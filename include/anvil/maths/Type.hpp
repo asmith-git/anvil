@@ -16,6 +16,7 @@
 #define ANVIL_MATHS_TYPE_HPP
 
 #include <cstdint>
+#include <type_traits>
 
 namespace anvil {
 	enum Type : int8_t {
@@ -58,12 +59,70 @@ namespace anvil {
 	}
 
 	template<Type TYPE>
+	using Primative = typename detail::TypeHelper<GetType(TYPE)>::type;
+
+	template<Type TYPE>
 	struct TypeInfo {
-		typedef typename detail::TypeHelper<GetType(TYPE)>::type type;
+		typedef Primative<TYPE> type;
 		enum {
-			channels = GetChannels(TYPE)
+			channels = GetChannels(TYPE),
+			size = sizeof(type),
+			is_unsigned = std::is_unsigned<type>::value,
+			is_signed = std::is_signed<type>::value,
+			is_floating_point = std::is_floating_point<type>::value
 		};
 	};
+
+	struct TypeInfoRuntime {
+		uint16_t channels : 8;
+		uint16_t size : 3;
+		uint16_t is_unsigned : 1;
+		uint16_t is_signed : 1;
+		uint16_t is_float : 1;
+
+		TypeInfoRuntime() throw() :
+			channels(0),
+			size(0),
+			is_unsigned(0),
+			is_signed(0),
+			is_float(0)
+		{}
+
+		TypeInfoRuntime(int aChannels, int aSize, int aUnsigned, int aSigned, int aFloat) throw() :
+			channels(aChannels),
+			size(aSize),
+			is_unsigned(aUnsigned),
+			is_signed(aSigned),
+			is_float(aFloat)
+		{}
+	};
+
+	static TypeInfoRuntime GetTypeInfo(Type aType) throw() {
+		switch (GetType(aType)) {
+			case ANVIL_8U :
+				return { GetChannels(aType), 1, 1, 0, 0 };
+			case ANVIL_8S :
+				return { GetChannels(aType), 1, 0, 1, 0 };
+			case ANVIL_16U :
+				return { GetChannels(aType), 2, 1, 0, 0 };
+			case ANVIL_16S :
+				return { GetChannels(aType), 2, 0, 1, 0 };
+			case ANVIL_32U :
+				return { GetChannels(aType), 4, 1, 0, 0 };
+			case ANVIL_32S :
+				return { GetChannels(aType), 4, 0, 1, 0 };
+			case ANVIL_64U :
+				return { GetChannels(aType), 8, 1, 0, 0 };
+			case ANVIL_64S :
+				return { GetChannels(aType), 8, 0, 1, 0 };
+			case ANVIL_32F :
+				return { GetChannels(aType), 4, 0, 0, 1 };
+			case ANVIL_64F :
+				return { GetChannels(aType), 8, 0, 0, 1 };
+			default:
+				return TypeInfoRuntime();
+		}
+	}
 
 	#define ANVIL_8UC1 anvil::CreateType(anvil::ANVIL_8U, 1)
 	#define ANVIL_8UC2 anvil::CreateType(anvil::ANVIL_8U, 2)

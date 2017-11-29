@@ -16,7 +16,6 @@
 #define ANVIL_MATHS_VECTOR_HPP
 
 #include <cmath>
-#include <type_traits>
 #include "Type.hpp"
 
 namespace anvil {
@@ -448,7 +447,7 @@ namespace anvil {
 	};
 
 	template<Type TYPE>
-	using AnvilVector = Vector<typename TypeInfo<TYPE>::type, TypeInfo<TYPE>::channels>;
+	using AnvilVector = Vector<Primative<GetType(TYPE)>, GetChannels(TYPE)>;
 
 	typedef Vector<uint8_t, 2> Vector8UC2;
 	typedef Vector<uint8_t, 3> Vector8UC3;
