@@ -60,7 +60,7 @@ namespace anvil {
 
 	template<Type TYPE>
 	using Primative = typename detail::TypeHelper<GetType(TYPE)>::type;
-
+	
 	template<Type TYPE>
 	struct TypeInfo {
 		typedef Primative<TYPE> type;
@@ -69,7 +69,7 @@ namespace anvil {
 			size = sizeof(type),
 			is_unsigned = std::is_unsigned<type>::value,
 			is_signed = std::is_signed<type>::value,
-			is_floating_point = std::is_floating_point<type>::value
+			is_float = std::is_floating_point<type>::value
 		};
 	};
 
@@ -80,7 +80,7 @@ namespace anvil {
 		uint16_t is_signed : 1;
 		uint16_t is_float : 1;
 
-		TypeInfoRuntime() throw() :
+		constexpr TypeInfoRuntime() throw() :
 			channels(0),
 			size(0),
 			is_unsigned(0),
@@ -88,7 +88,7 @@ namespace anvil {
 			is_float(0)
 		{}
 
-		TypeInfoRuntime(int aChannels, int aSize, int aUnsigned, int aSigned, int aFloat) throw() :
+		constexpr TypeInfoRuntime(int aChannels, int aSize, int aUnsigned, int aSigned, int aFloat) throw() :
 			channels(aChannels),
 			size(aSize),
 			is_unsigned(aUnsigned),
@@ -97,7 +97,7 @@ namespace anvil {
 		{}
 	};
 
-	static TypeInfoRuntime GetTypeInfo(Type aType) throw() {
+	static constexpr TypeInfoRuntime GetTypeInfo(Type aType) throw() {
 		switch (GetType(aType)) {
 			case ANVIL_8U :
 				return { GetChannels(aType), 1, 1, 0, 0 };
