@@ -16,7 +16,8 @@
 #define ANVIL_MATHS_VECTOR_HPP
 
 #include <cmath>
-#include <cstdint>
+#include <type_traits>
+#include "Type.hpp"
 
 namespace anvil {
 	template<class T, size_t S>
@@ -399,12 +400,6 @@ namespace anvil {
 			return *this;
 		}
 
-		inline this_t abs() const throw() {
-			this_t tmp;
-			for (size_t i = 0; i < size; ++i) tmp.mData[i] = static_cast<T>(std::abs(static_cast<double>(mData[i])));
-			return tmp;
-		}
-
 #if defined(_MSC_VER)
 #define AS_POPCOUNT __popcnt
 #define AS_POPCOUNT_TYPE int32_t
@@ -451,6 +446,9 @@ namespace anvil {
 #undef AS_POPCOUNT
 #undef AS_POPCOUNT_TYPE
 	};
+
+	template<Type TYPE>
+	using AnvilVector = Vector<typename TypeInfo<TYPE>::type, TypeInfo<TYPE>::channels>;
 
 	typedef Vector<uint8_t, 2> Vector8UC2;
 	typedef Vector<uint8_t, 3> Vector8UC3;

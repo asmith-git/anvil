@@ -31,6 +31,20 @@ namespace anvil {
 		ANVIL_64F
 	};
 
+	namespace detail {
+		template<Type TYPE> struct TypeHelper;
+		template<> struct TypeHelper<ANVIL_8U> { typedef uint8_t type; };
+		template<> struct TypeHelper<ANVIL_8S> { typedef int8_t type; };
+		template<> struct TypeHelper<ANVIL_16U> { typedef uint16_t type; };
+		template<> struct TypeHelper<ANVIL_16S> { typedef int16_t type; };
+		template<> struct TypeHelper<ANVIL_32U> { typedef uint32_t type; };
+		template<> struct TypeHelper<ANVIL_32S> { typedef int32_t type; };
+		template<> struct TypeHelper<ANVIL_64U> { typedef uint64_t type; };
+		template<> struct TypeHelper<ANVIL_64S> { typedef int64_t type; };
+		template<> struct TypeHelper<ANVIL_32F> { typedef float type; };
+		template<> struct TypeHelper<ANVIL_64F> { typedef double type; };
+	}
+
 	static constexpr Type CreateType(Type aType, int aChannels) throw() {
 		return static_cast<Type>(((aChannels - 1) << 4) | aType);
 	}
@@ -42,6 +56,14 @@ namespace anvil {
 	static constexpr int GetChannels(Type aType) throw() {
 		return (aType >> 4) + 1;
 	}
+
+	template<Type TYPE>
+	struct TypeInfo {
+		typedef typename detail::TypeHelper<GetType(TYPE)>::type type;
+		enum {
+			channels = GetChannels(TYPE)
+		};
+	};
 
 	#define ANVIL_8UC1 anvil::CreateType(anvil::ANVIL_8U, 1)
 	#define ANVIL_8UC2 anvil::CreateType(anvil::ANVIL_8U, 2)
