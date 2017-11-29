@@ -400,11 +400,11 @@ namespace anvil {
 		}
 
 #if defined(_MSC_VER)
-#define AS_POPCOUNT __popcnt
-#define AS_POPCOUNT_TYPE int32_t
+#define ANVIL_POPCOUNT __popcnt
+#define ANVIL_POPCOUNT_TYPE int32_t
 #elif defined(__GNUC__)
-#define AS_POPCOUNT __builtin_popcount
-#define AS_POPCOUNT_TYPE uint32_t
+#define ANVIL_POPCOUNT __builtin_popcount
+#define ANVIL_POPCOUNT_TYPE uint32_t
 #else
 	private:
 		static int as_popcount(int32_t aValue) throw() {
@@ -417,17 +417,17 @@ namespace anvil {
 			return tmp;
 		};
 	public:
-#define AS_POPCOUNT as_popcount
-#define AS_POPCOUNT_TYPE int32_t
+#define ANVIL_POPCOUNT as_popcount
+#define ANVIL_POPCOUNT_TYPE int32_t
 #endif
 
 		template<class T2 = type>
 		inline typename std::enable_if<sizeof(T2) == 1 || sizeof(T2) == 2 || sizeof(T2) == 4, this_t>::type popcount() const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) {
-				AS_POPCOUNT_TYPE val;
+				ANVIL_POPCOUNT_TYPE val;
 				memcpy(&val, &mData[i], sizeof(T2));
-				tmp.mData[i] = AS_POPCOUNT(val);
+				tmp.mData[i] = ANVIL_POPCOUNT(val);
 			}
 			return tmp;
 		}
@@ -436,14 +436,14 @@ namespace anvil {
 		inline typename std::enable_if<sizeof(T2) == 8, this_t>::type popcount() const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) {
-				AS_POPCOUNT_TYPE val[2];
+				ANVIL_POPCOUNT_TYPE val[2];
 				memcpy(&val, &mData[i], sizeof(T2));
-				tmp.mData[i] = AS_POPCOUNT(val[0]) + AS_POPCOUNT(val[1]);
+				tmp.mData[i] = ANVIL_POPCOUNT(val[0]) + ANVIL_POPCOUNT(val[1]);
 			}
 			return tmp;
 		}
-#undef AS_POPCOUNT
-#undef AS_POPCOUNT_TYPE
+#undef ANVIL_POPCOUNT
+#undef ANVIL_POPCOUNT_TYPE
 	};
 
 	template<Type TYPE>
