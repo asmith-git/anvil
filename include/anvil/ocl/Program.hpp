@@ -19,6 +19,7 @@
 #include "anvil/ocl/Context.hpp"
 
 namespace anvil { namespace ocl {
+
 	class Program {
 	private:
 		enum State : uint8_t {
@@ -35,7 +36,7 @@ namespace anvil { namespace ocl {
 		Program& operator=(Program&&) = delete;
 		Program& operator=(const Program&) = delete;
 	public:
-		friend class Context;
+		friend class Kernel;
 
 		ANVIL_CALL Program(const Context&);
 		ANVIL_CALL ~Program();
