@@ -19,37 +19,37 @@ namespace anvil { namespace ocl {
 	// Event
 
 	ANVIL_CALL Event::Event(const Context& aContext) :
-		mEvent(new cl_event)
+		mEvent(NULL)
 	{
 		cl_int error = CL_SUCCESS;
-		*mEvent = clCreateUserEvent(aContext.mContext, &error);
+		mEvent = clCreateUserEvent(aContext.mContext, &error);
 		if (error != CL_SUCCESS) {
-			mEvent.reset();
+			mEvent = NULL;
 			oclError("clCreateUserEvent ", error);
 		}
 	}
 
 	ANVIL_CALL Event::Event(Event&& aOther) :
-		mEvent()
+		mEvent(NULL)
 	{
-		mEvent.swap(aOther.mEvent);
+		std::swap(mEvent, aOther.mEvent);
 	}
 
 	ANVIL_CALL Event::~Event() {
 		if (mEvent) {
-			cl_int error = clReleaseEvent(*mEvent);
+			cl_int error = clReleaseEvent(mEvent);
 			if (error != CL_SUCCESS) oclError("clReleaseEvent ", error);
 		}
 	}
 
 	Event& ANVIL_CALL Event::operator=(Event&& aOther) {
-		mEvent.swap(aOther.mEvent);
+		std::swap(mEvent, aOther.mEvent);
 		return *this;
 	}
 
 	void ANVIL_CALL Event::wait() {
 		if (! mEvent) return;
-		cl_int error = clWaitForEvents(1, mEvent.get());
+		cl_int error = clWaitForEvents(1, &mEvent);
 		if (error != CL_SUCCESS) oclError("clWaitForEvents ", error);
 	}
 

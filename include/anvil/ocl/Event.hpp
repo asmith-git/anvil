@@ -22,7 +22,7 @@ namespace anvil { namespace ocl {
 
 	class Event {
 	private:
-		std::unique_ptr<cl_event> mEvent;
+		cl_event mEvent;
 
 		Event(const Event&) = delete;
 		Event& operator=(const Event&) = delete;

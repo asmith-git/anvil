@@ -90,14 +90,14 @@ namespace anvil { namespace ocl {
 
 	Event ANVIL_CALL Buffer::read(CommandQueue& aQueue, size_t aOffset, void* aDst, size_t aBytes, bool aBlocking) const {
 		Event event(mContext);
-		cl_int error = clEnqueueReadBuffer(aQueue.mQueue, mBuffer, aBlocking, aOffset, aBytes, aDst, 0, NULL, event.mEvent.get());
+		cl_int error = clEnqueueReadBuffer(aQueue.mQueue, mBuffer, aBlocking, aOffset, aBytes, aDst, 0, NULL, &event.mEvent);
 		if (error != CL_SUCCESS) oclError("clEnqueueReadBuffer", error);
 		return event;
 	}
 
 	Event ANVIL_CALL Buffer::write(CommandQueue& aQueue, size_t aOffset, const void* aSrc, size_t aBytes, bool aBlocking) {
 		Event event(mContext);
-		cl_int error = clEnqueueWriteBuffer(aQueue.mQueue, mBuffer, aBlocking, aOffset, aBytes, aSrc, 0, NULL, event.mEvent.get());
+		cl_int error = clEnqueueWriteBuffer(aQueue.mQueue, mBuffer, aBlocking, aOffset, aBytes, aSrc, 0, NULL, &event.mEvent);
 		if (error != CL_SUCCESS) oclError("clEnqueueWriteBuffer", error);
 		return event;
 	}
@@ -106,7 +106,7 @@ namespace anvil { namespace ocl {
 		Event event(mContext);
 		aOtherOffset += aOther.origin();
 		//! \todo Get aOther.cl_mem without unsafe cast
-		cl_int error = clEnqueueCopyBuffer(aQueue.mQueue, mBuffer, static_cast<Buffer&>(aOther).mBuffer, aThisOffset, aOtherOffset, aBytes, 0, NULL, event.mEvent.get());
+		cl_int error = clEnqueueCopyBuffer(aQueue.mQueue, mBuffer, static_cast<Buffer&>(aOther).mBuffer, aThisOffset, aOtherOffset, aBytes, 0, NULL, &event.mEvent);
 		if (error != CL_SUCCESS) oclError("clEnqueueCopyBuffer ", error);
 		return event;
 	}
