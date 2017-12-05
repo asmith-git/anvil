@@ -1,0 +1,50 @@
+//Copyright 2017 Adam G. Smith
+//
+//Licensed under the Apache License, Version 2.0 (the "License");
+//you may not use this file except in compliance with the License.
+//You may obtain a copy of the License at
+//
+//http ://www.apache.org/licenses/LICENSE-2.0
+//
+//Unless required by applicable law or agreed to in writing, software
+//distributed under the License is distributed on an "AS IS" BASIS,
+//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//See the License for the specific language governing permissions and
+//limitations under the License.
+
+#ifndef ANVIL_CORE_KEYWORDS_HPP
+#define ANVIL_CORE_KEYWORDS_HPP
+
+#include "anvil/core/Compiler.hpp"
+
+// Define keywords
+
+#if ANVIL_COMPILER == ANVIL_MSVC
+	#define ANVIL_STRONG_INLINE __forceinline
+#elif defined(ANVIL_GCC_COMPATIBILITY)
+	#define ANVIL_STRONG_INLINE __attribute__((always_inline))
+#else
+	#define ANVIL_STRONG_INLINE inline
+#endif
+
+#if ANVIL_CPP_VER >= 2011
+	#define ANVIL_CONSTEXPR_VAR constexpr
+	#define ANVIL_CONSTEXPR_FN constexpr
+	#define ANVIL_CONSTEXPR_CLA constexpr
+#else
+	#define ANVIL_CONSTEXPR_VAR const
+	#define ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE
+	#define ANVIL_CONSTEXPR_CLA
+#endif
+
+// Define types
+
+#ifndef float32_t
+	#define float32_t float
+#endif
+
+#ifndef float64_t
+	#define float64_t double
+#endif
+
+#endif
