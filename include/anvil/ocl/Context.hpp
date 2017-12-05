@@ -24,7 +24,7 @@ namespace anvil { namespace ocl {
 	public:
 		friend class Buffer;
 		
-		Context() {
+		ANVIL_CALL Context() {
 			cl_int error = CL_SUCCESS;
 			mContext = clCreateContext(nullptr, 0, nullptr, nullptr, nullptr, nullptr, &error); //! \todo Devices
 			if(error != CL_SUCCESS) {
@@ -33,7 +33,7 @@ namespace anvil { namespace ocl {
 			}
 		}
 		
-		~Context() {
+		ANVIL_CALL ~Context() {
 			if(mContext != 0) {
 				cl_int error = clReleaseContext(mContext);
 				if(error != CL_SUCCESS) throwException("clReleaseContext", error);

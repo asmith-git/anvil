@@ -37,15 +37,15 @@ namespace anvil { namespace ocl {
 			ALL = CL_DEVICE_TYPE_ALL,
 		};
 		
-		Device() :
+		ANVIL_CALL Device() :
 			mDevice(0) 
 		{}
 		
-		Device(cl_device_id aPlatform) :
+		ANVIL_CALL Device(cl_device_id aPlatform) :
 			mDevice(aPlatform) 
 		{}
 		
-		#define ANVIL_CL_GET_INFO(type, name1, name2) type name1() const { return *reinterpret_cast<type*>(getInfo(name2)); }
+		#define ANVIL_CL_GET_INFO(type, name1, name2) type ANVIL_CALL name1() const { return *reinterpret_cast<type*>(getInfo(name2)); }
 		
 		ANVIL_CL_GET_INFO(cl_uint,						addressBits,			    CL_DEVICE_ADDRESS_BITS);
 		ANVIL_CL_GET_INFO(cl_bool,						available,				    CL_DEVICE_AVAILABLE);

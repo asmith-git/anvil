@@ -22,15 +22,15 @@ namespace anvil { namespace ocl {
 	private:
 		cl_plaform_id mPlatform;
 	public:
-		Platform() :
+		ANVIL_CALL Platform() :
 			mPlatform(0) 
 		{}
 		
-		Platform(cl_plaform_id aPlatform) :
+		ANVIL_CALL Platform(cl_plaform_id aPlatform) :
 			mPlatform(aPlatform) 
 		{}
 		
-		std::vector<Device> getDevices(Type aType = kAll) {
+		std::vector<Device> ANVIL_CALL getDevices(Type aType = kAll) {
 			std::vector<Platform> devices;
 			
 			enum {kMaxDevices = 64}
@@ -43,7 +43,7 @@ namespace anvil { namespace ocl {
 			return devices;
 		}
 		
-		static std::vector<Platform> getPlatforms() {
+		static std::vector<Platform> ANVIL_CALL getPlatforms() {
 			std::vector<Platform> platforms;
 			
 			enum {kMaxPlatforms = 64}

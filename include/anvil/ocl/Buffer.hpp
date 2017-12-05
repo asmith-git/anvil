@@ -32,7 +32,7 @@ namespace anvil { namespace ocl {
 			READ_WRITE = CL_MEM_READ_WRITE,
 		};
 
-		Buffer(Context& aContext, size_t aSize, AccessMode aMode = READ_WRITE) :
+		ANVIL_CALL Buffer(Context& aContext, size_t aSize, AccessMode aMode = READ_WRITE) :
 			mContext(aContext),
 			mBuffer(),
 			mFlags(aMode),
@@ -47,7 +47,7 @@ namespace anvil { namespace ocl {
 			}
 		}
 
-		Buffer(Context& aContext, size_t aSize, AccessMode aMode = READ_WRITE, void* aHostPtr) :
+		ANVIL_CALL Buffer(Context& aContext, size_t aSize, AccessMode aMode = READ_WRITE, void* aHostPtr) :
 			mContext(aContext),
 			mBuffer(),
 			mFlags(aMode | CL_MEM_USE_HOST_PTR),
@@ -62,33 +62,33 @@ namespace anvil { namespace ocl {
 			}
 		}
 			
-		~Buffer() {
+		ANVIL_CALL ~Buffer() {
 			if(mSize != 0) {
 				cl_int error = clReleaseMemObject(mBuffer);
 				if(error != CL_SUCCESS) throwException("clReleaseMemObject", error);
 			}
 		}
 		
-		inline operator bool() const throw() {
+		inline ANVIL_CALL operator bool() const throw() {
 			return mSize != 0;
 		}
 		
-		inline AccessMode accessMode() const throw() {
+		inline AccessMode ANVIL_CALL accessMode() const throw() {
 			return 
 				mFlags & READ_ONLY ? READ_ONLY :
 				mFlags & WRITE_ONLY ?  WRITE_ONLY :
 				READ_WRITE;
 		}
 		
-		inline size_t size() const throw() {
+		inline size_t ANVIL_CALL size() const throw() {
 			return mSize;
 		}
 		
-		inline void* hostPtr() throw() {
+		inline void* ANVIL_CALL hostPtr() throw() {
 			return mHostPtr;
 		}
 		
-		inline const void* hostPtr() const throw() {
+		inline const void* ANVIL_CALL hostPtr() const throw() {
 			return mHostPtr;
 		}
 	};
