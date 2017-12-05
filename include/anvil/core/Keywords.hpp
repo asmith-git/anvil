@@ -41,6 +41,14 @@
 	#define ANVIL_CALL
 #endif
 
+#ifndef ANVIL_COMPILETIME_ASSERT
+	#define ANVIL_COMPILETIME_ASSERT(predicate, message) static_assert(predicate, message)
+#endif
+
+#ifndef ANVIL_RUNTIME_ASSERT
+	#define ANVIL_RUNTIME_ASSERT(predicate, message) if(! (predicate)) throw std::runtime_error(message);
+#endif
+
 // Define types
 
 #ifndef float32_t
