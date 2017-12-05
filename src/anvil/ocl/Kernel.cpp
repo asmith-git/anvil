@@ -47,4 +47,28 @@ namespace anvil { namespace ocl {
 		cl_int error = clSetKernelArg(mKernel, aIndex, aBytes, aSrc);
 	}
 
+	// NativeKernel
+
+	void __stdcall NativeKernel::execute_(void* aArgs) throw() {
+		reinterpret_cast<NativeKernel*>(aArgs)->onExecute();
+	}
+
+	ANVIL_CALL NativeKernel::NativeKernel(const Context& aContext) :
+		mContext(aContext)
+	{}
+
+	ANVIL_CALL NativeKernel::~NativeKernel() {
+
+	}
+
+	Event ANVIL_CALL NativeKernel::execute(CommandQueue& aQueue) {
+		Event event(mContext);
+
+		NativeKernel* args = this;
+		cl_int error = clEnqueueNativeKernel(aQueue.mQueue, NativeKernel::execute_, &args, sizeof(void*), 0, NULL, NULL, 0, NULL, &event.mEvent);
+		if (error != CL_SUCCESS) oclError("clEnqueueTask", error);
+
+		return event;
+	}
+
 }}

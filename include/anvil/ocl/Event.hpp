@@ -29,6 +29,7 @@ namespace anvil { namespace ocl {
 	public:
 		friend class Buffer;
 		friend class Kernel;
+		friend class NativeKernel;
 
 		ANVIL_CALL Event(const Context&);
 		ANVIL_CALL Event(Event&&);

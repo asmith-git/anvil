@@ -15,6 +15,7 @@
 #ifndef ANVIL_OCL_KERNEL_HPP
 #define ANVIL_OCL_KERNEL_HPP
 
+#include <functional>
 #include <cstdint>
 #include "anvil/ocl/Program.hpp"
 #include "anvil/ocl/CommandQueue.hpp"
@@ -22,7 +23,13 @@
 
 namespace anvil { namespace ocl {
 
-	class Kernel {
+	class KernelInterface {
+	public:
+		virtual ANVIL_CALL ~KernelInterface() {}
+		virtual Event ANVIL_CALL execute(CommandQueue&) = 0;
+	};
+
+	class Kernel : public KernelInterface {
 	private:
 		enum State : uint8_t {
 			INITIALISED,
@@ -41,7 +48,6 @@ namespace anvil { namespace ocl {
 		ANVIL_CALL ~Kernel();
 
 		void ANVIL_CALL setArg(cl_uint, const void*, size_t);
-		Event ANVIL_CALL execute(CommandQueue&);
 
 		template<class T>
 		ANVIL_STRONG_INLINE void ANVIL_CALL setArg(cl_uint aIndex, T aValue) {
@@ -102,10 +108,28 @@ namespace anvil { namespace ocl {
 		}
 
 		template<class ...ARGS>
-		Event execute(CommandQueue& aQueue, ARGS... aArgs) {
+		Event ANVIL_CALL execute(CommandQueue& aQueue, ARGS... aArgs) {
 			setArgs<ARGS...>(aArgs...);
 			return execute(aQueue);
 		}
+
+		// Inherited from KernelInterface
+		Event ANVIL_CALL execute(CommandQueue&) override;
+	};
+
+	class NativeKernel : public KernelInterface {
+	private:
+		static void __stdcall execute_(void*) throw();
+	protected:
+		const Context& mContext;
+
+		virtual void ANVIL_CALL onExecute() throw() = 0;
+	public:
+		ANVIL_CALL NativeKernel(const Context&);
+		virtual ANVIL_CALL ~NativeKernel();
+
+		// Inherited from KernelInterface
+		Event ANVIL_CALL execute(CommandQueue&) override;
 	};
 }}
 

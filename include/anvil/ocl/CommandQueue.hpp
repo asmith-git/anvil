@@ -33,6 +33,7 @@ namespace anvil { namespace ocl {
 	public:
 		friend class Buffer;
 		friend class Kernel;
+		friend class NativeKernel;
 
 		ANVIL_CALL CommandQueue(const Context&, const Device&, bool aOutOfOrder = false);
 		ANVIL_CALL ~CommandQueue();
