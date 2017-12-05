@@ -40,7 +40,7 @@ namespace anvil { namespace ocl {
 		if (error != CL_SUCCESS) oclError("clFlush", error);
 	}
 
-	void ANVIL_CALL CommandQueue::flush() {
+	void ANVIL_CALL CommandQueue::finish() {
 		cl_int error = clFinish(mQueue);
 		if (error != CL_SUCCESS) oclError("clFinish", error);
 	}
