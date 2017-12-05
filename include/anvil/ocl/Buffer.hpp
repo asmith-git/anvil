@@ -19,6 +19,8 @@
 
 namespace anvil { namespace ocl {
 
+	class CommandQueue;
+
 	class BufferInterface {
 	public:
 		enum AccessMode : cl_mem_flags {
@@ -36,6 +38,10 @@ namespace anvil { namespace ocl {
 		virtual size_t ANVIL_CALL size() const throw() = 0;
 		virtual void* ANVIL_CALL hostPtr() throw() = 0;
 		virtual const void* ANVIL_CALL hostPtr() const throw() = 0;
+		virtual void ANVIL_CALL read(CommandQueue&, size_t, void*, size_t, bool) const = 0;
+		virtual void ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t, bool) = 0;
+
+		//! \todo readRect, writeRect, copy
 	};
 
 	class Buffer : public BufferInterface {
@@ -66,6 +72,8 @@ namespace anvil { namespace ocl {
 		size_t ANVIL_CALL size() const throw() override;
 		void* ANVIL_CALL hostPtr() throw() override;
 		const void* ANVIL_CALL hostPtr() const throw() override;
+		void ANVIL_CALL read(CommandQueue&, size_t, void*, size_t, bool) const override;
+		void ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t, bool) override;
 	};
 
 	class SubBuffer : public BufferInterface {
@@ -94,6 +102,8 @@ namespace anvil { namespace ocl {
 		size_t ANVIL_CALL size() const throw() override;
 		void* ANVIL_CALL hostPtr() throw() override;
 		const void* ANVIL_CALL hostPtr() const throw() override;
+		void ANVIL_CALL read(CommandQueue&, size_t, void*, size_t, bool) const override;
+		void ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t, bool) override;
 	};
 }}
 

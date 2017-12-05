@@ -34,6 +34,7 @@ namespace anvil { namespace ocl {
 		virtual void ANVIL_CALL errorCallback(const char*, const void*, size_t) throw();
 	public:
 		friend class Buffer;
+		friend class CommandQueue;
 		
 		ANVIL_CALL Context(const std::vector<Device>&);
 		virtual ANVIL_CALL ~Context();

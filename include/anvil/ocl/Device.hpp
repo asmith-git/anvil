@@ -26,6 +26,7 @@ namespace anvil { namespace ocl {
 		void* ANVIL_CALL getInfo(cl_device_info aName) const;
 	public:
 		friend class Context;
+		friend class CommandQueue;
 
 		enum Type : cl_device_type {
 			CPU = CL_DEVICE_TYPE_CPU,

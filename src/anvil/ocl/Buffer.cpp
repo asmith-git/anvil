@@ -14,6 +14,7 @@
 
 #include <cstdint>
 #include "anvil/ocl/Buffer.hpp"
+#include "anvil/ocl/CommandQueue.hpp"
 
 namespace anvil { namespace ocl {
 
@@ -87,6 +88,16 @@ namespace anvil { namespace ocl {
 		return mContext;
 	}
 
+	void ANVIL_CALL Buffer::read(CommandQueue& aQueue, size_t aOffset, void* aDst, size_t aBytes, bool aBlocking) const {
+		cl_int error = clEnqueueReadBuffer(aQueue.mQueue, mBuffer, aBlocking, aOffset, aBytes, aDst, 0, NULL, NULL);
+		if (error != CL_SUCCESS) oclError("clEnqueueReadBuffer", error);
+	}
+
+	void ANVIL_CALL Buffer::write(CommandQueue& aQueue, size_t aOffset, const void* aSrc, size_t aBytes, bool aBlocking) {
+		cl_int error = clEnqueueWriteBuffer(aQueue.mQueue, mBuffer, aBlocking, aOffset, aBytes, aSrc, 0, NULL, NULL);
+		if (error != CL_SUCCESS) oclError("clEnqueueWriteBuffer", error);
+	}
+
 	// SubBuffer
 
 	ANVIL_CALL SubBuffer::SubBuffer(Buffer& aBuffer, size_t aOrigin, size_t aSize) :
@@ -147,6 +158,14 @@ namespace anvil { namespace ocl {
 
 	Buffer& ANVIL_CALL SubBuffer::buffer() throw() {
 		return mBuffer;
+	}
+
+	void ANVIL_CALL SubBuffer::read(CommandQueue& aQueue, size_t aOffset, void* aDst, size_t aBytes, bool aBlocking) const {
+		mBuffer.read(aQueue, aOffset + mOrigin, aDst, aBytes, aBlocking);
+	}
+
+	void ANVIL_CALL SubBuffer::write(CommandQueue& aQueue, size_t aOffset, const void* aSrc, size_t aBytes, bool aBlocking) {
+		mBuffer.write(aQueue, aOffset + mOrigin, aSrc, aBytes, aBlocking);
 	}
 
 }}
