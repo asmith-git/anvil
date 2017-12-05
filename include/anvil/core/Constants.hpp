@@ -43,12 +43,12 @@ namespace anvil {
 		};
 
 		enum {
-			eq = A == B,            //!< 1 if A is equal to B.
-			ne = A != B,
-			lt = A < B,
-			gt = A > B,
-			le = A <= B,
-			ge = A >= B
+			eq = A == B,            //!< 1 if A is equal to B, else 0.
+			ne = A != B,            //!< 1 if A is not equal to B, else 0.
+			lt = A < B,             //!< 1 if A is less than B, else 0.
+			gt = A > B,             //!< 1 if A is greater than B, else 0.
+			le = A <= B,            //!< 1 if A is greater than or equal to B, else 0.
+			ge = A >= B             //!< 1 if A is less than or equal to B, else 0.
 		};
 	};
 	
@@ -79,10 +79,15 @@ namespace anvil {
 			ge = A >= B
 		};
 		
+		/*!
+			\brief Calculate an integer power in compile time.
+			\tparam VALUE The operand value.
+			\tparam EXPONENT The exponent value.
+		*/
 		template <int VALUE, int EXPONENT>
 		struct ConstantPower {
 			enum {
-				value = VALUE * ConstantPower<VALUE, EXPONENT - 1>::value
+				value = VALUE * ConstantPower<VALUE, EXPONENT - 1>::value	//!< The resulting value.
 			};
 		};
 
@@ -93,10 +98,15 @@ namespace anvil {
 			};
 		};
 		
+		/*!
+			\brief Create a bitmask in compile time.
+			\tparam T The container type for the mask.
+			\tparam BITS The number of bits to set in the mask.
+		*/
 		template<class T, size_t BITS>
 		struct ConstantBitmask {
 			enum : T {
-				value = (ConstantBitmask<T, BITS - 1>::value << static_cast<T>(1)) | static_cast<T>(1)
+				value = (ConstantBitmask<T, BITS - 1>::value << static_cast<T>(1)) | static_cast<T>(1)	//!< The resulting value.
 			};
 		};
 
@@ -107,10 +117,14 @@ namespace anvil {
 			};
 		};
 
+		/*!
+			\brief Create a popcount (number of 1's) in compile time.
+			\tparam VAL The value to count.
+		*/
 		template<int64_t VAL>
 		struct ConstantPopcount {
 			enum {
-				value = (VAL & 1) + ConstantPopcount<ConstantOperation<int64_t, VAL, 1>::rshift>::value
+				value = (VAL & 1) + ConstantPopcount<ConstantOperation<int64_t, VAL, 1>::rshift>::value	//!< The resulting value.
 			};
 		};
 
