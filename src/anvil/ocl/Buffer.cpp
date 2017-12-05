@@ -19,7 +19,7 @@ namespace anvil { namespace ocl {
 
 	// Buffer
 
-	ANVIL_CALL Buffer::Buffer(Context& aContext, size_t aSize, AccessMode aMode) :
+	ANVIL_CALL Buffer::Buffer(const Context& aContext, size_t aSize, AccessMode aMode) :
 		mContext(aContext),
 		mBuffer(),
 		mFlags(aMode),
@@ -34,7 +34,7 @@ namespace anvil { namespace ocl {
 		}
 	}
 
-	ANVIL_CALL Buffer::Buffer(Context& aContext, size_t aSize, void* aHostPtr, AccessMode aMode) :
+	ANVIL_CALL Buffer::Buffer(const Context& aContext, size_t aSize, void* aHostPtr, AccessMode aMode) :
 		mContext(aContext),
 		mBuffer(),
 		mFlags(aMode | CL_MEM_USE_HOST_PTR),
@@ -67,6 +67,10 @@ namespace anvil { namespace ocl {
 			READ_WRITE;
 	}
 
+	size_t ANVIL_CALL Buffer::origin() const throw() {
+		return 0;
+	}
+
 	size_t ANVIL_CALL Buffer::size() const throw() {
 		return mSize;
 	}
@@ -79,7 +83,7 @@ namespace anvil { namespace ocl {
 		return mHostPtr;
 	}
 
-	Context& ANVIL_CALL Buffer::context() const throw() {
+	const Context& ANVIL_CALL Buffer::context() const throw() {
 		return mContext;
 	}
 
@@ -105,7 +109,7 @@ namespace anvil { namespace ocl {
 		}
 	}
 
-	Context& ANVIL_CALL SubBuffer::context() const throw() {
+	const Context& ANVIL_CALL SubBuffer::context() const throw() {
 		return mBuffer.context();
 	}
 
