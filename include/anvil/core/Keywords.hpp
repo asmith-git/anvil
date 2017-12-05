@@ -33,8 +33,12 @@
 	#define ANVIL_CONSTEXPR_CLA constexpr
 #else
 	#define ANVIL_CONSTEXPR_VAR const
-	#define ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE
+	#define ANVIL_CONSTEXPR_FN inline
 	#define ANVIL_CONSTEXPR_CLA
+#endif
+
+#ifndef ANVIL_CALL
+	#define ANVIL_CALL
 #endif
 
 // Define types

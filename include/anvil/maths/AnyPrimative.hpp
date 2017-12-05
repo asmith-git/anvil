@@ -15,6 +15,7 @@
 #ifndef ANVIL_MATHS_ANY_PRIMATIVE_HPP
 #define ANVIL_MATHS_ANY_PRIMATIVE_HPP
 
+#include "anvil/core/Keywords.hpp"
 #include "anvil/maths/Type.hpp"
 
 namespace anvil {
@@ -77,7 +78,7 @@ namespace anvil {
 	template<class FU8, class FU16, class FU32, class FU64, 
 		class FS8, class FS16, class FS32, class FS64, 
 		class FF32, class FF64>
-	static inline bool dispatchByType(PrimativeValue aPrimative, Type aType, 
+	static inline bool ANVIL_CALL dispatchByType(PrimativeValue aPrimative, Type aType, 
 	FU8 fu8,  FU16 fu16,  FU32 fu32,  FU64 fu64,  
 	FS8 fs8,  FS16 fs16,  FS32 fs32,  FS64 fs64, 
 	FF32 ff32,  FF64 ff64) {

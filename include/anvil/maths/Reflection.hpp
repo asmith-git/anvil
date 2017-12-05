@@ -16,10 +16,11 @@
 #define ANVIL_MATHS_REFLECTION_HPP
 
 #include <cstdint>
+#include "anvil/core/Keywords.hpp"
 
 namespace anvil {
 
-	static constexpr uint8_t reflect(const uint8_t aValue) throw() {
+	static constexpr uint8_t ANVIL_CALL reflect(const uint8_t aValue) throw() {
 		static constexpr const uint8_t gLookup[255] {
 			0,128,64,192,32,160,96,224,16,144,80,208,48,176,112,240,
 			8,136,72,200,40,168,104,232,24,152,88,216,56,184,120,248,
@@ -42,31 +43,31 @@ namespace anvil {
 		return gLookup[aValue];
 	}
 
-	static constexpr uint16_t reflect(const uint16_t aValue) throw() {
+	static constexpr uint16_t ANVIL_CALL reflect(const uint16_t aValue) throw() {
 		return reflect(static_cast<uint8_t>(aValue >> 8)) | (reflect(static_cast<uint8_t>(aValue & UINT8_MAX)) << 8);
 	}
 
-	static constexpr uint32_t reflect(const uint32_t aValue) throw() {
+	static constexpr uint32_t ANVIL_CALL reflect(const uint32_t aValue) throw() {
 		return reflect(static_cast<uint16_t>(aValue >> 16)) | (reflect(static_cast<uint16_t>(aValue & UINT16_MAX)) << 16);
 	}
 
-	static constexpr uint64_t reflect(const uint64_t aValue) throw() {
+	static constexpr uint64_t ANVIL_CALL reflect(const uint64_t aValue) throw() {
 		return reflect(static_cast<uint32_t>(aValue >> 32L)) | (reflect(static_cast<uint32_t>(aValue & UINT32_MAX)) << 32L);
 	}
 
-	static constexpr int8_t reflect(const int8_t aValue) throw() {
+	static constexpr int8_t ANVIL_CALL reflect(const int8_t aValue) throw() {
 		return static_cast<int8_t>(reflect(static_cast<uint8_t>(aValue)));
 	}
 
-	static constexpr int16_t reflect(const int16_t aValue) throw() {
+	static constexpr int16_t ANVIL_CALL reflect(const int16_t aValue) throw() {
 		return static_cast<int16_t>(reflect(static_cast<uint16_t>(aValue)));
 	}
 
-	static constexpr int32_t reflect(const int32_t aValue) throw() {
+	static constexpr int32_t ANVIL_CALL reflect(const int32_t aValue) throw() {
 		return static_cast<int32_t>(reflect(static_cast<uint32_t>(aValue)));
 	}
 
-	static constexpr int64_t reflect(const int64_t aValue) throw() {
+	static constexpr int64_t ANVIL_CALL reflect(const int64_t aValue) throw() {
 		return static_cast<int64_t>(reflect(static_cast<uint64_t>(aValue)));
 	}
 
