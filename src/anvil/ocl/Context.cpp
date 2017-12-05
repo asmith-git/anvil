@@ -23,7 +23,9 @@ namespace anvil { namespace ocl {
 		static_cast<Context*>(user_data)->errorCallback(errinfo, private_info, cb);
 	}
 
-	ANVIL_CALL Context::Context(const std::vector<Device>& aDevices) {
+	ANVIL_CALL Context::Context(const std::vector<Device>& aDevices) :
+		mDevices(aDevices)
+	{
 		enum { MAX_DEVICES = 128 };
 		const cl_uint s = aDevices.size();
 
@@ -48,6 +50,10 @@ namespace anvil { namespace ocl {
 
 	void ANVIL_CALL Context::errorCallback(const char* aMessage, const void*, size_t) throw() {
 		std::cerr << aMessage << std::endl;
+	}
+
+	std::vector<Device> ANVIL_CALL Context::devices() const throw() {
+		return mDevices;
 	}
 
 }}

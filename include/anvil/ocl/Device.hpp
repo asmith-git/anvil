@@ -15,6 +15,7 @@
 #ifndef ANVIL_OCL_DEVICE_HPP
 #define ANVIL_OCL_DEVICE_HPP
 
+#include <vector>
 #include "anvil/ocl/Core.hpp"
 
 namespace anvil { namespace ocl {
@@ -35,8 +36,8 @@ namespace anvil { namespace ocl {
 		};
 		
 		ANVIL_CALL Device();
-		
 		ANVIL_CALL Device(cl_device_id aPlatform);
+		static std::vector<Device> ANVIL_CALL devices(Device::Type aType = Device::ALL);
 		
 		struct WorkItemCount {
 			size_t x;

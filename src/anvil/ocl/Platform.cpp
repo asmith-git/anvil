@@ -37,20 +37,21 @@ namespace anvil { namespace ocl {
 		return gPlatformInfoBuffer;
 	}
 
-	std::vector<Device> ANVIL_CALL Platform::getDevices(Device::Type aType) const {
+	std::vector<Device> ANVIL_CALL Platform::devices(Device::Type aType) const {
 		std::vector<Device> devices;
 
 		enum { kMaxDevices = 64 };
 		cl_device_id ids[kMaxDevices];
 		cl_uint count = 0;
 		cl_int error = clGetDeviceIDs(mPlatform, aType, kMaxDevices, ids, &count);
-		if (error != CL_SUCCESS) throwException("clGetDeviceIDs", error);
+		if (error == CL_DEVICE_NOT_FOUND) count = 0;
+		else if (error != CL_SUCCESS) throwException("clGetDeviceIDs", error);
 		for (cl_uint i = 0; i < count; ++i) devices.push_back(Device(ids[i]));
 
 		return devices;
 	}
 
-	std::vector<Platform> ANVIL_CALL Platform::getPlatforms() {
+	std::vector<Platform> ANVIL_CALL Platform::platforms() {
 		std::vector<Platform> platforms;
 
 		enum { kMaxPlatforms = 64 };
@@ -61,16 +62,6 @@ namespace anvil { namespace ocl {
 		for (cl_uint i = 0; i < count; ++i) platforms.push_back(Platform(ids[i]));
 
 		return platforms;
-	}
-
-	std::vector<Device> ANVIL_CALL Platform::getDevicesAllPlatforms(Device::Type aType) {
-		std::vector<Device> devices;
-		const std::vector<Platform> platforms = getPlatforms();
-		for (Platform i : platforms) {
-			std::vector<Device> devices2 = i.getDevices();
-			for (Device i : devices2) devices.push_back(i);
-		}
-		return devices;
 	}
 
 }}

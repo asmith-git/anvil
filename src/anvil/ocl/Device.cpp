@@ -14,6 +14,7 @@
 
 #include <cstdint>
 #include "anvil/ocl/Device.hpp"
+#include "anvil/ocl/Platform.hpp"
 
 namespace anvil { namespace ocl {
 
@@ -34,5 +35,15 @@ namespace anvil { namespace ocl {
 		const cl_int error = clGetDeviceInfo(mDevice, aName, DEVICE_INFO_BUFFER_SIZE, gDeviceInfoBuffer, nullptr);
 		if (error != CL_SUCCESS) throwException("clGetDeviceInfo", error);
 		return gDeviceInfoBuffer;
+	}
+
+	std::vector<Device> ANVIL_CALL Device::devices(Device::Type aType) {
+		std::vector<Device> devices;
+		const std::vector<Platform> platforms = Platform::platforms();
+		for (Platform i : platforms) {
+			std::vector<Device> devices2 = i.devices(aType);
+			for (Device i : devices2) devices.push_back(i);
+		}
+		return devices;
 	}
 }}

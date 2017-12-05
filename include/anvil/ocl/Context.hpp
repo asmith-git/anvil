@@ -21,6 +21,7 @@
 namespace anvil { namespace ocl {
 	class Context {
 	private:
+		const std::vector<Device> mDevices;
 		cl_context mContext;
 
 		Context(Context&&) = delete;
@@ -36,6 +37,8 @@ namespace anvil { namespace ocl {
 		
 		ANVIL_CALL Context(const std::vector<Device>&);
 		virtual ANVIL_CALL ~Context();
+
+		std::vector<Device> ANVIL_CALL devices() const throw();
 	};
 }}
 

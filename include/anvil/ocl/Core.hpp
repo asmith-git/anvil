@@ -54,6 +54,15 @@ namespace anvil { namespace ocl {
 		case CL_OUT_OF_HOST_MEMORY   :
 			msg += "CL_OUT_OF_HOST_MEMORY";
 			break;
+		case CL_INVALID_PLATFORM:
+			msg += "CL_INVALID_PLATFORM";
+			break;
+		case CL_INVALID_DEVICE_TYPE:
+			msg += "CL_INVALID_DEVICE_TYPE";
+			break;
+		case CL_DEVICE_NOT_FOUND:
+			msg += "CL_DEVICE_NOT_FOUND";
+			break;
 		default:
 			msg += std::to_string(aCode);
 			break;

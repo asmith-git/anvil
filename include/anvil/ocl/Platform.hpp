@@ -15,7 +15,6 @@
 #ifndef ANVIL_OCL_PLATFORM_HPP
 #define ANVIL_OCL_PLATFORM_HPP
 
-#include <vector>
 #include "anvil/ocl/Device.hpp"
 
 namespace anvil { namespace ocl {
@@ -30,9 +29,8 @@ namespace anvil { namespace ocl {
 		ANVIL_CALL Platform();
 		ANVIL_CALL Platform(cl_platform_id);
 		
-		std::vector<Device> ANVIL_CALL getDevices(Device::Type aType = Device::ALL) const;
-		static std::vector<Platform> ANVIL_CALL getPlatforms();
-		static std::vector<Device> ANVIL_CALL getDevicesAllPlatforms(Device::Type aType = Device::ALL);
+		std::vector<Device> ANVIL_CALL devices(Device::Type aType = Device::ALL) const;
+		static std::vector<Platform> ANVIL_CALL platforms();
 
 
 		#define ANVIL_CL_GET_INFO(type, ptr, name1, name2) inline type ANVIL_CALL name1() const { return ptr reinterpret_cast<type ptr>(getInfo(name2)); }
