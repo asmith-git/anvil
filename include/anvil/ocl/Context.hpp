@@ -15,30 +15,27 @@
 #ifndef ANVIL_OCL_CONTEXT_HPP
 #define ANVIL_OCL_CONTEXT_HPP
 
-#include "anvil/ocl/Core.hpp"
+#include <vector>
+#include "anvil/ocl/Platform.hpp"
 
 namespace anvil { namespace ocl {
 	class Context {
 	private:
 		cl_context mContext;
+
+		Context(Context&&) = delete;
+		Context(const Context&) = delete;
+		Context& operator=(Context&&) = delete;
+		Context& operator=(const Context&) = delete;
+
+		static void __stdcall errorCallback_(const char *, const void *, size_t, void*);
+	protected:
+		virtual void ANVIL_CALL errorCallback(const char*, const void*, size_t) throw();
 	public:
 		friend class Buffer;
 		
-		ANVIL_CALL Context() {
-			cl_int error = CL_SUCCESS;
-			mContext = clCreateContext(nullptr, 0, nullptr, nullptr, nullptr, &error); //! \todo Devices
-			if(error != CL_SUCCESS) {
-				mContext = 0;
-				throwException("clCreateContext", error);
-			}
-		}
-		
-		ANVIL_CALL ~Context() {
-			if(mContext != 0) {
-				cl_int error = clReleaseContext(mContext);
-				if(error != CL_SUCCESS) throwException("clReleaseContext", error);
-			}
-		}
+		ANVIL_CALL Context(const std::vector<Device>&);
+		virtual ANVIL_CALL ~Context();
 	};
 }}
 

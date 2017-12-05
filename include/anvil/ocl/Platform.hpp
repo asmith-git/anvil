@@ -25,6 +25,8 @@ namespace anvil { namespace ocl {
 		
 		void* ANVIL_CALL getInfo(cl_platform_info) const;
 	public:
+		friend class Context;
+
 		ANVIL_CALL Platform();
 		ANVIL_CALL Platform(cl_platform_id);
 		

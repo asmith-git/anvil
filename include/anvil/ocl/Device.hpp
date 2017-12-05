@@ -24,6 +24,8 @@ namespace anvil { namespace ocl {
 		
 		void* ANVIL_CALL getInfo(cl_device_info aName) const;
 	public:
+		friend class Context;
+
 		enum Type : cl_device_type {
 			CPU = CL_DEVICE_TYPE_CPU,
 			GPU = CL_DEVICE_TYPE_GPU,
