@@ -37,14 +37,14 @@ namespace anvil { namespace ocl {
 		mContext = clCreateContext(NULL, s, devices, Context::errorCallback_, this, &error);
 		if (error != CL_SUCCESS) {
 			mContext = 0;
-			throwException("clCreateContext", error);
+			oclError("clCreateContext", error);
 		}
 	}
 
 	ANVIL_CALL Context::~Context() {
 		if (mContext != 0) {
 			cl_int error = clReleaseContext(mContext);
-			if (error != CL_SUCCESS) throwException("clReleaseContext", error);
+			if (error != CL_SUCCESS) oclError("clReleaseContext", error);
 		}
 	}
 

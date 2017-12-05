@@ -21,7 +21,7 @@
 #include "anvil/core/Keywords.hpp"
 
 namespace anvil { namespace ocl {
-	static void ANVIL_CALL throwException(const char* aFunction, cl_int aCode) {
+	static void ANVIL_CALL oclError(const char* aFunction, cl_int aCode) {
 		std::string msg = "OpenCL reports error in call ";
 		msg	+= aFunction;
 		msg	+= " with code ";

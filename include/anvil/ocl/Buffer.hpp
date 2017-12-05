@@ -25,72 +25,56 @@ namespace anvil { namespace ocl {
 		cl_mem_flags mFlags;
 		size_t mSize;
 		void* mHostPtr;
+
+		Buffer(Buffer&&) = delete;
+		Buffer(const Buffer&) = delete;
+		Buffer& operator=(Buffer&&) = delete;
+		Buffer& operator=(const Buffer&) = delete;
 	public:
+		friend class SubBuffer;
+
 		enum AccessMode : cl_mem_flags {
 			READ_ONLY = CL_MEM_READ_ONLY,
 			WRITE_ONLY = CL_MEM_WRITE_ONLY,
 			READ_WRITE = CL_MEM_READ_WRITE,
 		};
 
-		ANVIL_CALL Buffer(Context& aContext, size_t aSize, AccessMode aMode = READ_WRITE) :
-			mContext(aContext),
-			mBuffer(),
-			mFlags(aMode),
-			mSize(aSize),
-			mHostPtr(nullptr)
-		{
-			cl_int error = CL_SUCCESS;
-			mBuffer = clCreateBuffer(mContext.mContext, mFlags, mSize, mHostPtr, &error);
-			if(error != CL_SUCCESS) {
-				mSize = 0;
-				throwException("clCreateBuffer", error);
-			}
-		}
+		ANVIL_CALL Buffer(Context&, size_t, AccessMode aMode = READ_WRITE);
+		ANVIL_CALL Buffer(Context&, size_t, void*, AccessMode aMode = READ_WRITE);
+		ANVIL_CALL ~Buffer();
+		
+		Context& ANVIL_CALL context() const throw();
+		ANVIL_CALL operator bool() const throw();
+		AccessMode ANVIL_CALL accessMode() const throw();
+		size_t ANVIL_CALL size() const throw();
+		void* ANVIL_CALL hostPtr() throw();
+		const void* ANVIL_CALL hostPtr() const throw();
+	};
 
-		ANVIL_CALL Buffer(Context& aContext, size_t aSize, AccessMode aMode = READ_WRITE, void* aHostPtr) :
-			mContext(aContext),
-			mBuffer(),
-			mFlags(aMode | CL_MEM_USE_HOST_PTR),
-			mSize(aSize),
-			mHostPtr(aHostPtr)
-		{
-			cl_int error = CL_SUCCESS;
-			mBuffer = clCreateBuffer(mContext.mContext, mFlags, mSize, mHostPtr, &error);
-			if(error != CL_SUCCESS) {
-				mSize = 0;
-				throwException("clCreateBuffer", error);
-			}
-		}
-			
-		ANVIL_CALL ~Buffer() {
-			if(mSize != 0) {
-				cl_int error = clReleaseMemObject(mBuffer);
-				if(error != CL_SUCCESS) throwException("clReleaseMemObject", error);
-			}
-		}
-		
-		inline ANVIL_CALL operator bool() const throw() {
-			return mSize != 0;
-		}
-		
-		inline AccessMode ANVIL_CALL accessMode() const throw() {
-			return 
-				mFlags & READ_ONLY ? READ_ONLY :
-				mFlags & WRITE_ONLY ?  WRITE_ONLY :
-				READ_WRITE;
-		}
-		
-		inline size_t ANVIL_CALL size() const throw() {
-			return mSize;
-		}
-		
-		inline void* ANVIL_CALL hostPtr() throw() {
-			return mHostPtr;
-		}
-		
-		inline const void* ANVIL_CALL hostPtr() const throw() {
-			return mHostPtr;
-		}
+
+	class SubBuffer {
+	private:
+		Buffer& mBuffer;
+		cl_mem mSubBuffer;
+		size_t mOrigin;
+		size_t mSize;
+
+		SubBuffer(SubBuffer&&) = delete;
+		SubBuffer(const SubBuffer&) = delete;
+		SubBuffer& operator=(SubBuffer&&) = delete;
+		SubBuffer& operator=(const SubBuffer&) = delete;
+	public:
+		ANVIL_CALL SubBuffer(Buffer&, size_t, size_t);
+		ANVIL_CALL ~SubBuffer();
+
+		Context& ANVIL_CALL context() const throw();
+		ANVIL_CALL operator bool() const throw();
+		Buffer::AccessMode ANVIL_CALL accessMode() const throw();
+		size_t ANVIL_CALL origin() const throw();
+		size_t ANVIL_CALL size() const throw();
+		void* ANVIL_CALL hostPtr() throw();
+		const void* ANVIL_CALL hostPtr() const throw();
+		Buffer& ANVIL_CALL buffer() throw();
 	};
 }}
 

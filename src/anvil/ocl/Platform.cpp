@@ -33,7 +33,7 @@ namespace anvil { namespace ocl {
 
 	void* ANVIL_CALL Platform::getInfo(cl_platform_info aName) const {
 		const cl_int error = clGetPlatformInfo(mPlatform, aName, PLATFORM_INFO_BUFFER_SIZE, gPlatformInfoBuffer, nullptr);
-		if (error != CL_SUCCESS) throwException("clGetDeviceInfo", error);
+		if (error != CL_SUCCESS) oclError("clGetDeviceInfo", error);
 		return gPlatformInfoBuffer;
 	}
 
@@ -45,7 +45,7 @@ namespace anvil { namespace ocl {
 		cl_uint count = 0;
 		cl_int error = clGetDeviceIDs(mPlatform, aType, kMaxDevices, ids, &count);
 		if (error == CL_DEVICE_NOT_FOUND) count = 0;
-		else if (error != CL_SUCCESS) throwException("clGetDeviceIDs", error);
+		else if (error != CL_SUCCESS) oclError("clGetDeviceIDs", error);
 		for (cl_uint i = 0; i < count; ++i) devices.push_back(Device(ids[i]));
 
 		return devices;
@@ -58,7 +58,7 @@ namespace anvil { namespace ocl {
 		cl_platform_id ids[kMaxPlatforms];
 		cl_uint count = 0;
 		cl_int error = clGetPlatformIDs(kMaxPlatforms, ids, &count);
-		if (error != CL_SUCCESS) throwException("clGetPlatformIDs", error);
+		if (error != CL_SUCCESS) oclError("clGetPlatformIDs", error);
 		for (cl_uint i = 0; i < count; ++i) platforms.push_back(Platform(ids[i]));
 
 		return platforms;
