@@ -18,6 +18,7 @@
 #include "anvil/ocl/Buffer.hpp"
 
 namespace anvil { namespace ocl {
+
 	class CommandQueue {
 	private:
 		const Context& mContext;

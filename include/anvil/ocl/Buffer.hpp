@@ -15,7 +15,7 @@
 #ifndef ANVIL_OCL_BUFFER_HPP
 #define ANVIL_OCL_BUFFER_HPP
 
-#include "anvil/ocl/Context.hpp"
+#include "anvil/ocl/Event.hpp"
 
 namespace anvil { namespace ocl {
 
@@ -38,8 +38,9 @@ namespace anvil { namespace ocl {
 		virtual size_t ANVIL_CALL size() const throw() = 0;
 		virtual void* ANVIL_CALL hostPtr() throw() = 0;
 		virtual const void* ANVIL_CALL hostPtr() const throw() = 0;
-		virtual void ANVIL_CALL read(CommandQueue&, size_t, void*, size_t, bool) const = 0;
-		virtual void ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t, bool) = 0;
+		virtual Event ANVIL_CALL read(CommandQueue&, size_t, void*, size_t) const = 0;
+		virtual Event ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t) = 0;
+		virtual Event ANVIL_CALL copy(CommandQueue&, BufferInterface&, size_t, size_t, size_t) const = 0;
 
 		//! \todo readRect, writeRect, copy
 	};
@@ -72,8 +73,9 @@ namespace anvil { namespace ocl {
 		size_t ANVIL_CALL size() const throw() override;
 		void* ANVIL_CALL hostPtr() throw() override;
 		const void* ANVIL_CALL hostPtr() const throw() override;
-		void ANVIL_CALL read(CommandQueue&, size_t, void*, size_t, bool) const override;
-		void ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t, bool) override;
+		Event ANVIL_CALL read(CommandQueue&, size_t, void*, size_t, bool) const;
+		Event ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t, bool);
+		Event ANVIL_CALL copy(CommandQueue&, BufferInterface&, size_t, size_t, size_t, bool) const;
 	};
 
 	class SubBuffer : public BufferInterface {
@@ -102,8 +104,9 @@ namespace anvil { namespace ocl {
 		size_t ANVIL_CALL size() const throw() override;
 		void* ANVIL_CALL hostPtr() throw() override;
 		const void* ANVIL_CALL hostPtr() const throw() override;
-		void ANVIL_CALL read(CommandQueue&, size_t, void*, size_t, bool) const override;
-		void ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t, bool) override;
+		Event ANVIL_CALL read(CommandQueue&, size_t, void*, size_t, bool) const;
+		Event ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t, bool);
+		Event ANVIL_CALL copy(CommandQueue&, BufferInterface&, size_t, size_t, size_t, bool) const;
 	};
 }}
 
