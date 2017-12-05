@@ -17,6 +17,8 @@
 
 #include <cstdint>
 #include "anvil/ocl/Program.hpp"
+#include "anvil/ocl/CommandQueue.hpp"
+#include "anvil/ocl/Event.hpp"
 
 namespace anvil { namespace ocl {
 
@@ -39,6 +41,7 @@ namespace anvil { namespace ocl {
 		ANVIL_CALL ~Kernel();
 
 		void ANVIL_CALL setArg(cl_uint, const void*, size_t);
+		Event ANVIL_CALL execute(CommandQueue&);
 
 		template<class T>
 		ANVIL_STRONG_INLINE void ANVIL_CALL setArg(cl_uint aIndex, T aValue) {
@@ -96,6 +99,12 @@ namespace anvil { namespace ocl {
 			setArg<A>(0, a); setArg<B>(1, a); setArg<C>(2, a); setArg<D>(3, a);
 			setArg<E>(4, a); setArg<F>(5, a); setArg<G>(6, a); setArg<H>(7, a);
 			setArg<I>(8, a); setArg<J>(9, a);
+		}
+
+		template<class ...ARGS>
+		Event execute(CommandQueue& aQueue, ARGS... aArgs) {
+			setArgs<ARGS...>(aArgs...);
+			return execute(aQueue);
 		}
 	};
 }}

@@ -34,6 +34,15 @@ namespace anvil { namespace ocl {
 		}
 	}
 
+	Event ANVIL_CALL Kernel::execute(CommandQueue& aQueue) {
+		Event event(mProgram.mContext);
+
+		cl_int error = clEnqueueTask(aQueue.mQueue, mKernel, 0, NULL, &event.mEvent);
+		if (error != CL_SUCCESS) oclError("clEnqueueTask", error);
+
+		return event;
+	}
+
 	void ANVIL_CALL Kernel::setArg(cl_uint aIndex, const void* aSrc, size_t aBytes) {
 		cl_int error = clSetKernelArg(mKernel, aIndex, aBytes, aSrc);
 	}

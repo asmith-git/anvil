@@ -28,6 +28,7 @@ namespace anvil { namespace ocl {
 		Event& operator=(const Event&) = delete;
 	public:
 		friend class Buffer;
+		friend class Kernel;
 
 		ANVIL_CALL Event(const Context&);
 		ANVIL_CALL Event(Event&&);

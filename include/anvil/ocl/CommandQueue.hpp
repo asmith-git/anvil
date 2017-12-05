@@ -32,6 +32,7 @@ namespace anvil { namespace ocl {
 		CommandQueue& operator=(const CommandQueue&) = delete;
 	public:
 		friend class Buffer;
+		friend class Kernel;
 
 		ANVIL_CALL CommandQueue(const Context&, const Device&, bool aOutOfOrder = false);
 		ANVIL_CALL ~CommandQueue();
