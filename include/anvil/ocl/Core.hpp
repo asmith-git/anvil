@@ -15,6 +15,8 @@
 #ifndef ANVIL_OCL_CORE_HPP
 #define ANVIL_OCL_CORE_HPP
 
+#include <string>
+#include <stdexcept>
 #include <CL/CL.h>
 #include "anvil/core/Keywords.hpp"
 
@@ -33,9 +35,6 @@ namespace anvil { namespace ocl {
 			break;
 		case CL_INVALID_CONTEXT :
 			msg += "CL_INVALID_CONTEXT";
-			break;
-		case CL_INVALID_VALUE  :
-			msg += "CL_INVALID_VALUE";
 			break;
 		case CL_INVALID_BUFFER_SIZE  :
 			msg += "CL_INVALID_BUFFER_SIZE";
@@ -62,10 +61,6 @@ namespace anvil { namespace ocl {
 		
 		ANVIL_RUNTIME_ASSERT(false, msg);
 	}
-	
-	struct StringCast {
-		inline operator const char*() const throw() {
-			return reinterpret_cast<const char*>(this);
-		}
-	};
 }}
+
+#endif

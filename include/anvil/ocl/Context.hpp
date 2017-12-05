@@ -26,7 +26,7 @@ namespace anvil { namespace ocl {
 		
 		ANVIL_CALL Context() {
 			cl_int error = CL_SUCCESS;
-			mContext = clCreateContext(nullptr, 0, nullptr, nullptr, nullptr, nullptr, &error); //! \todo Devices
+			mContext = clCreateContext(nullptr, 0, nullptr, nullptr, nullptr, &error); //! \todo Devices
 			if(error != CL_SUCCESS) {
 				mContext = 0;
 				throwException("clCreateContext", error);
@@ -41,3 +41,5 @@ namespace anvil { namespace ocl {
 		}
 	};
 }}
+
+#endif

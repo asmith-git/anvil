@@ -15,45 +15,34 @@
 #ifndef ANVIL_OCL_PLATFORM_HPP
 #define ANVIL_OCL_PLATFORM_HPP
 
+#include <vector>
 #include "anvil/ocl/Device.hpp"
 
 namespace anvil { namespace ocl {
 	class Platform {
 	private:
-		cl_plaform_id mPlatform;
+		cl_platform_id mPlatform;
+		
+		void* ANVIL_CALL getInfo(cl_platform_info) const;
 	public:
-		ANVIL_CALL Platform() :
-			mPlatform(0) 
-		{}
+		ANVIL_CALL Platform();
+		ANVIL_CALL Platform(cl_platform_id);
 		
-		ANVIL_CALL Platform(cl_plaform_id aPlatform) :
-			mPlatform(aPlatform) 
-		{}
-		
-		std::vector<Device> ANVIL_CALL getDevices(Type aType = kAll) {
-			std::vector<Platform> devices;
-			
-			enum {kMaxDevices = 64}
-			cl_plaform_id ids[kMaxDevices];
-			cl_uint count = 0;
-			cl_int error = clGetDeviceIDs(mPlatform, aType, kMaxDevices, ids, &count);
-			if(error != CL_SUCCESS) throwException("clGetDeviceIDs", error);
-			for(cl_uint i = 0; i < count; ++i) devices.push_back(Devices(ids[i]));
-			
-			return devices;
-		}
-		
-		static std::vector<Platform> ANVIL_CALL getPlatforms() {
-			std::vector<Platform> platforms;
-			
-			enum {kMaxPlatforms = 64}
-			cl_plaform_id ids[kMaxPlatforms];
-			cl_uint count = 0;
-			cl_int error = clGetPlatformIDs(kMaxPlatforms, ids, &count);
-			if(error != CL_SUCCESS) throwException("clGetPlatformIDs", error);
-			for(cl_uint i = 0; i < count; ++i) platforms.push_back(Platform(ids[i]));
-			
-			return platforms;
-		}
+		std::vector<Device> ANVIL_CALL getDevices(Device::Type aType = Device::ALL) const;
+		static std::vector<Platform> ANVIL_CALL getPlatforms();
+		static std::vector<Device> ANVIL_CALL getDevicesAllPlatforms(Device::Type aType = Device::ALL);
+
+
+		#define ANVIL_CL_GET_INFO(type, ptr, name1, name2) inline type ANVIL_CALL name1() const { return ptr reinterpret_cast<type ptr>(getInfo(name2)); }
+
+		ANVIL_CL_GET_INFO(const char*, , profile,      CL_PLATFORM_PROFILE);
+		ANVIL_CL_GET_INFO(const char*, , version,      CL_PLATFORM_VERSION);
+		ANVIL_CL_GET_INFO(const char*, , name,         CL_PLATFORM_NAME);
+		ANVIL_CL_GET_INFO(const char*, , vendor,       CL_PLATFORM_VENDOR);
+		ANVIL_CL_GET_INFO(const char*, , extensions,   CL_PLATFORM_EXTENSIONS);
+
+		#undef ANVIL_CL_GET_INFO
 	};
 }}
+
+#endif
