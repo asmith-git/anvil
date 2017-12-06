@@ -62,36 +62,6 @@ namespace anvil { namespace ocl {
 		Event ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t);
 		Event ANVIL_CALL copy(CommandQueue&, Buffer&, size_t, size_t, size_t) const;
 	};
-
-	//class SubBuffer : public BufferInterface {
-	//private:
-	//	Context* mContext;
-	//	cl_mem mBuffer;
-	//	size_t mOrigin;
-	//	size_t mSize;
-
-	//	SubBuffer(SubBuffer&&) = delete;
-	//	SubBuffer(const SubBuffer&) = delete;
-	//	SubBuffer& operator=(SubBuffer&&) = delete;
-	//	SubBuffer& operator=(const SubBuffer&) = delete;
-	//public:
-	//	ANVIL_CALL SubBuffer() throw();
-	//	ANVIL_CALL SubBuffer(Buffer&, size_t, size_t) throw();
-	//	ANVIL_CALL ~SubBuffer() throw();
-
-	//	// Inherited from BufferInterface
-
-	//	Context& ANVIL_CALL context() const throw() override;
-	//	ANVIL_CALL operator bool() const throw() override;
-	//	Buffer::AccessMode ANVIL_CALL accessMode() const throw() override;
-	//	size_t ANVIL_CALL origin() const throw() override;
-	//	size_t ANVIL_CALL size() const throw() override;
-	//	void* ANVIL_CALL hostPtr() throw() override;
-	//	const void* ANVIL_CALL hostPtr() const throw() override;
-	//	Event ANVIL_CALL read(CommandQueue&, size_t, void*, size_t) const override;
-	//	Event ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t) override;
-	//	Event ANVIL_CALL copy(CommandQueue&, BufferInterface&, size_t, size_t, size_t) const override;
-	//};
 }}
 
 #endif
