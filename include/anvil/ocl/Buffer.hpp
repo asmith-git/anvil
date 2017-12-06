@@ -23,16 +23,22 @@ namespace anvil { namespace ocl {
 
 	class Buffer {
 	private:
-		Context* mContext;
 		cl_mem mBuffer;
-		cl_mem_flags mFlags;
-		size_t mOrigin;
-		size_t mSize;
-		void* mHostPtr;
 		bool mIsSubBuffer;
 
 		Buffer(const Buffer&) = delete;
 		Buffer& operator=(const Buffer&) = delete;
+
+		template<class T>
+		inline T getInfo(cl_mem_info aInfo) const throw() {
+			T tmp;
+			cl_int error = clGetMemObjectInfo(mBuffer, aInfo, sizeof(T), &tmp, NULL);
+			if (error != CL_SUCCESS) oclError("clGetMemObjectInfo", error);
+			return tmp;
+		}
+
+		cl_mem_flags ANVIL_CALL flags() const throw();
+		cl_context ANVIL_CALL context() const throw();
 	public:
 		enum AccessMode : cl_mem_flags {
 			READ_ONLY = CL_MEM_READ_ONLY,
@@ -41,26 +47,24 @@ namespace anvil { namespace ocl {
 		};
 
 		ANVIL_CALL Buffer() throw();
-		ANVIL_CALL Buffer(Context&, size_t, AccessMode aMode = READ_WRITE);
-		ANVIL_CALL Buffer(Context&, size_t, void*, AccessMode aMode = READ_WRITE);
+		ANVIL_CALL Buffer(Context&, size_t, AccessMode aMode = READ_WRITE) throw();
+		ANVIL_CALL Buffer(Context&, size_t, void*, AccessMode aMode = READ_WRITE) throw();
 		ANVIL_CALL Buffer(Buffer&&) throw();
-		ANVIL_CALL ~Buffer();
+		ANVIL_CALL ~Buffer() throw();
 
 		Buffer& ANVIL_CALL operator=(Buffer&&) throw();
 		void ANVIL_CALL swap(Buffer& aOther) throw();
 
 		Buffer ANVIL_CALL createSubBuffer(size_t, size_t) throw();
 		bool ANVIL_CALL isSubBuffer() const throw();
-		Context& ANVIL_CALL context() const throw();
 		ANVIL_CALL operator bool() const throw();
 		AccessMode ANVIL_CALL accessMode() const throw();
-		size_t ANVIL_CALL origin() const throw();
 		size_t ANVIL_CALL size() const throw();
 		void* ANVIL_CALL hostPtr() throw();
 		const void* ANVIL_CALL hostPtr() const throw();
-		Event ANVIL_CALL read(CommandQueue&, size_t, void*, size_t) const;
-		Event ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t);
-		Event ANVIL_CALL copy(CommandQueue&, Buffer&, size_t, size_t, size_t) const;
+		Event ANVIL_CALL read(CommandQueue&, size_t, void*, size_t) const throw();
+		Event ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t) throw();
+		Event ANVIL_CALL copy(CommandQueue&, Buffer&, size_t, size_t, size_t) const throw();
 	};
 }}
 

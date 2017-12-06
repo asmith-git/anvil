@@ -21,69 +21,46 @@ namespace anvil { namespace ocl {
 	// Buffer
 
 	ANVIL_CALL Buffer::Buffer() throw() :
-		mContext(NULL),
 		mBuffer(NULL),
-		mFlags(0),
-		mOrigin(0),
-		mSize(0),
-		mHostPtr(NULL),
 		mIsSubBuffer(false)
 	{}
 
-	ANVIL_CALL Buffer::Buffer(Context& aContext, size_t aSize, AccessMode aMode) :
-		mContext(&aContext),
+	ANVIL_CALL Buffer::Buffer(Context& aContext, size_t aSize, AccessMode aMode) throw() :
 		mBuffer(NULL),
-		mFlags(aMode),
-		mOrigin(0),
-		mSize(aSize),
-		mHostPtr(NULL),
 		mIsSubBuffer(false)
 	{
 		cl_int error = CL_SUCCESS;
-		mBuffer = clCreateBuffer(mContext->mContext, mFlags, mSize, mHostPtr, &error);
+		mBuffer = clCreateBuffer(aContext.mContext, aMode, aSize, NULL, &error);
 		if (error != CL_SUCCESS) {
-			mSize = 0;
+			mBuffer = NULL;
 			oclError("clCreateBuffer", error);
 		}
 	}
 
-	ANVIL_CALL Buffer::Buffer(Context& aContext, size_t aSize, void* aHostPtr, AccessMode aMode) :
-		mContext(&aContext),
+	ANVIL_CALL Buffer::Buffer(Context& aContext, size_t aSize, void* aHostPtr, AccessMode aMode) throw() :
 		mBuffer(NULL),
-		mFlags(aMode | CL_MEM_USE_HOST_PTR),
-		mOrigin(0),
-		mSize(aSize),
-		mHostPtr(aHostPtr),
 		mIsSubBuffer(false)
 	{
 		cl_int error = CL_SUCCESS;
-		mBuffer = clCreateBuffer(mContext->mContext, mFlags, mSize, mHostPtr, &error);
+		mBuffer = clCreateBuffer(aContext.mContext, aMode | CL_MEM_USE_HOST_PTR, aSize, aHostPtr, &error);
 		if (error != CL_SUCCESS) {
-			mSize = 0;
+			mBuffer = NULL;
 			oclError("clCreateBuffer", error);
 		}
 	}
 
 	ANVIL_CALL Buffer::Buffer(Buffer&& aOther) throw() :
-		mContext(aOther.mContext),
 		mBuffer(aOther.mBuffer),
-		mOrigin(aOther.mOrigin),
-		mFlags(aOther.mFlags),
-		mSize(aOther.mSize),
-		mHostPtr(aOther.mHostPtr),
 		mIsSubBuffer(aOther.mIsSubBuffer)
 	{
 		aOther.mBuffer = NULL;
-		aOther.mFlags = 0;
-		aOther.mOrigin = 0;
-		aOther.mSize = 0;
-		aOther.mHostPtr = NULL;
 		aOther.mIsSubBuffer = false;
 	}
 
-	ANVIL_CALL Buffer::~Buffer() {
-		if (mBuffer && ! isSubBuffer()) {
+	ANVIL_CALL Buffer::~Buffer() throw() {
+		if (mBuffer) {
 			cl_int error = clReleaseMemObject(mBuffer);
+			mBuffer = NULL;
 			if (error != CL_SUCCESS) oclError("clReleaseMemObject", error);
 		}
 	}
@@ -96,10 +73,6 @@ namespace anvil { namespace ocl {
 	void ANVIL_CALL Buffer::swap(Buffer& aOther) throw() {
 		std::swap(mBuffer, aOther.mBuffer);
 		std::swap(mBuffer, aOther.mBuffer);
-		std::swap(mFlags, aOther.mFlags);
-		std::swap(mOrigin, aOther.mOrigin);
-		std::swap(mSize, aOther.mSize);
-		std::swap(mHostPtr, aOther.mHostPtr);
 		std::swap(mIsSubBuffer, aOther.mIsSubBuffer);
 	}
 
@@ -107,64 +80,80 @@ namespace anvil { namespace ocl {
 		return mBuffer != NULL;
 	}
 
-	Buffer::AccessMode ANVIL_CALL Buffer::accessMode() const throw() {
-		return
-			mFlags & READ_ONLY ? READ_ONLY :
-			mFlags & WRITE_ONLY ? WRITE_ONLY :
-			READ_WRITE;
+	cl_mem_flags ANVIL_CALL Buffer::flags() const throw() {
+		return mBuffer ? getInfo<cl_mem_flags>(CL_MEM_FLAGS) : 0;
 	}
 
-	size_t ANVIL_CALL Buffer::origin() const throw() {
-		return isSubBuffer() ? mOrigin : 0;
+	cl_context ANVIL_CALL Buffer::context() const throw() {
+		return mBuffer ? getInfo<cl_context>(CL_MEM_CONTEXT) : NULL;
+	}
+
+	Buffer::AccessMode ANVIL_CALL Buffer::accessMode() const throw() {
+		return static_cast<AccessMode>(flags() & (READ_ONLY | WRITE_ONLY | READ_WRITE));
 	}
 
 	size_t ANVIL_CALL Buffer::size() const throw() {
-		return mSize;
+		return mBuffer ? getInfo<size_t>(CL_MEM_SIZE) : 0;
 	}
 
 	void* ANVIL_CALL Buffer::hostPtr() throw() {
-		return static_cast<uint8_t*>(mHostPtr) + origin();
+		return flags() & CL_MEM_USE_HOST_PTR ?
+			getInfo<void*>(CL_MEM_HOST_PTR) : nullptr;
+
 	}
 
 	const void* ANVIL_CALL Buffer::hostPtr() const throw() {
-		return static_cast<const uint8_t*>(mHostPtr) + origin();
+		return flags() & CL_MEM_USE_HOST_PTR ?
+			getInfo<void*>(CL_MEM_HOST_PTR) : nullptr;
 	}
 
-	Context& ANVIL_CALL Buffer::context() const throw() {
-		return *mContext;
-	}
-
-	Event ANVIL_CALL Buffer::read(CommandQueue& aQueue, size_t aOffset, void* aDst, size_t aBytes) const {
+	Event ANVIL_CALL Buffer::read(CommandQueue& aQueue, size_t aOffset, void* aDst, size_t aBytes) const throw() {
+		if (mBuffer == NULL) return Event();
 		Event event(context());
-		cl_int error = clEnqueueReadBuffer(aQueue.mQueue, mBuffer, CL_FALSE, aOffset + origin(), aBytes, aDst, 0, NULL, &event.mEvent);
-		if (error != CL_SUCCESS) oclError("clEnqueueReadBuffer", error);
+		cl_int error = clEnqueueReadBuffer(aQueue.mQueue, mBuffer, CL_FALSE, aOffset, aBytes, 
+			aDst, 0, NULL, event.mEvent == NULL ? NULL : &event.mEvent);
+		if (error != CL_SUCCESS) {
+			oclError("clEnqueueReadBuffer", error);
+			return Event();
+		}
 		return event;
 	}
 
-	Event ANVIL_CALL Buffer::write(CommandQueue& aQueue, size_t aOffset, const void* aSrc, size_t aBytes) {
+	Event ANVIL_CALL Buffer::write(CommandQueue& aQueue, size_t aOffset, const void* aSrc, size_t aBytes) throw() {
+		if (mBuffer == NULL) return Event();
 		Event event(context());
-		cl_int error = clEnqueueWriteBuffer(aQueue.mQueue, mBuffer, CL_FALSE, aOffset + origin(), aBytes, aSrc, 0, NULL, &event.mEvent);
-		if (error != CL_SUCCESS) oclError("clEnqueueWriteBuffer", error);
+		cl_int error = clEnqueueWriteBuffer(aQueue.mQueue, mBuffer, CL_FALSE, aOffset, aBytes, 
+			aSrc, 0, NULL, event.mEvent == NULL ? NULL : &event.mEvent);
+		if (error != CL_SUCCESS) {
+			oclError("clEnqueueWriteBuffer", error);
+			return Event();
+		}
 		return event;
 	}
 
-	Event ANVIL_CALL Buffer::copy(CommandQueue& aQueue, Buffer& aOther, size_t aThisOffset, size_t aOtherOffset, size_t aBytes) const {
+	Event ANVIL_CALL Buffer::copy(CommandQueue& aQueue, Buffer& aOther, size_t aThisOffset, size_t aOtherOffset, size_t aBytes) const throw() {
+		if (mBuffer == NULL || aOther.mBuffer == NULL) return Event();
 		Event event(context());
-		aOtherOffset += aOther.origin();
-		cl_int error = clEnqueueCopyBuffer(aQueue.mQueue, mBuffer, aOther.mBuffer, aThisOffset + origin(), aOtherOffset + aOther.origin(), aBytes, 0, NULL, &event.mEvent);
-		if (error != CL_SUCCESS) oclError("clEnqueueCopyBuffer ", error);
+		cl_int error = clEnqueueCopyBuffer(aQueue.mQueue, mBuffer, aOther.mBuffer, aThisOffset, 
+			aOtherOffset + aOther, aBytes, 0, NULL, event.mEvent == NULL ? NULL : &event.mEvent);
+		if (error != CL_SUCCESS) {
+			oclError("clEnqueueCopyBuffer", error);
+			return Event();
+		}
 		return event;
 	}
 
 	Buffer ANVIL_CALL Buffer::createSubBuffer(size_t aOrigin, size_t aSize) throw() {
 		Buffer tmp;
-		tmp.mContext = mContext;
-		tmp.mBuffer = mBuffer;
-		tmp.mFlags = mFlags;
-		tmp.mOrigin = mOrigin + aOrigin;
-		tmp.mSize = aSize;
-		tmp.mHostPtr = mHostPtr;
-		tmp.mIsSubBuffer = true;
+		cl_int error = CL_SUCCESS;
+		const size_t region[2] { aOrigin, aSize };
+		tmp.mBuffer = clCreateSubBuffer(mBuffer, accessMode() | (hostPtr() ? CL_MEM_USE_HOST_PTR : 0), 
+			CL_BUFFER_CREATE_TYPE_REGION, region, &error);
+		if (error == CL_SUCCESS) {
+			tmp.mIsSubBuffer = true;
+		} else {
+			oclError("clCreateSubBuffer ", error);
+		}
 		return tmp;
 	}
 

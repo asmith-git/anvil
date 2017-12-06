@@ -26,18 +26,21 @@ namespace anvil { namespace ocl {
 
 		Event(const Event&) = delete;
 		Event& operator=(const Event&) = delete;
+
+		ANVIL_CALL Event(cl_context) throw();
 	public:
 		friend class Buffer;
 		friend class Kernel;
 		friend class NativeKernel;
 
-		ANVIL_CALL Event(Context&);
-		ANVIL_CALL Event(Event&&);
-		ANVIL_CALL ~Event();
+		ANVIL_CALL Event() throw();
+		ANVIL_CALL Event(Context&) throw();
+		ANVIL_CALL Event(Event&&) throw();
+		ANVIL_CALL ~Event() throw();
 
-		Event& ANVIL_CALL operator=(Event&&);
+		Event& ANVIL_CALL operator=(Event&&) throw();
 
-		void ANVIL_CALL wait();
+		void ANVIL_CALL wait() throw();
 	};
 }}
 

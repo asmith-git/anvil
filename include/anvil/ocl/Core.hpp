@@ -17,6 +17,7 @@
 
 #include <string>
 #include <stdexcept>
+#include <iostream>
 #include <CL/CL.h>
 #include "anvil/core/Keywords.hpp"
 
@@ -95,7 +96,7 @@ namespace anvil { namespace ocl {
 
 #undef ANVIL_OCL_CASE
 		
-		ANVIL_RUNTIME_ASSERT(false, msg);
+		std::cerr << msg << std::endl;
 	}
 }}
 
