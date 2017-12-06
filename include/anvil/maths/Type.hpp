@@ -17,6 +17,7 @@
 
 #include <cstdint>
 #include <type_traits>
+#include "anvil/core/Keywords.hpp"
 
 namespace anvil {
 	enum Type : int8_t {
@@ -46,15 +47,15 @@ namespace anvil {
 		template<> struct TypeHelper<ANVIL_64F> { typedef double type; };
 	}
 
-	static constexpr Type CreateType(Type aType, int aChannels) throw() {
+	static ANVIL_CONSTEXPR_FN Type CreateType(Type aType, int aChannels) throw() {
 		return static_cast<Type>(((aChannels - 1) << 4) | aType);
 	}
 
-	static constexpr Type GetType(Type aType) throw() {
+	static ANVIL_CONSTEXPR_FN Type GetType(Type aType) throw() {
 		return static_cast<Type>(aType & 15);
 	}
 
-	static constexpr int GetChannels(Type aType) throw() {
+	static ANVIL_CONSTEXPR_FN int GetChannels(Type aType) throw() {
 		return (aType >> 4) + 1;
 	}
 
@@ -80,7 +81,7 @@ namespace anvil {
 		uint16_t is_signed : 1;
 		uint16_t is_float : 1;
 
-		constexpr TypeInfoRuntime() throw() :
+		TypeInfoRuntime() throw() :
 			channels(0),
 			size(0),
 			is_unsigned(0),
@@ -88,7 +89,7 @@ namespace anvil {
 			is_float(0)
 		{}
 
-		constexpr TypeInfoRuntime(int aChannels, int aSize, int aUnsigned, int aSigned, int aFloat) throw() :
+		TypeInfoRuntime(int aChannels, int aSize, int aUnsigned, int aSigned, int aFloat) throw() :
 			channels(aChannels),
 			size(aSize),
 			is_unsigned(aUnsigned),
@@ -97,7 +98,7 @@ namespace anvil {
 		{}
 	};
 
-	static constexpr TypeInfoRuntime GetTypeInfo(Type aType) throw() {
+	static TypeInfoRuntime GetTypeInfo(Type aType) throw() {
 		switch (GetType(aType)) {
 			case ANVIL_8U :
 				return { GetChannels(aType), 1, 1, 0, 0 };
