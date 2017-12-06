@@ -50,11 +50,10 @@ namespace anvil { namespace ocl {
 	}
 
 	ANVIL_CALL Buffer::Buffer(Buffer&& aOther) throw() :
-		mBuffer(aOther.mBuffer),
-		mIsSubBuffer(aOther.mIsSubBuffer)
+		mBuffer(NULL),
+		mIsSubBuffer(false)
 	{
-		aOther.mBuffer = NULL;
-		aOther.mIsSubBuffer = false;
+		swap(aOther);
 	}
 
 	ANVIL_CALL Buffer::~Buffer() throw() {

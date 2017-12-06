@@ -30,7 +30,7 @@ namespace anvil { namespace ocl {
 		Buffer& operator=(const Buffer&) = delete;
 
 		template<class T>
-		inline T getInfo(cl_mem_info aInfo) const throw() {
+		inline T ANVIL_CALL getInfo(cl_mem_info aInfo) const throw() {
 			T tmp;
 			cl_int error = clGetMemObjectInfo(mBuffer, aInfo, sizeof(T), &tmp, NULL);
 			if (error != CL_SUCCESS) oclError("clGetMemObjectInfo", error);

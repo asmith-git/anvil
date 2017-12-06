@@ -36,80 +36,97 @@ namespace anvil { namespace ocl {
 			SOURCE_SET,
 			BUILT
 		};
-		const Program& mProgram;
 		cl_kernel mKernel;
 		
-		Kernel(Kernel&&) = delete;
 		Kernel(const Kernel&) = delete;
-		Kernel& operator=(Kernel&&) = delete;
 		Kernel& operator=(const Kernel&) = delete;
-	public:
-		ANVIL_CALL Kernel(const Program&, const char*);
-		ANVIL_CALL ~Kernel();
 
-		void ANVIL_CALL setArg(cl_uint, const void*, size_t);
 
 		template<class T>
-		ANVIL_STRONG_INLINE void ANVIL_CALL setArg(cl_uint aIndex, T aValue) {
-			setArg(aIndex, &aValue, sizeof(T));
+		inline T ANVIL_CALL getInfo(cl_mem_info aInfo) const throw() {
+			T tmp;
+			cl_int error = clGetKernelInfo(mKernel, aInfo, sizeof(T), &tmp, NULL);
+			if (error != CL_SUCCESS) oclError("clGetKernelInfo ", error);
+			return tmp;
+		}
+
+		cl_context context() const throw();
+		cl_program program() const throw();
+	public:
+		ANVIL_CALL Kernel(Kernel&&);
+		ANVIL_CALL Kernel(const Program&, const char*) throw();
+		ANVIL_CALL ~Kernel() throw();
+
+		Kernel& ANVIL_CALL operator=(Kernel&&) throw();
+
+		void ANVIL_CALL swap(Kernel&) throw();
+
+		cl_uint arguments() const throw();
+		const char* name() const throw();
+
+		void ANVIL_CALL setArgument(cl_uint, const void*, size_t);
+
+		template<class T>
+		ANVIL_STRONG_INLINE void ANVIL_CALL setArgument(cl_uint aIndex, T aValue) {
+			setArgument(aIndex, &aValue, sizeof(T));
 		}
 
 		template<class A, class B>
-		ANVIL_STRONG_INLINE void ANVIL_CALL setArgs(A a, B b) {
-			setArg<A>(0, a); setArg<B>(1, a);
+		ANVIL_STRONG_INLINE void ANVIL_CALL setArguments(A a, B b) {
+			setArgument<A>(0, a); setArgument<B>(1, a);
 		}
 
 		template<class A, class B, class C>
-		ANVIL_STRONG_INLINE void ANVIL_CALL setArgs(A a, B b, C c) {
-			setArg<A>(0, a); setArg<B>(1, a); setArg<C>(2, a);
+		ANVIL_STRONG_INLINE void ANVIL_CALL setArguments(A a, B b, C c) {
+			setArgument<A>(0, a); setArgument<B>(1, a); setArgument<C>(2, a);
 		}
 
 		template<class A, class B, class C, class D>
-		ANVIL_STRONG_INLINE void ANVIL_CALL setArgs(A a, B b, C c, D d) {
-			setArg<A>(0, a); setArg<B>(1, a); setArg<C>(2, a); setArg<D>(3, a);
+		ANVIL_STRONG_INLINE void ANVIL_CALL setArguments(A a, B b, C c, D d) {
+			setArgument<A>(0, a); setArgument<B>(1, a); setArgument<C>(2, a); setArgument<D>(3, a);
 		}
 
 		template<class A, class B, class C, class D, class E>
-		ANVIL_STRONG_INLINE void ANVIL_CALL setArgs(A a, B b, C c, D d, E e) {
-			setArg<A>(0, a); setArg<B>(1, a); setArg<C>(2, a); setArg<D>(3, a);
-			setArg<E>(4, a);
+		ANVIL_STRONG_INLINE void ANVIL_CALL setArguments(A a, B b, C c, D d, E e) {
+			setArgument<A>(0, a); setArgument<B>(1, a); setArgument<C>(2, a); setArgument<D>(3, a);
+			setArgument<E>(4, a);
 		}
 
 		template<class A, class B, class C, class D, class E, class F>
-		ANVIL_STRONG_INLINE void ANVIL_CALL setArgs(A a, B b, C c, D d, E e, F f) {
-			setArg<A>(0, a); setArg<B>(1, a); setArg<C>(2, a); setArg<D>(3, a);
-			setArg<E>(4, a); setArg<F>(5, a);
+		ANVIL_STRONG_INLINE void ANVIL_CALL setArguments(A a, B b, C c, D d, E e, F f) {
+			setArgument<A>(0, a); setArgument<B>(1, a); setArgument<C>(2, a); setArgument<D>(3, a);
+			setArgument<E>(4, a); setArgument<F>(5, a);
 		}
 
 		template<class A, class B, class C, class D, class E, class F, class G>
-		ANVIL_STRONG_INLINE void ANVIL_CALL setArgs(A a, B b, C c, D d, E e, F f, G g) {
-			setArg<A>(0, a); setArg<B>(1, a); setArg<C>(2, a); setArg<D>(3, a);
-			setArg<E>(4, a); setArg<F>(5, a); setArg<G>(6, a);
+		ANVIL_STRONG_INLINE void ANVIL_CALL setArguments(A a, B b, C c, D d, E e, F f, G g) {
+			setArgument<A>(0, a); setArgument<B>(1, a); setArgument<C>(2, a); setArgument<D>(3, a);
+			setArgument<E>(4, a); setArgument<F>(5, a); setArgument<G>(6, a);
 		}
 
 		template<class A, class B, class C, class D, class E, class F, class G, class H>
-		ANVIL_STRONG_INLINE void ANVIL_CALL setArgs(A a, B b, C c, D d, E e, F f, G g, H h) {
-			setArg<A>(0, a); setArg<B>(1, a); setArg<C>(2, a); setArg<D>(3, a);
-			setArg<E>(4, a); setArg<F>(5, a); setArg<G>(6, a); setArg<H>(7, a);
+		ANVIL_STRONG_INLINE void ANVIL_CALL setArguments(A a, B b, C c, D d, E e, F f, G g, H h) {
+			setArgument<A>(0, a); setArgument<B>(1, a); setArgument<C>(2, a); setArgument<D>(3, a);
+			setArgument<E>(4, a); setArgument<F>(5, a); setArgument<G>(6, a); setArgument<H>(7, a);
 		}
 
 		template<class A, class B, class C, class D, class E, class F, class G, class H, class I>
-		ANVIL_STRONG_INLINE void ANVIL_CALL setArgs(A a, B b, C c, D d, E e, F f, G g, H h, I i) {
-			setArg<A>(0, a); setArg<B>(1, a); setArg<C>(2, a); setArg<D>(3, a);
-			setArg<E>(4, a); setArg<F>(5, a); setArg<G>(6, a); setArg<H>(7, a);
-			setArg<I>(8, a);
+		ANVIL_STRONG_INLINE void ANVIL_CALL setArguments(A a, B b, C c, D d, E e, F f, G g, H h, I i) {
+			setArgument<A>(0, a); setArgument<B>(1, a); setArgument<C>(2, a); setArgument<D>(3, a);
+			setArgument<E>(4, a); setArgument<F>(5, a); setArgument<G>(6, a); setArgument<H>(7, a);
+			setArgument<I>(8, a);
 		}
 
 		template<class A, class B, class C, class D, class E, class F, class G, class H, class I, class J>
-		ANVIL_STRONG_INLINE void ANVIL_CALL setArgs(A a, B b, C c, D d, E e, F f, G g, H h, I i, J j) {
-			setArg<A>(0, a); setArg<B>(1, a); setArg<C>(2, a); setArg<D>(3, a);
-			setArg<E>(4, a); setArg<F>(5, a); setArg<G>(6, a); setArg<H>(7, a);
-			setArg<I>(8, a); setArg<J>(9, a);
+		ANVIL_STRONG_INLINE void ANVIL_CALL setArguments(A a, B b, C c, D d, E e, F f, G g, H h, I i, J j) {
+			setArgument<A>(0, a); setArgument<B>(1, a); setArgument<C>(2, a); setArgument<D>(3, a);
+			setArgument<E>(4, a); setArgument<F>(5, a); setArgument<G>(6, a); setArgument<H>(7, a);
+			setArgument<I>(8, a); setArgument<J>(9, a);
 		}
 
 		template<class ...ARGS>
-		Event ANVIL_CALL execute(CommandQueue& aQueue, ARGS... aArgs) {
-			setArgs<ARGS...>(aArgs...);
+		Event ANVIL_CALL execute(CommandQueue& aQueue, ARGS... aArguments) {
+			setArguments<ARGS...>(aArguments...);
 			return execute(aQueue);
 		}
 
@@ -120,8 +137,13 @@ namespace anvil { namespace ocl {
 	class NativeKernel : public KernelInterface {
 	private:
 		static void __stdcall execute_(void*) throw();
+
+		NativeKernel(NativeKernel&&) = delete;
+		NativeKernel(NativeKernel&) = delete;
+		NativeKernel& operator=(NativeKernel&&) = delete;
+		NativeKernel& operator=(NativeKernel&) = delete;
 	protected:
-		Context& mContext;
+		cl_context mContext;
 
 		virtual void ANVIL_CALL onExecute() throw() = 0;
 	public:

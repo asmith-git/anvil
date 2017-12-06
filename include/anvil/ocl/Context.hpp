@@ -37,6 +37,7 @@ namespace anvil { namespace ocl {
 		friend class CommandQueue;
 		friend class Event;
 		friend class Program;
+		friend class NativeKernel;
 		
 		ANVIL_CALL Context(const std::vector<Device>&);
 		virtual ANVIL_CALL ~Context();

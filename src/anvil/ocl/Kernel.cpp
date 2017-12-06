@@ -19,8 +19,13 @@ namespace anvil { namespace ocl {
 
 	// Kernel
 
+	ANVIL_CALL Kernel::Kernel(Kernel&& aOther) throw() :
+		mKernel(NULL)
+	{
+		swap(aOther);
+	}
+
 	ANVIL_CALL Kernel::Kernel(const Program& aProgram, const char* aName) :
-		mProgram(aProgram),
 		mKernel(NULL)
 	{
 		cl_int error = CL_SUCCESS;
@@ -34,17 +39,44 @@ namespace anvil { namespace ocl {
 		}
 	}
 
-	Event ANVIL_CALL Kernel::execute(CommandQueue& aQueue) {
-		Event event(mProgram.mContext);
+	Kernel& ANVIL_CALL Kernel::operator=(Kernel&& aOther) throw() {
+		swap(aOther);
+		return *this;
+	}
 
+	void ANVIL_CALL Kernel::swap(Kernel& aOther) throw() {
+		std::swap(mKernel, aOther.mKernel);
+	}
+
+	Event ANVIL_CALL Kernel::execute(CommandQueue& aQueue) {
+		Event event(context());
 		cl_int error = clEnqueueTask(aQueue.mQueue, mKernel, 0, NULL, &event.mEvent);
 		if (error != CL_SUCCESS) oclError("clEnqueueTask", error);
-
 		return event;
 	}
 
-	void ANVIL_CALL Kernel::setArg(cl_uint aIndex, const void* aSrc, size_t aBytes) {
+	void ANVIL_CALL Kernel::setArgument(cl_uint aIndex, const void* aSrc, size_t aBytes) {
 		cl_int error = clSetKernelArg(mKernel, aIndex, aBytes, aSrc);
+	}
+
+	cl_context Kernel::context() const throw() {
+		return mKernel ? getInfo<cl_context>(CL_KERNEL_CONTEXT) : NULL;
+	}
+
+	cl_program Kernel::program() const throw() {
+		return mKernel ? getInfo<cl_program>(CL_KERNEL_PROGRAM) : NULL;
+	}
+
+	cl_uint Kernel::arguments() const throw() {
+		return mKernel ? getInfo<cl_uint>(CL_KERNEL_NUM_ARGS) : 0;
+	}
+
+	const char* Kernel::name() const throw() {
+		enum { MAX_KERNEL_NAME = 1024 };
+		static char gNameBuffer[MAX_KERNEL_NAME];
+		cl_int error = clGetKernelInfo(mKernel, CL_KERNEL_FUNCTION_NAME, MAX_KERNEL_NAME, gNameBuffer, NULL);
+		if (error != CL_SUCCESS) oclError("clGetKernelInfo ", error);
+		return gNameBuffer;
 	}
 
 	// NativeKernel
@@ -54,7 +86,7 @@ namespace anvil { namespace ocl {
 	}
 
 	ANVIL_CALL NativeKernel::NativeKernel(Context& aContext) :
-		mContext(aContext)
+		mContext(aContext.mContext)
 	{}
 
 	ANVIL_CALL NativeKernel::~NativeKernel() {
