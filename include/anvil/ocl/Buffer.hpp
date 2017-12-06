@@ -73,9 +73,9 @@ namespace anvil { namespace ocl {
 		size_t ANVIL_CALL size() const throw() override;
 		void* ANVIL_CALL hostPtr() throw() override;
 		const void* ANVIL_CALL hostPtr() const throw() override;
-		Event ANVIL_CALL read(CommandQueue&, size_t, void*, size_t, bool) const;
-		Event ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t, bool);
-		Event ANVIL_CALL copy(CommandQueue&, BufferInterface&, size_t, size_t, size_t, bool) const;
+		Event ANVIL_CALL read(CommandQueue&, size_t, void*, size_t) const override;
+		Event ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t) override;
+		Event ANVIL_CALL copy(CommandQueue&, BufferInterface&, size_t, size_t, size_t) const override;
 	};
 
 	class SubBuffer : public BufferInterface {
@@ -104,9 +104,9 @@ namespace anvil { namespace ocl {
 		size_t ANVIL_CALL size() const throw() override;
 		void* ANVIL_CALL hostPtr() throw() override;
 		const void* ANVIL_CALL hostPtr() const throw() override;
-		Event ANVIL_CALL read(CommandQueue&, size_t, void*, size_t, bool) const;
-		Event ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t, bool);
-		Event ANVIL_CALL copy(CommandQueue&, BufferInterface&, size_t, size_t, size_t, bool) const;
+		Event ANVIL_CALL read(CommandQueue&, size_t, void*, size_t) const override;
+		Event ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t) override;
+		Event ANVIL_CALL copy(CommandQueue&, BufferInterface&, size_t, size_t, size_t) const override;
 	};
 }}
 
