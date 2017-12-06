@@ -16,13 +16,13 @@
 #define ANVIL_CORE_CONSTANTS_HPP
 
 namespace anvil {
-	
+
 	/*!
-		\brief Compare two constant values.
-		\tparam T The type of the values.
-		\tparam A_ The first value.
-		\tparam B_ The second value.
-		\tparam ENABLE Internal use only (Avoids division by 0 error).
+	\brief Compare two constant values.
+	\tparam T The type of the values.
+	\tparam A_ The first value.
+	\tparam B_ The second value.
+	\tparam ENABLE Internal use only (Avoids division by 0 error).
 	*/
 	template<class T, T A_, T B_, class ENABLE = typename std::enable_if<B_ != 0>::type>
 	struct ConstantOperation {
@@ -51,7 +51,7 @@ namespace anvil {
 			ge = A >= B             //!< 1 if A is less than or equal to B, else 0.
 		};
 	};
-	
+
 	template<class T, T A_, T B_>
 	struct ConstantOperation<T, A_, B_, typename std::enable_if<B_ == 0>::type> {
 		enum : T {
@@ -78,64 +78,64 @@ namespace anvil {
 			le = A <= B,
 			ge = A >= B
 		};
-		
-		/*!
-			\brief Calculate an integer power in compile time.
-			\tparam VALUE The operand value.
-			\tparam EXPONENT The exponent value.
-		*/
-		template <int VALUE, int EXPONENT>
-		struct ConstantPower {
-			enum {
-				value = VALUE * ConstantPower<VALUE, EXPONENT - 1>::value	//!< The resulting value.
-			};
+	};
+	/*!
+	\brief Calculate an integer power in compile time.
+	\tparam VALUE The operand value.
+	\tparam EXPONENT The exponent value.
+	*/
+	template <int VALUE, int EXPONENT>
+	struct ConstantPower {
+		enum {
+			value = VALUE * ConstantPower<VALUE, EXPONENT - 1>::value	//!< The resulting value.
 		};
+	};
 
-		template <int VALUE>
-		struct ConstantPower<VALUE, 0> {
-			enum {
-				value = 1
-			};
+	template <int VALUE>
+	struct ConstantPower<VALUE, 0> {
+		enum {
+			value = 1
 		};
-		
-		/*!
-			\brief Create a bitmask in compile time.
-			\tparam T The container type for the mask.
-			\tparam BITS The number of bits to set in the mask.
-		*/
-		template<class T, size_t BITS>
-		struct ConstantBitmask {
-			enum : T {
-				value = (ConstantBitmask<T, BITS - 1>::value << static_cast<T>(1)) | static_cast<T>(1)	//!< The resulting value.
-			};
-		};
+	};
 
-		template<class T>
-		struct ConstantBitmask<T,1> {
-			enum : T {
-				value = 1
-			};
+	/*!
+	\brief Create a bitmask in compile time.
+	\tparam T The container type for the mask.
+	\tparam BITS The number of bits to set in the mask.
+	*/
+	template<class T, size_t BITS>
+	struct ConstantBitmask {
+		enum : T {
+			value = (ConstantBitmask<T, BITS - 1>::value << static_cast<T>(1)) | static_cast<T>(1)	//!< The resulting value.
 		};
+	};
 
-		/*!
-			\brief Create a popcount (number of 1's) in compile time.
-			\tparam VAL The value to count.
-		*/
-		template<int64_t VAL>
-		struct ConstantPopcount {
-			enum {
-				value = (VAL & 1) + ConstantPopcount<ConstantOperation<int64_t, VAL, 1>::rshift>::value	//!< The resulting value.
-			};
+	template<class T>
+	struct ConstantBitmask<T, 1> {
+		enum : T {
+			value = 1
 		};
+	};
 
-		template<>
-		struct ConstantPopcount<0> {
-			enum {
-				value = 0
-			};
+	/*!
+	\brief Create a popcount (number of 1's) in compile time.
+	\tparam VAL The value to count.
+	*/
+	template<int64_t VAL>
+	struct ConstantPopcount {
+		enum {
+			value = (VAL & 1) + ConstantPopcount<ConstantOperation<int64_t, VAL, 1>::rshift>::value	//!< The resulting value.
+		};
+	};
+
+	template<>
+	struct ConstantPopcount<0> {
+		enum {
+			value = 0
 		};
 	};
 }
+
 
 #define ANVIL_CMPEQ(a,b)  (anvil::ConstantOperation<decltype(a), a, b>::eq)
 #define ANVIL_CMPNE(a,b)  (anvil::ConstantOperation<decltype(a), a, b>::ne)
