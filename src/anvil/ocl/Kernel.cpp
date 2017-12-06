@@ -30,7 +30,10 @@ namespace anvil { namespace ocl {
 	{
 		cl_int error = CL_SUCCESS;
 		mKernel = clCreateKernel(aProgram.mProgram, aName, &error);
-		if (error != CL_SUCCESS) oclError("clCreateKernel", error);
+		if (error != CL_SUCCESS) {
+			mKernel = NULL;
+			oclError("clCreateKernel", error);
+		}
 	}
 
 	ANVIL_CALL Kernel::~Kernel() {

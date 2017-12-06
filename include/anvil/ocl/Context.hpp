@@ -21,12 +21,9 @@
 namespace anvil { namespace ocl {
 	class Context {
 	private:
-		const std::vector<Device> mDevices;
 		cl_context mContext;
 
-		Context(Context&&) = delete;
 		Context(Context&) = delete;
-		Context& operator=(Context&&) = delete;
 		Context& operator=(Context&) = delete;
 
 		static void __stdcall errorCallback_(const char *, const void *, size_t, void*);
@@ -38,9 +35,16 @@ namespace anvil { namespace ocl {
 		friend class Event;
 		friend class Program;
 		friend class NativeKernel;
-		
-		ANVIL_CALL Context(const std::vector<Device>&);
-		virtual ANVIL_CALL ~Context();
+
+		ANVIL_CALL Context() throw();
+		ANVIL_CALL Context(Context&&) throw();
+		ANVIL_CALL Context(Device) throw();
+		ANVIL_CALL Context(const std::vector<Device>&) throw();
+		virtual ANVIL_CALL ~Context() throw();
+
+		Context& ANVIL_CALL operator=(Context&&) throw();
+
+		void swap(Context&);
 
 		std::vector<Device> ANVIL_CALL devices() const throw();
 	};

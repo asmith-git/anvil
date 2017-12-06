@@ -23,29 +23,50 @@ namespace anvil { namespace ocl {
 		static_cast<Context*>(user_data)->errorCallback(errinfo, private_info, cb);
 	}
 
-	ANVIL_CALL Context::Context(const std::vector<Device>& aDevices) :
-		mDevices(aDevices)
+	ANVIL_CALL Context::Context() throw() :
+		mContext(NULL)
+	{}
+
+	ANVIL_CALL Context::Context(Context&& aOther) throw() :
+		mContext(NULL)
 	{
-		enum { MAX_DEVICES = 128 };
-		const cl_uint s = aDevices.size();
+		swap(aOther);
+	}
 
-		ANVIL_RUNTIME_ASSERT(s <= MAX_DEVICES, "Too many devices in context constructor");
-		cl_device_id devices[MAX_DEVICES];
-		for (size_t i = 0; i < s; ++i) devices[i] = aDevices[i].mDevice;
-
+	ANVIL_CALL Context::Context(Device aDevice) throw() :
+		mContext(NULL)
+	{
 		cl_int error = CL_SUCCESS;
-		mContext = clCreateContext(NULL, s, devices, Context::errorCallback_, this, &error);
+		const cl_device_id* const devices = reinterpret_cast<const cl_device_id*>(&aDevice);
+		mContext = clCreateContext(NULL, 1, devices, Context::errorCallback_, this, &error);
 		if (error != CL_SUCCESS) {
-			mContext = 0;
+			mContext = NULL;
 			oclError("clCreateContext", error);
 		}
 	}
 
-	ANVIL_CALL Context::~Context() {
-		if (mContext != 0) {
+	ANVIL_CALL Context::Context(const std::vector<Device>& aDevices) throw() :
+		mContext(NULL)
+	{
+		const cl_uint s = aDevices.size();
+		cl_int error = CL_SUCCESS;
+		const cl_device_id* const devices = s == 0 ? NULL : reinterpret_cast<const cl_device_id*>(&aDevices[0]);
+		mContext = clCreateContext(NULL, s, devices, Context::errorCallback_, this, &error);
+		if (error != CL_SUCCESS) {
+			mContext = NULL;
+			oclError("clCreateContext", error);
+		}
+	}
+
+	ANVIL_CALL Context::~Context() throw() {
+		if (mContext) {
 			cl_int error = clReleaseContext(mContext);
 			if (error != CL_SUCCESS) oclError("clReleaseContext", error);
 		}
+	}
+
+	void ANVIL_CALL Context::swap(Context& aOther) throw() {
+		std::swap(mContext, aOther.mContext);
 	}
 
 	void ANVIL_CALL Context::errorCallback(const char* aMessage, const void*, size_t) throw() {
@@ -53,7 +74,12 @@ namespace anvil { namespace ocl {
 	}
 
 	std::vector<Device> ANVIL_CALL Context::devices() const throw() {
-		return mDevices;
+		cl_uint count;
+		clGetContextInfo(mContext, CL_CONTEXT_NUM_DEVICES, sizeof(cl_uint), &count, NULL);
+		if (count == 0) return std::vector<Device>(0);
+		std::vector<Device> devices(count, NULL);
+		clGetContextInfo(mContext, CL_CONTEXT_NUM_DEVICES, sizeof(cl_device_id) * count, &devices[0], NULL);
+		return devices;
 	}
 
 }}
