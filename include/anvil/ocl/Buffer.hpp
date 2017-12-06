@@ -53,16 +53,20 @@ namespace anvil { namespace ocl {
 		size_t mSize;
 		void* mHostPtr;
 
-		Buffer(Buffer&&) = delete;
 		Buffer(const Buffer&) = delete;
-		Buffer& operator=(Buffer&&) = delete;
 		Buffer& operator=(const Buffer&) = delete;
 	public:
 		friend class SubBuffer;
 
+		ANVIL_CALL Buffer(const Context&);
 		ANVIL_CALL Buffer(const Context&, size_t, AccessMode aMode = READ_WRITE);
 		ANVIL_CALL Buffer(const Context&, size_t, void*, AccessMode aMode = READ_WRITE);
+		ANVIL_CALL Buffer(Buffer&&);
 		ANVIL_CALL ~Buffer();
+
+		Buffer& ANVIL_CALL operator=(Buffer&&);
+
+		void ANVIL_CALL swap(Buffer& aOther);
 		
 		// Inherited from BufferInterface
 

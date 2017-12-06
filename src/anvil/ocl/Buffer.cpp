@@ -20,12 +20,20 @@ namespace anvil { namespace ocl {
 
 	// Buffer
 
+	ANVIL_CALL Buffer::Buffer(const Context& a_context) :
+		mContext(a_context),
+		mBuffer(NULL),
+		mFlags(0),
+		mSize(0),
+		mHostPtr(NULL)
+	{}
+
 	ANVIL_CALL Buffer::Buffer(const Context& aContext, size_t aSize, AccessMode aMode) :
 		mContext(aContext),
-		mBuffer(),
+		mBuffer(NULL),
 		mFlags(aMode),
 		mSize(aSize),
-		mHostPtr(nullptr)
+		mHostPtr(NULL)
 	{
 		cl_int error = CL_SUCCESS;
 		mBuffer = clCreateBuffer(mContext.mContext, mFlags, mSize, mHostPtr, &error);
@@ -37,7 +45,7 @@ namespace anvil { namespace ocl {
 
 	ANVIL_CALL Buffer::Buffer(const Context& aContext, size_t aSize, void* aHostPtr, AccessMode aMode) :
 		mContext(aContext),
-		mBuffer(),
+		mBuffer(NULL),
 		mFlags(aMode | CL_MEM_USE_HOST_PTR),
 		mSize(aSize),
 		mHostPtr(aHostPtr)
@@ -50,11 +58,37 @@ namespace anvil { namespace ocl {
 		}
 	}
 
+	ANVIL_CALL Buffer::Buffer(Buffer&& aOther) :
+		mContext(aOther.mContext),
+		mBuffer(aOther.mBuffer),
+		mFlags(aOther.mFlags),
+		mSize(aOther.mSize),
+		mHostPtr(aOther.mHostPtr)
+	{
+		aOther.mBuffer = NULL;
+		aOther.mFlags = 0;
+		aOther.mSize = 0;
+		aOther.mHostPtr = NULL;
+	}
+
 	ANVIL_CALL Buffer::~Buffer() {
 		if (mSize != 0) {
 			cl_int error = clReleaseMemObject(mBuffer);
 			if (error != CL_SUCCESS) oclError("clReleaseMemObject", error);
 		}
+	}
+
+	Buffer& ANVIL_CALL Buffer::operator=(Buffer&& aOther) {
+		swap(aOther);
+		return *this;
+	}
+
+	void ANVIL_CALL Buffer::swap(Buffer& aOther) {
+		ANVIL_RUNTIME_ASSERT(mContext.mContext == aOther.mContext.mContext, "Cannot swap buffers with different contexts");
+		std::swap(mBuffer, aOther.mBuffer);
+		std::swap(mFlags, aOther.mFlags);
+		std::swap(mSize, aOther.mSize);
+		std::swap(mHostPtr, aOther.mHostPtr);
 	}
 
 	ANVIL_CALL Buffer::operator bool() const throw() {
