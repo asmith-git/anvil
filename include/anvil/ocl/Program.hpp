@@ -27,7 +27,7 @@ namespace anvil { namespace ocl {
 			SOURCE_SET,
 			BUILT
 		};
-		const Context& mContext;
+		Context& mContext;
 		cl_program mProgram;
 		State mState;
 		
@@ -38,7 +38,7 @@ namespace anvil { namespace ocl {
 	public:
 		friend class Kernel;
 
-		ANVIL_CALL Program(const Context&);
+		ANVIL_CALL Program(Context&);
 		ANVIL_CALL ~Program();
 
 		void ANVIL_CALL setSource(const char*);

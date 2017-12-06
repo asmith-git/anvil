@@ -18,7 +18,7 @@ namespace anvil { namespace ocl {
 
 	// Event
 
-	ANVIL_CALL Event::Event(const Context& aContext) :
+	ANVIL_CALL Event::Event(Context& aContext) :
 		mEvent(NULL)
 	{
 		cl_int error = CL_SUCCESS;

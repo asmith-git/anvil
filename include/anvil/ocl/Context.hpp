@@ -25,9 +25,9 @@ namespace anvil { namespace ocl {
 		cl_context mContext;
 
 		Context(Context&&) = delete;
-		Context(const Context&) = delete;
+		Context(Context&) = delete;
 		Context& operator=(Context&&) = delete;
-		Context& operator=(const Context&) = delete;
+		Context& operator=(Context&) = delete;
 
 		static void __stdcall errorCallback_(const char *, const void *, size_t, void*);
 	protected:

@@ -31,7 +31,7 @@ namespace anvil { namespace ocl {
 
 		virtual ANVIL_CALL ~BufferInterface() {}
 
-		virtual const Context& ANVIL_CALL context() const throw() = 0;
+		virtual Context& ANVIL_CALL context() const throw() = 0;
 		virtual ANVIL_CALL operator bool() const throw() = 0;
 		virtual AccessMode ANVIL_CALL accessMode() const throw() = 0;
 		virtual size_t ANVIL_CALL origin() const throw() = 0;
@@ -47,7 +47,7 @@ namespace anvil { namespace ocl {
 
 	class Buffer : public BufferInterface {
 	private:
-		const Context& mContext;
+		Context& mContext;
 		cl_mem mBuffer;
 		cl_mem_flags mFlags;
 		size_t mSize;
@@ -58,9 +58,9 @@ namespace anvil { namespace ocl {
 	public:
 		friend class SubBuffer;
 
-		ANVIL_CALL Buffer(const Context&);
-		ANVIL_CALL Buffer(const Context&, size_t, AccessMode aMode = READ_WRITE);
-		ANVIL_CALL Buffer(const Context&, size_t, void*, AccessMode aMode = READ_WRITE);
+		ANVIL_CALL Buffer(Context&);
+		ANVIL_CALL Buffer(Context&, size_t, AccessMode aMode = READ_WRITE);
+		ANVIL_CALL Buffer(Context&, size_t, void*, AccessMode aMode = READ_WRITE);
 		ANVIL_CALL Buffer(Buffer&&);
 		ANVIL_CALL ~Buffer();
 
@@ -70,7 +70,7 @@ namespace anvil { namespace ocl {
 		
 		// Inherited from BufferInterface
 
-		const Context& ANVIL_CALL context() const throw() override;
+		Context& ANVIL_CALL context() const throw() override;
 		ANVIL_CALL operator bool() const throw() override;
 		AccessMode ANVIL_CALL accessMode() const throw() override;
 		size_t ANVIL_CALL origin() const throw() override;
@@ -101,7 +101,7 @@ namespace anvil { namespace ocl {
 
 		// Inherited from BufferInterface
 
-		const Context& ANVIL_CALL context() const throw() override;
+		Context& ANVIL_CALL context() const throw() override;
 		ANVIL_CALL operator bool() const throw() override;
 		Buffer::AccessMode ANVIL_CALL accessMode() const throw() override;
 		size_t ANVIL_CALL origin() const throw() override;

@@ -53,7 +53,7 @@ namespace anvil { namespace ocl {
 		reinterpret_cast<NativeKernel*>(aArgs)->onExecute();
 	}
 
-	ANVIL_CALL NativeKernel::NativeKernel(const Context& aContext) :
+	ANVIL_CALL NativeKernel::NativeKernel(Context& aContext) :
 		mContext(aContext)
 	{}
 

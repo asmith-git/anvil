@@ -20,7 +20,7 @@ namespace anvil { namespace ocl {
 
 	// CommandQueue
 
-	ANVIL_CALL CommandQueue::CommandQueue(const Context& aContext, const Device& aDevice, bool aOutOfOrder) :
+	ANVIL_CALL CommandQueue::CommandQueue(Context& aContext, const Device& aDevice, bool aOutOfOrder) :
 		mContext(aContext),
 		mDevice(aDevice),
 		mOutOfOrder(aOutOfOrder)
@@ -49,7 +49,7 @@ namespace anvil { namespace ocl {
 		return mOutOfOrder;
 	}
 
-	const Context& ANVIL_CALL CommandQueue::context() const throw() {
+	Context& ANVIL_CALL CommandQueue::context() const throw() {
 		return mContext;
 	}
 

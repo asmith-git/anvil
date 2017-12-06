@@ -121,11 +121,11 @@ namespace anvil { namespace ocl {
 	private:
 		static void __stdcall execute_(void*) throw();
 	protected:
-		const Context& mContext;
+		Context& mContext;
 
 		virtual void ANVIL_CALL onExecute() throw() = 0;
 	public:
-		ANVIL_CALL NativeKernel(const Context&);
+		ANVIL_CALL NativeKernel(Context&);
 		virtual ANVIL_CALL ~NativeKernel();
 
 		// Inherited from KernelInterface

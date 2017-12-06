@@ -19,7 +19,7 @@ namespace anvil { namespace ocl {
 
 	// Program
 
-	ANVIL_CALL Program::Program(const Context& aContext) :
+	ANVIL_CALL Program::Program(Context& aContext) :
 		mContext(aContext),
 		mProgram(NULL),
 		mState(INITIALISED)

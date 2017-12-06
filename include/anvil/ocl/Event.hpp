@@ -31,7 +31,7 @@ namespace anvil { namespace ocl {
 		friend class Kernel;
 		friend class NativeKernel;
 
-		ANVIL_CALL Event(const Context&);
+		ANVIL_CALL Event(Context&);
 		ANVIL_CALL Event(Event&&);
 		ANVIL_CALL ~Event();
 

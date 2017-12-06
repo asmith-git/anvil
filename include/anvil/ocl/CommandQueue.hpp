@@ -21,7 +21,7 @@ namespace anvil { namespace ocl {
 
 	class CommandQueue {
 	private:
-		const Context& mContext;
+		Context& mContext;
 		const Device& mDevice;
 		cl_command_queue mQueue;
 		bool mOutOfOrder;
@@ -35,14 +35,14 @@ namespace anvil { namespace ocl {
 		friend class Kernel;
 		friend class NativeKernel;
 
-		ANVIL_CALL CommandQueue(const Context&, const Device&, bool aOutOfOrder = false);
+		ANVIL_CALL CommandQueue(Context&, const Device&, bool aOutOfOrder = false);
 		ANVIL_CALL ~CommandQueue();
 
 		void ANVIL_CALL flush();
 		void ANVIL_CALL finish();
 
 		bool ANVIL_CALL outOfOrder() const throw();
-		const Context& ANVIL_CALL context() const throw();
+		Context& ANVIL_CALL context() const throw();
 		const Device& ANVIL_CALL device() const throw();
 	};
 }}
