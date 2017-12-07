@@ -39,6 +39,7 @@ namespace anvil { namespace ocl {
 		ANVIL_CALL ~Event() throw();
 
 		Event& ANVIL_CALL operator=(Event&&) throw();
+		ANVIL_CALL operator bool() const throw();
 
 		void ANVIL_CALL wait() throw();
 	};

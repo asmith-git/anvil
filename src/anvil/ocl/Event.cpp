@@ -63,6 +63,10 @@ namespace anvil { namespace ocl {
 		return *this;
 	}
 
+	ANVIL_CALL Event::operator bool() const throw() {
+		return mEvent != NULL;
+	}
+
 	void ANVIL_CALL Event::wait() throw() {
 		if (! mEvent) return;
 		cl_int error = clWaitForEvents(1, &mEvent);

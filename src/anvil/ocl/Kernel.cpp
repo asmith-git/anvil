@@ -19,6 +19,10 @@ namespace anvil { namespace ocl {
 
 	// Kernel
 
+	ANVIL_CALL Kernel::Kernel() throw() :
+		mKernel(NULL)
+	{}
+
 	ANVIL_CALL Kernel::Kernel(Kernel&& aOther) throw() :
 		mKernel(NULL)
 	{
@@ -38,13 +42,18 @@ namespace anvil { namespace ocl {
 
 	ANVIL_CALL Kernel::~Kernel() {
 		if (mKernel) {
-			clReleaseKernel(mKernel);
+			cl_int error = clReleaseKernel(mKernel);
+			if (error != CL_SUCCESS) oclError("clReleaseKernel", error);
 		}
 	}
 
 	Kernel& ANVIL_CALL Kernel::operator=(Kernel&& aOther) throw() {
 		swap(aOther);
 		return *this;
+	}
+
+	ANVIL_CALL Kernel::operator bool() const throw() {
+		return mKernel != NULL;
 	}
 
 	void ANVIL_CALL Kernel::swap(Kernel& aOther) throw() {
@@ -54,12 +63,20 @@ namespace anvil { namespace ocl {
 	Event ANVIL_CALL Kernel::execute(CommandQueue& aQueue) {
 		Event event(context());
 		cl_int error = clEnqueueTask(aQueue.mQueue, mKernel, 0, NULL, &event.mEvent);
-		if (error != CL_SUCCESS) oclError("clEnqueueTask", error);
+		if (error != CL_SUCCESS) {
+			oclError("clEnqueueTask", error);
+			return Event();
+		}
 		return event;
 	}
 
-	void ANVIL_CALL Kernel::setArgument(cl_uint aIndex, const void* aSrc, size_t aBytes) {
+	bool ANVIL_CALL Kernel::setArgument(cl_uint aIndex, const void* aSrc, size_t aBytes) {
 		cl_int error = clSetKernelArg(mKernel, aIndex, aBytes, aSrc);
+		if (error != CL_SUCCESS) {
+			oclError("clSetKernelArg", error);
+			return false;
+		}
+		return true;
 	}
 
 	cl_context Kernel::context() const throw() {
@@ -101,7 +118,10 @@ namespace anvil { namespace ocl {
 
 		NativeKernel* args = this;
 		cl_int error = clEnqueueNativeKernel(aQueue.mQueue, NativeKernel::execute_, &args, sizeof(void*), 0, NULL, NULL, 0, NULL, &event.mEvent);
-		if (error != CL_SUCCESS) oclError("clEnqueueTask", error);
+		if (error != CL_SUCCESS) {
+			oclError("clEnqueueNativeKernel", error);
+			return Event();
+		}
 
 		return event;
 	}
