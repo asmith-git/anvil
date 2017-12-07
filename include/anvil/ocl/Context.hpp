@@ -46,6 +46,7 @@ namespace anvil { namespace ocl {
 		virtual ANVIL_CALL ~Context() throw();
 
 		Context& ANVIL_CALL operator=(Context&&) throw();
+		ANVIL_CALL operator bool() const throw();
 
 		void swap(Context&);
 

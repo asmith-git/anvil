@@ -65,6 +65,10 @@ namespace anvil { namespace ocl {
 		}
 	}
 
+	ANVIL_CALL Context::operator bool() const throw() {
+		return mContext != NULL;
+	}
+
 	void ANVIL_CALL Context::swap(Context& aOther) throw() {
 		std::swap(mContext, aOther.mContext);
 	}

@@ -24,9 +24,12 @@ namespace anvil { namespace ocl {
 		cl_device_id mDevice;
 		
 		void* ANVIL_CALL getInfo(cl_device_info aName) const;
+
+		ANVIL_CALL Device(cl_device_id);
 	public:
 		friend class Context;
 		friend class CommandQueue;
+		friend class Platform;
 
 		enum Type : cl_device_type {
 			CPU = CL_DEVICE_TYPE_CPU,
@@ -37,7 +40,7 @@ namespace anvil { namespace ocl {
 		};
 		
 		ANVIL_CALL Device();
-		ANVIL_CALL Device(cl_device_id aPlatform);
+		ANVIL_CALL operator bool() const throw();
 		static std::vector<Device> ANVIL_CALL devices(Device::Type aType = Device::ALL);
 		
 		struct WorkItemCount {
@@ -59,12 +62,13 @@ namespace anvil { namespace ocl {
 		ANVIL_CL_GET_INFO(cl_device_mem_cache_type, *,	    globalCacheType,	        CL_DEVICE_GLOBAL_MEM_CACHE_TYPE);
 		ANVIL_CL_GET_INFO(cl_uint, *,						globalCacheLineSize,        CL_DEVICE_GLOBAL_MEM_CACHELINE_SIZE);
 		ANVIL_CL_GET_INFO(cl_ulong, *,					    globalMemorySize,	        CL_DEVICE_GLOBAL_MEM_SIZE);
-		//ANVIL_CL_GET_INFO(cl_device_fp_config, *,			floatingPointConfiguration, CL_DEVICE_HALF_FP_CONFIG);
 		ANVIL_CL_GET_INFO(cl_bool, *,						unifiedHostMemory,	        CL_DEVICE_HOST_UNIFIED_MEMORY);
 		ANVIL_CL_GET_INFO(cl_bool, *,						imageSupport,		        CL_DEVICE_IMAGE_SUPPORT);
-		ANVIL_CL_GET_INFO(size_t, *,						maxImageDepth,		        CL_DEVICE_IMAGE3D_MAX_DEPTH);
-		ANVIL_CL_GET_INFO(size_t, *,						maxImageHeight,		        CL_DEVICE_IMAGE3D_MAX_HEIGHT);
-		ANVIL_CL_GET_INFO(size_t, *,						maxImageWidth,		        CL_DEVICE_IMAGE3D_MAX_WIDTH);
+		ANVIL_CL_GET_INFO(size_t, *,						maxImageHeight2D,		        CL_DEVICE_IMAGE2D_MAX_HEIGHT);
+		ANVIL_CL_GET_INFO(size_t, *,						maxImageWidth2D,		        CL_DEVICE_IMAGE2D_MAX_WIDTH);
+		ANVIL_CL_GET_INFO(size_t, *,						maxImageDepth3D,		        CL_DEVICE_IMAGE3D_MAX_DEPTH);
+		ANVIL_CL_GET_INFO(size_t, *,						maxImageHeight3D,		        CL_DEVICE_IMAGE3D_MAX_HEIGHT);
+		ANVIL_CL_GET_INFO(size_t, *,						maxImageWidth3D,		        CL_DEVICE_IMAGE3D_MAX_WIDTH);
 		ANVIL_CL_GET_INFO(cl_ulong, *,                      localMemorySize,            CL_DEVICE_LOCAL_MEM_SIZE);
 		ANVIL_CL_GET_INFO(cl_uint, *,                       maxClockFrequency,            CL_DEVICE_MAX_CLOCK_FREQUENCY);
 		ANVIL_CL_GET_INFO(cl_uint, *, maxComputeUnits, CL_DEVICE_MAX_COMPUTE_UNITS);
@@ -105,12 +109,9 @@ namespace anvil { namespace ocl {
 		ANVIL_CL_GET_INFO(cl_uint, *, vendorID, CL_DEVICE_VENDOR_ID);
 		ANVIL_CL_GET_INFO(const char*, , version, CL_DEVICE_VERSION);
 		ANVIL_CL_GET_INFO(const char*, , driverVersion, CL_DRIVER_VERSION);
-		//
-		////! \todo CL_DEVICE_DOUBLE_FP_CONFIG
-		////! \todo CL_DEVICE_IMAGE2D_MAX_WIDTH
-		////! \todo CL_DEVICE_IMAGE2D_MAX_HEIGHT
-		////! \todo Other infos
-		//
+		
+		//! \todo CL_DEVICE_DOUBLE_FP_CONFIG, CL_DEVICE_HALF_FP_CONFIG
+	
 		#undef ANVIL_CL_GET_INFO
 	};
 }}
