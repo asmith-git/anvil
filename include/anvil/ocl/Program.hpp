@@ -22,30 +22,40 @@ namespace anvil { namespace ocl {
 
 	class Program {
 	private:
-		enum State : uint8_t {
-			INITIALISED,
-			SOURCE_SET,
-			BUILT
-		};
-		Context& mContext;
+		cl_context mContext;
 		cl_program mProgram;
-		State mState;
 		
-		Program(Program&&) = delete;
 		Program(const Program&) = delete;
-		Program& operator=(Program&&) = delete;
 		Program& operator=(const Program&) = delete;
+
+		bool ANVIL_CALL build(const char*) throw();
 	public:
 		friend class Kernel;
 
-		ANVIL_CALL Program(Context&);
-		ANVIL_CALL ~Program();
+		enum { MAX_DEVICES = 32 };
 
-		void ANVIL_CALL setSource(const char*);
-		void ANVIL_CALL setSources(const char**, cl_uint);
-		void ANVIL_CALL setBinary(const unsigned char*, size_t);
-		void ANVIL_CALL setBinaries(const unsigned char**, const size_t*);
-		void ANVIL_CALL build(const char*);
+		typedef std::string Source;
+		typedef std::vector<uint8_t> Binary;
+
+		ANVIL_CALL Program() throw();
+		ANVIL_CALL Program(Program&&) throw();
+		ANVIL_CALL Program(Context&) throw();
+		ANVIL_CALL ~Program() throw();
+
+		Program& ANVIL_CALL operator=(Program&&) throw();
+		void ANVIL_CALL swap(Program&) throw();
+
+		bool ANVIL_CALL buildFromSource(const char*, const char* aOptions = NULL) throw();
+		bool ANVIL_CALL buildFromSources(const char**, cl_uint, const char* aOptions = NULL) throw();
+		bool ANVIL_CALL buildFromSource(const Source&, const char* aOptions = NULL) throw();
+		bool ANVIL_CALL buildFromSources(const std::vector<Source>&, const char* aOptions = NULL) throw();
+		bool ANVIL_CALL buildFromBinary(const void*, size_t, const char* aOptions = NULL) throw();
+		bool ANVIL_CALL buildFromBinaries(const void**, const size_t*, size_t, const char* aOptions = NULL) throw();
+		bool ANVIL_CALL buildFromBinary(const Binary&, const char* aOptions = NULL) throw();
+		bool ANVIL_CALL buildFromBinaries(const std::vector<Binary>&, const char* aOptions = NULL) throw();
+
+		Source source() const throw();
+		std::vector<Binary> binaries() const throw();
 	};
 }}
 

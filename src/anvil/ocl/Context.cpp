@@ -74,11 +74,15 @@ namespace anvil { namespace ocl {
 	}
 
 	std::vector<Device> ANVIL_CALL Context::devices() const throw() {
+		return devices(mContext);
+	}
+
+	std::vector<Device> ANVIL_CALL Context::devices(cl_context aContext) throw() {
 		cl_uint count;
-		clGetContextInfo(mContext, CL_CONTEXT_NUM_DEVICES, sizeof(cl_uint), &count, NULL);
+		clGetContextInfo(aContext, CL_CONTEXT_NUM_DEVICES, sizeof(cl_uint), &count, NULL);
 		if (count == 0) return std::vector<Device>(0);
 		std::vector<Device> devices(count, NULL);
-		clGetContextInfo(mContext, CL_CONTEXT_NUM_DEVICES, sizeof(cl_device_id) * count, &devices[0], NULL);
+		clGetContextInfo(aContext, CL_CONTEXT_NUM_DEVICES, sizeof(cl_device_id) * count, &devices[0], NULL);
 		return devices;
 	}
 

@@ -19,73 +19,169 @@ namespace anvil { namespace ocl {
 
 	// Program
 
-	ANVIL_CALL Program::Program(Context& aContext) :
-		mContext(aContext),
-		mProgram(NULL),
-		mState(INITIALISED)
+	ANVIL_CALL Program::Program() throw() :
+		mContext(NULL),
+		mProgram(NULL)
 	{}
 
-	ANVIL_CALL Program::~Program() {
+	ANVIL_CALL Program::Program(Context& aContext) throw() :
+		mContext(aContext.mContext),
+		mProgram(NULL)
+	{}
+
+	ANVIL_CALL Program::Program(Program&& aOther) throw() :
+		mContext(NULL),
+		mProgram(NULL)
+	{
+		swap(aOther);
+	}
+
+	ANVIL_CALL Program::~Program() throw() {
 		if (mProgram) {
-			clReleaseProgram(mProgram);
+			cl_int error = clReleaseProgram(mProgram);
+			if (error != CL_SUCCESS) oclError("clReleaseProgram", error);
 		}
 	}
 
-	void ANVIL_CALL Program::setSource(const char* aSource) {
-		setSources(&aSource, 1);
+	Program& ANVIL_CALL Program::operator=(Program&& aOther) throw() {
+		swap(aOther);
+		return *this;
 	}
 
-	void ANVIL_CALL Program::setSources(const char** aSources, cl_uint aCount) {
-		if (mState != INITIALISED) {
-			ANVIL_RUNTIME_ASSERT(false, "Program source has already been set");
-			return;
-		}
+	void ANVIL_CALL Program::swap(Program& aOther) throw() {
+		std::swap(mContext, aOther.mContext);
+		std::swap(mProgram, aOther.mProgram);
+	}
 
+	bool ANVIL_CALL Program::buildFromSource(const char* aSource, const char* aBuildOptions) throw() {
+		const char* sources[MAX_DEVICES];
+		const size_t count = Context::devices(mContext).size();
+		for (size_t i = 0; i < count; ++i) sources[i] = aSource;
+		return buildFromSources(sources, count, aBuildOptions);
+	}
+
+	bool ANVIL_CALL Program::buildFromSources(const char** aSources, cl_uint aCount, const char* aBuildOptions) throw() {
 		cl_int error = CL_SUCCESS;
-		mProgram = clCreateProgramWithSource(mContext.mContext, aCount, aSources, NULL, &error);
-		mState = SOURCE_SET;
-		if (error != CL_SUCCESS) oclError("clCreateProgramWithSource", error);
-	}
-
-	void ANVIL_CALL Program::setBinary(const unsigned char* aBinary, size_t aLength) {
-		setBinaries(&aBinary, &aLength);
-	}
-
-	void ANVIL_CALL Program::setBinaries(const unsigned char** aBinaries, const size_t* aLengths) {
-		if (mState != INITIALISED) {
-			ANVIL_RUNTIME_ASSERT(false, "Program binary has already been set");
-			return;
+		mProgram = clCreateProgramWithSource(mContext, aCount, aSources, NULL, &error);
+		if (error != CL_SUCCESS) {
+			oclError("clCreateProgramWithSource", error);
+			return false;
 		}
+		return build(aBuildOptions);
+	}
 
-		const std::vector<Device> devices = mContext.devices();
+	bool ANVIL_CALL Program::buildFromBinary(const void* aBinary, size_t aLength, const char* aBuildOptions) {
+		const void* binaries[MAX_DEVICES];
+		size_t lengths[MAX_DEVICES];
+		const size_t count = Context::devices(mContext).size();
+		for (size_t i = 0; i < count; ++i) {
+			binaries[i] = aBinary;
+			lengths[i] = aLength;
+		}
+		return buildFromBinaries(binaries, lengths, count, aBuildOptions);
+	}
+
+	bool ANVIL_CALL Program::buildFromBinaries(const void** aBinaries, const size_t* aLengths, size_t aCount, const char* aBuildOptions) throw() {
+		const std::vector<Device> devices = Context::devices(mContext);
 		const cl_uint deviceCount = devices.size();
+		if (aCount != deviceCount) {
+			oclError("clCreateProgramWithBinary", CL_INVALID_VALUE);
+			return false;
+		}
 		const cl_device_id* const devicePtr = deviceCount == 0 ? NULL : reinterpret_cast<const cl_device_id*>(&devices[0]);
 
 		cl_int error = CL_SUCCESS;
-		mProgram = clCreateProgramWithBinary(mContext.mContext, deviceCount, devicePtr, aLengths, aBinaries, NULL, &error);
+		mProgram = clCreateProgramWithBinary(mContext, deviceCount, devicePtr, aLengths, reinterpret_cast<const unsigned char**>(aBinaries), NULL, &error);
 		if (error != CL_SUCCESS) {
 			oclError("clCreateProgramWithBinary", error);
-			return;
+			return false;
 		}
-		mState = SOURCE_SET;
+		return build(aBuildOptions);
 	}
 
-	void ANVIL_CALL Program::build(const char* aOptions) {
-		if (mState != SOURCE_SET) {
-			ANVIL_RUNTIME_ASSERT(false, "Program binary has already been set");
-			return;
-		}
-
-		const std::vector<Device> devices = mContext.devices();
+	bool ANVIL_CALL Program::build(const char* aOptions) throw() {
+		const std::vector<Device> devices = Context::devices(mContext);
 		const cl_uint deviceCount = devices.size();
 		const cl_device_id* const devicePtr = deviceCount == 0 ? NULL : reinterpret_cast<const cl_device_id*>(&devices[0]);
 
 		cl_int error = clBuildProgram(mProgram, deviceCount, devicePtr, aOptions, [](cl_program, void*){}, NULL);
 		if (error != CL_SUCCESS) {
 			oclError("clBuildProgram", error);
-			return;
+			return false;
 		}
-		mState = BUILT;
+		return true;
+	}
+
+	Program::Source Program::source() const throw() {
+		size_t size = 0;
+		cl_int error = clGetProgramInfo(mProgram, CL_PROGRAM_SOURCE, 0, NULL, &size);
+		if (error != CL_SUCCESS) {
+			oclError("clGetProgramInfo", error);
+			return Source();
+		}
+
+		Source source(size, '?');
+		error = clGetProgramInfo(mProgram, CL_PROGRAM_SOURCE, size, &source[0], NULL);
+		if (error != CL_SUCCESS) {
+			oclError("clGetProgramInfo", error);
+			return Source();
+		}
+		return source;
+	}
+
+	std::vector<Program::Binary> Program::binaries() const throw() {
+		size_t sizes[MAX_DEVICES];
+
+		size_t size = 0;
+		cl_int error = clGetProgramInfo(mProgram, CL_PROGRAM_BINARY_SIZES, sizeof(size_t) * MAX_DEVICES, sizes, &size);
+		if (error != CL_SUCCESS) {
+			oclError("clGetProgramInfo", error);
+			return std::vector<Program::Binary>();
+		}
+		size /= sizeof(size_t);
+
+		std::vector<Program::Binary> binaries(size, Binary());
+		unsigned char** binary_ptrs = new unsigned char*[size];
+		for (size_t i = 0; i < size; ++i) {
+			binaries[i] = Binary(sizes[i], 0);
+			binary_ptrs[i] = &binaries[i][0];
+		}
+
+		Source source(size, '?');
+		error = clGetProgramInfo(mProgram, CL_PROGRAM_BINARIES, size * sizeof(unsigned char*), binary_ptrs, NULL);
+		if (error != CL_SUCCESS) {
+			oclError("clGetProgramInfo", error);
+			delete[] binary_ptrs;
+			return std::vector<Program::Binary>();
+		}
+		delete[] binary_ptrs;
+		return binaries;
+	}
+	
+	bool ANVIL_CALL Program::buildFromSource(const Source& aSource, const char* aBuildOptions) throw() {
+		return buildFromSource(aSource.c_str(), aBuildOptions);
+	}
+
+	bool ANVIL_CALL Program::buildFromSources(const std::vector<Source>& aSources, const char* aBuildOptions) throw() {
+		const char* sources[MAX_DEVICES];
+		const size_t count = aSources.size();
+		for (size_t i = 0; i < count; ++i) sources[i] = aSources[i].c_str();
+		return buildFromSources(sources, count, aBuildOptions);
+	}
+
+	bool ANVIL_CALL Program::buildFromBinary(const Binary& aBinary, const char* aBuildOptions) throw() {
+		return buildFromBinary(&aBinary[0], aBinary.size(), aBuildOptions);
+	}
+
+	bool ANVIL_CALL Program::buildFromBinaries(const std::vector<Binary>& aBinaries, const char* aBuildOptions) throw() {
+		const void* binaries[MAX_DEVICES];
+		size_t sizes[MAX_DEVICES];
+		const size_t count = aBinaries.size();
+		for (size_t i = 0; i < count; ++i) {
+			binaries[i] = &aBinaries[i];
+			sizes[i] = aBinaries[i].size();
+		}
+		return buildFromBinaries(binaries, sizes, count, aBuildOptions);
 	}
 
 }}

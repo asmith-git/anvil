@@ -27,6 +27,9 @@ namespace anvil { namespace ocl {
 		Context& operator=(Context&) = delete;
 
 		static void __stdcall errorCallback_(const char *, const void *, size_t, void*);
+
+		static std::vector<Device> ANVIL_CALL devices(cl_context) throw();
+
 	protected:
 		virtual void ANVIL_CALL errorCallback(const char*, const void*, size_t) throw();
 	public:
