@@ -23,14 +23,15 @@ namespace anvil { namespace ocl {
 		cl_platform_id mPlatform;
 		
 		void* ANVIL_CALL getInfo(cl_platform_info) const;
+		ANVIL_CALL Platform(cl_platform_id) throw();
 	public:
 		friend class Context;
 
-		ANVIL_CALL Platform();
-		ANVIL_CALL Platform(cl_platform_id);
+		ANVIL_CALL Platform() throw();
+		ANVIL_CALL operator bool() const throw();
 		
-		std::vector<Device> ANVIL_CALL devices(Device::Type aType = Device::ALL) const;
-		static std::vector<Platform> ANVIL_CALL platforms();
+		std::vector<Device> ANVIL_CALL devices(Device::Type aType = Device::ALL) const throw();
+		static std::vector<Platform> ANVIL_CALL platforms() throw();
 
 
 		#define ANVIL_CL_GET_INFO(type, ptr, name1, name2) inline type ANVIL_CALL name1() const { return ptr reinterpret_cast<type ptr>(getInfo(name2)); }

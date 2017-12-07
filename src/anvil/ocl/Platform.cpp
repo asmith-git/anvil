@@ -23,21 +23,25 @@ namespace anvil { namespace ocl {
 
 	// Platform
 
-	ANVIL_CALL Platform::Platform() :
-		mPlatform(0)
+	ANVIL_CALL Platform::Platform() throw() :
+		mPlatform(NULL)
 	{}
 
-	ANVIL_CALL Platform::Platform(cl_platform_id aPlatform) :
+	ANVIL_CALL Platform::Platform(cl_platform_id aPlatform) throw() :
 		mPlatform(aPlatform)
 	{}
 
-	void* ANVIL_CALL Platform::getInfo(cl_platform_info aName) const {
+	ANVIL_CALL Platform::operator bool() const throw() {
+		return mPlatform != NULL;
+	}
+
+	void* ANVIL_CALL Platform::getInfo(cl_platform_info aName) const throw() {
 		const cl_int error = clGetPlatformInfo(mPlatform, aName, PLATFORM_INFO_BUFFER_SIZE, gPlatformInfoBuffer, nullptr);
 		if (error != CL_SUCCESS) oclError("clGetDeviceInfo", error);
 		return gPlatformInfoBuffer;
 	}
 
-	std::vector<Device> ANVIL_CALL Platform::devices(Device::Type aType) const {
+	std::vector<Device> ANVIL_CALL Platform::devices(Device::Type aType) const throw() {
 		std::vector<Device> devices;
 
 		enum { kMaxDevices = 64 };
@@ -51,7 +55,7 @@ namespace anvil { namespace ocl {
 		return devices;
 	}
 
-	std::vector<Platform> ANVIL_CALL Platform::platforms() {
+	std::vector<Platform> ANVIL_CALL Platform::platforms() throw() {
 		std::vector<Platform> platforms;
 
 		enum { kMaxPlatforms = 64 };
