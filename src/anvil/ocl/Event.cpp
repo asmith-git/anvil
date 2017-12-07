@@ -67,10 +67,33 @@ namespace anvil { namespace ocl {
 		return mEvent != NULL;
 	}
 
-	void ANVIL_CALL Event::wait() throw() {
-		if (! mEvent) return;
+	bool ANVIL_CALL Event::wait() throw() {
+		if (!mEvent){
+			oclError("clWaitForEvents ", CL_INVALID_VALUE);
+			return false;
+		}
+
 		cl_int error = clWaitForEvents(1, &mEvent);
-		if (error != CL_SUCCESS) oclError("clWaitForEvents ", error);
+		if (error != CL_SUCCESS) {
+			oclError("clWaitForEvents ", error);
+			return false;
+		}
+		return true;
+	}
+
+	bool ANVIL_CALL Event::wait(const std::vector<Event>& aEvents) throw() {
+		const size_t count = aEvents.size();
+		if (count == 0) {
+			oclError("clWaitForEvents ", CL_INVALID_VALUE);
+			return false;
+		}
+
+		cl_int error = clWaitForEvents(count, &aEvents[0].mEvent);
+		if (error != CL_SUCCESS) {
+			oclError("clWaitForEvents ", error);
+			return false;
+		}
+		return true;
 	}
 
 }}
