@@ -61,7 +61,7 @@ namespace anvil { namespace ocl {
 	}
 
 	Event ANVIL_CALL Kernel::execute(CommandQueue& aQueue) {
-		Event event(context());
+		Event event;
 		cl_int error = clEnqueueTask(aQueue.mQueue, mKernel, 0, NULL, &event.mEvent);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueTask", error);
@@ -111,7 +111,7 @@ namespace anvil { namespace ocl {
 	}
 
 	Event ANVIL_CALL NativeKernel::execute(CommandQueue& aQueue) {
-		Event event(mContext);
+		Event event;
 
 		NativeKernel* args = this;
 		cl_int error = clEnqueueNativeKernel(aQueue.mQueue, NativeKernel::execute_, &args, sizeof(void*), 0, NULL, NULL, 0, NULL, &event.mEvent);

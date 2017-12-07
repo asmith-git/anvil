@@ -30,11 +30,15 @@ namespace anvil { namespace ocl {
 		swap(aOther);
 	}
 
-	ANVIL_CALL CommandQueue::CommandQueue(Context& aContext, Device aDevice, bool aOutOfOrder) throw() :
+	ANVIL_CALL CommandQueue::CommandQueue(Context& aContext, Device aDevice, bool aOutOfOrder, bool aProfiling) throw() :
 		mQueue(NULL)
 	{
 		cl_int error = CL_SUCCESS;
-		mQueue = clCreateCommandQueue(aContext.mContext, aDevice.mDevice, aOutOfOrder ? 1 : 0, &error);
+		mQueue = clCreateCommandQueue(
+			aContext.mContext, 
+			aDevice.mDevice, 
+			(aOutOfOrder ? CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE : 0) | (aProfiling ? CL_QUEUE_PROFILING_ENABLE : 0),
+			&error);
 		if (error != CL_SUCCESS) oclError("clFlush", error);
 	}
 
@@ -66,4 +70,20 @@ namespace anvil { namespace ocl {
 		return error == CL_SUCCESS ? true : oclError("clFinish", error, false);
 	}
 
+#ifndef CL_VERSION_1_2
+	bool ANVIL_CALL CommandQueue::barrier() throw() {
+		cl_int error = clEnqueueBarrier(mQueue);
+		return error == CL_SUCCESS ? true : oclError("clEnqueueBarrier", error, false);
+	}
+
+	Event ANVIL_CALL CommandQueue::pushMarker() throw() {
+		cl_event event;
+		cl_int error = clEnqueueMarker(mQueue, &event);
+		if (error != CL_SUCCESS) {
+			oclError("clEnqueueMarker", error);
+			return Event();
+		}
+		return Event(event);
+	}
+#endif
 }}

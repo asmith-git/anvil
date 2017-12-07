@@ -32,11 +32,15 @@ namespace anvil { namespace ocl {
 
 		ANVIL_CALL CommandQueue() throw();
 		ANVIL_CALL CommandQueue(CommandQueue&&);
-		ANVIL_CALL CommandQueue(Context&, Device, bool aOutOfOrder = false) throw();
+		ANVIL_CALL CommandQueue(Context&, Device, bool aOutOfOrder = false, bool aProfiling = false) throw();
 		ANVIL_CALL ~CommandQueue() throw();
 		ANVIL_CALL CommandQueue& operator=(CommandQueue&&);
 		ANVIL_CALL operator bool() const throw();
 
+#ifndef CL_VERSION_1_2
+		bool ANVIL_CALL barrier() throw();
+		Event ANVIL_CALL pushMarker() throw();
+#endif
 		bool ANVIL_CALL flush() throw();
 		bool ANVIL_CALL finish() throw();
 		void ANVIL_CALL swap(CommandQueue&) throw();

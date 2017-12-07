@@ -108,7 +108,7 @@ namespace anvil { namespace ocl {
 
 	Event ANVIL_CALL Buffer::read(CommandQueue& aQueue, size_t aOffset, void* aDst, size_t aBytes) const throw() {
 		if (mBuffer == NULL) return Event();
-		Event event(context());
+		Event event;
 		cl_int error = clEnqueueReadBuffer(aQueue.mQueue, mBuffer, CL_FALSE, aOffset, aBytes, 
 			aDst, 0, NULL, event.mEvent == NULL ? NULL : &event.mEvent);
 		if (error != CL_SUCCESS) {
@@ -120,7 +120,7 @@ namespace anvil { namespace ocl {
 
 	Event ANVIL_CALL Buffer::write(CommandQueue& aQueue, size_t aOffset, const void* aSrc, size_t aBytes) throw() {
 		if (mBuffer == NULL) return Event();
-		Event event(context());
+		Event event;
 		cl_int error = clEnqueueWriteBuffer(aQueue.mQueue, mBuffer, CL_FALSE, aOffset, aBytes, 
 			aSrc, 0, NULL, event.mEvent == NULL ? NULL : &event.mEvent);
 		if (error != CL_SUCCESS) {
@@ -132,7 +132,7 @@ namespace anvil { namespace ocl {
 
 	Event ANVIL_CALL Buffer::copy(CommandQueue& aQueue, Buffer& aOther, size_t aThisOffset, size_t aOtherOffset, size_t aBytes) const throw() {
 		if (mBuffer == NULL || aOther.mBuffer == NULL) return Event();
-		Event event(context());
+		Event event;
 		cl_int error = clEnqueueCopyBuffer(aQueue.mQueue, mBuffer, aOther.mBuffer, aThisOffset, 
 			aOtherOffset + aOther, aBytes, 0, NULL, event.mEvent == NULL ? NULL : &event.mEvent);
 		if (error != CL_SUCCESS) {
