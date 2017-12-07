@@ -20,17 +20,14 @@ namespace anvil { namespace ocl {
 	// Program
 
 	ANVIL_CALL Program::Program() throw() :
-		mContext(NULL),
 		mProgram(NULL)
 	{}
 
 	ANVIL_CALL Program::Program(Context& aContext) throw() :
-		mContext(aContext.mContext),
 		mProgram(NULL)
 	{}
 
 	ANVIL_CALL Program::Program(Program&& aOther) throw() :
-		mContext(NULL),
 		mProgram(NULL)
 	{
 		swap(aOther);
@@ -48,61 +45,65 @@ namespace anvil { namespace ocl {
 		return *this;
 	}
 
+	ANVIL_CALL Program::operator bool() const throw() {
+		return mProgram != NULL;
+	}
+
 	void ANVIL_CALL Program::swap(Program& aOther) throw() {
-		std::swap(mContext, aOther.mContext);
 		std::swap(mProgram, aOther.mProgram);
 	}
 
-	bool ANVIL_CALL Program::buildFromSource(const char* aSource, const char* aBuildOptions) throw() {
+	Program ANVIL_CALL Program::buildFromSource(Context& aContext, const char* aSource, const char* aBuildOptions) throw() {
 		const char* sources[MAX_DEVICES];
-		const size_t count = Context::devices(mContext).size();
+		const size_t count = aContext.devices().size();
 		for (size_t i = 0; i < count; ++i) sources[i] = aSource;
-		return buildFromSources(sources, count, aBuildOptions);
+		return buildFromSources(aContext, sources, count, aBuildOptions);
 	}
 
-	bool ANVIL_CALL Program::buildFromSources(const char** aSources, cl_uint aCount, const char* aBuildOptions) throw() {
+	Program ANVIL_CALL Program::buildFromSources(Context& aContext, const char** aSources, cl_uint aCount, const char* aBuildOptions) throw() {
 		cl_int error = CL_SUCCESS;
-		mProgram = clCreateProgramWithSource(mContext, aCount, aSources, NULL, &error);
+		Program program;
+		program.mProgram = clCreateProgramWithSource(aContext.mContext, aCount, aSources, NULL, &error);
 		if (error != CL_SUCCESS) {
 			oclError("clCreateProgramWithSource", error);
-			return false;
+			return Program();
 		}
-		return build(aBuildOptions);
+		return program.build(aContext.devices(), aBuildOptions) ? std::move(program) : Program();
 	}
 
-	bool ANVIL_CALL Program::buildFromBinary(const void* aBinary, size_t aLength, const char* aBuildOptions) {
+	Program ANVIL_CALL Program::buildFromBinary(Context& aContext, const void* aBinary, size_t aLength, const char* aBuildOptions) {
 		const void* binaries[MAX_DEVICES];
 		size_t lengths[MAX_DEVICES];
-		const size_t count = Context::devices(mContext).size();
+		const size_t count = aContext.devices().size();
 		for (size_t i = 0; i < count; ++i) {
 			binaries[i] = aBinary;
 			lengths[i] = aLength;
 		}
-		return buildFromBinaries(binaries, lengths, count, aBuildOptions);
+		return buildFromBinaries(aContext, binaries, lengths, count, aBuildOptions);
 	}
 
-	bool ANVIL_CALL Program::buildFromBinaries(const void** aBinaries, const size_t* aLengths, size_t aCount, const char* aBuildOptions) throw() {
-		const std::vector<Device> devices = Context::devices(mContext);
+	Program ANVIL_CALL Program::buildFromBinaries(Context& aContext, const void** aBinaries, const size_t* aLengths, size_t aCount, const char* aBuildOptions) throw() {
+		const std::vector<Device> devices = aContext.devices();
 		const cl_uint deviceCount = devices.size();
 		if (aCount != deviceCount) {
 			oclError("clCreateProgramWithBinary", CL_INVALID_VALUE);
-			return false;
+			return Program();
 		}
 		const cl_device_id* const devicePtr = deviceCount == 0 ? NULL : reinterpret_cast<const cl_device_id*>(&devices[0]);
 
 		cl_int error = CL_SUCCESS;
-		mProgram = clCreateProgramWithBinary(mContext, deviceCount, devicePtr, aLengths, reinterpret_cast<const unsigned char**>(aBinaries), NULL, &error);
+		Program program;
+		program.mProgram = clCreateProgramWithBinary(aContext.mContext, deviceCount, devicePtr, aLengths, reinterpret_cast<const unsigned char**>(aBinaries), NULL, &error);
 		if (error != CL_SUCCESS) {
 			oclError("clCreateProgramWithBinary", error);
-			return false;
+			return Program();
 		}
-		return build(aBuildOptions);
+		return program.build(devices, aBuildOptions) ? std::move(program) : Program();
 	}
 
-	bool ANVIL_CALL Program::build(const char* aOptions) throw() {
-		const std::vector<Device> devices = Context::devices(mContext);
-		const cl_uint deviceCount = devices.size();
-		const cl_device_id* const devicePtr = deviceCount == 0 ? NULL : reinterpret_cast<const cl_device_id*>(&devices[0]);
+	bool ANVIL_CALL Program::build(const std::vector<Device>& aDevices, const char* aOptions) throw() {
+		const cl_uint deviceCount = aDevices.size();
+		const cl_device_id* const devicePtr = deviceCount == 0 ? NULL : reinterpret_cast<const cl_device_id*>(&aDevices[0]);
 
 		cl_int error = clBuildProgram(mProgram, deviceCount, devicePtr, aOptions, [](cl_program, void*){}, NULL);
 		if (error != CL_SUCCESS) {
@@ -110,6 +111,32 @@ namespace anvil { namespace ocl {
 			return false;
 		}
 		return true;
+	}
+	
+	Program ANVIL_CALL Program::buildFromSource(Context& aContext, const Source& aSource, const char* aBuildOptions) throw() {
+		return buildFromSource(aContext, aSource.c_str(), aBuildOptions);
+	}
+
+	Program ANVIL_CALL Program::buildFromSources(Context& aContext, const std::vector<Source>& aSources, const char* aBuildOptions) throw() {
+		const char* sources[MAX_DEVICES];
+		const size_t count = aSources.size();
+		for (size_t i = 0; i < count; ++i) sources[i] = aSources[i].c_str();
+		return buildFromSources(aContext, sources, count, aBuildOptions);
+	}
+
+	Program ANVIL_CALL Program::buildFromBinary(Context& aContext, const Binary& aBinary, const char* aBuildOptions) throw() {
+		return buildFromBinary(aContext, &aBinary[0], aBinary.size(), aBuildOptions);
+	}
+
+	Program ANVIL_CALL Program::buildFromBinaries(Context& aContext, const std::vector<Binary>& aBinaries, const char* aBuildOptions) throw() {
+		const void* binaries[MAX_DEVICES];
+		size_t sizes[MAX_DEVICES];
+		const size_t count = aBinaries.size();
+		for (size_t i = 0; i < count; ++i) {
+			binaries[i] = &aBinaries[i];
+			sizes[i] = aBinaries[i].size();
+		}
+		return buildFromBinaries(aContext, binaries, sizes, count, aBuildOptions);
 	}
 
 	Program::Source Program::source() const throw() {
@@ -156,32 +183,6 @@ namespace anvil { namespace ocl {
 		}
 		delete[] binary_ptrs;
 		return binaries;
-	}
-	
-	bool ANVIL_CALL Program::buildFromSource(const Source& aSource, const char* aBuildOptions) throw() {
-		return buildFromSource(aSource.c_str(), aBuildOptions);
-	}
-
-	bool ANVIL_CALL Program::buildFromSources(const std::vector<Source>& aSources, const char* aBuildOptions) throw() {
-		const char* sources[MAX_DEVICES];
-		const size_t count = aSources.size();
-		for (size_t i = 0; i < count; ++i) sources[i] = aSources[i].c_str();
-		return buildFromSources(sources, count, aBuildOptions);
-	}
-
-	bool ANVIL_CALL Program::buildFromBinary(const Binary& aBinary, const char* aBuildOptions) throw() {
-		return buildFromBinary(&aBinary[0], aBinary.size(), aBuildOptions);
-	}
-
-	bool ANVIL_CALL Program::buildFromBinaries(const std::vector<Binary>& aBinaries, const char* aBuildOptions) throw() {
-		const void* binaries[MAX_DEVICES];
-		size_t sizes[MAX_DEVICES];
-		const size_t count = aBinaries.size();
-		for (size_t i = 0; i < count; ++i) {
-			binaries[i] = &aBinaries[i];
-			sizes[i] = aBinaries[i].size();
-		}
-		return buildFromBinaries(binaries, sizes, count, aBuildOptions);
 	}
 
 }}

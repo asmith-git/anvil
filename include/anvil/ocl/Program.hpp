@@ -22,13 +22,13 @@ namespace anvil { namespace ocl {
 
 	class Program {
 	private:
-		cl_context mContext;
 		cl_program mProgram;
 		
 		Program(const Program&) = delete;
 		Program& operator=(const Program&) = delete;
 
-		bool ANVIL_CALL build(const char*) throw();
+		ANVIL_CALL Program(Context&) throw();
+		bool ANVIL_CALL build(const std::vector<Device>&, const char*) throw();
 	public:
 		friend class Kernel;
 
@@ -39,23 +39,23 @@ namespace anvil { namespace ocl {
 
 		ANVIL_CALL Program() throw();
 		ANVIL_CALL Program(Program&&) throw();
-		ANVIL_CALL Program(Context&) throw();
 		ANVIL_CALL ~Program() throw();
 
 		Program& ANVIL_CALL operator=(Program&&) throw();
+		ANVIL_CALL operator bool() const throw();
 		void ANVIL_CALL swap(Program&) throw();
 
-		bool ANVIL_CALL buildFromSource(const char*, const char* aOptions = NULL) throw();
-		bool ANVIL_CALL buildFromSources(const char**, cl_uint, const char* aOptions = NULL) throw();
-		bool ANVIL_CALL buildFromSource(const Source&, const char* aOptions = NULL) throw();
-		bool ANVIL_CALL buildFromSources(const std::vector<Source>&, const char* aOptions = NULL) throw();
-		bool ANVIL_CALL buildFromBinary(const void*, size_t, const char* aOptions = NULL) throw();
-		bool ANVIL_CALL buildFromBinaries(const void**, const size_t*, size_t, const char* aOptions = NULL) throw();
-		bool ANVIL_CALL buildFromBinary(const Binary&, const char* aOptions = NULL) throw();
-		bool ANVIL_CALL buildFromBinaries(const std::vector<Binary>&, const char* aOptions = NULL) throw();
+		Source ANVIL_CALL source() const throw();
+		std::vector<Binary> ANVIL_CALL binaries() const throw();
 
-		Source source() const throw();
-		std::vector<Binary> binaries() const throw();
+		static Program ANVIL_CALL buildFromSource(Context&, const char*, const char* aOptions = NULL) throw();
+		static Program ANVIL_CALL buildFromSources(Context&, const char**, cl_uint, const char* aOptions = NULL) throw();
+		static Program ANVIL_CALL buildFromSource(Context&, const Source&, const char* aOptions = NULL) throw();
+		static Program ANVIL_CALL buildFromSources(Context&, const std::vector<Source>&, const char* aOptions = NULL) throw();
+		static Program ANVIL_CALL buildFromBinary(Context&, const void*, size_t, const char* aOptions = NULL) throw();
+		static Program ANVIL_CALL buildFromBinaries(Context&, const void**, const size_t*, size_t, const char* aOptions = NULL) throw();
+		static Program ANVIL_CALL buildFromBinary(Context&, const Binary&, const char* aOptions = NULL) throw();
+		static Program ANVIL_CALL buildFromBinaries(Context&, const std::vector<Binary>&, const char* aOptions = NULL) throw();
 	};
 }}
 
