@@ -49,7 +49,10 @@ namespace anvil { namespace ocl {
 		cl_uint count = 0;
 		cl_int error = clGetDeviceIDs(mPlatform, aType, kMaxDevices, ids, &count);
 		if (error == CL_DEVICE_NOT_FOUND) count = 0;
-		else if (error != CL_SUCCESS) oclError("clGetDeviceIDs", error);
+		else if (error != CL_SUCCESS) {
+			oclError("clGetDeviceIDs", error);
+			return devices;
+		}
 		for (cl_uint i = 0; i < count; ++i) devices.push_back(Device(ids[i]));
 
 		return devices;
@@ -62,7 +65,10 @@ namespace anvil { namespace ocl {
 		cl_platform_id ids[kMaxPlatforms];
 		cl_uint count = 0;
 		cl_int error = clGetPlatformIDs(kMaxPlatforms, ids, &count);
-		if (error != CL_SUCCESS) oclError("clGetPlatformIDs", error);
+		if (error != CL_SUCCESS) {
+			oclError("clGetPlatformIDs", error);
+			return platforms;
+		}
 		for (cl_uint i = 0; i < count; ++i) platforms.push_back(Platform(ids[i]));
 
 		return platforms;

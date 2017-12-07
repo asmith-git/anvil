@@ -58,20 +58,12 @@ namespace anvil { namespace ocl {
 
 	bool ANVIL_CALL CommandQueue::flush() throw() {
 		cl_int error = clFlush(mQueue);
-		if (error != CL_SUCCESS) {
-			oclError("clFlush", error);
-			return false;
-		}
-		return true;
+		return error == CL_SUCCESS ? true : oclError("clFlush", error, false);
 	}
 
 	bool ANVIL_CALL CommandQueue::finish() throw() {
 		cl_int error = clFinish(mQueue);
-		if (error != CL_SUCCESS) {
-			oclError("clFinish", error);
-			return false;
-		}
-		return true;
+		return error == CL_SUCCESS ? true : oclError("clFinish", error, false);
 	}
 
 }}

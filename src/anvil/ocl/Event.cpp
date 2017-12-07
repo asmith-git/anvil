@@ -29,7 +29,7 @@ namespace anvil { namespace ocl {
 		mEvent = clCreateUserEvent(aContext.mContext, &error);
 		if (error != CL_SUCCESS) {
 			mEvent = NULL;
-			oclError("clCreateUserEvent ", error);
+			oclError("clCreateUserEvent ", error, false);
 		}
 	}
 
@@ -40,7 +40,7 @@ namespace anvil { namespace ocl {
 		mEvent = clCreateUserEvent(aContext, &error);
 		if (error != CL_SUCCESS) {
 			mEvent = NULL;
-			oclError("clCreateUserEvent ", error);
+			oclError("clCreateUserEvent ", error, false);
 		}
 	}
 
@@ -54,7 +54,7 @@ namespace anvil { namespace ocl {
 		if (mEvent) {
 			cl_int error = clReleaseEvent(mEvent);
 			mEvent = NULL;
-			if (error != CL_SUCCESS) oclError("clReleaseEvent ", error);
+			if (error != CL_SUCCESS) oclError("clReleaseEvent ", error, false);
 		}
 	}
 
@@ -68,31 +68,17 @@ namespace anvil { namespace ocl {
 	}
 
 	bool ANVIL_CALL Event::wait() throw() {
-		if (!mEvent){
-			oclError("clWaitForEvents ", CL_INVALID_VALUE);
-			return false;
-		}
-
+		if (!mEvent) return oclError("clWaitForEvents ", CL_INVALID_VALUE, false);
 		cl_int error = clWaitForEvents(1, &mEvent);
-		if (error != CL_SUCCESS) {
-			oclError("clWaitForEvents ", error);
-			return false;
-		}
+		if (error != CL_SUCCESS) return oclError("clWaitForEvents ", error, false);
 		return true;
 	}
 
 	bool ANVIL_CALL Event::wait(const std::vector<Event>& aEvents) throw() {
 		const size_t count = aEvents.size();
-		if (count == 0) {
-			oclError("clWaitForEvents ", CL_INVALID_VALUE);
-			return false;
-		}
-
+		if (count == 0) return oclError("clWaitForEvents ", CL_INVALID_VALUE, false);
 		cl_int error = clWaitForEvents(count, &aEvents[0].mEvent);
-		if (error != CL_SUCCESS) {
-			oclError("clWaitForEvents ", error);
-			return false;
-		}
+		if (error != CL_SUCCESS) return oclError("clWaitForEvents ", error, false);
 		return true;
 	}
 

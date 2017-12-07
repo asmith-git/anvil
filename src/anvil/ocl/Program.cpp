@@ -106,11 +106,7 @@ namespace anvil { namespace ocl {
 		const cl_device_id* const devicePtr = deviceCount == 0 ? NULL : reinterpret_cast<const cl_device_id*>(&aDevices[0]);
 
 		cl_int error = clBuildProgram(mProgram, deviceCount, devicePtr, aOptions, [](cl_program, void*){}, NULL);
-		if (error != CL_SUCCESS) {
-			oclError("clBuildProgram", error);
-			return false;
-		}
-		return true;
+		return error == CL_SUCCESS ? true : oclError("clBuildProgram", error, false);
 	}
 	
 	Program ANVIL_CALL Program::buildFromSource(Context& aContext, const Source& aSource, const char* aBuildOptions) throw() {

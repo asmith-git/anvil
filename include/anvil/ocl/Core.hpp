@@ -22,7 +22,7 @@
 #include "anvil/core/Keywords.hpp"
 
 namespace anvil { namespace ocl {
-	static void ANVIL_CALL oclError(const char* aFunction, cl_int aCode) {
+	static bool ANVIL_CALL oclError(const char* aFunction, cl_int aCode, bool aReturnValue = false) {
 		std::string msg = "OpenCL reports error in call ";
 		msg	+= aFunction;
 		msg	+= " with code ";
@@ -97,6 +97,7 @@ namespace anvil { namespace ocl {
 #undef ANVIL_OCL_CASE
 		
 		std::cerr << msg << std::endl;
+		return aReturnValue;
 	}
 }}
 

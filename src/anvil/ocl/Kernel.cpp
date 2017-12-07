@@ -72,10 +72,7 @@ namespace anvil { namespace ocl {
 
 	bool ANVIL_CALL Kernel::setArgument(cl_uint aIndex, const void* aSrc, size_t aBytes) {
 		cl_int error = clSetKernelArg(mKernel, aIndex, aBytes, aSrc);
-		if (error != CL_SUCCESS) {
-			oclError("clSetKernelArg", error);
-			return false;
-		}
+		if (error != CL_SUCCESS) return oclError("clSetKernelArg", error, false);
 		return true;
 	}
 
