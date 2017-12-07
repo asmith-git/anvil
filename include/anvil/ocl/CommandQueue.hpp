@@ -21,7 +21,6 @@ namespace anvil { namespace ocl {
 
 	class CommandQueue {
 	private:
-		cl_context mContext;
 		cl_command_queue mQueue;
 
 		CommandQueue(const CommandQueue&) = delete;
