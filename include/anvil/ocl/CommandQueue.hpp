@@ -21,29 +21,26 @@ namespace anvil { namespace ocl {
 
 	class CommandQueue {
 	private:
-		Context& mContext;
-		const Device& mDevice;
+		cl_context mContext;
 		cl_command_queue mQueue;
-		bool mOutOfOrder;
 
-		CommandQueue(CommandQueue&&) = delete;
 		CommandQueue(const CommandQueue&) = delete;
-		CommandQueue& operator=(CommandQueue&&) = delete;
 		CommandQueue& operator=(const CommandQueue&) = delete;
 	public:
 		friend class Buffer;
 		friend class Kernel;
 		friend class NativeKernel;
 
-		ANVIL_CALL CommandQueue(Context&, const Device&, bool aOutOfOrder = false);
-		ANVIL_CALL ~CommandQueue();
+		ANVIL_CALL CommandQueue() throw();
+		ANVIL_CALL CommandQueue(CommandQueue&&);
+		ANVIL_CALL CommandQueue(Context&, Device, bool aOutOfOrder = false) throw();
+		ANVIL_CALL ~CommandQueue() throw();
+		ANVIL_CALL CommandQueue& operator=(CommandQueue&&);
+		ANVIL_CALL operator bool() const throw();
 
-		void ANVIL_CALL flush();
-		void ANVIL_CALL finish();
-
-		bool ANVIL_CALL outOfOrder() const throw();
-		Context& ANVIL_CALL context() const throw();
-		const Device& ANVIL_CALL device() const throw();
+		bool ANVIL_CALL flush() throw();
+		bool ANVIL_CALL finish() throw();
+		void ANVIL_CALL swap(CommandQueue&) throw();
 	};
 }}
 

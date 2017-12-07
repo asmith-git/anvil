@@ -20,41 +20,58 @@ namespace anvil { namespace ocl {
 
 	// CommandQueue
 
-	ANVIL_CALL CommandQueue::CommandQueue(Context& aContext, const Device& aDevice, bool aOutOfOrder) :
-		mContext(aContext),
-		mDevice(aDevice),
-		mOutOfOrder(aOutOfOrder)
+	ANVIL_CALL CommandQueue::CommandQueue() throw() :
+		mQueue(NULL)
+	{}
+
+	ANVIL_CALL CommandQueue::CommandQueue(CommandQueue&& aOther) throw() :
+		mQueue(NULL)
+	{
+		swap(aOther);
+	}
+
+	ANVIL_CALL CommandQueue::CommandQueue(Context& aContext, Device aDevice, bool aOutOfOrder) throw() :
+		mQueue(NULL)
 	{
 		cl_int error = CL_SUCCESS;
 		mQueue = clCreateCommandQueue(aContext.mContext, aDevice.mDevice, aOutOfOrder ? 1 : 0, &error);
 		if (error != CL_SUCCESS) oclError("clFlush", error);
 	}
 
-	ANVIL_CALL CommandQueue::~CommandQueue() {
+	ANVIL_CALL CommandQueue::~CommandQueue() throw() {
 		cl_int error = clReleaseCommandQueue(mQueue);
 		if (error != CL_SUCCESS) oclError("clReleaseCommandQueue", error);
 	}
+	
+	CommandQueue& ANVIL_CALL CommandQueue::operator=(CommandQueue&& aOther) throw() {
+		swap(aOther);
+		return *this;
+	}
 
-	void ANVIL_CALL CommandQueue::flush() {
+	ANVIL_CALL CommandQueue::operator bool() const throw() {
+		return mQueue != NULL;
+	}
+
+	void ANVIL_CALL CommandQueue::swap(CommandQueue& aOther) throw() {
+		std::swap(mQueue, aOther.mQueue);
+	}
+
+	bool ANVIL_CALL CommandQueue::flush() throw() {
 		cl_int error = clFlush(mQueue);
-		if (error != CL_SUCCESS) oclError("clFlush", error);
+		if (error != CL_SUCCESS) {
+			oclError("clFlush", error);
+			return false;
+		}
+		return true;
 	}
 
-	void ANVIL_CALL CommandQueue::finish() {
+	bool ANVIL_CALL CommandQueue::finish() throw() {
 		cl_int error = clFinish(mQueue);
-		if (error != CL_SUCCESS) oclError("clFinish", error);
-	}
-
-	bool ANVIL_CALL CommandQueue::outOfOrder() const throw() {
-		return mOutOfOrder;
-	}
-
-	Context& ANVIL_CALL CommandQueue::context() const throw() {
-		return mContext;
-	}
-
-	const Device& ANVIL_CALL CommandQueue::device() const throw() {
-		return mDevice;
+		if (error != CL_SUCCESS) {
+			oclError("clFinish", error);
+			return false;
+		}
+		return true;
 	}
 
 }}
