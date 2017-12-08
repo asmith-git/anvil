@@ -36,7 +36,7 @@ namespace anvil {
 			<li>ANVIL_64F</li>
 		</ul>
 	*/
-	union PrimativeValue {
+	union PrimativeValueStoreage {
 		uint8_t u8;		//!< Unsigned 8 bit value.
 		uint16_t u16;	//!< Unsigned 16 bit value.
 		uint32_t u32;	//!< Unsigned 32 bit value.
@@ -45,8 +45,104 @@ namespace anvil {
 		int16_t s16;	//!< Signed 16 bit value.
 		int32_t s32;	//!< Signed 32 bit value.
 		int64_t s64;	//!< Signed 64 bit value.
-		float f32;		//!< Single precision floating point value.
-		double f64;		//!< Double precision floating point value.
+		float32_t f32;	//!< Single precision floating point value.
+		float64_t f64;	//!< Double precision floating point value.
+
+		ANVIL_CALL PrimativeValueStoreage() throw() : u64(0) {}
+		ANVIL_CALL PrimativeValueStoreage(uint8_t aValue) throw() : u8(aValue) {}
+		ANVIL_CALL PrimativeValueStoreage(uint16_t aValue) throw() : u16(aValue) {}
+		ANVIL_CALL PrimativeValueStoreage(uint32_t aValue) throw() : u32(aValue) {}
+		ANVIL_CALL PrimativeValueStoreage(uint64_t aValue) throw() : u64(aValue) {}
+		ANVIL_CALL PrimativeValueStoreage(int8_t aValue) throw() : s8(aValue) {}
+		ANVIL_CALL PrimativeValueStoreage(int16_t aValue) throw() : s16(aValue) {}
+		ANVIL_CALL PrimativeValueStoreage(int32_t aValue) throw() : s32(aValue) {}
+		ANVIL_CALL PrimativeValueStoreage(int64_t aValue) throw() : s64(aValue) {}
+		ANVIL_CALL PrimativeValueStoreage(float32_t aValue) throw() : f32(aValue) {}
+		ANVIL_CALL PrimativeValueStoreage(float64_t aValue) throw() : f64(aValue) {}
+	};
+
+	class PrimativeValue {
+	private:
+		template<class T>
+		ANVIL_CONSTEXPR_FN T ANVIL_CALL as() const throw() {
+			return
+				type == ANVIL_8U ? static_cast<T>(value.u8) :
+				type == ANVIL_8S ? static_cast<T>(value.s8) :
+				type == ANVIL_16U ? static_cast<T>(value.u16) :
+				type == ANVIL_16S ? static_cast<T>(value.s16) :
+				type == ANVIL_32U ? static_cast<T>(value.u32) :
+				type == ANVIL_32S ? static_cast<T>(value.s32) :
+				type == ANVIL_64U ? static_cast<T>(value.u64) :
+				type == ANVIL_64S ? static_cast<T>(value.s64) :
+				type == ANVIL_32F ? static_cast<T>(value.f32) :
+				type == ANVIL_64F ? static_cast<T>(value.f64) :
+				static_cast<T>(0);
+		}
+	public:
+		PrimativeValueStoreage value;
+		Type type;
+
+		ANVIL_CONSTEXPR_CLA ANVIL_CALL PrimativeValue() throw();
+		ANVIL_CONSTEXPR_CLA ANVIL_CALL PrimativeValue(uint8_t aValue) throw();
+		ANVIL_CONSTEXPR_CLA ANVIL_CALL PrimativeValue(uint16_t aValue) throw();
+		ANVIL_CONSTEXPR_CLA ANVIL_CALL PrimativeValue(uint32_t aValue) throw();
+		ANVIL_CONSTEXPR_CLA ANVIL_CALL PrimativeValue(uint64_t aValue) throw();
+		ANVIL_CONSTEXPR_CLA ANVIL_CALL PrimativeValue(int8_t aValue) throw();
+		ANVIL_CONSTEXPR_CLA ANVIL_CALL PrimativeValue(int16_t aValue) throw();
+		ANVIL_CONSTEXPR_CLA ANVIL_CALL PrimativeValue(int32_t aValue) throw();
+		ANVIL_CONSTEXPR_CLA ANVIL_CALL PrimativeValue(int64_t aValue) throw();
+		ANVIL_CONSTEXPR_CLA ANVIL_CALL PrimativeValue(float32_t aValue) throw();
+		ANVIL_CONSTEXPR_CLA ANVIL_CALL PrimativeValue(float64_t aValue) throw();
+		
+		template<class T>
+		ANVIL_CALL PrimativeValue::PrimativeValue(Type aType, T aValue) throw() :
+			type(aType),
+			value()
+		{
+			switch (aType) {
+			case ANVIL_8U:
+				value.u8 = static_cast<uint8_t>(aValue);
+				break;
+			case ANVIL_8S:
+				value.s8 = static_cast<int8_t>(aValue);
+				break;
+			case ANVIL_16U:
+				value.u16 = static_cast<uint16_t>(aValue);
+				break;
+			case ANVIL_16S:
+				value.s16 = static_cast<int16_t>(aValue);
+				break;
+			case ANVIL_32U:
+				value.u32 = static_cast<uint32_t>(aValue);
+				break;
+			case ANVIL_32S:
+				value.s32 = static_cast<int32_t>(aValue);
+				break;
+			case ANVIL_64U:
+				value.u64 = static_cast<uint64_t>(aValue);
+				break;
+			case ANVIL_64S:
+				value.s64 = static_cast<int64_t>(aValue);
+				break;
+			case ANVIL_32F:
+				value.f32 = static_cast<float32_t>(aValue);
+				break;
+			case ANVIL_64F:
+				value.f64 = static_cast<float64_t>(aValue);
+				break;
+			}
+		}
+
+		explicit ANVIL_CONSTEXPR_FN ANVIL_CALL operator uint8_t() const throw() { return as<uint8_t>(); }
+		explicit ANVIL_CONSTEXPR_FN ANVIL_CALL operator uint16_t() const throw() { return as<uint16_t>(); }
+		explicit ANVIL_CONSTEXPR_FN ANVIL_CALL operator uint32_t() const throw() { return as<uint32_t>(); }
+		explicit ANVIL_CONSTEXPR_FN ANVIL_CALL operator uint64_t() const throw() { return as<uint64_t>(); }
+		explicit ANVIL_CONSTEXPR_FN ANVIL_CALL operator int8_t() const throw() { return as<int8_t>(); }
+		explicit ANVIL_CONSTEXPR_FN ANVIL_CALL operator int16_t() const throw() { return as<int16_t>(); }
+		explicit ANVIL_CONSTEXPR_FN ANVIL_CALL operator int32_t() const throw() { return as<int32_t>(); }
+		explicit ANVIL_CONSTEXPR_FN ANVIL_CALL operator int64_t() const throw() { return as<int64_t>(); }
+		explicit ANVIL_CONSTEXPR_FN ANVIL_CALL operator float32_t() const throw() { return as<float32_t>(); }
+		explicit ANVIL_CONSTEXPR_FN ANVIL_CALL operator float64_t() const throw() { return as<float64_t>(); }
 	};
 
 	/*!
@@ -78,41 +174,41 @@ namespace anvil {
 	template<class FU8, class FU16, class FU32, class FU64, 
 		class FS8, class FS16, class FS32, class FS64, 
 		class FF32, class FF64>
-	static inline bool ANVIL_CALL dispatchByType(PrimativeValue aPrimative, Type aType, 
+	static inline bool ANVIL_CALL dispatchByType(PrimativeValue aPrimative, 
 	FU8 fu8,  FU16 fu16,  FU32 fu32,  FU64 fu64,  
 	FS8 fs8,  FS16 fs16,  FS32 fs32,  FS64 fs64, 
 	FF32 ff32,  FF64 ff64) {
 		bool returnValue = true;
-		switch(aType) {
+		switch(aPrimative.type) {
 		case ANVIL_8U:
-			fu8(aPrimative.u8);
+			fu8(aPrimative.value.u8);
 			break;
 		case ANVIL_8S:
-			fs8(aPrimative.s8);
+			fs8(aPrimative.value.s8);
 			break;
 		case ANVIL_16U:
-			fu16(aPrimative.u16);
+			fu16(aPrimative.value.u16);
 			break;
 		case ANVIL_16S:
-			fs16(aPrimative.s16);
+			fs16(aPrimative.value.s16);
 			break;
 		case ANVIL_32U:
-			fu32(aPrimative.u32);
+			fu32(aPrimative.value.u32);
 			break;
 		case ANVIL_32S:
-			fs32(aPrimative.s32);
+			fs32(aPrimative.value.s32);
 			break;
 		case ANVIL_64U:
-			fu64(aPrimative.u64);
+			fu64(aPrimative.value.u64);
 			break;
 		case ANVIL_64S:
-			fs64(aPrimative.s64));
+			fs64(aPrimative.value.s64);
 			break;
 		case ANVIL_32F:
-			ff32(aPrimative.f32);
+			ff32(aPrimative.value.f32);
 			break;
 		case ANVIL_64F:
-			ff64(aPrimative.f64);
+			ff64(aPrimative.value.f64);
 			break;
 		default:
 			returnValue = false;
@@ -121,3 +217,5 @@ namespace anvil {
 		return returnValue;
 	}
 }
+
+#endif
