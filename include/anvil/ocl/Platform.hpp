@@ -25,8 +25,6 @@ namespace anvil { namespace ocl {
 		void* ANVIL_CALL getInfo(cl_platform_info) const;
 		ANVIL_CALL Platform(cl_platform_id) throw();
 	public:
-		friend class Context;
-
 		ANVIL_CALL Platform() throw();
 		ANVIL_CALL operator bool() const throw();
 		

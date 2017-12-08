@@ -29,22 +29,8 @@ namespace anvil { namespace ocl {
 		swap(aOther);
 	}
 
-	ANVIL_CALL Kernel::Kernel(const Program& aProgram, const char* aName) :
-		mKernel(NULL)
-	{
-		cl_int error = CL_SUCCESS;
-		mKernel = clCreateKernel(aProgram.mProgram, aName, &error);
-		if (error != CL_SUCCESS) {
-			mKernel = NULL;
-			oclError("clCreateKernel", error);
-		}
-	}
-
-	ANVIL_CALL Kernel::~Kernel() {
-		if (mKernel) {
-			cl_int error = clReleaseKernel(mKernel);
-			if (error != CL_SUCCESS) oclError("clReleaseKernel", error);
-		}
+	ANVIL_CALL Kernel::~Kernel() throw()  {
+		destroy();
 	}
 
 	Kernel& ANVIL_CALL Kernel::operator=(Kernel&& aOther) throw() {
@@ -60,9 +46,30 @@ namespace anvil { namespace ocl {
 		std::swap(mKernel, aOther.mKernel);
 	}
 
+	bool ANVIL_CALL Kernel::create(const Program& aProgram, const char* aName) throw() {
+		cl_int error = CL_SUCCESS;
+		mKernel = clCreateKernel(reinterpret_cast<const cl_program&>(aProgram), aName, &error);
+		if (error != CL_SUCCESS) {
+			mKernel = NULL;
+			return oclError("clCreateKernel", error, false);
+		}
+		return true;
+	}
+
+	bool ANVIL_CALL Kernel::destroy() throw() {
+		if (mKernel) {
+			cl_int error = clReleaseKernel(mKernel);
+			if (error != CL_SUCCESS) return oclError("clReleaseKernel", error, false);
+			mKernel = NULL;
+			return true;
+		}
+		return false;
+	}
+
 	Event ANVIL_CALL Kernel::execute(CommandQueue& aQueue) {
 		Event event;
-		cl_int error = clEnqueueTask(aQueue.mQueue, mKernel, 0, NULL, &event.mEvent);
+		cl_event& const event_ref = *reinterpret_cast<cl_event*>(&event);
+		cl_int error = clEnqueueTask(reinterpret_cast<cl_command_queue&>(aQueue), mKernel, 0, NULL, &event_ref);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueTask", error);
 			return Event();
@@ -103,7 +110,7 @@ namespace anvil { namespace ocl {
 	}
 
 	ANVIL_CALL NativeKernel::NativeKernel(Context& aContext) :
-		mContext(aContext.mContext)
+		mContext(reinterpret_cast<cl_context&>(aContext))
 	{}
 
 	ANVIL_CALL NativeKernel::~NativeKernel() {
@@ -114,7 +121,8 @@ namespace anvil { namespace ocl {
 		Event event;
 
 		NativeKernel* args = this;
-		cl_int error = clEnqueueNativeKernel(aQueue.mQueue, NativeKernel::execute_, &args, sizeof(void*), 0, NULL, NULL, 0, NULL, &event.mEvent);
+		cl_event& const event_ref = *reinterpret_cast<cl_event*>(&event);
+		cl_int error = clEnqueueNativeKernel(reinterpret_cast<cl_command_queue&>(aQueue), NativeKernel::execute_, &args, sizeof(void*), 0, NULL, NULL, 0, NULL, &event_ref);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueNativeKernel", error);
 			return Event();

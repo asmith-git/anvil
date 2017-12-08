@@ -30,8 +30,6 @@ namespace anvil { namespace ocl {
 		ANVIL_CALL Program(Context&) throw();
 		bool ANVIL_CALL build(const std::vector<Device>&, const char*) throw();
 	public:
-		friend class Kernel;
-
 		enum { MAX_DEVICES = 32 };
 
 		typedef std::string Source;
@@ -45,17 +43,19 @@ namespace anvil { namespace ocl {
 		ANVIL_CALL operator bool() const throw();
 		void ANVIL_CALL swap(Program&) throw();
 
+		bool ANVIL_CALL destroy() throw();
+
 		Source ANVIL_CALL source() const throw();
 		std::vector<Binary> ANVIL_CALL binaries() const throw();
 
-		static Program ANVIL_CALL buildFromSource(Context&, const char*, const char* aOptions = NULL) throw();
-		static Program ANVIL_CALL buildFromSources(Context&, const char**, cl_uint, const char* aOptions = NULL) throw();
-		static Program ANVIL_CALL buildFromSource(Context&, const Source&, const char* aOptions = NULL) throw();
-		static Program ANVIL_CALL buildFromSources(Context&, const std::vector<Source>&, const char* aOptions = NULL) throw();
-		static Program ANVIL_CALL buildFromBinary(Context&, const void*, size_t, const char* aOptions = NULL) throw();
-		static Program ANVIL_CALL buildFromBinaries(Context&, const void**, const size_t*, size_t, const char* aOptions = NULL) throw();
-		static Program ANVIL_CALL buildFromBinary(Context&, const Binary&, const char* aOptions = NULL) throw();
-		static Program ANVIL_CALL buildFromBinaries(Context&, const std::vector<Binary>&, const char* aOptions = NULL) throw();
+		bool ANVIL_CALL createFromSource(Context&, const char*, const char* aOptions = NULL) throw();
+		bool ANVIL_CALL createFromSources(Context&, const char**, cl_uint, const char* aOptions = NULL) throw();
+		bool ANVIL_CALL createFromBinary(Context&, const void*, size_t, const char* aOptions = NULL) throw();
+		bool ANVIL_CALL createFromBinaries(Context&, const void**, const size_t*, size_t, const char* aOptions = NULL) throw();
+		bool ANVIL_CALL create(Context&, const Source&, const char* aOptions = NULL) throw();
+		bool ANVIL_CALL create(Context&, const std::vector<Source>&, const char* aOptions = NULL) throw();
+		bool ANVIL_CALL create(Context&, const Binary&, const char* aOptions = NULL) throw();
+		bool ANVIL_CALL create(Context&, const std::vector<Binary>&, const char* aOptions = NULL) throw();
 	};
 }}
 

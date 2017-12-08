@@ -33,20 +33,17 @@ namespace anvil { namespace ocl {
 	protected:
 		virtual void ANVIL_CALL errorCallback(const char*, const void*, size_t) throw();
 	public:
-		friend class Buffer;
-		friend class CommandQueue;
-		friend class Event;
-		friend class Program;
-		friend class NativeKernel;
-
 		ANVIL_CALL Context() throw();
 		ANVIL_CALL Context(Context&&) throw();
-		ANVIL_CALL Context(Device) throw();
-		ANVIL_CALL Context(const std::vector<Device>&) throw();
 		virtual ANVIL_CALL ~Context() throw();
 
 		Context& ANVIL_CALL operator=(Context&&) throw();
 		ANVIL_CALL operator bool() const throw();
+
+		bool create(Device) throw();
+		bool create(const Device*, size_t) throw();
+		bool create(const std::vector<Device>&) throw();
+		bool destroy() throw();
 
 		void swap(Context&);
 

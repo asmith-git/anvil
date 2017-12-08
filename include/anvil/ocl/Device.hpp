@@ -27,10 +27,6 @@ namespace anvil { namespace ocl {
 
 		ANVIL_CALL Device(cl_device_id);
 	public:
-		friend class Context;
-		friend class CommandQueue;
-		friend class Platform;
-
 		enum Type : cl_device_type {
 			CPU = CL_DEVICE_TYPE_CPU,
 			GPU = CL_DEVICE_TYPE_GPU,

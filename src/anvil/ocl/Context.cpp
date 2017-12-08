@@ -33,40 +33,43 @@ namespace anvil { namespace ocl {
 		swap(aOther);
 	}
 
-	ANVIL_CALL Context::Context(Device aDevice) throw() :
-		mContext(NULL)
-	{
-		cl_int error = CL_SUCCESS;
-		const cl_device_id* const devices = reinterpret_cast<const cl_device_id*>(&aDevice);
-		mContext = clCreateContext(NULL, 1, devices, Context::errorCallback_, this, &error);
-		if (error != CL_SUCCESS) {
-			mContext = NULL;
-			oclError("clCreateContext", error);
-		}
-	}
-
-	ANVIL_CALL Context::Context(const std::vector<Device>& aDevices) throw() :
-		mContext(NULL)
-	{
-		const cl_uint s = aDevices.size();
-		cl_int error = CL_SUCCESS;
-		const cl_device_id* const devices = s == 0 ? NULL : reinterpret_cast<const cl_device_id*>(&aDevices[0]);
-		mContext = clCreateContext(NULL, s, devices, Context::errorCallback_, this, &error);
-		if (error != CL_SUCCESS) {
-			mContext = NULL;
-			oclError("clCreateContext", error);
-		}
-	}
-
 	ANVIL_CALL Context::~Context() throw() {
-		if (mContext) {
-			cl_int error = clReleaseContext(mContext);
-			if (error != CL_SUCCESS) oclError("clReleaseContext", error);
-		}
+		destroy();
 	}
 
 	ANVIL_CALL Context::operator bool() const throw() {
 		return mContext != NULL;
+	}
+
+	bool Context::create(Device aDevice) throw() {
+		return create(&aDevice, 1);
+	}
+
+	bool Context::create(const Device* aDevices, size_t aCount) throw() {
+		if (mContext) if (!destroy()) return false;
+
+		cl_int error = CL_SUCCESS;
+		mContext = clCreateContext(NULL, aCount, reinterpret_cast<const cl_device_id*>(aDevices), Context::errorCallback_, this, &error);
+		if (error != CL_SUCCESS) {
+			mContext = NULL;
+			return oclError("clCreateContext", error, false);
+		}
+		return true;
+	}
+
+	bool Context::create(const std::vector<Device>& aDevices) throw() {
+		const size_t s = aDevices.size();
+		return create(s == 0 ? NULL : &aDevices[0], s);
+	}
+
+	bool Context::destroy() throw() {
+		if (mContext) {
+			cl_int error = clReleaseContext(mContext);
+			if (error != CL_SUCCESS) return oclError("clReleaseContext", error, false);
+			mContext = NULL;
+			return true;
+		}
+		return false;
 	}
 
 	void ANVIL_CALL Context::swap(Context& aOther) throw() {
@@ -85,7 +88,7 @@ namespace anvil { namespace ocl {
 		cl_uint count;
 		clGetContextInfo(aContext, CL_CONTEXT_NUM_DEVICES, sizeof(cl_uint), &count, NULL);
 		if (count == 0) return std::vector<Device>(0);
-		std::vector<Device> devices(count, NULL);
+		std::vector<Device> devices(count, Device());
 		clGetContextInfo(aContext, CL_CONTEXT_NUM_DEVICES, sizeof(cl_device_id) * count, &devices[0], NULL);
 		return devices;
 	}

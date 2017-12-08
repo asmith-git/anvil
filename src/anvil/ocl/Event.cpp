@@ -22,10 +22,6 @@ namespace anvil { namespace ocl {
 		mEvent(NULL)
 	{}
 
-	ANVIL_CALL Event::Event(cl_event aEvent)  throw() :
-		mEvent(aEvent)
-	{}
-
 	ANVIL_CALL Event::Event(Event&& aOther) throw() :
 		mEvent(NULL)
 	{
@@ -33,11 +29,7 @@ namespace anvil { namespace ocl {
 	}
 
 	ANVIL_CALL Event::~Event() throw() {
-		if (mEvent) {
-			cl_int error = clReleaseEvent(mEvent);
-			mEvent = NULL;
-			if (error != CL_SUCCESS) oclError("clReleaseEvent ", error, false);
-		}
+		destroy();
 	}
 
 	Event& ANVIL_CALL Event::operator=(Event&& aOther) throw() {
@@ -47,6 +39,16 @@ namespace anvil { namespace ocl {
 
 	ANVIL_CALL Event::operator bool() const throw() {
 		return mEvent != NULL;
+	}
+
+	bool ANVIL_CALL Event::destroy() throw() {
+		if (mEvent) {
+			cl_int error = clReleaseEvent(mEvent);
+			if (error != CL_SUCCESS) return oclError("clReleaseEvent", error, false);
+			mEvent = NULL;
+			return true;
+		}
+		return false;
 	}
 
 	bool ANVIL_CALL Event::wait() throw() {

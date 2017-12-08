@@ -47,13 +47,15 @@ namespace anvil { namespace ocl {
 		};
 
 		ANVIL_CALL Buffer() throw();
-		ANVIL_CALL Buffer(Context&, size_t, AccessMode aMode = READ_WRITE) throw();
-		ANVIL_CALL Buffer(Context&, size_t, void*, AccessMode aMode = READ_WRITE) throw();
 		ANVIL_CALL Buffer(Buffer&&) throw();
 		ANVIL_CALL ~Buffer() throw();
 
 		Buffer& ANVIL_CALL operator=(Buffer&&) throw();
 		void ANVIL_CALL swap(Buffer& aOther) throw();
+
+		bool ANVIL_CALL create(Context&, size_t, AccessMode aMode = READ_WRITE) throw();
+		bool ANVIL_CALL create(Context&, size_t, void*, AccessMode aMode = READ_WRITE) throw();
+		bool destroy() throw();
 		
 		cl_mem ANVIL_CALL data() throw();
 		Buffer ANVIL_CALL createSubBuffer(size_t, size_t) throw();

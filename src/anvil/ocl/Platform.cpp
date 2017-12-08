@@ -42,35 +42,48 @@ namespace anvil { namespace ocl {
 	}
 
 	std::vector<Device> ANVIL_CALL Platform::devices(Device::Type aType) const throw() {
-		std::vector<Device> devices;
-
-		enum { kMaxDevices = 64 };
-		cl_device_id ids[kMaxDevices];
+		// Queury the number of devices
 		cl_uint count = 0;
-		cl_int error = clGetDeviceIDs(mPlatform, aType, kMaxDevices, ids, &count);
-		if (error == CL_DEVICE_NOT_FOUND) count = 0;
-		else if (error != CL_SUCCESS) {
-			oclError("clGetDeviceIDs", error);
-			return devices;
+		cl_int error = clGetDeviceIDs(mPlatform, aType, 0, NULL, &count);
+		if (error != CL_SUCCESS) {
+			if(error != CL_DEVICE_NOT_FOUND) oclError("clGetDeviceIDs", error);
+			return std::vector<Device>();
 		}
-		for (cl_uint i = 0; i < count; ++i) devices.push_back(Device(ids[i]));
 
+		// Allocate storage for devices
+		std::vector<Device> devices(count, Device());
+
+		// Get devices
+		error = clGetDeviceIDs(mPlatform, aType, count, reinterpret_cast<cl_device_id*>(&devices[0]), &count);
+		if (error != CL_SUCCESS) {
+			oclError("clGetDeviceIDs", error);
+			return std::vector<Device>();
+		}
+
+		// Return devices
 		return devices;
 	}
 
 	std::vector<Platform> ANVIL_CALL Platform::platforms() throw() {
-		std::vector<Platform> platforms;
-
-		enum { kMaxPlatforms = 64 };
-		cl_platform_id ids[kMaxPlatforms];
+		// Queury the number of platforms
 		cl_uint count = 0;
-		cl_int error = clGetPlatformIDs(kMaxPlatforms, ids, &count);
+		cl_int error = clGetPlatformIDs(0, NULL, &count);
 		if (error != CL_SUCCESS) {
 			oclError("clGetPlatformIDs", error);
-			return platforms;
+			return std::vector<Platform>();
 		}
-		for (cl_uint i = 0; i < count; ++i) platforms.push_back(Platform(ids[i]));
 
+		// Allocate storage for platforms
+		std::vector<Platform> platforms(count, Platform());
+
+		// Get platforms
+		error = clGetPlatformIDs(count, reinterpret_cast<cl_platform_id*>(&platforms[0]), &count);
+		if (error != CL_SUCCESS) {
+			oclError("clGetPlatformIDs", error);
+			return std::vector<Platform>();
+		}
+		
+		// Return platforms
 		return platforms;
 	}
 

@@ -53,15 +53,17 @@ namespace anvil { namespace ocl {
 		cl_context context() const throw();
 		cl_program program() const throw();
 	public:
-		ANVIL_CALL Kernel();
-		ANVIL_CALL Kernel(Kernel&&);
-		ANVIL_CALL Kernel(const Program&, const char*) throw();
+		ANVIL_CALL Kernel() throw();
+		ANVIL_CALL Kernel(Kernel&&) throw();
 		ANVIL_CALL ~Kernel() throw();
 
 		Kernel& ANVIL_CALL operator=(Kernel&&) throw();
 		ANVIL_CALL operator bool() const throw();
 
 		void ANVIL_CALL swap(Kernel&) throw();
+
+		bool ANVIL_CALL create(const Program&, const char*) throw();
+		bool ANVIL_CALL destroy() throw();
 
 		cl_uint arguments() const throw();
 		const char* name() const throw();

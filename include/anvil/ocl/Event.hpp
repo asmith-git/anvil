@@ -20,14 +20,8 @@
 
 namespace anvil { namespace ocl {
 
-	class EventListener {
-	protected:
-		virtual void onComplete() throw() = 0;
-	public:
-		friend Event;
-		virtual ~EventListener() {}
-	};
-
+	class EventListener;
+	
 	struct ProfileInfo {
 		cl_ulong queued;
 		cl_ulong submit;
@@ -41,14 +35,7 @@ namespace anvil { namespace ocl {
 
 		Event(const Event&) = delete;
 		Event& operator=(const Event&) = delete;
-
-		ANVIL_CALL Event(cl_event) throw();
 	public:
-		friend class Buffer;
-		friend class Kernel;
-		friend class NativeKernel;
-		friend class CommandQueue;
-
 		enum CommandType : cl_command_type {
 			NDRANGE_KERNEL = CL_COMMAND_NDRANGE_KERNEL,
 			TASK = CL_COMMAND_TASK,
@@ -87,6 +74,8 @@ namespace anvil { namespace ocl {
 		Event& ANVIL_CALL operator=(Event&&) throw();
 		ANVIL_CALL operator bool() const throw();
 
+		bool ANVIL_CALL destroy() throw();
+
 		bool ANVIL_CALL setListener(EventListener&) throw();
 		bool ANVIL_CALL wait() throw();
 		CommandType ANVIL_CALL type() const throw();
@@ -94,6 +83,14 @@ namespace anvil { namespace ocl {
 		ProfileInfo ANVIL_CALL profileInfo() const throw();
 
 		static bool ANVIL_CALL wait(const std::vector<Event>&) throw();
+	};
+
+	class EventListener {
+	protected:
+		virtual void onComplete() throw() = 0;
+	public:
+		friend Event;
+		virtual ~EventListener() {}
 	};
 }}
 

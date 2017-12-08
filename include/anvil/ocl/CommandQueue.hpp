@@ -15,7 +15,7 @@
 #ifndef ANVIL_OCL_COMMAND_QUEUE_HPP
 #define ANVIL_OCL_COMMAND_QUEUE_HPP
 
-#include "anvil/ocl/Buffer.hpp"
+#include "anvil/ocl/Event.hpp"
 
 namespace anvil { namespace ocl {
 
@@ -26,16 +26,14 @@ namespace anvil { namespace ocl {
 		CommandQueue(const CommandQueue&) = delete;
 		CommandQueue& operator=(const CommandQueue&) = delete;
 	public:
-		friend class Buffer;
-		friend class Kernel;
-		friend class NativeKernel;
-
 		ANVIL_CALL CommandQueue() throw();
 		ANVIL_CALL CommandQueue(CommandQueue&&);
-		ANVIL_CALL CommandQueue(Context&, Device, bool aOutOfOrder = false, bool aProfiling = false) throw();
 		ANVIL_CALL ~CommandQueue() throw();
 		ANVIL_CALL CommandQueue& operator=(CommandQueue&&);
 		ANVIL_CALL operator bool() const throw();
+
+		bool ANVIL_CALL create(Context&, Device&, bool aOutOfOrder = false, bool aProfiling = false) throw();
+		bool ANVIL_CALL destroy() throw();
 
 #ifndef CL_VERSION_1_2
 		bool ANVIL_CALL barrier() throw();

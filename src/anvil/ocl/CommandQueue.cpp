@@ -30,21 +30,8 @@ namespace anvil { namespace ocl {
 		swap(aOther);
 	}
 
-	ANVIL_CALL CommandQueue::CommandQueue(Context& aContext, Device aDevice, bool aOutOfOrder, bool aProfiling) throw() :
-		mQueue(NULL)
-	{
-		cl_int error = CL_SUCCESS;
-		mQueue = clCreateCommandQueue(
-			aContext.mContext, 
-			aDevice.mDevice, 
-			(aOutOfOrder ? CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE : 0) | (aProfiling ? CL_QUEUE_PROFILING_ENABLE : 0),
-			&error);
-		if (error != CL_SUCCESS) oclError("clFlush", error);
-	}
-
 	ANVIL_CALL CommandQueue::~CommandQueue() throw() {
-		cl_int error = clReleaseCommandQueue(mQueue);
-		if (error != CL_SUCCESS) oclError("clReleaseCommandQueue", error);
+		destroy();
 	}
 	
 	CommandQueue& ANVIL_CALL CommandQueue::operator=(CommandQueue&& aOther) throw() {
@@ -58,6 +45,29 @@ namespace anvil { namespace ocl {
 
 	void ANVIL_CALL CommandQueue::swap(CommandQueue& aOther) throw() {
 		std::swap(mQueue, aOther.mQueue);
+	}
+
+	bool CommandQueue::create(Context& aContext, Device& aDevice, bool aOutOfOrder, bool aProfiling) throw() {
+		if (mQueue) if (!destroy()) return false;
+
+		cl_int error = CL_SUCCESS;
+		mQueue = clCreateCommandQueue(
+			reinterpret_cast<cl_context&>(aDevice),
+			reinterpret_cast<cl_device_id&>(aDevice),
+			(aOutOfOrder ? CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE : 0) | (aProfiling ? CL_QUEUE_PROFILING_ENABLE : 0),
+			&error);
+		if (error != CL_SUCCESS) return oclError("clCreateCommandQueue", error, false);
+	}
+
+	bool CommandQueue::destroy() throw() {
+		if (mQueue) {
+			finish();
+			cl_int error = clReleaseCommandQueue(mQueue);
+			if (error != CL_SUCCESS) return oclError("clReleaseCommandQueue", error, false);
+			mQueue = NULL;
+			return true;
+		}
+		return false;
 	}
 
 	bool ANVIL_CALL CommandQueue::flush() throw() {
