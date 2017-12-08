@@ -79,6 +79,10 @@ namespace anvil { namespace ocl {
 		return mBuffer != NULL;
 	}
 
+	cl_mem ANVIL_CALL Buffer::data() throw() {
+		return mBuffer;
+	}
+
 	cl_mem_flags ANVIL_CALL Buffer::flags() const throw() {
 		return mBuffer ? getInfo<cl_mem_flags>(CL_MEM_FLAGS) : 0;
 	}

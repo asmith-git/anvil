@@ -54,7 +54,8 @@ namespace anvil { namespace ocl {
 
 		Buffer& ANVIL_CALL operator=(Buffer&&) throw();
 		void ANVIL_CALL swap(Buffer& aOther) throw();
-
+		
+		cl_mem ANVIL_CALL data() throw();
 		Buffer ANVIL_CALL createSubBuffer(size_t, size_t) throw();
 		bool ANVIL_CALL isSubBuffer() const throw();
 		ANVIL_CALL operator bool() const throw();
