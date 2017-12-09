@@ -43,7 +43,7 @@ namespace anvil {
 		virtual bool wait(TaskHandle, std::exception_ptr*) const throw() = 0;
 		virtual bool cancel(TaskHandle) throw() = 0;
 		virtual uint8_t getPriority(TaskHandle) const throw() = 0;
-		virtual bool getPriority(TaskHandle, uint8_t&) const throw() = 0;
+		virtual bool setPriority(TaskHandle, uint8_t) throw() = 0;
 		virtual bool waitAll() const throw() = 0;
 		virtual bool cancelAll() throw() = 0;
 	};

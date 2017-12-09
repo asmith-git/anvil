@@ -13,7 +13,7 @@
 //limitations under the License.
 
 #include <algorithm>
-#include "anvul/threading/ThreadPool.hpp"
+#include "anvil/threading/ThreadPool.hpp"
 
 namespace anvil {
 
@@ -93,6 +93,7 @@ namespace anvil {
 	}
 
 	TaskHandle ThreadPool::enqueue(uint8_t aPriority, Task aTask, void* aParam) throw() {
+		if (! aTask) return nullptr;
 		TaskHandle handle = new TaskHandle_();
 		handle->complete = false;
 		handle->task = aTask;
@@ -102,8 +103,8 @@ namespace anvil {
 		handle->index = ++mIndex;
 		mTasks.push_back(handle);
 		std::sort(mTasks.begin(), mTasks.end(), [](TaskHandle a, TaskHandle b)->bool {
-				return a->priority > b->priority ? true : a->index > b->index;
-			});
+			return a->priority > b->priority ? true : a->index > b->index;
+		});
 		mLock.unlock();
 		mTaskAdded.notify_one();
 		return handle;
@@ -141,9 +142,24 @@ namespace anvil {
 		return aHandle == nullptr ? 0 : aHandle->priority;
 	}
 
-	bool ThreadPool::getPriority(TaskHandle aHandle, uint8_t& aPriority) const throw() {
+	bool ThreadPool::setPriority(TaskHandle aHandle, uint8_t aPriority) throw() {
 		if (aHandle == nullptr || aHandle->complete) return false;
-		aPriority = aHandle->priority;
+		mLock.lock();
+		const auto end = mTasks.end();
+		const auto i = std::find(mTasks.begin(), mTasks.end(), aHandle);
+		if (i == end) {
+			mLock.unlock();
+			return false;
+		} else {
+			mTasks.erase(i);
+			aHandle->priority = aPriority;
+			mTasks.push_back(aHandle);
+			std::sort(mTasks.begin(), mTasks.end(), [](TaskHandle a, TaskHandle b)->bool {
+				return a->priority > b->priority ? true : a->index > b->index;
+			});
+			mLock.unlock();
+			return true;
+		}
 		return true;
 	}
 

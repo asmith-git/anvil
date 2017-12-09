@@ -54,7 +54,7 @@ namespace anvil {
 		bool wait(TaskHandle, std::exception_ptr*) const throw() override;
 		bool cancel(TaskHandle) throw() override;
 		uint8_t getPriority(TaskHandle) const throw() override;
-		bool getPriority(TaskHandle, uint8_t&) const throw() override;
+		bool setPriority(TaskHandle, uint8_t) throw() override;
 		bool waitAll() const throw() override;
 		bool cancelAll() throw() override;
 	};
