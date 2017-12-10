@@ -15,7 +15,7 @@
 #include "anvil/maths/Reflection.hpp"
 
 namespace anvil {
-	ANVIL_CONSTEXPR_VAR const uint8_t gReflectionLookup[255]{
+	ANVIL_CONSTEXPR_VAR const uint8_t gReflectionLookup[256]{
 		0,128,64,192,32,160,96,224,16,144,80,208,48,176,112,240,
 		8,136,72,200,40,168,104,232,24,152,88,216,56,184,120,248,
 		4,132,68,196,36,164,100,228,20,148,84,212,52,180,116,244,
@@ -31,7 +31,7 @@ namespace anvil {
 		3,131,67,195,35,163,99,227,19,147,83,211,51,179,115,243,
 		11,139,75,203,43,171,107,235,27,155,91,219,59,187,123,251,
 		7,135,71,199,39,167,103,231,23,151,87,215,55,183,119,247,
-		15,143,79,207,47,175,111,239,31,159,95,223,63,191,127,
+		15,143,79,207,47,175,111,239,31,159,95,223,63,191,127,255
 	};
 
 	uint8_t ANVIL_CALL reflect(const uint8_t aValue) throw() {
@@ -71,6 +71,7 @@ namespace anvil {
 		uint8_t* dst = static_cast<uint8_t*>(aDst) + aBytes;
 		for (size_t i = 0; i < aBytes; ++i) {
 			*dst = reflect(*src);
+			++src;
 			--dst;
 		}
 	}
