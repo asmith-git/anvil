@@ -39,37 +39,86 @@ namespace anvil {
 	}
 
 	uint16_t ANVIL_CALL reflect(const uint16_t aValue) throw() {
-		return reflect(static_cast<uint8_t>(aValue >> 8)) | (reflect(static_cast<uint8_t>(aValue & UINT8_MAX)) << 8);
+		const uint8_t* const src = reinterpret_cast<const uint8_t*>(&aValue);
+		const uint8_t dst[2] = {
+			gReflectionLookup[src[1]],
+			gReflectionLookup[src[0]]
+		};
+		return *reinterpret_cast<const uint16_t*>(dst);
 	}
 
 	uint32_t ANVIL_CALL reflect(const uint32_t aValue) throw() {
-		return reflect(static_cast<uint16_t>(aValue >> 16)) | (reflect(static_cast<uint16_t>(aValue & UINT16_MAX)) << 16);
+		const uint8_t* const src = reinterpret_cast<const uint8_t*>(&aValue);
+		const uint8_t dst[4] = {
+			gReflectionLookup[src[3]],
+			gReflectionLookup[src[2]],
+			gReflectionLookup[src[1]],
+			gReflectionLookup[src[0]]
+		};
+		return *reinterpret_cast<const uint32_t*>(dst);
 	}
 
 	uint64_t ANVIL_CALL reflect(const uint64_t aValue) throw() {
-		return uint64_t(reflect(static_cast<uint32_t>(aValue >> 32ULL))) | (uint64_t(reflect(static_cast<uint32_t>(aValue & UINT32_MAX))) << 32ULL);
+		const uint8_t* const src = reinterpret_cast<const uint8_t*>(&aValue);
+		const uint8_t dst[8] = {
+			gReflectionLookup[src[7]],
+			gReflectionLookup[src[6]],
+			gReflectionLookup[src[5]],
+			gReflectionLookup[src[4]],
+			gReflectionLookup[src[3]],
+			gReflectionLookup[src[2]],
+			gReflectionLookup[src[1]],
+			gReflectionLookup[src[0]]
+		};
+		return *reinterpret_cast<const uint64_t*>(dst);
 	}
 
 	int8_t ANVIL_CALL reflect(const int8_t aValue) throw() {
-		return static_cast<int8_t>(reflect(static_cast<uint8_t>(aValue)));
+		const uint8_t* const src = reinterpret_cast<const uint8_t*>(&aValue);
+		const uint8_t dst = gReflectionLookup[*src];
+		return *reinterpret_cast<const int8_t*>(dst);
 	}
 
 	int16_t ANVIL_CALL reflect(const int16_t aValue) throw() {
-		return static_cast<int16_t>(reflect(static_cast<uint16_t>(aValue)));
+		const uint8_t* const src = reinterpret_cast<const uint8_t*>(&aValue);
+		const uint8_t dst[2] = {
+			gReflectionLookup[src[1]],
+			gReflectionLookup[src[0]]
+		};
+		return *reinterpret_cast<const int16_t*>(dst);
 	}
 
 	int32_t ANVIL_CALL reflect(const int32_t aValue) throw() {
-		return static_cast<int32_t>(reflect(static_cast<uint32_t>(aValue)));
+		const uint8_t* const src = reinterpret_cast<const uint8_t*>(&aValue);
+		const uint8_t dst[4] = {
+			gReflectionLookup[src[3]],
+			gReflectionLookup[src[2]],
+			gReflectionLookup[src[1]],
+			gReflectionLookup[src[0]]
+		};
+		return *reinterpret_cast<const int32_t*>(dst);
 	}
 
 	int64_t ANVIL_CALL reflect(const int64_t aValue) throw() {
-		return static_cast<int64_t>(reflect(static_cast<uint64_t>(aValue)));
+		const uint8_t* const src = reinterpret_cast<const uint8_t*>(&aValue);
+		const uint8_t dst[8] = {
+			gReflectionLookup[src[7]],
+			gReflectionLookup[src[6]],
+			gReflectionLookup[src[5]],
+			gReflectionLookup[src[4]],
+			gReflectionLookup[src[3]],
+			gReflectionLookup[src[2]],
+			gReflectionLookup[src[1]],
+			gReflectionLookup[src[0]]
+		};
+		return *reinterpret_cast<const int64_t*>(dst);
 	}
 
 	void ANVIL_CALL reflect(const void* aSrc, void* aDst, size_t aBytes) throw() {
 		const uint8_t* src = static_cast<const uint8_t*>(aSrc);
-		uint8_t* dst = static_cast<uint8_t*>(aDst) + aBytes;
-		for (size_t i = 0; i < aBytes; ++i) {
+		const uint8_t* const end = src + aBytes;
+		uint8_t* dst = static_cast<uint8_t*>(aDst) + aBytes - 1;
+		while(src != end) {
 			*dst = reflect(*src);
 			++src;
 			--dst;
