@@ -48,12 +48,10 @@ namespace anvil {
 		4,5,5,6,5,6,6,7,5,6,6,7,6,7,7,8
 	};
 
-	typedef uint8_t ANVIL_POPCOUNT_TYPE;
+	#define ANVIL_POPCOUNT_TYPE uint8_t
 	#define ANVIL_POPCOUNT_SIZE 1
 
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL ANVIL_POPCOUNT(ANVIL_POPCOUNT_TYPE aByte) throw() {
-		return gPopcountLookup[aByte];
-	}
+#define ANVIL_POPCOUNT(aByte) gPopcountLookup[aByte]
 #endif
 
 	size_t ANVIL_CALL popcount(const uint8_t aValue) throw() {
@@ -122,12 +120,14 @@ namespace anvil {
 			++src;
 		}
 
+#if ANVIL_POPCOUNT_SIZE > 1
 		const uint8_t* src8 = reinterpret_cast<const uint8_t*>(src);
 		while (aBytes > 0) {
 			count += ANVIL_POPCOUNT(*src8);
 			--aBytes;
 			++src8;
 		}
+#endif
 		return count;
 	}
 
