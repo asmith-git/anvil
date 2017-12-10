@@ -97,9 +97,9 @@ namespace anvil {
 		size_t count = 0;
 		
 		const ANVIL_POPCOUNT_TYPE* src = static_cast<const ANVIL_POPCOUNT_TYPE*>(aSrc);
-		while (aBytes >= 4) {
+		while (aBytes >= sizeof(ANVIL_POPCOUNT_TYPE)) {
 			count += ANVIL_POPCOUNT(*src);
-			aBytes -= 4;
+			aBytes -= sizeof(ANVIL_POPCOUNT_TYPE);
 			++src;
 		}
 
