@@ -25,15 +25,19 @@
 #if defined(_MSC_VER)
 	#define ANVIL_COMPILER ANVIL_MSVC
 	#define ANVIL_COMPILER_VER _MSC_VER 
+	#define ANVIL_COMPILER_NAME "MSVC" 
 #elif defined(__clang__)
 	#define ANVIL_COMPILER ANVIL_CLANG
 	#define ANVIL_COMPILER_VER (__clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel_)
+	#define ANVIL_COMPILER_NAME "Clang" 
 #elif defined(__GNUC__)
 	#define ANVIL_COMPILER ANVIL_GCC
 	#define ANVIL_COMPILER_VER (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
+	#define ANVIL_COMPILER_NAME "GCC" 
 #elif defined(__INTEL_COMPILER)
 	#define ANVIL_COMPILER ANVIL_INTEL
 	#define ANVIL_COMPILER_VER __INTEL_COMPILER_BUILD_DATE
+	#define ANVIL_COMPILER_NAME "Intel" 
 #else
 	#error Could not determine C++ compiler vendor
 #endif

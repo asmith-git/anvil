@@ -24,12 +24,16 @@
 
 #if defined(_WIN32) || defined (_WIN64)
 	#define ANVIL_OS ANVIL_WINDOWS
+	#define ANVIL_OS_NAME "Windows" 
 #elif defined(__linux__) || defined(linux) || defined(__linux)
 	#define ANVIL_OS ANVIL_LINUX
+	#define ANVIL_OS_NAME "Linux" 
 #elif defined(__APPLE__) || defined (__MACH__)
 	#define ANVIL_OS ANVIL_APPLE
+	#define ANVIL_OS_NAME "Apple" 
 #elif defined(__FreeBSD__)
 	#define ANVIL_OS ANVIL_BSD
+	#define ANVIL_OS_NAME "BSD" 
 #else
 	#error Could not determine OS
 #endif
