@@ -24,8 +24,11 @@ namespace anvil {
 	\tparam B_ The second value.
 	\tparam ENABLE Internal use only (Avoids division by 0 error).
 	*/
-	template<class T, T A_, T B_, class ENABLE = typename std::enable_if<B_ != 0>::type>
-	struct ConstantOperation {
+	template<class T, T A_, T B_, class ENABLE = void>
+	struct ConstantOperation;
+
+	template<class T, T A_, T B_>
+	struct ConstantOperation<T, A_, B_, typename std::enable_if<B_ != 0>::type> {
 		enum : T {
 			A = A_,                 //!< The first value.
 			B = B_,                 //!< The second value.
