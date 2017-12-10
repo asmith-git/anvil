@@ -32,7 +32,7 @@
 	#define ANVIL_CONSTEXPR_FN constexpr
 	#define ANVIL_CONSTEXPR_CLA constexpr
 #else
-	#define ANVIL_CONSTEXPR_VAR const
+	#define ANVIL_CONSTEXPR_VAR 
 	#define ANVIL_CONSTEXPR_FN inline
 	#define ANVIL_CONSTEXPR_CLA
 #endif

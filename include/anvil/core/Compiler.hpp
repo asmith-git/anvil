@@ -24,28 +24,43 @@
 
 #if defined(_MSC_VER)
 	#define ANVIL_COMPILER ANVIL_MSVC
+	#define ANVIL_COMPILER_VER _MSC_VER 
 #elif defined(__clang__)
 	#define ANVIL_COMPILER ANVIL_CLANG
+	#define ANVIL_COMPILER_VER (__clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel_)
 #elif defined(__GNUC__)
 	#define ANVIL_COMPILER ANVIL_GCC
+	#define ANVIL_COMPILER_VER (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
 #elif defined(__INTEL_COMPILER)
 	#define ANVIL_COMPILER ANVIL_INTEL
+	#define ANVIL_COMPILER_VER __INTEL_COMPILER_BUILD_DATE
 #else
 	#error Could not determine C++ compiler vendor
 #endif
 
 // Detect C++ version
 
-#if __cplusplus >= 199700L && __cplusplus < 201100L
-	#define ANVIL_CPP_VER 1998
-#elif __cplusplus >= 201100L && __cplusplus < 201400L
-	#define ANVIL_CPP_VER 2011
-#elif __cplusplus >= 201400L && __cplusplus < 201700L
-	#define ANVIL_CPP_VER 2014
-#elif __cplusplus >= 201700L
-	#define ANVIL_CPP_VER 2017
-#else
-	#error Requires C++98 or greater
+#if ANVIL_COMPILER == ANVIL_MSVC
+	#if ANVIL_COMPILER_VER >= 1910 
+		#define ANVIL_CPP_VER 2014
+	#elif ANVIL_COMPILER_VER >= 1900 
+		#define ANVIL_CPP_VER 2011
+	#endif
+#endif
+
+
+#ifndef ANVIL_CPP_VER
+	#if __cplusplus >= 199700L && __cplusplus < 201100L
+		#define ANVIL_CPP_VER 1998
+	#elif __cplusplus >= 201100L && __cplusplus < 201400L
+		#define ANVIL_CPP_VER 2011
+	#elif __cplusplus >= 201400L && __cplusplus < 201700L
+		#define ANVIL_CPP_VER 2014
+	#elif __cplusplus >= 201700L
+		#define ANVIL_CPP_VER 2017
+	#else
+		#error Requires C++98 or greater
+	#endif
 #endif
 
 #endif
