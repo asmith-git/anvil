@@ -95,22 +95,21 @@ namespace anvil {
 
 	size_t ANVIL_CALL popcount(const void* aSrc, size_t aBytes) throw() {
 		size_t count = 0;
-		if (sizeof(ANVIL_POPCOUNT_TYPE) == 4) {
-			const ANVIL_POPCOUNT_TYPE* src = static_cast<const ANVIL_POPCOUNT_TYPE*>(aSrc);
-			while (aBytes >= 4) {
-				count += ANVIL_POPCOUNT(*src);
-				aBytes -= 4;
-				++src;
-			}
-			aSrc = src;
-		}
-		const uint8_t* src = reinterpret_cast<const uint8_t*>(aSrc);
-		while (aBytes > 0) {
+		
+		const ANVIL_POPCOUNT_TYPE* src = static_cast<const ANVIL_POPCOUNT_TYPE*>(aSrc);
+		while (aBytes >= 4) {
 			count += ANVIL_POPCOUNT(*src);
-			--aBytes;
+			aBytes -= 4;
 			++src;
 		}
-		return 0;
+
+		const uint8_t* src8 = reinterpret_cast<const uint8_t*>(src);
+		while (aBytes > 0) {
+			count += ANVIL_POPCOUNT(*src8);
+			--aBytes;
+			++src8;
+		}
+		return count;
 	}
 
 }
