@@ -29,7 +29,7 @@ namespace anvil {
 
 	// ThreadPool
 
-	void ThreadPool::worker(size_t aIndex) throw() {
+	void ANVIL_CALL ThreadPool::worker(size_t aIndex) throw() {
 		std::vector<TaskHandle> completed;
 		while (!mExitFlag) {
 			{
@@ -62,7 +62,7 @@ namespace anvil {
 		for (TaskHandle i : completed) delete i;
 	}
 
-	ThreadPool::ThreadPool(size_t aSize) throw() {
+	ANVIL_CALL ThreadPool::ThreadPool(size_t aSize) throw() {
 		mExitFlag = false;
 		mActiveThreads = 0;
 		mIndex = 0;
@@ -71,28 +71,28 @@ namespace anvil {
 		}
 	}
 
-	ThreadPool::~ThreadPool() throw() {
+	ANVIL_CALL ThreadPool::~ThreadPool() throw() {
 		mExitFlag = true;
 		mTaskAdded.notify_all();
 		for (std::thread& i : mThreads) i.join();
 	}
 
-	size_t ThreadPool::threadCount() const throw() {
+	size_t ANVIL_CALL ThreadPool::threadCount() const throw() {
 		return mThreads.size();
 	}
 
-	size_t ThreadPool::activeThreads() const throw() {
+	size_t ANVIL_CALL ThreadPool::activeThreads() const throw() {
 		return mActiveThreads;
 	}
 
-	size_t ThreadPool::queuedTasks() const throw() {
+	size_t ANVIL_CALL ThreadPool::queuedTasks() const throw() {
 		mLock.lock();
 		const size_t tmp = mTasks.size();
 		mLock.unlock();
 		return tmp;
 	}
 
-	TaskHandle ThreadPool::enqueue(uint8_t aPriority, Task aTask, void* aParam) throw() {
+	TaskHandle ANVIL_CALL ThreadPool::enqueue(uint8_t aPriority, Task aTask, void* aParam) throw() {
 		if (! aTask) return nullptr;
 		TaskHandle handle = new TaskHandle_();
 		handle->complete = false;
@@ -110,7 +110,7 @@ namespace anvil {
 		return handle;
 	}
 
-	bool ThreadPool::wait(TaskHandle aTask, std::exception_ptr* aException) const throw() {
+	bool ANVIL_CALL ThreadPool::wait(TaskHandle aTask, std::exception_ptr* aException) const throw() {
 		if (!aTask) return false;
 		if (aTask->complete) {
 			if (aException && aTask->exception) *aException = aTask->exception;
@@ -121,7 +121,7 @@ namespace anvil {
 		return true;
 	}
 
-	bool ThreadPool::cancel(TaskHandle aHandle) throw() {
+	bool ANVIL_CALL ThreadPool::cancel(TaskHandle aHandle) throw() {
 		mLock.lock();
 		const auto end = mTasks.end();
 		const auto i = std::find(mTasks.begin(), mTasks.end(), aHandle);
@@ -138,11 +138,11 @@ namespace anvil {
 		}
 	}
 
-	uint8_t ThreadPool::getPriority(TaskHandle aHandle) const throw() {
+	uint8_t ANVIL_CALL ThreadPool::getPriority(TaskHandle aHandle) const throw() {
 		return aHandle == nullptr ? 0 : aHandle->priority;
 	}
 
-	bool ThreadPool::setPriority(TaskHandle aHandle, uint8_t aPriority) throw() {
+	bool ANVIL_CALL ThreadPool::setPriority(TaskHandle aHandle, uint8_t aPriority) throw() {
 		if (aHandle == nullptr || aHandle->complete) return false;
 		mLock.lock();
 		const auto end = mTasks.end();
@@ -163,7 +163,7 @@ namespace anvil {
 		return true;
 	}
 
-	bool ThreadPool::waitAll() const throw() {
+	bool ANVIL_CALL ThreadPool::waitAll() const throw() {
 		mLock.lock();
 		if (mTasks.empty()) {
 			mLock.unlock();
@@ -175,7 +175,7 @@ namespace anvil {
 		return true;
 	}
 
-	bool ThreadPool::cancelAll() throw() {
+	bool ANVIL_CALL ThreadPool::cancelAll() throw() {
 		mLock.lock();
 		for (TaskHandle i : mTasks) {
 			i->complete = true;

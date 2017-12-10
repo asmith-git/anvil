@@ -17,6 +17,7 @@
 
 #include <cstdint>
 #include <exception>
+#include "anvil/core/Keywords.hpp"
 
 namespace anvil {
 
@@ -33,19 +34,19 @@ namespace anvil {
 			DEFAULT_PRIORITY = HIGHEST_PRIORITY / 2,
 			LOWEST_PRIORITY = 0
 		};
-		virtual ~TaskDispatcher() throw() {}
+		virtual ANVIL_CALL ~TaskDispatcher() throw() {}
 
-		virtual size_t threadCount() const throw() = 0;
-		virtual size_t activeThreads() const throw() = 0;
-		virtual size_t queuedTasks() const throw() = 0;
+		virtual size_t ANVIL_CALL threadCount() const throw() = 0;
+		virtual size_t ANVIL_CALL activeThreads() const throw() = 0;
+		virtual size_t ANVIL_CALL queuedTasks() const throw() = 0;
 
-		virtual TaskHandle enqueue(uint8_t, Task, void*) throw() = 0;
-		virtual bool wait(TaskHandle, std::exception_ptr*) const throw() = 0;
-		virtual bool cancel(TaskHandle) throw() = 0;
-		virtual uint8_t getPriority(TaskHandle) const throw() = 0;
-		virtual bool setPriority(TaskHandle, uint8_t) throw() = 0;
-		virtual bool waitAll() const throw() = 0;
-		virtual bool cancelAll() throw() = 0;
+		virtual TaskHandle ANVIL_CALL enqueue(uint8_t, Task, void*) throw() = 0;
+		virtual bool ANVIL_CALL wait(TaskHandle, std::exception_ptr*) const throw() = 0;
+		virtual bool ANVIL_CALL cancel(TaskHandle) throw() = 0;
+		virtual uint8_t ANVIL_CALL getPriority(TaskHandle) const throw() = 0;
+		virtual bool ANVIL_CALL setPriority(TaskHandle, uint8_t) throw() = 0;
+		virtual bool ANVIL_CALL waitAll() const throw() = 0;
+		virtual bool ANVIL_CALL cancelAll() throw() = 0;
 	};
 }
 

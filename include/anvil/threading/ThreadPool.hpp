@@ -34,29 +34,29 @@ namespace anvil {
 		std::atomic_bool mExitFlag;
 		uint64_t mIndex;
 
-		void worker(size_t) throw();
+		void ANVIL_CALL worker(size_t) throw();
 
 		ThreadPool(ThreadPool&&) = delete;
 		ThreadPool(const ThreadPool&) = delete;
 		ThreadPool& operator=(ThreadPool&&) = delete;
 		ThreadPool& operator=(const ThreadPool&) = delete;
 	public:
-		ThreadPool(size_t) throw();
-		~ThreadPool() throw();
+		ANVIL_CALL ThreadPool(size_t) throw();
+		ANVIL_CALL ~ThreadPool() throw();
 
 		// Inherited from TaskDispatcher
 
-		size_t threadCount() const throw() override;
-		size_t activeThreads() const throw() override;
-		size_t queuedTasks() const throw() override;
+		size_t ANVIL_CALL threadCount() const throw() override;
+		size_t ANVIL_CALL activeThreads() const throw() override;
+		size_t ANVIL_CALL queuedTasks() const throw() override;
 
-		TaskHandle enqueue(uint8_t, Task, void*) throw() override;
-		bool wait(TaskHandle, std::exception_ptr*) const throw() override;
-		bool cancel(TaskHandle) throw() override;
-		uint8_t getPriority(TaskHandle) const throw() override;
-		bool setPriority(TaskHandle, uint8_t) throw() override;
-		bool waitAll() const throw() override;
-		bool cancelAll() throw() override;
+		TaskHandle ANVIL_CALL enqueue(uint8_t, Task, void*) throw() override;
+		bool ANVIL_CALL wait(TaskHandle, std::exception_ptr*) const throw() override;
+		bool ANVIL_CALL cancel(TaskHandle) throw() override;
+		uint8_t ANVIL_CALL getPriority(TaskHandle) const throw() override;
+		bool ANVIL_CALL setPriority(TaskHandle, uint8_t) throw() override;
+		bool ANVIL_CALL waitAll() const throw() override;
+		bool ANVIL_CALL cancelAll() throw() override;
 	};
 }
 
