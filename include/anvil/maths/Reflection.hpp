@@ -52,7 +52,7 @@ namespace anvil {
 	}
 
 	static ANVIL_CONSTEXPR_FN uint64_t ANVIL_CALL reflect(const uint64_t aValue) throw() {
-		return reflect(static_cast<uint32_t>(aValue >> 32L)) | (reflect(static_cast<uint32_t>(aValue & UINT32_MAX)) << 32L);
+		return uint64_t(reflect(static_cast<uint32_t>(aValue >> 32ULL))) | (uint64_t(reflect(static_cast<uint32_t>(aValue & UINT32_MAX))) << 32ULL);
 	}
 
 	static ANVIL_CONSTEXPR_FN int8_t ANVIL_CALL reflect(const int8_t aValue) throw() {
