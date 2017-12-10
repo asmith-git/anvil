@@ -16,7 +16,8 @@
 #define ANVIL_MATHS_VECTOR_HPP
 
 #include <cmath>
-#include "Type.hpp"
+#include "anvil/maths/Type.hpp"
+#include "anvil/maths/Popcount.hpp"
 
 namespace anvil {
 	template<class T, size_t S>
@@ -397,53 +398,13 @@ namespace anvil {
 		template<class T2 = type>
 		inline typename std::enable_if<std::is_unsigned<T2>::value, this_t>::type abs() const throw() {
 			return *this;
+		}	
+		
+		inline Vector<size_t, size> popcount() const throw() {
+			Vector<size, size_t> tmp;
+			for (size_t i = 0; i < size; ++i) tmp[i] = popcount(mData + i, sizeof(type));
+			return *this;
 		}
-
-#if defined(_MSC_VER)
-#define ANVIL_POPCOUNT __popcnt
-#define ANVIL_POPCOUNT_TYPE int32_t
-#elif defined(__GNUC__)
-#define ANVIL_POPCOUNT __builtin_popcount
-#define ANVIL_POPCOUNT_TYPE uint32_t
-#else
-	private:
-		static int as_popcount(int32_t aValue) throw() {
-			int tmp = 0;
-			int mask = 1;
-			for (int i = 0; i < 32; ++i) {
-				tmp += aValue & mask ? 1 : 0;
-				mask <<= 1;
-			}
-			return tmp;
-		};
-	public:
-#define ANVIL_POPCOUNT as_popcount
-#define ANVIL_POPCOUNT_TYPE int32_t
-#endif
-
-		template<class T2 = type>
-		inline typename std::enable_if<sizeof(T2) == 1 || sizeof(T2) == 2 || sizeof(T2) == 4, this_t>::type popcount() const throw() {
-			this_t tmp;
-			for (size_t i = 0; i < size; ++i) {
-				ANVIL_POPCOUNT_TYPE val;
-				memcpy(&val, &mData[i], sizeof(T2));
-				tmp.mData[i] = ANVIL_POPCOUNT(val);
-			}
-			return tmp;
-		}
-
-		template<class T2 = type>
-		inline typename std::enable_if<sizeof(T2) == 8, this_t>::type popcount() const throw() {
-			this_t tmp;
-			for (size_t i = 0; i < size; ++i) {
-				ANVIL_POPCOUNT_TYPE val[2];
-				memcpy(&val, &mData[i], sizeof(T2));
-				tmp.mData[i] = ANVIL_POPCOUNT(val[0]) + ANVIL_POPCOUNT(val[1]);
-			}
-			return tmp;
-		}
-#undef ANVIL_POPCOUNT
-#undef ANVIL_POPCOUNT_TYPE
 	};
 
 	template<Type TYPE>
