@@ -32,6 +32,9 @@ namespace anvil {
 	#define ANVIL_POPCOUNT8 __builtin_popcount
 	#define ANVIL_POPCOUNT16 __builtin_popcount
 	#define ANVIL_POPCOUNT32 __builtin_popcount
+	#if ANVIL_ARCHITECTURE_BITS >= 64
+		#define ANVIL_POPCOUNT64 __builtin_popcountll
+	#endif
 #endif
 
 #ifndef ANVIL_POPCOUNT8
