@@ -65,7 +65,7 @@ namespace anvil { namespace ocl {
 		if (mHandle.program) if (!destroy()) return false;
 
 		cl_int error = CL_SUCCESS;
-		mHandle.program = clCreateProgramWithSource(aContext.handle().context, aCount, aSources, NULL, &error);
+		mHandle.program = clCreateProgramWithSource(aContext.mHandle.context, aCount, aSources, NULL, &error);
 		if (error != CL_SUCCESS) return oclError("clCreateProgramWithSource", error, false);
 
 		std::vector<Device> devices = aContext.devices();
