@@ -18,8 +18,12 @@ namespace anvil { namespace ocl {
 
 	// Object
 
-	ANVIL_CALL Object::~Object() throw() {
+	ANVIL_CALL Object::Object() throw() {
 		mHandle.context = NULL;
+	}
+
+	ANVIL_CALL Object::~Object() throw() {
+
 	}
 
 	Object::Handle ANVIL_CALL  Object::handle() const throw() {

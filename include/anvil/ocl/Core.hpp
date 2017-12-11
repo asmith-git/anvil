@@ -47,6 +47,7 @@ namespace anvil { namespace ocl {
 		friend class CommandQueue;
 		friend class Event;
 
+		ANVIL_CALL Object() throw();
 		virtual ANVIL_CALL ~Object() throw();
 
 		Handle ANVIL_CALL handle() const throw();
