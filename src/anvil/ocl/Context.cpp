@@ -19,13 +19,11 @@ namespace anvil { namespace ocl {
 
 	// Context
 
-	ANVIL_CALL Context::Context() throw() :
-		mContext(NULL)
-	{}
+	ANVIL_CALL Context::Context() throw() {
 
-	ANVIL_CALL Context::Context(Context&& aOther) throw() :
-		mContext(NULL)
-	{
+	}
+
+	ANVIL_CALL Context::Context(Context&& aOther) throw() {
 		swap(aOther);
 	}
 
@@ -33,55 +31,52 @@ namespace anvil { namespace ocl {
 		destroy();
 	}
 
-	ANVIL_CALL Context::operator bool() const throw() {
-		return mContext != NULL;
-	}
-
-	bool Context::create(Device aDevice, ErrorCallback aCallback) throw() {
+	bool ANVIL_CALL Context::create(Device aDevice, ErrorCallback aCallback) throw() {
 		return create(&aDevice, 1, aCallback);
 	}
 
-	bool Context::create(const Device* aDevices, size_t aCount, ErrorCallback aCallback) throw() {
-		if (mContext) if (!destroy()) return false;
+	bool ANVIL_CALL Context::create(const Device* aDevices, size_t aCount, ErrorCallback aCallback) throw() {
+		if (mHandle.context) if (!destroy()) return false;
+
+		cl_device_id devices[Platform::MAX_DEVICES];
+		for (size_t i = 0; i < aCount; ++i) devices[i] = const_cast<Device*>(aDevices)[i].handle().device;
 
 		cl_int error = CL_SUCCESS;
-		mContext = clCreateContext(NULL, aCount, reinterpret_cast<const cl_device_id*>(aDevices), aCallback, this, &error);
+		mHandle.context = clCreateContext(NULL, aCount, aCount == 0 ? NULL : devices, aCallback, this, &error);
 		if (error != CL_SUCCESS) {
-			mContext = NULL;
+			mHandle.context = NULL;
 			return oclError("clCreateContext", error, false);
 		}
 		return true;
 	}
 
-	bool Context::create(const std::vector<Device>& aDevices, ErrorCallback aCallback) throw() {
+	bool ANVIL_CALL Context::create(const std::vector<Device>& aDevices, ErrorCallback aCallback) throw() {
 		const size_t s = aDevices.size();
 		return create(s == 0 ? NULL : &aDevices[0], s, aCallback);
 	}
 
-	bool Context::destroy() throw() {
-		if (mContext) {
-			cl_int error = clReleaseContext(mContext);
+	bool ANVIL_CALL Context::destroy() throw() {
+		if (mHandle.context) {
+			cl_int error = clReleaseContext(mHandle.context);
 			if (error != CL_SUCCESS) return oclError("clReleaseContext", error, false);
-			mContext = NULL;
+			mHandle.context = NULL;
 			return true;
 		}
 		return false;
 	}
-
+	
 	void ANVIL_CALL Context::swap(Context& aOther) throw() {
-		std::swap(mContext, aOther.mContext);
+		std::swap(mHandle, aOther.mHandle);
 	}
 
 	std::vector<Device> ANVIL_CALL Context::devices() const throw() {
-		return devices(mContext);
-	}
-
-	std::vector<Device> ANVIL_CALL Context::devices(cl_context aContext) throw() {
-		cl_uint count;
-		clGetContextInfo(aContext, CL_CONTEXT_NUM_DEVICES, sizeof(cl_uint), &count, NULL);
-		if (count == 0) return std::vector<Device>(0);
+		cl_uint count = 0;
+		clGetContextInfo(mHandle.context, CL_CONTEXT_NUM_DEVICES, sizeof(cl_uint), &count, NULL);
+		if (count == 0) return std::vector<Device>();
+		cl_device_id deviceIDs[Platform::MAX_DEVICES];
+		clGetContextInfo(mHandle.context, CL_CONTEXT_NUM_DEVICES, sizeof(cl_device_id) * count, deviceIDs, NULL);
 		std::vector<Device> devices(count, Device());
-		clGetContextInfo(aContext, CL_CONTEXT_NUM_DEVICES, sizeof(cl_device_id) * count, &devices[0], NULL);
+		for (cl_uint i = 0; i < count; ++i) devices[i].mHandle.device = deviceIDs[i];
 		return devices;
 	}
 

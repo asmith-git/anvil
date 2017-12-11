@@ -29,10 +29,8 @@ namespace anvil { namespace ocl {
 		cl_ulong end;
 	};
 
-	class Event {
+	class Event : public Object {
 	private:
-		cl_event mEvent;
-
 		Event(const Event&) = delete;
 		Event& operator=(const Event&) = delete;
 	public:
@@ -72,9 +70,7 @@ namespace anvil { namespace ocl {
 		ANVIL_CALL ~Event() throw();
 
 		Event& ANVIL_CALL operator=(Event&&) throw();
-		ANVIL_CALL operator bool() const throw();
-
-		bool ANVIL_CALL destroy() throw();
+		void ANVIL_CALL swap(Event&) throw();
 
 		bool ANVIL_CALL setListener(EventListener&) throw();
 		bool ANVIL_CALL wait() throw();
@@ -83,6 +79,10 @@ namespace anvil { namespace ocl {
 		ProfileInfo ANVIL_CALL profileInfo() const throw();
 
 		static bool ANVIL_CALL wait(const std::vector<Event>&) throw();
+
+		// Inherited from Object
+
+		bool ANVIL_CALL destroy() throw() override;
 	};
 
 	class EventListener {

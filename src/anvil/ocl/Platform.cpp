@@ -23,20 +23,20 @@ namespace anvil { namespace ocl {
 
 	// Platform
 
-	ANVIL_CALL Platform::Platform() throw() :
-		mPlatform(NULL)
-	{}
+	ANVIL_CALL Platform::Platform() throw() {
 
-	ANVIL_CALL Platform::Platform(cl_platform_id aPlatform) throw() :
-		mPlatform(aPlatform)
-	{}
+	}
 
-	ANVIL_CALL Platform::operator bool() const throw() {
-		return mPlatform != NULL;
+	ANVIL_CALL Platform::Platform(cl_platform_id aPlatform) throw() {
+		mHandle.platform = aPlatform;
+	}
+
+	bool ANVIL_CALL Platform::destroy() throw() {
+		return false;
 	}
 
 	void* ANVIL_CALL Platform::getInfo(cl_platform_info aName) const throw() {
-		const cl_int error = clGetPlatformInfo(mPlatform, aName, PLATFORM_INFO_BUFFER_SIZE, gPlatformInfoBuffer, nullptr);
+		const cl_int error = clGetPlatformInfo(mHandle.platform, aName, PLATFORM_INFO_BUFFER_SIZE, gPlatformInfoBuffer, nullptr);
 		if (error != CL_SUCCESS) oclError("clGetDeviceInfo", error);
 		return gPlatformInfoBuffer;
 	}
@@ -44,21 +44,23 @@ namespace anvil { namespace ocl {
 	std::vector<Device> ANVIL_CALL Platform::devices(Device::Type aType) const throw() {
 		// Queury the number of devices
 		cl_uint count = 0;
-		cl_int error = clGetDeviceIDs(mPlatform, aType, 0, NULL, &count);
+		cl_int error = clGetDeviceIDs(mHandle.platform, aType, 0, NULL, &count);
 		if (error != CL_SUCCESS) {
 			if(error != CL_DEVICE_NOT_FOUND) oclError("clGetDeviceIDs", error);
 			return std::vector<Device>();
 		}
 
 		// Allocate storage for devices
-		std::vector<Device> devices(count, Device());
+		cl_device_id deviceIDS[MAX_DEVICES];
 
 		// Get devices
-		error = clGetDeviceIDs(mPlatform, aType, count, reinterpret_cast<cl_device_id*>(&devices[0]), &count);
+		error = clGetDeviceIDs(mHandle.platform, aType, count, deviceIDS, &count);
 		if (error != CL_SUCCESS) {
 			oclError("clGetDeviceIDs", error);
 			return std::vector<Device>();
 		}
+		std::vector<Device> devices(count, Device());
+		for (cl_uint i = 0; i < count; ++i) devices[i].mHandle.device = deviceIDS[i];
 
 		// Return devices
 		return devices;
@@ -72,16 +74,19 @@ namespace anvil { namespace ocl {
 			oclError("clGetPlatformIDs", error);
 			return std::vector<Platform>();
 		}
+		if (count == 0) return std::vector<Platform>();
 
 		// Allocate storage for platforms
-		std::vector<Platform> platforms(count, Platform());
+		cl_platform_id platformIDs[MAX_PLATFORMS];
 
 		// Get platforms
-		error = clGetPlatformIDs(count, reinterpret_cast<cl_platform_id*>(&platforms[0]), &count);
+		error = clGetPlatformIDs(count, platformIDs, &count);
 		if (error != CL_SUCCESS) {
 			oclError("clGetPlatformIDs", error);
 			return std::vector<Platform>();
 		}
+		std::vector<Platform> platforms(count, Platform());
+		for (cl_uint i = 0; i < count; ++i) platforms[i].mHandle.platform = platformIDs[i];
 		
 		// Return platforms
 		return platforms;

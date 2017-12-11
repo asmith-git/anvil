@@ -20,18 +20,14 @@
 
 namespace anvil { namespace ocl {
 
-	class Program {
+	class Program : public Object {
 	private:
-		cl_program mProgram;
-		
 		Program(const Program&) = delete;
 		Program& operator=(const Program&) = delete;
 
 		ANVIL_CALL Program(Context&) throw();
-		bool ANVIL_CALL build(const std::vector<Device>&, const char*) throw();
+		bool ANVIL_CALL build(const cl_device_id*, size_t, const char*) throw();
 	public:
-		enum { MAX_DEVICES = 32 };
-
 		typedef std::string Source;
 		typedef std::vector<uint8_t> Binary;
 
@@ -40,10 +36,7 @@ namespace anvil { namespace ocl {
 		ANVIL_CALL ~Program() throw();
 
 		Program& ANVIL_CALL operator=(Program&&) throw();
-		ANVIL_CALL operator bool() const throw();
 		void ANVIL_CALL swap(Program&) throw();
-
-		bool ANVIL_CALL destroy() throw();
 
 		Source ANVIL_CALL source() const throw();
 		std::vector<Binary> ANVIL_CALL binaries() const throw();
@@ -57,6 +50,10 @@ namespace anvil { namespace ocl {
 		bool ANVIL_CALL create(Context&, const std::vector<Source>&, const char* aOptions = NULL) throw();
 		bool ANVIL_CALL create(Context&, const Binary&, const char* aOptions = NULL) throw();
 		bool ANVIL_CALL create(Context&, const std::vector<Binary>&, const char* aOptions = NULL) throw();
+
+		// Inherited from Object
+
+		bool ANVIL_CALL destroy() throw() override;
 	};
 }}
 

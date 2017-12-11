@@ -19,10 +19,8 @@
 
 namespace anvil { namespace ocl {
 
-	class CommandQueue {
+	class CommandQueue : public Object {
 	private:
-		cl_command_queue mQueue;
-
 		CommandQueue(const CommandQueue&) = delete;
 		CommandQueue& operator=(const CommandQueue&) = delete;
 	public:
@@ -30,10 +28,8 @@ namespace anvil { namespace ocl {
 		ANVIL_CALL CommandQueue(CommandQueue&&);
 		ANVIL_CALL ~CommandQueue() throw();
 		ANVIL_CALL CommandQueue& operator=(CommandQueue&&);
-		ANVIL_CALL operator bool() const throw();
 
 		bool ANVIL_CALL create(Context&, Device&, bool aOutOfOrder = false, bool aProfiling = false) throw();
-		bool ANVIL_CALL destroy() throw();
 
 #ifndef CL_VERSION_1_2
 		bool ANVIL_CALL barrier() throw();
@@ -42,6 +38,10 @@ namespace anvil { namespace ocl {
 		bool ANVIL_CALL flush() throw();
 		bool ANVIL_CALL finish() throw();
 		void ANVIL_CALL swap(CommandQueue&) throw();
+
+		// Inherited from Object
+
+		bool ANVIL_CALL destroy() throw() override;
 	};
 }}
 

@@ -23,20 +23,20 @@ namespace anvil { namespace ocl {
 
 	// Device
 
-	ANVIL_CALL Device::Device() :
-		mDevice(NULL)
-	{}
+	ANVIL_CALL Device::Device() {
 
-	ANVIL_CALL Device::Device(cl_device_id aDevice) :
-		mDevice(aDevice)
-	{}
+	}
 
-	ANVIL_CALL Device::operator bool() const throw() {
-		return mDevice != NULL;
+	ANVIL_CALL Device::Device(cl_device_id aDevice) {
+		mHandle.device = aDevice;
+	}
+
+	bool ANVIL_CALL Device::destroy() throw() {
+		return false;
 	}
 
 	void* ANVIL_CALL Device::getInfo(cl_device_info aName) const {
-		const cl_int error = clGetDeviceInfo(mDevice, aName, DEVICE_INFO_BUFFER_SIZE, gDeviceInfoBuffer, nullptr);
+		const cl_int error = clGetDeviceInfo(mHandle.device, aName, DEVICE_INFO_BUFFER_SIZE, gDeviceInfoBuffer, nullptr);
 		if (error != CL_SUCCESS) oclError("clGetDeviceInfo", error);
 		return gDeviceInfoBuffer;
 	}

@@ -19,15 +19,10 @@
 #include "anvil/ocl/Platform.hpp"
 
 namespace anvil { namespace ocl {
-	class Context {
+	class Context : public Object {
 	private:
-		cl_context mContext;
-
 		Context(Context&) = delete;
 		Context& operator=(Context&) = delete;
-
-		static std::vector<Device> ANVIL_CALL devices(cl_context) throw();
-
 	public:
 		typedef void (__stdcall *ErrorCallback)(const char*, const void*, size_t, void*);
 
@@ -36,16 +31,18 @@ namespace anvil { namespace ocl {
 		ANVIL_CALL ~Context() throw();
 
 		Context& ANVIL_CALL operator=(Context&&) throw();
-		ANVIL_CALL operator bool() const throw();
 
-		bool create(Device, ErrorCallback) throw();
-		bool create(const Device*, size_t, ErrorCallback) throw();
-		bool create(const std::vector<Device>&, ErrorCallback) throw();
-		bool destroy() throw();
+		bool ANVIL_CALL create(Device, ErrorCallback) throw();
+		bool ANVIL_CALL create(const Device*, size_t, ErrorCallback) throw();
+		bool ANVIL_CALL create(const std::vector<Device>&, ErrorCallback) throw();
 
-		void swap(Context&);
+		void ANVIL_CALL swap(Context&);
 
 		std::vector<Device> ANVIL_CALL devices() const throw();
+
+		// Inherited from Object
+
+		bool ANVIL_CALL destroy() throw() override;
 	};
 }}
 

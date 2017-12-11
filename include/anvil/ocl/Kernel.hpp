@@ -23,15 +23,13 @@
 
 namespace anvil { namespace ocl {
 
-	class Kernel {
+	class Kernel : public Object {
 	private:
 		enum State : uint8_t {
 			INITIALISED,
 			SOURCE_SET,
 			BUILT
 		};
-		cl_kernel mKernel;
-		
 		Kernel(const Kernel&) = delete;
 		Kernel& operator=(const Kernel&) = delete;
 
@@ -39,7 +37,7 @@ namespace anvil { namespace ocl {
 		template<class T>
 		inline T ANVIL_CALL getInfo(cl_mem_info aInfo) const throw() {
 			T tmp;
-			cl_int error = clGetKernelInfo(mKernel, aInfo, sizeof(T), &tmp, NULL);
+			cl_int error = clGetKernelInfo(mHandle.kernel, aInfo, sizeof(T), &tmp, NULL);
 			if (error != CL_SUCCESS) oclError("clGetKernelInfo ", error);
 			return tmp;
 		}
@@ -52,13 +50,9 @@ namespace anvil { namespace ocl {
 		ANVIL_CALL ~Kernel() throw();
 
 		Kernel& ANVIL_CALL operator=(Kernel&&) throw();
-		ANVIL_CALL operator bool() const throw();
 
 		void ANVIL_CALL swap(Kernel&) throw();
-
 		bool ANVIL_CALL create(const Program&, const char*) throw();
-		bool ANVIL_CALL destroy() throw();
-
 		Event ANVIL_CALL execute(CommandQueue&, cl_uint, const size_t *, const size_t*, const size_t*);
 
 		cl_uint arguments() const throw();
@@ -134,6 +128,10 @@ namespace anvil { namespace ocl {
 		Event ANVIL_CALL operator()(CommandQueue& aQueue, ARGS... aArguments) {
 			return execute<ARGS...>(aQueue, aArguments..);
 		}
+
+		// Inherited from Object
+
+		bool ANVIL_CALL destroy() throw() override;
 	};
 
 	class NativeKernel {

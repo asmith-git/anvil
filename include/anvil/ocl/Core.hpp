@@ -22,6 +22,38 @@
 #include "anvil/core/Keywords.hpp"
 
 namespace anvil { namespace ocl {
+
+	class Object {
+	public:
+		union Handle {
+			cl_context context;
+			cl_platform_id platform;
+			cl_device_id device;
+			cl_program program;
+			cl_kernel kernel;
+			cl_mem buffer;
+			cl_command_queue queue;
+			cl_event event;
+		};
+	protected:
+		Handle mHandle;
+	public:
+		friend class Context;
+		friend class Platform;
+		friend class Device;
+		friend class Program;
+		friend class Kernel;
+		friend class Buffer;
+		friend class CommandQueue;
+		friend class Event;
+
+		virtual ANVIL_CALL ~Object() throw();
+
+		Handle ANVIL_CALL handle() const throw();
+		ANVIL_CALL operator bool() const throw();
+		virtual bool ANVIL_CALL destroy() throw() = 0;
+	};
+
 	static bool ANVIL_CALL oclError(const char* aFunction, cl_int aCode, bool aReturnValue = false) {
 		std::string msg = "OpenCL reports error in call ";
 		msg	+= aFunction;

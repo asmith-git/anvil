@@ -20,13 +20,11 @@ namespace anvil { namespace ocl {
 
 	// CommandQueue
 
-	ANVIL_CALL CommandQueue::CommandQueue() throw() :
-		mQueue(NULL)
-	{}
+	ANVIL_CALL CommandQueue::CommandQueue() throw() {
 
-	ANVIL_CALL CommandQueue::CommandQueue(CommandQueue&& aOther) throw() :
-		mQueue(NULL)
-	{
+	}
+
+	ANVIL_CALL CommandQueue::CommandQueue(CommandQueue&& aOther) throw() {
 		swap(aOther);
 	}
 
@@ -39,67 +37,64 @@ namespace anvil { namespace ocl {
 		return *this;
 	}
 
-	ANVIL_CALL CommandQueue::operator bool() const throw() {
-		return mQueue != NULL;
-	}
-
 	void ANVIL_CALL CommandQueue::swap(CommandQueue& aOther) throw() {
-		std::swap(mQueue, aOther.mQueue);
+		std::swap(mHandle, aOther.mHandle);
 	}
 
 	bool CommandQueue::create(Context& aContext, Device& aDevice, bool aOutOfOrder, bool aProfiling) throw() {
-		if (mQueue) if (!destroy()) return false;
+		if (mHandle.queue) if (!destroy()) return false;
 
 		cl_int error = CL_SUCCESS;
 #ifdef CL_VERSION_2_0
 		cl_queue_properties properties = (aOutOfOrder ? CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE : 0) | (aProfiling ? CL_QUEUE_PROFILING_ENABLE : 0);
-		mQueue = clCreateCommandQueueWithProperties(
-			reinterpret_cast<cl_context&>(aDevice),
-			reinterpret_cast<cl_device_id&>(aDevice),
+		mHandle.queue = clCreateCommandQueueWithProperties(
+			aDevice.handle().context,
+			aDevice.handle().device,
 			aOutOfOrder || aProfiling ? &properties : NULL,
 			&error);
 		if (error != CL_SUCCESS) return oclError("clCreateCommandQueueWithProperties", error, false);
 #else
 		mQueue = clCreateCommandQueue(
-			reinterpret_cast<cl_context&>(aDevice),
-			reinterpret_cast<cl_device_id&>(aDevice),
+			aDevice.handle().context,
+			aDevice.handle().device,
 			(aOutOfOrder ? CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE : 0) | (aProfiling ? CL_QUEUE_PROFILING_ENABLE : 0),
 			&error);
 		if (error != CL_SUCCESS) return oclError("clCreateCommandQueue", error, false);
 #endif
-#
+		return true;
 	}
 
 	bool CommandQueue::destroy() throw() {
-		if (mQueue) {
+		if (mHandle.queue) {
 			finish();
-			cl_int error = clReleaseCommandQueue(mQueue);
+			cl_int error = clReleaseCommandQueue(mHandle.queue);
 			if (error != CL_SUCCESS) return oclError("clReleaseCommandQueue", error, false);
-			mQueue = NULL;
+			mHandle.queue = NULL;
 			return true;
 		}
 		return false;
 	}
 
 	bool ANVIL_CALL CommandQueue::flush() throw() {
-		cl_int error = clFlush(mQueue);
+		cl_int error = clFlush(mHandle.queue);
 		return error == CL_SUCCESS ? true : oclError("clFlush", error, false);
 	}
 
 	bool ANVIL_CALL CommandQueue::finish() throw() {
-		cl_int error = clFinish(mQueue);
+		cl_int error = clFinish(mHandle.queue);
 		return error == CL_SUCCESS ? true : oclError("clFinish", error, false);
 	}
 
 #ifndef CL_VERSION_1_2
 	bool ANVIL_CALL CommandQueue::barrier() throw() {
-		cl_int error = clEnqueueBarrier(mQueue);
+		cl_int error = clEnqueueBarrier(mHandle.queue);
 		return error == CL_SUCCESS ? true : oclError("clEnqueueBarrier", error, false);
 	}
 
 	Event ANVIL_CALL CommandQueue::pushMarker() throw() {
-		cl_event event;
-		cl_int error = clEnqueueMarker(mQueue, &event);
+		Event event;
+		cl_event& event_ref = event.handle().event;
+		cl_int error = clEnqueueMarker(mHandle.queue, &event_ref);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueMarker", error);
 			return Event();

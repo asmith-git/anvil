@@ -21,9 +21,8 @@ namespace anvil { namespace ocl {
 
 	class CommandQueue;
 
-	class Buffer {
+	class Buffer : public Object {
 	private:
-		cl_mem mBuffer;
 		bool mIsSubBuffer;
 
 		Buffer(const Buffer&) = delete;
@@ -32,7 +31,7 @@ namespace anvil { namespace ocl {
 		template<class T>
 		inline T ANVIL_CALL getInfo(cl_mem_info aInfo) const throw() {
 			T tmp;
-			cl_int error = clGetMemObjectInfo(mBuffer, aInfo, sizeof(T), &tmp, NULL);
+			cl_int error = clGetMemObjectInfo(mHandle.buffer, aInfo, sizeof(T), &tmp, NULL);
 			if (error != CL_SUCCESS) oclError("clGetMemObjectInfo", error);
 			return tmp;
 		}
@@ -55,12 +54,9 @@ namespace anvil { namespace ocl {
 
 		bool ANVIL_CALL create(Context&, size_t, AccessMode aMode = READ_WRITE) throw();
 		bool ANVIL_CALL create(Context&, size_t, void*, AccessMode aMode = READ_WRITE) throw();
-		bool destroy() throw();
 		
-		cl_mem ANVIL_CALL data() throw();
 		Buffer ANVIL_CALL createSubBuffer(size_t, size_t) throw();
 		bool ANVIL_CALL isSubBuffer() const throw();
-		ANVIL_CALL operator bool() const throw();
 		AccessMode ANVIL_CALL accessMode() const throw();
 		size_t ANVIL_CALL size() const throw();
 		void* ANVIL_CALL hostPtr() throw();
@@ -68,6 +64,9 @@ namespace anvil { namespace ocl {
 		Event ANVIL_CALL read(CommandQueue&, size_t, void*, size_t) const throw();
 		Event ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t) throw();
 		Event ANVIL_CALL copy(CommandQueue&, Buffer&, size_t, size_t, size_t) const throw();
+		// Inherited from Object
+
+		bool ANVIL_CALL destroy() throw() override;
 	};
 }}
 

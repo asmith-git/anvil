@@ -19,10 +19,8 @@
 #include "anvil/ocl/Core.hpp"
 
 namespace anvil { namespace ocl {
-	class Device {
+	class Device : public Object {
 	private:
-		cl_device_id mDevice;
-		
 		void* ANVIL_CALL getInfo(cl_device_info aName) const;
 
 		ANVIL_CALL Device(cl_device_id);
@@ -36,7 +34,6 @@ namespace anvil { namespace ocl {
 		};
 		
 		ANVIL_CALL Device();
-		ANVIL_CALL operator bool() const throw();
 		static std::vector<Device> ANVIL_CALL devices(Device::Type aType = Device::ALL);
 		
 		struct WorkItemCount {
@@ -109,6 +106,10 @@ namespace anvil { namespace ocl {
 		//! \todo CL_DEVICE_DOUBLE_FP_CONFIG, CL_DEVICE_HALF_FP_CONFIG
 	
 		#undef ANVIL_CL_GET_INFO
+
+		// Inherited from Object
+
+		bool ANVIL_CALL destroy() throw() override;
 	};
 }}
 

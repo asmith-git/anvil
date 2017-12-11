@@ -18,14 +18,12 @@ namespace anvil { namespace ocl {
 
 	// Event
 
-	ANVIL_CALL Event::Event() :
-		mEvent(NULL)
-	{}
+	ANVIL_CALL Event::Event() {
 
-	ANVIL_CALL Event::Event(Event&& aOther) throw() :
-		mEvent(NULL)
-	{
-		std::swap(mEvent, aOther.mEvent);
+	}
+
+	ANVIL_CALL Event::Event(Event&& aOther) throw() {
+		swap(aOther);
 	}
 
 	ANVIL_CALL Event::~Event() throw() {
@@ -33,27 +31,27 @@ namespace anvil { namespace ocl {
 	}
 
 	Event& ANVIL_CALL Event::operator=(Event&& aOther) throw() {
-		std::swap(mEvent, aOther.mEvent);
+		swap(aOther);
 		return *this;
 	}
 
-	ANVIL_CALL Event::operator bool() const throw() {
-		return mEvent != NULL;
+	void ANVIL_CALL Event::swap(Event& aOther) throw() {
+		std::swap(mHandle, aOther.mHandle);
 	}
 
 	bool ANVIL_CALL Event::destroy() throw() {
-		if (mEvent) {
-			cl_int error = clReleaseEvent(mEvent);
+		if (mHandle.event) {
+			cl_int error = clReleaseEvent(mHandle.event);
 			if (error != CL_SUCCESS) return oclError("clReleaseEvent", error, false);
-			mEvent = NULL;
+			mHandle.event = NULL;
 			return true;
 		}
 		return false;
 	}
 
 	bool ANVIL_CALL Event::wait() throw() {
-		if (!mEvent) return oclError("clWaitForEvents ", CL_INVALID_VALUE, false);
-		cl_int error = clWaitForEvents(1, &mEvent);
+		if (!mHandle.event) return oclError("clWaitForEvents ", CL_INVALID_VALUE, false);
+		cl_int error = clWaitForEvents(1, &mHandle.event);
 		if (error != CL_SUCCESS) return oclError("clWaitForEvents ", error, false);
 		return true;
 	}
@@ -61,28 +59,28 @@ namespace anvil { namespace ocl {
 	bool ANVIL_CALL Event::wait(const std::vector<Event>& aEvents) throw() {
 		const size_t count = aEvents.size();
 		if (count == 0) return oclError("clWaitForEvents ", CL_INVALID_VALUE, false);
-		cl_int error = clWaitForEvents(count, &aEvents[0].mEvent);
+		cl_int error = clWaitForEvents(count, &aEvents[0].mHandle.event);
 		if (error != CL_SUCCESS) return oclError("clWaitForEvents ", error, false);
 		return true;
 	}
 
 	Event::CommandType ANVIL_CALL Event::type() const throw() {
 		cl_command_type type;
-		cl_int error = clGetEventInfo(mEvent, CL_EVENT_COMMAND_TYPE, sizeof(cl_command_type), &type, NULL);
+		cl_int error = clGetEventInfo(mHandle.event, CL_EVENT_COMMAND_TYPE, sizeof(cl_command_type), &type, NULL);
 		if (error != CL_SUCCESS) return static_cast<Event::CommandType>(oclError("clGetEventInfo ", error, false));
 		return static_cast<Event::CommandType>(type);
 	}
 
 	Event::Status ANVIL_CALL Event::status() const throw() {
 		cl_int type;
-		cl_int error = clGetEventInfo(mEvent, CL_EVENT_COMMAND_EXECUTION_STATUS, sizeof(cl_int), &type, NULL);
+		cl_int error = clGetEventInfo(mHandle.event, CL_EVENT_COMMAND_EXECUTION_STATUS, sizeof(cl_int), &type, NULL);
 		if (error != CL_SUCCESS) return static_cast<Event::Status>(oclError("clGetEventInfo ", error, false));
 		return static_cast<Event::Status>(type);
 	}
 
 	bool ANVIL_CALL Event::setListener(EventListener& aListener) throw() {
 		cl_int error = clSetEventCallback(
-			mEvent,
+			mHandle.event,
 			CL_COMPLETE,
 			[](cl_event aEvent, cl_int, void* aListener) { 
 				static_cast<EventListener*>(aListener)->onComplete();
@@ -96,13 +94,13 @@ namespace anvil { namespace ocl {
 	ProfileInfo ANVIL_CALL Event::profileInfo() const throw() {
 		ProfileInfo info = {0, 0, 0, 0};
 		cl_int error;
-		error = clGetEventProfilingInfo(mEvent, CL_PROFILING_COMMAND_QUEUED, sizeof(cl_ulong), &info.queued, NULL);
+		error = clGetEventProfilingInfo(mHandle.event, CL_PROFILING_COMMAND_QUEUED, sizeof(cl_ulong), &info.queued, NULL);
 		if (error != CL_SUCCESS) oclError("clGetEventProfilingInfo ", error);
-		error = clGetEventProfilingInfo(mEvent, CL_PROFILING_COMMAND_SUBMIT, sizeof(cl_ulong), &info.submit, NULL);
+		error = clGetEventProfilingInfo(mHandle.event, CL_PROFILING_COMMAND_SUBMIT, sizeof(cl_ulong), &info.submit, NULL);
 		if (error != CL_SUCCESS) oclError("clGetEventProfilingInfo ", error);
-		error = clGetEventProfilingInfo(mEvent, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &info.start, NULL);
+		error = clGetEventProfilingInfo(mHandle.event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &info.start, NULL);
 		if (error != CL_SUCCESS) oclError("clGetEventProfilingInfo ", error);
-		error = clGetEventProfilingInfo(mEvent, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &info.end, NULL);
+		error = clGetEventProfilingInfo(mHandle.event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &info.end, NULL);
 		if (error != CL_SUCCESS) oclError("clGetEventProfilingInfo ", error);
 		return info;
 	}

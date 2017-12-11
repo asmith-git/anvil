@@ -18,15 +18,17 @@
 #include "anvil/ocl/Device.hpp"
 
 namespace anvil { namespace ocl {
-	class Platform {
+	class Platform : public Object {
 	private:
-		cl_platform_id mPlatform;
-		
 		void* ANVIL_CALL getInfo(cl_platform_info) const;
 		ANVIL_CALL Platform(cl_platform_id) throw();
 	public:
+		enum {
+			MAX_PLATFORMS = 16,
+			MAX_DEVICES = 64
+		};
+
 		ANVIL_CALL Platform() throw();
-		ANVIL_CALL operator bool() const throw();
 		
 		std::vector<Device> ANVIL_CALL devices(Device::Type aType = Device::ALL) const throw();
 		static std::vector<Platform> ANVIL_CALL platforms() throw();
@@ -41,6 +43,10 @@ namespace anvil { namespace ocl {
 		ANVIL_CL_GET_INFO(const char*, , extensions,   CL_PLATFORM_EXTENSIONS);
 
 		#undef ANVIL_CL_GET_INFO
+
+		// Inherited from Object
+
+		bool ANVIL_CALL destroy() throw() override;
 	};
 }}
 
