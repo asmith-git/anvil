@@ -105,8 +105,23 @@ namespace anvil { namespace ocl {
 		const cl_uint deviceCount = aDevices.size();
 		const cl_device_id* const devicePtr = deviceCount == 0 ? NULL : reinterpret_cast<const cl_device_id*>(&aDevices[0]);
 
-		cl_int error = clBuildProgram(mProgram, deviceCount, devicePtr, aOptions, [](cl_program, void*){}, NULL);
-		return error == CL_SUCCESS ? true : oclError("clBuildProgram", error, false);
+		cl_int error = clBuildProgram(mProgram, deviceCount, devicePtr, aOptions, NULL, NULL);
+
+		if (error != CL_SUCCESS) {
+			oclError("clBuildProgram", error);
+			if (error == CL_BUILD_PROGRAM_FAILURE) {
+				enum { ERROR_LOG_SIZE = 1024 };
+				char log[ERROR_LOG_SIZE];
+				for (const Device& i : aDevices) {
+					error = clGetProgramBuildInfo(mProgram, reinterpret_cast<const cl_device_id&>(i), CL_PROGRAM_BUILD_LOG, ERROR_LOG_SIZE, log, NULL);
+					std::cerr << "Error log for " << i.name() << " : " << log << std::endl;
+					if (error != CL_SUCCESS) oclError("clCreateProgramWithSource", error);
+				}
+			}
+			return false;
+		}
+
+		return true;
 	}
 	
 	bool ANVIL_CALL Program::create(Context& aContext, const Source& aSource, const char* aBuildOptions) throw() {
@@ -179,6 +194,24 @@ namespace anvil { namespace ocl {
 		}
 		delete[] binary_ptrs;
 		return binaries;
+	}
+
+	std::vector<Device> ANVIL_CALL Program::devices() const throw() {
+		size_t count;
+		cl_int error = clGetProgramInfo(mProgram, CL_PROGRAM_NUM_DEVICES, sizeof(size_t), &count, NULL);
+		if (error != CL_SUCCESS) {
+			oclError("clGetProgramInfo", error);
+			return std::vector<Device>();
+		}
+		if(count == 0) return  std::vector<Device>();
+
+		std::vector<Device> devices(count, Device());
+		error = clGetProgramInfo(mProgram, CL_PROGRAM_NUM_DEVICES, sizeof(cl_device_id) * count, &devices[0], NULL);
+		if (error != CL_SUCCESS) {
+			oclError("clGetProgramInfo", error);
+			return std::vector<Device>();
+		}
+		return devices;
 	}
 
 }}

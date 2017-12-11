@@ -47,6 +47,7 @@ namespace anvil { namespace ocl {
 
 		Source ANVIL_CALL source() const throw();
 		std::vector<Binary> ANVIL_CALL binaries() const throw();
+		std::vector<Device> ANVIL_CALL devices() const throw();
 
 		bool ANVIL_CALL createFromSource(Context&, const char*, const char* aOptions = NULL) throw();
 		bool ANVIL_CALL createFromSources(Context&, const char**, cl_uint, const char* aOptions = NULL) throw();
