@@ -51,12 +51,23 @@ namespace anvil { namespace ocl {
 		if (mQueue) if (!destroy()) return false;
 
 		cl_int error = CL_SUCCESS;
+#ifdef CL_VERSION_2_0
+		cl_queue_properties properties = (aOutOfOrder ? CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE : 0) | (aProfiling ? CL_QUEUE_PROFILING_ENABLE : 0);
+		mQueue = clCreateCommandQueueWithProperties(
+			reinterpret_cast<cl_context&>(aDevice),
+			reinterpret_cast<cl_device_id&>(aDevice),
+			aOutOfOrder || aProfiling ? &properties : NULL,
+			&error);
+		if (error != CL_SUCCESS) return oclError("clCreateCommandQueueWithProperties", error, false);
+#else
 		mQueue = clCreateCommandQueue(
 			reinterpret_cast<cl_context&>(aDevice),
 			reinterpret_cast<cl_device_id&>(aDevice),
 			(aOutOfOrder ? CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE : 0) | (aProfiling ? CL_QUEUE_PROFILING_ENABLE : 0),
 			&error);
 		if (error != CL_SUCCESS) return oclError("clCreateCommandQueue", error, false);
+#endif
+#
 	}
 
 	bool CommandQueue::destroy() throw() {

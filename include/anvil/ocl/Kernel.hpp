@@ -23,13 +23,7 @@
 
 namespace anvil { namespace ocl {
 
-	class KernelInterface {
-	public:
-		virtual ANVIL_CALL ~KernelInterface() {}
-		virtual Event ANVIL_CALL execute(CommandQueue&) = 0;
-	};
-
-	class Kernel : public KernelInterface {
+	class Kernel {
 	private:
 		enum State : uint8_t {
 			INITIALISED,
@@ -64,6 +58,8 @@ namespace anvil { namespace ocl {
 
 		bool ANVIL_CALL create(const Program&, const char*) throw();
 		bool ANVIL_CALL destroy() throw();
+
+		Event ANVIL_CALL execute(CommandQueue&, cl_uint, const size_t *, const size_t*, const size_t*);
 
 		cl_uint arguments() const throw();
 		const char* name() const throw();
@@ -138,12 +134,9 @@ namespace anvil { namespace ocl {
 		Event ANVIL_CALL operator()(CommandQueue& aQueue, ARGS... aArguments) {
 			return execute<ARGS...>(aQueue, aArguments..);
 		}
-
-		// Inherited from KernelInterface
-		Event ANVIL_CALL execute(CommandQueue&) override;
 	};
 
-	class NativeKernel : public KernelInterface {
+	class NativeKernel {
 	private:
 		static void __stdcall execute_(void*) throw();
 
@@ -159,8 +152,7 @@ namespace anvil { namespace ocl {
 		ANVIL_CALL NativeKernel(Context&);
 		virtual ANVIL_CALL ~NativeKernel();
 
-		// Inherited from KernelInterface
-		Event ANVIL_CALL execute(CommandQueue&) override;
+		Event ANVIL_CALL execute(CommandQueue&);
 	};
 }}
 
