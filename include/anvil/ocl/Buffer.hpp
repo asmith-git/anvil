@@ -32,7 +32,7 @@ namespace anvil { namespace ocl {
 		inline T ANVIL_CALL getInfo(cl_mem_info aInfo) const throw() {
 			T tmp;
 			cl_int error = clGetMemObjectInfo(mHandle.buffer, aInfo, sizeof(T), &tmp, NULL);
-			if (error != CL_SUCCESS) oclError("clGetMemObjectInfo", error);
+			if (error != CL_SUCCESS) oclError("clGetMemObjectInfo", error, std::to_string(aInfo).c_str());
 			return tmp;
 		}
 

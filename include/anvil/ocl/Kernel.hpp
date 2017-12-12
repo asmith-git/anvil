@@ -38,7 +38,7 @@ namespace anvil { namespace ocl {
 		inline T ANVIL_CALL getInfo(cl_mem_info aInfo) const throw() {
 			T tmp;
 			cl_int error = clGetKernelInfo(mHandle.kernel, aInfo, sizeof(T), &tmp, NULL);
-			if (error != CL_SUCCESS) oclError("clGetKernelInfo ", error);
+			if (error != CL_SUCCESS) oclError("clGetKernelInfo ", error, std::to_string(aInfo).c_str());
 			return tmp;
 		}
 

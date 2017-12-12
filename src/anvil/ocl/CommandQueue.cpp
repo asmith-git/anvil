@@ -54,14 +54,14 @@ namespace anvil { namespace ocl {
 			aDevice.mHandle.device,
 			aOutOfOrder || aProfiling ? &properties : NULL,
 			&error);
-		if (error != CL_SUCCESS) return oclError("clCreateCommandQueueWithProperties", error, false);
+		if (error != CL_SUCCESS) return oclError("clCreateCommandQueueWithProperties", error);
 #else
 		mHandle.queue = clCreateCommandQueue(
 			aContext.mHandle.context,
 			aDevice.mHandle.device,
 			(aOutOfOrder ? CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE : 0) | (aProfiling ? CL_QUEUE_PROFILING_ENABLE : 0),
 			&error);
-		if (error != CL_SUCCESS) return oclError("clCreateCommandQueue", error, false);
+		if (error != CL_SUCCESS) return oclError("clCreateCommandQueue", error);
 #endif
 		return true;
 	}
@@ -70,7 +70,7 @@ namespace anvil { namespace ocl {
 		if (mHandle.queue) {
 			finish();
 			cl_int error = clReleaseCommandQueue(mHandle.queue);
-			if (error != CL_SUCCESS) return oclError("clReleaseCommandQueue", error, false);
+			if (error != CL_SUCCESS) return oclError("clReleaseCommandQueue", error);
 			mHandle.queue = NULL;
 			return true;
 		}
@@ -83,25 +83,25 @@ namespace anvil { namespace ocl {
 		if (aHandle.queue) {
 			mHandle = aHandle;
 			cl_int error = clRetainCommandQueue(mHandle.queue);
-			if (error != CL_SUCCESS) return oclError("clRetainCommandQueue", error, false);
+			if (error != CL_SUCCESS) return oclError("clRetainCommandQueue", error);
 		}
 		return true;
 	}
 
 	bool ANVIL_CALL CommandQueue::flush() throw() {
 		cl_int error = clFlush(mHandle.queue);
-		return error == CL_SUCCESS ? true : oclError("clFlush", error, false);
+		return error == CL_SUCCESS ? true : oclError("clFlush", error);
 	}
 
 	bool ANVIL_CALL CommandQueue::finish() throw() {
 		cl_int error = clFinish(mHandle.queue);
-		return error == CL_SUCCESS ? true : oclError("clFinish", error, false);
+		return error == CL_SUCCESS ? true : oclError("clFinish", error);
 	}
 
 #ifndef CL_VERSION_1_2
 	bool ANVIL_CALL CommandQueue::barrier() throw() {
 		cl_int error = clEnqueueBarrier(mHandle.queue);
-		return error == CL_SUCCESS ? true : oclError("clEnqueueBarrier", error, false);
+		return error == CL_SUCCESS ? true : oclError("clEnqueueBarrier", error);
 	}
 
 	Event ANVIL_CALL CommandQueue::pushMarker() throw() {

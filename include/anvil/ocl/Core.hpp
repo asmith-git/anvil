@@ -76,7 +76,7 @@ namespace anvil { namespace ocl {
 	};
 
 	std::string ANVIL_CALL getOclError() throw();
-	bool ANVIL_CALL oclError(const char*, cl_int, bool aReturnValue = false)  throw();
+	bool ANVIL_CALL oclError(const char*, cl_int, const char* aExtraMsg = NULL)  throw();
 }}
 
 #endif

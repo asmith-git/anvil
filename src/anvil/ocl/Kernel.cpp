@@ -47,7 +47,7 @@ namespace anvil { namespace ocl {
 		mHandle.kernel = clCreateKernel(const_cast<Program&>(aProgram).handle().program, aName, &error);
 		if (error != CL_SUCCESS) {
 			mHandle.kernel = NULL;
-			return oclError("clCreateKernel", error, false);
+			return oclError("clCreateKernel", error, aName);
 		}
 		return true;
 	}
@@ -55,7 +55,7 @@ namespace anvil { namespace ocl {
 	bool ANVIL_CALL Kernel::destroy() throw() {
 		if (mHandle.kernel) {
 			cl_int error = clReleaseKernel(mHandle.kernel);
-			if (error != CL_SUCCESS) return oclError("clReleaseKernel", error, false);
+			if (error != CL_SUCCESS) return oclError("clReleaseKernel", error);
 			mHandle.kernel = NULL;
 			return true;
 		}
@@ -68,7 +68,7 @@ namespace anvil { namespace ocl {
 		if (aHandle.kernel) {
 			mHandle = aHandle;
 			cl_int error = clRetainKernel(mHandle.kernel);
-			if (error != CL_SUCCESS) return oclError("clRetainKernel", error, false);
+			if (error != CL_SUCCESS) return oclError("clRetainKernel", error);
 		}
 		return true;
 	}
@@ -85,7 +85,7 @@ namespace anvil { namespace ocl {
 
 	bool ANVIL_CALL Kernel::setArgument(cl_uint aIndex, const void* aSrc, size_t aBytes) {
 		cl_int error = clSetKernelArg(mHandle.kernel, aIndex, aBytes, aSrc);
-		if (error != CL_SUCCESS) return oclError("clSetKernelArg", error, false);
+		if (error != CL_SUCCESS) return oclError("clSetKernelArg", error, std::to_string(aIndex).c_str());
 		return true;
 	}
 

@@ -45,7 +45,7 @@ namespace anvil { namespace ocl {
 
 	void* ANVIL_CALL Device::getInfo(cl_device_info aName) const {
 		const cl_int error = clGetDeviceInfo(mHandle.device, aName, DEVICE_INFO_BUFFER_SIZE, gDeviceInfoBuffer, nullptr);
-		if (error != CL_SUCCESS) oclError("clGetDeviceInfo", error);
+		if (error != CL_SUCCESS) oclError("clGetDeviceInfo", error, std::to_string(aName).c_str());
 		return gDeviceInfoBuffer;
 	}
 

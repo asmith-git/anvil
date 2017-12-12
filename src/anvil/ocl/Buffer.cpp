@@ -58,7 +58,7 @@ namespace anvil { namespace ocl {
 		mHandle.buffer = clCreateBuffer(aContext.handle().context, flags, aSize, aHostPtr, &error);
 		if (error != CL_SUCCESS) {
 			mHandle.buffer = NULL;
-			return oclError("clCreateBuffer", error, false);
+			return oclError("clCreateBuffer", error);
 		}
 		return true;
 	}
@@ -66,7 +66,7 @@ namespace anvil { namespace ocl {
 	bool Buffer::destroy() throw() {
 		if (mHandle.buffer) {
 			cl_int error = clReleaseMemObject(mHandle.buffer);
-			if (error != CL_SUCCESS) return oclError("clReleaseMemObject", error, false);
+			if (error != CL_SUCCESS) return oclError("clReleaseMemObject", error);
 			mHandle.buffer = NULL;
 			return true;
 		}
@@ -79,7 +79,7 @@ namespace anvil { namespace ocl {
 		if (aHandle.buffer) {
 			mHandle = aHandle;
 			cl_int error = clRetainMemObject(mHandle.buffer);
-			if (error != CL_SUCCESS) return oclError("clRetainMemObject", error, false);
+			if (error != CL_SUCCESS) return oclError("clRetainMemObject", error);
 		}
 		return true;
 	}

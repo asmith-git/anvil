@@ -25,7 +25,7 @@ namespace anvil { namespace ocl {
 		return tmp;
 	}
 
-	bool ANVIL_CALL oclError(const char* aFunction, cl_int aCode, bool aReturnValue) {
+	bool ANVIL_CALL oclError(const char* aFunction, cl_int aCode, const char* aExtraMsg) {
 		std::string msg = aFunction;
 		msg += " returned ";
 
@@ -98,9 +98,15 @@ namespace anvil { namespace ocl {
 
 #undef ANVIL_OCL_CASE
 
+		if (aExtraMsg) {
+			msg += " (";
+			msg += aExtraMsg;
+			msg += ")";
+		}
+
 		gErrorMessage = msg;
 		std::cerr << msg << std::endl;
-		return aReturnValue;
+		return false;
 	}
 
 	// Object

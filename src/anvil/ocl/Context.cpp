@@ -49,7 +49,7 @@ namespace anvil { namespace ocl {
 		devices[0] = const_cast<Device*>(aDevices)[0].handle().device;
 		for (size_t i = 1; i < aCount; ++i) {
 			devices[i] = const_cast<Device*>(aDevices)[i].handle().device;
-			if (aDevices[i].platform() != platform) return oclError("(context platforms)", CL_INVALID_PLATFORM, false);
+			if (aDevices[i].platform() != platform) return oclError("anvil::ocl::Context::create", CL_INVALID_PLATFORM, "Devices are not on the same platform");
 		}
 
 		const cl_context_properties properties[3] = {
@@ -65,7 +65,7 @@ namespace anvil { namespace ocl {
 			}, this, &error);
 		if (error != CL_SUCCESS) {
 			mHandle.context = NULL;
-			return oclError("clCreateContext", error, false);
+			return oclError("clCreateContext", error);
 		}
 		return true;
 	}
@@ -78,7 +78,7 @@ namespace anvil { namespace ocl {
 	bool ANVIL_CALL Context::destroy() throw() {
 		if (mHandle.context) {
 			cl_int error = clReleaseContext(mHandle.context);
-			if (error != CL_SUCCESS) return oclError("clReleaseContext", error, false);
+			if (error != CL_SUCCESS) return oclError("clReleaseContext", error);
 			mHandle.context = NULL;
 			return true;
 		}
@@ -91,7 +91,7 @@ namespace anvil { namespace ocl {
 		if (aHandle.context) {
 			mHandle = aHandle;
 			cl_int error = clRetainContext(mHandle.context);
-			if (error != CL_SUCCESS) return oclError("clRetainContext", error, false);
+			if (error != CL_SUCCESS) return oclError("clRetainContext", error);
 		}
 		return true;
 	}
