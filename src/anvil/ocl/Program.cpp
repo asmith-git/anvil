@@ -110,7 +110,16 @@ namespace anvil { namespace ocl {
 
 		cl_int error = CL_SUCCESS;
 		mHandle.program = clCreateProgramWithBinary(aContext.mHandle.context, deviceCount, devicePtr, aLengths, reinterpret_cast<const unsigned char**>(aBinaries), binaryStatus, &error);
-		if (error != CL_SUCCESS) return oclError("clCreateProgramWithBinary", error);
+		if (error != CL_SUCCESS) {
+			oclError("clCreateProgramWithBinary", error);
+			for (cl_uint i = 0; i < deviceCount; ++i) {
+				std::string msg = devices[i].name();
+				msg += " ";
+				msg += binaryStatus[i] == CL_SUCCESS ? "CL_SUCCESS " : binaryStatus[i] == CL_INVALID_VALUE ? "CL_INVALID_VALUE " : "CL_INVALID_BINARY ";
+				oclError("anvil::ocl::Program::createFromBinaries", error, msg.c_str());
+			}
+			return false;
+		}
 		return build(devicePtr, deviceCount, aBuildOptions);
 	}
 
@@ -122,9 +131,10 @@ namespace anvil { namespace ocl {
 			if (error == CL_BUILD_PROGRAM_FAILURE) {
 				enum { ERROR_LOG_SIZE = 1024 };
 				char log[ERROR_LOG_SIZE];
+				Handle h;
+				h.type = Object::DEVICE;
 				for (size_t i = 0; i < aDeviceCount; ++i) {
 					error = clGetProgramBuildInfo(mHandle.program, aDevices[i], CL_PROGRAM_BUILD_LOG, ERROR_LOG_SIZE, log, NULL);
-					Handle h;
 					h.device = aDevices[i];
 					Device d;
 					d.create(h);
