@@ -20,7 +20,9 @@ namespace anvil { namespace ocl {
 
 
 	std::string ANVIL_CALL getOclError() throw() {
-		return gErrorMessage;
+		std::string tmp = gErrorMessage;
+		gErrorMessage.clear();
+		return tmp;
 	}
 
 	bool ANVIL_CALL oclError(const char* aFunction, cl_int aCode, bool aReturnValue) {
