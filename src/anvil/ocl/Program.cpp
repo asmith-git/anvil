@@ -72,7 +72,7 @@ namespace anvil { namespace ocl {
 		const size_t deviceCount = devices.size();
 		if(deviceCount != aCount) return oclError("(source count)", CL_INVALID_DEVICE, false);
 		cl_device_id devicePtr[Platform::MAX_DEVICES];
-		if (deviceCount != 0) for (size_t i = 0; i < deviceCount; ++i) devicePtr[i] = devices[i].handle().device;
+		if (deviceCount != 0) for (size_t i = 0; i < deviceCount; ++i) devicePtr[i] = devices[i].mHandle.device;
 
 		return build(devicePtr, deviceCount, aBuildOptions);
 	}
@@ -96,7 +96,7 @@ namespace anvil { namespace ocl {
 		if (deviceCount != aCount) return oclError("(binary count)", CL_INVALID_DEVICE, false);
 		if (aCount != deviceCount) return oclError("clCreateProgramWithBinary", CL_INVALID_VALUE, false);
 		cl_device_id devicePtr[Platform::MAX_DEVICES];
-		if (deviceCount != 0) for (cl_uint i = 0; i < deviceCount; ++i) devicePtr[i] = devices[i].handle().device;
+		if (deviceCount != 0) for (cl_uint i = 0; i < deviceCount; ++i) devicePtr[i] = devices[i].mHandle.device;
 
 		cl_int error = CL_SUCCESS;
 		mHandle.program = clCreateProgramWithBinary(aContext.handle().context, deviceCount, devicePtr, aLengths, reinterpret_cast<const unsigned char**>(aBinaries), NULL, &error);
