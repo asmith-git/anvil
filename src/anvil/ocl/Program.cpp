@@ -19,15 +19,17 @@ namespace anvil { namespace ocl {
 
 	// Program
 
-	ANVIL_CALL Program::Program() throw() {
+	ANVIL_CALL Program::Program() throw() :
+		Object(PROGRAM)
+	{}
 
-	}
+	ANVIL_CALL Program::Program(Context& aContext) throw() :
+		Object(PROGRAM)
+	{}
 
-	ANVIL_CALL Program::Program(Context& aContext) throw() {
-
-	}
-
-	ANVIL_CALL Program::Program(Program&& aOther) throw() {
+	ANVIL_CALL Program::Program(Program&& aOther) throw() :
+		Object(PROGRAM) 
+	{
 		swap(aOther);
 	}
 
@@ -52,6 +54,17 @@ namespace anvil { namespace ocl {
 			return true;
 		}
 		return false;
+	}
+
+	bool ANVIL_CALL Program::create(Handle aHandle) throw() {
+		if (aHandle.type != PROGRAM) return false;
+		if (mHandle.program != NULL) if (!destroy()) return false;
+		if (aHandle.program) {
+			mHandle = aHandle;
+			cl_int error = clRetainProgram(mHandle.program);
+			if (error != CL_SUCCESS) return oclError("clRetainProgram", error, false);
+		}
+		return true;
 	}
 
 	bool ANVIL_CALL Program::createFromSource(Context& aContext, const char* aSource, const char* aBuildOptions) throw() {

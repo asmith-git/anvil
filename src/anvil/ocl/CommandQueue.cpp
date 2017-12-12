@@ -20,11 +20,13 @@ namespace anvil { namespace ocl {
 
 	// CommandQueue
 
-	ANVIL_CALL CommandQueue::CommandQueue() throw() {
+	ANVIL_CALL CommandQueue::CommandQueue() throw() :
+		Object(COMMAND_QUEUE) 
+	{}
 
-	}
-
-	ANVIL_CALL CommandQueue::CommandQueue(CommandQueue&& aOther) throw() {
+	ANVIL_CALL CommandQueue::CommandQueue(CommandQueue&& aOther) throw() :
+		Object(COMMAND_QUEUE) 
+	{
 		swap(aOther);
 	}
 
@@ -73,6 +75,17 @@ namespace anvil { namespace ocl {
 			return true;
 		}
 		return false;
+	}
+
+	bool ANVIL_CALL CommandQueue::create(Handle aHandle) throw() {
+		if (aHandle.type != COMMAND_QUEUE) return false;
+		if (mHandle.queue != NULL) if (!destroy()) return false;
+		if (aHandle.queue) {
+			mHandle = aHandle;
+			cl_int error = clRetainCommandQueue(mHandle.queue);
+			if (error != CL_SUCCESS) return oclError("clRetainCommandQueue", error, false);
+		}
+		return true;
 	}
 
 	bool ANVIL_CALL CommandQueue::flush() throw() {

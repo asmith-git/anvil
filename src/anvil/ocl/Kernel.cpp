@@ -19,11 +19,13 @@ namespace anvil { namespace ocl {
 
 	// Kernel
 
-	ANVIL_CALL Kernel::Kernel() throw() {
+	ANVIL_CALL Kernel::Kernel() throw() :
+		Object(KERNEL) 
+	{}
 
-	}
-
-	ANVIL_CALL Kernel::Kernel(Kernel&& aOther) throw() {
+	ANVIL_CALL Kernel::Kernel(Kernel&& aOther) throw():
+		Object(KERNEL) 
+	{
 		swap(aOther);
 	}
 
@@ -58,6 +60,17 @@ namespace anvil { namespace ocl {
 			return true;
 		}
 		return false;
+	}
+
+	bool ANVIL_CALL Kernel::create(Handle aHandle) throw() {
+		if (aHandle.type != KERNEL) return false;
+		if (mHandle.kernel != NULL) if (!destroy()) return false;
+		if (aHandle.kernel) {
+			mHandle = aHandle;
+			cl_int error = clRetainKernel(mHandle.kernel);
+			if (error != CL_SUCCESS) return oclError("clRetainKernel", error, false);
+		}
+		return true;
 	}
 
 	Event ANVIL_CALL Kernel::execute(CommandQueue& aQueue, cl_uint aDimensions, const size_t *aGlobalOffset, const size_t *aGlobalWorkSize, const size_t *aLocalWorkSize) {

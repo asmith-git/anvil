@@ -18,11 +18,13 @@ namespace anvil { namespace ocl {
 
 	// Event
 
-	ANVIL_CALL Event::Event() {
+	ANVIL_CALL Event::Event() :
+		Object(EVENT) 
+	{}
 
-	}
-
-	ANVIL_CALL Event::Event(Event&& aOther) throw() {
+	ANVIL_CALL Event::Event(Event&& aOther) throw() :
+		Object(EVENT)
+	{
 		swap(aOther);
 	}
 
@@ -47,6 +49,17 @@ namespace anvil { namespace ocl {
 			return true;
 		}
 		return false;
+	}
+
+	bool ANVIL_CALL Event::create(Handle aHandle) throw() {
+		if (aHandle.type != EVENT) return false;
+		if (mHandle.event != NULL) if (!destroy()) return false;
+		if (aHandle.event) {
+			mHandle = aHandle;
+			cl_int error = clRetainEvent(mHandle.event);
+			if (error != CL_SUCCESS) return oclError("clRetainEvent", error, false);
+		}
+		return true;
 	}
 
 	bool ANVIL_CALL Event::wait() throw() {

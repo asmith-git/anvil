@@ -23,16 +23,24 @@ namespace anvil { namespace ocl {
 
 	// Platform
 
-	ANVIL_CALL Platform::Platform() throw() {
+	ANVIL_CALL Platform::Platform() throw() :
+		Object(PLATFORM) 
+	{}
 
-	}
-
-	ANVIL_CALL Platform::Platform(cl_platform_id aPlatform) throw() {
+	ANVIL_CALL Platform::Platform(cl_platform_id aPlatform) throw() :
+		Object(PLATFORM) 
+	{
 		mHandle.platform = aPlatform;
 	}
 
 	bool ANVIL_CALL Platform::destroy() throw() {
 		return false;
+	}
+
+	bool ANVIL_CALL Platform::create(Handle aHandle) throw() {
+		if (aHandle.type != PLATFORM) return false;
+		mHandle = aHandle;
+		return true;
 	}
 
 	void* ANVIL_CALL Platform::getInfo(cl_platform_info aName) const throw() {

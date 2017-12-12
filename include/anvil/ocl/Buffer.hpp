@@ -64,8 +64,10 @@ namespace anvil { namespace ocl {
 		Event ANVIL_CALL read(CommandQueue&, size_t, void*, size_t) const throw();
 		Event ANVIL_CALL write(CommandQueue&, size_t, const void*, size_t) throw();
 		Event ANVIL_CALL copy(CommandQueue&, Buffer&, size_t, size_t, size_t) const throw();
+
 		// Inherited from Object
 
+		bool ANVIL_CALL create(Handle) throw() override;
 		bool ANVIL_CALL destroy() throw() override;
 	};
 }}

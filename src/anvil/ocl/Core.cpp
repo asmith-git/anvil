@@ -18,8 +18,9 @@ namespace anvil { namespace ocl {
 
 	// Object
 
-	ANVIL_CALL Object::Object() throw() {
+	ANVIL_CALL Object::Object(Type aType) throw() {
 		mHandle.context = NULL;
+		mHandle.type = aType;
 	}
 
 	ANVIL_CALL Object::~Object() throw() {

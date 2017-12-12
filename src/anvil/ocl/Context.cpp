@@ -19,11 +19,13 @@ namespace anvil { namespace ocl {
 
 	// Context
 
-	ANVIL_CALL Context::Context() throw() {
+	ANVIL_CALL Context::Context() throw() :
+		Object(CONTEXT) 
+	{}
 
-	}
-
-	ANVIL_CALL Context::Context(Context&& aOther) throw() {
+	ANVIL_CALL Context::Context(Context&& aOther) throw() :
+		Object(CONTEXT) 
+	{
 		swap(aOther);
 	}
 
@@ -81,6 +83,17 @@ namespace anvil { namespace ocl {
 			return true;
 		}
 		return false;
+	}
+
+	bool ANVIL_CALL Context::create(Handle aHandle) throw() {
+		if (aHandle.type != CONTEXT) return false;
+		if (mHandle.context != NULL) if (!destroy()) return false;
+		if (aHandle.context) {
+			mHandle = aHandle;
+			cl_int error = clRetainContext(mHandle.context);
+			if (error != CL_SUCCESS) return oclError("clRetainContext", error, false);
+		}
+		return true;
 	}
 	
 	void ANVIL_CALL Context::swap(Context& aOther) throw() {

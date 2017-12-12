@@ -23,16 +23,24 @@ namespace anvil { namespace ocl {
 
 	// Device
 
-	ANVIL_CALL Device::Device() {
+	ANVIL_CALL Device::Device() :
+		Object(DEVICE) 
+	{}
 
-	}
-
-	ANVIL_CALL Device::Device(cl_device_id aDevice) {
+	ANVIL_CALL Device::Device(cl_device_id aDevice) :
+		Object(DEVICE) 
+	{
 		mHandle.device = aDevice;
 	}
 
 	bool ANVIL_CALL Device::destroy() throw() {
 		return false;
+	}
+
+	bool ANVIL_CALL Device::create(Handle aHandle) throw() {
+		if (aHandle.type != DEVICE) return false;
+		mHandle = aHandle;
+		return true;
 	}
 
 	void* ANVIL_CALL Device::getInfo(cl_device_info aName) const {

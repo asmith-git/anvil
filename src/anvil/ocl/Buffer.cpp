@@ -21,10 +21,12 @@ namespace anvil { namespace ocl {
 	// Buffer
 
 	ANVIL_CALL Buffer::Buffer() throw() :
+		Object(BUFFER),
 		mIsSubBuffer(false)
 	{}
 
 	ANVIL_CALL Buffer::Buffer(Buffer&& aOther) throw() :
+		Object(BUFFER),
 		mIsSubBuffer(false)
 	{
 		swap(aOther);
@@ -69,6 +71,17 @@ namespace anvil { namespace ocl {
 			return true;
 		}
 		return false;
+	}
+
+	bool ANVIL_CALL Buffer::create(Handle aHandle) throw() {
+		if (aHandle.type != BUFFER) return false;
+		if (mHandle.buffer != NULL) if (!destroy()) return false;
+		if (aHandle.buffer) {
+			mHandle = aHandle;
+			cl_int error = clRetainMemObject(mHandle.buffer);
+			if (error != CL_SUCCESS) return oclError("clRetainMemObject", error, false);
+		}
+		return true;
 	}
 
 	cl_mem_flags ANVIL_CALL Buffer::flags() const throw() {

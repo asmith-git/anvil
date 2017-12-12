@@ -119,18 +119,21 @@ namespace anvil { namespace ocl {
 		}
 
 		template<class ...ARGS>
-		Event ANVIL_CALL execute(CommandQueue& aQueue, ARGS... aArguments) {
+		Event ANVIL_CALL execute(CommandQueue& aQueue, cl_uint aDimensions, const size_t* aGlobalOffset,
+			const size_t* aGlobalWorkSize, const size_t* aLocalWorkSize, ARGS... aArguments) {
 			if(! setArguments<ARGS...>(aArguments...)) return Event();
-			return execute(aQueue);
+			return execute(aQueue, aDimensions, aGlobalOffset, aGlobalWorkSize, aLocalWorkSize);
 		}
 
 		template<class ...ARGS>
-		Event ANVIL_CALL operator()(CommandQueue& aQueue, ARGS... aArguments) {
-			return execute<ARGS...>(aQueue, aArguments..);
+		Event ANVIL_CALL operator()(CommandQueue& aQueue, cl_uint aDimensions, const size_t* aGlobalOffset,
+			const size_t* aGlobalWorkSize, const size_t* aLocalWorkSize, ARGS... aArguments) {
+			return execute<ARGS...>(aQueue, aDimensions, aGlobalOffset, aGlobalWorkSize, aLocalWorkSize, aArguments..);
 		}
 
 		// Inherited from Object
 
+		bool ANVIL_CALL create(Handle) throw() override;
 		bool ANVIL_CALL destroy() throw() override;
 	};
 

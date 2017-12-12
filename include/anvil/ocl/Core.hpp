@@ -18,22 +18,41 @@
 #include <string>
 #include <stdexcept>
 #include <iostream>
+#include <cstdint>
 #include <CL/CL.h>
 #include "anvil/core/Keywords.hpp"
 
 namespace anvil { namespace ocl {
 
+	class NativeKernel;
+
 	class Object {
 	public:
-		union Handle {
-			cl_context context;
-			cl_platform_id platform;
-			cl_device_id device;
-			cl_program program;
-			cl_kernel kernel;
-			cl_mem buffer;
-			cl_command_queue queue;
-			cl_event event;
+		enum Type : uint8_t {
+			UNKNOWN,
+			CONTEXT,
+			PLATFORM,
+			DEVICE,
+			PROGRAM,
+			KERNEL,
+			NATIVE_KERNEL,
+			BUFFER,
+			COMMAND_QUEUE,
+			EVENT
+		};
+		struct Handle {
+			union {
+				cl_context context;
+				cl_platform_id platform;
+				cl_device_id device;
+				cl_program program;
+				cl_kernel kernel;
+				cl_mem buffer;
+				cl_command_queue queue;
+				cl_event event;
+				NativeKernel* native;
+			};
+			Type type;
 		};
 	protected:
 		Handle mHandle;
@@ -47,11 +66,12 @@ namespace anvil { namespace ocl {
 		friend class CommandQueue;
 		friend class Event;
 
-		ANVIL_CALL Object() throw();
+		ANVIL_CALL Object(Type) throw();
 		virtual ANVIL_CALL ~Object() throw();
 
 		Handle ANVIL_CALL handle() const throw();
 		ANVIL_CALL operator bool() const throw();
+		virtual bool ANVIL_CALL create(Handle) throw() = 0;
 		virtual bool ANVIL_CALL destroy() throw() = 0;
 	};
 
