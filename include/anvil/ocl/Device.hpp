@@ -19,6 +19,9 @@
 #include "anvil/ocl/Core.hpp"
 
 namespace anvil { namespace ocl {
+
+	//! \todo Sub-devices
+
 	class Device : public Object {
 	private:
 		void* ANVIL_CALL getInfo(cl_device_info aName) const;

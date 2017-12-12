@@ -24,6 +24,8 @@
 
 namespace anvil { namespace ocl {
 
+	//! \todo Time of creation
+
 	class NativeKernel;
 
 	class Object {
