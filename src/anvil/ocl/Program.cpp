@@ -55,10 +55,7 @@ namespace anvil { namespace ocl {
 	}
 
 	bool ANVIL_CALL Program::createFromSource(Context& aContext, const char* aSource, const char* aBuildOptions) throw() {
-		const char* sources[Platform::MAX_DEVICES];
-		const size_t count = aContext.devices().size();
-		for (size_t i = 0; i < count; ++i) sources[i] = aSource;
-		return createFromSources(aContext, sources, count, aBuildOptions);
+		return createFromSources(aContext, &aSource, 1, aBuildOptions);
 	}
 
 	bool ANVIL_CALL Program::createFromSources(Context& aContext, const char** aSources, cl_uint aCount, const char* aBuildOptions) throw() {
@@ -70,7 +67,6 @@ namespace anvil { namespace ocl {
 
 		std::vector<Device> devices = aContext.devices();
 		const size_t deviceCount = devices.size();
-		if(deviceCount != aCount) return oclError("(source count)", CL_INVALID_DEVICE, false);
 		cl_device_id devicePtr[Platform::MAX_DEVICES];
 		if (deviceCount != 0) for (size_t i = 0; i < deviceCount; ++i) devicePtr[i] = devices[i].mHandle.device;
 
