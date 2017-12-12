@@ -44,12 +44,12 @@ namespace anvil { namespace ocl {
 
 		bool ANVIL_CALL createFromSource(Context&, const char*, const char* aOptions = NULL) throw();
 		bool ANVIL_CALL createFromSources(Context&, const char**, cl_uint, const char* aOptions = NULL) throw();
-		bool ANVIL_CALL createFromBinary(Context&, const void*, size_t, const char* aOptions = NULL) throw();
-		bool ANVIL_CALL createFromBinaries(Context&, const void**, const size_t*, size_t, const char* aOptions = NULL) throw();
+		bool ANVIL_CALL createFromBinary(Context&, const uint8_t*, size_t) throw();
+		bool ANVIL_CALL createFromBinaries(Context&, const uint8_t**, const size_t*, size_t) throw();
 		bool ANVIL_CALL create(Context&, const Source&, const char* aOptions = NULL) throw();
 		bool ANVIL_CALL create(Context&, const std::vector<Source>&, const char* aOptions = NULL) throw();
-		bool ANVIL_CALL create(Context&, const Binary&, const char* aOptions = NULL) throw();
-		bool ANVIL_CALL create(Context&, const std::vector<Binary>&, const char* aOptions = NULL) throw();
+		bool ANVIL_CALL create(Context&, const Binary&) throw();
+		bool ANVIL_CALL create(Context&, const std::vector<Binary>&) throw();
 
 		// Inherited from Object
 
