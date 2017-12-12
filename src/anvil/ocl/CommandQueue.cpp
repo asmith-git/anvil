@@ -48,15 +48,15 @@ namespace anvil { namespace ocl {
 #ifdef CL_VERSION_2_0
 		cl_queue_properties properties = (aOutOfOrder ? CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE : 0) | (aProfiling ? CL_QUEUE_PROFILING_ENABLE : 0);
 		mHandle.queue = clCreateCommandQueueWithProperties(
-			aDevice.handle().context,
-			aDevice.handle().device,
+			aDevice.mHandle.context,
+			aDevice.mHandle.device,
 			aOutOfOrder || aProfiling ? &properties : NULL,
 			&error);
 		if (error != CL_SUCCESS) return oclError("clCreateCommandQueueWithProperties", error, false);
 #else
-		mQueue = clCreateCommandQueue(
-			aDevice.handle().context,
-			aDevice.handle().device,
+		mHandle.queue = clCreateCommandQueue(
+			aDevice.mHandle.context,
+			aDevice.mHandle.device,
 			(aOutOfOrder ? CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE : 0) | (aProfiling ? CL_QUEUE_PROFILING_ENABLE : 0),
 			&error);
 		if (error != CL_SUCCESS) return oclError("clCreateCommandQueue", error, false);
