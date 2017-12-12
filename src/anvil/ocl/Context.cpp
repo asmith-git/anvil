@@ -46,7 +46,7 @@ namespace anvil { namespace ocl {
 		cl_platform_id platform = aCount == 0 ? NULL : aDevices[0].platform();
 		devices[0] = const_cast<Device*>(aDevices)[0].handle().device;
 		for (size_t i = 1; i < aCount; ++i) {
-			const_cast<Device*>(aDevices)[i].handle().device;
+			devices[i] = const_cast<Device*>(aDevices)[i].handle().device;
 			if (aDevices[i].platform() != platform) return oclError("(context platforms)", CL_INVALID_PLATFORM, false);
 		}
 
