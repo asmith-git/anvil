@@ -95,7 +95,7 @@ namespace anvil {
 		ANVIL_CONSTEXPR_CLA ANVIL_CALL PrimativeValue(float64_t aValue) throw();
 		
 		template<class T>
-		ANVIL_CALL PrimativeValue::PrimativeValue(Type aType, T aValue) throw() :
+		ANVIL_CALL PrimativeValue(Type aType, T aValue) throw() :
 			type(aType),
 			value()
 		{
