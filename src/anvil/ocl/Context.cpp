@@ -31,18 +31,25 @@ namespace anvil { namespace ocl {
 		destroy();
 	}
 
-	bool ANVIL_CALL Context::create(Device aDevice, ErrorCallback aCallback) throw() {
-		return create(&aDevice, 1, aCallback);
+	void ANVIL_CALL Context::onError(const char* aErrorInfo, const void* aPrivateInfo, size_t aPrivateInfoSize) throw() {
+
 	}
 
-	bool ANVIL_CALL Context::create(const Device* aDevices, size_t aCount, ErrorCallback aCallback) throw() {
+	bool ANVIL_CALL Context::create(Device aDevice) throw() {
+		return create(&aDevice, 1);
+	}
+
+	bool ANVIL_CALL Context::create(const Device* aDevices, size_t aCount) throw() {
 		if (mHandle.context) if (!destroy()) return false;
 
 		cl_device_id devices[Platform::MAX_DEVICES];
 		for (size_t i = 0; i < aCount; ++i) devices[i] = const_cast<Device*>(aDevices)[i].handle().device;
 
 		cl_int error = CL_SUCCESS;
-		mHandle.context = clCreateContext(NULL, aCount, aCount == 0 ? NULL : devices, aCallback, this, &error);
+		mHandle.context = clCreateContext(NULL, aCount, aCount == 0 ? NULL : devices, 
+			[](const char* aErrorInfo, const void* aPrivateInfo, size_t aPrivateInfoSize, void* aUserData)->void {
+				static_cast<Context*>(aUserData)->onError(aErrorInfo, aPrivateInfo, aPrivateInfoSize);
+			}, this, &error);
 		if (error != CL_SUCCESS) {
 			mHandle.context = NULL;
 			return oclError("clCreateContext", error, false);
@@ -50,9 +57,9 @@ namespace anvil { namespace ocl {
 		return true;
 	}
 
-	bool ANVIL_CALL Context::create(const std::vector<Device>& aDevices, ErrorCallback aCallback) throw() {
+	bool ANVIL_CALL Context::create(const std::vector<Device>& aDevices) throw() {
 		const size_t s = aDevices.size();
-		return create(s == 0 ? NULL : &aDevices[0], s, aCallback);
+		return create(s == 0 ? NULL : &aDevices[0], s);
 	}
 
 	bool ANVIL_CALL Context::destroy() throw() {

@@ -23,8 +23,9 @@ namespace anvil { namespace ocl {
 	private:
 		Context(Context&) = delete;
 		Context& operator=(Context&) = delete;
+	protected:
+		virtual void ANVIL_CALL onError(const char*, const void*, size_t) throw();
 	public:
-		typedef void (__stdcall *ErrorCallback)(const char*, const void*, size_t, void*);
 
 		ANVIL_CALL Context() throw();
 		ANVIL_CALL Context(Context&&) throw();
@@ -32,9 +33,9 @@ namespace anvil { namespace ocl {
 
 		Context& ANVIL_CALL operator=(Context&&) throw();
 
-		bool ANVIL_CALL create(Device, ErrorCallback) throw();
-		bool ANVIL_CALL create(const Device*, size_t, ErrorCallback) throw();
-		bool ANVIL_CALL create(const std::vector<Device>&, ErrorCallback) throw();
+		bool ANVIL_CALL create(Device) throw();
+		bool ANVIL_CALL create(const Device*, size_t) throw();
+		bool ANVIL_CALL create(const std::vector<Device>&) throw();
 
 		void ANVIL_CALL swap(Context&);
 
