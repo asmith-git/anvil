@@ -31,10 +31,8 @@ namespace anvil { namespace ocl {
 
 		bool ANVIL_CALL create(Context&, Device&, bool aOutOfOrder = false, bool aProfiling = false) throw();
 
-#ifndef CL_VERSION_1_2
-		bool ANVIL_CALL barrier() throw();
+		Event ANVIL_CALL barrier() throw();
 		Event ANVIL_CALL pushMarker() throw();
-#endif
 		bool ANVIL_CALL flush() throw();
 		bool ANVIL_CALL finish() throw();
 		void ANVIL_CALL swap(CommandQueue&) throw();

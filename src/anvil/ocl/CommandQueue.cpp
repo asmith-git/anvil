@@ -98,21 +98,39 @@ namespace anvil { namespace ocl {
 		return error == CL_SUCCESS ? true : oclError("clFinish", error);
 	}
 
-#ifndef CL_VERSION_1_2
-	bool ANVIL_CALL CommandQueue::barrier() throw() {
+	Event ANVIL_CALL CommandQueue::barrier() throw() {
+#ifdef CL_VERSION_1_2
+		Event event;
+		cl_event& event_ref = event.mHandle.event;
+		cl_int error = clEnqueueBarrierWithWaitList(mHandle.queue, 0, NULL, &event_ref);
+		if (error != CL_SUCCESS) {
+			oclError("clEnqueueBarrierWithWaitList", error);
+			return Event();
+		}
+		return event;
+#else
 		cl_int error = clEnqueueBarrier(mHandle.queue);
-		return error == CL_SUCCESS ? true : oclError("clEnqueueBarrier", error);
+		if(error != CL_SUCCESS )oclError("clEnqueueBarrier", error);
+		return Event();
+#endif
 	}
 
 	Event ANVIL_CALL CommandQueue::pushMarker() throw() {
 		Event event;
-		cl_event& event_ref = event.handle().event;
+		cl_event& event_ref = event.mHandle.event;
+#ifdef CL_VERSION_1_2
+		cl_int error = clEnqueueMarkerWithWaitList(mHandle.queue, 0, NULL, &event_ref);
+		if (error != CL_SUCCESS) {
+			oclError("clEnqueueMarkerWithWaitList", error);
+			return Event();
+		}
+#else
 		cl_int error = clEnqueueMarker(mHandle.queue, &event_ref);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueMarker", error);
 			return Event();
 		}
-		return Event(event);
-	}
 #endif
+		return event;
+	}
 }}
