@@ -45,8 +45,14 @@ namespace anvil { namespace ocl {
 		cl_device_id devices[Platform::MAX_DEVICES];
 		for (size_t i = 0; i < aCount; ++i) devices[i] = const_cast<Device*>(aDevices)[i].handle().device;
 
+		const cl_context_properties properties[3] = {
+			CL_CONTEXT_PLATFORM,
+			reinterpret_cast<cl_context_properties>(aCount == 0 ? NULL : aDevices[0].platform()),
+			0
+		};
+
 		cl_int error = CL_SUCCESS;
-		mHandle.context = clCreateContext(NULL, aCount, aCount == 0 ? NULL : devices, 
+		mHandle.context = clCreateContext(aCount == 0 ? NULL : properties, aCount, aCount == 0 ? NULL : devices,
 			[](const char* aErrorInfo, const void* aPrivateInfo, size_t aPrivateInfoSize, void* aUserData)->void {
 				static_cast<Context*>(aUserData)->onError(aErrorInfo, aPrivateInfo, aPrivateInfoSize);
 			}, this, &error);
