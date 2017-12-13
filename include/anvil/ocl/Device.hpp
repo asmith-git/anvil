@@ -110,6 +110,8 @@ namespace anvil { namespace ocl {
 	
 		#undef ANVIL_CL_GET_INFO
 
+		Context ANVIL_CALL context() const throw();
+
 		// Inherited from Object
 
 		bool ANVIL_CALL create(Handle) throw() override;

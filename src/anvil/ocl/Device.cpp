@@ -15,6 +15,7 @@
 #include <cstdint>
 #include "anvil/ocl/Device.hpp"
 #include "anvil/ocl/Platform.hpp"
+#include "anvil/ocl/Context.hpp"
 
 namespace anvil { namespace ocl {
 
@@ -41,6 +42,14 @@ namespace anvil { namespace ocl {
 		if (aHandle.type != DEVICE) return false;
 		mHandle = aHandle;
 		return true;
+	}
+
+	Context ANVIL_CALL Device::context() const throw() {
+		Context tmp;
+		Handle h;
+		cl_int error = clGetMemObjectInfo(mHandle.buffer, CL_MEM_CONTEXT, sizeof(cl_context), &h.context, NULL);
+		if (error == CL_SUCCESS) oclError("clGetMemObjectInfo", error, (name() + std::string(", CL_MEM_CONTEXT")).c_str());
+		return std::move(tmp);
 	}
 
 	void* ANVIL_CALL Device::getInfo(cl_device_info aName) const {

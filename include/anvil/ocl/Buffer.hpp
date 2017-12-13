@@ -37,7 +37,6 @@ namespace anvil { namespace ocl {
 		}
 
 		cl_mem_flags ANVIL_CALL flags() const throw();
-		cl_context ANVIL_CALL context() const throw();
 	public:
 		enum AccessMode : cl_mem_flags {
 			READ_ONLY = CL_MEM_READ_ONLY,
@@ -57,6 +56,7 @@ namespace anvil { namespace ocl {
 		
 		Buffer ANVIL_CALL createSubBuffer(size_t, size_t) throw();
 		bool ANVIL_CALL isSubBuffer() const throw();
+		Context ANVIL_CALL context() const throw();
 		AccessMode ANVIL_CALL accessMode() const throw();
 		size_t ANVIL_CALL size() const throw();
 		void* ANVIL_CALL hostPtr() throw();

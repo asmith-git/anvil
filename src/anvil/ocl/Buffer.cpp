@@ -88,8 +88,12 @@ namespace anvil { namespace ocl {
 		return mHandle.buffer ? getInfo<cl_mem_flags>(CL_MEM_FLAGS) : 0;
 	}
 
-	cl_context ANVIL_CALL Buffer::context() const throw() {
-		return mHandle.buffer ? getInfo<cl_context>(CL_MEM_CONTEXT) : NULL;
+	Context ANVIL_CALL Buffer::context() const throw() {
+		Context tmp;
+		Handle h;
+		h.context = getInfo<cl_context>(CL_MEM_CONTEXT);
+		tmp.create(h);
+		return std::move(tmp);
 	}
 
 	Buffer::AccessMode ANVIL_CALL Buffer::accessMode() const throw() {
