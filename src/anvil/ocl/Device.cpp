@@ -67,4 +67,8 @@ namespace anvil { namespace ocl {
 		}
 		return devices;
 	}
+
+	cl_uint ANVIL_CALL Device::referenceCount() const throw() {
+		return 0;
+	}
 }}

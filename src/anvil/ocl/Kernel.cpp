@@ -141,6 +141,14 @@ namespace anvil { namespace ocl {
 		return gNameBuffer;
 	}
 
+	cl_uint ANVIL_CALL Kernel::referenceCount() const throw() {
+		cl_uint count;
+		cl_uint error = clGetKernelInfo(mHandle.kernel, CL_KERNEL_REFERENCE_COUNT, sizeof(count), &count, NULL);
+		if (error == CL_SUCCESS) return count;
+		oclError("clGetKernelInfo", error, "CL_KERNEL_REFERENCE_COUNT");
+		return 0;
+	}
+
 	// NativeKernel
 
 	void __stdcall NativeKernel::execute_(void* aArgs) throw() {

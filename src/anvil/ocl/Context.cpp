@@ -111,4 +111,12 @@ namespace anvil { namespace ocl {
 		return devices;
 	}
 
+	cl_uint ANVIL_CALL Context::referenceCount() const throw() {
+		cl_uint count;
+		cl_uint error = clGetContextInfo(mHandle.context, CL_CONTEXT_REFERENCE_COUNT, sizeof(count), &count, NULL);
+		if (error == CL_SUCCESS) return count;
+		oclError("clGetContextInfo", error, "CL_CONTEXT_REFERENCE_COUNT");
+		return 0;
+	}
+
 }}

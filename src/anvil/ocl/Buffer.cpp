@@ -168,4 +168,12 @@ namespace anvil { namespace ocl {
 	bool ANVIL_CALL Buffer::isSubBuffer() const throw() {
 		return mIsSubBuffer;
 	}
+
+	cl_uint ANVIL_CALL Buffer::referenceCount() const throw() {
+		cl_uint count;
+		cl_uint error = clGetMemObjectInfo(mHandle.buffer, CL_MEM_REFERENCE_COUNT, sizeof(count), &count, NULL);
+		if (error == CL_SUCCESS) return count;
+		oclError("clGetMemObjectInfo", error, "CL_MEM_REFERENCE_COUNT");
+		return 0;
+	}
 }}

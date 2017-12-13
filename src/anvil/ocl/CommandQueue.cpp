@@ -133,4 +133,10 @@ namespace anvil { namespace ocl {
 #endif
 		return event;
 	}
+
+	cl_uint ANVIL_CALL CommandQueue::referenceCount() const throw() {
+		//! \todo CommandQueue reference count
+		oclError("anvil::ocl::CommandQueue::referenceCount", CL_INVALID_COMMAND_QUEUE, "OpenCL runtime does not support this query");
+		return 0;
+	}
 }}

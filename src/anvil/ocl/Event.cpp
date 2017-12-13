@@ -118,4 +118,12 @@ namespace anvil { namespace ocl {
 		return info;
 	}
 
+	cl_uint ANVIL_CALL Event::referenceCount() const throw() {
+		cl_uint count;
+		cl_uint error = clGetEventInfo(mHandle.event, CL_EVENT_REFERENCE_COUNT, sizeof(count), &count, NULL);
+		if (error == CL_SUCCESS) return count;
+		oclError("clGetEventInfo", error, "CL_EVENT_REFERENCE_COUNT");
+		return 0;
+	}
+
 }}

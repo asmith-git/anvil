@@ -241,4 +241,12 @@ namespace anvil { namespace ocl {
 		return devices;
 	}
 
+	cl_uint ANVIL_CALL Program::referenceCount() const throw() {
+		cl_uint count;
+		cl_uint error = clGetProgramInfo(mHandle.program, CL_PROGRAM_REFERENCE_COUNT, sizeof(count), &count, NULL);
+		if (error == CL_SUCCESS) return count;
+		oclError("clGetProgramInfo", error, "CL_PROGRAM_REFERENCE_COUNT");
+		return 0;
+	}
+
 }}

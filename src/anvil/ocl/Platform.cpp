@@ -100,4 +100,8 @@ namespace anvil { namespace ocl {
 		return platforms;
 	}
 
+	cl_uint ANVIL_CALL Platform::referenceCount() const throw() {
+		return 0;
+	}
+
 }}
