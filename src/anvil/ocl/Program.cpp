@@ -249,4 +249,14 @@ namespace anvil { namespace ocl {
 		return 0;
 	}
 
+	Context ANVIL_CALL Program::context() const throw() {
+		Handle h;
+		h.type = CONTEXT;
+		Context tmp;
+		cl_uint error = clGetProgramInfo(mHandle.program, CL_PROGRAM_CONTEXT, sizeof(cl_context), &h.context, NULL);
+		if (error != CL_SUCCESS) oclError("clGetProgramInfo", error, "CL_PROGRAM_CONTEXT");
+		if (h.context) tmp.create(h);
+		return std::move(tmp);
+	}
+
 }}

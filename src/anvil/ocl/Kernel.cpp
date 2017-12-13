@@ -95,6 +95,7 @@ namespace anvil { namespace ocl {
 	Context ANVIL_CALL Kernel::context() const throw() {
 		Context tmp;
 		Handle h;
+		h.type = CONTEXT;
 		h.context = getInfo<cl_context>(CL_KERNEL_CONTEXT);
 		tmp.create(h);
 		return std::move(tmp);
@@ -103,6 +104,7 @@ namespace anvil { namespace ocl {
 	Program ANVIL_CALL Kernel::program() const throw() {
 		Program tmp;
 		Handle h;
+		h.type = PROGRAM;
 		h.program = getInfo<cl_program>(CL_KERNEL_PROGRAM);
 		tmp.create(h);
 		return tmp;
