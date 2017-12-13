@@ -68,7 +68,10 @@ namespace anvil { namespace ocl {
 		if (aHandle.kernel) {
 			mHandle = aHandle;
 			cl_int error = clRetainKernel(mHandle.kernel);
-			if (error != CL_SUCCESS) return oclError("clRetainKernel", error);
+			if (error != CL_SUCCESS) {
+				mHandle.kernel = NULL;
+				return oclError("clRetainKernel", error);
+			}
 		}
 		return true;
 	}
@@ -77,7 +80,7 @@ namespace anvil { namespace ocl {
 		Event event;
 		cl_int error = clEnqueueNDRangeKernel(aQueue.handle().queue, mHandle.kernel, aDimensions, aGlobalOffset, aGlobalWorkSize, aLocalWorkSize, 0, NULL, &event.mHandle.event);
 		if (error != CL_SUCCESS) {
-			oclError("clEnqueueNDRangeKernel", error);
+			oclError("clEnqueueNDRangeKernel", error, name());
 			return Event();
 		}
 		return event;
@@ -105,7 +108,7 @@ namespace anvil { namespace ocl {
 		enum { MAX_KERNEL_NAME = 1024 };
 		static char gNameBuffer[MAX_KERNEL_NAME];
 		cl_int error = clGetKernelInfo(mHandle.kernel, CL_KERNEL_FUNCTION_NAME, MAX_KERNEL_NAME, gNameBuffer, NULL);
-		if (error != CL_SUCCESS) oclError("clGetKernelInfo ", error);
+		if (error != CL_SUCCESS) oclError("clGetKernelInfo ", error, "CL_KERNEL_FUNCTION_NAME");
 		return gNameBuffer;
 	}
 
