@@ -46,9 +46,9 @@ namespace anvil { namespace ocl {
 
 		cl_device_id devices[Platform::MAX_DEVICES];
 		cl_platform_id platform = aCount == 0 ? NULL : aDevices[0].platform();
-		devices[0] = const_cast<Device*>(aDevices)[0].handle().device;
+		devices[0] = aDevices[0].handle();
 		for (size_t i = 1; i < aCount; ++i) {
-			devices[i] = const_cast<Device*>(aDevices)[i].handle().device;
+			devices[i] = aDevices[i].handle();
 			if (aDevices[i].platform() != platform) return oclError("anvil::ocl::Context::create", CL_INVALID_PLATFORM, "Devices are not on the same platform");
 		}
 
@@ -107,12 +107,7 @@ namespace anvil { namespace ocl {
 		cl_device_id deviceIDs[Platform::MAX_DEVICES];
 		clGetContextInfo(mHandle.context, CL_CONTEXT_DEVICES, sizeof(cl_device_id) * count, deviceIDs, NULL);
 		std::vector<Device> devices(count, Device());
-		Handle handle;
-		handle.type = DEVICE;
-		for (cl_uint i = 0; i < count; ++i) {
-			handle.device = deviceIDs[i];
-			devices[i].create(handle);
-		}
+		for (cl_uint i = 0; i < count; ++i) devices[i].create(deviceIDs[i]);
 		return devices;
 	}
 

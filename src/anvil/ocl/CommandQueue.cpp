@@ -65,8 +65,8 @@ namespace anvil { namespace ocl {
 		if (error != CL_SUCCESS) return oclError("clCreateCommandQueueWithProperties", error);
 #else
 		mHandle.queue = clCreateCommandQueue(
-			aContext.handle().context,
-			aDevice.handle().device,
+			aContext.handle(),
+			aDevice.handle(),
 			(aOutOfOrder ? CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE : 0) | (aProfiling ? CL_QUEUE_PROFILING_ENABLE : 0),
 			&error);
 		if (error != CL_SUCCESS) return oclError("clCreateCommandQueue", error);
@@ -74,8 +74,8 @@ namespace anvil { namespace ocl {
 #ifndef CL_VERSION_1_2
 		CommandQueueData* const data = new CommandQueueData();
 		data->reference_count = 1;
-		data->context = aContext.handle().context;
-		data->device = aDevice.handle().device;
+		data->context = aContext.handle();
+		data->device = aDevice.handle();
 		associateData(mHandle, data);
 #endif
 		return true;
@@ -128,8 +128,7 @@ namespace anvil { namespace ocl {
 
 	Event ANVIL_CALL CommandQueue::barrier() throw() {
 #ifdef CL_VERSION_1_2
-		Handle handle;
-		handle.type = EVENT;
+		Handle handle(EVENT);
 		cl_int error = clEnqueueBarrierWithWaitList(mHandle.queue, 0, NULL, &handle.event);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueBarrierWithWaitList", error);
@@ -146,8 +145,7 @@ namespace anvil { namespace ocl {
 	}
 
 	Event ANVIL_CALL CommandQueue::pushMarker() throw() {
-		Handle handle;
-		handle.type = EVENT;
+		Handle handle(EVENT);
 #ifdef CL_VERSION_1_2
 		cl_int error = clEnqueueMarkerWithWaitList(mHandle.queue, 0, NULL, &handle.event);
 		if (error != CL_SUCCESS) {
@@ -180,8 +178,7 @@ namespace anvil { namespace ocl {
 	}
 
 	Context ANVIL_CALL CommandQueue::context() const throw() {
-		Handle h;
-		h.type = CONTEXT;
+		Handle h(CONTEXT);
 		Context tmp;
 #ifdef CL_VERSION_1_2
 		cl_uint error = clGetCommandQueueInfo(mHandle.queue, CL_QUEUE_CONTEXT, sizeof(cl_context), &h.context, NULL);
@@ -195,8 +192,7 @@ namespace anvil { namespace ocl {
 	}
 
 	Device ANVIL_CALL CommandQueue::device() const throw() {
-		Handle h;
-		h.type = DEVICE;
+		Handle h(DEVICE);
 		Device tmp;
 #ifdef CL_VERSION_1_2
 		cl_uint error = clGetCommandQueueInfo(mHandle.queue, CL_QUEUE_DEVICE, sizeof(cl_device_id), &h.device, NULL);

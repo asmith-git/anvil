@@ -75,13 +75,13 @@ namespace anvil { namespace ocl {
 		if (mHandle.program) if (!destroy()) return false;
 
 		cl_int error = CL_SUCCESS;
-		mHandle.program = clCreateProgramWithSource(aContext.handle().context, aCount, aSources, NULL, &error);
+		mHandle.program = clCreateProgramWithSource(aContext.handle(), aCount, aSources, NULL, &error);
 		if (error != CL_SUCCESS) return oclError("clCreateProgramWithSource", error);
 
 		std::vector<Device> devices = aContext.devices();
 		const size_t deviceCount = devices.size();
 		cl_device_id devicePtr[Platform::MAX_DEVICES];
-		if (deviceCount != 0) for (size_t i = 0; i < deviceCount; ++i) devicePtr[i] = devices[i].handle().device;
+		if (deviceCount != 0) for (size_t i = 0; i < deviceCount; ++i) devicePtr[i] = devices[i].handle();
 
 		return build(devicePtr, deviceCount, aBuildOptions);
 	}
@@ -105,10 +105,10 @@ namespace anvil { namespace ocl {
 		if (deviceCount != aCount) return oclError("anvil::ocl::Program::createFromBinaries", CL_INVALID_DEVICE, "Binary and device count differ");
 		cl_device_id devicePtr[Platform::MAX_DEVICES];
 		cl_int binaryStatus[Platform::MAX_DEVICES];
-		if (deviceCount != 0) for (cl_uint i = 0; i < deviceCount; ++i) devicePtr[i] = devices[i].handle().device;
+		if (deviceCount != 0) for (cl_uint i = 0; i < deviceCount; ++i) devicePtr[i] = devices[i].handle();
 
 		cl_int error = CL_SUCCESS;
-		mHandle.program = clCreateProgramWithBinary(aContext.handle().context, deviceCount, devicePtr, aLengths, aBinaries, binaryStatus, &error);
+		mHandle.program = clCreateProgramWithBinary(aContext.handle(), deviceCount, devicePtr, aLengths, aBinaries, binaryStatus, &error);
 		if (error != CL_SUCCESS) {
 			oclError("clCreateProgramWithBinary", error);
 			for (cl_uint i = 0; i < deviceCount; ++i) {
@@ -237,12 +237,7 @@ namespace anvil { namespace ocl {
 			return std::vector<Device>();
 		}
 		std::vector<Device> devices(count, Device());
-		Handle handle;
-		handle.type = DEVICE;
-		for (size_t i = 0; i < count; ++i) {
-			handle.device = deviceIDS[i];
-			devices[i].create(handle);
-		}
+		for (size_t i = 0; i < count; ++i) devices[i].create(deviceIDS[i]);
 		return devices;
 	}
 

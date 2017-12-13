@@ -44,7 +44,7 @@ namespace anvil { namespace ocl {
 
 	bool ANVIL_CALL Kernel::create(const Program& aProgram, const char* aName) throw() {
 		cl_int error = CL_SUCCESS;
-		mHandle.kernel = clCreateKernel(const_cast<Program&>(aProgram).handle().program, aName, &error);
+		mHandle.kernel = clCreateKernel(const_cast<Program&>(aProgram).handle(), aName, &error);
 		if (error != CL_SUCCESS) {
 			mHandle.kernel = NULL;
 			return oclError("clCreateKernel", error, aName);
@@ -77,9 +77,8 @@ namespace anvil { namespace ocl {
 	}
 
 	Event ANVIL_CALL Kernel::execute(CommandQueue& aQueue, cl_uint aDimensions, const size_t *aGlobalOffset, const size_t *aGlobalWorkSize, const size_t *aLocalWorkSize) {
-		Handle handle;
-		handle.type = EVENT;
-		cl_int error = clEnqueueNDRangeKernel(aQueue.handle().queue, mHandle.kernel, aDimensions, aGlobalOffset, aGlobalWorkSize, aLocalWorkSize, 0, NULL, &mHandle.event);
+		Handle handle(EVENT);
+		cl_int error = clEnqueueNDRangeKernel(aQueue.handle(), mHandle.kernel, aDimensions, aGlobalOffset, aGlobalWorkSize, aLocalWorkSize, 0, NULL, &mHandle.event);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueNDRangeKernel", error, name());
 			return Event();
@@ -97,19 +96,13 @@ namespace anvil { namespace ocl {
 
 	Context ANVIL_CALL Kernel::context() const throw() {
 		Context tmp;
-		Handle h;
-		h.type = CONTEXT;
-		h.context = getInfo<cl_context>(CL_KERNEL_CONTEXT);
-		tmp.create(h);
+		tmp.create(getInfo<cl_context>(CL_KERNEL_CONTEXT));
 		return std::move(tmp);
 	}
 
 	Program ANVIL_CALL Kernel::program() const throw() {
 		Program tmp;
-		Handle h;
-		h.type = PROGRAM;
-		h.program = getInfo<cl_program>(CL_KERNEL_PROGRAM);
-		tmp.create(h);
+		tmp.create(getInfo<cl_program>(CL_KERNEL_PROGRAM));
 		return tmp;
 	}
 
@@ -119,21 +112,21 @@ namespace anvil { namespace ocl {
 
 	size_t ANVIL_CALL Kernel::workGroupSize(const Device& aDevice) const throw() {
 		size_t tmp;
-		cl_int error = clGetKernelWorkGroupInfo(mHandle.kernel, aDevice.handle().device, CL_KERNEL_WORK_GROUP_SIZE, sizeof(tmp), &tmp, NULL);
+		cl_int error = clGetKernelWorkGroupInfo(mHandle.kernel, aDevice.handle(), CL_KERNEL_WORK_GROUP_SIZE, sizeof(tmp), &tmp, NULL);
 		if (error != CL_SUCCESS) oclError("clGetKernelWorkGroupInfo", error, (name() + std::string(", CL_KERNEL_WORK_GROUP_SIZE")).c_str());
 		return tmp;
 	}
 
 	Device::WorkItemCount ANVIL_CALL Kernel::compileWorkGroupSize(const Device& aDevice) const throw() {
 		Device::WorkItemCount tmp;
-		cl_int error = clGetKernelWorkGroupInfo(mHandle.kernel, aDevice.handle().device, CL_KERNEL_COMPILE_WORK_GROUP_SIZE, sizeof(tmp), &tmp, NULL);
+		cl_int error = clGetKernelWorkGroupInfo(mHandle.kernel, aDevice.handle(), CL_KERNEL_COMPILE_WORK_GROUP_SIZE, sizeof(tmp), &tmp, NULL);
 		if (error != CL_SUCCESS) oclError("clGetKernelWorkGroupInfo", error, (name() + std::string(", CL_KERNEL_COMPILE_WORK_GROUP_SIZE")).c_str());
 		return tmp;
 	}
 
 	cl_ulong ANVIL_CALL Kernel::localMemorySize(const Device& aDevice) const throw() {
 		cl_ulong tmp;
-		cl_int error = clGetKernelWorkGroupInfo(mHandle.kernel, aDevice.handle().device, CL_KERNEL_LOCAL_MEM_SIZE, sizeof(tmp), &tmp, NULL);
+		cl_int error = clGetKernelWorkGroupInfo(mHandle.kernel, aDevice.handle(), CL_KERNEL_LOCAL_MEM_SIZE, sizeof(tmp), &tmp, NULL);
 		if (error != CL_SUCCESS) oclError("clGetKernelWorkGroupInfo", error, (name() + std::string(", CL_KERNEL_LOCAL_MEM_SIZE")).c_str());
 		return tmp;
 	}

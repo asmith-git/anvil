@@ -55,7 +55,7 @@ namespace anvil { namespace ocl {
 
 		const cl_mem_flags flags = aMode | (aHostPtr ? CL_MEM_USE_HOST_PTR : 0);
 		cl_int error = CL_SUCCESS;
-		mHandle.buffer = clCreateBuffer(aContext.handle().context, flags, aSize, aHostPtr, &error);
+		mHandle.buffer = clCreateBuffer(aContext.handle(), flags, aSize, aHostPtr, &error);
 		if (error != CL_SUCCESS) {
 			mHandle.buffer = NULL;
 			return oclError("clCreateBuffer", error);
@@ -90,10 +90,7 @@ namespace anvil { namespace ocl {
 
 	Context ANVIL_CALL Buffer::context() const throw() {
 		Context tmp;
-		Handle h;
-		h.type = CONTEXT;
-		h.context = getInfo<cl_context>(CL_MEM_CONTEXT);
-		tmp.create(h);
+		tmp.create(getInfo<cl_context>(CL_MEM_CONTEXT));
 		return std::move(tmp);
 	}
 
@@ -118,9 +115,8 @@ namespace anvil { namespace ocl {
 
 	Event ANVIL_CALL Buffer::read(CommandQueue& aQueue, size_t aOffset, void* aDst, size_t aBytes) const throw() {
 		if (mHandle.buffer == NULL) return Event();
-		Handle handle;
-		handle.type = EVENT;
-		cl_int error = clEnqueueReadBuffer(aQueue.handle().queue, mHandle.buffer, CL_FALSE, aOffset, aBytes,
+		Handle handle(EVENT);
+		cl_int error = clEnqueueReadBuffer(aQueue.handle(), mHandle.buffer, CL_FALSE, aOffset, aBytes,
 			aDst, 0, NULL, &handle.event);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueReadBuffer", error);
@@ -133,9 +129,8 @@ namespace anvil { namespace ocl {
 
 	Event ANVIL_CALL Buffer::write(CommandQueue& aQueue, size_t aOffset, const void* aSrc, size_t aBytes) throw() {
 		if (mHandle.buffer == NULL) return Event();
-		Handle handle;
-		handle.type = EVENT;
-		cl_int error = clEnqueueWriteBuffer(aQueue.handle().queue, mHandle.buffer, CL_FALSE, aOffset, aBytes,
+		Handle handle(EVENT);
+		cl_int error = clEnqueueWriteBuffer(aQueue.handle(), mHandle.buffer, CL_FALSE, aOffset, aBytes,
 			aSrc, 0, NULL, &handle.event);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueWriteBuffer", error);
@@ -148,9 +143,8 @@ namespace anvil { namespace ocl {
 
 	Event ANVIL_CALL Buffer::copy(CommandQueue& aQueue, Buffer& aOther, size_t aThisOffset, size_t aOtherOffset, size_t aBytes) const throw() {
 		if (mHandle.buffer == NULL || aOther.mHandle.buffer == NULL) return Event();
-		Handle handle;
-		handle.type = EVENT;
-		cl_int error = clEnqueueCopyBuffer(aQueue.handle().queue, mHandle.buffer, aOther.mHandle.buffer, aThisOffset,
+		Handle handle(EVENT);
+		cl_int error = clEnqueueCopyBuffer(aQueue.handle(), mHandle.buffer, aOther.mHandle.buffer, aThisOffset,
 			aOtherOffset + aOther, aBytes, 0, NULL, &handle.event);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueCopyBuffer", error);
