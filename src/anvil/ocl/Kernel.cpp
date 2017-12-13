@@ -92,16 +92,45 @@ namespace anvil { namespace ocl {
 		return true;
 	}
 
-	cl_context Kernel::context() const throw() {
-		return mHandle.kernel ? getInfo<cl_context>(CL_KERNEL_CONTEXT) : NULL;
+	Context ANVIL_CALL Kernel::context() const throw() {
+		Context tmp;
+		Handle h;
+		h.context = getInfo<cl_context>(CL_KERNEL_CONTEXT);
+		tmp.create(h);
+		return tmp;
 	}
 
-	cl_program Kernel::program() const throw() {
-		return mHandle.kernel ? getInfo<cl_program>(CL_KERNEL_PROGRAM) : NULL;
+	Program ANVIL_CALL Kernel::program() const throw() {
+		Program tmp;
+		Handle h;
+		h.program = getInfo<cl_program>(CL_KERNEL_PROGRAM);
+		tmp.create(h);
+		return tmp;
 	}
 
-	cl_uint Kernel::arguments() const throw() {
+	cl_uint ANVIL_CALL Kernel::arguments() const throw() {
 		return mHandle.kernel ? getInfo<cl_uint>(CL_KERNEL_NUM_ARGS) : 0;
+	}
+
+	size_t ANVIL_CALL Kernel::workGroupSize(const Device& aDevice) const throw() {
+		size_t tmp;
+		cl_int error = clGetKernelWorkGroupInfo(mHandle.kernel, aDevice.handle().device, CL_KERNEL_WORK_GROUP_SIZE, sizeof(tmp), &tmp, NULL);
+		if (error != CL_SUCCESS) oclError("clGetKernelWorkGroupInfo", error, (name() + std::string(", CL_KERNEL_WORK_GROUP_SIZE")).c_str());
+		return tmp;
+	}
+
+	Device::WorkItemCount ANVIL_CALL Kernel::compileWorkGroupSize(const Device& aDevice) const throw() {
+		Device::WorkItemCount tmp;
+		cl_int error = clGetKernelWorkGroupInfo(mHandle.kernel, aDevice.handle().device, CL_KERNEL_COMPILE_WORK_GROUP_SIZE, sizeof(tmp), &tmp, NULL);
+		if (error != CL_SUCCESS) oclError("clGetKernelWorkGroupInfo", error, (name() + std::string(", CL_KERNEL_COMPILE_WORK_GROUP_SIZE")).c_str());
+		return tmp;
+	}
+
+	cl_ulong ANVIL_CALL Kernel::localMemorySize(const Device& aDevice) const throw() {
+		cl_ulong tmp;
+		cl_int error = clGetKernelWorkGroupInfo(mHandle.kernel, aDevice.handle().device, CL_KERNEL_LOCAL_MEM_SIZE, sizeof(tmp), &tmp, NULL);
+		if (error != CL_SUCCESS) oclError("clGetKernelWorkGroupInfo", error, (name() + std::string(", CL_KERNEL_LOCAL_MEM_SIZE")).c_str());
+		return tmp;
 	}
 
 	const char* Kernel::name() const throw() {

@@ -41,9 +41,6 @@ namespace anvil { namespace ocl {
 			if (error != CL_SUCCESS) oclError("clGetKernelInfo ", error, std::to_string(aInfo).c_str());
 			return tmp;
 		}
-
-		cl_context context() const throw();
-		cl_program program() const throw();
 	public:
 		ANVIL_CALL Kernel() throw();
 		ANVIL_CALL Kernel(Kernel&&) throw();
@@ -55,8 +52,13 @@ namespace anvil { namespace ocl {
 		bool ANVIL_CALL create(const Program&, const char*) throw();
 		Event ANVIL_CALL execute(CommandQueue&, cl_uint, const size_t *, const size_t*, const size_t*);
 
-		cl_uint arguments() const throw();
-		const char* name() const throw();
+		cl_uint ANVIL_CALL arguments() const throw();
+		const char* ANVIL_CALL name() const throw();
+		size_t ANVIL_CALL workGroupSize(const Device&) const throw();
+		Device::WorkItemCount ANVIL_CALL compileWorkGroupSize(const Device&) const throw();
+		cl_ulong ANVIL_CALL localMemorySize(const Device&) const throw();
+		Context ANVIL_CALL context() const throw();
+		Program ANVIL_CALL program() const throw();
 
 		bool ANVIL_CALL setArgument(cl_uint, const void*, size_t);
 
