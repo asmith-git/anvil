@@ -55,6 +55,28 @@ namespace anvil { namespace ocl {
 				NativeKernel* native;
 			};
 			Type type;
+
+			ANVIL_CALL Handle();
+			ANVIL_CALL Handle(Type);
+			ANVIL_CALL Handle(cl_context);
+			ANVIL_CALL Handle(cl_platform_id);
+			ANVIL_CALL Handle(cl_device_id);
+			ANVIL_CALL Handle(cl_program);
+			ANVIL_CALL Handle(cl_kernel);
+			ANVIL_CALL Handle(cl_mem);
+			ANVIL_CALL Handle(cl_command_queue);
+			ANVIL_CALL Handle(cl_event);
+			ANVIL_CALL Handle(NativeKernel*);
+
+			ANVIL_CALL operator cl_context() throw();
+			ANVIL_CALL operator cl_platform_id() throw();
+			ANVIL_CALL operator cl_device_id() throw();
+			ANVIL_CALL operator cl_program() throw();
+			ANVIL_CALL operator cl_kernel() throw();
+			ANVIL_CALL operator cl_mem() throw();
+			ANVIL_CALL operator cl_command_queue() throw();
+			ANVIL_CALL operator cl_event() throw();
+			ANVIL_CALL operator NativeKernel*() throw();
 		};
 	protected:
 		Handle mHandle;
