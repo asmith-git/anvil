@@ -18,6 +18,10 @@
 
 namespace anvil { namespace ocl {
 
+	struct CommandQueueData {
+		cl_uint reference_count;
+	};
+
 	// CommandQueue
 
 	ANVIL_CALL CommandQueue::CommandQueue() throw() :
@@ -63,6 +67,9 @@ namespace anvil { namespace ocl {
 			&error);
 		if (error != CL_SUCCESS) return oclError("clCreateCommandQueue", error);
 #endif
+		CommandQueueData* const data = new CommandQueueData();
+		data->reference_count = 1;
+		associateData(mHandle, data);
 		return true;
 	}
 
@@ -71,6 +78,13 @@ namespace anvil { namespace ocl {
 			finish();
 			cl_int error = clReleaseCommandQueue(mHandle.queue);
 			if (error != CL_SUCCESS) return oclError("clReleaseCommandQueue", error);
+			CommandQueueData* const data = static_cast<CommandQueueData*>(getAssociatedData(mHandle));
+			if (data) {
+				if (--data->reference_count == 0) {
+					disassociateData(mHandle);
+					delete data;
+				}
+			}
 			mHandle.queue = NULL;
 			return true;
 		}
@@ -85,6 +99,8 @@ namespace anvil { namespace ocl {
 			cl_int error = clRetainCommandQueue(mHandle.queue);
 			if (error != CL_SUCCESS) return oclError("clRetainCommandQueue", error);
 		}
+		CommandQueueData* const data = static_cast<CommandQueueData*>(getAssociatedData(mHandle));
+		if (data) ++data->reference_count;
 		return true;
 	}
 
@@ -135,8 +151,7 @@ namespace anvil { namespace ocl {
 	}
 
 	cl_uint ANVIL_CALL CommandQueue::referenceCount() const throw() {
-		//! \todo CommandQueue reference count
-		oclError("anvil::ocl::CommandQueue::referenceCount", CL_INVALID_COMMAND_QUEUE, "OpenCL runtime does not support this query");
-		return 0;
+		CommandQueueData* const data = static_cast<CommandQueueData*>(getAssociatedData(mHandle));
+		return data ? data->reference_count : 0;
 	}
 }}

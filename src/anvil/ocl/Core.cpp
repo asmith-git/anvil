@@ -13,6 +13,8 @@
 //limitations under the License.
 
 #include "anvil/ocl/Core.hpp"
+#include <mutex>
+#include <map>
 
 namespace anvil { namespace ocl {
 
@@ -131,4 +133,46 @@ namespace anvil { namespace ocl {
 		return mHandle.context != NULL;
 	}
 
+	struct HandleKey {
+		Object::Handle handle;
+
+		inline bool ANVIL_CALL operator<(const HandleKey aOther) const throw() {
+			return handle.type < aOther.handle.type && handle.context < aOther.handle.context;
+		}
+	};
+
+	static std::mutex gHandleDataLock;
+	static std::map<HandleKey, void*> gHandleData;
+
+	void* ANVIL_CALL Object::getAssociatedData(Handle aHandle) throw() {
+		const HandleKey h = { aHandle };
+		if (h.handle.context == NULL) return nullptr;
+		std::lock_guard<std::mutex> lock(gHandleDataLock);
+		const auto i = gHandleData.find(h);
+		if (i != gHandleData.end()) return nullptr;
+		return i->second;
+	}
+
+	bool ANVIL_CALL Object::associateData(Handle aHandle, void* aData) throw() {
+		const HandleKey h = { aHandle };
+		if (h.handle.context == NULL) return false;
+		std::lock_guard<std::mutex> lock(gHandleDataLock);
+		const auto i = gHandleData.find(h);
+		if (i != gHandleData.end()) return false;
+		gHandleData.emplace(h, aData);
+		return true;
+	}
+
+	void* ANVIL_CALL Object::disassociateData(Handle aHandle) throw() {
+		const HandleKey h = { aHandle };
+		if (h.handle.context == NULL) return nullptr;
+		std::lock_guard<std::mutex> lock(gHandleDataLock);
+		const auto i = gHandleData.find(h);
+		if (i != gHandleData.end()) {
+			void* const tmp = i->second;
+			gHandleData.erase(i);
+			return tmp;
+		}
+		return nullptr;
+	}
 }}

@@ -58,6 +58,10 @@ namespace anvil { namespace ocl {
 		};
 	protected:
 		Handle mHandle;
+
+		static bool ANVIL_CALL associateData(Handle, void*) throw();
+		static void* ANVIL_CALL disassociateData(Handle) throw();
+		static void* ANVIL_CALL getAssociatedData(Handle) throw();
 	public:
 		friend class Context;
 		friend class Platform;
