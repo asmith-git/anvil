@@ -128,7 +128,7 @@ namespace anvil { namespace ocl {
 		if (error != CL_SUCCESS) {
 			oclError("clBuildProgram", error);
 			if (error == CL_BUILD_PROGRAM_FAILURE) {
-				enum { ERROR_LOG_SIZE = 1024 };
+				enum { ERROR_LOG_SIZE = 4096 };
 				char log[ERROR_LOG_SIZE];
 				Handle h;
 				h.type = Object::DEVICE;
@@ -137,7 +137,7 @@ namespace anvil { namespace ocl {
 					h.device = aDevices[i];
 					Device d;
 					d.create(h);
-					if (error != CL_SUCCESS) oclError("clGetProgramBuildInfo", error);
+					if (error != CL_SUCCESS) oclError("clGetProgramBuildInfo", error, "CL_PROGRAM_BUILD_LOG");
 					else oclError("anvil::ocl::Program::build", CL_BUILD_PROGRAM_FAILURE, (d.name() + std::string(", ") + log).c_str());
 				}
 			}

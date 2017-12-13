@@ -104,7 +104,10 @@ namespace anvil { namespace ocl {
 			msg += ")";
 		}
 
-		gErrorMessage = msg;
+		if (! gErrorMessage.empty()) {
+			gErrorMessage += '\n';
+		}
+		gErrorMessage += msg;
 		std::cerr << msg << std::endl;
 		return false;
 	}
