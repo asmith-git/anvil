@@ -68,7 +68,12 @@ namespace anvil { namespace ocl {
 			return std::vector<Device>();
 		}
 		std::vector<Device> devices(count, Device());
-		for (cl_uint i = 0; i < count; ++i) devices[i].mHandle.device = deviceIDS[i];
+		Handle handle;
+		handle.type = DEVICE;
+		for (cl_uint i = 0; i < count; ++i) {
+			handle.device = deviceIDS[i];
+			devices[i].create(handle);
+		}
 
 		// Return devices
 		return devices;

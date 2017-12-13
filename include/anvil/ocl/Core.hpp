@@ -63,15 +63,6 @@ namespace anvil { namespace ocl {
 		static void* ANVIL_CALL disassociateData(Handle) throw();
 		static void* ANVIL_CALL getAssociatedData(Handle) throw();
 	public:
-		friend class Context;
-		friend class Platform;
-		friend class Device;
-		friend class Program;
-		friend class Kernel;
-		friend class Buffer;
-		friend class CommandQueue;
-		friend class Event;
-
 		ANVIL_CALL Object(Type) throw();
 		virtual ANVIL_CALL ~Object() throw();
 

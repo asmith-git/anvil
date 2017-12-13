@@ -65,8 +65,8 @@ namespace anvil { namespace ocl {
 		if (error != CL_SUCCESS) return oclError("clCreateCommandQueueWithProperties", error);
 #else
 		mHandle.queue = clCreateCommandQueue(
-			aContext.mHandle.context,
-			aDevice.mHandle.device,
+			aContext.handle().context,
+			aDevice.handle().device,
 			(aOutOfOrder ? CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE : 0) | (aProfiling ? CL_QUEUE_PROFILING_ENABLE : 0),
 			&error);
 		if (error != CL_SUCCESS) return oclError("clCreateCommandQueue", error);
@@ -128,13 +128,15 @@ namespace anvil { namespace ocl {
 
 	Event ANVIL_CALL CommandQueue::barrier() throw() {
 #ifdef CL_VERSION_1_2
-		Event event;
-		cl_event& event_ref = event.mHandle.event;
-		cl_int error = clEnqueueBarrierWithWaitList(mHandle.queue, 0, NULL, &event_ref);
+		Handle handle;
+		handle.type = EVENT;
+		cl_int error = clEnqueueBarrierWithWaitList(mHandle.queue, 0, NULL, &handle.event);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueBarrierWithWaitList", error);
 			return Event();
 		}
+		Event event;
+		event.create(handle);
 		return event;
 #else
 		cl_int error = clEnqueueBarrier(mHandle.queue);
@@ -144,10 +146,10 @@ namespace anvil { namespace ocl {
 	}
 
 	Event ANVIL_CALL CommandQueue::pushMarker() throw() {
-		Event event;
-		cl_event& event_ref = event.mHandle.event;
+		Handle handle;
+		handle.type = EVENT;
 #ifdef CL_VERSION_1_2
-		cl_int error = clEnqueueMarkerWithWaitList(mHandle.queue, 0, NULL, &event_ref);
+		cl_int error = clEnqueueMarkerWithWaitList(mHandle.queue, 0, NULL, &handle.event);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueMarkerWithWaitList", error);
 			return Event();
@@ -159,6 +161,8 @@ namespace anvil { namespace ocl {
 			return Event();
 		}
 #endif
+		Event event;
+		event.create(handle);
 		return event;
 	}
 

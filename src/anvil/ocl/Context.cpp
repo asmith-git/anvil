@@ -107,7 +107,12 @@ namespace anvil { namespace ocl {
 		cl_device_id deviceIDs[Platform::MAX_DEVICES];
 		clGetContextInfo(mHandle.context, CL_CONTEXT_DEVICES, sizeof(cl_device_id) * count, deviceIDs, NULL);
 		std::vector<Device> devices(count, Device());
-		for (cl_uint i = 0; i < count; ++i) devices[i].mHandle.device = deviceIDs[i];
+		Handle handle;
+		handle.type = DEVICE;
+		for (cl_uint i = 0; i < count; ++i) {
+			handle.device = deviceIDs[i];
+			devices[i].create(handle);
+		}
 		return devices;
 	}
 

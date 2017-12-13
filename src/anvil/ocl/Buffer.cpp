@@ -91,6 +91,7 @@ namespace anvil { namespace ocl {
 	Context ANVIL_CALL Buffer::context() const throw() {
 		Context tmp;
 		Handle h;
+		h.type = CONTEXT;
 		h.context = getInfo<cl_context>(CL_MEM_CONTEXT);
 		tmp.create(h);
 		return std::move(tmp);
@@ -117,37 +118,46 @@ namespace anvil { namespace ocl {
 
 	Event ANVIL_CALL Buffer::read(CommandQueue& aQueue, size_t aOffset, void* aDst, size_t aBytes) const throw() {
 		if (mHandle.buffer == NULL) return Event();
-		Event event;
+		Handle handle;
+		handle.type = EVENT;
 		cl_int error = clEnqueueReadBuffer(aQueue.handle().queue, mHandle.buffer, CL_FALSE, aOffset, aBytes,
-			aDst, 0, NULL, &event.mHandle.event);
+			aDst, 0, NULL, &handle.event);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueReadBuffer", error);
 			return Event();
 		}
+		Event event;
+		event.create(handle);
 		return event;
 	}
 
 	Event ANVIL_CALL Buffer::write(CommandQueue& aQueue, size_t aOffset, const void* aSrc, size_t aBytes) throw() {
 		if (mHandle.buffer == NULL) return Event();
-		Event event;
+		Handle handle;
+		handle.type = EVENT;
 		cl_int error = clEnqueueWriteBuffer(aQueue.handle().queue, mHandle.buffer, CL_FALSE, aOffset, aBytes,
-			aSrc, 0, NULL, &event.mHandle.event);
+			aSrc, 0, NULL, &handle.event);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueWriteBuffer", error);
 			return Event();
 		}
+		Event event;
+		event.create(handle);
 		return event;
 	}
 
 	Event ANVIL_CALL Buffer::copy(CommandQueue& aQueue, Buffer& aOther, size_t aThisOffset, size_t aOtherOffset, size_t aBytes) const throw() {
 		if (mHandle.buffer == NULL || aOther.mHandle.buffer == NULL) return Event();
-		Event event;
+		Handle handle;
+		handle.type = EVENT;
 		cl_int error = clEnqueueCopyBuffer(aQueue.handle().queue, mHandle.buffer, aOther.mHandle.buffer, aThisOffset,
-			aOtherOffset + aOther, aBytes, 0, NULL, &event.mHandle.event);
+			aOtherOffset + aOther, aBytes, 0, NULL, &handle.event);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueCopyBuffer", error);
 			return Event();
 		}
+		Event event;
+		event.create(handle);
 		return event;
 	}
 

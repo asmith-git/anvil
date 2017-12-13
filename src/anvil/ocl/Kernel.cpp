@@ -77,12 +77,15 @@ namespace anvil { namespace ocl {
 	}
 
 	Event ANVIL_CALL Kernel::execute(CommandQueue& aQueue, cl_uint aDimensions, const size_t *aGlobalOffset, const size_t *aGlobalWorkSize, const size_t *aLocalWorkSize) {
-		Event event;
-		cl_int error = clEnqueueNDRangeKernel(aQueue.handle().queue, mHandle.kernel, aDimensions, aGlobalOffset, aGlobalWorkSize, aLocalWorkSize, 0, NULL, &event.mHandle.event);
+		Handle handle;
+		handle.type = EVENT;
+		cl_int error = clEnqueueNDRangeKernel(aQueue.handle().queue, mHandle.kernel, aDimensions, aGlobalOffset, aGlobalWorkSize, aLocalWorkSize, 0, NULL, &mHandle.event);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueNDRangeKernel", error, name());
 			return Event();
 		}
+		Event event;
+		event.create(handle);
 		return event;
 	}
 
