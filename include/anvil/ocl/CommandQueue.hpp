@@ -37,6 +37,9 @@ namespace anvil { namespace ocl {
 		bool ANVIL_CALL finish() throw();
 		void ANVIL_CALL swap(CommandQueue&) throw();
 
+		Context ANVIL_CALL context() const throw();
+		Device ANVIL_CALL device() const throw();
+
 		// Inherited from Object
 
 		bool ANVIL_CALL create(Handle) throw() override;

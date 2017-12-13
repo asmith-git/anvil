@@ -18,9 +18,11 @@
 
 namespace anvil { namespace ocl {
 
-#ifdef CL_VERSION_1_2
+#ifndef CL_VERSION_1_2
 	struct CommandQueueData {
 		cl_uint reference_count;
+		cl_context context;
+		cl_device_id device;
 	};
 #endif
 
@@ -69,9 +71,11 @@ namespace anvil { namespace ocl {
 			&error);
 		if (error != CL_SUCCESS) return oclError("clCreateCommandQueue", error);
 #endif
-#ifdef CL_VERSION_1_2
+#ifndef CL_VERSION_1_2
 		CommandQueueData* const data = new CommandQueueData();
 		data->reference_count = 1;
+		data->context = aContext.handle().context;
+		data->device = aDevice.handle().device;
 		associateData(mHandle, data);
 #endif
 		return true;
@@ -82,7 +86,7 @@ namespace anvil { namespace ocl {
 			finish();
 			cl_int error = clReleaseCommandQueue(mHandle.queue);
 			if (error != CL_SUCCESS) return oclError("clReleaseCommandQueue", error);
-#ifdef CL_VERSION_1_2
+#ifndef CL_VERSION_1_2
 			CommandQueueData* const data = static_cast<CommandQueueData*>(getAssociatedData(mHandle));
 			if (data) {
 				if (--data->reference_count == 0) {
@@ -105,7 +109,7 @@ namespace anvil { namespace ocl {
 			cl_int error = clRetainCommandQueue(mHandle.queue);
 			if (error != CL_SUCCESS) return oclError("clRetainCommandQueue", error);
 		}
-#ifdef CL_VERSION_1_2
+#ifndef CL_VERSION_1_2
 		CommandQueueData* const data = static_cast<CommandQueueData*>(getAssociatedData(mHandle));
 		if (data) ++data->reference_count;
 #endif
@@ -169,5 +173,35 @@ namespace anvil { namespace ocl {
 		CommandQueueData* const data = static_cast<CommandQueueData*>(getAssociatedData(mHandle));
 		return data ? data->reference_count : 0;
 #endif
+	}
+
+	Context ANVIL_CALL CommandQueue::context() const throw() {
+		Handle h;
+		h.type = CONTEXT;
+		Context tmp;
+#ifdef CL_VERSION_1_2
+		cl_uint error = clGetCommandQueueInfo(mHandle.queue, CL_QUEUE_CONTEXT, sizeof(cl_context), &h.context, NULL);
+		if (error != CL_SUCCESS) oclError("clGetCommandQueueInfo", error, "CL_QUEUE_CONTEXT");
+#else
+		CommandQueueData* const data = static_cast<CommandQueueData*>(getAssociatedData(mHandle));
+		h.context = data ? data->context : NULL;
+#endif
+		if(h.context) tmp.create(h);
+		return std::move(tmp);
+	}
+
+	Device ANVIL_CALL CommandQueue::device() const throw() {
+		Handle h;
+		h.type = DEVICE;
+		Device tmp;
+#ifdef CL_VERSION_1_2
+		cl_uint error = clGetCommandQueueInfo(mHandle.queue, CL_QUEUE_DEVICE, sizeof(cl_device_id), &h.device, NULL);
+		if (error != CL_SUCCESS) oclError("clGetCommandQueueInfo", error, "CL_QUEUE_DEVICE");
+#else
+		CommandQueueData* const data = static_cast<CommandQueueData*>(getAssociatedData(mHandle));
+		h.device = data ? data->device : NULL;
+#endif
+		if (h.device) tmp.create(h);
+		return std::move(tmp);
 	}
 }}
