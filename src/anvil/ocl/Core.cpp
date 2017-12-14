@@ -114,6 +114,83 @@ namespace anvil { namespace ocl {
 		return false;
 	}
 
+	std::string ANVIL_CALL typeName(Handle::Type aType) throw() {
+		switch (aType) {
+			case Handle::CONTEXT:
+				return "cl_context";
+			case Handle::PLATFORM:
+				return "cl_platform_id";
+			case Handle::DEVICE:
+				return "cl_device";
+			case Handle::PROGRAM:
+				return "cl_program";
+			case Handle::KERNEL:
+				return "cl_kernel";
+			case Handle::BUFFER:
+				return "cl_mem";
+			case Handle::COMMAND_QUEUE:
+				return "cl_command_queue";
+			case Handle::EVENT:
+				return "cl_event";
+			default:
+				return "";
+		};
+	};
+
+	std::string ANVIL_CALL typeName(anvil::Type aType) throw() {
+		std::string name;
+
+		switch (anvil::GetPrimativeType(aType)) {
+		case ANVIL_8U:
+			name = "uchar";
+			break;
+		case ANVIL_8S:
+			name = "char";
+			break;
+		case ANVIL_16U:
+			name = "ushort";
+			break;
+		case ANVIL_16S:
+			name = "short";
+			break;
+		case ANVIL_32U:
+			name = "uint";
+			break;
+		case ANVIL_32S:
+			name = "int";
+			break;
+		case ANVIL_64U:
+			name = "ulong";
+			break;
+		case ANVIL_64S:
+			name = "long";
+			break;
+		case ANVIL_32F:
+			name = "float";
+			break;
+		case ANVIL_64F:
+			name = "double";
+			break;
+		case ANVIL_8B:
+			name = "bool";
+			break;
+		}
+
+		switch (GetChannels(aType)) {
+		case 2:
+			name += "2";
+			break;
+		case 3:
+			name += "3";
+			break;
+		case 4:
+			name += "4";
+			break;
+		}
+
+		return name;
+	}
+
 	// Handle
 
 	ANVIL_CALL Handle::Handle() :

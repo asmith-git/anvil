@@ -22,6 +22,7 @@
 #include <cstdint>
 #include <CL/CL.h>
 #include "anvil/core/Keywords.hpp"
+#include "anvil/maths/Type.hpp"
 
 namespace anvil { namespace ocl {
 
@@ -97,6 +98,9 @@ namespace anvil { namespace ocl {
 		virtual Handle::Type ANVIL_CALL type() const throw() = 0;
 	};
 
+
+	std::string ANVIL_CALL typeName(Handle::Type) throw();
+	std::string ANVIL_CALL typeName(anvil::Type) throw();
 	std::string ANVIL_CALL getOclError() throw();
 	bool ANVIL_CALL oclError(const char*, cl_int, const char* aExtraMsg = NULL)  throw();
 }}
