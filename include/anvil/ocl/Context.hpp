@@ -23,6 +23,8 @@ namespace anvil { namespace ocl {
 	private:
 		Context(Context&) = delete;
 		Context& operator=(Context&) = delete;
+
+		bool ANVIL_CALL create(cl_platform_id, cl_device_id*, size_t) throw();
 	protected:
 		virtual void ANVIL_CALL onError(const char*, const void*, size_t) throw();
 	public:
@@ -33,13 +35,13 @@ namespace anvil { namespace ocl {
 
 		Context& ANVIL_CALL operator=(Context&&) throw();
 
-		bool ANVIL_CALL create(Device) throw();
-		bool ANVIL_CALL create(const Device*, size_t) throw();
-		bool ANVIL_CALL create(const std::vector<Device>&) throw();
+		bool ANVIL_CALL create(Device&) throw();
+		bool ANVIL_CALL create(Device*, size_t) throw();
+		bool ANVIL_CALL create(std::vector<std::shared_ptr<Device>>&) throw();
 
 		void ANVIL_CALL swap(Context&);
 
-		std::vector<Device> ANVIL_CALL devices() const throw();
+		std::vector<std::shared_ptr<Device>> ANVIL_CALL devices() const throw();
 
 		// Inherited from Object
 

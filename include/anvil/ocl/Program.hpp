@@ -40,7 +40,7 @@ namespace anvil { namespace ocl {
 
 		Source ANVIL_CALL source() const throw();
 		std::vector<Binary> ANVIL_CALL binaries() const throw();
-		std::vector<Device> ANVIL_CALL devices() const throw();
+		std::vector<std::shared_ptr<Device>> ANVIL_CALL devices() const throw();
 
 		Context ANVIL_CALL context() const throw();
 

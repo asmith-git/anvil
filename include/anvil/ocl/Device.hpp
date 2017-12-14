@@ -24,9 +24,10 @@ namespace anvil { namespace ocl {
 
 	class Device : public Object {
 	private:
-		void* ANVIL_CALL getInfo(cl_device_info aName) const;
+		Device(Device&) = delete;
+		Device& operator=(Device&) = delete;
 
-		ANVIL_CALL Device(cl_device_id);
+		void* ANVIL_CALL getInfo(cl_device_info aName) const;
 	public:
 		enum Type : cl_device_type {
 			CPU = CL_DEVICE_TYPE_CPU,
@@ -35,9 +36,18 @@ namespace anvil { namespace ocl {
 			DEFAULT = CL_DEVICE_TYPE_DEFAULT,
 			ALL = CL_DEVICE_TYPE_ALL,
 		};
+
+		static std::vector<std::shared_ptr<Device>> ANVIL_CALL devices(Device::Type aType = Device::ALL) throw();
 		
-		ANVIL_CALL Device();
-		static std::vector<Device> ANVIL_CALL devices(Device::Type aType = Device::ALL);
+		ANVIL_CALL Device() throw();
+		ANVIL_CALL Device(Device&&) throw();
+		ANVIL_CALL ~Device() throw();
+
+		Device& ANVIL_CALL operator=(Device&&) throw();
+		void ANVIL_CALL swap(Device&);
+
+		std::vector<std::shared_ptr<Device>> ANVIL_CALL partition(cl_uint) throw();
+		bool ANVIL_CALL isSubDevice() const throw();
 		
 		struct WorkItemCount {
 			size_t x;

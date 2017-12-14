@@ -30,7 +30,7 @@ namespace anvil { namespace ocl {
 
 		ANVIL_CALL Platform() throw();
 		
-		std::vector<Device> ANVIL_CALL devices(Device::Type aType = Device::ALL) const throw();
+		std::vector<std::shared_ptr<Device>> ANVIL_CALL devices(Device::Type aType = Device::ALL) const throw();
 		static std::vector<Platform> ANVIL_CALL platforms() throw();
 
 

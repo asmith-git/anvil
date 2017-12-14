@@ -49,13 +49,13 @@ namespace anvil { namespace ocl {
 		return gPlatformInfoBuffer;
 	}
 
-	std::vector<Device> ANVIL_CALL Platform::devices(Device::Type aType) const throw() {
+	std::vector<std::shared_ptr<Device>> ANVIL_CALL Platform::devices(Device::Type aType) const throw() {
 		// Queury the number of devices
 		cl_uint count = 0;
 		cl_int error = clGetDeviceIDs(mHandle.platform, aType, 0, NULL, &count);
 		if (error != CL_SUCCESS) {
 			if(error != CL_DEVICE_NOT_FOUND) oclError("clGetDeviceIDs", error);
-			return std::vector<Device>();
+			return std::vector<std::shared_ptr<Device>>();
 		}
 
 		// Allocate storage for devices
@@ -65,10 +65,13 @@ namespace anvil { namespace ocl {
 		error = clGetDeviceIDs(mHandle.platform, aType, count, deviceIDS, &count);
 		if (error != CL_SUCCESS) {
 			oclError("clGetDeviceIDs", error);
-			return std::vector<Device>();
+			return std::vector<std::shared_ptr<Device>>();
 		}
-		std::vector<Device> devices(count, Device());
-		for (cl_uint i = 0; i < count; ++i) devices[i].create(deviceIDS[i]);
+		std::vector<std::shared_ptr<Device>> devices(count, std::shared_ptr<Device>());
+		for (cl_uint i = 0; i < count; ++i) {
+			devices[i].swap(std::shared_ptr<Device>(new Device()));
+			devices[i]->create(deviceIDS[i]);
+		}
 
 		// Return devices
 		return devices;
