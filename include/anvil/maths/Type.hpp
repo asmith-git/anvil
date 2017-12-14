@@ -63,8 +63,8 @@ namespace anvil {
 
 	static ANVIL_CONSTEXPR_FN Type GetWidePrimativeType(Type aType) throw() {
 			return 
-				aType == ANVIL_8U || aType == ANVIL_16U ? ANVIL_32U :
-				aType == ANVIL_8S || aType == ANVIL_16S ? ANVIL_32S :
+				aType == ANVIL_8U || aType == ANVIL_16U || aType == ANVIL_8S || aType == ANVIL_16S ? ANVIL_32S :
+				aType == ANVIL_32U ? ANVIL_64S :
 				aType;
 	}
 
