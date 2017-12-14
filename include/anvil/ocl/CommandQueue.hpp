@@ -27,7 +27,7 @@ namespace anvil { namespace ocl {
 		ANVIL_CALL CommandQueue() throw();
 		ANVIL_CALL CommandQueue(CommandQueue&&);
 		ANVIL_CALL ~CommandQueue() throw();
-		ANVIL_CALL CommandQueue& operator=(CommandQueue&&);
+		CommandQueue& ANVIL_CALL operator=(CommandQueue&&);
 
 		bool ANVIL_CALL create(Context&, Device&, bool aOutOfOrder = false, bool aProfiling = false) throw();
 
@@ -45,7 +45,7 @@ namespace anvil { namespace ocl {
 		bool ANVIL_CALL create(Handle) throw() override;
 		bool ANVIL_CALL destroy() throw() override;
 		cl_uint ANVIL_CALL referenceCount() const throw() override;
-		Handle::Type type() const throw() override;
+		Handle::Type ANVIL_CALL type() const throw() override;
 	};
 }}
 

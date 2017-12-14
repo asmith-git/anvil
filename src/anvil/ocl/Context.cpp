@@ -67,6 +67,7 @@ namespace anvil { namespace ocl {
 			mHandle.context = NULL;
 			return oclError("clCreateContext", error);
 		}
+		onCreate();
 		return true;
 	}
 
@@ -79,6 +80,7 @@ namespace anvil { namespace ocl {
 		if (mHandle.context) {
 			cl_int error = clReleaseContext(mHandle.context);
 			if (error != CL_SUCCESS) return oclError("clReleaseContext", error);
+			onDestroy();
 			mHandle.context = NULL;
 			return true;
 		}
@@ -92,6 +94,7 @@ namespace anvil { namespace ocl {
 			mHandle = aHandle;
 			cl_int error = clRetainContext(mHandle.context);
 			if (error != CL_SUCCESS) return oclError("clRetainContext", error);
+			onCreate();
 		}
 		return true;
 	}
@@ -119,7 +122,7 @@ namespace anvil { namespace ocl {
 		return 0;
 	}
 
-	Handle::Type Context::type() const throw() {
+	Handle::Type ANVIL_CALL Context::type() const throw() {
 		return Handle::CONTEXT;
 	}
 

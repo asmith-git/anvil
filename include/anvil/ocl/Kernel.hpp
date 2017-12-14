@@ -24,15 +24,11 @@
 namespace anvil { namespace ocl {
 
 	class Kernel : public Object {
+	public:
+		typedef void(__stdcall *NativeFunction)(void*);
 	private:
-		enum State : uint8_t {
-			INITIALISED,
-			SOURCE_SET,
-			BUILT
-		};
 		Kernel(const Kernel&) = delete;
 		Kernel& operator=(const Kernel&) = delete;
-
 
 		template<class T>
 		inline T ANVIL_CALL getInfo(cl_mem_info aInfo) const throw() {
@@ -49,8 +45,10 @@ namespace anvil { namespace ocl {
 		Kernel& ANVIL_CALL operator=(Kernel&&) throw();
 
 		void ANVIL_CALL swap(Kernel&) throw();
+		bool ANVIL_CALL create(NativeFunction, cl_uint) throw();
 		bool ANVIL_CALL create(const Program&, const char*) throw();
-		Event ANVIL_CALL execute(CommandQueue&, cl_uint, const size_t *, const size_t*, const size_t*);
+		Event ANVIL_CALL operator()(CommandQueue&);
+		Event ANVIL_CALL operator()(CommandQueue&, cl_uint, const size_t *, const size_t*, const size_t*);
 
 		cl_uint ANVIL_CALL arguments() const throw();
 		const char* ANVIL_CALL name() const throw();
@@ -59,6 +57,7 @@ namespace anvil { namespace ocl {
 		cl_ulong ANVIL_CALL localMemorySize(const Device&) const throw();
 		Context ANVIL_CALL context() const throw();
 		Program ANVIL_CALL program() const throw();
+		bool ANVIL_CALL isNative() const throw();
 
 		bool ANVIL_CALL setArgument(cl_uint, const void*, size_t);
 
@@ -121,16 +120,10 @@ namespace anvil { namespace ocl {
 		}
 
 		template<class ...ARGS>
-		Event ANVIL_CALL execute(CommandQueue& aQueue, cl_uint aDimensions, const size_t* aGlobalOffset,
-			const size_t* aGlobalWorkSize, const size_t* aLocalWorkSize, ARGS... aArguments) {
-			if(! setArguments<ARGS...>(aArguments...)) return Event();
-			return execute(aQueue, aDimensions, aGlobalOffset, aGlobalWorkSize, aLocalWorkSize);
-		}
-
-		template<class ...ARGS>
 		Event ANVIL_CALL operator()(CommandQueue& aQueue, cl_uint aDimensions, const size_t* aGlobalOffset,
 			const size_t* aGlobalWorkSize, const size_t* aLocalWorkSize, ARGS... aArguments) {
-			return execute<ARGS...>(aQueue, aDimensions, aGlobalOffset, aGlobalWorkSize, aLocalWorkSize, aArguments..);
+			if (!setArguments<ARGS...>(aArguments...)) return Event();
+			return operator()(aQueue, aDimensions, aGlobalOffset, aGlobalWorkSize, aLocalWorkSize);
 		}
 
 		// Inherited from Object
@@ -138,26 +131,7 @@ namespace anvil { namespace ocl {
 		bool ANVIL_CALL create(Handle) throw() override;
 		bool ANVIL_CALL destroy() throw() override;
 		cl_uint ANVIL_CALL referenceCount() const throw() override;
-		Handle::Type type() const throw() override;
-	};
-
-	class NativeKernel {
-	private:
-		static void __stdcall execute_(void*) throw();
-
-		NativeKernel(NativeKernel&&) = delete;
-		NativeKernel(NativeKernel&) = delete;
-		NativeKernel& operator=(NativeKernel&&) = delete;
-		NativeKernel& operator=(NativeKernel&) = delete;
-	protected:
-		cl_context mContext;
-
-		virtual void ANVIL_CALL onExecute() throw() = 0;
-	public:
-		ANVIL_CALL NativeKernel(Context&);
-		virtual ANVIL_CALL ~NativeKernel();
-
-		Event ANVIL_CALL execute(CommandQueue&);
+		Handle::Type ANVIL_CALL type() const throw() override;
 	};
 }}
 

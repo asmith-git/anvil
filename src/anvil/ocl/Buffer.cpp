@@ -60,6 +60,7 @@ namespace anvil { namespace ocl {
 			mHandle.buffer = NULL;
 			return oclError("clCreateBuffer", error);
 		}
+		onCreate();
 		return true;
 	}
 
@@ -67,6 +68,7 @@ namespace anvil { namespace ocl {
 		if (mHandle.buffer) {
 			cl_int error = clReleaseMemObject(mHandle.buffer);
 			if (error != CL_SUCCESS) return oclError("clReleaseMemObject", error);
+			onDestroy();
 			mHandle.buffer = NULL;
 			return true;
 		}
@@ -80,6 +82,7 @@ namespace anvil { namespace ocl {
 			mHandle = aHandle;
 			cl_int error = clRetainMemObject(mHandle.buffer);
 			if (error != CL_SUCCESS) return oclError("clRetainMemObject", error);
+			onCreate();
 		}
 		return true;
 	}
@@ -181,7 +184,7 @@ namespace anvil { namespace ocl {
 		return 0;
 	}
 
-	Handle::Type Buffer::type() const throw() {
+	Handle::Type ANVIL_CALL Buffer::type() const throw() {
 		return Handle::BUFFER;
 	}
 }}

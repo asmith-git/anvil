@@ -104,7 +104,7 @@ namespace anvil { namespace ocl {
 		return 0;
 	}
 
-	Handle::Type Platform::type() const throw() {
+	Handle::Type ANVIL_CALL Platform::type() const throw() {
 		return Handle::PLATFORM;
 	}
 

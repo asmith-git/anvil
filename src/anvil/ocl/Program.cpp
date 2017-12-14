@@ -50,6 +50,7 @@ namespace anvil { namespace ocl {
 		if (mHandle.program) {
 			cl_int error = clReleaseProgram(mHandle.program);
 			if (error != CL_SUCCESS) return oclError("clReleaseProgram", error);
+			onDestroy();
 			mHandle.program = NULL;
 			return true;
 		}
@@ -63,6 +64,7 @@ namespace anvil { namespace ocl {
 			mHandle = aHandle;
 			cl_int error = clRetainProgram(mHandle.program);
 			if (error != CL_SUCCESS) return oclError("clRetainProgram", error);
+			onCreate();
 		}
 		return true;
 	}
@@ -146,7 +148,7 @@ namespace anvil { namespace ocl {
 			}
 			return false;
 		}
-
+		onCreate();
 		return true;
 	}
 	
@@ -259,7 +261,7 @@ namespace anvil { namespace ocl {
 		return std::move(tmp);
 	}
 
-	Handle::Type Program::type() const throw() {
+	Handle::Type ANVIL_CALL Program::type() const throw() {
 		return Handle::PROGRAM;
 	}
 }}

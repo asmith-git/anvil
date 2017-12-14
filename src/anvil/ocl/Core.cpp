@@ -167,11 +167,6 @@ namespace anvil { namespace ocl {
 		event(aValue)
 	{}
 
-	ANVIL_CALL Handle::Handle(NativeKernel* aValue) :
-		type(NATIVE_KERNEL),
-		native(aValue)
-	{}
-
 	ANVIL_CALL Handle::operator cl_context() throw() {
 		return type == CONTEXT ? context : NULL;
 	}
@@ -204,10 +199,6 @@ namespace anvil { namespace ocl {
 		return type == EVENT ? event : NULL;
 	}
 
-	ANVIL_CALL Handle::operator NativeKernel*() throw() {
-		return type == NATIVE_KERNEL ? native : NULL;
-	}
-
 	// Object
 
 	ANVIL_CALL Object::Object(Handle::Type aType) throw() {
@@ -236,37 +227,43 @@ namespace anvil { namespace ocl {
 	};
 
 	static std::mutex gHandleDataLock;
-	static std::map<HandleKey, void*> gHandleData;
+	static std::map<HandleKey, std::weak_ptr<void>> gHandleData;
 
-	void* ANVIL_CALL Object::getAssociatedData(Handle aHandle) throw() {
-		const HandleKey h = { aHandle };
-		if (h.handle.context == NULL) return nullptr;
+	void ANVIL_CALL Object::onCreate() throw() {
 		std::lock_guard<std::mutex> lock(gHandleDataLock);
-		const auto i = gHandleData.find(h);
-		if (i != gHandleData.end()) return nullptr;
-		return i->second;
-	}
-
-	bool ANVIL_CALL Object::associateData(Handle aHandle, void* aData) throw() {
-		const HandleKey h = { aHandle };
-		if (h.handle.context == NULL) return false;
-		std::lock_guard<std::mutex> lock(gHandleDataLock);
-		const auto i = gHandleData.find(h);
-		if (i != gHandleData.end()) return false;
-		gHandleData.emplace(h, aData);
-		return true;
-	}
-
-	void* ANVIL_CALL Object::disassociateData(Handle aHandle) throw() {
-		const HandleKey h = { aHandle };
-		if (h.handle.context == NULL) return nullptr;
-		std::lock_guard<std::mutex> lock(gHandleDataLock);
-		const auto i = gHandleData.find(h);
+		const auto i = gHandleData.find({ mHandle });
 		if (i != gHandleData.end()) {
-			void* const tmp = i->second;
-			gHandleData.erase(i);
-			return tmp;
+			std::shared_ptr<void> tmp = i->second.lock();
+			if (tmp) {
+				mExtraData = tmp;
+			} else {
+				gHandleData.erase(i);
+			}
 		}
-		return nullptr;
+	}
+
+	void ANVIL_CALL Object::onDestroy() throw() {
+		if (!mHandle.context) return;
+		if (mExtraData) {
+			if (mExtraData.use_count() == 1) {
+				std::lock_guard<std::mutex> lock(gHandleDataLock);
+				const auto i = gHandleData.find({ mHandle });
+				gHandleData.erase(i);
+			}
+			mExtraData.swap(std::shared_ptr<void>());
+		}
+	}
+
+	std::shared_ptr<void> ANVIL_CALL Object::getExtraData() throw() {
+		return mExtraData;
+	}
+
+	bool ANVIL_CALL Object::setExtraData(std::shared_ptr<void> aData) throw() {
+		if (mExtraData || ! mHandle.context) return false;
+		std::lock_guard<std::mutex> lock(gHandleDataLock);
+		HandleKey key = { mHandle };
+		gHandleData.emplace(key, aData);
+		mExtraData = aData;
+		return true;
 	}
 }}

@@ -15,6 +15,7 @@
 #ifndef ANVIL_OCL_CORE_HPP
 #define ANVIL_OCL_CORE_HPP
 
+#include <memory>
 #include <string>
 #include <stdexcept>
 #include <iostream>
@@ -26,9 +27,6 @@ namespace anvil { namespace ocl {
 
 	//! \todo Time of creation
 
-	class NativeKernel;
-
-
 	struct Handle {
 		enum Type : uint8_t {
 			UNKNOWN,
@@ -37,7 +35,6 @@ namespace anvil { namespace ocl {
 			DEVICE,
 			PROGRAM,
 			KERNEL,
-			NATIVE_KERNEL,
 			BUFFER,
 			COMMAND_QUEUE,
 			EVENT
@@ -52,7 +49,7 @@ namespace anvil { namespace ocl {
 			cl_mem buffer;
 			cl_command_queue queue;
 			cl_event event;
-			NativeKernel* native;
+			void* user;
 		};
 		Type type;
 
@@ -66,7 +63,6 @@ namespace anvil { namespace ocl {
 		ANVIL_CALL Handle(cl_mem);
 		ANVIL_CALL Handle(cl_command_queue);
 		ANVIL_CALL Handle(cl_event);
-		ANVIL_CALL Handle(NativeKernel*);
 
 		ANVIL_CALL operator cl_context() throw();
 		ANVIL_CALL operator cl_platform_id() throw();
@@ -76,16 +72,18 @@ namespace anvil { namespace ocl {
 		ANVIL_CALL operator cl_mem() throw();
 		ANVIL_CALL operator cl_command_queue() throw();
 		ANVIL_CALL operator cl_event() throw();
-		ANVIL_CALL operator NativeKernel*() throw();
 	};
 
 	class Object {
+	private:
+		std::shared_ptr<void> mExtraData;
 	protected:
 		Handle mHandle;
 
-		static bool ANVIL_CALL associateData(Handle, void*) throw();
-		static void* ANVIL_CALL disassociateData(Handle) throw();
-		static void* ANVIL_CALL getAssociatedData(Handle) throw();
+		bool ANVIL_CALL setExtraData(std::shared_ptr<void>) throw();
+		virtual void ANVIL_CALL onCreate() throw();
+		virtual void ANVIL_CALL onDestroy() throw();
+		std::shared_ptr<void> ANVIL_CALL getExtraData() throw();
 	public:
 		ANVIL_CALL Object(Handle::Type) throw();
 		virtual ANVIL_CALL ~Object() throw();
@@ -96,7 +94,7 @@ namespace anvil { namespace ocl {
 		virtual bool ANVIL_CALL create(Handle) throw() = 0;
 		virtual bool ANVIL_CALL destroy() throw() = 0;
 		virtual cl_uint ANVIL_CALL referenceCount() const throw() = 0;
-		virtual Handle::Type type() const throw() = 0;
+		virtual Handle::Type ANVIL_CALL type() const throw() = 0;
 	};
 
 	std::string ANVIL_CALL getOclError() throw();

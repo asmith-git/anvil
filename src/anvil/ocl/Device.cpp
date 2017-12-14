@@ -64,7 +64,7 @@ namespace anvil { namespace ocl {
 		return 0;
 	}
 
-	Handle::Type Device::type() const throw() {
+	Handle::Type ANVIL_CALL Device::type() const throw() {
 		return Handle::DEVICE;
 	}
 }}

@@ -45,6 +45,7 @@ namespace anvil { namespace ocl {
 		if (mHandle.event) {
 			cl_int error = clReleaseEvent(mHandle.event);
 			if (error != CL_SUCCESS) return oclError("clReleaseEvent", error);
+			onDestroy();
 			mHandle.event = NULL;
 			return true;
 		}
@@ -58,6 +59,7 @@ namespace anvil { namespace ocl {
 			mHandle = aHandle;
 			cl_int error = clRetainEvent(mHandle.event);
 			if (error != CL_SUCCESS) return oclError("clRetainEvent", error);
+			onCreate();
 		}
 		return true;
 	}
@@ -126,7 +128,7 @@ namespace anvil { namespace ocl {
 		return 0;
 	}
 
-	Handle::Type Event::type() const throw() {
+	Handle::Type ANVIL_CALL Event::type() const throw() {
 		return Handle::EVENT;
 	}
 

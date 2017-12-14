@@ -17,6 +17,17 @@
 
 namespace anvil { namespace ocl {
 
+	enum {
+		NATIVE_FLAG = 1
+	};
+
+	struct KernelData {
+		Kernel::NativeFunction function;
+		std::vector<uint8_t> args;
+		cl_uint arg_count;
+		cl_uint current_arg;
+	};
+
 	// Kernel
 
 	ANVIL_CALL Kernel::Kernel() throw() :
@@ -42,6 +53,21 @@ namespace anvil { namespace ocl {
 		std::swap(mHandle, aOther.mHandle);
 	}
 
+	bool ANVIL_CALL Kernel::create(NativeFunction aFunction, cl_uint aArgCount) throw() {
+		if (mHandle.kernel != NULL) if (!destroy()) return false;
+		mHandle.user = aFunction;
+		std::shared_ptr<KernelData> data(new KernelData());
+		data->function = aFunction;
+		data->arg_count = aArgCount;
+		data->current_arg = 0;
+		if (!setExtraData(data)) {
+			mHandle.user = NULL;
+			return false;
+		}
+		onCreate();
+		return true;
+	}
+
 	bool ANVIL_CALL Kernel::create(const Program& aProgram, const char* aName) throw() {
 		cl_int error = CL_SUCCESS;
 		mHandle.kernel = clCreateKernel(const_cast<Program&>(aProgram).handle(), aName, &error);
@@ -49,14 +75,21 @@ namespace anvil { namespace ocl {
 			mHandle.kernel = NULL;
 			return oclError("clCreateKernel", error, aName);
 		}
+		onCreate();
 		return true;
 	}
 
 	bool ANVIL_CALL Kernel::destroy() throw() {
 		if (mHandle.kernel) {
-			cl_int error = clReleaseKernel(mHandle.kernel);
-			if (error != CL_SUCCESS) return oclError("clReleaseKernel", error);
-			mHandle.kernel = NULL;
+			if (isNative()) {
+				onDestroy();
+				mHandle.kernel = NULL;
+			}else {
+				cl_int error = clReleaseKernel(mHandle.kernel);
+				if (error != CL_SUCCESS) return oclError("clReleaseKernel", error);
+				onDestroy();
+				mHandle.kernel = NULL;
+			}
 			return true;
 		}
 		return false;
@@ -72,11 +105,46 @@ namespace anvil { namespace ocl {
 				mHandle.kernel = NULL;
 				return oclError("clRetainKernel", error);
 			}
+			onCreate();
 		}
 		return true;
 	}
 
-	Event ANVIL_CALL Kernel::execute(CommandQueue& aQueue, cl_uint aDimensions, const size_t *aGlobalOffset, const size_t *aGlobalWorkSize, const size_t *aLocalWorkSize) {
+	Event ANVIL_CALL Kernel::operator()(CommandQueue& aQueue) {
+		Handle handle(Handle::EVENT);
+		if (isNative()) {
+			std::shared_ptr<KernelData> data = std::static_pointer_cast<KernelData>(getExtraData());
+			if (!data) {
+				oclError("clEnqueueNativeKernel  ", CL_INVALID_VALUE);
+				return Event();
+			}
+			const size_t size = data->args.size();
+			cl_int error = clEnqueueNativeKernel(aQueue.handle(), data->function, size == 0 ? NULL : &data->args[0], size, 0, NULL, NULL, 0, NULL, &mHandle.event);
+			data->args.clear();
+			data->current_arg = 0;
+			if (error != CL_SUCCESS) {
+				oclError("clEnqueueNativeKernel  ", error);
+				return Event();
+			}
+		} else {
+#ifdef CL_VERSION_1_2
+			oclError("clEnqueueNDRangeKernel", CL_INVALID_WORK_GROUP_SIZE, name());
+			return Event();
+#else
+			cl_int error = clEnqueueTask (aQueue.handle(), mHandle.kernel, 0, NULL, &mHandle.event);
+			if (error != CL_SUCCESS) {
+				oclError("clEnqueueTask ", error, name());
+				return Event();
+			}
+#endif
+		}
+		Event event;
+		event.create(handle);
+		return event;
+	}
+
+	Event ANVIL_CALL Kernel::operator()(CommandQueue& aQueue, cl_uint aDimensions, const size_t *aGlobalOffset, const size_t *aGlobalWorkSize, const size_t *aLocalWorkSize) {
+		if (isNative()) return operator()(aQueue);
 		Handle handle(Handle::EVENT);
 		cl_int error = clEnqueueNDRangeKernel(aQueue.handle(), mHandle.kernel, aDimensions, aGlobalOffset, aGlobalWorkSize, aLocalWorkSize, 0, NULL, &mHandle.event);
 		if (error != CL_SUCCESS) {
@@ -89,8 +157,18 @@ namespace anvil { namespace ocl {
 	}
 
 	bool ANVIL_CALL Kernel::setArgument(cl_uint aIndex, const void* aSrc, size_t aBytes) {
-		cl_int error = clSetKernelArg(mHandle.kernel, aIndex, aBytes, aSrc);
-		if (error != CL_SUCCESS) return oclError("clSetKernelArg", error, std::to_string(aIndex).c_str());
+		if (isNative()) {
+			std::shared_ptr<KernelData> data = std::static_pointer_cast<KernelData>(getExtraData());
+			if (aIndex != data->current_arg) return oclError("clSetKernelArg", CL_INVALID_ARG_INDEX, std::to_string(aIndex).c_str());
+			const uint8_t* const ptr = static_cast<const uint8_t*>(aSrc);
+			for (size_t i = 0; i < aBytes; ++i) {
+				data->args.push_back(ptr[i]);
+			}
+			++data->current_arg;
+		} else {
+			cl_int error = clSetKernelArg(mHandle.kernel, aIndex, aBytes, aSrc);
+			if (error != CL_SUCCESS) return oclError("clSetKernelArg", error, std::to_string(aIndex).c_str());
+		}
 		return true;
 	}
 
@@ -107,10 +185,14 @@ namespace anvil { namespace ocl {
 	}
 
 	cl_uint ANVIL_CALL Kernel::arguments() const throw() {
-		return mHandle.kernel ? getInfo<cl_uint>(CL_KERNEL_NUM_ARGS) : 0;
+		return mHandle.kernel ? isNative() ? 1 : getInfo<cl_uint>(CL_KERNEL_NUM_ARGS) : 0;
 	}
 
 	size_t ANVIL_CALL Kernel::workGroupSize(const Device& aDevice) const throw() {
+		if (isNative()) {
+			oclError("anvil::ocl::Kernel::workGroupSize", CL_INVALID_KERNEL, "Kernel is native");
+			return 0;
+		}
 		size_t tmp;
 		cl_int error = clGetKernelWorkGroupInfo(mHandle.kernel, aDevice.handle(), CL_KERNEL_WORK_GROUP_SIZE, sizeof(tmp), &tmp, NULL);
 		if (error != CL_SUCCESS) oclError("clGetKernelWorkGroupInfo", error, (name() + std::string(", CL_KERNEL_WORK_GROUP_SIZE")).c_str());
@@ -118,6 +200,10 @@ namespace anvil { namespace ocl {
 	}
 
 	Device::WorkItemCount ANVIL_CALL Kernel::compileWorkGroupSize(const Device& aDevice) const throw() {
+		if (isNative()) {
+			oclError("anvil::ocl::Kernel::compileWorkGroupSize", CL_INVALID_KERNEL, "Kernel is native");
+			return { 0, 0, 0 };
+		}
 		Device::WorkItemCount tmp;
 		cl_int error = clGetKernelWorkGroupInfo(mHandle.kernel, aDevice.handle(), CL_KERNEL_COMPILE_WORK_GROUP_SIZE, sizeof(tmp), &tmp, NULL);
 		if (error != CL_SUCCESS) oclError("clGetKernelWorkGroupInfo", error, (name() + std::string(", CL_KERNEL_COMPILE_WORK_GROUP_SIZE")).c_str());
@@ -125,6 +211,10 @@ namespace anvil { namespace ocl {
 	}
 
 	cl_ulong ANVIL_CALL Kernel::localMemorySize(const Device& aDevice) const throw() {
+		if (isNative()) {
+			oclError("anvil::ocl::Kernel::localMemorySize", CL_INVALID_KERNEL, "Kernel is native");
+			return 0;
+		}
 		cl_ulong tmp;
 		cl_int error = clGetKernelWorkGroupInfo(mHandle.kernel, aDevice.handle(), CL_KERNEL_LOCAL_MEM_SIZE, sizeof(tmp), &tmp, NULL);
 		if (error != CL_SUCCESS) oclError("clGetKernelWorkGroupInfo", error, (name() + std::string(", CL_KERNEL_LOCAL_MEM_SIZE")).c_str());
@@ -132,6 +222,10 @@ namespace anvil { namespace ocl {
 	}
 
 	const char* Kernel::name() const throw() {
+		if (isNative()) {
+			oclError("anvil::ocl::Kernel::name", CL_INVALID_KERNEL, "Kernel is native");
+			return NULL;
+		}
 		enum { MAX_KERNEL_NAME = 1024 };
 		static char gNameBuffer[MAX_KERNEL_NAME];
 		cl_int error = clGetKernelInfo(mHandle.kernel, CL_KERNEL_FUNCTION_NAME, MAX_KERNEL_NAME, gNameBuffer, NULL);
@@ -140,6 +234,7 @@ namespace anvil { namespace ocl {
 	}
 
 	cl_uint ANVIL_CALL Kernel::referenceCount() const throw() {
+		if (isNative()) return const_cast<Kernel*>(this)->getExtraData().use_count() - 1;
 		cl_uint count;
 		cl_uint error = clGetKernelInfo(mHandle.kernel, CL_KERNEL_REFERENCE_COUNT, sizeof(count), &count, NULL);
 		if (error == CL_SUCCESS) return count;
@@ -151,32 +246,8 @@ namespace anvil { namespace ocl {
 		return Handle::KERNEL;
 	}
 
-	// NativeKernel
-
-	void __stdcall NativeKernel::execute_(void* aArgs) throw() {
-		reinterpret_cast<NativeKernel*>(aArgs)->onExecute();
-	}
-
-	ANVIL_CALL NativeKernel::NativeKernel(Context& aContext) :
-		mContext(reinterpret_cast<cl_context&>(aContext))
-	{}
-
-	ANVIL_CALL NativeKernel::~NativeKernel() {
-
-	}
-
-	Event ANVIL_CALL NativeKernel::execute(CommandQueue& aQueue) {
-		Event event;
-
-		NativeKernel* args = this;
-		cl_event& event_ref = *reinterpret_cast<cl_event*>(&event);
-		cl_int error = clEnqueueNativeKernel(reinterpret_cast<cl_command_queue&>(aQueue), NativeKernel::execute_, &args, sizeof(void*), 0, NULL, NULL, 0, NULL, &event_ref);
-		if (error != CL_SUCCESS) {
-			oclError("clEnqueueNativeKernel", error);
-			return Event();
-		}
-
-		return event;
+	bool ANVIL_CALL Kernel::isNative() const throw() {
+		return const_cast<Kernel*>(this)->getExtraData() ? true : false;
 	}
 
 }}
