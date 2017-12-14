@@ -30,7 +30,8 @@ namespace anvil {
 		ANVIL_64U,
 		ANVIL_64S,
 		ANVIL_32F,
-		ANVIL_64F
+		ANVIL_64F,
+		ANVIL_8B
 	};
 
 	namespace detail {
@@ -45,13 +46,14 @@ namespace anvil {
 		template<> struct TypeHelper<ANVIL_64S> { typedef int64_t type; };
 		template<> struct TypeHelper<ANVIL_32F> { typedef float type; };
 		template<> struct TypeHelper<ANVIL_64F> { typedef double type; };
+		template<> struct TypeHelper<ANVIL_8B> { typedef bool type; };
 	}
 
 	static ANVIL_CONSTEXPR_FN Type CreateType(Type aType, int aChannels) throw() {
 		return static_cast<Type>(((aChannels - 1) << 4) | aType);
 	}
 
-	static ANVIL_CONSTEXPR_FN Type GetType(Type aType) throw() {
+	static ANVIL_CONSTEXPR_FN Type GetPrimativeType(Type aType) throw() {
 		return static_cast<Type>(aType & 15);
 	}
 
@@ -59,8 +61,21 @@ namespace anvil {
 		return (aType >> 4) + 1;
 	}
 
+	static ANVIL_CONSTEXPR_FN Type GetWidePrimativeType(Type aType) throw() {
+			return 
+				aType == ANVIL_8U || aType == ANVIL_16U ? ANVIL_32U :
+				aType == ANVIL_8S || aType == ANVIL_16S ? ANVIL_32S :
+				aType;
+	}
+
+	static ANVIL_CONSTEXPR_FN Type GetWideType(Type aType) throw() {
+		return CreateType(
+			GetWidePrimativeType(GetPrimativeType(aType)),
+			GetChannels(aType));
+	}
+
 	template<Type TYPE>
-	using Primative = typename detail::TypeHelper<GetType(TYPE)>::type;
+	using Primative = typename detail::TypeHelper<GetPrimativeType(TYPE)>::type;
 	
 	template<Type TYPE>
 	struct TypeInfo {
@@ -99,7 +114,7 @@ namespace anvil {
 	};
 
 	static TypeInfoRuntime GetTypeInfo(Type aType) throw() {
-		switch (GetType(aType)) {
+		switch (GetPrimativeType(aType)) {
 			case ANVIL_8U :
 				return { GetChannels(aType), 1, 1, 0, 0 };
 			case ANVIL_8S :
@@ -120,6 +135,8 @@ namespace anvil {
 				return { GetChannels(aType), 4, 0, 0, 1 };
 			case ANVIL_64F :
 				return { GetChannels(aType), 8, 0, 0, 1 };
+			case ANVIL_8B :
+				return { GetChannels(aType), 8, 0, 0, 0 };
 			default:
 				return TypeInfoRuntime();
 		}
@@ -165,6 +182,10 @@ namespace anvil {
 	#define ANVIL_64FC2 anvil::CreateType(anvil::ANVIL_64F, 2)
 	#define ANVIL_64FC3 anvil::CreateType(anvil::ANVIL_64F, 3)
 	#define ANVIL_64FC4 anvil::CreateType(anvil::ANVIL_64F, 4)
+	#define ANVIL_8BC1 anvil::CreateType(anvil::ANVIL_8B, 1)
+	#define ANVIL_8BC2 anvil::CreateType(anvil::ANVIL_8B, 2)
+	#define ANVIL_8BC3 anvil::CreateType(anvil::ANVIL_8B, 3)
+	#define ANVIL_8BC4 anvil::CreateType(anvil::ANVIL_8B, 4)
 }
 
 #endif

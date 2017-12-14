@@ -47,6 +47,7 @@ namespace anvil {
 		int64_t s64;	//!< Signed 64 bit value.
 		float32_t f32;	//!< Single precision floating point value.
 		float64_t f64;	//!< Double precision floating point value.
+		bool b8;	    //!< Boolean value.
 
 		ANVIL_CALL PrimativeValueStoreage() throw() : u64(0) {}
 		ANVIL_CALL PrimativeValueStoreage(uint8_t aValue) throw() : u8(aValue) {}
@@ -59,6 +60,7 @@ namespace anvil {
 		ANVIL_CALL PrimativeValueStoreage(int64_t aValue) throw() : s64(aValue) {}
 		ANVIL_CALL PrimativeValueStoreage(float32_t aValue) throw() : f32(aValue) {}
 		ANVIL_CALL PrimativeValueStoreage(float64_t aValue) throw() : f64(aValue) {}
+		ANVIL_CALL PrimativeValueStoreage(bool aValue) throw() : b8(aValue) {}
 	};
 
 	class PrimativeValue {
@@ -76,6 +78,7 @@ namespace anvil {
 				type == ANVIL_64S ? static_cast<T>(value.s64) :
 				type == ANVIL_32F ? static_cast<T>(value.f32) :
 				type == ANVIL_64F ? static_cast<T>(value.f64) :
+				type == ANVIL_8B ? static_cast<T>(value.b8) :
 				static_cast<T>(0);
 		}
 	public:
@@ -93,6 +96,7 @@ namespace anvil {
 		ANVIL_CONSTEXPR_CLA ANVIL_CALL PrimativeValue(int64_t aValue) throw();
 		ANVIL_CONSTEXPR_CLA ANVIL_CALL PrimativeValue(float32_t aValue) throw();
 		ANVIL_CONSTEXPR_CLA ANVIL_CALL PrimativeValue(float64_t aValue) throw();
+		ANVIL_CONSTEXPR_CLA ANVIL_CALL PrimativeValue(bool aValue) throw();
 		
 		template<class T>
 		ANVIL_CALL PrimativeValue(Type aType, T aValue) throw() :
@@ -130,6 +134,9 @@ namespace anvil {
 			case ANVIL_64F:
 				value.f64 = static_cast<float64_t>(aValue);
 				break;
+			case ANVIL_8B:
+				value.b8 = static_cast<bool>(aValue);
+				break;
 			}
 		}
 
@@ -143,6 +150,7 @@ namespace anvil {
 		explicit ANVIL_CONSTEXPR_FN ANVIL_CALL operator int64_t() const throw() { return as<int64_t>(); }
 		explicit ANVIL_CONSTEXPR_FN ANVIL_CALL operator float32_t() const throw() { return as<float32_t>(); }
 		explicit ANVIL_CONSTEXPR_FN ANVIL_CALL operator float64_t() const throw() { return as<float64_t>(); }
+		explicit ANVIL_CONSTEXPR_FN ANVIL_CALL operator bool() const throw() { return as<bool>(); }
 	};
 
 	/*!
