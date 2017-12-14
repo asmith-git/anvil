@@ -20,11 +20,11 @@ namespace anvil { namespace ocl {
 	// Kernel
 
 	ANVIL_CALL Kernel::Kernel() throw() :
-		Object(KERNEL) 
+		Object(Handle::KERNEL)
 	{}
 
 	ANVIL_CALL Kernel::Kernel(Kernel&& aOther) throw():
-		Object(KERNEL) 
+		Object(Handle::KERNEL)
 	{
 		swap(aOther);
 	}
@@ -63,7 +63,7 @@ namespace anvil { namespace ocl {
 	}
 
 	bool ANVIL_CALL Kernel::create(Handle aHandle) throw() {
-		if (aHandle.type != KERNEL) return false;
+		if (aHandle.type != Handle::KERNEL) return false;
 		if (mHandle.kernel != NULL) if (!destroy()) return false;
 		if (aHandle.kernel) {
 			mHandle = aHandle;
@@ -77,7 +77,7 @@ namespace anvil { namespace ocl {
 	}
 
 	Event ANVIL_CALL Kernel::execute(CommandQueue& aQueue, cl_uint aDimensions, const size_t *aGlobalOffset, const size_t *aGlobalWorkSize, const size_t *aLocalWorkSize) {
-		Handle handle(EVENT);
+		Handle handle(Handle::EVENT);
 		cl_int error = clEnqueueNDRangeKernel(aQueue.handle(), mHandle.kernel, aDimensions, aGlobalOffset, aGlobalWorkSize, aLocalWorkSize, 0, NULL, &mHandle.event);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueNDRangeKernel", error, name());
@@ -145,6 +145,10 @@ namespace anvil { namespace ocl {
 		if (error == CL_SUCCESS) return count;
 		oclError("clGetKernelInfo", error, "CL_KERNEL_REFERENCE_COUNT");
 		return 0;
+	}
+
+	Handle::Type Kernel::type() const throw() {
+		return Handle::KERNEL;
 	}
 
 	// NativeKernel

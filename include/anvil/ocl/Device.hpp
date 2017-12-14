@@ -100,7 +100,7 @@ namespace anvil { namespace ocl {
 		ANVIL_CL_GET_INFO(const char*, , profile, CL_DEVICE_PROFILE);
 		ANVIL_CL_GET_INFO(size_t, *, profilingTimerResolution, CL_DEVICE_PROFILING_TIMER_RESOLUTION);
 		ANVIL_CL_GET_INFO(Type, *, queueProperties, CL_DEVICE_QUEUE_PROPERTIES);
-		ANVIL_CL_GET_INFO(cl_device_type, *, type, CL_DEVICE_TYPE);
+		ANVIL_CL_GET_INFO(cl_device_type, *, deviceType, CL_DEVICE_TYPE);
 		ANVIL_CL_GET_INFO(const char*, , vendor, CL_DEVICE_VENDOR);
 		ANVIL_CL_GET_INFO(cl_uint, *, vendorID, CL_DEVICE_VENDOR_ID);
 		ANVIL_CL_GET_INFO(const char*, , version, CL_DEVICE_VERSION);
@@ -115,6 +115,7 @@ namespace anvil { namespace ocl {
 		bool ANVIL_CALL create(Handle) throw() override;
 		bool ANVIL_CALL destroy() throw() override;
 		cl_uint ANVIL_CALL referenceCount() const throw() override;
+		Handle::Type type() const throw() override;
 	};
 }}
 

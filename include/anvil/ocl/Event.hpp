@@ -74,7 +74,7 @@ namespace anvil { namespace ocl {
 
 		bool ANVIL_CALL setListener(EventListener&) throw();
 		bool ANVIL_CALL wait() throw();
-		CommandType ANVIL_CALL type() const throw();
+		CommandType ANVIL_CALL commandType() const throw();
 		Status ANVIL_CALL status() const throw();
 		ProfileInfo ANVIL_CALL profileInfo() const throw();
 
@@ -85,6 +85,7 @@ namespace anvil { namespace ocl {
 		bool ANVIL_CALL create(Handle) throw() override;
 		bool ANVIL_CALL destroy() throw() override;
 		cl_uint ANVIL_CALL referenceCount() const throw() override;
+		Handle::Type type() const throw() override;
 	};
 
 	class EventListener {

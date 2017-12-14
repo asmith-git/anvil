@@ -19,11 +19,11 @@ namespace anvil { namespace ocl {
 	// Event
 
 	ANVIL_CALL Event::Event() :
-		Object(EVENT) 
+		Object(Handle::EVENT)
 	{}
 
 	ANVIL_CALL Event::Event(Event&& aOther) throw() :
-		Object(EVENT)
+		Object(Handle::EVENT)
 	{
 		swap(aOther);
 	}
@@ -52,7 +52,7 @@ namespace anvil { namespace ocl {
 	}
 
 	bool ANVIL_CALL Event::create(Handle aHandle) throw() {
-		if (aHandle.type != EVENT) return false;
+		if (aHandle.type != Handle::EVENT) return false;
 		if (mHandle.event != NULL) if (!destroy()) return false;
 		if (aHandle.event) {
 			mHandle = aHandle;
@@ -77,7 +77,7 @@ namespace anvil { namespace ocl {
 		return true;
 	}
 
-	Event::CommandType ANVIL_CALL Event::type() const throw() {
+	Event::CommandType ANVIL_CALL Event::commandType() const throw() {
 		cl_command_type type;
 		cl_int error = clGetEventInfo(mHandle.event, CL_EVENT_COMMAND_TYPE, sizeof(cl_command_type), &type, NULL);
 		if (error != CL_SUCCESS) return static_cast<Event::CommandType>(oclError("clGetEventInfo ", error, "CL_EVENT_COMMAND_TYPE"));
@@ -124,6 +124,10 @@ namespace anvil { namespace ocl {
 		if (error == CL_SUCCESS) return count;
 		oclError("clGetEventInfo", error, "CL_EVENT_REFERENCE_COUNT");
 		return 0;
+	}
+
+	Handle::Type Event::type() const throw() {
+		return Handle::EVENT;
 	}
 
 }}

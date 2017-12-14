@@ -28,8 +28,8 @@ namespace anvil { namespace ocl {
 
 	class NativeKernel;
 
-	class Object {
-	public:
+
+	struct Handle {
 		enum Type : uint8_t {
 			UNKNOWN,
 			CONTEXT,
@@ -42,42 +42,44 @@ namespace anvil { namespace ocl {
 			COMMAND_QUEUE,
 			EVENT
 		};
-		struct Handle {
-			union {
-				cl_context context;
-				cl_platform_id platform;
-				cl_device_id device;
-				cl_program program;
-				cl_kernel kernel;
-				cl_mem buffer;
-				cl_command_queue queue;
-				cl_event event;
-				NativeKernel* native;
-			};
-			Type type;
 
-			ANVIL_CALL Handle();
-			ANVIL_CALL Handle(Type);
-			ANVIL_CALL Handle(cl_context);
-			ANVIL_CALL Handle(cl_platform_id);
-			ANVIL_CALL Handle(cl_device_id);
-			ANVIL_CALL Handle(cl_program);
-			ANVIL_CALL Handle(cl_kernel);
-			ANVIL_CALL Handle(cl_mem);
-			ANVIL_CALL Handle(cl_command_queue);
-			ANVIL_CALL Handle(cl_event);
-			ANVIL_CALL Handle(NativeKernel*);
-
-			ANVIL_CALL operator cl_context() throw();
-			ANVIL_CALL operator cl_platform_id() throw();
-			ANVIL_CALL operator cl_device_id() throw();
-			ANVIL_CALL operator cl_program() throw();
-			ANVIL_CALL operator cl_kernel() throw();
-			ANVIL_CALL operator cl_mem() throw();
-			ANVIL_CALL operator cl_command_queue() throw();
-			ANVIL_CALL operator cl_event() throw();
-			ANVIL_CALL operator NativeKernel*() throw();
+		union {
+			cl_context context;
+			cl_platform_id platform;
+			cl_device_id device;
+			cl_program program;
+			cl_kernel kernel;
+			cl_mem buffer;
+			cl_command_queue queue;
+			cl_event event;
+			NativeKernel* native;
 		};
+		Type type;
+
+		ANVIL_CALL Handle();
+		ANVIL_CALL Handle(Type);
+		ANVIL_CALL Handle(cl_context);
+		ANVIL_CALL Handle(cl_platform_id);
+		ANVIL_CALL Handle(cl_device_id);
+		ANVIL_CALL Handle(cl_program);
+		ANVIL_CALL Handle(cl_kernel);
+		ANVIL_CALL Handle(cl_mem);
+		ANVIL_CALL Handle(cl_command_queue);
+		ANVIL_CALL Handle(cl_event);
+		ANVIL_CALL Handle(NativeKernel*);
+
+		ANVIL_CALL operator cl_context() throw();
+		ANVIL_CALL operator cl_platform_id() throw();
+		ANVIL_CALL operator cl_device_id() throw();
+		ANVIL_CALL operator cl_program() throw();
+		ANVIL_CALL operator cl_kernel() throw();
+		ANVIL_CALL operator cl_mem() throw();
+		ANVIL_CALL operator cl_command_queue() throw();
+		ANVIL_CALL operator cl_event() throw();
+		ANVIL_CALL operator NativeKernel*() throw();
+	};
+
+	class Object {
 	protected:
 		Handle mHandle;
 
@@ -85,14 +87,16 @@ namespace anvil { namespace ocl {
 		static void* ANVIL_CALL disassociateData(Handle) throw();
 		static void* ANVIL_CALL getAssociatedData(Handle) throw();
 	public:
-		ANVIL_CALL Object(Type) throw();
+		ANVIL_CALL Object(Handle::Type) throw();
 		virtual ANVIL_CALL ~Object() throw();
 
 		Handle ANVIL_CALL handle() const throw();
 		ANVIL_CALL operator bool() const throw();
+
 		virtual bool ANVIL_CALL create(Handle) throw() = 0;
 		virtual bool ANVIL_CALL destroy() throw() = 0;
 		virtual cl_uint ANVIL_CALL referenceCount() const throw() = 0;
+		virtual Handle::Type type() const throw() = 0;
 	};
 
 	std::string ANVIL_CALL getOclError() throw();

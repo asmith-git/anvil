@@ -21,12 +21,12 @@ namespace anvil { namespace ocl {
 	// Buffer
 
 	ANVIL_CALL Buffer::Buffer() throw() :
-		Object(BUFFER),
+		Object(Handle::BUFFER),
 		mIsSubBuffer(false)
 	{}
 
 	ANVIL_CALL Buffer::Buffer(Buffer&& aOther) throw() :
-		Object(BUFFER),
+		Object(Handle::BUFFER),
 		mIsSubBuffer(false)
 	{
 		swap(aOther);
@@ -74,7 +74,7 @@ namespace anvil { namespace ocl {
 	}
 
 	bool ANVIL_CALL Buffer::create(Handle aHandle) throw() {
-		if (aHandle.type != BUFFER) return false;
+		if (aHandle.type != Handle::BUFFER) return false;
 		if (mHandle.buffer != NULL) if (!destroy()) return false;
 		if (aHandle.buffer) {
 			mHandle = aHandle;
@@ -115,7 +115,7 @@ namespace anvil { namespace ocl {
 
 	Event ANVIL_CALL Buffer::read(CommandQueue& aQueue, size_t aOffset, void* aDst, size_t aBytes) const throw() {
 		if (mHandle.buffer == NULL) return Event();
-		Handle handle(EVENT);
+		Handle handle(Handle::EVENT);
 		cl_int error = clEnqueueReadBuffer(aQueue.handle(), mHandle.buffer, CL_FALSE, aOffset, aBytes,
 			aDst, 0, NULL, &handle.event);
 		if (error != CL_SUCCESS) {
@@ -129,7 +129,7 @@ namespace anvil { namespace ocl {
 
 	Event ANVIL_CALL Buffer::write(CommandQueue& aQueue, size_t aOffset, const void* aSrc, size_t aBytes) throw() {
 		if (mHandle.buffer == NULL) return Event();
-		Handle handle(EVENT);
+		Handle handle(Handle::EVENT);
 		cl_int error = clEnqueueWriteBuffer(aQueue.handle(), mHandle.buffer, CL_FALSE, aOffset, aBytes,
 			aSrc, 0, NULL, &handle.event);
 		if (error != CL_SUCCESS) {
@@ -143,7 +143,7 @@ namespace anvil { namespace ocl {
 
 	Event ANVIL_CALL Buffer::copy(CommandQueue& aQueue, Buffer& aOther, size_t aThisOffset, size_t aOtherOffset, size_t aBytes) const throw() {
 		if (mHandle.buffer == NULL || aOther.mHandle.buffer == NULL) return Event();
-		Handle handle(EVENT);
+		Handle handle(Handle::EVENT);
 		cl_int error = clEnqueueCopyBuffer(aQueue.handle(), mHandle.buffer, aOther.mHandle.buffer, aThisOffset,
 			aOtherOffset + aOther, aBytes, 0, NULL, &handle.event);
 		if (error != CL_SUCCESS) {
@@ -179,5 +179,9 @@ namespace anvil { namespace ocl {
 		if (error == CL_SUCCESS) return count;
 		oclError("clGetMemObjectInfo", error, "CL_MEM_REFERENCE_COUNT");
 		return 0;
+	}
+
+	Handle::Type Buffer::type() const throw() {
+		return Handle::BUFFER;
 	}
 }}

@@ -70,6 +70,7 @@ namespace anvil { namespace ocl {
 		bool ANVIL_CALL create(Handle) throw() override;
 		bool ANVIL_CALL destroy() throw() override;
 		cl_uint ANVIL_CALL referenceCount() const throw() override;
+		Handle::Type type() const throw() override;
 	};
 }}
 

@@ -25,11 +25,11 @@ namespace anvil { namespace ocl {
 	// Device
 
 	ANVIL_CALL Device::Device() :
-		Object(DEVICE) 
+		Object(Handle::DEVICE)
 	{}
 
 	ANVIL_CALL Device::Device(cl_device_id aDevice) :
-		Object(DEVICE) 
+		Object(Handle::DEVICE)
 	{
 		mHandle.device = aDevice;
 	}
@@ -39,7 +39,7 @@ namespace anvil { namespace ocl {
 	}
 
 	bool ANVIL_CALL Device::create(Handle aHandle) throw() {
-		if (aHandle.type != DEVICE) return false;
+		if (aHandle.type != Handle::DEVICE) return false;
 		mHandle = aHandle;
 		return true;
 	}
@@ -62,5 +62,9 @@ namespace anvil { namespace ocl {
 
 	cl_uint ANVIL_CALL Device::referenceCount() const throw() {
 		return 0;
+	}
+
+	Handle::Type Device::type() const throw() {
+		return Handle::DEVICE;
 	}
 }}

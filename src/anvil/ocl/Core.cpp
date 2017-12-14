@@ -114,103 +114,103 @@ namespace anvil { namespace ocl {
 		return false;
 	}
 
-	// Object::Handle
+	// Handle
 
-	ANVIL_CALL Object::Handle::Handle() :
+	ANVIL_CALL Handle::Handle() :
 		type(UNKNOWN),
 		context(NULL)
 	{}
 
-	ANVIL_CALL Object::Handle::Handle(Type aType) :
+	ANVIL_CALL Handle::Handle(Type aType) :
 		type(aType),
 		context(NULL)
 	{}
 
 
-	ANVIL_CALL Object::Handle::Handle(cl_context aValue) :
+	ANVIL_CALL Handle::Handle(cl_context aValue) :
 		type(CONTEXT),
 		context(aValue)
 	{}
 
-	ANVIL_CALL Object::Handle::Handle(cl_platform_id aValue) :
+	ANVIL_CALL Handle::Handle(cl_platform_id aValue) :
 		type(PLATFORM),
 		platform(aValue)
 	{}
 
-	ANVIL_CALL Object::Handle::Handle(cl_device_id aValue) :
+	ANVIL_CALL Handle::Handle(cl_device_id aValue) :
 		type(DEVICE),
 		device(aValue)
 	{}
 
-	ANVIL_CALL Object::Handle::Handle(cl_program aValue) :
+	ANVIL_CALL Handle::Handle(cl_program aValue) :
 		type(PROGRAM),
 		program(aValue)
 	{}
 
-	ANVIL_CALL Object::Handle::Handle(cl_kernel aValue) :
+	ANVIL_CALL Handle::Handle(cl_kernel aValue) :
 		type(KERNEL),
 		kernel(aValue)
 	{}
 
-	ANVIL_CALL Object::Handle::Handle(cl_mem aValue) :
+	ANVIL_CALL Handle::Handle(cl_mem aValue) :
 		type(BUFFER),
 		buffer(aValue)
 	{}
 
-	ANVIL_CALL Object::Handle::Handle(cl_command_queue aValue) :
+	ANVIL_CALL Handle::Handle(cl_command_queue aValue) :
 		type(COMMAND_QUEUE),
 		queue(aValue)
 	{}
 
-	ANVIL_CALL Object::Handle::Handle(cl_event aValue) :
+	ANVIL_CALL Handle::Handle(cl_event aValue) :
 		type(EVENT),
 		event(aValue)
 	{}
 
-	ANVIL_CALL Object::Handle::Handle(NativeKernel* aValue) :
+	ANVIL_CALL Handle::Handle(NativeKernel* aValue) :
 		type(NATIVE_KERNEL),
 		native(aValue)
 	{}
 
-	ANVIL_CALL Object::Handle::operator cl_context() throw() {
+	ANVIL_CALL Handle::operator cl_context() throw() {
 		return type == CONTEXT ? context : NULL;
 	}
 
-	ANVIL_CALL Object::Handle::operator cl_platform_id() throw() {
+	ANVIL_CALL Handle::operator cl_platform_id() throw() {
 		return type == PLATFORM ? platform : NULL;
 	}
 
-	ANVIL_CALL Object::Handle::operator cl_device_id() throw() {
+	ANVIL_CALL Handle::operator cl_device_id() throw() {
 		return type == DEVICE ? device : NULL;
 	}
 
-	ANVIL_CALL Object::Handle::operator cl_program() throw() {
+	ANVIL_CALL Handle::operator cl_program() throw() {
 		return type == PROGRAM ? program : NULL;
 	}
 
-	ANVIL_CALL Object::Handle::operator cl_kernel() throw() {
+	ANVIL_CALL Handle::operator cl_kernel() throw() {
 		return type == KERNEL ? kernel : NULL;
 	}
 
-	ANVIL_CALL Object::Handle::operator cl_mem() throw() {
+	ANVIL_CALL Handle::operator cl_mem() throw() {
 		return type == BUFFER ? buffer : NULL;
 	}
 
-	ANVIL_CALL Object::Handle::operator cl_command_queue() throw() {
+	ANVIL_CALL Handle::operator cl_command_queue() throw() {
 		return type == COMMAND_QUEUE ? queue : NULL;
 	}
 
-	ANVIL_CALL Object::Handle::operator cl_event() throw() {
+	ANVIL_CALL Handle::operator cl_event() throw() {
 		return type == EVENT ? event : NULL;
 	}
 
-	ANVIL_CALL Object::Handle::operator NativeKernel*() throw() {
+	ANVIL_CALL Handle::operator NativeKernel*() throw() {
 		return type == NATIVE_KERNEL ? native : NULL;
 	}
 
 	// Object
 
-	ANVIL_CALL Object::Object(Type aType) throw() {
+	ANVIL_CALL Object::Object(Handle::Type aType) throw() {
 		mHandle.context = NULL;
 		mHandle.type = aType;
 	}
@@ -219,7 +219,7 @@ namespace anvil { namespace ocl {
 
 	}
 
-	Object::Handle ANVIL_CALL  Object::handle() const throw() {
+	Handle ANVIL_CALL  Object::handle() const throw() {
 		return mHandle;
 	}
 
@@ -228,7 +228,7 @@ namespace anvil { namespace ocl {
 	}
 
 	struct HandleKey {
-		Object::Handle handle;
+		Handle handle;
 
 		inline bool ANVIL_CALL operator<(const HandleKey aOther) const throw() {
 			return handle.type < aOther.handle.type && handle.context < aOther.handle.context;

@@ -20,15 +20,15 @@ namespace anvil { namespace ocl {
 	// Program
 
 	ANVIL_CALL Program::Program() throw() :
-		Object(PROGRAM)
+		Object(Handle::PROGRAM)
 	{}
 
 	ANVIL_CALL Program::Program(Context& aContext) throw() :
-		Object(PROGRAM)
+		Object(Handle::PROGRAM)
 	{}
 
 	ANVIL_CALL Program::Program(Program&& aOther) throw() :
-		Object(PROGRAM) 
+		Object(Handle::PROGRAM)
 	{
 		swap(aOther);
 	}
@@ -57,7 +57,7 @@ namespace anvil { namespace ocl {
 	}
 
 	bool ANVIL_CALL Program::create(Handle aHandle) throw() {
-		if (aHandle.type != PROGRAM) return false;
+		if (aHandle.type != Handle::PROGRAM) return false;
 		if (mHandle.program != NULL) if (!destroy()) return false;
 		if (aHandle.program) {
 			mHandle = aHandle;
@@ -130,7 +130,7 @@ namespace anvil { namespace ocl {
 			if (error == CL_BUILD_PROGRAM_FAILURE) {
 				std::string log;
 				Handle h;
-				h.type = Object::DEVICE;
+				h.type = Handle::DEVICE;
 				for (size_t i = 0; i < aDeviceCount; ++i) {
 					size_t logSize;
 					error = clGetProgramBuildInfo(mHandle.program, aDevices[i], CL_PROGRAM_BUILD_LOG, 0, NULL, &logSize);
@@ -251,7 +251,7 @@ namespace anvil { namespace ocl {
 
 	Context ANVIL_CALL Program::context() const throw() {
 		Handle h;
-		h.type = CONTEXT;
+		h.type = Handle::CONTEXT;
 		Context tmp;
 		cl_uint error = clGetProgramInfo(mHandle.program, CL_PROGRAM_CONTEXT, sizeof(cl_context), &h.context, NULL);
 		if (error != CL_SUCCESS) oclError("clGetProgramInfo", error, "CL_PROGRAM_CONTEXT");
@@ -259,4 +259,7 @@ namespace anvil { namespace ocl {
 		return std::move(tmp);
 	}
 
+	Handle::Type Program::type() const throw() {
+		return Handle::PROGRAM;
+	}
 }}

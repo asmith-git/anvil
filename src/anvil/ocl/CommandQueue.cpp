@@ -29,11 +29,11 @@ namespace anvil { namespace ocl {
 	// CommandQueue
 
 	ANVIL_CALL CommandQueue::CommandQueue() throw() :
-		Object(COMMAND_QUEUE) 
+		Object(Handle::COMMAND_QUEUE)
 	{}
 
 	ANVIL_CALL CommandQueue::CommandQueue(CommandQueue&& aOther) throw() :
-		Object(COMMAND_QUEUE) 
+		Object(Handle::COMMAND_QUEUE)
 	{
 		swap(aOther);
 	}
@@ -102,7 +102,7 @@ namespace anvil { namespace ocl {
 	}
 
 	bool ANVIL_CALL CommandQueue::create(Handle aHandle) throw() {
-		if (aHandle.type != COMMAND_QUEUE) return false;
+		if (aHandle.type != Handle::COMMAND_QUEUE) return false;
 		if (mHandle.queue != NULL) if (!destroy()) return false;
 		if (aHandle.queue) {
 			mHandle = aHandle;
@@ -128,7 +128,7 @@ namespace anvil { namespace ocl {
 
 	Event ANVIL_CALL CommandQueue::barrier() throw() {
 #ifdef CL_VERSION_1_2
-		Handle handle(EVENT);
+		Handle handle(Handle::EVENT);
 		cl_int error = clEnqueueBarrierWithWaitList(mHandle.queue, 0, NULL, &handle.event);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueBarrierWithWaitList", error);
@@ -145,7 +145,7 @@ namespace anvil { namespace ocl {
 	}
 
 	Event ANVIL_CALL CommandQueue::pushMarker() throw() {
-		Handle handle(EVENT);
+		Handle handle(Handle::EVENT);
 #ifdef CL_VERSION_1_2
 		cl_int error = clEnqueueMarkerWithWaitList(mHandle.queue, 0, NULL, &handle.event);
 		if (error != CL_SUCCESS) {
@@ -178,7 +178,7 @@ namespace anvil { namespace ocl {
 	}
 
 	Context ANVIL_CALL CommandQueue::context() const throw() {
-		Handle h(CONTEXT);
+		Handle h(Handle::CONTEXT);
 		Context tmp;
 #ifdef CL_VERSION_1_2
 		cl_uint error = clGetCommandQueueInfo(mHandle.queue, CL_QUEUE_CONTEXT, sizeof(cl_context), &h.context, NULL);
@@ -192,7 +192,7 @@ namespace anvil { namespace ocl {
 	}
 
 	Device ANVIL_CALL CommandQueue::device() const throw() {
-		Handle h(DEVICE);
+		Handle h(Handle::DEVICE);
 		Device tmp;
 #ifdef CL_VERSION_1_2
 		cl_uint error = clGetCommandQueueInfo(mHandle.queue, CL_QUEUE_DEVICE, sizeof(cl_device_id), &h.device, NULL);
@@ -203,5 +203,9 @@ namespace anvil { namespace ocl {
 #endif
 		if (h.device) tmp.create(h);
 		return std::move(tmp);
+	}
+
+	Handle::Type CommandQueue::type() const throw() {
+		return Handle::COMMAND_QUEUE;
 	}
 }}

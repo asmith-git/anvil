@@ -20,11 +20,11 @@ namespace anvil { namespace ocl {
 	// Context
 
 	ANVIL_CALL Context::Context() throw() :
-		Object(CONTEXT) 
+		Object(Handle::CONTEXT)
 	{}
 
 	ANVIL_CALL Context::Context(Context&& aOther) throw() :
-		Object(CONTEXT) 
+		Object(Handle::CONTEXT)
 	{
 		swap(aOther);
 	}
@@ -86,7 +86,7 @@ namespace anvil { namespace ocl {
 	}
 
 	bool ANVIL_CALL Context::create(Handle aHandle) throw() {
-		if (aHandle.type != CONTEXT) return false;
+		if (aHandle.type != Handle::CONTEXT) return false;
 		if (mHandle.context != NULL) if (!destroy()) return false;
 		if (aHandle.context) {
 			mHandle = aHandle;
@@ -117,6 +117,10 @@ namespace anvil { namespace ocl {
 		if (error == CL_SUCCESS) return count;
 		oclError("clGetContextInfo", error, "CL_CONTEXT_REFERENCE_COUNT");
 		return 0;
+	}
+
+	Handle::Type Context::type() const throw() {
+		return Handle::CONTEXT;
 	}
 
 }}

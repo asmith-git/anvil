@@ -24,11 +24,11 @@ namespace anvil { namespace ocl {
 	// Platform
 
 	ANVIL_CALL Platform::Platform() throw() :
-		Object(PLATFORM) 
+		Object(Handle::PLATFORM)
 	{}
 
 	ANVIL_CALL Platform::Platform(cl_platform_id aPlatform) throw() :
-		Object(PLATFORM) 
+		Object(Handle::PLATFORM)
 	{
 		mHandle.platform = aPlatform;
 	}
@@ -38,7 +38,7 @@ namespace anvil { namespace ocl {
 	}
 
 	bool ANVIL_CALL Platform::create(Handle aHandle) throw() {
-		if (aHandle.type != PLATFORM) return false;
+		if (aHandle.type != Handle::PLATFORM) return false;
 		mHandle = aHandle;
 		return true;
 	}
@@ -102,6 +102,10 @@ namespace anvil { namespace ocl {
 
 	cl_uint ANVIL_CALL Platform::referenceCount() const throw() {
 		return 0;
+	}
+
+	Handle::Type Platform::type() const throw() {
+		return Handle::PLATFORM;
 	}
 
 }}
