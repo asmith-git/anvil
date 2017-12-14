@@ -70,19 +70,19 @@ namespace anvil { namespace ocl {
 		return true;
 	}
 
-	std::vector<std::shared_ptr<Device>> ANVIL_CALL Device::partition(cl_uint aCount) throw() {
+	std::vector<std::shared_ptr<Device>> ANVIL_CALL Device::partitionWithProperties(const intptr_t* aProperties, cl_uint aCount) throw() {
 #ifdef CL_VERSION_1_2
-		//! Options for other properies
-		cl_device_partition_property properties[2];
-		properties[0] = CL_DEVICE_PARTITION_EQUALLY ;
-		properties[1] = 0;
-
 		if (aCount > Platform::MAX_DEVICES) {
 			oclError("clCreateSubDevices", CL_INVALID_DEVICE_PARTITION_COUNT, std::to_string(aCount).c_str());
 			return std::vector<std::shared_ptr<Device>>();
 		}
 		cl_device_id deviceIDs[Platform::MAX_DEVICES];
-		cl_uint error = clCreateSubDevices(mHandle, properties, aCount, deviceIDs, NULL);
+		cl_uint error = clCreateSubDevices(
+			mHandle, 
+			aProperties, 
+			aProperties[0] == CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN ? Platform::MAX_DEVICES : aCount, 
+			deviceIDs,
+			aProperties[0] == CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN ? &aCount : NULL);
 		if (error != CL_SUCCESS){
 			oclError("clCreateSubDevices", error, std::to_string(aCount).c_str());
 			return std::vector<std::shared_ptr<Device>>();
@@ -97,8 +97,50 @@ namespace anvil { namespace ocl {
 		return devices;
 #else
 		oclError("clCreateSubDevices", CL_DEVICE_PARTITION_FAILED, "OpenCL version does not support this operation");
-		return std::vector<std::shared_ptr<Device>> ();
+		return std::vector<std::shared_ptr<Device>>();
 #endif
+	}
+
+	std::vector<std::shared_ptr<Device>> ANVIL_CALL Device::partition(cl_uint aCount) throw() {
+#ifdef CL_VERSION_1_2
+		cl_device_partition_property properties[2];
+		properties[0] = CL_DEVICE_PARTITION_EQUALLY;
+		properties[1] = 0;
+#else
+		intptr_t* properties = NULL;
+#endif
+		return partitionWithProperties(properties, aCount);
+	}
+
+
+	std::vector<std::shared_ptr<Device>> ANVIL_CALL Device::partition(const cl_uint* aUnits, cl_uint aCount) throw() {
+#ifdef CL_VERSION_1_2
+		cl_device_partition_property properties[Platform::MAX_DEVICES];
+		properties[0] = CL_DEVICE_PARTITION_BY_COUNTS;
+		for (cl_uint i = 0; i < aCount; ++i) properties[i] = aUnits[i];
+		properties[aCount] = 0;
+#else
+		intptr_t* properties = NULL;
+#endif
+		return partitionWithProperties(properties, aCount);
+
+	}
+
+	std::vector<std::shared_ptr<Device>> ANVIL_CALL Device::partition(AffinityDomain aDomain) throw() {
+#ifdef CL_VERSION_1_2
+		cl_device_partition_property properties[3];
+		properties[0] = CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN;
+		properties[1] = aDomain;
+		properties[2] = 0;
+#else
+		intptr_t* properties = NULL;
+#endif
+		return partitionWithProperties(properties, 0);
+
+	}
+
+	std::vector<std::shared_ptr<Device>> ANVIL_CALL Device::partition(const std::vector<cl_uint>& aUnits) throw() {
+		return aUnits.empty() ? std::vector<std::shared_ptr<Device>>() : partition(&aUnits[0], aUnits.size());
 	}
 
 	bool ANVIL_CALL Device::isSubDevice() const throw() {
@@ -109,13 +151,24 @@ namespace anvil { namespace ocl {
 #endif
 	}
 
-	void* ANVIL_CALL Device::getInfo(cl_device_info aName) const {
+	Device ANVIL_CALL Device::getParentDevice() throw() {
+		Handle handle(Handle::DEVICE);
+#ifdef CL_VERSION_1_2
+		const cl_int error = clGetDeviceInfo(mHandle.device, CL_DEVICE_PARENT_DEVICE, sizeof(cl_device_id), &handle.device, nullptr);
+		if (error != CL_SUCCESS) oclError("clGetDeviceInfo", error, "CL_DEVICE_PARENT_DEVICE");
+#endif
+		Device device;
+		device.create(handle);
+		return std::move(device);
+	}
+
+	void* ANVIL_CALL Device::getInfo(cl_device_info aName) const throw() {
 		const cl_int error = clGetDeviceInfo(mHandle.device, aName, DEVICE_INFO_BUFFER_SIZE, gDeviceInfoBuffer, nullptr);
 		if (error != CL_SUCCESS) oclError("clGetDeviceInfo", error, std::to_string(aName).c_str());
 		return gDeviceInfoBuffer;
 	}
 
-	std::vector<std::shared_ptr<Device>> ANVIL_CALL Device::devices(Device::Type aType) {
+	std::vector<std::shared_ptr<Device>> ANVIL_CALL Device::devices(Device::Type aType) throw() {
 		std::vector<std::shared_ptr<Device>> devices;
 		const std::vector<Platform> platforms = Platform::platforms();
 		for (Platform i : platforms) {

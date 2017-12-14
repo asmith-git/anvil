@@ -28,6 +28,8 @@ namespace anvil { namespace ocl {
 		Device& operator=(Device&) = delete;
 
 		void* ANVIL_CALL getInfo(cl_device_info aName) const;
+
+		std::vector<std::shared_ptr<Device>> ANVIL_CALL partitionWithProperties(const intptr_t*, cl_uint) throw();
 	public:
 		enum Type : cl_device_type {
 			CPU = CL_DEVICE_TYPE_CPU,
@@ -37,6 +39,24 @@ namespace anvil { namespace ocl {
 			ALL = CL_DEVICE_TYPE_ALL,
 		};
 
+		enum AffinityDomain : intptr_t {
+#ifdef CL_VERSION_1_2
+			NUMA = CL_DEVICE_AFFINITY_DOMAIN_NUMA,
+			L4_CACHE = CL_DEVICE_AFFINITY_DOMAIN_L4_CACHE,
+			L3_CACHE = CL_DEVICE_AFFINITY_DOMAIN_L3_CACHE,
+			L2_CACHE = CL_DEVICE_AFFINITY_DOMAIN_L2_CACHE,
+			L1_CACHE = CL_DEVICE_AFFINITY_DOMAIN_L1_CACHE,
+			NEXT = CL_DEVICE_AFFINITY_DOMAIN_NEXT_PARTITIONABLE 
+#else
+			NUMA,
+			L4_CACHE,
+			L3_CACHE,
+			L2_CACHE,
+			L1_CACHE,
+			NEXT
+#endif
+		};
+
 		static std::vector<std::shared_ptr<Device>> ANVIL_CALL devices(Device::Type aType = Device::ALL) throw();
 		
 		ANVIL_CALL Device() throw();
@@ -44,10 +64,14 @@ namespace anvil { namespace ocl {
 		ANVIL_CALL ~Device() throw();
 
 		Device& ANVIL_CALL operator=(Device&&) throw();
-		void ANVIL_CALL swap(Device&);
+		void ANVIL_CALL swap(Device&) throw();
 
 		std::vector<std::shared_ptr<Device>> ANVIL_CALL partition(cl_uint) throw();
+		std::vector<std::shared_ptr<Device>> ANVIL_CALL partition(const cl_uint*, cl_uint) throw();
+		std::vector<std::shared_ptr<Device>> ANVIL_CALL partition(const std::vector<cl_uint>&) throw();
+		std::vector<std::shared_ptr<Device>> ANVIL_CALL partition(AffinityDomain) throw();
 		bool ANVIL_CALL isSubDevice() const throw();
+		Device ANVIL_CALL getParentDevice() throw();
 		
 		struct WorkItemCount {
 			size_t x;
@@ -55,7 +79,7 @@ namespace anvil { namespace ocl {
 			size_t z;
 		};
 
-		#define ANVIL_CL_GET_INFO(type, ptr, name1, name2) inline type ANVIL_CALL name1() const { return ptr reinterpret_cast<type ptr>(getInfo(name2)); }
+		#define ANVIL_CL_GET_INFO(type, ptr, name1, name2) inline type ANVIL_CALL name1() const throw() { return ptr reinterpret_cast<type ptr>(getInfo(name2)); }
 		
 		ANVIL_CL_GET_INFO(cl_uint, *,						addressBits,			    CL_DEVICE_ADDRESS_BITS);
 		ANVIL_CL_GET_INFO(cl_bool, *,						available,				    CL_DEVICE_AVAILABLE);
