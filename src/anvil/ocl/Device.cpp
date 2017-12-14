@@ -118,7 +118,8 @@ namespace anvil { namespace ocl {
 		cl_device_partition_property properties[Platform::MAX_DEVICES];
 		properties[0] = CL_DEVICE_PARTITION_BY_COUNTS;
 		for (cl_uint i = 0; i < aCount; ++i) properties[i] = aUnits[i];
-		properties[aCount] = 0;
+		properties[aCount] = CL_DEVICE_PARTITION_BY_COUNTS_LIST_END;
+		properties[aCount + 1] = 0;
 #else
 		intptr_t* properties = NULL;
 #endif
