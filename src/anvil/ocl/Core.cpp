@@ -18,12 +18,15 @@
 
 namespace anvil { namespace ocl {
 
-	static std::string gErrorMessage;
+	static std::string gErrorMessageA;
+	static std::string gErrorMessageB;
+	static std::string* gErrorMessage = &gErrorMessageA;
 
 
-	std::string ANVIL_CALL getOclError() throw() {
-		std::string tmp = gErrorMessage;
-		gErrorMessage.clear();
+	const char* ANVIL_CALL getOclError() throw() {
+		const char* tmp = gErrorMessage->c_str();
+		gErrorMessage = gErrorMessage == &gErrorMessageA ? &gErrorMessageB : &gErrorMessageA;
+		gErrorMessage->clear();
 		return tmp;
 	}
 
@@ -106,10 +109,10 @@ namespace anvil { namespace ocl {
 			msg += ")";
 		}
 
-		if (! gErrorMessage.empty()) {
-			gErrorMessage += '\n';
+		if (! gErrorMessage->empty()) {
+			*gErrorMessage += '\n';
 		}
-		gErrorMessage += msg;
+		*gErrorMessage += msg;
 		std::cerr << msg << std::endl;
 		return false;
 	}
