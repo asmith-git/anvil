@@ -24,6 +24,7 @@ namespace anvil { namespace ocl {
 
 
 	const char* ANVIL_CALL getOclError() throw() {
+		if (gErrorMessage->empty()) return nullptr;
 		const char* tmp = gErrorMessage->c_str();
 		gErrorMessage = gErrorMessage == &gErrorMessageA ? &gErrorMessageB : &gErrorMessageA;
 		gErrorMessage->clear();
