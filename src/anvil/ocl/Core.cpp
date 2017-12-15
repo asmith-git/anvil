@@ -114,7 +114,7 @@ namespace anvil { namespace ocl {
 		return false;
 	}
 
-	std::string ANVIL_CALL typeName(Handle::Type aType) throw() {
+	const char* ANVIL_CALL typeName(Handle::Type aType) throw() {
 		switch (aType) {
 			case Handle::CONTEXT:
 				return "cl_context";
@@ -133,62 +133,47 @@ namespace anvil { namespace ocl {
 			case Handle::EVENT:
 				return "cl_event";
 			default:
-				return "";
+				return nullptr;
 		};
 	};
 
-	std::string ANVIL_CALL typeName(anvil::Type aType) throw() {
-		std::string name;
-
+	const char* ANVIL_CALL typeName(anvil::Type aType) throw() {
+		static ANVIL_CONSTEXPR_VAR const char gNames[28][8] = {
+			"uchar",  "uchar2",  "uchar3",  "uchar4",
+			"ushort", "ushort2", "ushort3", "ushort4",
+			"uint",   "uint2",   "uint3",   "uint4",
+			"ulong",  "ulong2",  "ulong3",  "ulong4",
+			"float",  "float2",  "float3",  "float4",
+			"double", "double2", "double3", "double4",
+			"bool",   "bool2",   "bool3",   "bool4"
+		};
+		
 		switch (anvil::GetPrimativeType(aType)) {
 		case ANVIL_8U:
-			name = "uchar";
-			break;
+			return gNames[0 + GetChannels(aType)];
 		case ANVIL_8S:
-			name = "char";
-			break;
+			return gNames[0 + GetChannels(aType)] + 1;
 		case ANVIL_16U:
-			name = "ushort";
-			break;
+			return gNames[4 + GetChannels(aType)];
 		case ANVIL_16S:
-			name = "short";
-			break;
+			return gNames[4 + GetChannels(aType)] + 1;
 		case ANVIL_32U:
-			name = "uint";
-			break;
+			return gNames[8 + GetChannels(aType)];
 		case ANVIL_32S:
-			name = "int";
-			break;
+			return gNames[8 + GetChannels(aType)] + 1;
 		case ANVIL_64U:
-			name = "ulong";
-			break;
+			return gNames[12 + GetChannels(aType)];
 		case ANVIL_64S:
-			name = "long";
-			break;
+			return gNames[12 + GetChannels(aType)] + 1;
 		case ANVIL_32F:
-			name = "float";
-			break;
+			return gNames[16 + GetChannels(aType)];
 		case ANVIL_64F:
-			name = "double";
-			break;
+			return gNames[20 + GetChannels(aType)];
 		case ANVIL_8B:
-			name = "bool";
-			break;
+			return gNames[24 + GetChannels(aType)];
+		default:
+			return nullptr;
 		}
-
-		switch (GetChannels(aType)) {
-		case 2:
-			name += "2";
-			break;
-		case 3:
-			name += "3";
-			break;
-		case 4:
-			name += "4";
-			break;
-		}
-
-		return name;
 	}
 
 	// Handle
