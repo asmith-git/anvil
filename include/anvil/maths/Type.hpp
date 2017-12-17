@@ -19,19 +19,23 @@
 #include <type_traits>
 #include "anvil/core/Keywords.hpp"
 
+#ifndef ANVIL_8U
+	#define ANVIL_8U  static_cast<anvil::Type>(0)
+	#define ANVIL_8S  static_cast<anvil::Type>(1)
+	#define ANVIL_16U static_cast<anvil::Type>(2)
+	#define ANVIL_16S static_cast<anvil::Type>(3)
+	#define ANVIL_32U static_cast<anvil::Type>(4)
+	#define ANVIL_32S static_cast<anvil::Type>(5)
+	#define ANVIL_64U static_cast<anvil::Type>(6)
+	#define ANVIL_64S static_cast<anvil::Type>(7)
+	#define ANVIL_32F static_cast<anvil::Type>(8)
+	#define ANVIL_64F static_cast<anvil::Type>(9)
+	#define ANVIL_8B  static_cast<anvil::Type>(10)
+#endif
+
 namespace anvil {
 	enum Type : int8_t {
-		ANVIL_8U,
-		ANVIL_8S,
-		ANVIL_16U,
-		ANVIL_16S,
-		ANVIL_32U,
-		ANVIL_32S,
-		ANVIL_64U,
-		ANVIL_64S,
-		ANVIL_32F,
-		ANVIL_64F,
-		ANVIL_8B
+
 	};
 
 	namespace detail {
