@@ -23,9 +23,7 @@ namespace anvil {
 
 	typedef void(*Task)(void*);
 
-	struct TaskHandle_;
-
-	typedef TaskHandle_* TaskHandle;
+	typedef void* TaskHandle;
 
 	class TaskDispatcher {
 	public:
