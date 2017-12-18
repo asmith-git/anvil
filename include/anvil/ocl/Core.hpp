@@ -106,6 +106,7 @@ namespace anvil { namespace ocl {
 	const char* ANVIL_CALL typeName(anvil::Type) throw();
 	const char* ANVIL_CALL getOclError() throw();
 	bool ANVIL_CALL oclError(const char*, cl_int, const char* aExtraMsg = NULL)  throw();
+	const char* ANVIL_CALL getErrorName(cl_int) throw();
 }}
 
 #endif

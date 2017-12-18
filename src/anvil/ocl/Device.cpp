@@ -51,6 +51,9 @@ namespace anvil { namespace ocl {
 #ifdef CL_VERSION_1_2
 		if (isSubDevice()) {
 			cl_int error = clReleaseDevice(mHandle);
+#ifdef ANVIL_LOG_OCL
+			std::cerr << getErrorName(error) << " <- clReleaseDevice (" << mHandle.device << ")" << std::endl;
+#endif
 			if(error != CL_SUCCESS) return oclError("clReleaseDevice", error);
 			onDestroy();
 			mHandle.device = NULL;
@@ -66,10 +69,10 @@ namespace anvil { namespace ocl {
 	bool ANVIL_CALL Device::retain() throw() {
 		if (mHandle.event && isSubDevice()) {
 #ifdef CL_VERSION_1_2
-#ifdef ANVIL_LOG_OCL
-			std::cerr << "clRetainDevice (" << mHandle.device << ")" << std::endl;
-#endif
 			cl_int error = clRetainDevice(mHandle.device);
+#ifdef ANVIL_LOG_OCL
+			std::cerr << getErrorName(error) << " <- clRetainDevice (" << mHandle.device << ")" << std::endl;
+#endif
 			return error == CL_SUCCESS ? true : oclError("clRetainDevice", error);
 #endif
 		}
@@ -83,20 +86,20 @@ namespace anvil { namespace ocl {
 			return std::vector<std::shared_ptr<Device>>();
 		}
 		cl_device_id deviceIDs[Platform::MAX_DEVICES];
+		cl_uint error = clCreateSubDevices(
+			mHandle,
+			aProperties,
+			aProperties[0] == CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN ? Platform::MAX_DEVICES : aCount,
+			deviceIDs,
+			aProperties[0] == CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN ? &aCount : NULL);
 #ifdef ANVIL_LOG_OCL
-		std::cerr << "clCreateSubDevices (" <<
+		std::cerr << getErrorName(error) << " <- clCreateSubDevices (" <<
 			mHandle.device << ", " <<
 			aProperties << ", " <<
 			(aProperties[0] == CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN ? Platform::MAX_DEVICES : aCount) << ", " <<
 			deviceIDs << ", " <<
 			(void*) (aProperties[0] == CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN ? &aCount : NULL) << ")" << std::endl;
 #endif
-		cl_uint error = clCreateSubDevices(
-			mHandle, 
-			aProperties, 
-			aProperties[0] == CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN ? Platform::MAX_DEVICES : aCount, 
-			deviceIDs,
-			aProperties[0] == CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN ? &aCount : NULL);
 		if (error != CL_SUCCESS){
 			oclError("clCreateSubDevices", error, std::to_string(aCount).c_str());
 			return std::vector<std::shared_ptr<Device>>();
@@ -169,11 +172,11 @@ namespace anvil { namespace ocl {
 	Device ANVIL_CALL Device::getParentDevice() throw() {
 		Handle handle(Handle::DEVICE);
 #ifdef CL_VERSION_1_2
+		const cl_int error = clGetDeviceInfo(mHandle.device, CL_DEVICE_PARENT_DEVICE, sizeof(cl_device_id), &handle.device, NULL);
 #ifdef ANVIL_LOG_OCL
-		std::cerr << "clGetDeviceInfo (" << mHandle.device << ", " << "CL_DEVICE_PARENT_DEVICE" << ", " << sizeof(cl_device_id) << 
+		std::cerr << getErrorName(error) << " <- clGetDeviceInfo (" << mHandle.device << ", " << "CL_DEVICE_PARENT_DEVICE" << ", " << sizeof(cl_device_id) <<
 			", " << &handle.device << ", " << "NULL" << ")" << std::endl;
 #endif
-		const cl_int error = clGetDeviceInfo(mHandle.device, CL_DEVICE_PARENT_DEVICE, sizeof(cl_device_id), &handle.device, NULL);
 		if (error != CL_SUCCESS) oclError("clGetDeviceInfo", error, "CL_DEVICE_PARENT_DEVICE");
 #endif
 		Device device;
@@ -182,6 +185,7 @@ namespace anvil { namespace ocl {
 	}
 
 	void* ANVIL_CALL Device::getInfo(cl_device_info aName) const throw() {
+		const cl_int error = clGetDeviceInfo(mHandle.device, aName, DEVICE_INFO_BUFFER_SIZE, gDeviceInfoBuffer, NULL);
 #ifdef ANVIL_LOG_OCL
 		const std::string info(
 			aName == CL_DEVICE_ADDRESS_BITS ? "CL_DEVICE_ADDRESS_BITS" :
@@ -237,10 +241,9 @@ namespace anvil { namespace ocl {
 			aName == CL_DEVICE_VERSION ? "CL_DEVICE_VERSION" :
 			aName == CL_DRIVER_VERSION ? "CL_DRIVER_VERSION" :
 			std::to_string(aName).c_str());
-		std::cerr << "clGetDeviceInfo (" << mHandle.device << ", " << info << ", " << DEVICE_INFO_BUFFER_SIZE << ", " <<
+		std::cerr << getErrorName(error) << " <- clGetDeviceInfo (" << mHandle.device << ", " << info << ", " << DEVICE_INFO_BUFFER_SIZE << ", " <<
 			gDeviceInfoBuffer << ", " << "NULL" << ")" << std::endl;
 #endif
-		const cl_int error = clGetDeviceInfo(mHandle.device, aName, DEVICE_INFO_BUFFER_SIZE, gDeviceInfoBuffer, NULL);
 		if (error != CL_SUCCESS) oclError("clGetDeviceInfo", error, std::to_string(aName).c_str());
 		return gDeviceInfoBuffer;
 	}

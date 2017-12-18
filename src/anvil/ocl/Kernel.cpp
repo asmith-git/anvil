@@ -70,10 +70,10 @@ namespace anvil { namespace ocl {
 
 	bool ANVIL_CALL Kernel::create(const Program& aProgram, const char* aName) throw() {
 		cl_int error = CL_SUCCESS;
-#ifdef ANVIL_LOG_OCL
-		std::cerr << "clCreateKernel (" << const_cast<Program&>(aProgram).handle().program << ", " << aName << ", " << (void*)&error << ")" << std::endl;
-#endif
 		mHandle.kernel = clCreateKernel(const_cast<Program&>(aProgram).handle(), aName, &error);
+#ifdef ANVIL_LOG_OCL
+		std::cerr << getErrorName(error) << " <- clCreateKernel (" << const_cast<Program&>(aProgram).handle().program << ", " << aName << ", " << (void*)&error << ")" << std::endl;
+#endif
 		if (error != CL_SUCCESS) {
 			mHandle.kernel = NULL;
 			return oclError("clCreateKernel", error, aName);
@@ -88,10 +88,10 @@ namespace anvil { namespace ocl {
 				onDestroy();
 				mHandle.kernel = NULL;
 			}else {
-#ifdef ANVIL_LOG_OCL
-				std::cerr << "clReleaseKernel (" << mHandle.kernel << ")" << std::endl;
-#endif
 				cl_int error = clReleaseKernel(mHandle.kernel);
+#ifdef ANVIL_LOG_OCL
+				std::cerr << getErrorName(error) << " <- clReleaseKernel (" << mHandle.kernel << ")" << std::endl;
+#endif
 				if (error != CL_SUCCESS) return oclError("clReleaseKernel", error);
 				onDestroy();
 				mHandle.kernel = NULL;
@@ -103,10 +103,10 @@ namespace anvil { namespace ocl {
 
 	bool ANVIL_CALL Kernel::retain() throw() {
 		if (mHandle.kernel) {
-#ifdef ANVIL_LOG_OCL
-			std::cerr << "clRetainKernel (" << mHandle.kernel << ")" << std::endl;
-#endif
 			cl_int error = clRetainKernel(mHandle.kernel);
+#ifdef ANVIL_LOG_OCL
+			std::cerr << getErrorName(error) << " <- clRetainKernel (" << mHandle.kernel << ")" << std::endl;
+#endif
 			return error == CL_SUCCESS ? true : oclError("clRetainKernel", error);
 		}
 		return false;
@@ -121,11 +121,11 @@ namespace anvil { namespace ocl {
 				return Event();
 			}
 			const size_t size = data->args.size();
+			cl_int error = clEnqueueNativeKernel(aQueue.handle(), data->function, size == 0 ? NULL : &data->args[0], size, 0, NULL, NULL, 0, NULL, &mHandle.event);
 #ifdef ANVIL_LOG_OCL
-			std::cerr << "clEnqueueNativeKernel (" << aQueue.handle().kernel<< ", " << data->function<< ", " << (void*)(size == 0 ? NULL : &data->args[0]) << 
+			std::cerr << getErrorName(error) << " <- clEnqueueNativeKernel (" << aQueue.handle().kernel << ", " << data->function << ", " << (void*)(size == 0 ? NULL : &data->args[0]) <<
 				", " << size << ", " << 0 << ", " << "NULL" << ", " << "NULL" << ", " << 0 << ", " << "NULL" << ", " << &mHandle.event << ")" << std::endl;
 #endif
-			cl_int error = clEnqueueNativeKernel(aQueue.handle(), data->function, size == 0 ? NULL : &data->args[0], size, 0, NULL, NULL, 0, NULL, &mHandle.event);
 			data->args.clear();
 			data->current_arg = 0;
 			if (error != CL_SUCCESS) {
@@ -138,9 +138,9 @@ namespace anvil { namespace ocl {
 			return Event();
 #else
 #ifdef ANVIL_LOG_OCL
-			std::cerr << "clEnqueueTask (" << aQueue.handle().queue<< ", " << mHandle.kernel<< ", " << 0<< ", " << "NULL"<< ", " << &mHandle.event << ")" << std::endl;
-#endif
 			cl_int error = clEnqueueTask (aQueue.handle(), mHandle.kernel, 0, NULL, &mHandle.event);
+			std::cerr << getErrorName(error) << " <- clEnqueueTask (" << aQueue.handle().queue<< ", " << mHandle.kernel<< ", " << 0<< ", " << "NULL"<< ", " << &mHandle.event << ")" << std::endl;
+#endif
 			if (error != CL_SUCCESS) {
 				oclError("clEnqueueTask ", error, name());
 				return Event();
@@ -155,11 +155,11 @@ namespace anvil { namespace ocl {
 	Event ANVIL_CALL Kernel::operator()(CommandQueue& aQueue, cl_uint aDimensions, const size_t *aGlobalOffset, const size_t *aGlobalWorkSize, const size_t *aLocalWorkSize) {
 		if (isNative()) return operator()(aQueue);
 		Handle handle(Handle::EVENT);
+		cl_int error = clEnqueueNDRangeKernel(aQueue.handle(), mHandle.kernel, aDimensions, aGlobalOffset, aGlobalWorkSize, aLocalWorkSize, 0, NULL, &mHandle.event);
 #ifdef ANVIL_LOG_OCL
-		std::cerr << "clEnqueueNDRangeKernel (" << aQueue.handle().queue<< ", " << mHandle.kernel<< ", " << aDimensions<< ", " << 
+		std::cerr << getErrorName(error) << " <- clEnqueueNDRangeKernel (" << aQueue.handle().queue << ", " << mHandle.kernel << ", " << aDimensions << ", " <<
 			aGlobalOffset<< ", " << aGlobalWorkSize<< ", " << aLocalWorkSize<< ", " << 0<< ", " << "NULL"<< ", " << &mHandle.event << ")" << std::endl;
 #endif
-		cl_int error = clEnqueueNDRangeKernel(aQueue.handle(), mHandle.kernel, aDimensions, aGlobalOffset, aGlobalWorkSize, aLocalWorkSize, 0, NULL, &mHandle.event);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueNDRangeKernel", error, name());
 			return Event();
@@ -179,10 +179,10 @@ namespace anvil { namespace ocl {
 			}
 			++data->current_arg;
 		} else {
-#ifdef ANVIL_LOG_OCL
-			std::cerr << "clSetKernelArg (" << mHandle.kernel << ", " << aIndex << ", " << aBytes << ", " << aSrc << ")" << std::endl;
-#endif
 			cl_int error = clSetKernelArg(mHandle.kernel, aIndex, aBytes, aSrc);
+#ifdef ANVIL_LOG_OCL
+			std::cerr << getErrorName(error) << " <- clSetKernelArg (" << mHandle.kernel << ", " << aIndex << ", " << aBytes << ", " << aSrc << ")" << std::endl;
+#endif
 			if (error != CL_SUCCESS) return oclError("clSetKernelArg", error, std::to_string(aIndex).c_str());
 		}
 		return true;
@@ -210,11 +210,11 @@ namespace anvil { namespace ocl {
 			return 0;
 		}
 		size_t tmp;
+		cl_int error = clGetKernelWorkGroupInfo(mHandle.kernel, aDevice.handle(), CL_KERNEL_WORK_GROUP_SIZE, sizeof(tmp), &tmp, NULL);
 #ifdef ANVIL_LOG_OCL
-		std::cerr << "clGetKernelWorkGroupInfo (" << mHandle.kernel << ", " << aDevice.handle().device << ", " << 
+		std::cerr << getErrorName(error) << " <- clGetKernelWorkGroupInfo (" << mHandle.kernel << ", " << aDevice.handle().device << ", " <<
 			"CL_KERNEL_WORK_GROUP_SIZE" << ", " << sizeof(tmp) << ", " << &tmp << ", " << "NULL" << ")" << std::endl;
 #endif
-		cl_int error = clGetKernelWorkGroupInfo(mHandle.kernel, aDevice.handle(), CL_KERNEL_WORK_GROUP_SIZE, sizeof(tmp), &tmp, NULL);
 		if (error != CL_SUCCESS) oclError("clGetKernelWorkGroupInfo", error, (name() + std::string(", CL_KERNEL_WORK_GROUP_SIZE")).c_str());
 		return tmp;
 	}
@@ -225,11 +225,11 @@ namespace anvil { namespace ocl {
 			return { 0, 0, 0 };
 		}
 		Device::WorkItemCount tmp;
+		cl_int error = clGetKernelWorkGroupInfo(mHandle.kernel, aDevice.handle(), CL_KERNEL_COMPILE_WORK_GROUP_SIZE, sizeof(tmp), &tmp, NULL);
 #ifdef ANVIL_LOG_OCL
-		std::cerr << "clGetKernelWorkGroupInfo (" << mHandle.kernel << ", " << aDevice.handle().device << ", " << 
+		std::cerr << getErrorName(error) << " <- clGetKernelWorkGroupInfo (" << mHandle.kernel << ", " << aDevice.handle().device << ", " <<
 			"CL_KERNEL_COMPILE_WORK_GROUP_SIZE" << ", " << sizeof(tmp) << ", " << &tmp << ", " << "NULL" << ")" << std::endl;
 #endif
-		cl_int error = clGetKernelWorkGroupInfo(mHandle.kernel, aDevice.handle(), CL_KERNEL_COMPILE_WORK_GROUP_SIZE, sizeof(tmp), &tmp, NULL);
 		if (error != CL_SUCCESS) oclError("clGetKernelWorkGroupInfo", error, (name() + std::string(", CL_KERNEL_COMPILE_WORK_GROUP_SIZE")).c_str());
 		return tmp;
 	}
@@ -240,11 +240,11 @@ namespace anvil { namespace ocl {
 			return 0;
 		}
 		cl_ulong tmp;
+		cl_int error = clGetKernelWorkGroupInfo(mHandle.kernel, aDevice.handle(), CL_KERNEL_LOCAL_MEM_SIZE, sizeof(tmp), &tmp, NULL);
 #ifdef ANVIL_LOG_OCL
-		std::cerr << "clGetKernelWorkGroupInfo (" << mHandle.kernel << ", " << aDevice.handle().device << ", " <<
+		std::cerr << getErrorName(error) << " <- clGetKernelWorkGroupInfo (" << mHandle.kernel << ", " << aDevice.handle().device << ", " <<
 			"CL_KERNEL_LOCAL_MEM_SIZE" << ", " << sizeof(tmp) << ", " << &tmp << ", " << "NULL" << ")" << std::endl;
 #endif
-		cl_int error = clGetKernelWorkGroupInfo(mHandle.kernel, aDevice.handle(), CL_KERNEL_LOCAL_MEM_SIZE, sizeof(tmp), &tmp, NULL);
 		if (error != CL_SUCCESS) oclError("clGetKernelWorkGroupInfo", error, (name() + std::string(", CL_KERNEL_LOCAL_MEM_SIZE")).c_str());
 		return tmp;
 	}
@@ -256,11 +256,11 @@ namespace anvil { namespace ocl {
 		}
 		enum { MAX_KERNEL_NAME = 1024 };
 		static char gNameBuffer[MAX_KERNEL_NAME];
+		cl_int error = clGetKernelInfo(mHandle.kernel, CL_KERNEL_FUNCTION_NAME, MAX_KERNEL_NAME, gNameBuffer, NULL);
 #ifdef ANVIL_LOG_OCL
-		std::cerr << "clGetKernelInfo (" << mHandle.kernel << ", " << mHandle.kernel << ", " <<
+		std::cerr << getErrorName(error) << " <- clGetKernelInfo (" << mHandle.kernel << ", " << mHandle.kernel << ", " <<
 			"CL_KERNEL_FUNCTION_NAME" << ", " << MAX_KERNEL_NAME << ", " << gNameBuffer << ", " << "NULL" << ")" << std::endl;
 #endif
-		cl_int error = clGetKernelInfo(mHandle.kernel, CL_KERNEL_FUNCTION_NAME, MAX_KERNEL_NAME, gNameBuffer, NULL);
 		if (error != CL_SUCCESS) oclError("clGetKernelInfo ", error, "CL_KERNEL_FUNCTION_NAME");
 		return gNameBuffer;
 	}
@@ -268,11 +268,11 @@ namespace anvil { namespace ocl {
 	cl_uint ANVIL_CALL Kernel::referenceCount() const throw() {
 		if (isNative()) return const_cast<Kernel*>(this)->getExtraData().use_count() - 1;
 		cl_uint count;
+		cl_uint error = clGetKernelInfo(mHandle.kernel, CL_KERNEL_REFERENCE_COUNT, sizeof(count), &count, NULL);
 #ifdef ANVIL_LOG_OCL
-		std::cerr << "clGetKernelInfo (" << mHandle.kernel << ", " << mHandle.kernel << ", " <<
+		std::cerr << getErrorName(error) << " <- clGetKernelInfo (" << mHandle.kernel << ", " << mHandle.kernel << ", " <<
 			"CL_KERNEL_REFERENCE_COUNT" << ", " << sizeof(count) << ", " << &count << ", " << "NULL" << ")" << std::endl;
 #endif
-		cl_uint error = clGetKernelInfo(mHandle.kernel, CL_KERNEL_REFERENCE_COUNT, sizeof(count), &count, NULL);
 		if (error == CL_SUCCESS) return count;
 		oclError("clGetKernelInfo", error, "CL_KERNEL_REFERENCE_COUNT");
 		return 0;

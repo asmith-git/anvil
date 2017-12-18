@@ -55,10 +55,10 @@ namespace anvil { namespace ocl {
 
 		const cl_mem_flags flags = aMode | (aHostPtr ? CL_MEM_USE_HOST_PTR : 0);
 		cl_int error = CL_SUCCESS;
-#ifdef ANVIL_LOG_OCL
-		std::cerr << "clCreateBuffer (" << aContext.handle().context << ", " << flags << ", " << aSize << ", " << aHostPtr << ", " << &error << ")" << std::endl;
-#endif
 		mHandle.buffer = clCreateBuffer(aContext.handle(), flags, aSize, aHostPtr, &error);
+#ifdef ANVIL_LOG_OCL
+		std::cerr << getErrorName(error) << " <- clCreateBuffer (" << aContext.handle().context << ", " << flags << ", " << aSize << ", " << aHostPtr << ", " << &error << ")" << std::endl;
+#endif
 		if (error != CL_SUCCESS) {
 			mHandle.buffer = NULL;
 			return oclError("clCreateBuffer", error);
@@ -69,10 +69,10 @@ namespace anvil { namespace ocl {
 
 	bool Buffer::destroy() throw() {
 		if (mHandle.buffer) {
-#ifdef ANVIL_LOG_OCL
-			std::cerr << "clReleaseMemObject (" << mHandle.buffer << ")" << std::endl;
-#endif
 			cl_int error = clReleaseMemObject(mHandle.buffer);
+#ifdef ANVIL_LOG_OCL
+			std::cerr << getErrorName(error) << " <- clReleaseMemObject (" << mHandle.buffer << ")" << std::endl;
+#endif
 			if (error != CL_SUCCESS) return oclError("clReleaseMemObject", error);
 			onDestroy();
 			mHandle.buffer = NULL;
@@ -83,10 +83,10 @@ namespace anvil { namespace ocl {
 
 	bool ANVIL_CALL Buffer::retain() throw() {
 		if (mHandle.buffer) {
-#ifdef ANVIL_LOG_OCL
-			std::cerr << "clRetainMemObject (" << mHandle.buffer << ")" << std::endl;
-#endif
 			cl_int error = clRetainMemObject(mHandle.buffer);
+#ifdef ANVIL_LOG_OCL
+			std::cerr << getErrorName(error) << " <- clRetainMemObject (" << mHandle.buffer << ")" << std::endl;
+#endif
 			return error == CL_SUCCESS ? true : oclError("clRetainMemObject", error);
 		}
 		return false;
@@ -124,12 +124,12 @@ namespace anvil { namespace ocl {
 	Event ANVIL_CALL Buffer::read(CommandQueue& aQueue, size_t aOffset, void* aDst, size_t aBytes) const throw() {
 		if (mHandle.buffer == NULL) return Event();
 		Handle handle(Handle::EVENT);
-#ifdef ANVIL_LOG_OCL
-		std::cerr << "clEnqueueReadBuffer (" << aQueue.handle().buffer << ", " << mHandle.buffer << ", " << "CL_FALSE" << ", " << aOffset << ", " << aBytes << ", " <<
-			aDst << ", " << 0 << ", " << "NULL" << ", " << &handle.event << ")" << std::endl;
-#endif
 		cl_int error = clEnqueueReadBuffer(aQueue.handle(), mHandle.buffer, CL_FALSE, aOffset, aBytes,
 			aDst, 0, NULL, &handle.event);
+#ifdef ANVIL_LOG_OCL
+		std::cerr << getErrorName(error) << " <- clEnqueueReadBuffer (" << aQueue.handle().buffer << ", " << mHandle.buffer << ", " << "CL_FALSE" << ", " << aOffset << ", " << aBytes << ", " <<
+			aDst << ", " << 0 << ", " << "NULL" << ", " << &handle.event << ")" << std::endl;
+#endif
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueReadBuffer", error);
 			return Event();
@@ -142,12 +142,12 @@ namespace anvil { namespace ocl {
 	Event ANVIL_CALL Buffer::write(CommandQueue& aQueue, size_t aOffset, const void* aSrc, size_t aBytes) throw() {
 		if (mHandle.buffer == NULL) return Event();
 		Handle handle(Handle::EVENT);
-#ifdef ANVIL_LOG_OCL
-		std::cerr << "clEnqueueReadBuffer (" << aQueue.handle().queue << ", " << mHandle.buffer << ", " << "CL_FALSE" << ", " << aOffset << ", " << aBytes << ", " <<
-			aSrc << ", " << 0 << ", " << "NULL" << ", " << &handle.event << ")" << std::endl;
-#endif
 		cl_int error = clEnqueueWriteBuffer(aQueue.handle(), mHandle.buffer, CL_FALSE, aOffset, aBytes,
 			aSrc, 0, NULL, &handle.event);
+#ifdef ANVIL_LOG_OCL
+		std::cerr << getErrorName(error) << " <- clEnqueueReadBuffer (" << aQueue.handle().queue << ", " << mHandle.buffer << ", " << "CL_FALSE" << ", " << aOffset << ", " << aBytes << ", " <<
+			aSrc << ", " << 0 << ", " << "NULL" << ", " << &handle.event << ")" << std::endl;
+#endif
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueWriteBuffer", error);
 			return Event();
@@ -160,12 +160,12 @@ namespace anvil { namespace ocl {
 	Event ANVIL_CALL Buffer::copy(CommandQueue& aQueue, Buffer& aOther, size_t aThisOffset, size_t aOtherOffset, size_t aBytes) const throw() {
 		if (mHandle.buffer == NULL || aOther.mHandle.buffer == NULL) return Event();
 		Handle handle(Handle::EVENT);
-#ifdef ANVIL_LOG_OCL
-		std::cerr << "clEnqueueCopyBuffer (" << aQueue.handle().queue << ", " << mHandle.buffer << ", " << aOther.mHandle.buffer << ", " << aThisOffset << ", " <<
-			aOtherOffset + aOther << ", " << aBytes << ", " << 0 << ", " << "NULL" << ", " << &handle.event << ")" << std::endl;
-#endif
 		cl_int error = clEnqueueCopyBuffer(aQueue.handle(), mHandle.buffer, aOther.mHandle.buffer, aThisOffset,
 			aOtherOffset + aOther, aBytes, 0, NULL, &handle.event);
+#ifdef ANVIL_LOG_OCL
+		std::cerr << getErrorName(error) << " <- clEnqueueCopyBuffer (" << aQueue.handle().queue << ", " << mHandle.buffer << ", " << aOther.mHandle.buffer << ", " << aThisOffset << ", " <<
+			aOtherOffset + aOther << ", " << aBytes << ", " << 0 << ", " << "NULL" << ", " << &handle.event << ")" << std::endl;
+#endif
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueCopyBuffer", error);
 			return Event();
@@ -179,12 +179,12 @@ namespace anvil { namespace ocl {
 		Buffer tmp;
 		cl_int error = CL_SUCCESS;
 		const size_t region[2] { aOrigin, aSize };
-#ifdef ANVIL_LOG_OCL
-		std::cerr << "clCreateSubBuffer (" << mHandle.buffer << ", " << (accessMode() | (hostPtr() ? CL_MEM_USE_HOST_PTR : 0)) << ", " <<
-			"CL_BUFFER_CREATE_TYPE_REGION" << ", " << region << ", " << &error << ")" << std::endl;
-#endif
 		tmp.mHandle.buffer = clCreateSubBuffer(mHandle.buffer, accessMode() | (hostPtr() ? CL_MEM_USE_HOST_PTR : 0),
 			CL_BUFFER_CREATE_TYPE_REGION, region, &error);
+#ifdef ANVIL_LOG_OCL
+		std::cerr << getErrorName(error) << " <- clCreateSubBuffer (" << mHandle.buffer << ", " << (accessMode() | (hostPtr() ? CL_MEM_USE_HOST_PTR : 0)) << ", " <<
+			"CL_BUFFER_CREATE_TYPE_REGION" << ", " << region << ", " << &error << ")" << std::endl;
+#endif
 		if (error == CL_SUCCESS) {
 			tmp.mIsSubBuffer = true;
 		} else {
@@ -199,11 +199,11 @@ namespace anvil { namespace ocl {
 
 	cl_uint ANVIL_CALL Buffer::referenceCount() const throw() {
 		cl_uint count;
+		cl_uint error = clGetMemObjectInfo(mHandle.buffer, CL_MEM_REFERENCE_COUNT, sizeof(count), &count, NULL);
 #ifdef ANVIL_LOG_OCL
-		std::cerr << "clGetMemObjectInfo (" << mHandle.buffer << ", " << "CL_MEM_REFERENCE_COUNT" << ", " << 
+		std::cerr << getErrorName(error) << " <- clGetMemObjectInfo (" << mHandle.buffer << ", " << "CL_MEM_REFERENCE_COUNT" << ", " <<
 			sizeof(count) << ", " << &count << ", " << "NULL" << std::endl;
 #endif
-		cl_uint error = clGetMemObjectInfo(mHandle.buffer, CL_MEM_REFERENCE_COUNT, sizeof(count), &count, NULL);
 		if (error == CL_SUCCESS) return count;
 		oclError("clGetMemObjectInfo", error, "CL_MEM_REFERENCE_COUNT");
 		return 0;

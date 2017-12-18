@@ -60,12 +60,12 @@ namespace anvil { namespace ocl {
 		};
 
 		cl_int error = CL_SUCCESS;
-#ifdef ANVIL_LOG_OCL
-		std::cerr << "clCreateContext (" << (aPlatform == NULL ? NULL : properties) << ", " << aCount << ", " << (aCount == 0 ? NULL : aDevices) << ", " <<
-			function << ", " << this << ", " << &error << ")" << std::endl;
-#endif
 		mHandle.context = clCreateContext(aPlatform == NULL ? NULL : properties, aCount, aCount == 0 ? NULL : aDevices,
 			function, this, &error);
+#ifdef ANVIL_LOG_OCL
+		std::cerr << getErrorName(error) << " <- clCreateContext (" << (aPlatform == NULL ? NULL : properties) << ", " << aCount << ", " << (aCount == 0 ? NULL : aDevices) << ", " <<
+			function << ", " << this << ", " << &error << ")" << std::endl;
+#endif
 		if (error != CL_SUCCESS) {
 			mHandle.context = NULL;
 			return oclError("clCreateContext", error);
@@ -103,10 +103,10 @@ namespace anvil { namespace ocl {
 
 	bool ANVIL_CALL Context::destroy() throw() {
 		if (mHandle.context) {
-#ifdef ANVIL_LOG_OCL
-			std::cerr << "clReleaseContext (" << mHandle.context << ")" << std::endl;
-#endif
 			cl_int error = clReleaseContext(mHandle.context);
+#ifdef ANVIL_LOG_OCL
+			std::cerr << getErrorName(error) << " <- clReleaseContext (" << mHandle.context << ")" << std::endl;
+#endif
 			if (error != CL_SUCCESS) return oclError("clReleaseContext", error);
 			onDestroy();
 			mHandle.context = NULL;
@@ -117,10 +117,10 @@ namespace anvil { namespace ocl {
 
 	bool ANVIL_CALL Context::retain() throw() {
 		if (mHandle.context) {
-#ifdef ANVIL_LOG_OCL
-			std::cerr << "clRetainContext (" << mHandle.context << ")" << std::endl;
-#endif
 			cl_int error = clRetainContext(mHandle.context);
+#ifdef ANVIL_LOG_OCL
+			std::cerr << getErrorName(error) << " <- clRetainContext (" << mHandle.context << ")" << std::endl;
+#endif
 			return error == CL_SUCCESS ? true : oclError("clRetainContext", error);
 		}
 		return false;
@@ -132,18 +132,18 @@ namespace anvil { namespace ocl {
 
 	std::vector<std::shared_ptr<Device>> ANVIL_CALL Context::devices() const throw() {
 		cl_uint count = 0;
+		cl_int error = clGetContextInfo(mHandle.context, CL_CONTEXT_NUM_DEVICES, sizeof(cl_uint), &count, NULL);
 #ifdef ANVIL_LOG_OCL
-		std::cerr << "clGetContextInfo (" << mHandle.context << ", " << "CL_CONTEXT_NUM_DEVICES" << ", " << sizeof(cl_uint) <<
+		std::cerr << getErrorName(error) << " <- clGetContextInfo (" << mHandle.context << ", " << "CL_CONTEXT_NUM_DEVICES" << ", " << sizeof(cl_uint) <<
 			", " << &count << ", " << "NULL" << ")" << std::endl;
 #endif
-		clGetContextInfo(mHandle.context, CL_CONTEXT_NUM_DEVICES, sizeof(cl_uint), &count, NULL);
 		if (count == 0) return std::vector<std::shared_ptr<Device>>();
 		cl_device_id deviceIDs[Platform::MAX_DEVICES];
+		error = clGetContextInfo(mHandle.context, CL_CONTEXT_DEVICES, sizeof(cl_device_id) * count, deviceIDs, NULL);
 #ifdef ANVIL_LOG_OCL
-		std::cerr << "clGetContextInfo (" << mHandle.context << ", " << "CL_CONTEXT_DEVICES" << ", " << sizeof(cl_device_id) * count <<
+		std::cerr << getErrorName(error) << " <- clGetContextInfo (" << mHandle.context << ", " << "CL_CONTEXT_DEVICES" << ", " << sizeof(cl_device_id) * count <<
 			", " << deviceIDs << ", " << "NULL" << ")" << std::endl;
 #endif
-		clGetContextInfo(mHandle.context, CL_CONTEXT_DEVICES, sizeof(cl_device_id) * count, deviceIDs, NULL);
 		std::vector<std::shared_ptr<Device>> devices(count, std::shared_ptr<Device>());
 		for (cl_uint i = 0; i < count; ++i) {
 			devices[i].swap(std::shared_ptr<Device>(new Device()));
@@ -154,11 +154,11 @@ namespace anvil { namespace ocl {
 
 	cl_uint ANVIL_CALL Context::referenceCount() const throw() {
 		cl_uint count;
+		cl_uint error = clGetContextInfo(mHandle.context, CL_CONTEXT_REFERENCE_COUNT, sizeof(count), &count, NULL);
 #ifdef ANVIL_LOG_OCL
-		std::cerr << "clGetContextInfo (" << mHandle.context << ", " << "CL_CONTEXT_REFERENCE_COUNT" << ", " << sizeof(count) << 
+		std::cerr << getErrorName(error) << " <- clGetContextInfo (" << mHandle.context << ", " << "CL_CONTEXT_REFERENCE_COUNT" << ", " << sizeof(count) <<
 			", " << &count << ", " << "NULL" << ")" << std::endl;
 #endif
-		cl_uint error = clGetContextInfo(mHandle.context, CL_CONTEXT_REFERENCE_COUNT, sizeof(count), &count, NULL);
 		if (error == CL_SUCCESS) return count;
 		oclError("clGetContextInfo", error, "CL_CONTEXT_REFERENCE_COUNT");
 		return 0;
