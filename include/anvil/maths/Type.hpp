@@ -19,19 +19,78 @@
 #include <type_traits>
 #include "anvil/core/Keywords.hpp"
 
+// Primative Types
+
+#ifndef ANVIL_8U
+	#define ANVIL_8U  static_cast<anvil::Type>(0)
+	#define ANVIL_8S  static_cast<anvil::Type>(1)
+	#define ANVIL_16U static_cast<anvil::Type>(2)
+	#define ANVIL_16S static_cast<anvil::Type>(3)
+	#define ANVIL_32U static_cast<anvil::Type>(4)
+	#define ANVIL_32S static_cast<anvil::Type>(5)
+	#define ANVIL_64U static_cast<anvil::Type>(6)
+	#define ANVIL_64S static_cast<anvil::Type>(7)
+	#define ANVIL_32F static_cast<anvil::Type>(8)
+	#define ANVIL_64F static_cast<anvil::Type>(9)
+	#define ANVIL_8B  static_cast<anvil::Type>(10)
+#endif
+
+// Base Types
+
+#define ANVIL_8UC1  anvil::CreateType(ANVIL_8U,  1);
+#define ANVIL_8UC2  anvil::CreateType(ANVIL_8U,  2);
+#define ANVIL_8UC3  anvil::CreateType(ANVIL_8U,  3);
+#define ANVIL_8UC4  anvil::CreateType(ANVIL_8U,  4);
+#define ANVIL_8SC1  anvil::CreateType(ANVIL_8S,  1);
+#define ANVIL_8SC2  anvil::CreateType(ANVIL_8S,  2);
+#define ANVIL_8SC3  anvil::CreateType(ANVIL_8S,  3);
+#define ANVIL_8SC4  anvil::CreateType(ANVIL_8S,  4);
+#define ANVIL_16UC1 anvil::CreateType(ANVIL_16U, 1);
+#define ANVIL_16UC2 anvil::CreateType(ANVIL_16U, 2);
+#define ANVIL_16UC3 anvil::CreateType(ANVIL_16U, 3);
+#define ANVIL_16UC4 anvil::CreateType(ANVIL_16U, 4);
+#define ANVIL_16SC1 anvil::CreateType(ANVIL_16S, 1);
+#define ANVIL_16SC2 anvil::CreateType(ANVIL_16S, 2);
+#define ANVIL_16SC3 anvil::CreateType(ANVIL_16S, 3);
+#define ANVIL_16SC4 anvil::CreateType(ANVIL_16S, 4);
+#define ANVIL_32UC1 anvil::CreateType(ANVIL_32U, 1);
+#define ANVIL_32UC2 anvil::CreateType(ANVIL_32U, 2);
+#define ANVIL_32UC3 anvil::CreateType(ANVIL_32U, 3);
+#define ANVIL_32UC4 anvil::CreateType(ANVIL_32U, 4);
+#define ANVIL_32SC1 anvil::CreateType(ANVIL_32S, 1);
+#define ANVIL_32SC2 anvil::CreateType(ANVIL_32S, 2);
+#define ANVIL_32SC3 anvil::CreateType(ANVIL_32S, 3);
+#define ANVIL_32SC4 anvil::CreateType(ANVIL_32S, 4);
+#define ANVIL_64UC1 anvil::CreateType(ANVIL_64U, 1);
+#define ANVIL_64UC2 anvil::CreateType(ANVIL_64U, 2);
+#define ANVIL_64UC3 anvil::CreateType(ANVIL_64U, 3);
+#define ANVIL_64UC4 anvil::CreateType(ANVIL_64U, 4);
+#define ANVIL_64SC1 anvil::CreateType(ANVIL_64S, 1);
+#define ANVIL_64SC2 anvil::CreateType(ANVIL_64S, 2);
+#define ANVIL_64SC3 anvil::CreateType(ANVIL_64S, 3);
+#define ANVIL_64SC4 anvil::CreateType(ANVIL_64S, 4);
+#define ANVIL_32FC1 anvil::CreateType(ANVIL_32F, 1);
+#define ANVIL_32FC2 anvil::CreateType(ANVIL_32F, 2);
+#define ANVIL_32FC3 anvil::CreateType(ANVIL_32F, 3);
+#define ANVIL_32FC4 anvil::CreateType(ANVIL_32F, 4);
+#define ANVIL_64FC1 anvil::CreateType(ANVIL_64F, 1);
+#define ANVIL_64FC2 anvil::CreateType(ANVIL_64F, 2);
+#define ANVIL_64FC3 anvil::CreateType(ANVIL_64F, 3);
+#define ANVIL_64FC4 anvil::CreateType(ANVIL_64F, 4);
+#define ANVIL_8BC1  anvil::CreateType(ANVIL_8B,  1);
+#define ANVIL_8BC2  anvil::CreateType(ANVIL_8B,  2);
+#define ANVIL_8BC3  anvil::CreateType(ANVIL_8B,  3);
+#define ANVIL_8BC4  anvil::CreateType(ANVIL_8B,  4);
+
+// SSE Types
+
+#define ANVIL_8SC16 anvil::CreateType(ANVIL_8S,  16);
+#define ANVIL_8SC8  anvil::CreateType(ANVIL_8S,  8);
+#define ANVIL_16SC8 anvil::CreateType(ANVIL_16S, 8);
+
 namespace anvil {
-	enum Type : int8_t {
-		ANVIL_8U,
-		ANVIL_8S,
-		ANVIL_16U,
-		ANVIL_16S,
-		ANVIL_32U,
-		ANVIL_32S,
-		ANVIL_64U,
-		ANVIL_64S,
-		ANVIL_32F,
-		ANVIL_64F,
-		ANVIL_8B
+	enum Type : int16_t {
+
 	};
 
 	namespace detail {

@@ -408,7 +408,7 @@ namespace anvil {
 	};
 
 	template<Type TYPE>
-	using AnvilVector = Vector<Primative<GetType(TYPE)>, GetChannels(TYPE)>;
+	using AnvilVector = Vector<Primative<GetPrimativeType(TYPE)>, GetChannels(TYPE)>;
 
 	typedef Vector<uint8_t, 2> Vector8UC2;
 	typedef Vector<uint8_t, 3> Vector8UC3;
