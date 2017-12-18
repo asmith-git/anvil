@@ -27,54 +27,183 @@ namespace anvil {
 		uint8_t priority;
 	};
 
-	// ThreadPool
-
-	void ANVIL_CALL ThreadPool::worker(size_t aIndex) throw() {
-		std::vector<TaskHandle> completed;
-		while (!mExitFlag) {
-			{
-				std::unique_lock<std::mutex> lock(mLock);
-				mTaskAdded.wait(lock);
-			}
-			if (mExitFlag) break;
-			mLock.lock();
-		CHECK_TASKS:
-			if (mTasks.empty()) {
-				mLock.unlock();
-			} else {
-				++mActiveThreads;
-				ThreadPoolHandle* task = static_cast<ThreadPoolHandle*>(mTasks.back());
-				mTasks.pop_back();
-				mLock.unlock();
-				try {
-					task->task(task->param);
-				} catch (std::exception& e) {
-					task->exception = std::make_exception_ptr(e);
-				}
-				task->complete = true;
-				completed.push_back(task);
-				task->wait_condition.notify_all();
-				mLock.lock();
-				--mActiveThreads;
-				goto CHECK_TASKS;
-			}
-		}
-		for (TaskHandle i : completed) delete i;
+	// WorkerThread
+	
+	ANVIL_CALL ThreadPool::WorkerThread::WorkerThread(ThreadPool* aPool) :
+		mPool(aPool)
+	{
+		mLock = false;
+		mThread = std::thread(&WorkerThread::worker, this);
 	}
+
+	void ANVIL_CALL ThreadPool::WorkerThread::lock() const throw() {
+		bool expected = false;
+		while (! mLock.compare_exchange_strong(expected, true)) {
+			expected = false;
+		}
+	}
+
+	void ANVIL_CALL ThreadPool::WorkerThread::unlock() const throw() {
+		bool expected = true;
+		mLock.compare_exchange_strong(expected, false);
+	}
+
+	bool ANVIL_CALL ThreadPool::WorkerThread::try_lock() const throw() {
+		bool expected = true;
+		return mLock.compare_exchange_strong(expected, false);
+	}
+
+	size_t ANVIL_CALL ThreadPool::WorkerThread::queuedTasks() const throw() {
+		size_t tmp = 0;
+		lock();
+		tmp = mQueued.size() + (mCurrent ? 1 : 0);
+		unlock();
+		return tmp;
+	}
+
+	void ANVIL_CALL ThreadPool::WorkerThread::join() throw() {
+		mTaskAdded.notify_all();
+		mThread.join();
+	}
+
+	TaskHandle ANVIL_CALL ThreadPool::WorkerThread::enqueue(uint8_t aPriority, Task aTask, void* aParam) throw() {
+		ThreadPoolHandle* handle = new ThreadPoolHandle();
+		handle->complete = false;
+		handle->task = aTask;
+		handle->param = aParam;
+		handle->priority = aPriority;
+		handle->index = ++mPool->mIndex;
+
+		lock();
+		mQueued.push_back(handle);
+		std::sort(mQueued.begin(), mQueued.end(), [](TaskHandle a, TaskHandle b)->bool {
+			return static_cast<ThreadPoolHandle*>(a)->priority > static_cast<ThreadPoolHandle*>(b)->priority ?
+				true : static_cast<ThreadPoolHandle*>(a)->index > static_cast<ThreadPoolHandle*>(b)->index;
+		});
+		unlock();
+	}
+
+	bool ANVIL_CALL ThreadPool::WorkerThread::wait(TaskHandle aTask, std::exception_ptr* aException) const throw() {
+		return mPool->wait(aTask, aException);
+	}
+
+	bool ANVIL_CALL ThreadPool::WorkerThread::cancel(TaskHandle aTask) throw() {
+		lock();
+		auto end = mQueued.end();
+		auto i = std::find(mQueued.begin(), end, aTask);
+		if (i == end) {
+			unlock();
+			return false;
+		} else {
+			mQueued.erase(i);
+			unlock();
+			ThreadPoolHandle* const h = static_cast<ThreadPoolHandle*>(aTask);
+			h->complete = true;
+			h->wait_condition.notify_all();
+			return true;
+		}
+	}
+
+	uint8_t ANVIL_CALL ThreadPool::WorkerThread::getPriority(TaskHandle aTask) const throw() {
+		return mPool->getPriority(aTask);
+	}
+
+	bool ANVIL_CALL ThreadPool::WorkerThread::setPriority(TaskHandle aTask, uint8_t aPriority) throw() {
+		lock();
+		auto end = mQueued.end();
+		auto i = std::find(mQueued.begin(), end, aTask);
+		if (i == end) {
+			unlock();
+			return false;
+		} else {
+			ThreadPoolHandle* const h = static_cast<ThreadPoolHandle*>(aTask);
+			h->priority = aPriority;
+			std::sort(mQueued.begin(), mQueued.end(), [](TaskHandle a, TaskHandle b)->bool {
+				return static_cast<ThreadPoolHandle*>(a)->priority > static_cast<ThreadPoolHandle*>(b)->priority ?
+					true : static_cast<ThreadPoolHandle*>(a)->index > static_cast<ThreadPoolHandle*>(b)->index;
+			});
+			unlock();
+			return true;
+		}
+	}
+
+	bool ANVIL_CALL ThreadPool::WorkerThread::waitAll() const throw() {
+		std::vector<TaskHandle> tmp;
+		lock();
+		tmp = mQueued;
+		unlock();
+
+		bool return_value = true;
+		for (TaskHandle i : tmp) {
+			return_value = return_value && wait(i, nullptr);
+		}
+		return true;
+	}
+
+	bool ANVIL_CALL ThreadPool::WorkerThread::cancelAll() throw() {
+		std::vector<TaskHandle> tmp;
+		lock();
+		mQueued.swap(tmp);
+		unlock();
+		for (TaskHandle i : tmp) {
+			ThreadPoolHandle* const h = static_cast<ThreadPoolHandle*>(i);
+			h->complete = true;
+			h->wait_condition.notify_all();
+		}
+		return true;
+	}
+
+	void ANVIL_CALL ThreadPool::WorkerThread::worker() throw() {
+		//! \todo Implement work stealing 
+
+		//std::vector<TaskHandle> completed;
+		//while (!mExitFlag) {
+		//	{
+		//		std::unique_lock<std::mutex> lock(mLock);
+		//		mTaskAdded.wait(lock);
+		//	}
+		//	if (mExitFlag) break;
+		//	mLock.lock();
+		//CHECK_TASKS:
+		//	if (mTasks.empty()) {
+		//		mLock.unlock();
+		//	} else {
+		//		++mActiveThreads;
+		//		ThreadPoolHandle* task = static_cast<ThreadPoolHandle*>(mTasks.back());
+		//		mTasks.pop_back();
+		//		mLock.unlock();
+		//		try {
+		//			task->task(task->param);
+		//		} catch (std::exception& e) {
+		//			task->exception = std::make_exception_ptr(e);
+		//		}
+		//		task->complete = true;
+		//		completed.push_back(task);
+		//		task->wait_condition.notify_all();
+		//		mLock.lock();
+		//		--mActiveThreads;
+		//		goto CHECK_TASKS;
+		//	}
+		//}
+		//for (TaskHandle i : completed) delete i;
+	}
+
+	// ThreadPool
 
 	ANVIL_CALL ThreadPool::ThreadPool(size_t aSize) throw() {
 		mExitFlag = false;
-		mActiveThreads = 0;
 		mIndex = 0;
 		for (size_t i = 0; i < aSize; ++i) {
-			mThreads.push_back(std::thread(&ThreadPool::worker, this, i));
+			//mThreads.push_back(WorkerThread());
 		}
 	}
 
 	ANVIL_CALL ThreadPool::~ThreadPool() throw() {
 		mExitFlag = true;
-		mTaskAdded.notify_all();
-		for (std::thread& i : mThreads) i.join();
+		for (WorkerThread& i : mThreads) {
+			i.cancelAll();
+			i.join();
+		}
 	}
 
 	size_t ANVIL_CALL ThreadPool::threadCount() const throw() {
@@ -82,33 +211,36 @@ namespace anvil {
 	}
 
 	size_t ANVIL_CALL ThreadPool::activeThreads() const throw() {
-		return mActiveThreads;
+		size_t count = 0;
+		for (const WorkerThread& i : mThreads) {
+			if (i.queuedTasks() > 0) ++count;
+		}
+		return count;
 	}
 
 	size_t ANVIL_CALL ThreadPool::queuedTasks() const throw() {
-		mLock.lock();
-		const size_t tmp = mTasks.size();
-		mLock.unlock();
-		return tmp;
+		size_t count = 0;
+		for (const WorkerThread& i : mThreads) {
+			count += i.queuedTasks();
+		}
+		return count;
 	}
 
 	TaskHandle ANVIL_CALL ThreadPool::enqueue(uint8_t aPriority, Task aTask, void* aParam) throw() {
 		if (! aTask) return nullptr;
-		ThreadPoolHandle* handle = new ThreadPoolHandle();
-		handle->complete = false;
-		handle->task = aTask;
-		handle->param = aParam;
-		handle->priority = aPriority;
-		mLock.lock();
-		handle->index = ++mIndex;
-		mTasks.push_back(handle);
-		std::sort(mTasks.begin(), mTasks.end(), [](TaskHandle a, TaskHandle b)->bool {
-			return static_cast<ThreadPoolHandle*>(a)->priority > static_cast<ThreadPoolHandle*>(b)->priority ? 
-				true : static_cast<ThreadPoolHandle*>(a)->index > static_cast<ThreadPoolHandle*>(b)->index;
-		});
-		mLock.unlock();
-		mTaskAdded.notify_one();
-		return handle;
+
+		const size_t count = mThreads.size();
+		WorkerThread* low = &mThreads[0];
+		size_t tasks = low->queuedTasks();
+		for (size_t i = 1; i < count; ++i)  {
+			size_t tmp = mThreads[i].queuedTasks();
+			if (tmp < tasks) {
+				low = &mThreads[i];
+				tasks = tmp;
+			}
+		}
+
+		return low->enqueue(aPriority, aTask, aParam);
 	}
 
 	bool ANVIL_CALL ThreadPool::wait(TaskHandle aTask, std::exception_ptr* aException) const throw() {
@@ -118,26 +250,17 @@ namespace anvil {
 			if (aException && handle->exception) *aException = handle->exception;
 			return true;
 		}
-		std::unique_lock<std::mutex> lock(mLock);
+		std::mutex lock_;
+		std::unique_lock<std::mutex> lock(lock_);
 		handle->wait_condition.wait(lock);
-		return true;
+		return false;
 	}
 
 	bool ANVIL_CALL ThreadPool::cancel(TaskHandle aHandle) throw() {
-		mLock.lock();
-		const auto end = mTasks.end();
-		const auto i = std::find(mTasks.begin(), mTasks.end(), aHandle);
-		if (i == end) {
-			mLock.unlock();
-			return false;
-		} else {
-			mTasks.erase(i);
-			mLock.unlock();
-			ThreadPoolHandle* const handle = static_cast<ThreadPoolHandle*>(*i);
-			handle->complete = true;
-			handle->wait_condition.notify_all();
-			return true;
+		for (WorkerThread& i : mThreads) {
+			if (i.cancel(aHandle)) return true;
 		}
+		return false;
 	}
 
 	uint8_t ANVIL_CALL ThreadPool::getPriority(TaskHandle aHandle) const throw() {
@@ -146,49 +269,25 @@ namespace anvil {
 	}
 
 	bool ANVIL_CALL ThreadPool::setPriority(TaskHandle aHandle, uint8_t aPriority) throw() {
-		ThreadPoolHandle* const handle = static_cast<ThreadPoolHandle*>(aHandle);
-		if (aHandle == nullptr || handle->complete) return false;
-		mLock.lock();
-		const auto end = mTasks.end();
-		const auto i = std::find(mTasks.begin(), mTasks.end(), aHandle);
-		if (i == end) {
-			mLock.unlock();
-			return false;
-		} else {
-			mTasks.erase(i);
-			handle->priority = aPriority;
-			mTasks.push_back(aHandle);
-			std::sort(mTasks.begin(), mTasks.end(), [](TaskHandle a, TaskHandle b)->bool {
-				return static_cast<ThreadPoolHandle*>(a)->priority > static_cast<ThreadPoolHandle*>(b)->priority ? 
-					true : static_cast<ThreadPoolHandle*>(a)->index > static_cast<ThreadPoolHandle*>(b)->index;
-			});
-			mLock.unlock();
-			return true;
+		for (WorkerThread& i : mThreads) {
+			if (i.setPriority(aHandle, aPriority)) return true;
 		}
-		return true;
+		return false;
 	}
 
 	bool ANVIL_CALL ThreadPool::waitAll() const throw() {
-		mLock.lock();
-		if (mTasks.empty()) {
-			mLock.unlock();
-			return false;
+		bool return_value = true;
+		for (const WorkerThread& i : mThreads) {
+			return_value = return_value && i.waitAll();
 		}
-		std::vector<TaskHandle> tasks = mTasks;
-		mLock.unlock();
-		for (TaskHandle i : tasks) if (! wait(i, nullptr)) return false;
-		return true;
+		return false;
 	}
 
 	bool ANVIL_CALL ThreadPool::cancelAll() throw() {
-		mLock.lock();
-		for (TaskHandle i : mTasks) {
-			ThreadPoolHandle* const handle = static_cast<ThreadPoolHandle*>(i);
-			handle->complete = true;
-			handle->wait_condition.notify_all();
+		bool return_value = true;
+		for (WorkerThread& i : mThreads) {
+			return_value = return_value && i.cancelAll();
 		}
-		mTasks.clear();
-		mLock.unlock();
-		return true;
+		return false;
 	}
 }

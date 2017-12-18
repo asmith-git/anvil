@@ -26,15 +26,43 @@ namespace anvil {
 
 	class ThreadPool : public TaskDispatcher {
 	private:
-		mutable std::mutex mLock;
-		std::vector<std::thread> mThreads;
-		std::vector<TaskHandle> mTasks;
-		std::condition_variable mTaskAdded;
-		std::atomic_uint32_t mActiveThreads;
+		class WorkerThread : public TaskDispatcher {
+		private:
+			TaskHandle mCurrent;
+			std::vector<TaskHandle> mQueued;
+			ThreadPool* mPool;
+			std::thread mThread;
+			mutable std::atomic_bool mLock;
+			std::condition_variable mTaskAdded;
+
+			void ANVIL_CALL worker() throw();
+		public:
+			ANVIL_CALL WorkerThread(ThreadPool*);
+
+			void ANVIL_CALL lock() const throw();
+			void ANVIL_CALL unlock() const throw();
+			bool ANVIL_CALL try_lock() const throw();
+
+			void ANVIL_CALL join() throw();
+
+			// Inherited from TaskDispatcher
+
+			size_t ANVIL_CALL threadCount() const throw() override;
+			size_t ANVIL_CALL activeThreads() const throw() override;
+			size_t ANVIL_CALL queuedTasks() const throw() override;
+
+			TaskHandle ANVIL_CALL enqueue(uint8_t, Task, void*) throw() override;
+			bool ANVIL_CALL wait(TaskHandle, std::exception_ptr*) const throw() override;
+			bool ANVIL_CALL cancel(TaskHandle) throw() override;
+			uint8_t ANVIL_CALL getPriority(TaskHandle) const throw() override;
+			bool ANVIL_CALL setPriority(TaskHandle, uint8_t) throw() override;
+			bool ANVIL_CALL waitAll() const throw() override;
+			bool ANVIL_CALL cancelAll() throw() override;
+		};
+
+		std::vector<WorkerThread> mThreads;
 		std::atomic_bool mExitFlag;
 		uint64_t mIndex;
-
-		void ANVIL_CALL worker(size_t) throw();
 
 		ThreadPool(ThreadPool&&) = delete;
 		ThreadPool(const ThreadPool&) = delete;
