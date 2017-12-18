@@ -157,8 +157,27 @@ namespace anvil { namespace ocl {
 		Handle handle(Handle::EVENT);
 		cl_int error = clEnqueueNDRangeKernel(aQueue.handle(), mHandle.kernel, aDimensions, aGlobalOffset, aGlobalWorkSize, aLocalWorkSize, 0, NULL, &mHandle.event);
 #ifdef ANVIL_LOG_OCL
+		std::string offset = "[";
+		std::string global = "[";
+		std::string local = "[";
+
+		for (cl_uint i = 0; i < aDimensions; ++i) {
+			offset += std::to_string(aGlobalOffset[i]);
+			global += std::to_string(aGlobalWorkSize[i]);
+			local += std::to_string(aLocalWorkSize[i]);
+			if (i + 1 < aDimensions) {
+				offset += ", ";
+				global += ", ";
+				local += ", ";
+			}
+		}
+
+		offset += "]";
+		global += "]";
+		local += "]";
+		
 		std::cerr << getErrorName(error) << " <- clEnqueueNDRangeKernel (" << aQueue.handle().queue << ", " << mHandle.kernel << ", " << aDimensions << ", " <<
-			aGlobalOffset<< ", " << aGlobalWorkSize<< ", " << aLocalWorkSize<< ", " << 0<< ", " << "NULL"<< ", " << &mHandle.event << ")" << std::endl;
+			offset << ", " << global << ", " << local << ", " << 0 << ", " << "NULL" << ", " << &mHandle.event << ")" << std::endl;
 #endif
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueNDRangeKernel", error, name());
