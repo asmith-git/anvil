@@ -63,10 +63,25 @@ namespace anvil { namespace ocl {
 #endif
 	}
 
-	bool ANVIL_CALL Device::create(Handle aHandle) throw() {
+	bool ANVIL_CALL Device::createNoRetain(Handle aHandle) throw() {
+		if (mHandle.device) if (!destroy()) return false;
 		if (aHandle.type != Handle::DEVICE) return false;
 		mHandle = aHandle;
 		onCreate();
+		return true;
+	}
+
+	bool ANVIL_CALL Device::create(Handle aHandle) throw() {
+		if (!createNoRetain(aHandle)) return false;
+		if (aHandle.event && isSubDevice()) {
+#ifdef CL_VERSION_1_2
+#ifdef ANVIL_LOG_OCL
+			std::cerr << "clRetainDevice (" << mHandle.device << ")" << std::endl;
+#endif
+			cl_int error = clRetainDevice(mHandle.device);
+			if (error != CL_SUCCESS) return oclError("clRetainDevice", error);
+#endif
+		}
 		return true;
 	}
 

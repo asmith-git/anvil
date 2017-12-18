@@ -60,17 +60,24 @@ namespace anvil { namespace ocl {
 		return false;
 	}
 
-	bool ANVIL_CALL Program::create(Handle aHandle) throw() {
+	bool ANVIL_CALL Program::createNoRetain(Handle aHandle) throw() {
 		if (aHandle.type != Handle::PROGRAM) return false;
 		if (mHandle.program != NULL) if (!destroy()) return false;
 		if (aHandle.program) {
 			mHandle = aHandle;
+			onCreate();
+		}
+		return true;
+	}
+
+	bool ANVIL_CALL Program::create(Handle aHandle) throw() {
+		if (!createNoRetain(aHandle)) return false;
+		if (aHandle.program) {
 #ifdef ANVIL_LOG_OCL
 			std::cerr << "clRetainProgram (" << mHandle.program << ")" << std::endl;
 #endif
 			cl_int error = clRetainProgram(mHandle.program);
 			if (error != CL_SUCCESS) return oclError("clRetainProgram", error);
-			onCreate();
 		}
 		return true;
 	}

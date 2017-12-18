@@ -105,17 +105,24 @@ namespace anvil { namespace ocl {
 		return false;
 	}
 
-	bool ANVIL_CALL CommandQueue::create(Handle aHandle) throw() {
+	bool ANVIL_CALL CommandQueue::createNoRetain(Handle aHandle) throw() {
 		if (aHandle.type != Handle::COMMAND_QUEUE) return false;
 		if (mHandle.queue != NULL) if (!destroy()) return false;
 		if (aHandle.queue) {
 			mHandle = aHandle;
+			onCreate();
+		}
+		return true;
+	}
+
+	bool ANVIL_CALL CommandQueue::create(Handle aHandle) throw() {
+		if (!createNoRetain(aHandle)) return false;
+		if (aHandle.queue) {
 #ifdef ANVIL_LOG_OCL
 			std::cerr << "clRetainCommandQueue (" << mHandle.queue << ")" << std::endl;
 #endif
 			cl_int error = clRetainCommandQueue(mHandle.queue);
 			if (error != CL_SUCCESS) return oclError("clRetainCommandQueue", error);
-			onCreate();
 		}
 		return true;
 	}

@@ -101,9 +101,18 @@ namespace anvil { namespace ocl {
 		return false;
 	}
 
-	bool ANVIL_CALL Kernel::create(Handle aHandle) throw() {
+	bool ANVIL_CALL Kernel::createNoRetain(Handle aHandle) throw() {
 		if (aHandle.type != Handle::KERNEL) return false;
 		if (mHandle.kernel != NULL) if (!destroy()) return false;
+		if (aHandle.kernel) {
+			mHandle = aHandle;
+			onCreate();
+		}
+		return true;
+	}
+
+	bool ANVIL_CALL Kernel::create(Handle aHandle) throw() {
+		if (!createNoRetain(aHandle)) return false;
 		if (aHandle.kernel) {
 			mHandle = aHandle;
 #ifdef ANVIL_LOG_OCL
@@ -114,7 +123,6 @@ namespace anvil { namespace ocl {
 				mHandle.kernel = NULL;
 				return oclError("clRetainKernel", error);
 			}
-			onCreate();
 		}
 		return true;
 	}

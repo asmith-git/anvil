@@ -92,6 +92,7 @@ namespace anvil { namespace ocl {
 		Handle ANVIL_CALL handle() const throw();
 		ANVIL_CALL operator bool() const throw();
 
+		virtual bool ANVIL_CALL createNoRetain(Handle) throw() = 0;
 		virtual bool ANVIL_CALL create(Handle) throw() = 0;
 		virtual bool ANVIL_CALL destroy() throw() = 0;
 		virtual cl_uint ANVIL_CALL referenceCount() const throw() = 0;

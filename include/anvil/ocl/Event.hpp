@@ -82,6 +82,7 @@ namespace anvil { namespace ocl {
 
 		// Inherited from Object
 
+		bool ANVIL_CALL createNoRetain(Handle) throw() override;
 		bool ANVIL_CALL create(Handle) throw() override;
 		bool ANVIL_CALL destroy() throw() override;
 		cl_uint ANVIL_CALL referenceCount() const throw() override;

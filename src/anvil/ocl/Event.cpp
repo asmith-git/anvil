@@ -55,17 +55,24 @@ namespace anvil { namespace ocl {
 		return false;
 	}
 
-	bool ANVIL_CALL Event::create(Handle aHandle) throw() {
+	bool ANVIL_CALL Event::createNoRetain(Handle aHandle) throw() {
 		if (aHandle.type != Handle::EVENT) return false;
 		if (mHandle.event != NULL) if (!destroy()) return false;
 		if (aHandle.event) {
 			mHandle = aHandle;
+			onCreate();
+		}
+		return true;
+	}
+
+	bool ANVIL_CALL Event::create(Handle aHandle) throw() {
+		if (!createNoRetain(aHandle)) return false;
+		if (aHandle.event) {
 #ifdef ANVIL_LOG_OCL
 			std::cerr << "clRetainEvent (" << mHandle.event << ")" << std::endl;
 #endif
 			cl_int error = clRetainEvent(mHandle.event);
 			if (error != CL_SUCCESS) return oclError("clRetainEvent", error);
-			onCreate();
 		}
 		return true;
 	}

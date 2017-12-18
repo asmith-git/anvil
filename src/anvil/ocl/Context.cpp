@@ -115,17 +115,24 @@ namespace anvil { namespace ocl {
 		return false;
 	}
 
-	bool ANVIL_CALL Context::create(Handle aHandle) throw() {
+	bool ANVIL_CALL Context::createNoRetain(Handle aHandle) throw() {
 		if (aHandle.type != Handle::CONTEXT) return false;
 		if (mHandle.context != NULL) if (!destroy()) return false;
 		if (aHandle.context) {
 			mHandle = aHandle;
+			onCreate();
+		}
+		return true;
+	}
+
+	bool ANVIL_CALL Context::create(Handle aHandle) throw() {
+		if (!createNoRetain(aHandle)) return false;
+		if (aHandle.context) {
 #ifdef ANVIL_LOG_OCL
 			std::cerr << "clRetainContext (" << mHandle.context << ")" << std::endl;
 #endif
 			cl_int error = clRetainContext(mHandle.context);
 			if (error != CL_SUCCESS) return oclError("clRetainContext", error);
-			onCreate();
 		}
 		return true;
 	}
