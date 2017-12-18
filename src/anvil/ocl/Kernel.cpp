@@ -148,7 +148,7 @@ namespace anvil { namespace ocl {
 #endif
 		}
 		Event event;
-		event.create(handle);
+		event.createNoRetain(handle);
 		return event;
 	}
 
@@ -165,7 +165,7 @@ namespace anvil { namespace ocl {
 			return Event();
 		}
 		Event event;
-		event.create(handle);
+		event.createNoRetain(handle);
 		return event;
 	}
 
