@@ -77,6 +77,14 @@ namespace anvil { namespace ocl {
 			return std::vector<std::shared_ptr<Device>>();
 		}
 		cl_device_id deviceIDs[Platform::MAX_DEVICES];
+#ifdef ANVIL_LOG_OCL
+		std::cerr << "clCreateSubDevices (" <<
+			mHandle.device << ", " <<
+			aProperties << ", " <<
+			(aProperties[0] == CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN ? Platform::MAX_DEVICES : aCount) << ", " <<
+			deviceIDs << ", " <<
+			(void*) (aProperties[0] == CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN ? &aCount : NULL) << ")" << std::endl;
+#endif
 		cl_uint error = clCreateSubDevices(
 			mHandle, 
 			aProperties, 
@@ -155,7 +163,11 @@ namespace anvil { namespace ocl {
 	Device ANVIL_CALL Device::getParentDevice() throw() {
 		Handle handle(Handle::DEVICE);
 #ifdef CL_VERSION_1_2
-		const cl_int error = clGetDeviceInfo(mHandle.device, CL_DEVICE_PARENT_DEVICE, sizeof(cl_device_id), &handle.device, nullptr);
+#ifdef ANVIL_LOG_OCL
+		std::cerr << "clGetDeviceInfo (" << mHandle.device << ", " << "CL_DEVICE_PARENT_DEVICE" << ", " << sizeof(cl_device_id) << 
+			", " << &handle.device << ", " << "NULL" << ")" << std::endl;
+#endif
+		const cl_int error = clGetDeviceInfo(mHandle.device, CL_DEVICE_PARENT_DEVICE, sizeof(cl_device_id), &handle.device, NULL);
 		if (error != CL_SUCCESS) oclError("clGetDeviceInfo", error, "CL_DEVICE_PARENT_DEVICE");
 #endif
 		Device device;
@@ -164,7 +176,11 @@ namespace anvil { namespace ocl {
 	}
 
 	void* ANVIL_CALL Device::getInfo(cl_device_info aName) const throw() {
-		const cl_int error = clGetDeviceInfo(mHandle.device, aName, DEVICE_INFO_BUFFER_SIZE, gDeviceInfoBuffer, nullptr);
+#ifdef ANVIL_LOG_OCL
+		std::cerr << "clGetDeviceInfo (" << mHandle.device << ", " << aName << ", " << DEVICE_INFO_BUFFER_SIZE << ", " << 
+			gDeviceInfoBuffer << ", " << "NULL" << ")" << std::endl;
+#endif
+		const cl_int error = clGetDeviceInfo(mHandle.device, aName, DEVICE_INFO_BUFFER_SIZE, gDeviceInfoBuffer, NULL);
 		if (error != CL_SUCCESS) oclError("clGetDeviceInfo", error, std::to_string(aName).c_str());
 		return gDeviceInfoBuffer;
 	}

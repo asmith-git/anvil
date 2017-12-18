@@ -31,6 +31,10 @@ namespace anvil { namespace ocl {
 		template<class T>
 		inline T ANVIL_CALL getInfo(cl_mem_info aInfo) const throw() {
 			T tmp;
+#ifdef ANVIL_LOG_OCL
+			std::cerr << "clGetMemObjectInfo (" << mHandle.buffer << ", " << aInfo << ", " << sizeof(T) <<
+				", " << (void*) &tmp << ", " << "NULL" << ")" << std::endl;
+#endif
 			cl_int error = clGetMemObjectInfo(mHandle.buffer, aInfo, sizeof(T), &tmp, NULL);
 			if (error != CL_SUCCESS) oclError("clGetMemObjectInfo", error, std::to_string(aInfo).c_str());
 			return tmp;

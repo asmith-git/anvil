@@ -56,6 +56,11 @@ namespace anvil { namespace ocl {
 		cl_int error = CL_SUCCESS;
 #ifdef CL_VERSION_2_0
 		cl_queue_properties properties = (aOutOfOrder ? CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE : 0) | (aProfiling ? CL_QUEUE_PROFILING_ENABLE : 0);
+#ifdef ANVIL_LOG_OCL
+		std::cerr << "clCreateCommandQueueWithProperties (" << aContext.handle().context << ", " << aDevice.handle().device << ", " <<
+			(void*) (aOutOfOrder || aProfiling ? &properties : NULL) <<
+			&error << ")" << std::endl;
+#endif
 		mHandle.queue = clCreateCommandQueueWithProperties(
 			aContext.mHandle.context,
 			aDevice.mHandle.device,
@@ -63,6 +68,11 @@ namespace anvil { namespace ocl {
 			&error);
 		if (error != CL_SUCCESS) return oclError("clCreateCommandQueueWithProperties", error);
 #else
+#ifdef ANVIL_LOG_OCL
+		std::cerr << "clCreateCommandQueue (" << aContext.handle().context << ", " << aDevice.handle().device << ", " <<
+			((aOutOfOrder ? CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE : 0) | (aProfiling ? CL_QUEUE_PROFILING_ENABLE : 0)) << ", " <<
+			&error << ")" << std::endl;
+#endif
 		mHandle.queue = clCreateCommandQueue(
 			aContext.handle(),
 			aDevice.handle(),
@@ -83,6 +93,9 @@ namespace anvil { namespace ocl {
 	bool CommandQueue::destroy() throw() {
 		if (mHandle.queue) {
 			finish();
+#ifdef ANVIL_LOG_OCL
+			std::cerr << "clReleaseCommandQueue (" << mHandle.queue << ")" << std::endl;
+#endif
 			cl_int error = clReleaseCommandQueue(mHandle.queue);
 			if (error != CL_SUCCESS) return oclError("clReleaseCommandQueue", error);
 			onDestroy();
@@ -97,6 +110,9 @@ namespace anvil { namespace ocl {
 		if (mHandle.queue != NULL) if (!destroy()) return false;
 		if (aHandle.queue) {
 			mHandle = aHandle;
+#ifdef ANVIL_LOG_OCL
+			std::cerr << "clRetainCommandQueue (" << mHandle.queue << ")" << std::endl;
+#endif
 			cl_int error = clRetainCommandQueue(mHandle.queue);
 			if (error != CL_SUCCESS) return oclError("clRetainCommandQueue", error);
 			onCreate();
@@ -105,11 +121,17 @@ namespace anvil { namespace ocl {
 	}
 
 	bool ANVIL_CALL CommandQueue::flush() throw() {
+#ifdef ANVIL_LOG_OCL
+		std::cerr << "clFlush (" << mHandle.queue << ")" << std::endl;
+#endif
 		cl_int error = clFlush(mHandle.queue);
 		return error == CL_SUCCESS ? true : oclError("clFlush", error);
 	}
 
 	bool ANVIL_CALL CommandQueue::finish() throw() {
+#ifdef ANVIL_LOG_OCL
+		std::cerr << "clFinish (" << mHandle.queue << ")" << std::endl;
+#endif
 		cl_int error = clFinish(mHandle.queue);
 		return error == CL_SUCCESS ? true : oclError("clFinish", error);
 	}
@@ -117,6 +139,9 @@ namespace anvil { namespace ocl {
 	Event ANVIL_CALL CommandQueue::barrier() throw() {
 #ifdef CL_VERSION_1_2
 		Handle handle(Handle::EVENT);
+#ifdef ANVIL_LOG_OCL
+		std::cerr << "clEnqueueBarrierWithWaitList (" << mHandle.queue << ", " << 0 << ", " << "NULL" << ", " << &handle.event << ")" << std::endl;
+#endif
 		cl_int error = clEnqueueBarrierWithWaitList(mHandle.queue, 0, NULL, &handle.event);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueBarrierWithWaitList", error);
@@ -126,6 +151,9 @@ namespace anvil { namespace ocl {
 		event.create(handle);
 		return event;
 #else
+#ifdef ANVIL_LOG_OCL
+		std::cerr << "clEnqueueBarrier (" << mHandle.queue << ")" << std::endl;
+#endif
 		cl_int error = clEnqueueBarrier(mHandle.queue);
 		if(error != CL_SUCCESS )oclError("clEnqueueBarrier", error);
 		return Event();
@@ -135,12 +163,18 @@ namespace anvil { namespace ocl {
 	Event ANVIL_CALL CommandQueue::pushMarker() throw() {
 		Handle handle(Handle::EVENT);
 #ifdef CL_VERSION_1_2
+#ifdef ANVIL_LOG_OCL
+		std::cerr << "clEnqueueMarkerWithWaitList (" << mHandle.queue << ", " << 0 << ", " << "NULL" << ", " << &handle.event << ")" << std::endl;
+#endif
 		cl_int error = clEnqueueMarkerWithWaitList(mHandle.queue, 0, NULL, &handle.event);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueMarkerWithWaitList", error);
 			return Event();
 		}
 #else
+#ifdef ANVIL_LOG_OCL
+		std::cerr << "clEnqueueMarker (" << mHandle.queue << ", " << &handle.event << ")" << std::endl;
+#endif
 		cl_int error = clEnqueueMarker(mHandle.queue, &handle.event);
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueMarker", error);
@@ -156,6 +190,10 @@ namespace anvil { namespace ocl {
 		if (mHandle.queue == NULL) return 0;
 #ifdef CL_VERSION_1_2
 		cl_uint count;
+#ifdef ANVIL_LOG_OCL
+		std::cerr << "clGetCommandQueueInfo (" << mHandle.queue << ", " << "CL_QUEUE_REFERENCE_COUNT" << ", " << sizeof(count) << 
+			", " << &count << ", " << "NULL" << ")" << std::endl;
+#endif
 		cl_uint error = clGetCommandQueueInfo(mHandle.queue, CL_QUEUE_REFERENCE_COUNT, sizeof(count), &count, NULL);
 		if (error == CL_SUCCESS) return count;
 		oclError("clGetCommandQueueInfo", error, "CL_QUEUE_REFERENCE_COUNT");
@@ -169,6 +207,10 @@ namespace anvil { namespace ocl {
 		Handle h(Handle::CONTEXT);
 		Context tmp;
 #ifdef CL_VERSION_1_2
+#ifdef ANVIL_LOG_OCL
+		std::cerr << "clGetCommandQueueInfo (" << mHandle.queue << ", " << "CL_QUEUE_CONTEXT" << ", " << sizeof(cl_context) <<
+			", " << &h.context << ", " << "NULL" << ")" << std::endl;
+#endif
 		cl_uint error = clGetCommandQueueInfo(mHandle.queue, CL_QUEUE_CONTEXT, sizeof(cl_context), &h.context, NULL);
 		if (error != CL_SUCCESS) oclError("clGetCommandQueueInfo", error, "CL_QUEUE_CONTEXT");
 #else
@@ -183,6 +225,10 @@ namespace anvil { namespace ocl {
 		Handle h(Handle::DEVICE);
 		Device tmp;
 #ifdef CL_VERSION_1_2
+#ifdef ANVIL_LOG_OCL
+		std::cerr << "clGetCommandQueueInfo (" << mHandle.queue << ", " << "CL_QUEUE_DEVICE" << ", " << sizeof(cl_device_id) <<
+			", " << &h.context << ", " << "NULL" << ")" << std::endl;
+#endif
 		cl_uint error = clGetCommandQueueInfo(mHandle.queue, CL_QUEUE_DEVICE, sizeof(cl_device_id), &h.device, NULL);
 		if (error != CL_SUCCESS) oclError("clGetCommandQueueInfo", error, "CL_QUEUE_DEVICE");
 #else
