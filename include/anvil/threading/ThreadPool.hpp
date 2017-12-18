@@ -29,8 +29,8 @@ namespace anvil {
 		class WorkerThread : public TaskDispatcher {
 		private:
 			TaskHandle mCurrent;
+			std::vector<TaskHandle> mCompleted;
 			std::vector<TaskHandle> mQueued;
-
 			ThreadPool* mPool;
 			std::thread mThread;
 			mutable std::atomic_bool mLock;
@@ -61,7 +61,6 @@ namespace anvil {
 			bool ANVIL_CALL cancelAll() throw() override;
 		};
 
-		std::vector<TaskHandle> mCompleted;
 		std::vector<std::shared_ptr<WorkerThread>> mThreads;
 		std::atomic_bool mExitFlag;
 		uint64_t mIndex;

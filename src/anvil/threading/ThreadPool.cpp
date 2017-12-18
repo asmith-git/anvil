@@ -89,6 +89,7 @@ namespace anvil {
 				true : static_cast<ThreadPoolHandle*>(a)->index > static_cast<ThreadPoolHandle*>(b)->index;
 		});
 		unlock();
+		mTaskAdded.notify_all();
 		return handle;
 	}
 
@@ -187,11 +188,15 @@ CHECK_TASKS:
 					task->exception = std::make_exception_ptr(e);
 				}
 				task->complete = true;
-				mPool->mCompleted.push_back(task);
+				mCompleted.push_back(task);
 				task->wait_condition.notify_all();
 				lock();
 				goto CHECK_TASKS;
 			}
+		}
+
+		for (TaskHandle i : mCompleted) {
+			delete static_cast<ThreadPoolHandle*>(i);
 		}
 	}
 
