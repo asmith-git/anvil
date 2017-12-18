@@ -165,21 +165,41 @@ namespace anvil {
 	}
 
 	void ANVIL_CALL ThreadPool::WorkerThread::worker() throw() {
-		//! \todo Implement work stealing 
-
 		std::mutex mutex;
 		while (! mPool->mExitFlag) {
 		{
 				std::unique_lock<std::mutex> lock(mutex);
 				mTaskAdded.wait(lock);
 		}
+		WorkerThread* max = nullptr;
+		ThreadPoolHandle* task;
 		if (mPool->mExitFlag) break;
 			lock();
 CHECK_TASKS:
 			if (mQueued.empty()) {
+				//! \todo Implement work stealing
 				unlock();
+#define ANVIL_DISABLE_WORK_STEALING
+#ifndef ANVIL_DISABLE_WORK_STEALING
+				max = &mPool->maxThread();
+				max->lock();
+				if(max->mQueued.empty()) {
+					lock();
+					mQueued.push_back(max->mQueued.back());
+					unlock();
+					max->mQueued.pop_back();
+					max->unlock();
+					goto CHECK_TASKS;
+				} else {
+					max->unlock();
+				}
+#endif
+				{
+					std::unique_lock<std::mutex> lock(mutex);
+					mTaskAdded.wait(lock);
+				}
 			} else {
-				ThreadPoolHandle* task = static_cast<ThreadPoolHandle*>(mQueued.back());
+				task = static_cast<ThreadPoolHandle*>(mQueued.back());
 				mQueued.pop_back();
 				unlock();
 				try {
@@ -218,6 +238,34 @@ CHECK_TASKS:
 		}
 	}
 
+	ThreadPool::WorkerThread& ThreadPool::minThread() throw() {
+		std::shared_ptr<WorkerThread> tmp = mThreads[0];
+		size_t count = tmp->queuedTasks();
+		const size_t threads = mThreads.size();
+		for (size_t i = 1; i < threads; ++i) {
+			size_t c = mThreads[i]->queuedTasks();
+			if (c < count) {
+				count = c;
+				tmp = mThreads[i];
+			}
+		}
+		return *tmp;
+	}
+
+	ThreadPool::WorkerThread& ThreadPool::maxThread() throw() {
+		std::shared_ptr<WorkerThread> tmp = mThreads[0];
+		size_t count = tmp->queuedTasks();
+		const size_t threads = mThreads.size();
+		for (size_t i = 1; i < threads; ++i) {
+			size_t c = mThreads[i]->queuedTasks();
+			if (c > count) {
+				count = c;
+				tmp = mThreads[i];
+			}
+		}
+		return *tmp;
+	}
+
 	size_t ANVIL_CALL ThreadPool::threadCount() const throw() {
 		return mThreads.size();
 	}
@@ -240,19 +288,7 @@ CHECK_TASKS:
 
 	TaskHandle ANVIL_CALL ThreadPool::enqueue(uint8_t aPriority, Task aTask, void* aParam) throw() {
 		if (! aTask) return nullptr;
-
-		const size_t count = mThreads.size();
-		std::shared_ptr<WorkerThread> low = mThreads[0];
-		size_t tasks = low->queuedTasks();
-		for (size_t i = 1; i < count; ++i)  {
-			size_t tmp = mThreads[i]->queuedTasks();
-			if (tmp < tasks) {
-				low = mThreads[i];
-				tasks = tmp;
-			}
-		}
-
-		return low->enqueue(aPriority, aTask, aParam);
+		return minThread().enqueue(aPriority, aTask, aParam);
 	}
 
 	bool ANVIL_CALL ThreadPool::wait(TaskHandle aTask, std::exception_ptr* aException) const throw() {

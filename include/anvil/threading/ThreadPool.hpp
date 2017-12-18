@@ -69,6 +69,9 @@ namespace anvil {
 		ThreadPool(const ThreadPool&) = delete;
 		ThreadPool& operator=(ThreadPool&&) = delete;
 		ThreadPool& operator=(const ThreadPool&) = delete;
+
+		WorkerThread& minThread() throw();
+		WorkerThread& maxThread() throw();
 	public:
 		ANVIL_CALL ThreadPool(size_t) throw();
 		ANVIL_CALL ~ThreadPool() throw();
