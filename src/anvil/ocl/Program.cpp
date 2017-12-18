@@ -56,30 +56,20 @@ namespace anvil { namespace ocl {
 			onDestroy();
 			mHandle.program = NULL;
 			return true;
+		} else {
+			return false;
 		}
-		return false;
 	}
 
-	bool ANVIL_CALL Program::createNoRetain(Handle aHandle) throw() {
-		if (aHandle.type != Handle::PROGRAM) return false;
-		if (mHandle.program != NULL) if (!destroy()) return false;
-		if (aHandle.program) {
-			mHandle = aHandle;
-			onCreate();
-		}
-		return true;
-	}
-
-	bool ANVIL_CALL Program::create(Handle aHandle) throw() {
-		if (!createNoRetain(aHandle)) return false;
-		if (aHandle.program) {
+	bool ANVIL_CALL Program::retain() throw() {
+		if (mHandle.program) {
 #ifdef ANVIL_LOG_OCL
 			std::cerr << "clRetainProgram (" << mHandle.program << ")" << std::endl;
 #endif
 			cl_int error = clRetainProgram(mHandle.program);
-			if (error != CL_SUCCESS) return oclError("clRetainProgram", error);
+			return error == CL_SUCCESS ? true : oclError("clRetainProgram", error);
 		}
-		return true;
+		return false;
 	}
 
 	bool ANVIL_CALL Program::createFromSource(Context& aContext, const char* aSource, const char* aBuildOptions) throw() {
@@ -327,7 +317,7 @@ namespace anvil { namespace ocl {
 #endif
 		cl_uint error = clGetProgramInfo(mHandle.program, CL_PROGRAM_CONTEXT, sizeof(cl_context), &h.context, NULL);
 		if (error != CL_SUCCESS) oclError("clGetProgramInfo", error, "CL_PROGRAM_CONTEXT");
-		if (h.context) tmp.create(h);
+		if (h.context) tmp.Object::create(h);
 		return std::move(tmp);
 	}
 

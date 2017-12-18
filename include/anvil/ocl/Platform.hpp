@@ -22,6 +22,9 @@ namespace anvil { namespace ocl {
 	private:
 		void* ANVIL_CALL getInfo(cl_platform_info) const;
 		ANVIL_CALL Platform(cl_platform_id) throw();
+	protected:
+		// Inherited from Object
+		bool ANVIL_CALL retain() throw() override;
 	public:
 		enum {
 			MAX_PLATFORMS = 16,
@@ -46,8 +49,6 @@ namespace anvil { namespace ocl {
 
 		// Inherited from Object
 
-		bool ANVIL_CALL createNoRetain(Handle) throw() override;
-		bool ANVIL_CALL create(Handle) throw() override;
 		bool ANVIL_CALL destroy() throw() override;
 		cl_uint ANVIL_CALL referenceCount() const throw() override;
 		Handle::Type ANVIL_CALL type() const throw() override;

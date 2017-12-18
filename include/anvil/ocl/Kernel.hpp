@@ -41,6 +41,9 @@ namespace anvil { namespace ocl {
 			if (error != CL_SUCCESS) oclError("clGetKernelInfo ", error, std::to_string(aInfo).c_str());
 			return tmp;
 		}
+	protected:
+		// Inherited from Object
+		bool ANVIL_CALL retain() throw() override;
 	public:
 		ANVIL_CALL Kernel() throw();
 		ANVIL_CALL Kernel(Kernel&&) throw();
@@ -132,8 +135,6 @@ namespace anvil { namespace ocl {
 
 		// Inherited from Object
 
-		bool ANVIL_CALL createNoRetain(Handle) throw() override;
-		bool ANVIL_CALL create(Handle) throw() override;
 		bool ANVIL_CALL destroy() throw() override;
 		cl_uint ANVIL_CALL referenceCount() const throw() override;
 		Handle::Type ANVIL_CALL type() const throw() override;

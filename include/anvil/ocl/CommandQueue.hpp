@@ -23,6 +23,9 @@ namespace anvil { namespace ocl {
 	private:
 		CommandQueue(const CommandQueue&) = delete;
 		CommandQueue& operator=(const CommandQueue&) = delete;
+	protected:
+		// Inherited from Object
+		bool ANVIL_CALL retain() throw() override;
 	public:
 		ANVIL_CALL CommandQueue() throw();
 		ANVIL_CALL CommandQueue(CommandQueue&&);
@@ -42,8 +45,6 @@ namespace anvil { namespace ocl {
 
 		// Inherited from Object
 
-		bool ANVIL_CALL createNoRetain(Handle) throw() override;
-		bool ANVIL_CALL create(Handle) throw() override;
 		bool ANVIL_CALL destroy() throw() override;
 		cl_uint ANVIL_CALL referenceCount() const throw() override;
 		Handle::Type ANVIL_CALL type() const throw() override;

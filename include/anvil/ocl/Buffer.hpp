@@ -41,6 +41,9 @@ namespace anvil { namespace ocl {
 		}
 
 		cl_mem_flags ANVIL_CALL flags() const throw();
+	protected:
+		// Inherited from Object
+		bool ANVIL_CALL retain() throw() override;
 	public:
 		enum AccessMode : cl_mem_flags {
 			READ_ONLY = CL_MEM_READ_ONLY,
@@ -71,8 +74,6 @@ namespace anvil { namespace ocl {
 
 		// Inherited from Object
 
-		bool ANVIL_CALL createNoRetain(Handle) throw() override;
-		bool ANVIL_CALL create(Handle) throw() override;
 		bool ANVIL_CALL destroy() throw() override;
 		cl_uint ANVIL_CALL referenceCount() const throw() override;
 		Handle::Type ANVIL_CALL type() const throw() override;

@@ -37,14 +37,8 @@ namespace anvil { namespace ocl {
 		return false;
 	}
 
-	bool ANVIL_CALL Platform::createNoRetain(Handle aHandle) throw() {
-		if (aHandle.type != Handle::PLATFORM) return false;
-		mHandle = aHandle;
+	bool ANVIL_CALL Platform::retain() throw() {
 		return true;
-	}
-
-	bool ANVIL_CALL Platform::create(Handle aHandle) throw() {
-		return createNoRetain(aHandle);
 	}
 
 	void* ANVIL_CALL Platform::getInfo(cl_platform_info aName) const throw() {

@@ -27,6 +27,9 @@ namespace anvil { namespace ocl {
 		bool ANVIL_CALL create(cl_platform_id, cl_device_id*, size_t) throw();
 	protected:
 		virtual void ANVIL_CALL onError(const char*, const void*, size_t) throw();
+
+		// Inherited from Object
+		bool ANVIL_CALL retain() throw() override;
 	public:
 
 		ANVIL_CALL Context() throw();
@@ -45,8 +48,6 @@ namespace anvil { namespace ocl {
 
 		// Inherited from Object
 
-		bool ANVIL_CALL createNoRetain(Handle) throw() override;
-		bool ANVIL_CALL create(Handle) throw() override;
 		bool ANVIL_CALL destroy() throw() override;
 		cl_uint ANVIL_CALL referenceCount() const throw() override;
 		Handle::Type ANVIL_CALL type() const throw() override;

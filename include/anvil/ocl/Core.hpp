@@ -85,6 +85,8 @@ namespace anvil { namespace ocl {
 		virtual void ANVIL_CALL onCreate() throw();
 		virtual void ANVIL_CALL onDestroy() throw();
 		std::shared_ptr<void> ANVIL_CALL getExtraData() throw();
+
+		virtual bool retain() throw() = 0;
 	public:
 		ANVIL_CALL Object(Handle::Type) throw();
 		virtual ANVIL_CALL ~Object() throw();
@@ -92,8 +94,8 @@ namespace anvil { namespace ocl {
 		Handle ANVIL_CALL handle() const throw();
 		ANVIL_CALL operator bool() const throw();
 
-		virtual bool ANVIL_CALL createNoRetain(Handle) throw() = 0;
-		virtual bool ANVIL_CALL create(Handle) throw() = 0;
+		virtual bool ANVIL_CALL createNoRetain(Handle) throw();
+		virtual bool ANVIL_CALL create(Handle) throw();
 		virtual bool ANVIL_CALL destroy() throw() = 0;
 		virtual cl_uint ANVIL_CALL referenceCount() const throw() = 0;
 		virtual Handle::Type ANVIL_CALL type() const throw() = 0;

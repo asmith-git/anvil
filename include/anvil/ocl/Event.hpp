@@ -33,6 +33,9 @@ namespace anvil { namespace ocl {
 	private:
 		Event(const Event&) = delete;
 		Event& operator=(const Event&) = delete;
+	protected:
+		// Inherited from Object
+		bool ANVIL_CALL retain() throw() override;
 	public:
 		enum CommandType : cl_command_type {
 			NDRANGE_KERNEL = CL_COMMAND_NDRANGE_KERNEL,
@@ -82,8 +85,6 @@ namespace anvil { namespace ocl {
 
 		// Inherited from Object
 
-		bool ANVIL_CALL createNoRetain(Handle) throw() override;
-		bool ANVIL_CALL create(Handle) throw() override;
 		bool ANVIL_CALL destroy() throw() override;
 		cl_uint ANVIL_CALL referenceCount() const throw() override;
 		Handle::Type ANVIL_CALL type() const throw() override;

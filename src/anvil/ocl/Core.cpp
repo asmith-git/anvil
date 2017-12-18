@@ -332,4 +332,19 @@ namespace anvil { namespace ocl {
 		mExtraData = aData;
 		return true;
 	}
+
+	bool ANVIL_CALL Object::createNoRetain(Handle aHandle) throw() {
+		if (aHandle.type != type()) return false;
+		if (mHandle.context != NULL) if (!destroy()) return false;
+		if (aHandle.context) {
+			mHandle = aHandle;
+			onCreate();
+		}
+		return true;
+	}
+
+	bool ANVIL_CALL Object::create(Handle aHandle) throw() {
+		if (!createNoRetain(aHandle)) return false;
+		return retain();
+	}
 }}

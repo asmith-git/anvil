@@ -81,23 +81,15 @@ namespace anvil { namespace ocl {
 		return false;
 	}
 
-	bool ANVIL_CALL Buffer::createNoRetain(Handle aHandle) throw() {
-		if (aHandle.type != Handle::BUFFER) return false;
-		if (mHandle.buffer != NULL) if (!destroy()) return false;
-		if (aHandle.buffer) {
-			mHandle = aHandle;
-			onCreate();
+	bool ANVIL_CALL Buffer::retain() throw() {
+		if (mHandle.buffer) {
+#ifdef ANVIL_LOG_OCL
+			std::cerr << "clRetainMemObject (" << mHandle.buffer << ")" << std::endl;
+#endif
+			cl_int error = clRetainMemObject(mHandle.buffer);
+			return error == CL_SUCCESS ? true : oclError("clRetainMemObject", error);
 		}
-		return true;
-	}
-
-	bool ANVIL_CALL Buffer::create(Handle aHandle) throw() {
-		if (!createNoRetain(aHandle)) return false;
-		if (aHandle.buffer) {
-			mHandle = aHandle;
-			onCreate();
-		}
-		return true;
+		return false;
 	}
 
 	cl_mem_flags ANVIL_CALL Buffer::flags() const throw() {
@@ -106,7 +98,7 @@ namespace anvil { namespace ocl {
 
 	Context ANVIL_CALL Buffer::context() const throw() {
 		Context tmp;
-		tmp.create(getInfo<cl_context>(CL_MEM_CONTEXT));
+		tmp.Object::create(getInfo<cl_context>(CL_MEM_CONTEXT));
 		return std::move(tmp);
 	}
 

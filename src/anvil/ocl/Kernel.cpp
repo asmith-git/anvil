@@ -101,30 +101,15 @@ namespace anvil { namespace ocl {
 		return false;
 	}
 
-	bool ANVIL_CALL Kernel::createNoRetain(Handle aHandle) throw() {
-		if (aHandle.type != Handle::KERNEL) return false;
-		if (mHandle.kernel != NULL) if (!destroy()) return false;
-		if (aHandle.kernel) {
-			mHandle = aHandle;
-			onCreate();
-		}
-		return true;
-	}
-
-	bool ANVIL_CALL Kernel::create(Handle aHandle) throw() {
-		if (!createNoRetain(aHandle)) return false;
-		if (aHandle.kernel) {
-			mHandle = aHandle;
+	bool ANVIL_CALL Kernel::retain() throw() {
+		if (mHandle.kernel) {
 #ifdef ANVIL_LOG_OCL
 			std::cerr << "clRetainKernel (" << mHandle.kernel << ")" << std::endl;
 #endif
 			cl_int error = clRetainKernel(mHandle.kernel);
-			if (error != CL_SUCCESS) {
-				mHandle.kernel = NULL;
-				return oclError("clRetainKernel", error);
-			}
+			return error == CL_SUCCESS ? true : oclError("clRetainKernel", error);
 		}
-		return true;
+		return false;
 	}
 
 	Event ANVIL_CALL Kernel::operator()(CommandQueue& aQueue) {
@@ -205,13 +190,13 @@ namespace anvil { namespace ocl {
 
 	Context ANVIL_CALL Kernel::context() const throw() {
 		Context tmp;
-		tmp.create(getInfo<cl_context>(CL_KERNEL_CONTEXT));
+		tmp.Object::create(getInfo<cl_context>(CL_KERNEL_CONTEXT));
 		return std::move(tmp);
 	}
 
 	Program ANVIL_CALL Kernel::program() const throw() {
 		Program tmp;
-		tmp.create(getInfo<cl_program>(CL_KERNEL_PROGRAM));
+		tmp.Object::create(getInfo<cl_program>(CL_KERNEL_PROGRAM));
 		return tmp;
 	}
 

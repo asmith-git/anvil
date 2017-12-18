@@ -30,6 +30,9 @@ namespace anvil { namespace ocl {
 		void* ANVIL_CALL getInfo(cl_device_info aName) const;
 
 		std::vector<std::shared_ptr<Device>> ANVIL_CALL partitionWithProperties(const intptr_t*, cl_uint) throw();
+	protected:
+		// Inherited from Object
+		bool ANVIL_CALL retain() throw() override;
 	public:
 		enum Type : cl_device_type {
 			CPU = CL_DEVICE_TYPE_CPU,
@@ -146,8 +149,6 @@ namespace anvil { namespace ocl {
 
 		// Inherited from Object
 
-		bool ANVIL_CALL createNoRetain(Handle) throw() override;
-		bool ANVIL_CALL create(Handle) throw() override;
 		bool ANVIL_CALL destroy() throw() override;
 		cl_uint ANVIL_CALL referenceCount() const throw() override;
 		Handle::Type ANVIL_CALL type() const throw() override;

@@ -63,26 +63,17 @@ namespace anvil { namespace ocl {
 #endif
 	}
 
-	bool ANVIL_CALL Device::createNoRetain(Handle aHandle) throw() {
-		if (mHandle.device) if (!destroy()) return false;
-		if (aHandle.type != Handle::DEVICE) return false;
-		mHandle = aHandle;
-		onCreate();
-		return true;
-	}
-
-	bool ANVIL_CALL Device::create(Handle aHandle) throw() {
-		if (!createNoRetain(aHandle)) return false;
-		if (aHandle.event && isSubDevice()) {
+	bool ANVIL_CALL Device::retain() throw() {
+		if (mHandle.event && isSubDevice()) {
 #ifdef CL_VERSION_1_2
 #ifdef ANVIL_LOG_OCL
 			std::cerr << "clRetainDevice (" << mHandle.device << ")" << std::endl;
 #endif
 			cl_int error = clRetainDevice(mHandle.device);
-			if (error != CL_SUCCESS) return oclError("clRetainDevice", error);
+			return error == CL_SUCCESS ? true : oclError("clRetainDevice", error);
 #endif
 		}
-		return true;
+		return false;
 	}
 
 	std::vector<std::shared_ptr<Device>> ANVIL_CALL Device::partitionWithProperties(const intptr_t* aProperties, cl_uint aCount) throw() {
