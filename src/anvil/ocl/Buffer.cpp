@@ -161,10 +161,10 @@ namespace anvil { namespace ocl {
 		if (mHandle.buffer == NULL || aOther.mHandle.buffer == NULL) return Event();
 		Handle handle(Handle::EVENT);
 		cl_int error = clEnqueueCopyBuffer(aQueue.handle(), mHandle.buffer, aOther.mHandle.buffer, aThisOffset,
-			aOtherOffset + aOther, aBytes, 0, NULL, &handle.event);
+			aOtherOffset, aBytes, 0, NULL, &handle.event);
 #ifdef ANVIL_LOG_OCL
 		std::cerr << getErrorName(error) << " <- clEnqueueCopyBuffer (" << aQueue.handle().queue << ", " << mHandle.buffer << ", " << aOther.mHandle.buffer << ", " << aThisOffset << ", " <<
-			aOtherOffset + aOther << ", " << aBytes << ", " << 0 << ", " << "NULL" << ", " << &handle.event << ")" << std::endl;
+			aOtherOffset << ", " << aBytes << ", " << 0 << ", " << "NULL" << ", " << &handle.event << ")" << std::endl;
 #endif
 		if (error != CL_SUCCESS) {
 			oclError("clEnqueueCopyBuffer", error);
