@@ -15,6 +15,7 @@
 #ifndef ANVIL_THREADING_THREAD_POOL_HPP
 #define ANVIL_THREADING_THREAD_POOL_HPP
 
+#include <memory>
 #include <vector>
 #include <mutex>
 #include <condition_variable>
