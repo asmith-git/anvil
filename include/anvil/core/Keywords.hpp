@@ -21,10 +21,13 @@
 
 #if ANVIL_COMPILER == ANVIL_MSVC
 	#define ANVIL_STRONG_INLINE __forceinline
+	#define ANVIL_RESTRICT __restrict
 #elif defined(ANVIL_GCC_COMPATIBILITY)
 	#define ANVIL_STRONG_INLINE __attribute__((always_inline))
+	#define ANVIL_RESTRICT __restrict__
 #else
 	#define ANVIL_STRONG_INLINE inline
+	#define ANVIL_RESTRICT
 #endif
 
 #if ANVIL_CPP_VER >= 2011
