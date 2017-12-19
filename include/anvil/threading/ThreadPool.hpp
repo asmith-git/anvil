@@ -29,6 +29,7 @@ namespace anvil {
 		class WorkerThread : public TaskDispatcher {
 		private:
 			TaskHandle mCurrent;
+			std::vector<TaskHandle> mCompleted;
 			std::vector<TaskHandle> mQueued;
 			ThreadPool* mPool;
 			std::thread mThread;
@@ -60,7 +61,7 @@ namespace anvil {
 			bool ANVIL_CALL cancelAll() throw() override;
 		};
 
-		std::vector<WorkerThread> mThreads;
+		std::vector<std::shared_ptr<WorkerThread>> mThreads;
 		std::atomic_bool mExitFlag;
 		uint64_t mIndex;
 
@@ -68,6 +69,9 @@ namespace anvil {
 		ThreadPool(const ThreadPool&) = delete;
 		ThreadPool& operator=(ThreadPool&&) = delete;
 		ThreadPool& operator=(const ThreadPool&) = delete;
+
+		WorkerThread& minThread() throw();
+		WorkerThread& maxThread() throw();
 	public:
 		ANVIL_CALL ThreadPool(size_t) throw();
 		ANVIL_CALL ~ThreadPool() throw();

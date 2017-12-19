@@ -53,6 +53,14 @@ namespace anvil {
 		return mLock.compare_exchange_strong(expected, false);
 	}
 
+	size_t ANVIL_CALL ThreadPool::WorkerThread::threadCount() const throw() {
+		return 1;
+	}
+
+	size_t ANVIL_CALL ThreadPool::WorkerThread::activeThreads() const throw() {
+		return mCurrent ? 1 : 0;
+	}
+
 	size_t ANVIL_CALL ThreadPool::WorkerThread::queuedTasks() const throw() {
 		size_t tmp = 0;
 		lock();
@@ -81,6 +89,8 @@ namespace anvil {
 				true : static_cast<ThreadPoolHandle*>(a)->index > static_cast<ThreadPoolHandle*>(b)->index;
 		});
 		unlock();
+		mTaskAdded.notify_all();
+		return handle;
 	}
 
 	bool ANVIL_CALL ThreadPool::WorkerThread::wait(TaskHandle aTask, std::exception_ptr* aException) const throw() {
@@ -150,42 +160,64 @@ namespace anvil {
 			h->complete = true;
 			h->wait_condition.notify_all();
 		}
+		mTaskAdded.notify_all();
 		return true;
 	}
 
 	void ANVIL_CALL ThreadPool::WorkerThread::worker() throw() {
-		//! \todo Implement work stealing 
+		std::mutex mutex;
+		while (! mPool->mExitFlag) {
+		{
+				std::unique_lock<std::mutex> lock(mutex);
+				mTaskAdded.wait(lock);
+		}
+		WorkerThread* max = nullptr;
+		ThreadPoolHandle* task;
+		if (mPool->mExitFlag) break;
+			lock();
+CHECK_TASKS:
+			if (mQueued.empty()) {
+				//! \todo Implement work stealing
+				unlock();
+#define ANVIL_DISABLE_WORK_STEALING
+#ifndef ANVIL_DISABLE_WORK_STEALING
+				max = &mPool->maxThread();
+				max->lock();
+				if(max->mQueued.empty()) {
+					lock();
+					mQueued.push_back(max->mQueued.back());
+					unlock();
+					max->mQueued.pop_back();
+					max->unlock();
+					goto CHECK_TASKS;
+				} else {
+					max->unlock();
+				}
+#endif
+				{
+					std::unique_lock<std::mutex> lock(mutex);
+					mTaskAdded.wait(lock);
+				}
+			} else {
+				task = static_cast<ThreadPoolHandle*>(mQueued.back());
+				mQueued.pop_back();
+				unlock();
+				try {
+					task->task(task->param);
+				} catch (std::exception& e) {
+					task->exception = std::make_exception_ptr(e);
+				}
+				task->complete = true;
+				mCompleted.push_back(task);
+				task->wait_condition.notify_all();
+				lock();
+				goto CHECK_TASKS;
+			}
+		}
 
-		//std::vector<TaskHandle> completed;
-		//while (!mExitFlag) {
-		//	{
-		//		std::unique_lock<std::mutex> lock(mLock);
-		//		mTaskAdded.wait(lock);
-		//	}
-		//	if (mExitFlag) break;
-		//	mLock.lock();
-		//CHECK_TASKS:
-		//	if (mTasks.empty()) {
-		//		mLock.unlock();
-		//	} else {
-		//		++mActiveThreads;
-		//		ThreadPoolHandle* task = static_cast<ThreadPoolHandle*>(mTasks.back());
-		//		mTasks.pop_back();
-		//		mLock.unlock();
-		//		try {
-		//			task->task(task->param);
-		//		} catch (std::exception& e) {
-		//			task->exception = std::make_exception_ptr(e);
-		//		}
-		//		task->complete = true;
-		//		completed.push_back(task);
-		//		task->wait_condition.notify_all();
-		//		mLock.lock();
-		//		--mActiveThreads;
-		//		goto CHECK_TASKS;
-		//	}
-		//}
-		//for (TaskHandle i : completed) delete i;
+		for (TaskHandle i : mCompleted) {
+			delete static_cast<ThreadPoolHandle*>(i);
+		}
 	}
 
 	// ThreadPool
@@ -194,16 +226,44 @@ namespace anvil {
 		mExitFlag = false;
 		mIndex = 0;
 		for (size_t i = 0; i < aSize; ++i) {
-			//mThreads.push_back(WorkerThread());
+			mThreads.push_back(std::shared_ptr<WorkerThread>(new WorkerThread(this)));
 		}
 	}
 
 	ANVIL_CALL ThreadPool::~ThreadPool() throw() {
 		mExitFlag = true;
-		for (WorkerThread& i : mThreads) {
-			i.cancelAll();
-			i.join();
+		for (std::shared_ptr<WorkerThread>& i : mThreads) {
+			i->cancelAll();
+			i->join();
 		}
+	}
+
+	ThreadPool::WorkerThread& ThreadPool::minThread() throw() {
+		std::shared_ptr<WorkerThread> tmp = mThreads[0];
+		size_t count = tmp->queuedTasks();
+		const size_t threads = mThreads.size();
+		for (size_t i = 1; i < threads; ++i) {
+			size_t c = mThreads[i]->queuedTasks();
+			if (c < count) {
+				count = c;
+				tmp = mThreads[i];
+			}
+		}
+		return *tmp;
+	}
+
+	ThreadPool::WorkerThread& ThreadPool::maxThread() throw() {
+		std::shared_ptr<WorkerThread> tmp = mThreads[0];
+		size_t count = tmp->queuedTasks();
+		const size_t threads = mThreads.size();
+		for (size_t i = 1; i < threads; ++i) {
+			size_t c = mThreads[i]->queuedTasks();
+			if (c > count) {
+				count = c;
+				tmp = mThreads[i];
+			}
+		}
+		return *tmp;
 	}
 
 	size_t ANVIL_CALL ThreadPool::threadCount() const throw() {
@@ -212,35 +272,23 @@ namespace anvil {
 
 	size_t ANVIL_CALL ThreadPool::activeThreads() const throw() {
 		size_t count = 0;
-		for (const WorkerThread& i : mThreads) {
-			if (i.queuedTasks() > 0) ++count;
+		for (const std::shared_ptr<WorkerThread>& i : mThreads) {
+			if (i->queuedTasks() > 0) ++count;
 		}
 		return count;
 	}
 
 	size_t ANVIL_CALL ThreadPool::queuedTasks() const throw() {
 		size_t count = 0;
-		for (const WorkerThread& i : mThreads) {
-			count += i.queuedTasks();
+		for (const std::shared_ptr<WorkerThread>& i : mThreads) {
+			count += i->queuedTasks();
 		}
 		return count;
 	}
 
 	TaskHandle ANVIL_CALL ThreadPool::enqueue(uint8_t aPriority, Task aTask, void* aParam) throw() {
 		if (! aTask) return nullptr;
-
-		const size_t count = mThreads.size();
-		WorkerThread* low = &mThreads[0];
-		size_t tasks = low->queuedTasks();
-		for (size_t i = 1; i < count; ++i)  {
-			size_t tmp = mThreads[i].queuedTasks();
-			if (tmp < tasks) {
-				low = &mThreads[i];
-				tasks = tmp;
-			}
-		}
-
-		return low->enqueue(aPriority, aTask, aParam);
+		return minThread().enqueue(aPriority, aTask, aParam);
 	}
 
 	bool ANVIL_CALL ThreadPool::wait(TaskHandle aTask, std::exception_ptr* aException) const throw() {
@@ -257,8 +305,8 @@ namespace anvil {
 	}
 
 	bool ANVIL_CALL ThreadPool::cancel(TaskHandle aHandle) throw() {
-		for (WorkerThread& i : mThreads) {
-			if (i.cancel(aHandle)) return true;
+		for (std::shared_ptr<WorkerThread>& i : mThreads) {
+			if (i->cancel(aHandle)) return true;
 		}
 		return false;
 	}
@@ -269,24 +317,24 @@ namespace anvil {
 	}
 
 	bool ANVIL_CALL ThreadPool::setPriority(TaskHandle aHandle, uint8_t aPriority) throw() {
-		for (WorkerThread& i : mThreads) {
-			if (i.setPriority(aHandle, aPriority)) return true;
+		for (std::shared_ptr<WorkerThread>& i : mThreads) {
+			if (i->setPriority(aHandle, aPriority)) return true;
 		}
 		return false;
 	}
 
 	bool ANVIL_CALL ThreadPool::waitAll() const throw() {
 		bool return_value = true;
-		for (const WorkerThread& i : mThreads) {
-			return_value = return_value && i.waitAll();
+		for (const std::shared_ptr<WorkerThread>& i : mThreads) {
+			return_value = return_value && i->waitAll();
 		}
 		return false;
 	}
 
 	bool ANVIL_CALL ThreadPool::cancelAll() throw() {
 		bool return_value = true;
-		for (WorkerThread& i : mThreads) {
-			return_value = return_value && i.cancelAll();
+		for (std::shared_ptr<WorkerThread>& i : mThreads) {
+			return_value = return_value && i->cancelAll();
 		}
 		return false;
 	}
