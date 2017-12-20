@@ -54,12 +54,7 @@
 
 // Define types
 
-#ifndef float32_t
-	#define float32_t float
-#endif
-
-#ifndef float64_t
-	#define float64_t double
-#endif
+typedef float float32_t;
+typedef double float64_t;
 
 #endif
