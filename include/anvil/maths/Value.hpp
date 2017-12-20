@@ -99,9 +99,9 @@ namespace anvil {
 		class FS8, class FS16, class FS32, class FS64, 
 		class FF32, class FF64, class FB8>
 	static inline bool ANVIL_CALL dispatchByType(Value aValue, 
-	FU8 fu8,  FU16 fu16,  FU32 fu32,  FU64 fu64,  
-	FS8 fs8,  FS16 fs16,  FS32 fs32,  FS64 fs64, 
-	FF32 ff32,  FF64 ff64, FB8 fb8) {
+		FU8 fu8,   FS8 fs8,   FU16 fu16, FS16 fs16,
+		FU32 fu32, FS32 fs32, FU64 fu64, FS64 fs64,
+		FF32 ff32, FF64 ff64, FB8 fb8) {
 		bool returnValue = true;
 		switch (GetPrimativeType(aValue.type)) {
 		case ANVIL_8U:
