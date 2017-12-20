@@ -25,18 +25,15 @@ namespace anvil {
 		for (int i = 0; i < MAX_LENGTH; ++i) u8[i] = 0;
 	}
 
-	ANVIL_CALL Value::Value(Type aType, const Value& aOther) throw() :
-		type(aType),
-		length(GetChannels(aType))
-	{
-		const int l = length;
-		const int ol = aOther.length;
+	Value ANVIL_CALL Value::convertTo(Type aType) const throw() {
+		const int l = GetChannels(aType);
+		const int ol = length;
 		float64_t buffer[MAX_LENGTH];
-		const float64_t* const conversion = aOther;
+		const float64_t* const conversion = *this;
 		for (int i = 0; i < ol; ++i) buffer[i] = conversion[i];
 		const float64_t back = buffer[ol - 1];
 		for (int i = ol; i < l; ++i) buffer[i] = back;
-		*this = Value(aType, buffer, length);
+		return Value(aType, buffer, length);
 	}
 
 #define ANVIL_DEF_FUNCTIONS(E, T, N)\

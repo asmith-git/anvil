@@ -43,7 +43,7 @@ namespace anvil {
 		uint8_t length;
 
 		ANVIL_CALL Value() throw();
-		ANVIL_CALL Value(Type, const Value&) throw();
+		Value ANVIL_CALL convertTo(Type) const throw();
 
 #define ANVIL_DEF_FUNCTIONS(T)\
 		ANVIL_CALL Value(T) throw();\
