@@ -43,6 +43,7 @@ namespace anvil {
 		uint8_t length;
 
 		ANVIL_CALL Value() throw();
+		ANVIL_CALL Value(Type, const Value&) throw();
 
 #define ANVIL_DEF_FUNCTIONS(T)\
 		ANVIL_CALL Value(T) throw();\
@@ -102,7 +103,7 @@ namespace anvil {
 	FS8 fs8,  FS16 fs16,  FS32 fs32,  FS64 fs64, 
 	FF32 ff32,  FF64 ff64, FB8 fb8) {
 		bool returnValue = true;
-		switch(GetPrimativeType(aPrimative.type)) {
+		switch (GetPrimativeType(aValue.type)) {
 		case ANVIL_8U:
 			fu8(aValue.u8, aValue.length);
 			break;
