@@ -44,11 +44,13 @@ namespace anvil {
 
 		ANVIL_CALL Value() throw();
 
-#define ANVIL_DEF_FUNCTIONS(type)\
-		ANVIL_CALL Value(type) throw();\
-		ANVIL_CALL Value(const type *, size_t) throw();\
-		ANVIL_CALL operator type() const throw();\
-		ANVIL_CALL operator const type *() const throw();\
+#define ANVIL_DEF_FUNCTIONS(T)\
+		ANVIL_CALL Value(T) throw();\
+		ANVIL_CALL Value(const T *, size_t) throw();\
+		ANVIL_CALL Value(Type, T) throw();\
+		ANVIL_CALL Value(Type, const T *, size_t) throw();\
+		ANVIL_CALL operator T() const throw();\
+		ANVIL_CALL operator const T *() const throw();\
 
 		ANVIL_DEF_FUNCTIONS(uint8_t)
 		ANVIL_DEF_FUNCTIONS(int8_t)
