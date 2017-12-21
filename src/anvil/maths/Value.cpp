@@ -13,6 +13,7 @@
 //limitations under the License.
 
 #include "anvil/maths/Value.hpp"
+#include <type_traits>
 
 namespace anvil {
 
@@ -168,37 +169,48 @@ namespace anvil {
 		const int l = length;\
 		switch(GetPrimativeType(type)) {\
 		case ANVIL_8U:\
-			for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(u8[i]);\
+			if(std::is_same<T, uint8_t>::value) return reinterpret_cast<const T*>(u8);\
+			else for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(u8[i]);\
 			break;\
 		case ANVIL_8S:\
-			for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(s8[i]);\
+			if(std::is_same<T, int8_t>::value) return reinterpret_cast<const T*>(s8);\
+			else for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(s8[i]);\
 			break;\
 		case ANVIL_16U:\
-			for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(u16[i]);\
+			if(std::is_same<T, uint16_t>::value) return reinterpret_cast<const T*>(u16);\
+			else for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(u16[i]);\
 			break;\
 		case ANVIL_16S:\
-			for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(s16[i]);\
+			if(std::is_same<T, int16_t>::value) return reinterpret_cast<const T*>(s16);\
+			else for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(s16[i]);\
 			break;\
 		case ANVIL_32U:\
-			for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(u32[i]);\
+			if(std::is_same<T, uint32_t>::value) return reinterpret_cast<const T*>(u32);\
+			else for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(u32[i]);\
 			break;\
 		case ANVIL_32S:\
-			for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(s32[i]);\
+			if(std::is_same<T, int32_t>::value) return reinterpret_cast<const T*>(s32);\
+			else for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(s32[i]);\
 			break;\
 		case ANVIL_64U:\
-			for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(u64[i]);\
+			if(std::is_same<T, uint64_t>::value) return reinterpret_cast<const T*>(u64);\
+			else for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(u64[i]);\
 			break;\
 		case ANVIL_64S:\
-			for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(s64[i]);\
+			if(std::is_same<T, int64_t>::value) return reinterpret_cast<const T*>(s64);\
+			else for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(s64[i]);\
 			break;\
 		case ANVIL_32F:\
-			for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(f32[i]);\
+			if(std::is_same<T, float32_t>::value) return reinterpret_cast<const T*>(f32);\
+			else for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(f32[i]);\
 			break;\
 		case ANVIL_64F:\
-			for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(f64[i]);\
+			if(std::is_same<T, float64_t>::value) return reinterpret_cast<const T*>(f64);\
+			else for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(f64[i]);\
 			break;\
 		case ANVIL_8B:\
-			for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(b8[i]);\
+			if(std::is_same<T, bool>::value) return reinterpret_cast<const T*>(b8);\
+			else for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(b8[i]);\
 			break;\
 		default:\
 			break;\
