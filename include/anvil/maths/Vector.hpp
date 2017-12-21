@@ -20,6 +20,39 @@
 #include "anvil/maths/Popcount.hpp"
 
 namespace anvil {
+
+	namespace detail {
+		template<class T>
+		static ANVIL_STRONG_INLINE T vmax(T a, T b) {
+			return a > b ? a : b;
+		}
+
+		template<>
+		static ANVIL_STRONG_INLINE float vmax<float>(float a, float b) {
+			return std::fmax(a, b);
+		}
+
+		template<>
+		static ANVIL_STRONG_INLINE double vmax<double>(double a, double b) {
+			return std::fmax(a, b);
+		}
+
+		template<class T>
+		static ANVIL_STRONG_INLINE T vmin(T a, T b) {
+			return a > b ? a : b;
+		}
+
+		template<>
+		static ANVIL_STRONG_INLINE float vmin<float>(float a, float b) {
+			return std::fmin(a, b);
+		}
+
+		template<>
+		static ANVIL_STRONG_INLINE double vmin<double>(double a, double b) {
+			return std::fmin(a, b);
+		}
+	}
+
 	template<class T, size_t S>
 	class Vector {
 	public:
@@ -250,27 +283,15 @@ namespace anvil {
 			return sum() / static_cast<type>(size);
 		}
 
-		inline this_t min(const this_t aOther) const throw() {
-			this_t tmp;
-			for (size_t i = 0; i < size; ++i) tmp.mData[i] = std::min<type>(mData[i], aOther.mData[i]);
-			return tmp;
-		}
-
-		inline this_t max(const this_t aOther) const throw() {
-			this_t tmp;
-			for (size_t i = 0; i < size; ++i) tmp.mData[i] = std::min<type>(mData[i], aOther.mData[i]);
-			return tmp;
-		}
-
 		inline type min() const throw() {
 			type tmp = data[0];
-			for (size_t i = 1; i < size; ++i) tmp = std::min<type>(tmp, aOther.mData[i]);
+			for (size_t i = 1; i < size; ++i) tmp = detail::vmin<type>(tmp, aOther.mData[i]);
 			return tmp;
 		}
 
 		inline type max() const throw() {
 			type tmp = data[0];
-			for (size_t i = 1; i < size; ++i) tmp = std::type<type>(tmp, aOther.mData[i]);
+			for (size_t i = 1; i < size; ++i) tmp = detail::vmax<type>(tmp, aOther.mData[i]);
 			return tmp;
 		}
 	};
