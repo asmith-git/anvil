@@ -51,11 +51,24 @@ namespace anvil {
 		static ANVIL_STRONG_INLINE double vmin<double>(double a, double b) {
 			return std::fmin(a, b);
 		}
+
+		template<class T>
+		struct VFloat {
+			typedef float type;
+		};
+
+
+		template<>
+		struct VFloat<double> {
+			typedef double type;
+		};
+
 	}
 
 	template<class T, size_t S>
 	class Vector {
 	public:
+		typedef typename detail::VFloat<T>::type float_t;
 		typedef T type;
 		enum {
 			size = S,
@@ -273,14 +286,14 @@ namespace anvil {
 			return mData + size;
 		}
 
-		inline type sum() const throw() {
-			type tmp = static_cast<type>(0);
-			for (size_t i = 0; i < size; ++i) tmp += mData[i];
+		inline float_t sum() const throw() {
+			float_t tmp = static_cast<float_t>(0);
+			for (size_t i = 0; i < size; ++i) tmp += static_cast<float_t>(mData[i]);
 			return tmp;
 		}
 
-		inline type avg() const throw() {
-			return sum() / static_cast<type>(size);
+		inline float_t avg() const throw() {
+			return sum() / static_cast<float_t>(size);
 		}
 
 		inline type min() const throw() {
@@ -293,6 +306,20 @@ namespace anvil {
 			type tmp = data[0];
 			for (size_t i = 1; i < size; ++i) tmp = detail::vmax<type>(tmp, aOther.mData[i]);
 			return tmp;
+		}
+
+		inline float_t dot(const this_t aOther) const throw() {
+			float_t sum = static_cast<float>(0);
+			if (std::is_same<float_t, type>::value) {
+				for (size_t i = 0; i < size; ++i) sum += std::fma(mData[i], aOther.mData[i], sum);
+			} else {
+				float_t a[size];
+				float_t b[size];
+				for (size_t i = 0; i < size; ++i) a[i] = static_cast<float_t>(mData[i]);
+				for (size_t i = 0; i < size; ++i) b[i] = static_cast<float_t>(aOther.mData[i]);
+				for (size_t i = 0; i < size; ++i) sum += std::fma(a[i], b[i], sum);
+			}
+			return sum;
 		}
 	};
 
