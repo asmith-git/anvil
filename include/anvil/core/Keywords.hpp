@@ -22,7 +22,7 @@
 #if ANVIL_COMPILER == ANVIL_MSVC
 	#define ANVIL_STRONG_INLINE __forceinline
 	#define ANVIL_RESTRICT __restrict
-#elif defined(ANVIL_GCC_COMPATIBILITY)
+#elif ANVIL_COMPILER == ANVIL_GCC || ANVIL_COMPILER == ANVIL_CLANG
 	#define ANVIL_STRONG_INLINE __attribute__((always_inline))
 	#define ANVIL_RESTRICT __restrict__
 #else
@@ -54,7 +54,9 @@
 
 // Define types
 
-typedef float float32_t;
-typedef double float64_t;
+namespace anvil {
+	typedef float float32_t;
+	typedef double float64_t;
+}
 
 #endif
