@@ -93,21 +93,6 @@ namespace anvil {
 
 	};
 
-	namespace detail {
-		template<Type TYPE> struct TypeHelper;
-		template<> struct TypeHelper<ANVIL_8U> { typedef uint8_t type; };
-		template<> struct TypeHelper<ANVIL_8S> { typedef int8_t type; };
-		template<> struct TypeHelper<ANVIL_16U> { typedef uint16_t type; };
-		template<> struct TypeHelper<ANVIL_16S> { typedef int16_t type; };
-		template<> struct TypeHelper<ANVIL_32U> { typedef uint32_t type; };
-		template<> struct TypeHelper<ANVIL_32S> { typedef int32_t type; };
-		template<> struct TypeHelper<ANVIL_64U> { typedef uint64_t type; };
-		template<> struct TypeHelper<ANVIL_64S> { typedef int64_t type; };
-		template<> struct TypeHelper<ANVIL_32F> { typedef float type; };
-		template<> struct TypeHelper<ANVIL_64F> { typedef double type; };
-		template<> struct TypeHelper<ANVIL_8B> { typedef bool type; };
-	}
-
 	static ANVIL_CONSTEXPR_FN Type CreateType(Type aType, int aChannels) throw() {
 		return static_cast<Type>(((aChannels - 1) << 4) | aType);
 	}
@@ -134,12 +119,35 @@ namespace anvil {
 			GetChannels(aType));
 	}
 
-	template<Type TYPE>
-	using Primative = typename detail::TypeHelper<GetPrimativeType(TYPE)>::type;
+	template<Type TYPE> struct TypeFromEnum;
+	template<> struct TypeFromEnum<ANVIL_8U>  { typedef uint8_t type; };
+	template<> struct TypeFromEnum<ANVIL_8S>  { typedef int8_t type; };
+	template<> struct TypeFromEnum<ANVIL_16U> { typedef uint16_t type; };
+	template<> struct TypeFromEnum<ANVIL_16S> { typedef int16_t type; };
+	template<> struct TypeFromEnum<ANVIL_32U> { typedef uint32_t type; };
+	template<> struct TypeFromEnum<ANVIL_32S> { typedef int32_t type; };
+	template<> struct TypeFromEnum<ANVIL_64U> { typedef uint64_t type; };
+	template<> struct TypeFromEnum<ANVIL_64S> { typedef int64_t type; };
+	template<> struct TypeFromEnum<ANVIL_32F> { typedef float type; };
+	template<> struct TypeFromEnum<ANVIL_64F> { typedef double type; };
+	template<> struct TypeFromEnum<ANVIL_8B>  { typedef bool type; };
+
+	template<class T> struct EnumFromType;
+	template<> struct EnumFromType<uint8_t>  { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_8U; };
+	template<> struct EnumFromType<int8_t>   { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_8S; };
+	template<> struct EnumFromType<uint16_t> { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_16U; };
+	template<> struct EnumFromType<int16_t>  { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_16S; };
+	template<> struct EnumFromType<uint32_t> { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_32U; };
+	template<> struct EnumFromType<int32_t>  { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_32S; };
+	template<> struct EnumFromType<uint64_t> { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_64U; };
+	template<> struct EnumFromType<int64_t>  { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_64S; };
+	template<> struct EnumFromType<float>    { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_32F; };
+	template<> struct EnumFromType<double>   { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_64F; };
+	template<> struct EnumFromType<bool>     { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_8B; };
 	
 	template<Type TYPE>
 	struct TypeInfo {
-		typedef Primative<TYPE> type;
+		typedef TypeFromEnum<TYPE> type;
 		enum {
 			channels = GetChannels(TYPE),
 			size = sizeof(type),

@@ -13,7 +13,9 @@
 //limitations under the License.
 
 #include "anvil/maths/Value.hpp"
+#include "anvil/maths/Vector.hpp"
 #include <type_traits>
+#include <cstring>
 
 namespace anvil {
 
@@ -35,6 +37,66 @@ namespace anvil {
 		const float64_t back = buffer[ol - 1];
 		for (int i = ol; i < l; ++i) buffer[i] = back;
 		return Value(aType, buffer, length);
+	}		
+	
+	Value Value::operator+(const Value& aOther) const throw() {
+		return Value(*this) += aOther;
+	}
+
+	Value Value::operator-(const Value& aOther) const throw() {
+		return Value(*this) -= aOther;
+	}
+
+	Value Value::operator*(const Value& aOther) const throw() {
+		return Value(*this) *= aOther;
+	}
+
+	Value Value::operator/(const Value& aOther) const throw() {
+		return Value(*this) /= aOther;
+	}
+
+	Value& Value::operator+=(const Value& aOther) throw() {
+		Vector<maths_t, MAX_LENGTH> a;
+		Vector<maths_t, MAX_LENGTH> b;
+		memcpy(&a, static_cast<const maths_t*>(*this), sizeof(maths_t) * MAX_LENGTH);
+		memcpy(&b, static_cast<const maths_t*>(aOther), sizeof(maths_t) * MAX_LENGTH);
+		a += b;
+		memcpy(f32, &a, sizeof(maths_t) * MAX_LENGTH);
+		type = CreateType(EnumFromType<maths_t>::value, length);
+		return *this;
+	}
+
+	Value& Value::operator-=(const Value& aOther) throw() {
+		Vector<maths_t, MAX_LENGTH> a;
+		Vector<maths_t, MAX_LENGTH> b;
+		memcpy(&a, static_cast<const maths_t*>(*this), sizeof(maths_t) * MAX_LENGTH);
+		memcpy(&b, static_cast<const maths_t*>(aOther), sizeof(maths_t) * MAX_LENGTH);
+		a -= b;
+		memcpy(f32, &a, sizeof(maths_t) * MAX_LENGTH);
+		type = CreateType(EnumFromType<maths_t>::value, length);
+		return *this;
+	}
+
+	Value& Value::operator*=(const Value& aOther) throw() {
+		Vector<maths_t, MAX_LENGTH> a;
+		Vector<maths_t, MAX_LENGTH> b;
+		memcpy(&a, static_cast<const maths_t*>(*this), sizeof(maths_t) * MAX_LENGTH);
+		memcpy(&b, static_cast<const maths_t*>(aOther), sizeof(maths_t) * MAX_LENGTH);
+		a *= b;
+		memcpy(f32, &a, sizeof(maths_t) * MAX_LENGTH);
+		type = CreateType(EnumFromType<maths_t>::value, length);
+		return *this;
+	}
+
+	Value& Value::operator/=(const Value& aOther) throw() {
+		Vector<maths_t, MAX_LENGTH> a;
+		Vector<maths_t, MAX_LENGTH> b;
+		memcpy(&a, static_cast<const maths_t*>(*this), sizeof(maths_t) * MAX_LENGTH);
+		memcpy(&b, static_cast<const maths_t*>(aOther), sizeof(maths_t) * MAX_LENGTH);
+		a /= b;
+		memcpy(f32, &a, sizeof(maths_t) * MAX_LENGTH);
+		type = CreateType(EnumFromType<maths_t>::value, length);
+		return *this;
 	}
 
 #define ANVIL_DEF_FUNCTIONS(E, T, N)\

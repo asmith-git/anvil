@@ -23,6 +23,7 @@ namespace anvil {
 
 	class Value {
 	public:
+		typedef float maths_t;
 		enum {
 			MAX_LENGTH = 4
 		};
@@ -44,6 +45,16 @@ namespace anvil {
 
 		ANVIL_CALL Value() throw();
 		Value ANVIL_CALL convertTo(Type) const throw();
+
+		Value operator+(const Value&) const throw();
+		Value operator-(const Value&) const throw();
+		Value operator*(const Value&) const throw();
+		Value operator/(const Value&) const throw();
+
+		Value& operator+=(const Value&) throw();
+		Value& operator-=(const Value&) throw();
+		Value& operator*=(const Value&) throw();
+		Value& operator/=(const Value&) throw();
 
 #define ANVIL_DEF_FUNCTIONS(T)\
 		ANVIL_CALL Value(T) throw();\
