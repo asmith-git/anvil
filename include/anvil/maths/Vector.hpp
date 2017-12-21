@@ -68,12 +68,13 @@ namespace anvil {
 	template<class T, size_t S>
 	class Vector {
 	public:
-		typedef typename detail::VFloat<T>::type float_t;
 		typedef T type;
 		enum {
 			size = S,
 		};
 		typedef Vector<type, size> this_t;
+		typedef typename detail::VFloat<type>::type float_t;
+		typedef type array_t[size];
 	private:
 		type mData[size];
 	public:
@@ -85,8 +86,35 @@ namespace anvil {
 			for (size_t i = 0; i < size; ++i) mData[i] = aScalar;
 		}
 
-		Vector(const T* aData) throw() {
-			for (size_t i = 0; i < size; ++i) mData[i] = aData[i];
+		Vector(const T a, const T b) throw() {
+			mData[0] = a;
+			mData[1] = b;
+			if(size > 2) memset(mData + 2, 0, sizeof(type) * (size - 2));
+		}
+
+		Vector(const T a, const T b, const T c) throw() {
+			mData[0] = a;
+			mData[1] = b;
+			mData[2] = c;
+			if (size > 3) memset(mData + 3, 0, sizeof(type) * (size - 3));
+		}
+
+		Vector(const T a, const T b, const T c, const T d) throw() {
+			mData[0] = a;
+			mData[1] = b;
+			mData[2] = c;
+			mData[3] = d;
+			if (size > 4) memset(mData + 4, 0, sizeof(type) * (size - 4));
+		}
+
+		Vector(const T* aData, size_t aSize) throw() {
+			const size_t s = aSize < size ? aSize : size;
+			for (size_t i = 0; i < s; ++i) mData[i] = aData[i];
+			if (aSize < size) memset(mData + aSize, 0, sizeof(type) * (size - aSize));
+		}
+
+		Vector(const array_t aOther) throw() {
+			memcpy(mData, aOther, sizeof(type) * size);
 		}
 
 		template<class T2>
@@ -95,7 +123,7 @@ namespace anvil {
 		}
 
 		inline operator bool() const throw() {
-			return sum() > static_cast<type>(0);
+			return sum() > static_cast<float32_t>(0.f);
 		}
 
 		inline this_t operator!() const throw() {
