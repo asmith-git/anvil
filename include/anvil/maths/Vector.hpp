@@ -78,7 +78,7 @@ namespace anvil {
 		type mData[size];
 	public:
 		Vector() throw() {
-			for (size_t i = 0; i < size; ++i) mData[i] = static_cast<type>(0);
+			memset(mData, 0, sizeof(type) * size);
 		}
 
 		Vector(const T aScalar) throw() {
@@ -320,6 +320,13 @@ namespace anvil {
 				for (size_t i = 0; i < size; ++i) sum += std::fma(a[i], b[i], sum);
 			}
 			return sum;
+		}
+
+		template<class T2, size_t S2>
+		Vector<type, S2> swizzle(const Vector<T2, S2> aOther) const throw() {
+			Vector<type, S2> tmp;
+			for (size_t i = 0; i < S2; ++i) tmp[i] = mData[static_cast<size_t>(aOther[i])];
+			return tmp;
 		}
 	};
 
