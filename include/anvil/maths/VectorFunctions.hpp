@@ -75,7 +75,7 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T fma(T a, T b, T c) {
-		return a * b + c;
+		return (a * b) + c;
 	}
 
 	template<>
