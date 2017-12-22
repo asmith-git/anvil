@@ -359,14 +359,14 @@ namespace anvil {
 		}
 
 		inline type min() const throw() {
-			type tmp = data[0];
-			for (size_t i = 1; i < size; ++i) tmp = min(tmp, aOther.mData[i]);
+			type tmp = mData[0];
+			for (size_t i = 1; i < size; ++i) tmp = anvil::min(tmp, mData[i]);
 			return tmp;
 		}
 
 		inline type max() const throw() {
-			type tmp = data[0];
-			for (size_t i = 1; i < size; ++i) tmp = max(tmp, aOther.mData[i]);
+			type tmp = mData[0];
+			for (size_t i = 1; i < size; ++i) tmp = anvil::max(tmp, mData[i]);
 			return tmp;
 		}
 
