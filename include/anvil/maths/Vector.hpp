@@ -147,7 +147,7 @@ namespace anvil {
 
 		inline this_t operator%(const this_t aOther) const throw() {
 			this_t tmp;
-			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mod(mData[i], aOther.mData[i]);
+			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mod<type>(mData[i], aOther.mData[i]);
 			return tmp;
 		}
 
@@ -332,26 +332,26 @@ namespace anvil {
 
 		inline type min() const throw() {
 			type tmp = data[0];
-			for (size_t i = 1; i < size; ++i) tmp = detail::vmin<type>(tmp, aOther.mData[i]);
+			for (size_t i = 1; i < size; ++i) tmp = min<type>(tmp, aOther.mData[i]);
 			return tmp;
 		}
 
 		inline type max() const throw() {
 			type tmp = data[0];
-			for (size_t i = 1; i < size; ++i) tmp = detail::vmax<type>(tmp, aOther.mData[i]);
+			for (size_t i = 1; i < size; ++i) tmp = max<type>(tmp, aOther.mData[i]);
 			return tmp;
 		}
 
 		inline float_t dot(const this_t aOther) const throw() {
 			float_t sum = static_cast<float>(0);
 			if (std::is_same<float_t, type>::value) {
-				for (size_t i = 0; i < size; ++i) sum += std::fma(mData[i], aOther.mData[i], sum);
+				for (size_t i = 0; i < size; ++i) sum += fma<type>(mData[i], aOther.mData[i], sum);
 			} else {
 				float_t a[size];
 				float_t b[size];
 				for (size_t i = 0; i < size; ++i) a[i] = static_cast<float_t>(mData[i]);
 				for (size_t i = 0; i < size; ++i) b[i] = static_cast<float_t>(aOther.mData[i]);
-				for (size_t i = 0; i < size; ++i) sum += std::fma(a[i], b[i], sum);
+				for (size_t i = 0; i < size; ++i) sum += fma(a[i], b[i], sum);
 			}
 			return sum;
 		}
