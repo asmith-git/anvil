@@ -34,10 +34,17 @@
 	#define ANVIL_CONSTEXPR_VAR constexpr
 	#define ANVIL_CONSTEXPR_FN constexpr
 	#define ANVIL_CONSTEXPR_CLA constexpr
+	#define ANVIL_ALIGN(x) alignas(x)
 #else
 	#define ANVIL_CONSTEXPR_VAR 
 	#define ANVIL_CONSTEXPR_FN inline
 	#define ANVIL_CONSTEXPR_CLA
+
+	#if ANVIL_COMPILER == ANVIL_MSVC
+		#define ANVIL_ALIGN(x) __declspec(align(x))
+	#else
+		#define ANVIL_ALIGN(x)
+	#endif
 #endif
 
 #ifndef ANVIL_CALL
