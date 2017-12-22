@@ -50,23 +50,21 @@ namespace anvil {
 			memset(mData, 0, sizeof(type) * size);
 		}
 
-		Vector(const T aScalar) throw() {
+		Vector(const type aScalar) throw() {
 			for (size_t i = 0; i < size; ++i) mData[i] = aScalar;
 		}
 
 		template<size_t S2 = 2, class ENABLE = typename std::enable_if<S2 == size>::type>
-		Vector(const T a, const T b) throw() {
+		Vector(const type a, const type b) throw() {
 			mData[0] = a;
 			mData[1] = b;
-			//if(size > 2) memset(mData + 2, 0, sizeof(type) * (size - 2));
 		}
 
 		template<size_t S2 = 3, class ENABLE = typename std::enable_if<S3 == size>::type>
-		Vector(const T a, const T b, const T c) throw() {
+		Vector(const type a, const type b, const type c) throw() {
 			mData[0] = a;
 			mData[1] = b;
 			mData[2] = c;
-			//if (size > 3) memset(mData + 3, 0, sizeof(type) * (size - 3));
 		}
 
 		template<size_t S2 = 4, class ENABLE = typename std::enable_if<S2 == size>::type>
@@ -75,7 +73,6 @@ namespace anvil {
 			mData[1] = b;
 			mData[2] = c;
 			mData[3] = d;
-			//if (size > 4) memset(mData + 4, 0, sizeof(type) * (size - 4));
 		}
 
 		Vector(const T* aData, size_t aSize) throw() {
@@ -88,9 +85,16 @@ namespace anvil {
 			memcpy(mData, aOther, sizeof(type) * size);
 		}
 
-		template<class T2>
-		explicit Vector(const Vector<T2, size> aOther) throw() {
-			for (size_t i = 0; i < size; ++i) mData[i] = static_cast<T>(aOther[i]);
+		template<class T2, size_t S2>
+		explicit Vector(const Vector<T2, S2> aOther) throw() {
+			enum {
+				S3 = size < S2 ? size : S2
+			};
+			if (std::is_same<type, T2>::value) {
+				memcpy(mData, &aOther, sizeof(type) * S3);
+			} else {
+				for (size_t i = 0; i < S3; ++i) mData[i] = static_cast<T>(aOther[i]);
+			}
 		}
 		
 		template<size_t SA, size_t SB, class ENABLE = typename std::enable_if<(SA + SB) == size>::type>
@@ -294,6 +298,30 @@ namespace anvil {
 		inline typename std::enable_if<std::is_integral<T2>::value, this_t&>::type operator>>=(const this_t aOther) throw() {
 			for (size_t i = 0; i < size; ++i) mData[i] >>= aOther.mData[i];
 			return *this;
+		}
+
+		inline this_t& operator++() throw() {
+			this_t tmp(*this);
+			for (size_t i = 0; i < size; ++i) ++tmp.mData[i];
+			return *this;
+		}
+
+		inline this_t& operator--() throw() {
+			this_t tmp(*this);
+			for (size_t i = 0; i < size; ++i) ++tmp.mData[i];
+			return *this;
+		}
+
+		inline this_t operator++(int) throw() {
+			const this_t tmp(*this);
+			for (size_t i = 0; i < size; ++i) ++mData[i];
+			return tmp;
+		}
+
+		inline this_t operator--(int) throw() {
+			const this_t tmp(*this);
+			for (size_t i = 0; i < size; ++i) ++mData[i];
+			return tmp;
 		}
 
 		inline type operator[](const size_t aIndex) const throw() {
