@@ -521,46 +521,80 @@ namespace anvil {
 	typedef Vector<uint8_t, 4> Vector8UC4;
 	typedef Vector<uint8_t, 8> Vector8UC8;
 	typedef Vector<uint8_t, 16> Vector8UC16;
-
-	typedef Vector<uint16_t, 2> Vector16UC2;
-	typedef Vector<uint16_t, 3> Vector16UC3;
-	typedef Vector<uint16_t, 4> Vector16UC4;
-	typedef Vector<uint16_t, 8> Vector16UC8;
-
-	typedef Vector<uint32_t, 2> Vector32UC2;
-	typedef Vector<uint32_t, 3> Vector32UC3;
-	typedef Vector<uint32_t, 4> Vector32UC4;
-
-	typedef Vector<uint64_t, 2> Vector64UC2;
-	typedef Vector<uint64_t, 3> Vector64UC3;
-	typedef Vector<uint64_t, 4> Vector64UC4;
+	typedef Vector<uint8_t, 32> Vector8UC32;
+	typedef Vector<uint8_t, 64> Vector8UC64;
 
 	typedef Vector<int8_t, 2> Vector8SC2;
 	typedef Vector<int8_t, 3> Vector8SC3;
 	typedef Vector<int8_t, 4> Vector8SC4;
 	typedef Vector<int8_t, 8> Vector8SC8;
 	typedef Vector<int8_t, 16> Vector8SC16;
+	typedef Vector<int8_t, 32> Vector8SC32;
+	typedef Vector<int8_t, 64> Vector8SC64;
+
+	typedef Vector<uint16_t, 2> Vector16UC2;
+	typedef Vector<uint16_t, 3> Vector16UC3;
+	typedef Vector<uint16_t, 4> Vector16UC4;
+	typedef Vector<uint16_t, 8> Vector16UC8;
+	typedef Vector<uint16_t, 16> Vector16UC16;
+	typedef Vector<uint16_t, 32> Vector16UC32;
+	typedef Vector<uint16_t, 64> Vector16UC64;
 
 	typedef Vector<int16_t, 2> Vector16SC2;
 	typedef Vector<int16_t, 3> Vector16SC3;
 	typedef Vector<int16_t, 4> Vector16SC4;
 	typedef Vector<int16_t, 8> Vector16SC8;
+	typedef Vector<int16_t, 16> Vector16SC16;
+	typedef Vector<int16_t, 32> Vector16SC32;
+	typedef Vector<int16_t, 64> Vector16SC64;
+
+	typedef Vector<uint32_t, 2> Vector32UC2;
+	typedef Vector<uint32_t, 3> Vector32UC3;
+	typedef Vector<uint32_t, 4> Vector32UC4;
+	typedef Vector<uint32_t, 8> Vector32UC8;
+	typedef Vector<uint32_t, 16> Vector32UC16;
+	typedef Vector<uint32_t, 32> Vector32UC32;
+	typedef Vector<uint32_t, 64> Vector32UC64;
 
 	typedef Vector<int32_t, 2> Vector32SC2;
 	typedef Vector<int32_t, 3> Vector32SC3;
 	typedef Vector<int32_t, 4> Vector32SC4;
+	typedef Vector<int32_t, 8> Vector32SC8;
+	typedef Vector<int32_t, 16> Vector32SC16;
+	typedef Vector<int32_t, 32> Vector32SC32;
+	typedef Vector<int32_t, 64> Vector32SC64;
+
+	typedef Vector<uint64_t, 2> Vector64UC2;
+	typedef Vector<uint64_t, 3> Vector64UC3;
+	typedef Vector<uint64_t, 4> Vector64UC4;
+	typedef Vector<uint64_t, 8> Vector64UC8;
+	typedef Vector<uint64_t, 16> Vector64UC16;
+	typedef Vector<uint64_t, 32> Vector64UC32;
+	typedef Vector<uint64_t, 64> Vector64UC64;
 
 	typedef Vector<int64_t, 2> Vector64SC2;
 	typedef Vector<int64_t, 3> Vector64SC3;
 	typedef Vector<int64_t, 4> Vector64SC4;
+	typedef Vector<int64_t, 8> Vector64SC8;
+	typedef Vector<int64_t, 16> Vector64SC16;
+	typedef Vector<int64_t, 32> Vector64SC32;
+	typedef Vector<int64_t, 64> Vector64SC64;
 
-	typedef Vector<float, 2> Vector32FC2;
-	typedef Vector<float, 3> Vector32FC3;
-	typedef Vector<float, 4> Vector32FC4;
+	typedef Vector<float32_t, 2> Vector32FC2;
+	typedef Vector<float32_t, 3> Vector32FC3;
+	typedef Vector<float32_t, 4> Vector32FC4;
+	typedef Vector<float32_t, 8> Vector32FC8;
+	typedef Vector<float32_t, 16> Vector32FC16;
+	typedef Vector<float32_t, 32> Vector32FC32;
+	typedef Vector<float32_t, 64> Vector32FC64;
 
-	typedef Vector<double, 2> Vector64FC2;
-	typedef Vector<double, 3> Vector64FC3;
-	typedef Vector<double, 4> Vector64FC4;
+	typedef Vector<float64_t, 2> Vector64FC2;
+	typedef Vector<float64_t, 3> Vector64FC3;
+	typedef Vector<float64_t, 4> Vector64FC4;
+	typedef Vector<float64_t, 8> Vector64FC8;
+	typedef Vector<float64_t, 16> Vector64FC16;
+	typedef Vector<float64_t, 32> Vector64FC32;
+	typedef Vector<float64_t, 64> Vector64FC64;
 
 	// Popcount.hpp overloads
 
