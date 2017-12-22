@@ -531,9 +531,9 @@ namespace anvil {
 	typedef Vector<uint32_t, 3> Vector32UC3;
 	typedef Vector<uint32_t, 4> Vector32UC4;
 
-	typedef Vector<uint64_t, 2> Vecto64UC2;
-	typedef Vector<uint64_t, 3> Vecto64UC3;
-	typedef Vector<uint64_t, 4> Vecto64UC4;
+	typedef Vector<uint64_t, 2> Vector64UC2;
+	typedef Vector<uint64_t, 3> Vector64UC3;
+	typedef Vector<uint64_t, 4> Vector64UC4;
 
 	typedef Vector<int8_t, 2> Vector8SC2;
 	typedef Vector<int8_t, 3> Vector8SC3;
