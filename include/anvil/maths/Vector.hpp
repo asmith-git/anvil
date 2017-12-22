@@ -15,54 +15,22 @@
 #ifndef ANVIL_MATHS_VECTOR_HPP
 #define ANVIL_MATHS_VECTOR_HPP
 
-#include <cmath>
 #include "anvil/maths/Type.hpp"
 #include "anvil/maths/Popcount.hpp"
+#include "anvil/maths/Common.hpp"
 
 namespace anvil {
 
 	namespace detail {
 		template<class T>
-		static ANVIL_STRONG_INLINE T vmax(T a, T b) {
-			return a > b ? a : b;
-		}
-
-		template<>
-		static ANVIL_STRONG_INLINE float vmax<float>(float a, float b) {
-			return std::fmax(a, b);
-		}
-
-		template<>
-		static ANVIL_STRONG_INLINE double vmax<double>(double a, double b) {
-			return std::fmax(a, b);
-		}
-
-		template<class T>
-		static ANVIL_STRONG_INLINE T vmin(T a, T b) {
-			return a > b ? a : b;
-		}
-
-		template<>
-		static ANVIL_STRONG_INLINE float vmin<float>(float a, float b) {
-			return std::fmin(a, b);
-		}
-
-		template<>
-		static ANVIL_STRONG_INLINE double vmin<double>(double a, double b) {
-			return std::fmin(a, b);
-		}
-
-		template<class T>
 		struct VFloat {
 			typedef float type;
 		};
-
 
 		template<>
 		struct VFloat<double> {
 			typedef double type;
 		};
-
 	}
 
 	template<class T, size_t S>
@@ -86,25 +54,28 @@ namespace anvil {
 			for (size_t i = 0; i < size; ++i) mData[i] = aScalar;
 		}
 
+		template<size_t S2 = 2, class ENABLE = typename std::enable_if<S2 == size>::type>
 		Vector(const T a, const T b) throw() {
 			mData[0] = a;
 			mData[1] = b;
-			if(size > 2) memset(mData + 2, 0, sizeof(type) * (size - 2));
+			//if(size > 2) memset(mData + 2, 0, sizeof(type) * (size - 2));
 		}
 
+		template<size_t S2 = 3, class ENABLE = typename std::enable_if<S3 == size>::type>
 		Vector(const T a, const T b, const T c) throw() {
 			mData[0] = a;
 			mData[1] = b;
 			mData[2] = c;
-			if (size > 3) memset(mData + 3, 0, sizeof(type) * (size - 3));
+			//if (size > 3) memset(mData + 3, 0, sizeof(type) * (size - 3));
 		}
 
+		template<size_t S2 = 4, class ENABLE = typename std::enable_if<S2 == size>::type>
 		Vector(const T a, const T b, const T c, const T d) throw() {
 			mData[0] = a;
 			mData[1] = b;
 			mData[2] = c;
 			mData[3] = d;
-			if (size > 4) memset(mData + 4, 0, sizeof(type) * (size - 4));
+			//if (size > 4) memset(mData + 4, 0, sizeof(type) * (size - 4));
 		}
 
 		Vector(const T* aData, size_t aSize) throw() {
@@ -118,12 +89,47 @@ namespace anvil {
 		}
 
 		template<class T2>
-		Vector(const Vector<T2, size> aOther) throw() {
+		explicit Vector(const Vector<T2, size> aOther) throw() {
 			for (size_t i = 0; i < size; ++i) mData[i] = static_cast<T>(aOther[i]);
 		}
+		
+		template<size_t SA, size_t SB, class ENABLE = typename std::enable_if<(SA + SB) == size>::type>
+		Vector(const Vector<type, SA> a, const const Vector<type, SB> b) throw() {
+			type* ptr = mData;
+			size_t s1 = sizeof(type) * size;
+			size_t s2 = std::min(s1, sizeof(type) * SA);
+			memcpy(ptr, &a, s2);
+			ptr += s2 / sizeof(type);
+			s1 -= s2; 
+			
+			s2 = std::min(s1, sizeof(type) * SB);
+			memcpy(ptr, &b, s2);
+			ptr += s2 / sizeof(type);
+			s1 = s1 > s2 ? s1 - s2 : 0;
+			
+			memset(ptr, 0, sizeof(type) * s1);
+		}
 
-		inline operator bool() const throw() {
-			return sum() > static_cast<float32_t>(0.f);
+		template<size_t SA, size_t SB, size_t SC, class ENABLE = typename std::enable_if<(SA + SB + SC) == size>::type>
+		Vector(const Vector<type, SA> a, const const Vector<type, SB> b, const const Vector<type, SC> c) throw() {
+			type* ptr = mData;
+			size_t s1 = sizeof(type) * size;
+			size_t s2 = std::min(s1, sizeof(type) * SA);
+			memcpy(ptr, &a, s2);
+			ptr += s2 / sizeof(type);
+			s1 -= s2;
+
+			s2 = std::min(s1, sizeof(type) * SB);
+			memcpy(ptr, &b, s2);
+			ptr += s2 / sizeof(type);
+			s1 -= s2;
+
+			s2 = std::min(s1, sizeof(type) * SC);
+			memcpy(ptr, &c, s2);
+			ptr += s2 / sizeof(type);
+			s1 -= s2;
+
+			memset(ptr, 0, sizeof(type) * s1);
 		}
 
 		inline this_t operator!() const throw() {
@@ -141,7 +147,7 @@ namespace anvil {
 
 		inline this_t operator%(const this_t aOther) const throw() {
 			this_t tmp;
-			for (size_t i = 0; i < size; ++i) tmp.mData[i] = static_cast<type>(mData[i] % aOther.mData[i]);
+			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mod(mData[i], aOther.mData[i]);
 			return tmp;
 		}
 
@@ -406,6 +412,225 @@ namespace anvil {
 	typedef Vector<double, 2> Vector64FC2;
 	typedef Vector<double, 3> Vector64FC3;
 	typedef Vector<double, 4> Vector64FC4;
+
+	// Common.hpp overloads
+
+	template<class T, size_t S>
+	static inline const Vector<T, S> abs(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = abs(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline const Vector<T, S> abs(const Vector<T, S> a, const Vector<T, S> b) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = mod(a[i], b[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> fma(const Vector<T, S> a, const Vector<T, S> b, const Vector<T, S> c) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = fma(a[i], b[i], c[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> max(const Vector<T, S> a, const Vector<T, S> b) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = max(a[i], b[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> min(const Vector<T, S> a, const Vector<T, S> b) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = min(a[i], b[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> dif(const Vector<T, S> a, const Vector<T, S> b) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = dif(a[i], b[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> exp(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = exp(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> log(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = log(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> log2(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = log2(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> log10(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = log10(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> pow(const Vector<T, S> a, const Vector<T, S> b) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = pow(a[i], b[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> sqrt(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = sqrt(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> cbrt(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = cbrt(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> hypot(const Vector<T, S> a, const Vector<T, S> b) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = hypot(a[i], b[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> sin(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = sin(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> cos(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = cos(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> tan(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = tan(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline const Vector<T, S> asin(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = asin(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline const Vector<T, S> acos(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = acos(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline const Vector<T, S> atan(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = atan(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline const Vector<T, S> atan2(const Vector<T, S> a, const Vector<T, S> b) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = atan2(a[i], b[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> sinh(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = sinh(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> cosh(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = cosh(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> tanh(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = tanh(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline const Vector<T, S> asinh(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = asinh(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline const Vector<T, S> acosh(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = acosh(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline const Vector<T, S> atanh(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = atanh(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> ceil(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = ceil(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> floor(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = floor(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> trunc(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = trunc(a[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> round(const Vector<T, S> a) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = round(a[i]);
+		return tmp;
+	}
 }
 
 #endif

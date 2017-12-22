@@ -15,7 +15,8 @@
 #ifndef ANVIL_MATHS_VECTOR_FUNCTIONS_HPP
 #define ANVIL_MATHS_VECTOR_FUNCTIONS_HPP
 
-#include "anvil/maths/Vector.hpp"
+#include <cmath>
+#include <algorithm>
 
 namespace anvil {
 	// abs
@@ -26,27 +27,20 @@ namespace anvil {
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE const float abs<float>(const float a) {
+	static ANVIL_STRONG_INLINE float abs<float>(const float a) {
 		return std::abs(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE const double abs<double>(const double a) {
+	static ANVIL_STRONG_INLINE double abs<double>(const double a) {
 		return std::abs(a);
-	}
-
-	template<class T, size_t S>
-	static inline const Vector<T, S> abs(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = abs(a[i]);
-		return tmp;
 	}
 
 	// mod / fmod
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T fmod(T a, T b) {
-		return mod<T>(a, b);
+		return mod(a, b);
 	}
 
 	template<class T>
@@ -62,13 +56,6 @@ namespace anvil {
 	template<>
 	static ANVIL_STRONG_INLINE double mod<double>(const double a, const double b) {
 		return std::fmod(a,b);
-	}
-
-	template<class T, size_t S>
-	static inline const Vector<T, S> abs(const Vector<T, S> a, const Vector<T, S> b) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = mod(a[i], b[i]);
-		return tmp;
 	}
 
 	// fma
@@ -88,56 +75,55 @@ namespace anvil {
 		return std::fma(a, b, c);
 	}
 
-	template<class T, size_t S>
-	static inline Vector<T, S> fma(const Vector<T, S> a, const Vector<T, S> b, const Vector<T, S> c) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = fma(a[i], b[i], c[i]);
-		return tmp;
-	}
-
 	// max / fmax
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T fmax(T a, T b) {
-		return detail::vmax(a, b);
+		return detail::max(a, b);
 	}
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T max(T a, T b) {
-		return detail::vmax<T>(a, b);
+		return std::max<T>(a, b);
 	}
 
-	template<class T, size_t S>
-	static inline Vector<T, S> max(const Vector<T, S> a, const Vector<T, S> b) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = max(a[i], b[i]);
-		return tmp;
+	template<>
+	static ANVIL_STRONG_INLINE float max<float>(float a, float b) {
+		return std::fmax(a, b);
+	}
+
+	template<>
+	static ANVIL_STRONG_INLINE double max<double>(double a, double b) {
+		return std::fmax(a, b);
 	}
 
 	// min / fmin
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T fmin(T a, T b) {
-		return detail::vmin(a, b);
+		return detail::min(a, b);
 	}
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T min(T a, T b) {
-		return detail::vmin<T>(a, b);
+		return std::min<T>(a, b);
 	}
 
-	template<class T, size_t S>
-	static inline Vector<T, S> min(const Vector<T, S> a, const Vector<T, S> b) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = min(a[i], b[i]);
-		return tmp;
+	template<>
+	static ANVIL_STRONG_INLINE float min<float>(float a, float b) {
+		return std::fmin(a, b);
+	}
+
+	template<>
+	static ANVIL_STRONG_INLINE double min<double>(double a, double b) {
+		return std::fmin(a, b);
 	}
 
 	// dif / fdim
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T fdim(T a, T b) {
-		return dif<T>(a, b);
+		return dif(a, b);
 	}
 
 	template<class T>
@@ -153,13 +139,6 @@ namespace anvil {
 	template<>
 	static ANVIL_STRONG_INLINE double dif<double>(const double a, const double b) {
 		return std::fdim(a, b);
-	}
-
-	template<class T, size_t S>
-	static inline Vector<T, S> dif(const Vector<T, S> a, const Vector<T, S> b) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = dif(a[i], b[i]);
-		return tmp;
 	}
 
 	// exp
@@ -179,13 +158,6 @@ namespace anvil {
 		return std::exp(a);
 	}
 
-	template<class T, size_t S>
-	static inline Vector<T, S> exp(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = exp(a[i]);
-		return tmp;
-	}
-
 	// exp
 
 	template<class T>
@@ -201,13 +173,6 @@ namespace anvil {
 	template<>
 	static ANVIL_STRONG_INLINE double log<double>(const double a) {
 		return std::log(a);
-	}
-
-	template<class T, size_t S>
-	static inline Vector<T, S> log(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = log(a[i]);
-		return tmp;
 	}
 
 	// log2
@@ -227,13 +192,6 @@ namespace anvil {
 		return std::log2(a);
 	}
 
-	template<class T, size_t S>
-	static inline Vector<T, S> log2(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = log2(a[i]);
-		return tmp;
-	}
-
 	// log10
 
 	template<class T>
@@ -249,13 +207,6 @@ namespace anvil {
 	template<>
 	static ANVIL_STRONG_INLINE double log10<double>(const double a) {
 		return std::log10(a);
-	}
-
-	template<class T, size_t S>
-	static inline Vector<T, S> log10(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = log10(a[i]);
-		return tmp;
 	}
 
 	// pow
@@ -275,13 +226,6 @@ namespace anvil {
 		return std::pow(a, b);
 	}
 
-	template<class T, size_t S>
-	static inline Vector<T, S> pow(const Vector<T, S> a, const Vector<T, S> b) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = pow(a[i], b[i]);
-		return tmp;
-	}
-
 	// sqrt
 
 	template<class T>
@@ -297,37 +241,6 @@ namespace anvil {
 	template<>
 	static ANVIL_STRONG_INLINE double sqrt<double>(const double a) {
 		return std::sqrt(a);
-	}
-
-	template<class T, size_t S>
-	static inline Vector<T, S> sqrt(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = sqrt(a[i]);
-		return tmp;
-	}
-
-	// sqrt
-
-	template<class T>
-	static ANVIL_STRONG_INLINE T cbrt(T aValue) {
-		return static_cast<T>(std::cbrt(static_cast<float>(a)));
-	}
-
-	template<>
-	static ANVIL_STRONG_INLINE float cbrt<float>(const float a) {
-		return std::cbrt(a);
-	}
-
-	template<>
-	static ANVIL_STRONG_INLINE double cbrt<double>(const double a) {
-		return std::cbrt(a);
-	}
-
-	template<class T, size_t S>
-	static inline Vector<T, S> cbrt(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = cbrt(a[i]);
-		return tmp;
 	}
 
 	// cbrt
@@ -347,13 +260,6 @@ namespace anvil {
 		return std::cbrt(a);
 	}
 
-	template<class T, size_t S>
-	static inline Vector<T, S> cbrt(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = cbrt(a[i]);
-		return tmp;
-	}
-
 	// hypot
 
 	template<class T>
@@ -369,13 +275,6 @@ namespace anvil {
 	template<>
 	static ANVIL_STRONG_INLINE double hypot<double>(const double a, const double b) {
 		return std::hypot(a, b);
-	}
-
-	template<class T, size_t S>
-	static inline Vector<T, S> hypot(const Vector<T, S> a, const Vector<T, S> b) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = hypot(a[i], b[i]);
-		return tmp;
 	}
 
 	// sin
@@ -395,13 +294,6 @@ namespace anvil {
 		return std::sin(a);
 	}
 
-	template<class T, size_t S>
-	static inline Vector<T, S> sin(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = sin(a[i]);
-		return tmp;
-	}
-
 	// cos
 
 	template<class T>
@@ -417,13 +309,6 @@ namespace anvil {
 	template<>
 	static ANVIL_STRONG_INLINE double cos<double>(const double a) {
 		return std::cos(a);
-	}
-
-	template<class T, size_t S>
-	static inline Vector<T, S> cos(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = cos(a[i]);
-		return tmp;
 	}
 
 	// tan
@@ -443,13 +328,6 @@ namespace anvil {
 		return std::tan(a);
 	}
 
-	template<class T, size_t S>
-	static inline Vector<T, S> tan(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = tan(a[i]);
-		return tmp;
-	}
-
 	// asin
 
 	template<class T>
@@ -458,20 +336,13 @@ namespace anvil {
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE const float asin<float>(const float a) {
+	static ANVIL_STRONG_INLINE float asin<float>(const float a) {
 		return std::asin(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE const double asin<double>(const double a) {
+	static ANVIL_STRONG_INLINE double asin<double>(const double a) {
 		return std::asin(a);
-	}
-
-	template<class T, size_t S>
-	static inline const Vector<T, S> asin(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = asin(a[i]);
-		return tmp;
 	}
 
 	// acos
@@ -482,20 +353,13 @@ namespace anvil {
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE const float acos<float>(const float a) {
+	static ANVIL_STRONG_INLINE float acos<float>(const float a) {
 		return std::acos(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE const double acos<double>(const double a) {
+	static ANVIL_STRONG_INLINE double acos<double>(const double a) {
 		return std::acos(a);
-	}
-
-	template<class T, size_t S>
-	static inline const Vector<T, S> acos(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = acos(a[i]);
-		return tmp;
 	}
 
 	// atan
@@ -506,20 +370,13 @@ namespace anvil {
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE const float atan<float>(const float a) {
+	static ANVIL_STRONG_INLINE float atan<float>(const float a) {
 		return std::atan(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE const double atan<double>(const double a) {
+	static ANVIL_STRONG_INLINE double atan<double>(const double a) {
 		return std::atan(a);
-	}
-
-	template<class T, size_t S>
-	static inline const Vector<T, S> atan(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = atan(a[i]);
-		return tmp;
 	}
 
 	// atan2
@@ -530,20 +387,13 @@ namespace anvil {
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE const float atan2<float>(const float a, const float b) {
+	static ANVIL_STRONG_INLINE float atan2<float>(const float a, const float b) {
 		return std::atan2(a, b);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE const double atan2<double>(const double a, const double b) {
+	static ANVIL_STRONG_INLINE double atan2<double>(const double a, const double b) {
 		return std::atan2(a, b);
-	}
-
-	template<class T, size_t S>
-	static inline const Vector<T, S> atan2(const Vector<T, S> a, const Vector<T, S> b) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = atan2(a[i], b[i]);
-		return tmp;
 	}
 
 	// sinh
@@ -563,13 +413,6 @@ namespace anvil {
 		return std::sinh(a);
 	}
 
-	template<class T, size_t S>
-	static inline Vector<T, S> sinh(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = sinh(a[i]);
-		return tmp;
-	}
-
 	// cosh
 
 	template<class T>
@@ -585,13 +428,6 @@ namespace anvil {
 	template<>
 	static ANVIL_STRONG_INLINE double cosh<double>(const double a) {
 		return std::cosh(a);
-	}
-
-	template<class T, size_t S>
-	static inline Vector<T, S> cosh(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = cosh(a[i]);
-		return tmp;
 	}
 
 	// tanh
@@ -611,13 +447,6 @@ namespace anvil {
 		return std::tanh(a);
 	}
 
-	template<class T, size_t S>
-	static inline Vector<T, S> tanh(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = tanh(a[i]);
-		return tmp;
-	}
-
 	// asinh
 
 	template<class T>
@@ -626,20 +455,13 @@ namespace anvil {
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE const float asinh<float>(const float a) {
+	static ANVIL_STRONG_INLINE float asinh<float>(const float a) {
 		return std::asinh(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE const double asinh<double>(const double a) {
+	static ANVIL_STRONG_INLINE double asinh<double>(const double a) {
 		return std::asinh(a);
-	}
-
-	template<class T, size_t S>
-	static inline const Vector<T, S> asinh(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = asinh(a[i]);
-		return tmp;
 	}
 
 	// acosh
@@ -650,20 +472,13 @@ namespace anvil {
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE const float acosh<float>(const float a) {
+	static ANVIL_STRONG_INLINE float acosh<float>(const float a) {
 		return std::acosh(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE const double acosh<double>(const double a) {
+	static ANVIL_STRONG_INLINE double acosh<double>(const double a) {
 		return std::acosh(a);
-	}
-
-	template<class T, size_t S>
-	static inline const Vector<T, S> acosh(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = acosh(a[i]);
-		return tmp;
 	}
 
 	// atanh
@@ -674,20 +489,13 @@ namespace anvil {
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE const float atanh<float>(const float a) {
+	static ANVIL_STRONG_INLINE float atanh<float>(const float a) {
 		return std::atanh(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE const double atanh<double>(const double a) {
+	static ANVIL_STRONG_INLINE double atanh<double>(const double a) {
 		return std::atanh(a);
-	}
-
-	template<class T, size_t S>
-	static inline const Vector<T, S> atanh(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = atanh(a[i]);
-		return tmp;
 	}
 
 	// ceil
@@ -707,13 +515,6 @@ namespace anvil {
 		return std::ceil(a);
 	}
 
-	template<class T, size_t S>
-	static inline Vector<T, S> ceil(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = ceil(a[i]);
-		return tmp;
-	}
-
 	// floor
 
 	template<class T>
@@ -729,13 +530,6 @@ namespace anvil {
 	template<>
 	static ANVIL_STRONG_INLINE double floor<double>(const double a) {
 		return std::floor(a);
-	}
-
-	template<class T, size_t S>
-	static inline Vector<T, S> floor(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = floor(a[i]);
-		return tmp;
 	}
 
 	// trunc
@@ -755,13 +549,6 @@ namespace anvil {
 		return std::trunc(a);
 	}
 
-	template<class T, size_t S>
-	static inline Vector<T, S> trunc(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = trunc(a[i]);
-		return tmp;
-	}
-
 	// round
 
 	template<class T>
@@ -777,13 +564,6 @@ namespace anvil {
 	template<>
 	static ANVIL_STRONG_INLINE double round<double>(const double a) {
 		return std::round(a);
-	}
-
-	template<class T, size_t S>
-	static inline Vector<T, S> round(const Vector<T, S> a) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = round(a[i]);
-		return tmp;
 	}
 }
 
