@@ -39,7 +39,9 @@ namespace anvil { namespace ocl {
 	}
 
 	void ANVIL_CALL Context::onError(const char* aErrorInfo, const void* aPrivateInfo, size_t aPrivateInfoSize) throw() {
-
+#ifdef ANVIL_LOG_OCL
+		std::cerr << "pfn_notify : " << aErrorInfo << std::endl;
+#endif
 	}
 
 	bool ANVIL_CALL Context::create(Device& aDevice) throw() {
