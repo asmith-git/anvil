@@ -20,7 +20,7 @@
 #endif
 
 namespace anvil {
-
+	namespace detail {
 #if ANVIL_COMPILER == ANVIL_MSVC
 	#define ANVIL_POPCOUNT8 __popcnt16
 	#define ANVIL_POPCOUNT16 __popcnt16
@@ -60,11 +60,11 @@ namespace anvil {
 #define ANVIL_POPCOUNT8(aByte) gPopcountLookup[aByte]
 #endif
 
-	size_t ANVIL_CALL popcount(const uint8_t aValue) throw() {
+	size_t ANVIL_CALL popcount1(const uint8_t aValue) throw() {
 		return ANVIL_POPCOUNT8(aValue);
 	}
 
-	size_t ANVIL_CALL popcount(const uint16_t aValue) throw() {
+	size_t ANVIL_CALL popcount2(const uint16_t aValue) throw() {
 #ifdef ANVIL_POPCOUNT16
 		return ANVIL_POPCOUNT16(aValue);
 #else
@@ -72,7 +72,7 @@ namespace anvil {
 #endif
 	}
 
-	size_t ANVIL_CALL popcount(const uint32_t aValue) throw() {
+	size_t ANVIL_CALL popcount4(const uint32_t aValue) throw() {
 #ifdef ANVIL_POPCOUNT32
 		return ANVIL_POPCOUNT32(aValue);
 #else
@@ -80,7 +80,7 @@ namespace anvil {
 #endif
 	}
 
-	size_t ANVIL_CALL popcount(const uint64_t aValue) throw() {
+	size_t ANVIL_CALL popcount8(const uint64_t aValue) throw() {
 #ifdef ANVIL_POPCOUNT64
 		return ANVIL_POPCOUNT64(aValue);
 #else
@@ -88,20 +88,6 @@ namespace anvil {
 #endif
 	}
 
-	size_t ANVIL_CALL popcount(const int8_t aValue) throw() {
-		return popcount(*reinterpret_cast<const uint8_t*>(&aValue));
-	}
-
-	size_t ANVIL_CALL popcount(const int16_t aValue) throw() {
-		return popcount(*reinterpret_cast<const uint16_t*>(&aValue));
-	}
-
-	size_t ANVIL_CALL popcount(const int32_t aValue) throw() {
-		return popcount(*reinterpret_cast<const uint32_t*>(&aValue));
-	}
-
-	size_t ANVIL_CALL popcount(const int64_t aValue) throw() {
-		return popcount(*reinterpret_cast<const uint64_t*>(&aValue));
 	}
 
 	size_t ANVIL_CALL popcount(const void* aSrc, size_t aBytes) throw() {

@@ -411,6 +411,15 @@ namespace anvil {
 	typedef Vector<double, 3> Vector64FC3;
 	typedef Vector<double, 4> Vector64FC4;
 
+	// Popcount.hpp overloads
+
+	template<class T, size_t S>
+	static inline Vector<size_t, S> popcount(const Vector<T, S> a) {
+		Vector<size_t, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = popcount(a[i]);
+		return tmp;
+	}
+
 	// Common.hpp overloads
 
 	template<class T, size_t S>
