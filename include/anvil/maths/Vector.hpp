@@ -360,26 +360,59 @@ namespace anvil {
 
 		inline type min() const throw() {
 			type tmp = data[0];
-			for (size_t i = 1; i < size; ++i) tmp = min<type>(tmp, aOther.mData[i]);
+			for (size_t i = 1; i < size; ++i) tmp = min(tmp, aOther.mData[i]);
 			return tmp;
 		}
 
 		inline type max() const throw() {
 			type tmp = data[0];
-			for (size_t i = 1; i < size; ++i) tmp = max<type>(tmp, aOther.mData[i]);
+			for (size_t i = 1; i < size; ++i) tmp = max(tmp, aOther.mData[i]);
 			return tmp;
 		}
 
 		inline float_t dot(const this_t aOther) const throw() {
-			float_t sum = static_cast<float>(0);
 			if (std::is_same<float_t, type>::value) {
-				for (size_t i = 0; i < size; ++i) sum = fma<type>(mData[i], aOther.mData[i], sum);
+				float_t sum = static_cast<float_t>(0);
+				for (size_t i = 0; i < size; ++i) sum = fma(mData[i], aOther.mData[i], sum);
+				return sum;
 			} else {
 				Vector<float_t, size> a(*this);
 				Vector<float_t, size> b(aOther);
 				return a.dot(b);
 			}
-			return sum;
+		}
+
+		inline float_t mag2() const throw() {
+			if (std::is_same<float_t, type>::value) {
+				float_t sum = static_cast<float_t>(0);
+				for (size_t i = 0; i < size; ++i) sum = fma(mData[i], mData[i], sum);
+				return sum;
+			} else {
+				return Vector<float_t, size>(*this).mag2();
+			}
+		}
+
+		inline float_t mag() const throw() {
+			return sqrt(mag2());
+		}
+
+		inline Vector<float_t, size> normalisef() const throw() {
+			if (std::is_same<float_t, type>::value) {
+				float_t mag = static_cast<float_t>(0);
+				Vector<float_t, size> tmp;
+				for (size_t i = 0; i < size; ++i) {
+					tmp[i] = mData[i] * mData[i];
+					mag += tmp[i];
+				}
+				tmp /= mag;
+				return tmp;
+			} else {
+				return Vector<float_t, size>(*this).normalisef();
+			}
+		}
+
+		inline this_t normalise() const throw() {
+			return this_t(normalisef());
 		}
 
 		template<class T2, size_t S2>
