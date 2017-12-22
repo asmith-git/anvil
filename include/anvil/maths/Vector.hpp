@@ -423,6 +423,96 @@ namespace anvil {
 		}
 	};
 
+	template<class T, size_t S>
+	inline Vector<T, S> operator+(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) + b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> operator-(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) - b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> operator*(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) * b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> operator/(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) / b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> operator&(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) & b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> operator|(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) | b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> operator^(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) ^ b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> operator&&(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) && b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> operator||(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) ^ b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> operator==(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) == b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> operator!=(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) != b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> operator<(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) < b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> operator>(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) > b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> operator<=(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) <= b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> operator>=(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) >= b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> operator<<(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) << b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> operator>>(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) >> b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> operator%(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) % b;
+	}
+
 	template<Type TYPE>
 	using AnvilVector = Vector<typename TypeFromEnum<GetPrimativeType(TYPE)>::type, GetChannels(TYPE)>;
 
