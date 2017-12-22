@@ -345,13 +345,11 @@ namespace anvil {
 		inline float_t dot(const this_t aOther) const throw() {
 			float_t sum = static_cast<float>(0);
 			if (std::is_same<float_t, type>::value) {
-				for (size_t i = 0; i < size; ++i) sum += fma<type>(mData[i], aOther.mData[i], sum);
+				for (size_t i = 0; i < size; ++i) sum = fma<type>(mData[i], aOther.mData[i], sum);
 			} else {
-				float_t a[size];
-				float_t b[size];
-				for (size_t i = 0; i < size; ++i) a[i] = static_cast<float_t>(mData[i]);
-				for (size_t i = 0; i < size; ++i) b[i] = static_cast<float_t>(aOther.mData[i]);
-				for (size_t i = 0; i < size; ++i) sum += fma(a[i], b[i], sum);
+				Vector<float_t, size> a(*this);
+				Vector<float_t, size> b(aOther);
+				return a.dot(b);
 			}
 			return sum;
 		}
