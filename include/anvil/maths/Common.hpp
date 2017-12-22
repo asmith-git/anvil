@@ -87,16 +87,6 @@ namespace anvil {
 		return std::max<T>(a, b);
 	}
 
-	template<>
-	static ANVIL_STRONG_INLINE float max<float>(float a, float b) {
-		return std::fmax(a, b);
-	}
-
-	template<>
-	static ANVIL_STRONG_INLINE double max<double>(double a, double b) {
-		return std::fmax(a, b);
-	}
-
 	// min / fmin
 
 	template<class T>
@@ -107,16 +97,6 @@ namespace anvil {
 	template<class T>
 	static ANVIL_STRONG_INLINE T min(T a, T b) {
 		return std::min<T>(a, b);
-	}
-
-	template<>
-	static ANVIL_STRONG_INLINE float min<float>(float a, float b) {
-		return std::fmin(a, b);
-	}
-
-	template<>
-	static ANVIL_STRONG_INLINE double min<double>(double a, double b) {
-		return std::fmin(a, b);
 	}
 
 	// dif / fdim
