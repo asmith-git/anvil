@@ -18,6 +18,7 @@
 #include <iostream>
 #include "anvil/maths/Type.hpp"
 #include "anvil/maths/Popcount.hpp"
+#include "anvil/maths/Reflection.hpp"
 #include "anvil/maths/Common.hpp"
 
 namespace anvil {
@@ -622,6 +623,15 @@ namespace anvil {
 	static inline Vector<size_t, S> popcount(const Vector<T, S> a) {
 		Vector<size_t, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = popcount(a[i]);
+		return tmp;
+	}
+
+	// Reflection.hpp reflect
+
+	template<class T, size_t S>
+	static inline Vector<size_t, S> reflect(const Vector<T, S> a) {
+		Vector<size_t, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = reflect(a[i]);
 		return tmp;
 	}
 
