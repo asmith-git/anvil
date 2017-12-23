@@ -544,6 +544,8 @@ namespace anvil {
 		return Vector<T, S>(a) % b;
 	}
 
+	template<class T, class S>
+
 	template<Type TYPE>
 	using AnvilVector = Vector<typename TypeFromEnum<GetPrimativeType(TYPE)>::type, GetChannels(TYPE)>;
 
