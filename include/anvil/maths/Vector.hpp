@@ -15,6 +15,7 @@
 #ifndef ANVIL_MATHS_VECTOR_HPP
 #define ANVIL_MATHS_VECTOR_HPP
 
+#include <iostream>
 #include "anvil/maths/Type.hpp"
 #include "anvil/maths/Popcount.hpp"
 #include "anvil/maths/Common.hpp"
@@ -422,6 +423,25 @@ namespace anvil {
 			return tmp;
 		}
 	};
+
+	template<class T, size_t S>
+	std::ostream& operator<<(std::ostream& aStream, Vector<T, S> aValue) {
+		aStream << '[';
+		for (size_t i = 0; i < S - 1; ++i) aStream << aValue[i] << ',';
+		aStream << aValue[S - 1];
+		aStream << ']';
+		return aStream;
+	}
+
+	template<class T, size_t S>
+	std::istream& operator>>(std::istream& aStream, Vector<T, S>& aValue) {
+		char buf;
+		aStream >> buf;
+		for (size_t i = 0; i < S - 1; ++i) aStream >> aValue[i] >> buf;
+		aStream >> aValue[S - 1];
+		aStream >> buf;
+		return aStream;
+	}
 
 	template<class T, size_t S>
 	inline Vector<T, S> operator+(const T a, const Vector<T, S> b) {
