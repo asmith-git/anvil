@@ -386,15 +386,12 @@ namespace anvil {
 
 		template<size_t S2 = size>
 		inline typename std::enable_if<S2 == 3, this_t>::type cross(const this_t aOther) const throw() {
-			type a[4] = {              mData[1],        mData[2],         mData[0], static_cast<type>(0) };
-			const type b[4] = { aOther.mData[2], aOther.mData[0],  aOther.mData[1], static_cast<type>(0) };
-			type c[4] = {              mData[2],        mData[0],         mData[1], static_cast<type>(0) };
-			const type d[4] = { aOther.mData[1], aOther.mData[2],  aOther.mData[0], static_cast<type>(0) };
-
-			for (size_t i = 0; i < 4; ++i) a[i] *= b[i];
-			for (size_t i = 0; i < 4; ++i) c[i] *= d[i];
-			for (size_t i = 0; i < 4; ++i) a[i] -= c[i];
-			return this_t(a);
+			const type tmp[3] = {
+				(mData[1] * aOther.mData[2]) - (mData[2] * aOther.mData[1]),
+				(mData[2] * aOther.mData[0]) - (mData[0] * aOther.mData[2]),
+				(mData[0] * aOther.mData[1]) - (mData[1] * aOther.mData[0])
+			};
+			return this_t(tmp);
 		}
 
 		inline float_t mag2() const throw() {
