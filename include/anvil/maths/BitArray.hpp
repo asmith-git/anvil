@@ -23,6 +23,11 @@ namespace anvil {
 	void ANVIL_CALL setBit(void*, size_t) throw();
 	void ANVIL_CALL clearBit(void*, size_t) throw();
 	void ANVIL_CALL flipBit(void*, size_t) throw();
+	bool ANVIL_CALL checkBits(const void*, size_t, size_t) throw();
+	void ANVIL_CALL setBits(void*, size_t, size_t) throw();
+	void ANVIL_CALL clearBits(void*, size_t, size_t) throw();
+	void ANVIL_CALL flipBits(void*, size_t, size_t) throw();
+	void ANVIL_CALL copyBits(void*, size_t, const void*, size_t, size_t) throw();
 }
 
 #endif
