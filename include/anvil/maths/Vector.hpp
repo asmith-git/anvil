@@ -86,18 +86,6 @@ namespace anvil {
 		Vector(const array_t aOther) throw() {
 			memcpy(mData, aOther, sizeof(type) * size);
 		}
-
-		template<class T2, size_t S2>
-		explicit Vector(const Vector<T2, S2> aOther) throw() {
-			enum {
-				S3 = size < S2 ? size : S2
-			};
-			if (std::is_same<type, T2>::value) {
-				memcpy(mData, &aOther, sizeof(type) * S3);
-			} else {
-				for (size_t i = 0; i < S3; ++i) mData[i] = static_cast<T>(aOther[i]);
-			}
-		}
 		
 		template<size_t SA, size_t SB, class ENABLE = typename std::enable_if<(SA + SB) == size>::type>
 		Vector(const Vector<type, SA> a, const const Vector<type, SB> b) throw() {
@@ -136,6 +124,23 @@ namespace anvil {
 			s1 -= s2;
 
 			memset(ptr, 0, sizeof(type) * s1);
+		}
+
+		template<class T2, size_t S2>
+		explicit operator Vector<T2, S2>() const throw() {
+			enum { S3 = size < S2 ? size : S2 };
+
+			Vector<T2, S2> tmp;
+			if (std::is_same<type, T2>::value) {
+				memcpy(mData, &aOther, sizeof(type) * S3);
+			} else {
+				for (size_t i = 0; i < S3; ++i) tmp[i] = static_cast<T2>(mData[i]);
+			}
+		}
+
+		explicit operator bool() const throw() {
+			this_t tmp;
+			return memcmp(this, &tmp, sizeof(this_t)) == 0;
 		}
 
 		inline this_t operator!() const throw() {
@@ -350,14 +355,22 @@ namespace anvil {
 			return mData + size;
 		}
 
-		inline float_t sum() const throw() {
+		inline float_t sumf() const throw() {
 			float_t tmp = static_cast<float_t>(0);
 			for (size_t i = 0; i < size; ++i) tmp += static_cast<float_t>(mData[i]);
 			return tmp;
 		}
 
-		inline float_t avg() const throw() {
-			return sum() / static_cast<float_t>(size);
+		inline float_t avgf() const throw() {
+			return sumf() / static_cast<float_t>(size);
+		}
+
+		inline type sum() const throw() {
+			return static_cast<type>(sumf());
+		}
+
+		inline type avg() const throw() {
+			return static_cast<type>(avgf());
 		}
 
 		inline type min() const throw() {
@@ -394,7 +407,7 @@ namespace anvil {
 			return this_t(tmp);
 		}
 
-		inline float_t mag2() const throw() {
+		inline float_t mag2f() const throw() {
 			if (std::is_same<float_t, type>::value) {
 				float_t sum = static_cast<float_t>(0);
 				for (size_t i = 0; i < size; ++i) sum = fma(mData[i], mData[i], sum);
@@ -404,8 +417,16 @@ namespace anvil {
 			}
 		}
 
-		inline float_t mag() const throw() {
-			return sqrt(mag2());
+		inline float_t magf() const throw() {
+			return sqrt(mag2f());
+		}
+
+		inline type mag2() const throw() {
+			return static_cast<type>(mag2f());
+		}
+
+		inline type mag() const throw() {
+			return static_cast<type>(magf());
 		}
 
 		inline Vector<float_t, size> normalisef() const throw() {
