@@ -48,47 +48,47 @@ namespace anvil {
 	private:
 		type mData[size];
 	public:
-		Vector() throw() {
+		ANVIL_CALL Vector() throw() {
 			memset(mData, 0, sizeof(type) * size);
 		}
 
-		Vector(const type aScalar) throw() {
+		ANVIL_CALL Vector(const type aScalar) throw() {
 			for (size_t i = 0; i < size; ++i) mData[i] = aScalar;
 		}
 
 		template<size_t S2 = 2, class ENABLE = typename std::enable_if<S2 == size>::type>
-		Vector(const type a, const type b) throw() {
+		ANVIL_CALL Vector(const type a, const type b) throw() {
 			mData[0] = a;
 			mData[1] = b;
 		}
 
 		template<size_t S2 = 3, class ENABLE = typename std::enable_if<S3 == size>::type>
-		Vector(const type a, const type b, const type c) throw() {
+		ANVIL_CALL Vector(const type a, const type b, const type c) throw() {
 			mData[0] = a;
 			mData[1] = b;
 			mData[2] = c;
 		}
 
 		template<size_t S2 = 4, class ENABLE = typename std::enable_if<S2 == size>::type>
-		Vector(const T a, const T b, const T c, const T d) throw() {
+		ANVIL_CALL Vector(const T a, const T b, const T c, const T d) throw() {
 			mData[0] = a;
 			mData[1] = b;
 			mData[2] = c;
 			mData[3] = d;
 		}
 
-		Vector(const T* aData, size_t aSize) throw() {
+		ANVIL_CALL Vector(const T* aData, size_t aSize) throw() {
 			const size_t s = aSize < size ? aSize : size;
 			for (size_t i = 0; i < s; ++i) mData[i] = aData[i];
 			if (aSize < size) memset(mData + aSize, 0, sizeof(type) * (size - aSize));
 		}
 
-		Vector(const array_t aOther) throw() {
+		ANVIL_CALL Vector(const array_t aOther) throw() {
 			memcpy(mData, aOther, sizeof(type) * size);
 		}
 		
 		template<size_t SA, size_t SB, class ENABLE = typename std::enable_if<(SA + SB) == size>::type>
-		Vector(const Vector<type, SA> a, const const Vector<type, SB> b) throw() {
+		ANVIL_CALL Vector(const Vector<type, SA> a, const const Vector<type, SB> b) throw() {
 			type* ptr = mData;
 			size_t s1 = sizeof(type) * size;
 			size_t s2 = std::min(s1, sizeof(type) * SA);
@@ -105,7 +105,7 @@ namespace anvil {
 		}
 
 		template<size_t SA, size_t SB, size_t SC, class ENABLE = typename std::enable_if<(SA + SB + SC) == size>::type>
-		Vector(const Vector<type, SA> a, const const Vector<type, SB> b, const const Vector<type, SC> c) throw() {
+		ANVIL_CALL Vector(const Vector<type, SA> a, const const Vector<type, SB> b, const const Vector<type, SC> c) throw() {
 			type* ptr = mData;
 			size_t s1 = sizeof(type) * size;
 			size_t s2 = std::min(s1, sizeof(type) * SA);
@@ -127,7 +127,7 @@ namespace anvil {
 		}
 
 		template<class T2, size_t S2>
-		explicit operator Vector<T2, S2>() const throw() {
+		explicit ANVIL_CALL operator Vector<T2, S2>() const throw() {
 			enum { S3 = size < S2 ? size : S2 };
 
 			Vector<T2, S2> tmp;
@@ -138,254 +138,254 @@ namespace anvil {
 			}
 		}
 
-		explicit operator bool() const throw() {
+		explicit ANVIL_CALL operator bool() const throw() {
 			this_t tmp;
 			return memcmp(this, &tmp, sizeof(this_t)) != 0;
 		}
 
-		inline this_t operator!() const throw() {
+		inline this_t ANVIL_CALL operator!() const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = !mData[i];
 			return tmp;
 		}
 
 		template<class T2 = type>
-		inline typename std::enable_if<std::is_integral<T2>::value, this_t>::type operator~() const throw() {
+		inline typename std::enable_if<std::is_integral<T2>::value, this_t>::type ANVIL_CALL operator~() const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = ~mData[i];
 			return tmp;
 		}
 
-		inline this_t operator%(const this_t aOther) const throw() {
+		inline this_t ANVIL_CALL operator%(const this_t aOther) const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mod<type>(mData[i], aOther.mData[i]);
 			return tmp;
 		}
 
-		inline this_t operator==(const this_t aOther) const throw() {
+		inline this_t ANVIL_CALL operator==(const this_t aOther) const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = static_cast<type>(mData[i] == aOther.mData[i]);
 			return tmp;
 		}
 
-		inline this_t operator!=(const this_t aOther) const throw() {
+		inline this_t ANVIL_CALL operator!=(const this_t aOther) const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = static_cast<type>(mData[i] != aOther.mData[i]);
 			return tmp;
 		}
 
-		inline this_t operator<(const this_t aOther) const throw() {
+		inline this_t ANVIL_CALL operator<(const this_t aOther) const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = static_cast<type>(mData[i] < aOther.mData[i]);
 			return tmp;
 		}
 
-		inline this_t operator>(const this_t aOther) const throw() {
+		inline this_t ANVIL_CALL operator>(const this_t aOther) const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = static_cast<type>(mData[i] > aOther.mData[i]);
 			return tmp;
 		}
 
-		inline this_t operator<=(const this_t aOther) const throw() {
+		inline this_t ANVIL_CALL operator<=(const this_t aOther) const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = static_cast<type>(mData[i] <= aOther.mData[i]);
 			return tmp;
 		}
 
-		inline this_t operator>=(const this_t aOther) const throw() {
+		inline this_t ANVIL_CALL operator>=(const this_t aOther) const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = static_cast<type>(mData[i] >= aOther.mData[i]);
 			return tmp;
 		}
 
-		inline this_t operator+(const this_t aOther) const throw() {
+		inline this_t ANVIL_CALL operator+(const this_t aOther) const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mData[i] + aOther.mData[i];
 			return tmp;
 		}
 
-		inline this_t operator-(const this_t aOther) const throw() {
+		inline this_t ANVIL_CALL operator-(const this_t aOther) const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mData[i] - aOther.mData[i];
 			return tmp;
 		}
 
-		inline this_t operator*(const this_t aOther) const throw() {
+		inline this_t ANVIL_CALL operator*(const this_t aOther) const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mData[i] * aOther.mData[i];
 			return tmp;
 		}
 
-		inline this_t operator/(const this_t aOther) const throw() {
+		inline this_t ANVIL_CALL operator/(const this_t aOther) const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mData[i] / aOther.mData[i];
 			return tmp;
 		}
 
 		template<class T2 = type>
-		inline typename std::enable_if<std::is_integral<T2>::value, this_t>::type operator&(const this_t aOther) const throw() {
+		inline typename std::enable_if<std::is_integral<T2>::value, this_t>::type ANVIL_CALL operator&(const this_t aOther) const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mData[i] & aOther.mData[i];
 			return tmp;
 		}
 
 		template<class T2 = type>
-		inline typename std::enable_if<std::is_integral<T2>::value, this_t>::type operator|(const this_t aOther) const throw() {
+		inline typename std::enable_if<std::is_integral<T2>::value, this_t>::type ANVIL_CALL operator|(const this_t aOther) const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mData[i] | aOther.mData[i];
 			return tmp;
 		}
 
 		template<class T2 = type>
-		inline typename std::enable_if<std::is_integral<T2>::value, this_t>::type operator^(const this_t aOther) const throw() {
+		inline typename std::enable_if<std::is_integral<T2>::value, this_t>::type ANVIL_CALL operator^(const this_t aOther) const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mData[i] ^ aOther.mData[i];
 			return tmp;
 		}
 
 		template<class T2 = type>
-		inline typename std::enable_if<std::is_integral<T2>::value, this_t>::type operator<<(const this_t aOther) const throw() {
+		inline typename std::enable_if<std::is_integral<T2>::value, this_t>::type ANVIL_CALL operator<<(const this_t aOther) const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mData[i] << aOther.mData[i];
 			return tmp;
 		}
 
 		template<class T2 = type>
-		inline typename std::enable_if<std::is_integral<T2>::value, this_t>::type operator>>(const this_t aOther) const throw() {
+		inline typename std::enable_if<std::is_integral<T2>::value, this_t>::type ANVIL_CALL operator>>(const this_t aOther) const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mData[i] >> aOther.mData[i];
 			return tmp;
 		}
 
-		inline this_t& operator+=(const this_t aOther) throw() {
+		inline this_t& ANVIL_CALL operator+=(const this_t aOther) throw() {
 			for (size_t i = 0; i < size; ++i) mData[i] += aOther.mData[i];
 			return *this;
 		}
 
-		inline this_t& operator-=(const this_t aOther) throw() {
+		inline this_t& ANVIL_CALL operator-=(const this_t aOther) throw() {
 			for (size_t i = 0; i < size; ++i) mData[i] -= aOther.mData[i];
 			return *this;
 		}
 
-		inline this_t& operator*=(const this_t aOther) throw() {
+		inline this_t& ANVIL_CALL operator*=(const this_t aOther) throw() {
 			for (size_t i = 0; i < size; ++i) mData[i] *= aOther.mData[i];
 			return *this;
 		}
 
-		inline this_t& operator/=(const this_t aOther) throw() {
+		inline this_t& ANVIL_CALL operator/=(const this_t aOther) throw() {
 			for (size_t i = 0; i < size; ++i) mData[i] /= aOther.mData[i];
 			return *this;
 		}
 
 		template<class T2 = type>
-		inline typename std::enable_if<std::is_integral<T2>::value, this_t&>::type operator&=(const this_t aOther) throw() {
+		inline typename std::enable_if<std::is_integral<T2>::value, this_t&>::type ANVIL_CALL operator&=(const this_t aOther) throw() {
 			for (size_t i = 0; i < size; ++i) mData[i] &= aOther.mData[i];
 			return *this;
 		}
 
 		template<class T2 = type>
-		inline typename std::enable_if<std::is_integral<T2>::value, this_t&>::type operator|=(const this_t aOther) throw() {
+		inline typename std::enable_if<std::is_integral<T2>::value, this_t&>::type ANVIL_CALL operator|=(const this_t aOther) throw() {
 			for (size_t i = 0; i < size; ++i) mData[i] |= aOther.mData[i];
 			return *this;
 		}
 
 		template<class T2 = type>
-		inline typename std::enable_if<std::is_integral<T2>::value, this_t&>::type operator^=(const this_t aOther) throw() {
+		inline typename std::enable_if<std::is_integral<T2>::value, this_t&>::type ANVIL_CALL operator^=(const this_t aOther) throw() {
 			for (size_t i = 0; i < size; ++i) mData[i] ^= aOther.mData[i];
 			return *this;
 		}
 
 		template<class T2 = type>
-		inline typename std::enable_if<std::is_integral<T2>::value, this_t&>::type operator<<=(const this_t aOther) throw() {
+		inline typename std::enable_if<std::is_integral<T2>::value, this_t&>::type ANVIL_CALL operator<<=(const this_t aOther) throw() {
 			for (size_t i = 0; i < size; ++i) mData[i] <<= aOther.mData[i];
 			return *this;
 		}
 
 		template<class T2 = type>
-		inline typename std::enable_if<std::is_integral<T2>::value, this_t&>::type operator>>=(const this_t aOther) throw() {
+		inline typename std::enable_if<std::is_integral<T2>::value, this_t&>::type ANVIL_CALL operator>>=(const this_t aOther) throw() {
 			for (size_t i = 0; i < size; ++i) mData[i] >>= aOther.mData[i];
 			return *this;
 		}
 
-		inline this_t& operator++() throw() {
+		inline this_t& ANVIL_CALL operator++() throw() {
 			this_t tmp(*this);
 			for (size_t i = 0; i < size; ++i) ++tmp.mData[i];
 			return *this;
 		}
 
-		inline this_t& operator--() throw() {
+		inline this_t& ANVIL_CALL operator--() throw() {
 			this_t tmp(*this);
 			for (size_t i = 0; i < size; ++i) ++tmp.mData[i];
 			return *this;
 		}
 
-		inline this_t operator++(int) throw() {
+		inline this_t ANVIL_CALL operator++(int) throw() {
 			const this_t tmp(*this);
 			for (size_t i = 0; i < size; ++i) ++mData[i];
 			return tmp;
 		}
 
-		inline this_t operator--(int) throw() {
+		inline this_t ANVIL_CALL operator--(int) throw() {
 			const this_t tmp(*this);
 			for (size_t i = 0; i < size; ++i) ++mData[i];
 			return tmp;
 		}
 
-		inline type operator[](const size_t aIndex) const throw() {
+		inline type ANVIL_CALL operator[](const size_t aIndex) const throw() {
 			return mData[aIndex];
 		}
 
-		inline type& operator[](const size_t aIndex) throw() {
+		inline type& ANVIL_CALL operator[](const size_t aIndex) throw() {
 			return mData[aIndex];
 		}
 
-		inline const type* begin() const throw() {
+		inline const type* ANVIL_CALL begin() const throw() {
 			return mData;
 		}
 
-		inline type* begin() throw() {
+		inline type* ANVIL_CALL begin() throw() {
 			return mData;
 		}
 
-		inline const type* end() const throw() {
+		inline const type* ANVIL_CALL end() const throw() {
 			return mData + size;
 		}
 
-		inline type* end() throw() {
+		inline type* ANVIL_CALL end() throw() {
 			return mData + size;
 		}
 
-		inline float_t sumf() const throw() {
+		inline float_t ANVIL_CALL sumf() const throw() {
 			float_t tmp = static_cast<float_t>(0);
 			for (size_t i = 0; i < size; ++i) tmp += static_cast<float_t>(mData[i]);
 			return tmp;
 		}
 
-		inline float_t avgf() const throw() {
+		inline float_t ANVIL_CALL avgf() const throw() {
 			return sumf() / static_cast<float_t>(size);
 		}
 
-		inline type sum() const throw() {
+		inline type ANVIL_CALL sum() const throw() {
 			return static_cast<type>(sumf());
 		}
 
-		inline type avg() const throw() {
+		inline type ANVIL_CALL avg() const throw() {
 			return static_cast<type>(avgf());
 		}
 
-		inline type min() const throw() {
+		inline type ANVIL_CALL min() const throw() {
 			type tmp = mData[0];
 			for (size_t i = 1; i < size; ++i) tmp = anvil::min(tmp, mData[i]);
 			return tmp;
 		}
 
-		inline type max() const throw() {
+		inline type ANVIL_CALL max() const throw() {
 			type tmp = mData[0];
 			for (size_t i = 1; i < size; ++i) tmp = anvil::max(tmp, mData[i]);
 			return tmp;
 		}
 
-		inline float_t dot(const this_t aOther) const throw() {
+		inline float_t ANVIL_CALL dot(const this_t aOther) const throw() {
 			if (std::is_same<float_t, type>::value) {
 				float_t sum = static_cast<float_t>(0);
 				for (size_t i = 0; i < size; ++i) sum = fma(mData[i], aOther.mData[i], sum);
@@ -398,7 +398,7 @@ namespace anvil {
 		}
 
 		template<size_t S2 = size>
-		inline typename std::enable_if<S2 == 3, this_t>::type cross(const this_t aOther) const throw() {
+		inline typename std::enable_if<S2 == 3, this_t>::type ANVIL_CALL cross(const this_t aOther) const throw() {
 			const type tmp[3] = {
 				(mData[1] * aOther.mData[2]) - (mData[2] * aOther.mData[1]),
 				(mData[2] * aOther.mData[0]) - (mData[0] * aOther.mData[2]),
@@ -407,7 +407,7 @@ namespace anvil {
 			return this_t(tmp);
 		}
 
-		inline float_t mag2f() const throw() {
+		inline float_t ANVIL_CALL mag2f() const throw() {
 			if (std::is_same<float_t, type>::value) {
 				float_t sum = static_cast<float_t>(0);
 				for (size_t i = 0; i < size; ++i) sum = fma(mData[i], mData[i], sum);
@@ -417,19 +417,19 @@ namespace anvil {
 			}
 		}
 
-		inline float_t magf() const throw() {
+		inline float_t ANVIL_CALL magf() const throw() {
 			return sqrt(mag2f());
 		}
 
-		inline type mag2() const throw() {
+		inline type ANVIL_CALL mag2() const throw() {
 			return static_cast<type>(mag2f());
 		}
 
-		inline type mag() const throw() {
+		inline type ANVIL_CALL mag() const throw() {
 			return static_cast<type>(magf());
 		}
 
-		inline Vector<float_t, size> normalisef() const throw() {
+		inline Vector<float_t, size> ANVIL_CALL normalisef() const throw() {
 			if (std::is_same<float_t, type>::value) {
 				float_t mag = static_cast<float_t>(0);
 				Vector<float_t, size> tmp;
@@ -444,12 +444,12 @@ namespace anvil {
 			}
 		}
 
-		inline this_t normalise() const throw() {
+		inline this_t ANVIL_CALL normalise() const throw() {
 			return this_t(normalisef());
 		}
 
 		template<class T2, size_t S2>
-		Vector<type, S2> swizzle(const Vector<T2, S2> aOther) const throw() {
+		Vector<type, S2> ANVIL_CALL swizzle(const Vector<T2, S2> aOther) const throw() {
 			Vector<type, S2> tmp;
 			for (size_t i = 0; i < S2; ++i) tmp[i] = mData[static_cast<size_t>(aOther[i])];
 			return tmp;
@@ -457,7 +457,7 @@ namespace anvil {
 	};
 
 	template<class T, size_t S>
-	std::ostream& operator<<(std::ostream& aStream, Vector<T, S> aValue) {
+	std::ostream& ANVIL_CALL operator<<(std::ostream& aStream, Vector<T, S> aValue) {
 		aStream << '[';
 		for (size_t i = 0; i < S - 1; ++i) aStream << aValue[i] << ',';
 		aStream << aValue[S - 1];
@@ -466,7 +466,7 @@ namespace anvil {
 	}
 
 	template<class T, size_t S>
-	std::istream& operator>>(std::istream& aStream, Vector<T, S>& aValue) {
+	std::istream& ANVIL_CALL operator>>(std::istream& aStream, Vector<T, S>& aValue) {
 		char buf;
 		aStream >> buf;
 		for (size_t i = 0; i < S - 1; ++i) aStream >> aValue[i] >> buf;
@@ -476,92 +476,92 @@ namespace anvil {
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S> operator+(const T a, const Vector<T, S> b) {
+	inline Vector<T, S> ANVIL_CALL operator+(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) + b;
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S> operator-(const T a, const Vector<T, S> b) {
+	inline Vector<T, S> ANVIL_CALL operator-(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) - b;
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S> operator*(const T a, const Vector<T, S> b) {
+	inline Vector<T, S> ANVIL_CALL operator*(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) * b;
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S> operator/(const T a, const Vector<T, S> b) {
+	inline Vector<T, S> ANVIL_CALL operator/(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) / b;
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S> operator&(const T a, const Vector<T, S> b) {
+	inline Vector<T, S> ANVIL_CALL operator&(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) & b;
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S> operator|(const T a, const Vector<T, S> b) {
+	inline Vector<T, S> ANVIL_CALL operator|(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) | b;
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S> operator^(const T a, const Vector<T, S> b) {
+	inline Vector<T, S> ANVIL_CALL operator^(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) ^ b;
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S> operator&&(const T a, const Vector<T, S> b) {
+	inline Vector<T, S> ANVIL_CALL operator&&(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) && b;
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S> operator||(const T a, const Vector<T, S> b) {
+	inline Vector<T, S> ANVIL_CALL operator||(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) ^ b;
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S> operator==(const T a, const Vector<T, S> b) {
+	inline Vector<T, S> ANVIL_CALL operator==(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) == b;
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S> operator!=(const T a, const Vector<T, S> b) {
+	inline Vector<T, S> ANVIL_CALL operator!=(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) != b;
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S> operator<(const T a, const Vector<T, S> b) {
+	inline Vector<T, S> ANVIL_CALL operator<(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) < b;
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S> operator>(const T a, const Vector<T, S> b) {
+	inline Vector<T, S> ANVIL_CALL operator>(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) > b;
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S> operator<=(const T a, const Vector<T, S> b) {
+	inline Vector<T, S> ANVIL_CALL operator<=(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) <= b;
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S> operator>=(const T a, const Vector<T, S> b) {
+	inline Vector<T, S> ANVIL_CALL operator>=(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) >= b;
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S> operator<<(const T a, const Vector<T, S> b) {
+	inline Vector<T, S> ANVIL_CALL operator<<(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) << b;
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S> operator>>(const T a, const Vector<T, S> b) {
+	inline Vector<T, S> ANVIL_CALL operator>>(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) >> b;
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S> operator%(const T a, const Vector<T, S> b) {
+	inline Vector<T, S> ANVIL_CALL operator%(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) % b;
 	}
 
@@ -654,7 +654,7 @@ namespace anvil {
 	// Popcount.hpp overloads
 
 	template<class T, size_t S>
-	static inline Vector<size_t, S> popcount(const Vector<T, S> a) {
+	static inline Vector<size_t, S> ANVIL_CALL popcount(const Vector<T, S> a) {
 		Vector<size_t, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = popcount(a[i]);
 		return tmp;
@@ -663,7 +663,7 @@ namespace anvil {
 	// Reflection.hpp reflect
 
 	template<class T, size_t S>
-	static inline Vector<size_t, S> reflect(const Vector<T, S> a) {
+	static inline Vector<size_t, S> ANVIL_CALL reflect(const Vector<T, S> a) {
 		Vector<size_t, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = reflect(a[i]);
 		return tmp;
@@ -672,217 +672,217 @@ namespace anvil {
 	// Common.hpp overloads
 
 	template<class T, size_t S>
-	static inline const Vector<T, S> abs(const Vector<T, S> a) {
+	static inline const Vector<T, S> ANVIL_CALL abs(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = abs(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline const Vector<T, S> abs(const Vector<T, S> a, const Vector<T, S> b) {
+	static inline const Vector<T, S> ANVIL_CALL abs(const Vector<T, S> a, const Vector<T, S> b) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = mod(a[i], b[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> fma(const Vector<T, S> a, const Vector<T, S> b, const Vector<T, S> c) {
+	static inline Vector<T, S> ANVIL_CALL fma(const Vector<T, S> a, const Vector<T, S> b, const Vector<T, S> c) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = fma(a[i], b[i], c[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> max(const Vector<T, S> a, const Vector<T, S> b) {
+	static inline Vector<T, S> ANVIL_CALL max(const Vector<T, S> a, const Vector<T, S> b) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = max(a[i], b[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> min(const Vector<T, S> a, const Vector<T, S> b) {
+	static inline Vector<T, S> ANVIL_CALL min(const Vector<T, S> a, const Vector<T, S> b) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = min(a[i], b[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> dif(const Vector<T, S> a, const Vector<T, S> b) {
+	static inline Vector<T, S> ANVIL_CALL dif(const Vector<T, S> a, const Vector<T, S> b) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = dif(a[i], b[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> exp(const Vector<T, S> a) {
+	static inline Vector<T, S> ANVIL_CALL exp(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = exp(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> log(const Vector<T, S> a) {
+	static inline Vector<T, S> ANVIL_CALL log(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = log(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> log2(const Vector<T, S> a) {
+	static inline Vector<T, S> ANVIL_CALL log2(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = log2(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> log10(const Vector<T, S> a) {
+	static inline Vector<T, S> ANVIL_CALL log10(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = log10(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> pow(const Vector<T, S> a, const Vector<T, S> b) {
+	static inline Vector<T, S> ANVIL_CALL pow(const Vector<T, S> a, const Vector<T, S> b) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = pow(a[i], b[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> sqrt(const Vector<T, S> a) {
+	static inline Vector<T, S> ANVIL_CALL sqrt(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = sqrt(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> cbrt(const Vector<T, S> a) {
+	static inline Vector<T, S> ANVIL_CALL cbrt(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = cbrt(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> hypot(const Vector<T, S> a, const Vector<T, S> b) {
+	static inline Vector<T, S> ANVIL_CALL hypot(const Vector<T, S> a, const Vector<T, S> b) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = hypot(a[i], b[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> sin(const Vector<T, S> a) {
+	static inline Vector<T, S> ANVIL_CALL sin(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = sin(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> cos(const Vector<T, S> a) {
+	static inline Vector<T, S> ANVIL_CALL cos(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = cos(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> tan(const Vector<T, S> a) {
+	static inline Vector<T, S> ANVIL_CALL tan(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = tan(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline const Vector<T, S> asin(const Vector<T, S> a) {
+	static inline const Vector<T, S> ANVIL_CALL asin(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = asin(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline const Vector<T, S> acos(const Vector<T, S> a) {
+	static inline const Vector<T, S> ANVIL_CALL acos(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = acos(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline const Vector<T, S> atan(const Vector<T, S> a) {
+	static inline const Vector<T, S> ANVIL_CALL atan(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = atan(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline const Vector<T, S> atan2(const Vector<T, S> a, const Vector<T, S> b) {
+	static inline const Vector<T, S> ANVIL_CALL atan2(const Vector<T, S> a, const Vector<T, S> b) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = atan2(a[i], b[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> sinh(const Vector<T, S> a) {
+	static inline Vector<T, S> ANVIL_CALL sinh(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = sinh(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> cosh(const Vector<T, S> a) {
+	static inline Vector<T, S> ANVIL_CALL cosh(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = cosh(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> tanh(const Vector<T, S> a) {
+	static inline Vector<T, S> ANVIL_CALL tanh(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = tanh(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline const Vector<T, S> asinh(const Vector<T, S> a) {
+	static inline const Vector<T, S> ANVIL_CALL asinh(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = asinh(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline const Vector<T, S> acosh(const Vector<T, S> a) {
+	static inline const Vector<T, S> ANVIL_CALL acosh(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = acosh(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline const Vector<T, S> atanh(const Vector<T, S> a) {
+	static inline const Vector<T, S> ANVIL_CALL atanh(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = atanh(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> ceil(const Vector<T, S> a) {
+	static inline Vector<T, S> ANVIL_CALL ceil(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = ceil(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> floor(const Vector<T, S> a) {
+	static inline Vector<T, S> ANVIL_CALL floor(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = floor(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> trunc(const Vector<T, S> a) {
+	static inline Vector<T, S> ANVIL_CALL trunc(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = trunc(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> round(const Vector<T, S> a) {
+	static inline Vector<T, S> ANVIL_CALL round(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = round(a[i]);
 		return tmp;
