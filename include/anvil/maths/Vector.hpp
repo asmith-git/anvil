@@ -140,7 +140,7 @@ namespace anvil {
 
 		explicit operator bool() const throw() {
 			this_t tmp;
-			return memcmp(this, &tmp, sizeof(this_t)) == 0;
+			return memcmp(this, &tmp, sizeof(this_t)) != 0;
 		}
 
 		inline this_t operator!() const throw() {
