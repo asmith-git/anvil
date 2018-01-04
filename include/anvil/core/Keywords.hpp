@@ -35,6 +35,7 @@
 	#define ANVIL_CONSTEXPR_FN constexpr
 	#define ANVIL_CONSTEXPR_CLA constexpr
 	#define ANVIL_ALIGN(x) alignas(x)
+	#define ANVIL_THREAD_LOCAL thread_local
 #else
 	#define ANVIL_CONSTEXPR_VAR 
 	#define ANVIL_CONSTEXPR_FN inline
@@ -42,7 +43,9 @@
 
 	#if ANVIL_COMPILER == ANVIL_MSVC
 		#define ANVIL_ALIGN(x) __declspec(align(x))
+		#define ANVIL_THREAD_LOCAL __declspec(thread)
 	#else
+		#define ANVIL_THREAD_LOCAL //! \todo Thread local on non-microsoft compilers
 		#define ANVIL_ALIGN(x)
 	#endif
 #endif
