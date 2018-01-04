@@ -679,7 +679,7 @@ namespace anvil {
 	}
 
 	template<class T, size_t S>
-	static inline const Vector<T, S> ANVIL_CALL abs(const Vector<T, S> a, const Vector<T, S> b) {
+	static inline const Vector<T, S> ANVIL_CALL mod(const Vector<T, S> a, const Vector<T, S> b) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = mod(a[i], b[i]);
 		return tmp;
