@@ -134,7 +134,7 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL dim(T a, T b) {
-		return anvil::max<T>(a, b) - anvil::min<T>(a, b);
+		return a > b ? a - b : static_cast<T>(0);
 	}
 
 	template<>
