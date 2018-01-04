@@ -707,9 +707,9 @@ namespace anvil {
 	}
 
 	template<class T, size_t S>
-	static inline Vector<T, S> ANVIL_CALL dif(const Vector<T, S> a, const Vector<T, S> b) {
+	static inline Vector<T, S> ANVIL_CALL dim(const Vector<T, S> a, const Vector<T, S> b) {
 		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp[i] = dif(a[i], b[i]);
+		for (size_t i = 0; i < S; ++i) tmp[i] = dim(a[i], b[i]);
 		return tmp;
 	}
 

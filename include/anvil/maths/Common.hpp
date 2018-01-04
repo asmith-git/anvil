@@ -19,6 +19,7 @@
 #include <algorithm>
 
 namespace anvil {
+
 	// abs
 
 	template<class T>
@@ -104,7 +105,7 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL fmax(T a, T b) {
-		returnmax(a, b);
+		return anvil::max(a, b);
 	}
 
 	template<class T>
@@ -116,7 +117,7 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL fmin(T a, T b) {
-		return min(a, b);
+		return anvil::min(a, b);
 	}
 
 	template<class T>
@@ -128,21 +129,21 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL fdim(T a, T b) {
-		return dif(a, b);
+		return dim(a, b);
 	}
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL dif(T a, T b) {
-		return max<T>(a, b) - min<T>(a, b);
+	static ANVIL_STRONG_INLINE T ANVIL_CALL dim(T a, T b) {
+		return anvil::max<T>(a, b) - anvil::min<T>(a, b);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL dif<float>(const float a, const float b) {
+	static ANVIL_STRONG_INLINE float ANVIL_CALL dim<float>(const float a, const float b) {
 		return std::fdim(a, b);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL dif<double>(const double a, const double b) {
+	static ANVIL_STRONG_INLINE double ANVIL_CALL dim<double>(const double a, const double b) {
 		return std::fdim(a, b);
 	}
 
