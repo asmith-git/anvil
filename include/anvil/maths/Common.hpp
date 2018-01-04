@@ -22,18 +22,43 @@ namespace anvil {
 	// abs
 
 	template<class T>
+	static ANVIL_STRONG_INLINE T ANVIL_CALL fabs(T aValue) {
+		return anvil::abs(aValue);
+	}
+
+	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL abs(T aValue) {
-		return static_cast<T>(std::abs(static_cast<float>(a)));
+		return std::abs(a);
+	}
+
+	template<>
+	static ANVIL_STRONG_INLINE uint8_t ANVIL_CALL abs<uint8_t>(const uint8_t a) {
+		return a;
+	}
+
+	template<>
+	static ANVIL_STRONG_INLINE uint16_t ANVIL_CALL abs<uint16_t>(const uint16_t a) {
+		return a;
+	}
+
+	template<>
+	static ANVIL_STRONG_INLINE uint32_t ANVIL_CALL abs<uint32_t>(const uint32_t a) {
+		return a;
+	}
+
+	template<>
+	static ANVIL_STRONG_INLINE uint64_t ANVIL_CALL abs<uint64_t>(const uint64_t a) {
+		return a;
 	}
 
 	template<>
 	static ANVIL_STRONG_INLINE float ANVIL_CALL abs<float>(const float a) {
-		return std::abs(a);
+		return std::fabs(a);
 	}
 
 	template<>
 	static ANVIL_STRONG_INLINE double ANVIL_CALL abs<double>(const double a) {
-		return std::abs(a);
+		return std::fabs(a);
 	}
 
 	// mod / fmod
