@@ -12,7 +12,7 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#include "anvil/maths/Reflection.hpp"
+#include "anvil/maths/BitArray.hpp"
 
 namespace anvil {
 	bool ANVIL_CALL checkBit(const void* aBits, size_t aOffset) throw() {
