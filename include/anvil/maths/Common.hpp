@@ -23,12 +23,12 @@ namespace anvil {
 	// abs
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL fabs(T aValue) {
-		return anvil::abs(aValue);
+	static ANVIL_STRONG_INLINE T ANVIL_CALL fabs(T a) {
+		return anvil::abs(a);
 	}
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL abs(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL abs(T a) {
 		return std::abs(a);
 	}
 
@@ -150,7 +150,7 @@ namespace anvil {
 	// exp
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL exp(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL exp(T a) {
 		return static_cast<T>(std::exp(static_cast<float>(a)));
 	}
 
@@ -167,7 +167,7 @@ namespace anvil {
 	// exp
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL log(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL log(T a) {
 		return static_cast<T>(std::log(static_cast<float>(a)));
 	}
 
@@ -184,7 +184,7 @@ namespace anvil {
 	// log2
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL log2(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL log2(T a) {
 		return static_cast<T>(std::log2(static_cast<float>(a)));
 	}
 
@@ -201,7 +201,7 @@ namespace anvil {
 	// log10
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL log10(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL log10(T a) {
 		return static_cast<T>(std::log10(static_cast<float>(a)));
 	}
 
@@ -235,7 +235,7 @@ namespace anvil {
 	// sqrt
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL sqrt(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL sqrt(T a) {
 		return static_cast<T>(std::sqrt(static_cast<float>(a)));
 	}
 
@@ -252,7 +252,7 @@ namespace anvil {
 	// cbrt
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL cbrt(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL cbrt(T a) {
 		return static_cast<T>(std::cbrt(static_cast<float>(a)));
 	}
 
@@ -286,7 +286,7 @@ namespace anvil {
 	// sin
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL sin(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL sin(T a) {
 		return static_cast<T>(std::sin(static_cast<float>(a)));
 	}
 
@@ -303,7 +303,7 @@ namespace anvil {
 	// cos
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL cos(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL cos(T a) {
 		return static_cast<T>(std::cos(static_cast<float>(a)));
 	}
 
@@ -320,7 +320,7 @@ namespace anvil {
 	// tan
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL tan(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL tan(T a) {
 		return static_cast<T>(std::tan(static_cast<float>(a)));
 	}
 
@@ -337,7 +337,7 @@ namespace anvil {
 	// asin
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL asin(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL asin(T a) {
 		return static_cast<T>(std::asin(static_cast<float>(a)));
 	}
 
@@ -354,7 +354,7 @@ namespace anvil {
 	// acos
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL acos(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL acos(T a) {
 		return static_cast<T>(std::acos(static_cast<float>(a)));
 	}
 
@@ -371,7 +371,7 @@ namespace anvil {
 	// atan
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL atan(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL atan(T a) {
 		return static_cast<T>(std::atan(static_cast<float>(a)));
 	}
 
@@ -405,7 +405,7 @@ namespace anvil {
 	// sinh
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL sinh(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL sinh(T a) {
 		return static_cast<T>(std::sinh(static_cast<float>(a)));
 	}
 
@@ -422,7 +422,7 @@ namespace anvil {
 	// cosh
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL cosh(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL cosh(T a) {
 		return static_cast<T>(std::cosh(static_cast<float>(a)));
 	}
 
@@ -439,7 +439,7 @@ namespace anvil {
 	// tanh
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL tanh(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL tanh(T a) {
 		return static_cast<T>(std::tanh(static_cast<float>(a)));
 	}
 
@@ -456,7 +456,7 @@ namespace anvil {
 	// asinh
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL asinh(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL asinh(T a) {
 		return static_cast<T>(std::asinh(static_cast<float>(a)));
 	}
 
@@ -473,7 +473,7 @@ namespace anvil {
 	// acosh
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL acosh(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL acosh(T a) {
 		return static_cast<T>(std::acosh(static_cast<float>(a)));
 	}
 
@@ -490,7 +490,7 @@ namespace anvil {
 	// atanh
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL atanh(T aValue) {
+	static ANVIL_STRONG_INLINE T ANVIL_CALL atanh(T a) {
 		return static_cast<T>(std::atanh(static_cast<float>(a)));
 	}
 
@@ -507,8 +507,8 @@ namespace anvil {
 	// ceil
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL ceil(T aValue) {
-		return aValue;
+	static ANVIL_STRONG_INLINE T ANVIL_CALL ceil(T a) {
+		return a;
 	}
 
 	template<>
@@ -524,8 +524,8 @@ namespace anvil {
 	// floor
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL floor(T aValue) {
-		return aValue;
+	static ANVIL_STRONG_INLINE T ANVIL_CALL floor(T a) {
+		return a;
 	}
 
 	template<>
@@ -541,8 +541,8 @@ namespace anvil {
 	// trunc
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL trunc(T aValue) {
-		return aValue;
+	static ANVIL_STRONG_INLINE T ANVIL_CALL trunc(T a) {
+		return a;
 	}
 
 	template<>
@@ -558,8 +558,8 @@ namespace anvil {
 	// round
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL round(T aValue) {
-		return aValue;
+	static ANVIL_STRONG_INLINE T ANVIL_CALL round(T a) {
+		return a;
 	}
 
 	template<>
