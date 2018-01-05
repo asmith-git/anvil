@@ -88,7 +88,7 @@ namespace anvil {
 		}
 		
 		template<size_t SA, size_t SB, class ENABLE = typename std::enable_if<(SA + SB) == size>::type>
-		ANVIL_CALL Vector(const Vector<type, SA> a, const const Vector<type, SB> b) throw() {
+		ANVIL_CALL Vector(const Vector<type, SA> a,  Vector<type, SB> b) throw() {
 			type* ptr = mData;
 			size_t s1 = sizeof(type) * size;
 			size_t s2 = std::min(s1, sizeof(type) * SA);
@@ -105,7 +105,7 @@ namespace anvil {
 		}
 
 		template<size_t SA, size_t SB, size_t SC, class ENABLE = typename std::enable_if<(SA + SB + SC) == size>::type>
-		ANVIL_CALL Vector(const Vector<type, SA> a, const const Vector<type, SB> b, const const Vector<type, SC> c) throw() {
+		ANVIL_CALL Vector(const Vector<type, SA> a,  Vector<type, SB> b,  Vector<type, SC> c) throw() {
 			type* ptr = mData;
 			size_t s1 = sizeof(type) * size;
 			size_t s2 = std::min(s1, sizeof(type) * SA);
