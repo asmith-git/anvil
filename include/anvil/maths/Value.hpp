@@ -127,26 +127,32 @@ namespace anvil {
 		case ANVIL_16S:
 			fs16(aValue.s16, aValue.length);
 			break;
+#ifndef ANVIL_OCV_COMPATIBILITY
 		case ANVIL_32U:
 			fu32(aValue.u32, aValue.length);
 			break;
+#endif
 		case ANVIL_32S:
 			fs32(aValue.s32, aValue.length);
 			break;
+#ifndef ANVIL_OCV_COMPATIBILITY
 		case ANVIL_64U:
 			fu64(aValue.u64, aValue.length);
 			break;
 		case ANVIL_64S:
 			fs64(aValue.s64, aValue.length);
 			break;
+#endif
 		case ANVIL_32F:
 			ff32(aValue.f32, aValue.length);
 			break;
 		case ANVIL_64F:
 			ff64(aValue.f64, aValue.length);
+#ifndef ANVIL_OCV_COMPATIBILITY
 		case ANVIL_8B:
 			fb8(aValue.b8, aValue.length);
 			break;
+#endif
 		default:
 			returnValue = false;
 			break;

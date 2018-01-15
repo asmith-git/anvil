@@ -29,10 +29,11 @@
 	#define ANVIL_32S static_cast<anvil::Type>(4)
 	#define ANVIL_32F static_cast<anvil::Type>(5)
 	#define ANVIL_64F static_cast<anvil::Type>(6)
-	//#define ANVIL_32U static_cast<anvil::Type>(7)
-	//#define ANVIL_64U static_cast<anvil::Type>(7)
-	//#define ANVIL_64S static_cast<anvil::Type>(7)
-	//#define ANVIL_8B  static_cast<anvil::Type>(7)
+	#define ANVIL_32U static_cast<anvil::Type>(7)
+	#define ANVIL_64U static_cast<anvil::Type>(7)
+	#define ANVIL_64S static_cast<anvil::Type>(7)
+	#define ANVIL_8B  static_cast<anvil::Type>(7)
+	#define ANVIL_TYPES 7
 #else
 	#define ANVIL_8U  static_cast<anvil::Type>(0)
 	#define ANVIL_8S  static_cast<anvil::Type>(1)
@@ -45,6 +46,7 @@
 	#define ANVIL_32F static_cast<anvil::Type>(8)
 	#define ANVIL_64F static_cast<anvil::Type>(9)
 	#define ANVIL_8B  static_cast<anvil::Type>(10)
+	#define ANVIL_TYPES 11
 #endif
 // Base Types
 
@@ -154,10 +156,6 @@ namespace anvil {
 	}
 
 	static ANVIL_CONSTEXPR_FN Type GetWidePrimativeType(Type aType) throw() {
-#ifdef ANVIL_OCV_COMPATIBILITY
-		static const Type ANVIL_32U = static_cast<Type>(7);
-		static const Type ANVIL_64S = static_cast<Type>(7);
-#endif
 			return 
 				aType == ANVIL_8U || aType == ANVIL_8S ? ANVIL_16S :
 				aType == ANVIL_16U || aType == ANVIL_16S ? ANVIL_32S :
@@ -173,12 +171,6 @@ namespace anvil {
 
 	namespace detail {
 		static ANVIL_CONSTEXPR_FN size_t SizeOfPrimative(Type aType) throw() {
-#ifdef ANVIL_OCV_COMPATIBILITY
-			static const Type ANVIL_8B = static_cast<Type>(7);
-			static const Type ANVIL_32U = static_cast<Type>(7);
-			static const Type ANVIL_64U = static_cast<Type>(7);
-			static const Type ANVIL_64S = static_cast<Type>(7);
-#endif
 			return
 				aType == ANVIL_8U || aType == ANVIL_8S || aType == ANVIL_8B ? 1 :
 				aType == ANVIL_16U || aType == ANVIL_16S ? 2 :
