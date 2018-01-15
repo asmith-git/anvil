@@ -170,6 +170,26 @@ namespace anvil {
 				aType == ANVIL_64U || aType == ANVIL_64S || aType == ANVIL_64F ? 8 :
 				0;
 		}
+
+		static ANVIL_CONSTEXPR_FN int TypeWidthRank(Type aType) throw() {
+			return
+				aType == ANVIL_8U	? 0 :
+				aType == ANVIL_16U	? 1 :
+				aType == ANVIL_32U	? 2 :
+				aType == ANVIL_64U	? 3 :
+				aType == ANVIL_8S	? 1 :
+				aType == ANVIL_16S	? 2 :
+				aType == ANVIL_32S	? 3 :
+				aType == ANVIL_64S	? 4 :
+				aType == ANVIL_32F	? 5 :
+				aType == ANVIL_64F	? 6 :
+				aType == ANVIL_8B	? -1 :
+				0;
+		}
+
+		static ANVIL_CONSTEXPR_FN Type WidestTypePrimative(Type a, Type b) throw() {
+			return TypeWidthRank(a) < TypeWidthRank(b) ? b : a;
+		}
 	}
 
 	static ANVIL_CONSTEXPR_FN size_t SizeOf(Type aType) throw() {
@@ -178,6 +198,12 @@ namespace anvil {
 
 	static ANVIL_CONSTEXPR_FN size_t WidthOf(Type aType) throw() {
 		return detail::SizeOfPrimative(GetPrimativeType(aType)) << 3;
+	}
+
+	static ANVIL_CONSTEXPR_FN Type WidestType(anvil::Type a, anvil::Type b) throw() {
+		return anvil::CreateType(
+			detail::WidestTypePrimative(GetPrimativeType(a), GetPrimativeType(b)), 
+			GetChannels(a) < GetChannels(b) ? GetChannels(b) : GetChannels(a));
 	}
 
 	template<Type TYPE> struct TypeFromEnum;
