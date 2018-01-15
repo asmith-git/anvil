@@ -119,6 +119,25 @@ namespace anvil {
 			GetChannels(aType));
 	}
 
+	namespace detail {
+		static ANVIL_CONSTEXPR_FN size_t SizeOfPrimative(Type aType) throw() {
+			return
+				aType == ANVIL_8U || aType == ANVIL_8S || aType == ANVIL_8B ? 1 :
+				aType == ANVIL_16U || aType == ANVIL_16S ? 2 :
+				aType == ANVIL_32U || aType == ANVIL_32S || aType == ANVIL_32F ? 4 :
+				aType == ANVIL_64U || aType == ANVIL_64S || aType == ANVIL_64F ? 8 :
+				0;
+		}
+	}
+
+	static ANVIL_CONSTEXPR_FN size_t SizeOf(Type aType) throw() {
+		return detail::SizeOfPrimative(GetPrimativeType(aType)) * GetChannels(aType);
+	}
+
+	static ANVIL_CONSTEXPR_FN size_t WidthOf(Type aType) throw() {
+		return detail::SizeOfPrimative(GetPrimativeType(aType)) << 3;
+	}
+
 	template<Type TYPE> struct TypeFromEnum;
 	template<> struct TypeFromEnum<ANVIL_8U>  { typedef uint8_t type; };
 	template<> struct TypeFromEnum<ANVIL_8S>  { typedef int8_t type; };
