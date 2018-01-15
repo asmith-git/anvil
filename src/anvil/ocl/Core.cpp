@@ -148,7 +148,7 @@ namespace anvil { namespace ocl {
 		};
 	};
 
-	const char* ANVIL_CALL typeName(anvil::Type aType) throw() {
+	const char* ANVIL_CALL typeName(Type aType) throw() {
 		static ANVIL_CONSTEXPR_VAR const char gNames[28][8] = {
 			"uchar",  "uchar2",  "uchar3",  "uchar4",
 			"ushort", "ushort2", "ushort3", "ushort4",
@@ -159,7 +159,7 @@ namespace anvil { namespace ocl {
 			"bool",   "bool2",   "bool3",   "bool4"
 		};
 		
-		switch (anvil::GetPrimativeType(aType)) {
+		switch (GetPrimativeType(aType)) {
 		case ANVIL_8U:
 			return gNames[0 + GetChannels(aType) - 1];
 		case ANVIL_8S:
