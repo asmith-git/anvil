@@ -164,7 +164,7 @@ namespace anvil {
 		return std::exp(a);
 	}
 
-	// exp
+	// log
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL log(T a) {
