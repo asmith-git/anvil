@@ -21,32 +21,33 @@
 
 // Primative Types
 
+enum AnvilType : int16_t {
 #ifdef ANVIL_OCV_COMPATIBILITY
-	#define ANVIL_8U  static_cast<anvil::Type>(0)
-	#define ANVIL_8S  static_cast<anvil::Type>(1)
-	#define ANVIL_16U static_cast<anvil::Type>(2)
-	#define ANVIL_16S static_cast<anvil::Type>(3)
-	#define ANVIL_32S static_cast<anvil::Type>(4)
-	#define ANVIL_32F static_cast<anvil::Type>(5)
-	#define ANVIL_64F static_cast<anvil::Type>(6)
-	#define ANVIL_32U static_cast<anvil::Type>(8)
-	#define ANVIL_64U static_cast<anvil::Type>(9)
-	#define ANVIL_64S static_cast<anvil::Type>(10)
-	#define ANVIL_8B  static_cast<anvil::Type>(11)
+	ANVIL_8U  = 0,
+	ANVIL_8S  = 1,
+	ANVIL_16U = 2,
+	ANVIL_16S = 3,
+	ANVIL_32U = -1,
+	ANVIL_32S = 4,
+	ANVIL_64U = -2,
+	ANVIL_64S = -3,
+	ANVIL_32F = 5,
+	ANVIL_64F = 6,
+	ANVIL_8B  = -4
 #else
-	#define ANVIL_8U  static_cast<anvil::Type>(0)
-	#define ANVIL_8S  static_cast<anvil::Type>(1)
-	#define ANVIL_16U static_cast<anvil::Type>(2)
-	#define ANVIL_16S static_cast<anvil::Type>(3)
-	#define ANVIL_32U static_cast<anvil::Type>(4)
-	#define ANVIL_32S static_cast<anvil::Type>(5)
-	#define ANVIL_64U static_cast<anvil::Type>(6)
-	#define ANVIL_64S static_cast<anvil::Type>(7)
-	#define ANVIL_32F static_cast<anvil::Type>(8)
-	#define ANVIL_64F static_cast<anvil::Type>(9)
-	#define ANVIL_8B  static_cast<anvil::Type>(10)
+	ANVIL_8U  = 0
+	ANVIL_8S  = 1
+	ANVIL_16U = 2
+	ANVIL_16S = 3
+	ANVIL_32U = 4
+	ANVIL_32S = 5
+	ANVIL_64U = 6
+	ANVIL_64S = 7
+	ANVIL_32F = 8
+	ANVIL_64F = 9
+	ANVIL_8B  = 10
 #endif
-
+};
 // Base Types
 
 #define ANVIL_MAKETYPE(T,C) anvil::CreateType(T,C)
@@ -98,25 +99,48 @@
 
 // SSE Types
 
-#define ANVIL_8SC16 anvil::CreateType(ANVIL_8S,  16)
-#define ANVIL_8SC8  anvil::CreateType(ANVIL_8S,  8)
-#define ANVIL_16SC8 anvil::CreateType(ANVIL_16S, 8)
+#define ANVIL_8SC16 ANVIL_MAKETYPE(ANVIL_8S,  16)
+#define ANVIL_8SC8  ANVIL_MAKETYPE(ANVIL_8S,  8)
+#define ANVIL_16SC8 ANVIL_MAKETYPE(ANVIL_16S, 8)
 
 namespace anvil {
-	enum Type : int16_t {
+	typedef AnvilType Type;
 
-	};
+	namespace detail {
+		enum {
+#ifdef ANVIL_OCV_COMPATIBILITY
+			CHANNEL_SHIFT = 3,
+			MAX_DEPTH = 1 << CHANNEL_SHIFT,
+			DEPTH_MASK = MAX_DEPTH - 1
+#else
+			CHANNEL_SHIFT = 4,
+			DEPTH_MASK = 15
+#endif
+		};
+	}
 
 	static ANVIL_CONSTEXPR_FN Type CreateType(Type aType, int aChannels) throw() {
-		return static_cast<Type>(((aChannels - 1) << 4) | aType);
+#ifdef ANVIL_OCV_COMPATIBILITY
+		return static_cast<Type>((aType & detail::DEPTH_MASK) + (((aChannels)-1) << detail::CHANNEL_SHIFT));
+#else
+		return static_cast<Type>(((aChannels - 1) << detail::CHANNEL_SHIFT) | aType);
+#endif
 	}
 
 	static ANVIL_CONSTEXPR_FN Type GetPrimativeType(Type aType) throw() {
-		return static_cast<Type>(aType & 15);
+#ifdef ANVIL_OCV_COMPATIBILITY
+		return static_cast<Type>(aType & detail::DEPTH_MASK);
+#else
+		return static_cast<Type>(aType & detail::DEPTH_MASK);
+#endif
 	}
 
 	static ANVIL_CONSTEXPR_FN int GetChannels(Type aType) throw() {
-		return (aType >> 4) + 1;
+#ifdef ANVIL_OCV_COMPATIBILITY
+		return ((aType & (~detail::DEPTH_MASK)) >> detail::CHANNEL_SHIFT) + 1;
+#else
+		return (aType >> detail::CHANNEL_SHIFT) + 1;
+#endif
 	}
 
 	static ANVIL_CONSTEXPR_FN Type GetWidePrimativeType(Type aType) throw() {
