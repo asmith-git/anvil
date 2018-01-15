@@ -26,13 +26,13 @@
 	#define ANVIL_8S  static_cast<anvil::Type>(1)
 	#define ANVIL_16U static_cast<anvil::Type>(2)
 	#define ANVIL_16S static_cast<anvil::Type>(3)
-	#define ANVIL_32U static_cast<anvil::Type>(8)
 	#define ANVIL_32S static_cast<anvil::Type>(4)
-	#define ANVIL_64U static_cast<anvil::Type>(9)
-	#define ANVIL_64S static_cast<anvil::Type>(10)
 	#define ANVIL_32F static_cast<anvil::Type>(5)
 	#define ANVIL_64F static_cast<anvil::Type>(6)
-	#define ANVIL_8B  static_cast<anvil::Type>(11)
+	//#define ANVIL_32U static_cast<anvil::Type>(7)
+	//#define ANVIL_64U static_cast<anvil::Type>(7)
+	//#define ANVIL_64S static_cast<anvil::Type>(7)
+	//#define ANVIL_8B  static_cast<anvil::Type>(7)
 #else
 	#define ANVIL_8U  static_cast<anvil::Type>(0)
 	#define ANVIL_8S  static_cast<anvil::Type>(1)
@@ -66,14 +66,17 @@
 #define ANVIL_16SC2 ANVIL_MAKETYPE(ANVIL_16S, 2)
 #define ANVIL_16SC3 ANVIL_MAKETYPE(ANVIL_16S, 3)
 #define ANVIL_16SC4 ANVIL_MAKETYPE(ANVIL_16S, 4)
+#ifndef ANVIL_OCV_COMPATIBILITY
 #define ANVIL_32UC1 ANVIL_MAKETYPE(ANVIL_32U, 1)
 #define ANVIL_32UC2 ANVIL_MAKETYPE(ANVIL_32U, 2)
 #define ANVIL_32UC3 ANVIL_MAKETYPE(ANVIL_32U, 3)
 #define ANVIL_32UC4 ANVIL_MAKETYPE(ANVIL_32U, 4)
+#endif
 #define ANVIL_32SC1 ANVIL_MAKETYPE(ANVIL_32S, 1)
 #define ANVIL_32SC2 ANVIL_MAKETYPE(ANVIL_32S, 2)
 #define ANVIL_32SC3 ANVIL_MAKETYPE(ANVIL_32S, 3)
 #define ANVIL_32SC4 ANVIL_MAKETYPE(ANVIL_32S, 4)
+#ifndef ANVIL_OCV_COMPATIBILITY
 #define ANVIL_64UC1 ANVIL_MAKETYPE(ANVIL_64U, 1)
 #define ANVIL_64UC2 ANVIL_MAKETYPE(ANVIL_64U, 2)
 #define ANVIL_64UC3 ANVIL_MAKETYPE(ANVIL_64U, 3)
@@ -82,6 +85,7 @@
 #define ANVIL_64SC2 ANVIL_MAKETYPE(ANVIL_64S, 2)
 #define ANVIL_64SC3 ANVIL_MAKETYPE(ANVIL_64S, 3)
 #define ANVIL_64SC4 ANVIL_MAKETYPE(ANVIL_64S, 4)
+#endif
 #define ANVIL_32FC1 ANVIL_MAKETYPE(ANVIL_32F, 1)
 #define ANVIL_32FC2 ANVIL_MAKETYPE(ANVIL_32F, 2)
 #define ANVIL_32FC3 ANVIL_MAKETYPE(ANVIL_32F, 3)
@@ -90,10 +94,12 @@
 #define ANVIL_64FC2 ANVIL_MAKETYPE(ANVIL_64F, 2)
 #define ANVIL_64FC3 ANVIL_MAKETYPE(ANVIL_64F, 3)
 #define ANVIL_64FC4 ANVIL_MAKETYPE(ANVIL_64F, 4)
+#ifndef ANVIL_OCV_COMPATIBILITY
 #define ANVIL_8BC1  ANVIL_MAKETYPE(ANVIL_8B,  1)
 #define ANVIL_8BC2  ANVIL_MAKETYPE(ANVIL_8B,  2)
 #define ANVIL_8BC3  ANVIL_MAKETYPE(ANVIL_8B,  3)
 #define ANVIL_8BC4  ANVIL_MAKETYPE(ANVIL_8B,  4)
+#endif
 
 // SSE Types
 
@@ -148,6 +154,10 @@ namespace anvil {
 	}
 
 	static ANVIL_CONSTEXPR_FN Type GetWidePrimativeType(Type aType) throw() {
+#ifdef ANVIL_OCV_COMPATIBILITY
+		static const Type ANVIL_32U = static_cast<Type>(7);
+		static const Type ANVIL_64S = static_cast<Type>(7);
+#endif
 			return 
 				aType == ANVIL_8U || aType == ANVIL_8S ? ANVIL_16S :
 				aType == ANVIL_16U || aType == ANVIL_16S ? ANVIL_32S :
@@ -163,6 +173,12 @@ namespace anvil {
 
 	namespace detail {
 		static ANVIL_CONSTEXPR_FN size_t SizeOfPrimative(Type aType) throw() {
+#ifdef ANVIL_OCV_COMPATIBILITY
+			static const Type ANVIL_8B = static_cast<Type>(7);
+			static const Type ANVIL_32U = static_cast<Type>(7);
+			static const Type ANVIL_64U = static_cast<Type>(7);
+			static const Type ANVIL_64S = static_cast<Type>(7);
+#endif
 			return
 				aType == ANVIL_8U || aType == ANVIL_8S || aType == ANVIL_8B ? 1 :
 				aType == ANVIL_16U || aType == ANVIL_16S ? 2 :
@@ -174,16 +190,22 @@ namespace anvil {
 		static ANVIL_CONSTEXPR_FN int TypeWidthRank(Type aType) throw() {
 			return
 				aType == ANVIL_8U	? 0 :
-				aType == ANVIL_16U	? 1 :
+				aType == ANVIL_16U ? 1 :
+#ifndef ANVIL_OCV_COMPATIBILITY
 				aType == ANVIL_32U	? 2 :
 				aType == ANVIL_64U	? 3 :
+#endif
 				aType == ANVIL_8S	? 1 :
 				aType == ANVIL_16S	? 2 :
-				aType == ANVIL_32S	? 3 :
+				aType == ANVIL_32S ? 3 :
+#ifndef ANVIL_OCV_COMPATIBILITY
 				aType == ANVIL_64S	? 4 :
+#endif
 				aType == ANVIL_32F	? 5 :
 				aType == ANVIL_64F	? 6 :
+#ifndef ANVIL_OCV_COMPATIBILITY
 				aType == ANVIL_8B	? -1 :
+#endif
 				0;
 		}
 
@@ -211,26 +233,30 @@ namespace anvil {
 	template<> struct TypeFromEnum<ANVIL_8S>  { typedef int8_t type; };
 	template<> struct TypeFromEnum<ANVIL_16U> { typedef uint16_t type; };
 	template<> struct TypeFromEnum<ANVIL_16S> { typedef int16_t type; };
-	template<> struct TypeFromEnum<ANVIL_32U> { typedef uint32_t type; };
 	template<> struct TypeFromEnum<ANVIL_32S> { typedef int32_t type; };
-	template<> struct TypeFromEnum<ANVIL_64U> { typedef uint64_t type; };
-	template<> struct TypeFromEnum<ANVIL_64S> { typedef int64_t type; };
 	template<> struct TypeFromEnum<ANVIL_32F> { typedef float type; };
 	template<> struct TypeFromEnum<ANVIL_64F> { typedef double type; };
+#ifndef ANVIL_OCV_COMPATIBILITY
+	template<> struct TypeFromEnum<ANVIL_32U> { typedef uint32_t type; };
+	template<> struct TypeFromEnum<ANVIL_64U> { typedef uint64_t type; };
+	template<> struct TypeFromEnum<ANVIL_64S> { typedef int64_t type; };
 	template<> struct TypeFromEnum<ANVIL_8B>  { typedef bool type; };
+#endif
 
 	template<class T> struct EnumFromType;
 	template<> struct EnumFromType<uint8_t>  { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_8U; };
 	template<> struct EnumFromType<int8_t>   { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_8S; };
 	template<> struct EnumFromType<uint16_t> { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_16U; };
 	template<> struct EnumFromType<int16_t>  { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_16S; };
-	template<> struct EnumFromType<uint32_t> { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_32U; };
 	template<> struct EnumFromType<int32_t>  { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_32S; };
-	template<> struct EnumFromType<uint64_t> { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_64U; };
-	template<> struct EnumFromType<int64_t>  { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_64S; };
 	template<> struct EnumFromType<float>    { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_32F; };
 	template<> struct EnumFromType<double>   { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_64F; };
+#ifndef ANVIL_OCV_COMPATIBILITY
+	template<> struct EnumFromType<uint32_t> { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_32U; };
+	template<> struct EnumFromType<uint64_t> { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_64U; };
+	template<> struct EnumFromType<int64_t>  { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_64S; };
 	template<> struct EnumFromType<bool>     { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_8B; };
+#endif
 	
 	template<Type TYPE>
 	struct TypeInfo {
@@ -277,21 +303,27 @@ namespace anvil {
 			case ANVIL_16U :
 				return { GetChannels(aType), 2, 1, 0, 0 };
 			case ANVIL_16S :
-				return { GetChannels(aType), 2, 0, 1, 0 };
+				return{ GetChannels(aType), 2, 0, 1, 0 };
+#ifndef ANVIL_OCV_COMPATIBILITY
 			case ANVIL_32U :
 				return { GetChannels(aType), 4, 1, 0, 0 };
+#endif
 			case ANVIL_32S :
 				return { GetChannels(aType), 4, 0, 1, 0 };
+#ifndef ANVIL_OCV_COMPATIBILITY
 			case ANVIL_64U :
 				return { GetChannels(aType), 8, 1, 0, 0 };
 			case ANVIL_64S :
 				return { GetChannels(aType), 8, 0, 1, 0 };
+#endif
 			case ANVIL_32F :
 				return { GetChannels(aType), 4, 0, 0, 1 };
 			case ANVIL_64F :
 				return { GetChannels(aType), 8, 0, 0, 1 };
+#ifndef ANVIL_OCV_COMPATIBILITY
 			case ANVIL_8B :
 				return { GetChannels(aType), 8, 0, 0, 0 };
+#endif
 			default:
 				return TypeInfoRuntime();
 		}

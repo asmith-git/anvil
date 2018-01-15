@@ -99,6 +99,140 @@ namespace anvil {
 		return *this;
 	}
 
+#ifdef ANVIL_OCV_COMPATIBILITY
+	#define ANVIL_DEF_FUNCTIONS(E, T, N)\
+	ANVIL_CALL Value::Value(T aValue) throw() :\
+		type(E),\
+		length(1)\
+	{\
+		N[0] = aValue;\
+		for (int i = 1; i < MAX_LENGTH; ++i) N[i] = static_cast<T>(0);\
+	}\
+	ANVIL_CALL Value::Value(const T* aValue, size_t aLength) throw() :\
+		type(E),\
+		length(aLength < MAX_LENGTH ? aLength : MAX_LENGTH)\
+	{\
+			const int l = length;\
+			for (int i = 0; i < l; ++i) N[i] = aValue[i];\
+	}\
+	ANVIL_CALL Value::Value(Type aType, T aValue) throw() :\
+		type(aType),\
+		length(1)\
+	{\
+		switch(GetPrimativeType(aType)) {\
+		case ANVIL_8U:\
+			u8[0] = static_cast<uint8_t>(aValue);\
+			break;\
+		case ANVIL_8S:\
+			s8[0] = static_cast<int8_t>(aValue);\
+			break;\
+		case ANVIL_16U:\
+			u16[0] = static_cast<uint16_t>(aValue);\
+			break;\
+		case ANVIL_16S:\
+			s16[0] = static_cast<int16_t>(aValue);\
+			break;\
+		case ANVIL_32S:\
+			s32[0] = static_cast<int32_t>(aValue);\
+			break;\
+		case ANVIL_32F:\
+			f32[0] = static_cast<float32_t>(aValue);\
+			break;\
+		case ANVIL_64F:\
+			f64[0] = static_cast<float64_t>(aValue);\
+			break;\
+		default:\
+			break;\
+		}\
+	}\
+	ANVIL_CALL Value::Value(Type aType, const T* aValue, size_t aLength) throw() :\
+		type(aType),\
+		length(aLength)\
+	{\
+		switch(GetPrimativeType(aType)) {\
+		case ANVIL_8U:\
+			for (int i = 0; i < aLength; ++i) u8[i] = static_cast<uint8_t>(aValue[i]);\
+			break;\
+		case ANVIL_8S:\
+			for (int i = 0; i < aLength; ++i) s8[i] = static_cast<int8_t>(aValue[i]);\
+			break;\
+		case ANVIL_16U:\
+			for (int i = 0; i < aLength; ++i) u16[i] = static_cast<uint16_t>(aValue[i]);\
+			break;\
+		case ANVIL_16S:\
+			for (int i = 0; i < aLength; ++i) s16[i] = static_cast<int16_t>(aValue[i]);\
+			break;\
+		case ANVIL_32S:\
+			for (int i = 0; i < aLength; ++i) s32[i] = static_cast<int32_t>(aValue[i]);\
+			break;\
+		case ANVIL_32F:\
+			for (int i = 0; i < aLength; ++i) f32[i] = static_cast<float32_t>(aValue[i]);\
+			break;\
+		case ANVIL_64F:\
+			for (int i = 0; i < aLength; ++i) f64[i] = static_cast<float64_t>(aValue[i]);\
+			break;\
+		default:\
+			break;\
+		}\
+	}\
+	ANVIL_CALL Value::operator T() const throw() {\
+		switch(GetPrimativeType(type)) {\
+		case ANVIL_8U:\
+			return static_cast<T>(u8[0]);\
+		case ANVIL_8S:\
+			return static_cast<T>(s8[0]);\
+		case ANVIL_16U:\
+			return static_cast<T>(u16[0]);\
+		case ANVIL_16S:\
+			return static_cast<T>(s16[0]);\
+		case ANVIL_32S:\
+			return static_cast<T>(s32[0]);\
+		case ANVIL_32F:\
+			return static_cast<T>(f32[0]);\
+		case ANVIL_64F:\
+			return static_cast<T>(f64[0]);\
+		default:\
+			return static_cast<T>(0);\
+		}\
+	}\
+	ANVIL_CALL Value::operator const T*() const throw() {\
+		static T gBuffer[MAX_LENGTH];\
+		const int l = length;\
+		switch(GetPrimativeType(type)) {\
+		case ANVIL_8U:\
+			if(std::is_same<T, uint8_t>::value) return reinterpret_cast<const T*>(u8);\
+			else for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(u8[i]);\
+			break;\
+		case ANVIL_8S:\
+			if(std::is_same<T, int8_t>::value) return reinterpret_cast<const T*>(s8);\
+			else for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(s8[i]);\
+			break;\
+		case ANVIL_16U:\
+			if(std::is_same<T, uint16_t>::value) return reinterpret_cast<const T*>(u16);\
+			else for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(u16[i]);\
+			break;\
+		case ANVIL_16S:\
+			if(std::is_same<T, int16_t>::value) return reinterpret_cast<const T*>(s16);\
+			else for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(s16[i]);\
+			break;\
+		case ANVIL_32S:\
+			if(std::is_same<T, int32_t>::value) return reinterpret_cast<const T*>(s32);\
+			else for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(s32[i]);\
+			break;\
+		case ANVIL_32F:\
+			if(std::is_same<T, float32_t>::value) return reinterpret_cast<const T*>(f32);\
+			else for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(f32[i]);\
+			break;\
+		case ANVIL_64F:\
+			if(std::is_same<T, float64_t>::value) return reinterpret_cast<const T*>(f64);\
+			else for(int i = 0; i < l; ++i) gBuffer[i] = static_cast<T>(f64[i]);\
+			break;\
+		default:\
+			break;\
+		}\
+		return gBuffer;\
+	}
+#else
 #define ANVIL_DEF_FUNCTIONS(E, T, N)\
 	ANVIL_CALL Value::Value(T aValue) throw() :\
 		type(E),\
@@ -279,18 +413,25 @@ namespace anvil {
 		}\
 		return gBuffer;\
 	}
+#endif
 
 	ANVIL_DEF_FUNCTIONS(ANVIL_8U, uint8_t, u8)
 	ANVIL_DEF_FUNCTIONS(ANVIL_8S, int8_t, s8)
 	ANVIL_DEF_FUNCTIONS(ANVIL_16U, uint16_t, u16)
 	ANVIL_DEF_FUNCTIONS(ANVIL_16S, int16_t, s16)
+#ifndef ANVIL_OCV_COMPATIBILITY
 	ANVIL_DEF_FUNCTIONS(ANVIL_32U, uint32_t, u32)
+#endif
 	ANVIL_DEF_FUNCTIONS(ANVIL_32S, int32_t, s32)
+#ifndef ANVIL_OCV_COMPATIBILITY
 	ANVIL_DEF_FUNCTIONS(ANVIL_64U, uint64_t, u64)
 	ANVIL_DEF_FUNCTIONS(ANVIL_64S, int64_t, s64)
+#endif
 	ANVIL_DEF_FUNCTIONS(ANVIL_32F, float32_t, f32)
 	ANVIL_DEF_FUNCTIONS(ANVIL_64F, float64_t, f64)
+#ifndef ANVIL_OCV_COMPATIBILITY
 	ANVIL_DEF_FUNCTIONS(ANVIL_8B, bool, b8)
+#endif
 #undef ANVIL_DEF_FUNCTIONS
 
 }

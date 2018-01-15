@@ -168,20 +168,26 @@ namespace anvil { namespace ocl {
 			return gNames[4 + GetChannels(aType) - 1];
 		case ANVIL_16S:
 			return gNames[4 + GetChannels(aType) - 1] + 1;
+#ifndef ANVIL_OCV_COMPATIBILITY
 		case ANVIL_32U:
 			return gNames[8 + GetChannels(aType) - 1];
+#endif
 		case ANVIL_32S:
 			return gNames[8 + GetChannels(aType) - 1] + 1;
+#ifndef ANVIL_OCV_COMPATIBILITY
 		case ANVIL_64U:
 			return gNames[12 + GetChannels(aType) - 1];
 		case ANVIL_64S:
 			return gNames[12 + GetChannels(aType) - 1] + 1;
+#endif
 		case ANVIL_32F:
 			return gNames[16 + GetChannels(aType) - 1];
 		case ANVIL_64F:
 			return gNames[20 + GetChannels(aType) - 1];
+#ifndef ANVIL_OCV_COMPATIBILITY
 		case ANVIL_8B:
 			return gNames[24 + GetChannels(aType) - 1];
+#endif
 		default:
 			return nullptr;
 		}
