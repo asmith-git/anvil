@@ -21,33 +21,31 @@
 
 // Primative Types
 
-enum AnvilType : int16_t {
 #ifdef ANVIL_OCV_COMPATIBILITY
-	ANVIL_8U  = 0,
-	ANVIL_8S  = 1,
-	ANVIL_16U = 2,
-	ANVIL_16S = 3,
-	ANVIL_32U = -1,
-	ANVIL_32S = 4,
-	ANVIL_64U = -2,
-	ANVIL_64S = -3,
-	ANVIL_32F = 5,
-	ANVIL_64F = 6,
-	ANVIL_8B  = -4
+	#define ANVIL_8U  static_cast<anvil::Type>(0)
+	#define ANVIL_8S  static_cast<anvil::Type>(1)
+	#define ANVIL_16U static_cast<anvil::Type>(2)
+	#define ANVIL_16S static_cast<anvil::Type>(3)
+	#define ANVIL_32U static_cast<anvil::Type>(8)
+	#define ANVIL_32S static_cast<anvil::Type>(4)
+	#define ANVIL_64U static_cast<anvil::Type>(9)
+	#define ANVIL_64S static_cast<anvil::Type>(10)
+	#define ANVIL_32F static_cast<anvil::Type>(5)
+	#define ANVIL_64F static_cast<anvil::Type>(6)
+	#define ANVIL_8B  static_cast<anvil::Type>(11)
 #else
-	ANVIL_8U  = 0
-	ANVIL_8S  = 1
-	ANVIL_16U = 2
-	ANVIL_16S = 3
-	ANVIL_32U = 4
-	ANVIL_32S = 5
-	ANVIL_64U = 6
-	ANVIL_64S = 7
-	ANVIL_32F = 8
-	ANVIL_64F = 9
-	ANVIL_8B  = 10
+	#define ANVIL_8U  static_cast<anvil::Type>(0)
+	#define ANVIL_8S  static_cast<anvil::Type>(1)
+	#define ANVIL_16U static_cast<anvil::Type>(2)
+	#define ANVIL_16S static_cast<anvil::Type>(3)
+	#define ANVIL_32U static_cast<anvil::Type>(4)
+	#define ANVIL_32S static_cast<anvil::Type>(5)
+	#define ANVIL_64U static_cast<anvil::Type>(6)
+	#define ANVIL_64S static_cast<anvil::Type>(7)
+	#define ANVIL_32F static_cast<anvil::Type>(8)
+	#define ANVIL_64F static_cast<anvil::Type>(9)
+	#define ANVIL_8B  static_cast<anvil::Type>(10)
 #endif
-};
 // Base Types
 
 #define ANVIL_MAKETYPE(T,C) anvil::CreateType(T,C)
@@ -104,7 +102,13 @@ enum AnvilType : int16_t {
 #define ANVIL_16SC8 ANVIL_MAKETYPE(ANVIL_16S, 8)
 
 namespace anvil {
-	typedef AnvilType Type;
+	enum Type :
+#ifdef ANVIL_OCV_COMPATIBILITY
+		int32_t
+#else
+		int16_t 
+#endif
+	{};
 
 	namespace detail {
 		enum {
