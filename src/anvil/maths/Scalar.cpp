@@ -124,10 +124,9 @@ namespace anvil {
 		for (int i = 1; i < MAX_LENGTH; ++i) N[i] = static_cast<T>(0);\
 		}\
 	ANVIL_CALL Scalar::Scalar(const T* aValue, size_t aLength) throw() :\
-		type(E)\
+		type(CreateType(GetPrimativeType(E), aLength))\
 		{\
-			const int l = GetChannels(E);\
-			for (int i = 0; i < l; ++i) N[i] = aValue[i];\
+			for (int i = 0; i < aLength; ++i) N[i] = aValue[i];\
 		}\
 	ANVIL_CALL Scalar::Scalar(Type aType, T aValue) throw() :\
 		type(aType)\
