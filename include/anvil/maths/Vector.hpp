@@ -612,13 +612,13 @@ namespace anvil {
 	typedef Vector<int8_t, 32> int8_32;
 	typedef Vector<int8_t, 64> int8_64;
 
-	typedef Vector<uint16_t, 2>  uint_16_2;
-	typedef Vector<uint16_t, 3>  uint_16_3;
-	typedef Vector<uint16_t, 4>  uint_16_4;
-	typedef Vector<uint16_t, 8>  uint_16_8;
-	typedef Vector<uint16_t, 16> uint_16_16;
-	typedef Vector<uint16_t, 32> uint_16_32;
-	typedef Vector<uint16_t, 64> uint_16_64;
+	typedef Vector<uint16_t, 2>  uint16_2;
+	typedef Vector<uint16_t, 3>  uint16_3;
+	typedef Vector<uint16_t, 4>  uint16_4;
+	typedef Vector<uint16_t, 8>  uint16_8;
+	typedef Vector<uint16_t, 16> uint16_16;
+	typedef Vector<uint16_t, 32> uint16_32;
+	typedef Vector<uint16_t, 64> uint16_64;
 
 	typedef Vector<int16_t, 2>  int16_2;
 	typedef Vector<int16_t, 3>  int16_3;
