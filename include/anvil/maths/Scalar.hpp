@@ -41,7 +41,6 @@ namespace anvil {
 			bool b8[MAX_LENGTH];		//!< Boolean value.x
 		};
 		Type type;
-		uint8_t length;
 
 		ANVIL_CALL Scalar() throw();
 		Scalar ANVIL_CALL convertTo(Type) const throw();
@@ -116,41 +115,41 @@ namespace anvil {
 		bool returnValue = true;
 		switch (GetPrimativeType(aValue.type)) {
 		case ANVIL_8U:
-			fu8(aValue.u8, aValue.length);
+			fu8(aValue.u8, GetChannels(aValue.type));
 			break;
 		case ANVIL_8S:
-			fs8(aValue.s8, aValue.length);
+			fs8(aValue.s8, GetChannels(aValue.type));
 			break;
 		case ANVIL_16U:
-			fu16(aValue.u16, aValue.length);
+			fu16(aValue.u16, GetChannels(aValue.type));
 			break;
 		case ANVIL_16S:
-			fs16(aValue.s16, aValue.length);
+			fs16(aValue.s16, GetChannels(aValue.type));
 			break;
 #ifndef ANVIL_OCV_COMPATIBILITY
 		case ANVIL_32U:
-			fu32(aValue.u32, aValue.length);
+			fu32(aValue.u32, GetChannels(aValue.type));
 			break;
 #endif
 		case ANVIL_32S:
-			fs32(aValue.s32, aValue.length);
+			fs32(aValue.s32, GetChannels(aValue.type));
 			break;
 #ifndef ANVIL_OCV_COMPATIBILITY
 		case ANVIL_64U:
-			fu64(aValue.u64, aValue.length);
+			fu64(aValue.u64, GetChannels(aValue.type));
 			break;
 		case ANVIL_64S:
-			fs64(aValue.s64, aValue.length);
+			fs64(aValue.s64, GetChannels(aValue.type));
 			break;
 #endif
 		case ANVIL_32F:
-			ff32(aValue.f32, aValue.length);
+			ff32(aValue.f32, GetChannels(aValue.type));
 			break;
 		case ANVIL_64F:
-			ff64(aValue.f64, aValue.length);
+			ff64(aValue.f64, GetChannels(aValue.type));
 #ifndef ANVIL_OCV_COMPATIBILITY
 		case ANVIL_8B:
-			fb8(aValue.b8, aValue.length);
+			fb8(aValue.b8, GetChannels(aValue.type));
 			break;
 #endif
 		default:

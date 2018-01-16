@@ -22,21 +22,37 @@ namespace anvil {
 	// Scalar
 
 	ANVIL_CALL Scalar::Scalar() throw() :
-		type(ANVIL_8U),
-		length(0)
+		type(ANVIL_8U)
 	{
 		for (int i = 0; i < MAX_LENGTH; ++i) u8[i] = 0;
 	}
 
 	Scalar ANVIL_CALL Scalar::convertTo(Type aType) const throw() {
-		const int l = GetChannels(aType);
-		const int ol = length;
-		float64_t buffer[MAX_LENGTH];
-		const float64_t* const conversion = *this;
-		for (int i = 0; i < ol; ++i) buffer[i] = conversion[i];
-		const float64_t back = buffer[ol - 1];
-		for (int i = ol; i < l; ++i) buffer[i] = back;
-		return Scalar(aType, buffer, length);
+		const int length = GetChannels(type);
+		const int new_length = GetChannels(aType);
+
+		float64_t value[MAX_LENGTH];
+		memset(value, 0, sizeof(float64_t) * MAX_LENGTH);
+		const float64_t* const ptr = *this;
+		memcpy(value, ptr, sizeof(float64_t) * length);
+
+		Scalar tmp;
+		tmp.type = aType;
+		dispatchByType(
+			tmp,
+			[&value](uint8_t* a_value, size_t a_length)->void   { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<uint8_t>(value[i]); },
+			[&value](int8_t* a_value, size_t a_length)->void    { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<int8_t>(value[i]); },
+			[&value](uint16_t* a_value, size_t a_length)->void  { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<uint16_t>(value[i]); },
+			[&value](int16_t* a_value, size_t a_length)->void   { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<int16_t>(value[i]); },
+			[&value](uint32_t* a_value, size_t a_length)->void  { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<uint32_t>(value[i]); },
+			[&value](int32_t* a_value, size_t a_length)->void   { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<int32_t>(value[i]); },
+			[&value](uint64_t* a_value, size_t a_length)->void  { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<uint64_t>(value[i]); },
+			[&value](int64_t* a_value, size_t a_length)->void   { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<int64_t>(value[i]); },
+			[&value](float* a_value, size_t a_length)->void     { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<float>(value[i]); },
+			[&value](double* a_value, size_t a_length)->void    { memcpy(a_value, value, sizeof(double) * MAX_LENGTH); },
+			[&value](bool* a_value, size_t a_length)->void      { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<bool>(value[i]); }
+		);
+		return tmp;
 	}		
 	
 	Scalar Scalar::operator+(const Scalar& aOther) const throw() {
@@ -62,7 +78,7 @@ namespace anvil {
 		memcpy(&b, static_cast<const maths_t*>(aOther), sizeof(maths_t) * MAX_LENGTH);
 		a += b;
 		memcpy(f32, &a, sizeof(maths_t) * MAX_LENGTH);
-		type = CreateType(EnumFromType<maths_t>::value, length);
+		type = CreateType(EnumFromType<maths_t>::value, GetChannels(type));
 		return *this;
 	}
 
@@ -73,7 +89,7 @@ namespace anvil {
 		memcpy(&b, static_cast<const maths_t*>(aOther), sizeof(maths_t) * MAX_LENGTH);
 		a -= b;
 		memcpy(f32, &a, sizeof(maths_t) * MAX_LENGTH);
-		type = CreateType(EnumFromType<maths_t>::value, length);
+		type = CreateType(EnumFromType<maths_t>::value, GetChannels(type));
 		return *this;
 	}
 
@@ -84,7 +100,7 @@ namespace anvil {
 		memcpy(&b, static_cast<const maths_t*>(aOther), sizeof(maths_t) * MAX_LENGTH);
 		a *= b;
 		memcpy(f32, &a, sizeof(maths_t) * MAX_LENGTH);
-		type = CreateType(EnumFromType<maths_t>::value, length);
+		type = CreateType(EnumFromType<maths_t>::value, GetChannels(type));
 		return *this;
 	}
 
@@ -95,61 +111,59 @@ namespace anvil {
 		memcpy(&b, static_cast<const maths_t*>(aOther), sizeof(maths_t) * MAX_LENGTH);
 		a /= b;
 		memcpy(f32, &a, sizeof(maths_t) * MAX_LENGTH);
-		type = CreateType(EnumFromType<maths_t>::value, length);
+		type = CreateType(EnumFromType<maths_t>::value, GetChannels(type));
 		return *this;
 	}
 
 #ifdef ANVIL_OCV_COMPATIBILITY
-	#define ANVIL_DEF_FUNCTIONS(E, T, N)\
+#define ANVIL_DEF_FUNCTIONS(E, T, N)\
 	ANVIL_CALL Scalar::Scalar(T aValue) throw() :\
-		type(E),\
-		length(1)\
-	{\
+		type(GetPrimativeType(E))\
+		{\
 		N[0] = aValue;\
 		for (int i = 1; i < MAX_LENGTH; ++i) N[i] = static_cast<T>(0);\
-	}\
+		}\
 	ANVIL_CALL Scalar::Scalar(const T* aValue, size_t aLength) throw() :\
-		type(E),\
-		length(aLength < MAX_LENGTH ? aLength : MAX_LENGTH)\
-	{\
-			const int l = length;\
+		type(E)\
+		{\
+			const int l = GetChannels(E);\
 			for (int i = 0; i < l; ++i) N[i] = aValue[i];\
-	}\
+		}\
 	ANVIL_CALL Scalar::Scalar(Type aType, T aValue) throw() :\
-		type(aType),\
-		length(1)\
-	{\
+		type(aType)\
+		{\
 		switch(GetPrimativeType(aType)) {\
 		case ANVIL_8U:\
-			u8[0] = static_cast<uint8_t>(aValue);\
+			for(int i = 0; i < MAX_LENGTH; ++i) u8[i] = static_cast<uint8_t>(aValue);\
 			break;\
 		case ANVIL_8S:\
-			s8[0] = static_cast<int8_t>(aValue);\
+			for(int i = 0; i < MAX_LENGTH; ++i) s8[i] = static_cast<int8_t>(aValue);\
 			break;\
 		case ANVIL_16U:\
-			u16[0] = static_cast<uint16_t>(aValue);\
+			for(int i = 0; i < MAX_LENGTH; ++i) u16[i] = static_cast<uint16_t>(aValue);\
 			break;\
 		case ANVIL_16S:\
-			s16[0] = static_cast<int16_t>(aValue);\
+			for(int i = 0; i < MAX_LENGTH; ++i) s16[i] = static_cast<int16_t>(aValue);\
 			break;\
 		case ANVIL_32S:\
-			s32[0] = static_cast<int32_t>(aValue);\
+			for(int i = 0; i < MAX_LENGTH; ++i) s32[i] = static_cast<int32_t>(aValue);\
 			break;\
 		case ANVIL_32F:\
-			f32[0] = static_cast<float32_t>(aValue);\
+			for(int i = 0; i < MAX_LENGTH; ++i) f32[i] = static_cast<float32_t>(aValue);\
 			break;\
 		case ANVIL_64F:\
-			f64[0] = static_cast<float64_t>(aValue);\
+			for(int i = 0; i < MAX_LENGTH; ++i) f64[i] = static_cast<float64_t>(aValue);\
 			break;\
 		default:\
 			break;\
+			}\
 		}\
-	}\
 	ANVIL_CALL Scalar::Scalar(Type aType, const T* aValue, size_t aLength) throw() :\
-		type(aType),\
-		length(aLength)\
-	{\
-		switch(GetPrimativeType(aType)) {\
+		type(ANVIL_8U)\
+		{\
+		const Type primative = GetPrimativeType(aType);\
+		type = CreateType(primative, aLength);\
+		switch(primative) {\
 		case ANVIL_8U:\
 			for (int i = 0; i < aLength; ++i) u8[i] = static_cast<uint8_t>(aValue[i]);\
 			break;\
@@ -197,7 +211,7 @@ namespace anvil {
 	}\
 	ANVIL_CALL Scalar::operator const T*() const throw() {\
 		static T gBuffer[MAX_LENGTH];\
-		const int l = length;\
+		const int l = GetChannels(type);\
 		switch(GetPrimativeType(type)) {\
 		case ANVIL_8U:\
 			if(std::is_same<T, uint8_t>::value) return reinterpret_cast<const T*>(u8);\
@@ -235,64 +249,59 @@ namespace anvil {
 #else
 #define ANVIL_DEF_FUNCTIONS(E, T, N)\
 	ANVIL_CALL Scalar::Scalar(T aValue) throw() :\
-		type(E),\
-		length(1)\
+		type(GetPrimativeType(E))\
 	{\
 		N[0] = aValue;\
 		for (int i = 1; i < MAX_LENGTH; ++i) N[i] = static_cast<T>(0);\
 	}\
 	ANVIL_CALL Scalar::Scalar(const T* aValue, size_t aLength) throw() :\
-		type(E),\
-		length(aLength < MAX_LENGTH ? aLength : MAX_LENGTH)\
+		type(CreateType(GetPrimativeType(E), aLength))\
 	{\
-			const int l = length;\
-			for (int i = 0; i < l; ++i) N[i] = aValue[i];\
+		for (int i = 0; i < aLength; ++i) N[i] = aValue[i];\
 	}\
 	ANVIL_CALL Scalar::Scalar(Type aType, T aValue) throw() :\
-		type(aType),\
-		length(1)\
+		type(aType)\
 	{\
 		switch(GetPrimativeType(aType)) {\
 		case ANVIL_8U:\
-			u8[0] = static_cast<uint8_t>(aValue);\
+			for(int i = 0; i < MAX_LENGTH; ++i) u8[i] = static_cast<uint8_t>(aValue);\
 			break;\
 		case ANVIL_8S:\
-			s8[0] = static_cast<int8_t>(aValue);\
+			for(int i = 0; i < MAX_LENGTH; ++i) s8[i] = static_cast<int8_t>(aValue);\
 			break;\
 		case ANVIL_16U:\
-			u16[0] = static_cast<uint16_t>(aValue);\
+			for(int i = 0; i < MAX_LENGTH; ++i) u16[i] = static_cast<uint16_t>(aValue);\
 			break;\
 		case ANVIL_16S:\
-			s16[0] = static_cast<int16_t>(aValue);\
+			for(int i = 0; i < MAX_LENGTH; ++i) s16[i] = static_cast<int16_t>(aValue);\
 			break;\
 		case ANVIL_32U:\
-			u32[0] = static_cast<uint32_t>(aValue);\
+			for(int i = 0; i < MAX_LENGTH; ++i) u32[i] = static_cast<uint32_t>(aValue);\
 			break;\
 		case ANVIL_32S:\
-			s32[0] = static_cast<int32_t>(aValue);\
+			for(int i = 0; i < MAX_LENGTH; ++i) s32[i] = static_cast<int32_t>(aValue);\
 			break;\
 		case ANVIL_64U:\
-			u64[0] = static_cast<uint64_t>(aValue);\
+			for(int i = 0; i < MAX_LENGTH; ++i) u64[i] = static_cast<uint64_t>(aValue);\
 			break;\
 		case ANVIL_64S:\
-			s64[0] = static_cast<int64_t>(aValue);\
+			for(int i = 0; i < MAX_LENGTH; ++i) s64[i] = static_cast<int64_t>(aValue);\
 			break;\
 		case ANVIL_32F:\
-			f32[0] = static_cast<float32_t>(aValue);\
+			for(int i = 0; i < MAX_LENGTH; ++i) f32[i] = static_cast<float32_t>(aValue);\
 			break;\
 		case ANVIL_64F:\
-			f64[0] = static_cast<float64_t>(aValue);\
+			for(int i = 0; i < MAX_LENGTH; ++i) f64[i] = static_cast<float64_t>(aValue);\
 			break;\
 		case ANVIL_8B:\
-			b8[0] = static_cast<bool>(aValue);\
+			for(int i = 0; i < MAX_LENGTH; ++i) b8[i] = static_cast<bool>(aValue);\
 			break;\
 		default:\
 			break;\
 		}\
 	}\
 	ANVIL_CALL Scalar::Scalar(Type aType, const T* aValue, size_t aLength) throw() :\
-		type(aType),\
-		length(aLength)\
+		type(CreateType(GetPrimativeType(E), aLength))\
 	{\
 		switch(GetPrimativeType(aType)) {\
 		case ANVIL_8U:\
@@ -362,7 +371,7 @@ namespace anvil {
 	}\
 	ANVIL_CALL Scalar::operator const T*() const throw() {\
 		static T gBuffer[MAX_LENGTH];\
-		const int l = length;\
+		const int l = GetChannels(type);\
 		switch(GetPrimativeType(type)) {\
 		case ANVIL_8U:\
 			if(std::is_same<T, uint8_t>::value) return reinterpret_cast<const T*>(u8);\
