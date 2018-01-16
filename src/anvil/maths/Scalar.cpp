@@ -40,17 +40,17 @@ namespace anvil {
 		tmp.type = aType;
 		dispatchByType(
 			tmp,
-			[&value](uint8_t* a_value, size_t a_length)->void   { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<uint8_t>(value[i]); },
-			[&value](int8_t* a_value, size_t a_length)->void    { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<int8_t>(value[i]); },
-			[&value](uint16_t* a_value, size_t a_length)->void  { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<uint16_t>(value[i]); },
-			[&value](int16_t* a_value, size_t a_length)->void   { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<int16_t>(value[i]); },
-			[&value](uint32_t* a_value, size_t a_length)->void  { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<uint32_t>(value[i]); },
-			[&value](int32_t* a_value, size_t a_length)->void   { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<int32_t>(value[i]); },
-			[&value](uint64_t* a_value, size_t a_length)->void  { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<uint64_t>(value[i]); },
-			[&value](int64_t* a_value, size_t a_length)->void   { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<int64_t>(value[i]); },
-			[&value](float* a_value, size_t a_length)->void     { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<float>(value[i]); },
-			[&value](double* a_value, size_t a_length)->void    { memcpy(a_value, value, sizeof(double) * MAX_LENGTH); },
-			[&value](bool* a_value, size_t a_length)->void      { for (int i = 0; i < MAX_LENGTH; ++i) a_value[i] = static_cast<bool>(value[i]); }
+			[&tmp, &value](uint8_t* a_value, size_t a_length)->void   { for (int i = 0; i < MAX_LENGTH; ++i) tmp.u8[i] = static_cast<uint8_t>(value[i]); },
+			[&tmp, &value](int8_t* a_value, size_t a_length)->void    { for (int i = 0; i < MAX_LENGTH; ++i) tmp.s8[i] = static_cast<int8_t>(value[i]); },
+			[&tmp, &value](uint16_t* a_value, size_t a_length)->void  { for (int i = 0; i < MAX_LENGTH; ++i) tmp.u16[i] = static_cast<uint16_t>(value[i]); },
+			[&tmp, &value](int16_t* a_value, size_t a_length)->void   { for (int i = 0; i < MAX_LENGTH; ++i) tmp.s16[i] = static_cast<int16_t>(value[i]); },
+			[&tmp, &value](uint32_t* a_value, size_t a_length)->void  { for (int i = 0; i < MAX_LENGTH; ++i) tmp.u32[i] = static_cast<uint32_t>(value[i]); },
+			[&tmp, &value](int32_t* a_value, size_t a_length)->void   { for (int i = 0; i < MAX_LENGTH; ++i) tmp.s32[i] = static_cast<int32_t>(value[i]); },
+			[&tmp, &value](uint64_t* a_value, size_t a_length)->void  { for (int i = 0; i < MAX_LENGTH; ++i) tmp.u64[i] = static_cast<uint64_t>(value[i]); },
+			[&tmp, &value](int64_t* a_value, size_t a_length)->void   { for (int i = 0; i < MAX_LENGTH; ++i) tmp.s64[i] = static_cast<int64_t>(value[i]); },
+			[&tmp, &value](float* a_value, size_t a_length)->void     { for (int i = 0; i < MAX_LENGTH; ++i) tmp.f32[i] = static_cast<float>(value[i]); },
+			[&tmp, &value](double* a_value, size_t a_length)->void    { for (int i = 0; i < MAX_LENGTH; ++i) tmp.f64[i] = value[i]; },
+			[&tmp, &value](bool* a_value, size_t a_length)->void      { for (int i = 0; i < MAX_LENGTH; ++i) tmp.b8[i] = static_cast<bool>(value[i]); }
 		);
 		return tmp;
 	}		
