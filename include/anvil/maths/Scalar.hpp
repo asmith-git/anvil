@@ -12,8 +12,8 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#ifndef ANVIL_MATHS_ANY_PRIMATIVE_HPP
-#define ANVIL_MATHS_ANY_PRIMATIVE_HPP
+#ifndef ANVIL_MATHS_SCALAR_HPP
+#define ANVIL_MATHS_SCALAR_HPP
 
 #include "anvil/core/Keywords.hpp"
 #include "anvil/maths/Type.hpp"
@@ -21,7 +21,7 @@
 namespace anvil {
 
 
-	class Value {
+	class Scalar {
 	public:
 		typedef float maths_t;
 		enum {
@@ -43,24 +43,24 @@ namespace anvil {
 		Type type;
 		uint8_t length;
 
-		ANVIL_CALL Value() throw();
-		Value ANVIL_CALL convertTo(Type) const throw();
+		ANVIL_CALL Scalar() throw();
+		Scalar ANVIL_CALL convertTo(Type) const throw();
 
-		Value operator+(const Value&) const throw();
-		Value operator-(const Value&) const throw();
-		Value operator*(const Value&) const throw();
-		Value operator/(const Value&) const throw();
+		Scalar operator+(const Scalar&) const throw();
+		Scalar operator-(const Scalar&) const throw();
+		Scalar operator*(const Scalar&) const throw();
+		Scalar operator/(const Scalar&) const throw();
 
-		Value& operator+=(const Value&) throw();
-		Value& operator-=(const Value&) throw();
-		Value& operator*=(const Value&) throw();
-		Value& operator/=(const Value&) throw();
+		Scalar& operator+=(const Scalar&) throw();
+		Scalar& operator-=(const Scalar&) throw();
+		Scalar& operator*=(const Scalar&) throw();
+		Scalar& operator/=(const Scalar&) throw();
 
 #define ANVIL_DEF_FUNCTIONS(T)\
-		ANVIL_CALL Value(T) throw();\
-		ANVIL_CALL Value(const T *, size_t) throw();\
-		ANVIL_CALL Value(Type, T) throw();\
-		ANVIL_CALL Value(Type, const T *, size_t) throw();\
+		ANVIL_CALL Scalar(T) throw();\
+		ANVIL_CALL Scalar(const T *, size_t) throw();\
+		ANVIL_CALL Scalar(Type, T) throw();\
+		ANVIL_CALL Scalar(Type, const T *, size_t) throw();\
 		ANVIL_CALL operator T() const throw();\
 		ANVIL_CALL operator const T *() const throw();\
 
@@ -109,7 +109,7 @@ namespace anvil {
 	template<class FU8, class FU16, class FU32, class FU64, 
 		class FS8, class FS16, class FS32, class FS64, 
 		class FF32, class FF64, class FB8>
-	static inline bool ANVIL_CALL dispatchByType(Value aValue, 
+	static inline bool ANVIL_CALL dispatchByType(Scalar aValue, 
 		FU8 fu8,   FS8 fs8,   FU16 fu16, FS16 fs16,
 		FU32 fu32, FS32 fs32, FU64 fu64, FS64 fs64,
 		FF32 ff32, FF64 ff64, FB8 fb8) {

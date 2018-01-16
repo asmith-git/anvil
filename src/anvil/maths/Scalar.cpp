@@ -12,23 +12,23 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#include "anvil/maths/Value.hpp"
+#include "anvil/maths/Scalar.hpp"
 #include "anvil/maths/Vector.hpp"
 #include <type_traits>
 #include <cstring>
 
 namespace anvil {
 
-	// Value
+	// Scalar
 
-	ANVIL_CALL Value::Value() throw() :
+	ANVIL_CALL Scalar::Scalar() throw() :
 		type(ANVIL_8U),
 		length(0)
 	{
 		for (int i = 0; i < MAX_LENGTH; ++i) u8[i] = 0;
 	}
 
-	Value ANVIL_CALL Value::convertTo(Type aType) const throw() {
+	Scalar ANVIL_CALL Scalar::convertTo(Type aType) const throw() {
 		const int l = GetChannels(aType);
 		const int ol = length;
 		float64_t buffer[MAX_LENGTH];
@@ -36,26 +36,26 @@ namespace anvil {
 		for (int i = 0; i < ol; ++i) buffer[i] = conversion[i];
 		const float64_t back = buffer[ol - 1];
 		for (int i = ol; i < l; ++i) buffer[i] = back;
-		return Value(aType, buffer, length);
+		return Scalar(aType, buffer, length);
 	}		
 	
-	Value Value::operator+(const Value& aOther) const throw() {
-		return Value(*this) += aOther;
+	Scalar Scalar::operator+(const Scalar& aOther) const throw() {
+		return Scalar(*this) += aOther;
 	}
 
-	Value Value::operator-(const Value& aOther) const throw() {
-		return Value(*this) -= aOther;
+	Scalar Scalar::operator-(const Scalar& aOther) const throw() {
+		return Scalar(*this) -= aOther;
 	}
 
-	Value Value::operator*(const Value& aOther) const throw() {
-		return Value(*this) *= aOther;
+	Scalar Scalar::operator*(const Scalar& aOther) const throw() {
+		return Scalar(*this) *= aOther;
 	}
 
-	Value Value::operator/(const Value& aOther) const throw() {
-		return Value(*this) /= aOther;
+	Scalar Scalar::operator/(const Scalar& aOther) const throw() {
+		return Scalar(*this) /= aOther;
 	}
 
-	Value& Value::operator+=(const Value& aOther) throw() {
+	Scalar& Scalar::operator+=(const Scalar& aOther) throw() {
 		Vector<maths_t, MAX_LENGTH> a;
 		Vector<maths_t, MAX_LENGTH> b;
 		memcpy(&a, static_cast<const maths_t*>(*this), sizeof(maths_t) * MAX_LENGTH);
@@ -66,7 +66,7 @@ namespace anvil {
 		return *this;
 	}
 
-	Value& Value::operator-=(const Value& aOther) throw() {
+	Scalar& Scalar::operator-=(const Scalar& aOther) throw() {
 		Vector<maths_t, MAX_LENGTH> a;
 		Vector<maths_t, MAX_LENGTH> b;
 		memcpy(&a, static_cast<const maths_t*>(*this), sizeof(maths_t) * MAX_LENGTH);
@@ -77,7 +77,7 @@ namespace anvil {
 		return *this;
 	}
 
-	Value& Value::operator*=(const Value& aOther) throw() {
+	Scalar& Scalar::operator*=(const Scalar& aOther) throw() {
 		Vector<maths_t, MAX_LENGTH> a;
 		Vector<maths_t, MAX_LENGTH> b;
 		memcpy(&a, static_cast<const maths_t*>(*this), sizeof(maths_t) * MAX_LENGTH);
@@ -88,7 +88,7 @@ namespace anvil {
 		return *this;
 	}
 
-	Value& Value::operator/=(const Value& aOther) throw() {
+	Scalar& Scalar::operator/=(const Scalar& aOther) throw() {
 		Vector<maths_t, MAX_LENGTH> a;
 		Vector<maths_t, MAX_LENGTH> b;
 		memcpy(&a, static_cast<const maths_t*>(*this), sizeof(maths_t) * MAX_LENGTH);
@@ -101,21 +101,21 @@ namespace anvil {
 
 #ifdef ANVIL_OCV_COMPATIBILITY
 	#define ANVIL_DEF_FUNCTIONS(E, T, N)\
-	ANVIL_CALL Value::Value(T aValue) throw() :\
+	ANVIL_CALL Scalar::Scalar(T aValue) throw() :\
 		type(E),\
 		length(1)\
 	{\
 		N[0] = aValue;\
 		for (int i = 1; i < MAX_LENGTH; ++i) N[i] = static_cast<T>(0);\
 	}\
-	ANVIL_CALL Value::Value(const T* aValue, size_t aLength) throw() :\
+	ANVIL_CALL Scalar::Scalar(const T* aValue, size_t aLength) throw() :\
 		type(E),\
 		length(aLength < MAX_LENGTH ? aLength : MAX_LENGTH)\
 	{\
 			const int l = length;\
 			for (int i = 0; i < l; ++i) N[i] = aValue[i];\
 	}\
-	ANVIL_CALL Value::Value(Type aType, T aValue) throw() :\
+	ANVIL_CALL Scalar::Scalar(Type aType, T aValue) throw() :\
 		type(aType),\
 		length(1)\
 	{\
@@ -145,7 +145,7 @@ namespace anvil {
 			break;\
 		}\
 	}\
-	ANVIL_CALL Value::Value(Type aType, const T* aValue, size_t aLength) throw() :\
+	ANVIL_CALL Scalar::Scalar(Type aType, const T* aValue, size_t aLength) throw() :\
 		type(aType),\
 		length(aLength)\
 	{\
@@ -175,7 +175,7 @@ namespace anvil {
 			break;\
 		}\
 	}\
-	ANVIL_CALL Value::operator T() const throw() {\
+	ANVIL_CALL Scalar::operator T() const throw() {\
 		switch(GetPrimativeType(type)) {\
 		case ANVIL_8U:\
 			return static_cast<T>(u8[0]);\
@@ -195,7 +195,7 @@ namespace anvil {
 			return static_cast<T>(0);\
 		}\
 	}\
-	ANVIL_CALL Value::operator const T*() const throw() {\
+	ANVIL_CALL Scalar::operator const T*() const throw() {\
 		static T gBuffer[MAX_LENGTH];\
 		const int l = length;\
 		switch(GetPrimativeType(type)) {\
@@ -234,21 +234,21 @@ namespace anvil {
 	}
 #else
 #define ANVIL_DEF_FUNCTIONS(E, T, N)\
-	ANVIL_CALL Value::Value(T aValue) throw() :\
+	ANVIL_CALL Scalar::Scalar(T aValue) throw() :\
 		type(E),\
 		length(1)\
 	{\
 		N[0] = aValue;\
 		for (int i = 1; i < MAX_LENGTH; ++i) N[i] = static_cast<T>(0);\
 	}\
-	ANVIL_CALL Value::Value(const T* aValue, size_t aLength) throw() :\
+	ANVIL_CALL Scalar::Scalar(const T* aValue, size_t aLength) throw() :\
 		type(E),\
 		length(aLength < MAX_LENGTH ? aLength : MAX_LENGTH)\
 	{\
 			const int l = length;\
 			for (int i = 0; i < l; ++i) N[i] = aValue[i];\
 	}\
-	ANVIL_CALL Value::Value(Type aType, T aValue) throw() :\
+	ANVIL_CALL Scalar::Scalar(Type aType, T aValue) throw() :\
 		type(aType),\
 		length(1)\
 	{\
@@ -290,7 +290,7 @@ namespace anvil {
 			break;\
 		}\
 	}\
-	ANVIL_CALL Value::Value(Type aType, const T* aValue, size_t aLength) throw() :\
+	ANVIL_CALL Scalar::Scalar(Type aType, const T* aValue, size_t aLength) throw() :\
 		type(aType),\
 		length(aLength)\
 	{\
@@ -332,7 +332,7 @@ namespace anvil {
 			break;\
 		}\
 	}\
-	ANVIL_CALL Value::operator T() const throw() {\
+	ANVIL_CALL Scalar::operator T() const throw() {\
 		switch(GetPrimativeType(type)) {\
 		case ANVIL_8U:\
 			return static_cast<T>(u8[0]);\
@@ -360,7 +360,7 @@ namespace anvil {
 			return static_cast<T>(0);\
 		}\
 	}\
-	ANVIL_CALL Value::operator const T*() const throw() {\
+	ANVIL_CALL Scalar::operator const T*() const throw() {\
 		static T gBuffer[MAX_LENGTH];\
 		const int l = length;\
 		switch(GetPrimativeType(type)) {\
