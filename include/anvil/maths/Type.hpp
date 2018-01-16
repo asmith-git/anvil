@@ -68,17 +68,14 @@
 #define ANVIL_16SC2 ANVIL_MAKETYPE(ANVIL_16S, 2)
 #define ANVIL_16SC3 ANVIL_MAKETYPE(ANVIL_16S, 3)
 #define ANVIL_16SC4 ANVIL_MAKETYPE(ANVIL_16S, 4)
-#ifndef ANVIL_OCV_COMPATIBILITY
 #define ANVIL_32UC1 ANVIL_MAKETYPE(ANVIL_32U, 1)
 #define ANVIL_32UC2 ANVIL_MAKETYPE(ANVIL_32U, 2)
 #define ANVIL_32UC3 ANVIL_MAKETYPE(ANVIL_32U, 3)
 #define ANVIL_32UC4 ANVIL_MAKETYPE(ANVIL_32U, 4)
-#endif
 #define ANVIL_32SC1 ANVIL_MAKETYPE(ANVIL_32S, 1)
 #define ANVIL_32SC2 ANVIL_MAKETYPE(ANVIL_32S, 2)
 #define ANVIL_32SC3 ANVIL_MAKETYPE(ANVIL_32S, 3)
 #define ANVIL_32SC4 ANVIL_MAKETYPE(ANVIL_32S, 4)
-#ifndef ANVIL_OCV_COMPATIBILITY
 #define ANVIL_64UC1 ANVIL_MAKETYPE(ANVIL_64U, 1)
 #define ANVIL_64UC2 ANVIL_MAKETYPE(ANVIL_64U, 2)
 #define ANVIL_64UC3 ANVIL_MAKETYPE(ANVIL_64U, 3)
@@ -87,7 +84,6 @@
 #define ANVIL_64SC2 ANVIL_MAKETYPE(ANVIL_64S, 2)
 #define ANVIL_64SC3 ANVIL_MAKETYPE(ANVIL_64S, 3)
 #define ANVIL_64SC4 ANVIL_MAKETYPE(ANVIL_64S, 4)
-#endif
 #define ANVIL_32FC1 ANVIL_MAKETYPE(ANVIL_32F, 1)
 #define ANVIL_32FC2 ANVIL_MAKETYPE(ANVIL_32F, 2)
 #define ANVIL_32FC3 ANVIL_MAKETYPE(ANVIL_32F, 3)
@@ -96,12 +92,10 @@
 #define ANVIL_64FC2 ANVIL_MAKETYPE(ANVIL_64F, 2)
 #define ANVIL_64FC3 ANVIL_MAKETYPE(ANVIL_64F, 3)
 #define ANVIL_64FC4 ANVIL_MAKETYPE(ANVIL_64F, 4)
-#ifndef ANVIL_OCV_COMPATIBILITY
 #define ANVIL_8BC1  ANVIL_MAKETYPE(ANVIL_8B,  1)
 #define ANVIL_8BC2  ANVIL_MAKETYPE(ANVIL_8B,  2)
 #define ANVIL_8BC3  ANVIL_MAKETYPE(ANVIL_8B,  3)
 #define ANVIL_8BC4  ANVIL_MAKETYPE(ANVIL_8B,  4)
-#endif
 
 // SSE Types
 
@@ -132,27 +126,15 @@ namespace anvil {
 	}
 
 	static ANVIL_CONSTEXPR_FN Type CreateType(Type aType, int aChannels) throw() {
-#ifdef ANVIL_OCV_COMPATIBILITY
-		return static_cast<Type>((aType & detail::DEPTH_MASK) + (((aChannels)-1) << detail::CHANNEL_SHIFT));
-#else
 		return static_cast<Type>(((aChannels - 1) << detail::CHANNEL_SHIFT) | aType);
-#endif
 	}
 
 	static ANVIL_CONSTEXPR_FN Type GetPrimativeType(Type aType) throw() {
-#ifdef ANVIL_OCV_COMPATIBILITY
 		return static_cast<Type>(aType & detail::DEPTH_MASK);
-#else
-		return static_cast<Type>(aType & detail::DEPTH_MASK);
-#endif
 	}
 
 	static ANVIL_CONSTEXPR_FN int GetChannels(Type aType) throw() {
-#ifdef ANVIL_OCV_COMPATIBILITY
-		return ((aType & (~detail::DEPTH_MASK)) >> detail::CHANNEL_SHIFT) + 1;
-#else
 		return (aType >> detail::CHANNEL_SHIFT) + 1;
-#endif
 	}
 
 	static ANVIL_CONSTEXPR_FN Type GetWidePrimativeType(Type aType) throw() {
