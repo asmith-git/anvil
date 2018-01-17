@@ -45,8 +45,38 @@ namespace anvil {
 	}
 
 	template<class T>
+	static void vector_add(T* a, const T* b, size_t a_length) throw() {
+		enum { LENGTH = detail::OptimalVectorLength<T>::value };
+
+		detail::VectorPtr<T, LENGTH> a_;
+		detail::VectorPtr<T, LENGTH> b_;
+		detail::VectorPtr<T, LENGTH> c_;
+
+		a_.scalar = a;
+		b_.scalar = const_cast<T*>(b);
+
+		while (a_length >= LENGTH) {
+			*a_.vector += *b_.vector;
+			++a_.vector;
+			++b_.vector;
+			a_length -= LENGTH;
+		}
+
+		for (size_t i = 0; i < a_length; ++i) {
+			*a_.scalar += *b_.scalar;
+			++a_.scalar;
+			++b_.scalar;
+		}
+	}
+
+	template<class T>
 	static void vector_add(const T* a, const T* b, T* c, size_t a_length) throw() {
 		enum { LENGTH = detail::OptimalVectorLength<T>::value };
+
+		if (a == c) {
+			vector_add<T>(c, b, a_length);
+			return;
+		}
 
 		detail::VectorPtr<T, LENGTH> a_;
 		detail::VectorPtr<T, LENGTH> b_;
