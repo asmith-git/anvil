@@ -132,10 +132,11 @@ namespace anvil {
 
 			Vector<T2, S2> tmp;
 			if (std::is_same<type, T2>::value) {
-				memcpy(mData, &tmp, sizeof(type) * S3);
+				memcpy(&tmp, this, sizeof(type) * S3);
 			} else {
 				for (size_t i = 0; i < S3; ++i) tmp[i] = static_cast<T2>(mData[i]);
 			}
+			return tmp;
 		}
 
 		explicit ANVIL_CALL operator bool() const throw() {
