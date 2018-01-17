@@ -302,6 +302,20 @@ namespace anvil {
 				return TypeInfoRuntime();
 		}
 	}
+
+	template<class T>
+	struct Widen;
+
+	template<> struct Widen<uint8_t> { typedef int16_t type; };
+	template<> struct Widen<int8_t> { typedef int16_t type; };
+	template<> struct Widen<uint16_t> { typedef int32_t type; };
+	template<> struct Widen<int16_t> { typedef int32_t type; };
+	template<> struct Widen<uint32_t> { typedef int64_t type; };
+	template<> struct Widen<int32_t> { typedef int32_t type; };
+	template<> struct Widen<uint64_t> { typedef int64_t type; };
+	template<> struct Widen<int64_t> { typedef int64_t type; };
+	template<> struct Widen<float> { typedef float type; };
+	template<> struct Widen<double> { typedef double type; };
 }
 
 #endif

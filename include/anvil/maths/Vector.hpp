@@ -132,7 +132,7 @@ namespace anvil {
 
 			Vector<T2, S2> tmp;
 			if (std::is_same<type, T2>::value) {
-				memcpy(mData, &aOther, sizeof(type) * S3);
+				memcpy(mData, &tmp, sizeof(type) * S3);
 			} else {
 				for (size_t i = 0; i < S3; ++i) tmp[i] = static_cast<T2>(mData[i]);
 			}
@@ -564,6 +564,11 @@ namespace anvil {
 	inline Vector<T, S> ANVIL_CALL operator%(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) % b;
 	}
+
+	template<class T, size_t S>
+	struct Widen<Vector<T,S>> {
+		typedef Vector<typename Widen<T>::type, S> type;
+	};
 
 	template<class T, size_t S>
 	using VectorP4 = Vector<T, (S + 3) & (~3)>;
