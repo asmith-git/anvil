@@ -44,63 +44,91 @@ namespace anvil {
 		};
 	}
 
-	template<class T>
-	static void vector_add(T* a, const T* b, size_t a_length) throw() {
-		enum { LENGTH = detail::OptimalVectorLength<T>::value };
-
-		detail::VectorPtr<T, LENGTH> a_;
-		detail::VectorPtr<T, LENGTH> b_;
-		detail::VectorPtr<T, LENGTH> c_;
-
-		a_.scalar = a;
-		b_.scalar = const_cast<T*>(b);
-
-		while (a_length >= LENGTH) {
-			*a_.vector += *b_.vector;
-			++a_.vector;
-			++b_.vector;
-			a_length -= LENGTH;
-		}
-
-		for (size_t i = 0; i < a_length; ++i) {
-			*a_.scalar += *b_.scalar;
-			++a_.scalar;
-			++b_.scalar;
-		}
+#define ANVIL_VECTORISE_VV(NAME, OPERATION)\
+	template<class T>\
+	static void NAME(T* a, const T* b, size_t a_length) throw() {\
+		enum { LENGTH = detail::OptimalVectorLength<T>::value };\
+		\
+		detail::VectorPtr<T, LENGTH> a_;\
+		detail::VectorPtr<T, LENGTH> b_;\
+		detail::VectorPtr<T, LENGTH> c_;\
+		\
+		a_.scalar = a;\
+		b_.scalar = const_cast<T*>(b);\
+		\
+		while (a_length >= LENGTH) {\
+			OPERATION(*a_.vector, *b_.vector);\
+			++a_.vector;\
+			++b_.vector;\
+			a_length -= LENGTH;\
+		}\
+		\
+		for (size_t i = 0; i < a_length; ++i) {\
+			OPERATION(*a_.scalar, *b_.scalar);\
+			++a_.scalar;\
+			++b_.scalar;\
+		}\
 	}
 
-	template<class T>
-	static void vector_add(const T* a, const T* b, T* c, size_t a_length) throw() {
-		enum { LENGTH = detail::OptimalVectorLength<T>::value };
-
-		if (a == c) {
-			vector_add<T>(c, b, a_length);
-			return;
-		}
-
-		detail::VectorPtr<T, LENGTH> a_;
-		detail::VectorPtr<T, LENGTH> b_;
-		detail::VectorPtr<T, LENGTH> c_;
-
-		a_.scalar = const_cast<T*>(a);
-		b_.scalar = const_cast<T*>(b);
-		c_.scalar = c;
-
-		while (a_length >= LENGTH) {
-			*c_.vector = *a_.vector + *b_.vector;
-			++a_.vector;
-			++b_.vector;
-			++c_.vector;
-			a_length -= LENGTH;
-		}
-
-		for (size_t i = 0; i < a_length; ++i) {
-			*c_.scalar = *a_.scalar + *b_.scalar;
-			++a_.scalar;
-			++b_.scalar;
-			++c_.scalar;
-		}
+#define ANVIL_VECTORISE_VVV(NAME, OPERATION, OPERATION2)\
+	ANVIL_VECTORISE_VV(NAME, OPERATION2)\
+	template<class T>\
+	static void NAME(const T* a, const T* b, T* c, size_t a_length) throw() {\
+		enum { LENGTH = detail::OptimalVectorLength<T>::value };\
+		\
+		if (a == c) {\
+			NAME<T>(c, b, a_length);\
+			return;\
+		}\
+		\
+		detail::VectorPtr<T, LENGTH> a_;\
+		detail::VectorPtr<T, LENGTH> b_;\
+		detail::VectorPtr<T, LENGTH> c_;\
+		\
+		a_.scalar = const_cast<T*>(a);\
+		b_.scalar = const_cast<T*>(b);\
+		c_.scalar = c;\
+		\
+		while (a_length >= LENGTH) {\
+			*c_.vector = OPERATION(*a_.vector, *b_.vector);\
+			++a_.vector;\
+			++b_.vector;\
+			++c_.vector;\
+			a_length -= LENGTH;\
+		}\
+		\
+		for (size_t i = 0; i < a_length; ++i) {\
+			*c_.scalar = OPERATION(*a_.scalar, *b_.scalar);\
+			++a_.scalar;\
+			++b_.scalar;\
+			++c_.scalar;\
+		}\
 	}
+
+#undef ANVIL_VECTOR_OP
+#undef ANVIL_VECTOR_OP2
+#define ANVIL_VECTOR_OP(X,Y) X + Y
+#define ANVIL_VECTOR_OP2(X, Y) X += Y
+ANVIL_VECTORISE_VVV(vector_add, ANVIL_VECTOR_OP, ANVIL_VECTOR_OP2)
+
+#undef ANVIL_VECTOR_OP
+#undef ANVIL_VECTOR_OP2
+#define ANVIL_VECTOR_OP(X,Y) X - Y
+#define ANVIL_VECTOR_OP2(X, Y) X -= Y
+ANVIL_VECTORISE_VVV(vector_sub, ANVIL_VECTOR_OP, ANVIL_VECTOR_OP2)
+
+#undef ANVIL_VECTOR_OP
+#undef ANVIL_VECTOR_OP2
+#define ANVIL_VECTOR_OP(X,Y) X * Y
+#define ANVIL_VECTOR_OP2(X, Y) X *= Y
+ANVIL_VECTORISE_VVV(vector_mul, ANVIL_VECTOR_OP, ANVIL_VECTOR_OP2)
+
+#undef ANVIL_VECTOR_OP
+#undef ANVIL_VECTOR_OP2
+#define ANVIL_VECTOR_OP(X,Y) X / Y
+#define ANVIL_VECTOR_OP2(X, Y) X /= Y
+ANVIL_VECTORISE_VVV(vector_div, ANVIL_VECTOR_OP, ANVIL_VECTOR_OP2)
+
 }
 
 #endif
