@@ -67,6 +67,8 @@
 
 namespace anvil {
 
+
+
 	namespace detail {
 		template<class T>
 		struct VFloat {
@@ -77,9 +79,116 @@ namespace anvil {
 		struct VFloat<double> {
 			typedef double type;
 		};
+
+
+		enum {
+#if defined(ANVIL_AVX)
+			V8U_LEN = 16,
+			V8S_LEN = 16,
+			V16U_LEN = 8,
+			V16S_LEN = 8,
+			V32U_LEN = 4,
+			V32S_LEN = 4,
+			V64U_LEN = 2,
+			V64S_LEN = 2,
+			V32F_LEN = 8,
+			V64F_LEN = 4,
+#elif defined(ANVIL_SSE2)
+			V8U_LEN = 16,
+			V8S_LEN = 16,
+			V16U_LEN = 8,
+			V16S_LEN = 8,
+			V32U_LEN = 4,
+			V32S_LEN = 4,
+			V64U_LEN = 2,
+			V64S_LEN = 2,
+			V32F_LEN = 4,
+			V64F_LEN = 2,
+#elif defined(ANVIL_SSE)
+			V8U_LEN = 8,
+			V8S_LEN = 8,
+			V16U_LEN = 4,
+			V16S_LEN = 4,
+			V32U_LEN = 1,
+			V32S_LEN = 1,
+			V64U_LEN = 1,
+			V64S_LEN = 1,
+			V32F_LEN = 4,
+			V64F_LEN = 1,
+#elif defined(ANVIL_MMX)
+			V8U_LEN = 8,
+			V8S_LEN = 8,
+			V16U_LEN = 4,
+			V16S_LEN = 4,
+			V32U_LEN = 1,
+			V32S_LEN = 1,
+			V64U_LEN = 1,
+			V64S_LEN = 1,
+			V32F_LEN = 1,
+			V64F_LEN = 1,
+#else
+			V8U_LEN = 1,
+			V8S_LEN = 1,
+			V16U_LEN = 1,
+			V16S_LEN = 1,
+			V32U_LEN = 1,
+			V32S_LEN = 1,
+			V64U_LEN = 1,
+			V64S_LEN = 1,
+			V32F_LEN = 1,
+			V64F_LEN = 1,
+#endif
+		};
+
+		template<class T> struct OptimalVectorLength { enum { value = 1 }; };
+		template<> struct OptimalVectorLength<int8_t> { enum   { value = V8S_LEN }; };
+		template<> struct OptimalVectorLength<uint8_t> { enum  { value = V8U_LEN }; };
+		template<> struct OptimalVectorLength<int16_t> { enum  { value = V16S_LEN }; };
+		template<> struct OptimalVectorLength<uint16_t> { enum { value = V16U_LEN }; };
+		template<> struct OptimalVectorLength<int32_t> { enum  { value = V32S_LEN }; };
+		template<> struct OptimalVectorLength<uint32_t> { enum { value = V32U_LEN }; };
+		template<> struct OptimalVectorLength<int64_t> { enum  { value = V64S_LEN }; };
+		template<> struct OptimalVectorLength<uint64_t> { enum { value = V64U_LEN }; };
+		template<> struct OptimalVectorLength<float> { enum    { value = V32F_LEN }; };
+		template<> struct OptimalVectorLength<double> { enum   { value = V64F_LEN }; };
+
+		template<int S> struct RoundVectorLength_ { enum { value = S }; };
+		template<> struct RoundVectorLength_<3> { enum { value = 4 }; };
+		template<> struct RoundVectorLength_<5> { enum { value = 8 }; };
+		template<> struct RoundVectorLength_<6> { enum { value = 8 }; };
+		template<> struct RoundVectorLength_<7> { enum { value = 8 }; };
+		template<> struct RoundVectorLength_<9> { enum { value = 16 }; };
+		template<> struct RoundVectorLength_<10> { enum { value = 16 }; };
+		template<> struct RoundVectorLength_<11> { enum { value = 16 }; };
+		template<> struct RoundVectorLength_<12> { enum { value = 16 }; };
+		template<> struct RoundVectorLength_<13> { enum { value = 16 }; };
+		template<> struct RoundVectorLength_<14> { enum { value = 16 }; };
+		template<> struct RoundVectorLength_<15> { enum { value = 16 }; };
+		template<> struct RoundVectorLength_<17> { enum { value = 32 }; };
+		template<> struct RoundVectorLength_<18> { enum { value = 32 }; };
+		template<> struct RoundVectorLength_<19> { enum { value = 32 }; };
+		template<> struct RoundVectorLength_<20> { enum { value = 32 }; };
+		template<> struct RoundVectorLength_<21> { enum { value = 32 }; };
+		template<> struct RoundVectorLength_<22> { enum { value = 32 }; };
+		template<> struct RoundVectorLength_<23> { enum { value = 32 }; };
+		template<> struct RoundVectorLength_<24> { enum { value = 32 }; };
+		template<> struct RoundVectorLength_<25> { enum { value = 32 }; };
+		template<> struct RoundVectorLength_<26> { enum { value = 32 }; };
+		template<> struct RoundVectorLength_<27> { enum { value = 32 }; };
+		template<> struct RoundVectorLength_<28> { enum { value = 32 }; };
+		template<> struct RoundVectorLength_<29> { enum { value = 32 }; };
+		template<> struct RoundVectorLength_<30> { enum { value = 32 }; };
+		template<> struct RoundVectorLength_<31> { enum { value = 32 }; };
+
+		template<class T, int S> 
+		struct RoundVectorLength { 
+			enum { 
+				value = RoundVectorLength_<S>::value <= OptimalVectorLength<T>::value ? RoundVectorLength_<S>::value : S
+			}; 
+		};
 	}
 
-	template<class T, size_t S>
+	template<class T = float, size_t S = detail::OptimalVectorLength<T>::value>
 	class Vector {
 	public:
 		typedef T type;
@@ -420,54 +529,66 @@ namespace anvil {
 
 	////
 
-	template<class T, size_t S>
-	inline Vector<T,S> ANVIL_CALL operator+(const Vector<T,S> a, const Vector<T,S> b) throw() {
-		Vector<T, S> c;
-		for (size_t i = 0; i < S; ++i) c[i] = a[i] + b[i];
-		return c;
+	namespace detail {
+		template<class T, int S>
+		union RoundedVector {
+			Vector<T, S> unrounded;
+			Vector<T, RoundVectorLength<T, S>::value> rounded;
+		};
+
+		template<class T, size_t S>
+		union VectorPtr {
+			Vector<T, S>* vector;
+			T* scalar;
+		};
 	}
 
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator-(const Vector<T, S> a, const Vector<T, S> b) throw() {
-		Vector<T, S> c;
-		for (size_t i = 0; i < S; ++i) c[i] = a[i] - b[i];
-		return c;
+#define ANVIL_VECTOR_OP(SYMBOL)\
+	template<class T, size_t S>\
+	inline Vector<T,S> ANVIL_CALL operator ## SYMBOL(const Vector<T,S> a, const Vector<T,S> b) throw() {\
+		Vector<T, S> c;\
+		enum { OPTIMAL = detail::OptimalVectorLength<T>::value };\
+		if(OPTIMAL < S){\
+			size_t a_length = S;\
+			detail::VectorPtr<T, OPTIMAL> a_, b_, c_;\
+			\
+			a_.scalar = const_cast<T*>(reinterpret_cast<const T*>(&a));\
+			b_.scalar = const_cast<T*>(reinterpret_cast<const T*>(&b));\
+			c_.scalar = reinterpret_cast<T*>(&c);\
+			\
+			while (a_length >= OPTIMAL) {\
+				*c_.vector = *a_.vector SYMBOL *b_.vector;\
+				++a_.vector;\
+				++b_.vector;\
+				++c_.vector;\
+				a_length -= OPTIMAL;\
+			}\
+			\
+			for (size_t i = 0; i < a_length; ++i) {\
+				*c_.scalar = *a_.scalar SYMBOL *b_.scalar;\
+				++a_.scalar;\
+				++b_.scalar;\
+				++c_.scalar;\
+			}\
+		} else if(OPTIMAL > S) {\
+			detail::RoundedVector<T, S> a_, b_, c_;\
+			a_.unrounded = a;\
+			b_.unrounded = b;\
+			c_.rounded = a_.rounded SYMBOL b_.rounded;\
+			c = c_.unrounded;\
+		} else {\
+			for (size_t i = 0; i < S; ++i) c[i] = a[i] SYMBOL b[i];\
+		}\
+		return c;\
 	}
 
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator*(const Vector<T, S> a, const Vector<T, S> b) throw() {
-		Vector<T, S> c;
-		for (size_t i = 0; i < S; ++i) c[i] = a[i] * b[i];
-		return c;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator/(const Vector<T, S> a, const Vector<T, S> b) throw() {
-		Vector<T, S> c;
-		for (size_t i = 0; i < S; ++i) c[i] = a[i] / b[i];
-		return c;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator&(const Vector<T, S> a, const Vector<T, S> b) throw() {
-		Vector<T, S> c;
-		for (size_t i = 0; i < S; ++i) c[i] = a[i] & b[i];
-		return c;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator|(const Vector<T, S> a, const Vector<T, S> b) throw() {
-		Vector<T, S> c;
-		for (size_t i = 0; i < S; ++i) c[i] = a[i] | b[i];
-		return c;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator^(const Vector<T, S> a, const Vector<T, S> b) throw() {
-		Vector<T, S> c;
-		for (size_t i = 0; i < S; ++i) c[i] = a[i] ^ b[i];
-		return c;
-	}
+	ANVIL_VECTOR_OP(+)
+	ANVIL_VECTOR_OP(-)
+	ANVIL_VECTOR_OP(*)
+	ANVIL_VECTOR_OP(/)
+	ANVIL_VECTOR_OP(&)
+	ANVIL_VECTOR_OP(|)
+	ANVIL_VECTOR_OP(^)
 
 	template<class T, size_t S>
 	inline Vector<T, S>& ANVIL_CALL operator+=(Vector<T, S>& a, const Vector<T, S> b) throw() {
