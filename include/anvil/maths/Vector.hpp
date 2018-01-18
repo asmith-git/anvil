@@ -140,11 +140,11 @@ namespace anvil {
 			enum {
 				HALF_OPTIMISED = S > 2 && VopOptimised<T, S/2, VOP>::value,
 
-				_OPTIMISED_4 = S > 4 && VopOptimised<T, 4, VOP>::value,
-				_OPTIMISED_8 = S > 8 && VopOptimised<T, 8, VOP>::value,
-				_OPTIMISED_16 = S > 16 && VopOptimised<T, 16, VOP>::value,
-				_OPTIMISED_32 = S > 32 && VopOptimised<T, 32, VOP>::value,
-				_OPTIMISED_64 = S > 64 && VopOptimised<T, 64, VOP>::value,
+				_OPTIMISED_4 = S >= 8 && VopOptimised<T, 4, VOP>::value,
+				_OPTIMISED_8 = S >= 16 && VopOptimised<T, 8, VOP>::value,
+				_OPTIMISED_16 = S >= 32 && VopOptimised<T, 16, VOP>::value,
+				_OPTIMISED_32 = S >= 64 && VopOptimised<T, 32, VOP>::value,
+				_OPTIMISED_64 = S >= 128 && VopOptimised<T, 64, VOP>::value,
 				OPTIMISED_SIZE =
 					_OPTIMISED_64 ? 64 :
 					_OPTIMISED_32 ? 32 :
