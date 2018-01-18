@@ -559,15 +559,13 @@ namespace anvil {
 			b_.scalar = const_cast<T*>(reinterpret_cast<const T*>(&b));\
 			\
 			for(int i = 0; i < LOOP1; ++i) {\
-				*a_.vector SYMBOL *b_.vector;\
-				++a_.vector;\
-				++b_.vector;\
+				a_.vector[i] SYMBOL b_.vector[i];\
 			}\
+			a_.vector += LOOP1;\
+			b_.vector += LOOP1;\
 			\
 			for (int i = 0; i < LOOP2; ++i) {\
-				*a_.scalar SYMBOL *b_.scalar;\
-				++a_.scalar;\
-				++b_.scalar;\
+				a_.scalar[i] SYMBOL b_.scalar[i];\
 			}\
 		} else if(OPTIMAL > S) {\
 			detail::RoundedVector<T, S> a_, b_;\
@@ -599,17 +597,14 @@ namespace anvil {
 			c_.scalar = reinterpret_cast<T*>(&c);\
 			\
 			for(int i = 0; i < LOOP1; ++i) {\
-				*c_.vector = *a_.vector SYMBOL *b_.vector;\
-				++a_.vector;\
-				++b_.vector;\
-				++c_.vector;\
+				c_.vector[i] = a_.vector[i] SYMBOL b_.vector[i];\
 			}\
+			a_.vector += LOOP1;\
+			b_.vector += LOOP1;\
+			c_.vector += LOOP1;\
 			\
 			for (int i = 0; i < LOOP2; ++i) {\
-				*c_.scalar = *a_.scalar SYMBOL *b_.scalar;\
-				++a_.scalar;\
-				++b_.scalar;\
-				++c_.scalar;\
+				c_.scalar[i] = a_.scalar[i] SYMBOL b_.scalar[i];\
 			}\
 		} else if(OPTIMAL > S) {\
 			detail::RoundedVector<T, S> a_, b_, c_;\
