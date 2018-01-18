@@ -535,8 +535,8 @@ namespace anvil {
 			}
 		}
 
-		inline this_t ANVIL_CALL normalise() const throw() {
-			return this_t(normalisef());
+		ANVIL_STRONG_INLINE this_t ANVIL_CALL normalise() const throw() {
+			return static_cast<this_t>(normalisef());
 		}
 
 		template<class T2, size_t S2>
