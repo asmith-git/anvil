@@ -1121,6 +1121,7 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, < , detail::Vec_F32_4, _mm_cmplt_ps)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(float, 4, max, detail::Vec_F32_4, _mm_max_ps)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(float, 4, min, detail::Vec_F32_4, _mm_min_ps)
+	ANVIL_SPECIALISE_VECTOR_FN_VV(float, 4, sqrt, detail::Vec_F32_4, _mm_sqrt_ps)
 
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(int16_t, 4, max, detail::Vec_S16_4, _mm_max_pi16)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(int16_t, 4, min, detail::Vec_S16_4, _mm_max_pi16)
@@ -1144,6 +1145,7 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, < , detail::Vec_F64_2, _mm_cmplt_pd)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(double, 2, max, detail::Vec_F64_2, _mm_max_pd)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(double, 2, min, detail::Vec_F64_2, _mm_min_pd)
+	ANVIL_SPECIALISE_VECTOR_FN_VV(double, 2, sqrt, detail::Vec_F64_2, _mm_sqrt_pd)
 
 	ANVIL_SPECIALISE_VECTOR_OP(int64_t, 2, +, detail::Vec_S64_2, _mm_add_epi64)
 	ANVIL_SPECIALISE_VECTOR_OP(int64_t, 2, -, detail::Vec_S64_2, _mm_sub_epi64)
@@ -1238,6 +1240,7 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_OP(double, 4, ^, detail::Vec_F64_4, _mm256_xor_pd)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(double, 4, max, detail::Vec_F64_4, _mm256_max_pd)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(double, 4, min, detail::Vec_F64_4, _mm256_min_pd)
+	ANVIL_SPECIALISE_VECTOR_FN_VV(double, 4, sqrt, detail::Vec_F64_4, _mm256_sqrt_pd)
 
 	ANVIL_SPECIALISE_VECTOR_OP(float, 8, +, detail::Vec_F32_8, _mm256_add_ps)
 	ANVIL_SPECIALISE_VECTOR_OP(float, 8, -, detail::Vec_F32_8, _mm256_sub_ps)
@@ -1248,6 +1251,7 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_OP(float, 8, ^, detail::Vec_F32_8, _mm256_xor_ps)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(float, 8, max, detail::Vec_F32_8, _mm256_max_ps)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(float, 8, min, detail::Vec_F32_8, _mm256_min_ps)
+	ANVIL_SPECIALISE_VECTOR_FN_VV(float, 8, sqrt, detail::Vec_F32_8, _mm256_sqrt_ps)
 
 	//! \todo Support _mm_cmp_pd and _mm_cmp_ps
 #endif
