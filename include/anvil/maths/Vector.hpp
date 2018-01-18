@@ -646,8 +646,13 @@ namespace anvil {
 	ANVIL_VECTOR_OP(>)
 	ANVIL_VECTOR_OP(<=)
 	ANVIL_VECTOR_OP(>=)
-
-
+	
+	template<class T, size_t S>
+	static inline Vector<size_t, S> ANVIL_CALL fill(const T a) {
+		Vector<size_t, S> b;
+		for (size_t i = 0; i < S; ++i) b[i] = a;
+		return b;
+	}
 
 	// Popcount.hpp overloads
 
@@ -1383,62 +1388,62 @@ namespace anvil {
 
 	template<class T, size_t S>
 	inline Vector<T, S> ANVIL_CALL operator+(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) + b;
+		return fill<T,S>(a) + b;
 	}
 
 	template<class T, size_t S>
 	inline Vector<T, S> ANVIL_CALL operator-(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) - b;
+		return fill<T, S>(a) - b;
 	}
 
 	template<class T, size_t S>
 	inline Vector<T, S> ANVIL_CALL operator*(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) * b;
+		return fill<T,S>(a) * b;
 	}
 
 	template<class T, size_t S>
 	inline Vector<T, S> ANVIL_CALL operator/(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) / b;
+		return fill<T,S>(a) / b;
 	}
 
 	template<class T, size_t S>
 	inline Vector<T, S> ANVIL_CALL operator&(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) & b;
+		return fill<T,S>(a) & b;
 	}
 
 	template<class T, size_t S>
 	inline Vector<T, S> ANVIL_CALL operator|(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) | b;
+		return fill<T,S>(a) | b;
 	}
 
 	template<class T, size_t S>
 	inline Vector<T, S> ANVIL_CALL operator^(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) ^ b;
+		return fill<T,S>(a) ^ b;
 	}
 
 	template<class T, size_t S>
 	inline Vector<T, S> ANVIL_CALL operator&&(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) && b;
+		return fill<T,S>(a) && b;
 	}
 
 	template<class T, size_t S>
 	inline Vector<T, S> ANVIL_CALL operator||(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) ^ b;
+		return fill<T,S>(a) || b;
 	}
 
 	template<class T, size_t S>
 	inline Vector<T, S> ANVIL_CALL operator<<(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) << b;
+		return fill<T,S>(a) << b;
 	}
 
 	template<class T, size_t S>
 	inline Vector<T, S> ANVIL_CALL operator>>(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) >> b;
+		return fill<T,S>(a) >> b;
 	}
 
 	template<class T, size_t S>
 	inline Vector<T, S> ANVIL_CALL operator%(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) % b;
+		return fill<T,S>(a) % b;
 	}
 
 	template<class T, size_t S>
