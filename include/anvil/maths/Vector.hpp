@@ -545,6 +545,12 @@ namespace anvil {
 			for (size_t i = 0; i < S2; ++i) tmp[i] = mData[static_cast<size_t>(aOther[i])];
 			return tmp;
 		}
+
+		inline this_t ANVIL_CALL sort() const throw() {
+			this_t tmp(*this);
+			std::sort(tmp.begin(), tmp.end());
+			return tmp;
+		}
 	};
 
 	////
