@@ -228,6 +228,22 @@ namespace anvil {
 		//	memset(ptr, 0, sizeof(type) * s1);
 		//}
 
+		ANVIL_STRONG_INLINE half_t& lowerHalf() throw() {
+			return reinterpret_cast<half_t*>(this)[0];
+		}
+
+		ANVIL_STRONG_INLINE half_t& upperHalf() throw() {
+			return reinterpret_cast<half_t*>(this)[1];
+		}
+
+		ANVIL_STRONG_INLINE half_t lowerHalf() const throw() {
+			return reinterpret_cast<const half_t*>(this)[0];
+		}
+
+		ANVIL_STRONG_INLINE half_t upperHalf() const throw() {
+			return reinterpret_cast<const half_t*>(this)[1];
+		}
+
 		template<class T2, size_t S2>
 		explicit ANVIL_CALL operator Vector<T2, S2>() const throw() {
 			enum { S3 = size < S2 ? size : S2 };
@@ -328,26 +344,24 @@ namespace anvil {
 		}
 
 		inline this_t& ANVIL_CALL operator++() throw() {
-			this_t tmp(*this);
-			for (size_t i = 0; i < size; ++i) ++tmp.mData[i];
+			*this += fill<type, size>(static_cast<type>(1));
 			return *this;
 		}
 
 		inline this_t& ANVIL_CALL operator--() throw() {
-			this_t tmp(*this);
-			for (size_t i = 0; i < size; ++i) ++tmp.mData[i];
+			*this -= fill<type, size>(static_cast<type>(1));
 			return *this;
 		}
 
 		inline this_t ANVIL_CALL operator++(int) throw() {
 			const this_t tmp(*this);
-			for (size_t i = 0; i < size; ++i) ++mData[i];
+			*this += fill<type, size>(static_cast<type>(1));
 			return tmp;
 		}
 
 		inline this_t ANVIL_CALL operator--(int) throw() {
 			const this_t tmp(*this);
-			for (size_t i = 0; i < size; ++i) ++mData[i];
+			*this -= fill<type, size>(static_cast<type>(1));
 			return tmp;
 		}
 
@@ -391,22 +405,6 @@ namespace anvil {
 
 		inline type ANVIL_CALL avg() const throw() {
 			return static_cast<type>(avgf());
-		}
-
-		ANVIL_STRONG_INLINE half_t& lowerHalf() throw() {
-			return reinterpret_cast<half_t*>(this)[0];
-		}
-
-		ANVIL_STRONG_INLINE half_t& upperHalf() throw() {
-			return reinterpret_cast<half_t*>(this)[1];
-		}
-
-		ANVIL_STRONG_INLINE half_t lowerHalf() const throw() {
-			return reinterpret_cast<const half_t*>(this)[0];
-		}
-
-		ANVIL_STRONG_INLINE half_t upperHalf() const throw() {
-			return reinterpret_cast<const half_t*>(this)[1];
 		}
 
 		inline type ANVIL_CALL min() const throw() {
