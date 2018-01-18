@@ -353,25 +353,26 @@ namespace anvil {
 			}
 		}
 
-		inline bool ANVIL_CALL elementsEqual(const T a_scalar) const throw() {
-			typedef detail::VectorLoopInfo<type, size, detail::VOP_EQ> Info;
-			if (Info::HALF_OPTIMISED) {
-				return mData[0] == a_scalar && (lowerHalf() == upperHalf()).sumf() == static_cast<float_t>(half_t::size);
-			} else if (Info::OPTIMISED_SIZE) {
-				if(mData[0] != a_scalar) return false;
-				const Vector<type, Info::OPTIMISED_SIZE>* ptr = reinterpret_cast<const Vector<type, Info::OPTIMISED_SIZE>*>(this);
-				const Vector<type, Info::OPTIMISED_SIZE> tmp = fill<type, Info::OPTIMISED_SIZE>(a_scalar);
-				for (size_t i = 0; i < Info::OPTIMISED_LOOP; ++i) if((ptr[i] == tmp).sumf() != static_cast<float_t>(size)) return false;
-				for (size_t i = 0; i < Info::OPTIMISED_REMAINDER; ++i) if(a_scalar != ptr[Info::OPTIMISED_LOOP][i]) return false;
-				return true;
-			} else {
-				for (size_t i = 0; i < size; ++i) if(a_scalar != mData[i]) return false;
-				return true;
-			}
+		ANVIL_STRONG_INLINE bool ANVIL_CALL elementsEqual(const T a_scalar) const throw() {
+			return mData[0] == a_scalar ? elementsEqual() : false;
 		}
 
-		ANVIL_STRONG_INLINE bool ANVIL_CALL elementsEqual() const throw() {
-			return elementsEqual(mData[0]);
+		inline bool ANVIL_CALL elementsEqual() const throw() {
+			typedef detail::VectorLoopInfo<type, size, detail::VOP_EQ> Info;
+			if (Info::HALF_OPTIMISED) {
+				const half_t tmp = lowerHalf();
+				return (lowerHalf() == upperHalf()).sumf() == static_cast<float_t>(half_t::size) && tmp.elementsEqual();
+			} else if (Info::OPTIMISED_SIZE) {
+				const Vector<type, Info::OPTIMISED_SIZE>* ptr = reinterpret_cast<const Vector<type, Info::OPTIMISED_SIZE>*>(this);
+				const Vector<type, Info::OPTIMISED_SIZE> tmp = ptr[0];
+				if (!tmp.elementsEqual()) return false;
+				for (size_t i = 1; i < Info::OPTIMISED_LOOP; ++i) if((ptr[i] == tmp).sumf() != static_cast<float_t>(size)) return false;
+				for (size_t i = 0; i < Info::OPTIMISED_REMAINDER; ++i) if(ptr[0][0] != ptr[Info::OPTIMISED_LOOP][i]) return false;
+				return true;
+			} else {
+				for (size_t i = 0; i < size; ++i) if(mData[0] != mData[i]) return false;
+				return true;
+			}
 		}
 
 		ANVIL_STRONG_INLINE float_t ANVIL_CALL avgf() const throw() {
