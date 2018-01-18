@@ -33,6 +33,7 @@
 
 #ifdef ANVIL_AVX
 	#define ANVIL_SSE4_2
+	#define ANVIL_FMA
 	#include <immintrin.h>
 #endif
 
@@ -690,6 +691,13 @@ namespace anvil {
 	}
 
 	template<class T, size_t S>
+	static inline Vector<T, S> ANVIL_CALL fms(const Vector<T, S> a, const Vector<T, S> b, const Vector<T, S> c) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp[i] = fms(a[i], b[i], c[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
 	static inline Vector<T, S> ANVIL_CALL max(const Vector<T, S> a, const Vector<T, S> b) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = max(a[i], b[i]);
@@ -1068,6 +1076,17 @@ namespace anvil {
 		b_.vector = b;\
 		c_.intrinsic = FUNCTION(a_.intrinsic, b_.intrinsic);\
 		return c_.vector;\
+		}
+
+#define ANVIL_SPECIALISE_VECTOR_FN_VVVV(TYPE,CHANNELS,NAME,UNION,FUNCTION)\
+	template<>\
+	inline Vector<TYPE, CHANNELS> ANVIL_CALL NAME<TYPE, CHANNELS>(const Vector<TYPE, CHANNELS> a, const Vector<TYPE, CHANNELS> b, const Vector<TYPE, CHANNELS> c) throw() {\
+		UNION a_, b_, c_, d_;\
+		a_.vector = a;\
+		b_.vector = b;\
+		c_.vector = c;\
+		d_.intrinsic = FUNCTION(a_.intrinsic, b_.intrinsic, c_.intrinsic);\
+		return d_.vector;\
 	}
 
 #define ANVIL_SPECIALISE_VECTOR_OP(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)\
@@ -1259,6 +1278,19 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_FN_VV(float, 8, sqrt, detail::Vec_F32_8, _mm256_sqrt_ps)
 
 	//! \todo Support _mm_cmp_pd and _mm_cmp_ps
+#endif
+#ifdef ANVIL_FMA
+	ANVIL_SPECIALISE_VECTOR_FN_VVVV(double, 4, fma, detail::Vec_F64_4, _mm256_fmadd_pd)
+	ANVIL_SPECIALISE_VECTOR_FN_VVVV(double, 4, fms, detail::Vec_F64_4, _mm256_fmsub_pd)
+
+	ANVIL_SPECIALISE_VECTOR_FN_VVVV(float, 8, fma, detail::Vec_F32_8, _mm256_fmadd_ps)
+	ANVIL_SPECIALISE_VECTOR_FN_VVVV(float, 8, fms, detail::Vec_F32_8, _mm256_fmsub_ps)
+
+	ANVIL_SPECIALISE_VECTOR_FN_VVVV(double, 2, fma, detail::Vec_F64_2, _mm_fmadd_pd)
+	ANVIL_SPECIALISE_VECTOR_FN_VVVV(double, 2, fms, detail::Vec_F64_2, _mm_fmsub_pd)
+
+	ANVIL_SPECIALISE_VECTOR_FN_VVVV(float, 4, fma, detail::Vec_F32_4, _mm_fmadd_ps)
+	ANVIL_SPECIALISE_VECTOR_FN_VVVV(float, 4, fms, detail::Vec_F32_4, _mm_fmsub_ps)
 #endif
 
 #undef ANVIL_SPECIALISE_VECTOR_OP

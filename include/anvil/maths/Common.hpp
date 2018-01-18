@@ -101,6 +101,13 @@ namespace anvil {
 		return std::fma(a, b, c);
 	}
 
+	// fms
+
+	template<class T>
+	static ANVIL_STRONG_INLINE T ANVIL_CALL fms(T a, T b, T c) {
+		return (a * b) - c;
+	}
+
 	// max / fmax
 
 	template<class T>
