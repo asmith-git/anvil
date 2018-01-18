@@ -21,6 +21,16 @@
 #include "anvil/maths/Reflection.hpp"
 #include "anvil/maths/Common.hpp"
 
+#define ANVIL_SSE2 //! \todo Remove this line
+
+#ifdef ANVIL_SSE2
+	#define ANVIL_SSE
+#endif
+
+#ifdef ANVIL_SSE
+	#include "xmmintrin.h"
+#endif
+
 namespace anvil {
 
 	namespace detail {
@@ -48,83 +58,83 @@ namespace anvil {
 	private:
 		type mData[size];
 	public:
-		ANVIL_CALL Vector() throw() {
-			memset(mData, 0, sizeof(type) * size);
-		}
+		//ANVIL_CALL Vector() throw() {
+		//	memset(mData, 0, sizeof(type) * size);
+		//}
 
-		ANVIL_CALL Vector(const type aScalar) throw() {
-			for (size_t i = 0; i < size; ++i) mData[i] = aScalar;
-		}
+		//ANVIL_CALL Vector(const type aScalar) throw() {
+		//	for (size_t i = 0; i < size; ++i) mData[i] = aScalar;
+		//}
 
-		template<size_t S2 = 2, class ENABLE = typename std::enable_if<S2 == size>::type>
-		ANVIL_CALL Vector(const type a, const type b) throw() {
-			mData[0] = a;
-			mData[1] = b;
-		}
+		//template<size_t S2 = 2, class ENABLE = typename std::enable_if<S2 == size>::type>
+		//ANVIL_CALL Vector(const type a, const type b) throw() {
+		//	mData[0] = a;
+		//	mData[1] = b;
+		//}
 
-		template<size_t S2 = 3, class ENABLE = typename std::enable_if<S3 == size>::type>
-		ANVIL_CALL Vector(const type a, const type b, const type c) throw() {
-			mData[0] = a;
-			mData[1] = b;
-			mData[2] = c;
-		}
+		//template<size_t S2 = 3, class ENABLE = typename std::enable_if<S3 == size>::type>
+		//ANVIL_CALL Vector(const type a, const type b, const type c) throw() {
+		//	mData[0] = a;
+		//	mData[1] = b;
+		//	mData[2] = c;
+		//}
 
-		template<size_t S2 = 4, class ENABLE = typename std::enable_if<S2 == size>::type>
-		ANVIL_CALL Vector(const T a, const T b, const T c, const T d) throw() {
-			mData[0] = a;
-			mData[1] = b;
-			mData[2] = c;
-			mData[3] = d;
-		}
+		//template<size_t S2 = 4, class ENABLE = typename std::enable_if<S2 == size>::type>
+		//ANVIL_CALL Vector(const T a, const T b, const T c, const T d) throw() {
+		//	mData[0] = a;
+		//	mData[1] = b;
+		//	mData[2] = c;
+		//	mData[3] = d;
+		//}
 
-		ANVIL_CALL Vector(const T* aData, size_t aSize) throw() {
-			const size_t s = aSize < size ? aSize : size;
-			for (size_t i = 0; i < s; ++i) mData[i] = aData[i];
-			if (aSize < size) memset(mData + aSize, 0, sizeof(type) * (size - aSize));
-		}
+		//ANVIL_CALL Vector(const T* aData, size_t aSize) throw() {
+		//	const size_t s = aSize < size ? aSize : size;
+		//	for (size_t i = 0; i < s; ++i) mData[i] = aData[i];
+		//	if (aSize < size) memset(mData + aSize, 0, sizeof(type) * (size - aSize));
+		//}
 
-		ANVIL_CALL Vector(const array_t aOther) throw() {
-			memcpy(mData, aOther, sizeof(type) * size);
-		}
-		
-		template<size_t SA, size_t SB, class ENABLE = typename std::enable_if<(SA + SB) == size>::type>
-		ANVIL_CALL Vector(const Vector<type, SA> a,  Vector<type, SB> b) throw() {
-			type* ptr = mData;
-			size_t s1 = sizeof(type) * size;
-			size_t s2 = std::min(s1, sizeof(type) * SA);
-			memcpy(ptr, &a, s2);
-			ptr += s2 / sizeof(type);
-			s1 -= s2; 
-			
-			s2 = std::min(s1, sizeof(type) * SB);
-			memcpy(ptr, &b, s2);
-			ptr += s2 / sizeof(type);
-			s1 = s1 > s2 ? s1 - s2 : 0;
-			
-			memset(ptr, 0, sizeof(type) * s1);
-		}
+		//ANVIL_CALL Vector(const array_t aOther) throw() {
+		//	memcpy(mData, aOther, sizeof(type) * size);
+		//}
+		//
+		//template<size_t SA, size_t SB, class ENABLE = typename std::enable_if<(SA + SB) == size>::type>
+		//ANVIL_CALL Vector(const Vector<type, SA> a,  Vector<type, SB> b) throw() {
+		//	type* ptr = mData;
+		//	size_t s1 = sizeof(type) * size;
+		//	size_t s2 = std::min(s1, sizeof(type) * SA);
+		//	memcpy(ptr, &a, s2);
+		//	ptr += s2 / sizeof(type);
+		//	s1 -= s2; 
+		//	
+		//	s2 = std::min(s1, sizeof(type) * SB);
+		//	memcpy(ptr, &b, s2);
+		//	ptr += s2 / sizeof(type);
+		//	s1 = s1 > s2 ? s1 - s2 : 0;
+		//	
+		//	memset(ptr, 0, sizeof(type) * s1);
+		//}
 
-		template<size_t SA, size_t SB, size_t SC, class ENABLE = typename std::enable_if<(SA + SB + SC) == size>::type>
-		ANVIL_CALL Vector(const Vector<type, SA> a,  Vector<type, SB> b,  Vector<type, SC> c) throw() {
-			type* ptr = mData;
-			size_t s1 = sizeof(type) * size;
-			size_t s2 = std::min(s1, sizeof(type) * SA);
-			memcpy(ptr, &a, s2);
-			ptr += s2 / sizeof(type);
-			s1 -= s2;
+		//template<size_t SA, size_t SB, size_t SC, class ENABLE = typename std::enable_if<(SA + SB + SC) == size>::type>
+		//ANVIL_CALL Vector(const Vector<type, SA> a,  Vector<type, SB> b,  Vector<type, SC> c) throw() {
+		//	type* ptr = mData;
+		//	size_t s1 = sizeof(type) * size;
+		//	size_t s2 = std::min(s1, sizeof(type) * SA);
+		//	memcpy(ptr, &a, s2);
+		//	ptr += s2 / sizeof(type);
+		//	s1 -= s2;
 
-			s2 = std::min(s1, sizeof(type) * SB);
-			memcpy(ptr, &b, s2);
-			ptr += s2 / sizeof(type);
-			s1 -= s2;
+		//	s2 = std::min(s1, sizeof(type) * SB);
+		//	memcpy(ptr, &b, s2);
+		//	ptr += s2 / sizeof(type);
+		//	s1 -= s2;
 
-			s2 = std::min(s1, sizeof(type) * SC);
-			memcpy(ptr, &c, s2);
-			ptr += s2 / sizeof(type);
-			s1 -= s2;
+		//	s2 = std::min(s1, sizeof(type) * SC);
+		//	memcpy(ptr, &c, s2);
+		//	ptr += s2 / sizeof(type);
+		//	s1 -= s2;
 
-			memset(ptr, 0, sizeof(type) * s1);
-		}
+		//	memset(ptr, 0, sizeof(type) * s1);
+		//}
 
 		template<class T2, size_t S2>
 		explicit ANVIL_CALL operator Vector<T2, S2>() const throw() {
@@ -199,30 +209,6 @@ namespace anvil {
 			return tmp;
 		}
 
-		inline this_t ANVIL_CALL operator+(const this_t aOther) const throw() {
-			this_t tmp;
-			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mData[i] + aOther.mData[i];
-			return tmp;
-		}
-
-		inline this_t ANVIL_CALL operator-(const this_t aOther) const throw() {
-			this_t tmp;
-			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mData[i] - aOther.mData[i];
-			return tmp;
-		}
-
-		inline this_t ANVIL_CALL operator*(const this_t aOther) const throw() {
-			this_t tmp;
-			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mData[i] * aOther.mData[i];
-			return tmp;
-		}
-
-		inline this_t ANVIL_CALL operator/(const this_t aOther) const throw() {
-			this_t tmp;
-			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mData[i] / aOther.mData[i];
-			return tmp;
-		}
-
 		template<class T2 = type>
 		inline typename std::enable_if<std::is_integral<T2>::value, this_t>::type ANVIL_CALL operator&(const this_t aOther) const throw() {
 			this_t tmp;
@@ -256,26 +242,6 @@ namespace anvil {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mData[i] >> aOther.mData[i];
 			return tmp;
-		}
-
-		inline this_t& ANVIL_CALL operator+=(const this_t aOther) throw() {
-			for (size_t i = 0; i < size; ++i) mData[i] += aOther.mData[i];
-			return *this;
-		}
-
-		inline this_t& ANVIL_CALL operator-=(const this_t aOther) throw() {
-			for (size_t i = 0; i < size; ++i) mData[i] -= aOther.mData[i];
-			return *this;
-		}
-
-		inline this_t& ANVIL_CALL operator*=(const this_t aOther) throw() {
-			for (size_t i = 0; i < size; ++i) mData[i] *= aOther.mData[i];
-			return *this;
-		}
-
-		inline this_t& ANVIL_CALL operator/=(const this_t aOther) throw() {
-			for (size_t i = 0; i < size; ++i) mData[i] /= aOther.mData[i];
-			return *this;
 		}
 
 		template<class T2 = type>
@@ -456,6 +422,159 @@ namespace anvil {
 			return tmp;
 		}
 	};
+
+	////
+
+	template<class T, size_t S>
+	inline Vector<T,S> ANVIL_CALL operator+(const Vector<T,S> a, const Vector<T,S> b) throw() {
+		Vector<T, S> c;
+		for (size_t i = 0; i < S; ++i) c[i] = a[i] + b[i];
+		return c;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator-(const Vector<T, S> a, const Vector<T, S> b) throw() {
+		Vector<T, S> c;
+		for (size_t i = 0; i < S; ++i) c[i] = a[i] - b[i];
+		return c;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator*(const Vector<T, S> a, const Vector<T, S> b) throw() {
+		Vector<T, S> c;
+		for (size_t i = 0; i < S; ++i) c[i] = a[i] * b[i];
+		return c;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator/(const Vector<T, S> a, const Vector<T, S> b) throw() {
+		Vector<T, S> c;
+		for (size_t i = 0; i < S; ++i) c[i] = a[i] / b[i];
+		return c;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S>& ANVIL_CALL operator+=(Vector<T, S>& a, const Vector<T, S> b) throw() {
+		for (size_t i = 0; i < S; ++i) a[i] += b[i];
+		return a;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S>& ANVIL_CALL operator-=(Vector<T, S>& a, const Vector<T, S> b) throw() {
+		for (size_t i = 0; i < S; ++i) a[i] -= b[i];
+		return a;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S>& ANVIL_CALL operator*=(Vector<T, S>& a, const Vector<T, S> b) throw() {
+		for (size_t i = 0; i < S; ++i) a[i] *= b[i];
+		return a;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S>& ANVIL_CALL operator/=(Vector<T, S>& a, const Vector<T, S> b) throw() {
+		for (size_t i = 0; i < S; ++i) a[i] /= b[i];
+		return a;
+	}
+	namespace detail{
+#ifdef ANVIL_SSE
+		union Vec_F32_4 {
+			Vector<float, 4> vector;
+			__m128 intrinsic;
+		};
+#endif
+#ifdef ANVIL_SSE2
+		union Vec_S32_8 {
+			Vector<int8_t, 16> vector;
+			__m128i intrinsic;
+		};
+
+		union Vec_U32_8 {
+			Vector<uint8_t, 16> vector;
+			__m128i intrinsic;
+		};
+
+		union Vec_S16_8 {
+			Vector<int16_t, 8> vector;
+			__m128i intrinsic;
+		};
+
+		union Vec_U16_8 {
+			Vector<uint16_t, 8> vector;
+			__m128i intrinsic;
+		};
+
+		union Vec_S32_4 {
+			Vector<int32_t, 4> vector;
+			__m128i intrinsic;
+		};
+
+		union Vec_U32_4 {
+			Vector<uint32_t, 4> vector;
+			__m128i intrinsic;
+		};
+
+		union Vec_S64_2 {
+			Vector<int64_t, 2> vector;
+			__m128i intrinsic;
+		};
+
+		union Vec_U64_2 {
+			Vector<uint64_t, 2> vector;
+			__m128i intrinsic;
+		};
+
+		union Vec_F64_2 {
+			Vector<double, 2> vector;
+			__m128d intrinsic;
+		};
+#endif
+	}
+
+#define ANVIL_SPECIALISE_VECTOR_OP(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)\
+	template<>\
+	inline Vector<TYPE, CHANNELS> ANVIL_CALL operator ## SYMBOL(const Vector<TYPE, CHANNELS> a, const Vector<TYPE, CHANNELS> b) throw() {\
+		UNION a_, b_, c_;\
+		a_.vector = a;\
+		b_.vector = b;\
+		c_.intrinsic = FUNCTION(a_.intrinsic, b_.intrinsic);\
+		return c_.vector;\
+	}\
+	template<>\
+	inline Vector<TYPE, CHANNELS>& ANVIL_CALL operator ## SYMBOL ## =(Vector<TYPE, CHANNELS>& a, const Vector<TYPE, CHANNELS> b) throw() {\
+		UNION a_, b_;\
+		a_.vector = a;\
+		b_.vector = b;\
+		a_.intrinsic = FUNCTION(a_.intrinsic, b_.intrinsic);\
+		return a = a_.vector;\
+	}\
+
+#ifdef ANVIL_SSE
+	ANVIL_SPECIALISE_VECTOR_OP(float, 4, +, detail::Vec_F32_4, _mm_add_ps)
+	ANVIL_SPECIALISE_VECTOR_OP(float, 4, -, detail::Vec_F32_4, _mm_sub_ps)
+	ANVIL_SPECIALISE_VECTOR_OP(float, 4, *, detail::Vec_F32_4, _mm_mul_ps)
+	ANVIL_SPECIALISE_VECTOR_OP(float, 4, /, detail::Vec_F32_4, _mm_div_ps)
+#endif
+
+#ifdef ANVIL_SSE2
+	ANVIL_SPECIALISE_VECTOR_OP(double, 2, +, detail::Vec_F64_2, _mm_add_pd)
+	ANVIL_SPECIALISE_VECTOR_OP(double, 2, -, detail::Vec_F64_2, _mm_sub_pd)
+	ANVIL_SPECIALISE_VECTOR_OP(double, 2, *, detail::Vec_F64_2, _mm_mul_pd)
+	ANVIL_SPECIALISE_VECTOR_OP(double, 2, / , detail::Vec_F64_2, _mm_div_pd)
+
+	ANVIL_SPECIALISE_VECTOR_OP(int64_t, 2, +, detail::Vec_S64_2, _mm_add_epi64)
+	ANVIL_SPECIALISE_VECTOR_OP(int64_t, 2, -, detail::Vec_S64_2, _mm_sub_epi64)
+
+	ANVIL_SPECIALISE_VECTOR_OP(int32_t, 4, +, detail::Vec_S32_4, _mm_add_epi32)
+	ANVIL_SPECIALISE_VECTOR_OP(int32_t, 4, -, detail::Vec_S32_4, _mm_sub_epi32)
+
+	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, +, detail::Vec_S16_8, _mm_add_epi16)
+	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, -, detail::Vec_S16_8, _mm_sub_epi16)
+#endif
+
+#undef ANVIL_SPECIALISE_VECTOR_OP
+
+	////
 
 	template<class T, size_t S>
 	std::ostream& ANVIL_CALL operator<<(std::ostream& aStream, Vector<T, S> aValue) {
