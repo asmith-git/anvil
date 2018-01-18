@@ -107,34 +107,6 @@ namespace anvil {
 			enum { value = 0 };
 		};
 
-		template<int S> struct RoundVectorLength_ { enum { value = S }; };
-		template<> struct RoundVectorLength_<3> { enum { value = 4 }; };
-		template<> struct RoundVectorLength_<5> { enum { value = 8 }; };
-		template<> struct RoundVectorLength_<6> { enum { value = 8 }; };
-		template<> struct RoundVectorLength_<7> { enum { value = 8 }; };
-		template<> struct RoundVectorLength_<9> { enum { value = 16 }; };
-		template<> struct RoundVectorLength_<10> { enum { value = 16 }; };
-		template<> struct RoundVectorLength_<11> { enum { value = 16 }; };
-		template<> struct RoundVectorLength_<12> { enum { value = 16 }; };
-		template<> struct RoundVectorLength_<13> { enum { value = 16 }; };
-		template<> struct RoundVectorLength_<14> { enum { value = 16 }; };
-		template<> struct RoundVectorLength_<15> { enum { value = 16 }; };
-		template<> struct RoundVectorLength_<17> { enum { value = 32 }; };
-		template<> struct RoundVectorLength_<18> { enum { value = 32 }; };
-		template<> struct RoundVectorLength_<19> { enum { value = 32 }; };
-		template<> struct RoundVectorLength_<20> { enum { value = 32 }; };
-		template<> struct RoundVectorLength_<21> { enum { value = 32 }; };
-		template<> struct RoundVectorLength_<22> { enum { value = 32 }; };
-		template<> struct RoundVectorLength_<23> { enum { value = 32 }; };
-		template<> struct RoundVectorLength_<24> { enum { value = 32 }; };
-		template<> struct RoundVectorLength_<25> { enum { value = 32 }; };
-		template<> struct RoundVectorLength_<26> { enum { value = 32 }; };
-		template<> struct RoundVectorLength_<27> { enum { value = 32 }; };
-		template<> struct RoundVectorLength_<28> { enum { value = 32 }; };
-		template<> struct RoundVectorLength_<29> { enum { value = 32 }; };
-		template<> struct RoundVectorLength_<30> { enum { value = 32 }; };
-		template<> struct RoundVectorLength_<31> { enum { value = 32 }; };
-
 		template<class T, VectorOp VOP>
 		struct OptimalVectorLength {
 			enum {
@@ -151,7 +123,7 @@ namespace anvil {
 		template<class T, int S, VectorOp VOP>
 		struct RoundVectorLength { 
 			enum { 
-				value = RoundVectorLength_<S>::value <= OptimalVectorLength<T, VOP>::value ? RoundVectorLength_<S>::value : S
+				value = S <= OptimalVectorLength<T, VOP>::value ? OptimalVectorLength<T, VOP>::value : S
 			}; 
 		};
 	}
