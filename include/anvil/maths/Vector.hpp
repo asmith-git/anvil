@@ -591,11 +591,17 @@ namespace anvil {
 	}\
 
 #ifdef ANVIL_MMX
-	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, +, detail::Vec_S16_4, _mm_add_pi16)
-	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, -, detail::Vec_S16_4, _mm_sub_pi16)
+	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, +, detail::Vec_S16_4, _mm_adds_pi16)
+	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, -, detail::Vec_S16_4, _mm_subs_pi16)
 
-	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, +, detail::Vec_S8_8, _mm_add_pi8)
-	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, -, detail::Vec_S8_8, _mm_sub_pi8)
+	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, +, detail::Vec_S8_8, _mm_adds_pi8)
+	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, -, detail::Vec_S8_8, _mm_subs_pi8)
+
+	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 4, +, detail::Vec_U16_4, _mm_adds_pu16)
+	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 4, -, detail::Vec_U16_4, _mm_subs_pu16)
+
+	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 8, +, detail::Vec_U8_8, _mm_adds_pu8)
+	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 8, -, detail::Vec_U8_8, _mm_subs_pu8)
 #endif
 #ifdef ANVIL_SSE
 	ANVIL_SPECIALISE_VECTOR_OP(float, 4, +, detail::Vec_F32_4, _mm_add_ps)
@@ -615,8 +621,17 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_OP(int32_t, 4, +, detail::Vec_S32_4, _mm_add_epi32)
 	ANVIL_SPECIALISE_VECTOR_OP(int32_t, 4, -, detail::Vec_S32_4, _mm_sub_epi32)
 
-	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, +, detail::Vec_S16_8, _mm_add_epi16)
-	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, -, detail::Vec_S16_8, _mm_sub_epi16)
+	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, +, detail::Vec_S16_8, _mm_adds_epi16)
+	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, -, detail::Vec_S16_8, _mm_subs_epi16)
+
+	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 16, +, detail::Vec_S8_16, _mm_adds_epi8)
+	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 16, -, detail::Vec_S8_16, _mm_subs_epi8)
+
+	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 8, +, detail::Vec_U16_8, _mm_adds_epu16)
+	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 8, -, detail::Vec_U16_8, _mm_subs_epu16)
+
+	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, +, detail::Vec_U8_16, _mm_adds_epu8)
+	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, -, detail::Vec_U8_16, _mm_subs_epu8)
 #endif
 
 #undef ANVIL_SPECIALISE_VECTOR_OP
