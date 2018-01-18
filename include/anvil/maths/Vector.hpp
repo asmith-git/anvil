@@ -602,6 +602,58 @@ namespace anvil {
 			__m128d intrinsic;
 		};
 #endif
+#ifdef ANVIL_AVX
+
+		union Vec_S8_32 {
+			Vector<int8_t, 32> vector;
+			__m256i intrinsic;
+		};
+
+		union Vec_U8_32 {
+			Vector<uint8_t, 32> vector;
+			__m256i intrinsic;
+		};
+
+		union Vec_S16_16 {
+			Vector<int16_t, 16> vector;
+			__m256i intrinsic;
+		};
+
+		union Vec_U16_16 {
+			Vector<uint16_t, 16> vector;
+			__m256i intrinsic;
+		};
+
+		union Vec_S32_16 {
+			Vector<int32_t, 16> vector;
+			__m256i intrinsic;
+		};
+
+		union Vec_U32_8 {
+			Vector<uint32_t, 8> vector;
+			__m256i intrinsic;
+		};
+
+		union Vec_S64_4 {
+			Vector<int64_t, 4> vector;
+			__m256i intrinsic;
+		};
+
+		union Vec_U64_4 {
+			Vector<uint64_t, 4> vector;
+			__m256i intrinsic;
+		};
+
+		union Vec_F32_8 {
+			Vector<float, 8> vector;
+			__m256 intrinsic;
+		};
+
+		union Vec_F64_4 {
+			Vector<double, 4> vector;
+			__m256d  intrinsic;
+		};
+#endif
 	}
 
 #define ANVIL_SPECIALISE_VECTOR_OP(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)\
@@ -664,6 +716,17 @@ namespace anvil {
 
 	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, +, detail::Vec_U8_16, _mm_adds_epu8)
 	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, -, detail::Vec_U8_16, _mm_subs_epu8)
+#endif
+#ifdef ANVIL_AVX
+	ANVIL_SPECIALISE_VECTOR_OP(double, 4, +, detail::Vec_F64_4, _mm256_add_pd)
+	ANVIL_SPECIALISE_VECTOR_OP(double, 4, -, detail::Vec_F64_4, _mm256_sub_pd)
+	ANVIL_SPECIALISE_VECTOR_OP(double, 4, *, detail::Vec_F64_4, _mm256_mul_pd)
+	ANVIL_SPECIALISE_VECTOR_OP(double, 4, /, detail::Vec_F64_4, _mm256_div_pd)
+
+	ANVIL_SPECIALISE_VECTOR_OP(float, 8, +, detail::Vec_F32_8, _mm256_add_ps)
+	ANVIL_SPECIALISE_VECTOR_OP(float, 8, -, detail::Vec_F32_8, _mm256_sub_ps)
+	ANVIL_SPECIALISE_VECTOR_OP(float, 8, *, detail::Vec_F32_8, _mm256_mul_ps)
+	ANVIL_SPECIALISE_VECTOR_OP(float, 8, /, detail::Vec_F32_8, _mm256_div_ps)
 #endif
 
 #undef ANVIL_SPECIALISE_VECTOR_OP

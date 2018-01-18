@@ -21,21 +21,76 @@ namespace anvil {
 
 	namespace detail {
 		enum {
-			VECTOR_LENGTH_SCALE = 1
+#if defined(ANVIL_AVX)
+			V8U_LEN = 16,
+			V8S_LEN = 16,
+			V16U_LEN = 8,
+			V16S_LEN = 8,
+			V32U_LEN = 4,
+			V32S_LEN = 4,
+			V64U_LEN = 2,
+			V64S_LEN = 2,
+			V32F_LEN = 8,
+			V64F_LEN = 4,
+#elif defined(ANVIL_SSE2)
+			V8U_LEN = 16,
+			V8S_LEN = 16,
+			V16U_LEN = 8,
+			V16S_LEN = 8,
+			V32U_LEN = 4,
+			V32S_LEN = 4,
+			V64U_LEN = 2,
+			V64S_LEN = 2,
+			V32F_LEN = 4,
+			V64F_LEN = 2,
+#elif defined(ANVIL_SSE)
+			V8U_LEN = 8,
+			V8S_LEN = 8,
+			V16U_LEN = 4,
+			V16S_LEN = 4,
+			V32U_LEN = 1,
+			V32S_LEN = 1,
+			V64U_LEN = 1,
+			V64S_LEN = 1,
+			V32F_LEN = 4,
+			V64F_LEN = 1,
+#elif defined(ANVIL_MMX)
+			V8U_LEN = 8,
+			V8S_LEN = 8,
+			V16U_LEN = 4,
+			V16S_LEN = 4,
+			V32U_LEN = 1,
+			V32S_LEN = 1,
+			V64U_LEN = 1,
+			V64S_LEN = 1,
+			V32F_LEN = 1,
+			V64F_LEN = 1,
+#else
+			V8U_LEN = 1,
+			V8S_LEN = 1,
+			V16U_LEN = 1,
+			V16S_LEN = 1,
+			V32U_LEN = 1,
+			V32S_LEN = 1,
+			V64U_LEN = 1,
+			V64S_LEN = 1,
+			V32F_LEN = 1,
+			V64F_LEN = 1,
+#endif
 		};
 
 		template<class T> struct OptimalVectorLength;
 
-		template<> struct OptimalVectorLength<int8_t> { enum   { value = 16 * VECTOR_LENGTH_SCALE }; };
-		template<> struct OptimalVectorLength<uint8_t> { enum  { value = 16 * VECTOR_LENGTH_SCALE }; };
-		template<> struct OptimalVectorLength<int16_t> { enum  { value = 8 * VECTOR_LENGTH_SCALE }; };
-		template<> struct OptimalVectorLength<uint16_t> { enum { value = 8 * VECTOR_LENGTH_SCALE }; };
-		template<> struct OptimalVectorLength<int32_t> { enum  { value = 4 * VECTOR_LENGTH_SCALE }; };
-		template<> struct OptimalVectorLength<uint32_t> { enum { value = 4 * VECTOR_LENGTH_SCALE }; };
-		template<> struct OptimalVectorLength<int64_t> { enum  { value = 2 * VECTOR_LENGTH_SCALE }; };
-		template<> struct OptimalVectorLength<uint64_t> { enum { value = 2 * VECTOR_LENGTH_SCALE }; };
-		template<> struct OptimalVectorLength<float> { enum    { value = 4 * VECTOR_LENGTH_SCALE }; };
-		template<> struct OptimalVectorLength<double> { enum   { value = 2 * VECTOR_LENGTH_SCALE }; };
+		template<> struct OptimalVectorLength<int8_t> { enum   { value = V8S_LEN }; };
+		template<> struct OptimalVectorLength<uint8_t> { enum  { value = V8U_LEN }; };
+		template<> struct OptimalVectorLength<int16_t> { enum  { value = V16S_LEN }; };
+		template<> struct OptimalVectorLength<uint16_t> { enum { value = V16U_LEN }; };
+		template<> struct OptimalVectorLength<int32_t> { enum  { value = V32S_LEN }; };
+		template<> struct OptimalVectorLength<uint32_t> { enum { value = V32U_LEN }; };
+		template<> struct OptimalVectorLength<int64_t> { enum  { value = V64S_LEN }; };
+		template<> struct OptimalVectorLength<uint64_t> { enum { value = V64U_LEN }; };
+		template<> struct OptimalVectorLength<float> { enum    { value = V32F_LEN }; };
+		template<> struct OptimalVectorLength<double> { enum   { value = V64F_LEN }; };
 
 		template<class T, size_t S>
 		union VectorPtr {
@@ -56,7 +111,7 @@ namespace anvil {
 		a_.scalar = a;\
 		b_.scalar = const_cast<T*>(b);\
 		\
-		while (a_length >= LENGTH) {\
+		if (LENGTH > 1) while (a_length >= LENGTH) {\
 			OPERATION(*a_.vector, *b_.vector);\
 			++a_.vector;\
 			++b_.vector;\
@@ -89,7 +144,7 @@ namespace anvil {
 		b_.scalar = const_cast<T*>(b);\
 		c_.scalar = c;\
 		\
-		while (a_length >= LENGTH) {\
+		if (LENGTH > 1) while (a_length >= LENGTH) {\
 			*c_.vector = OPERATION(*a_.vector, *b_.vector);\
 			++a_.vector;\
 			++b_.vector;\
