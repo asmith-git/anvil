@@ -28,7 +28,7 @@
 
 #ifdef ANVIL_AVX2
 	#define ANVIL_AVX
-	#include <zmmintrin.h>
+	//#include <zmmintrin.h>
 #endif
 
 #ifdef ANVIL_AVX
@@ -110,7 +110,8 @@ namespace anvil {
 		template<class T, VectorOp VOP>
 		struct OptimalVectorLength {
 			enum {
-				value = 
+				value =
+				VopOptimised<T, 64, VOP>::value ? 64 :
 				VopOptimised<T, 32, VOP>::value ? 32 :
 				VopOptimised<T, 16, VOP>::value ? 16 :
 				VopOptimised<T, 8, VOP>::value ? 8 :
@@ -925,7 +926,6 @@ namespace anvil {
 		};
 #endif
 #ifdef ANVIL_AVX
-
 		union Vec_S8_32 {
 			Vector<int8_t, 32> vector;
 			__m256i intrinsic;
@@ -974,6 +974,57 @@ namespace anvil {
 		union Vec_F64_4 {
 			Vector<double, 4> vector;
 			__m256d  intrinsic;
+		};
+#endif
+#ifdef ANVIL_AVX_512
+		union Vec_S8_64 {
+			Vector<int8_t, 64> vector;
+			__m512i intrinsic;
+		};
+
+		union Vec_U8_64 {
+			Vector<uint8_t, 64> vector;
+			__m512i intrinsic;
+		};
+
+		union Vec_S16_32 {
+			Vector<int16_t, 32> vector;
+			__m512i intrinsic;
+		};
+
+		union Vec_U16_32 {
+			Vector<uint16_t, 32> vector;
+			__m512i intrinsic;
+		};
+
+		union Vec_S32_16 {
+			Vector<int32_t, 16> vector;
+			__m512i intrinsic;
+		};
+
+		union Vec_U32_16 {
+			Vector<uint32_t, 16> vector;
+			__m512i intrinsic;
+		};
+
+		union Vec_S64_8 {
+			Vector<int64_t, 8> vector;
+			__m512i intrinsic;
+		};
+
+		union Vec_U64_8 {
+			Vector<uint64_t, 8> vector;
+			__m512i intrinsic;
+		};
+
+		union Vec_F32_16 {
+			Vector<float, 16> vector;
+			__m512 intrinsic;
+		};
+
+		union Vec_F64_8 {
+			Vector<double, 8> vector;
+			__m512d  intrinsic;
 		};
 #endif
 	}
@@ -1296,6 +1347,25 @@ namespace anvil {
 
 	ANVIL_SPECIALISE_VECTOR_FN_VVVV(detail::VOP_FMA, float, 4, fma, detail::Vec_F32_4, _mm_fmadd_ps)
 	ANVIL_SPECIALISE_VECTOR_FN_VVVV(detail::VOP_FMS, float, 4, fms, detail::Vec_F32_4, _mm_fmsub_ps)
+#endif
+#ifdef ANVIL_AVX_512
+		ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_ADD, double, 8, +, detail::Vec_F64_8, _mm512_add_pd)
+		ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_SUB, double, 8, -, detail::Vec_F64_8, _mm512_sub_pd)
+		ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_MUL, double, 8, *, detail::Vec_F64_8, _mm512_mul_pd)
+		ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_DIV, double, 8, /, detail::Vec_F64_8, _mm512_div_pd)
+		ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_SQRT, double, 8, sqrt, detail::Vec_F64_8, _mm512_sqrt_pd)
+		ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_ABS, double, 8, abs, detail::Vec_F64_8, _mm512_abs_pd)
+		ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MAX, double, 8, max, detail::Vec_F64_8, _mm512_max_pd)
+		ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MIN, double, 8, min, detail::Vec_F64_8, _mm512_min_pd)
+
+		ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_ADD, float, 16, +, detail::Vec_F32_16, _mm512_add_ps)
+		ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_SUB, float, 16, -, detail::Vec_F32_16, _mm512_sub_ps)
+		ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_MUL, float, 16, *, detail::Vec_F32_16, _mm512_mul_ps)
+		ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_DIV, float, 16, /, detail::Vec_F32_16, _mm512_div_ps)
+		ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_DIV, float, 16, sqrt, detail::Vec_F32_16, _mm512_sqrt_ps)
+		ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_ABS, float, 16, abs, detail::Vec_F32_16, _mm512_abs_ps)
+		ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MAX, float, 16, max, detail::Vec_F32_16, _mm512_max_ps)
+		ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MIN, float, 16, min, detail::Vec_F32_16, _mm512_min_ps)
 #endif
 
 #undef ANVIL_SPECIALISE_VECTOR_OP_CMP
