@@ -28,6 +28,10 @@
 #endif
 
 #ifdef ANVIL_SSE
+	#define ANVIL_MMX
+#endif
+
+#ifdef ANVIL_SSE
 	#include "xmmintrin.h"
 #endif
 
@@ -477,6 +481,43 @@ namespace anvil {
 		return a;
 	}
 	namespace detail{
+
+#ifdef ANVIL_MMX
+		union Vec_F32_2 {
+			Vector<float, 2> vector;
+			__m64 intrinsic;
+		};
+
+		union Vec_S8_8 {
+			Vector<int8_t, 8> vector;
+			__m64 intrinsic;
+		};
+
+		union Vec_U8_8 {
+			Vector<uint8_t, 8> vector;
+			__m64 intrinsic;
+		};
+
+		union Vec_S16_4 {
+			Vector<int16_t, 4> vector;
+			__m64 intrinsic;
+		};
+
+		union Vec_U16_4 {
+			Vector<uint16_t, 4> vector;
+			__m64 intrinsic;
+		};
+
+		union Vec_S32_2 {
+			Vector<int32_t, 2> vector;
+			__m64 intrinsic;
+		};
+
+		union Vec_U32_2 {
+			Vector<uint32_t, 2> vector;
+			__m64 intrinsic;
+		};
+#endif
 #ifdef ANVIL_SSE
 		union Vec_F32_4 {
 			Vector<float, 4> vector;
@@ -484,12 +525,12 @@ namespace anvil {
 		};
 #endif
 #ifdef ANVIL_SSE2
-		union Vec_S32_8 {
+		union Vec_S8_16 {
 			Vector<int8_t, 16> vector;
 			__m128i intrinsic;
 		};
 
-		union Vec_U32_8 {
+		union Vec_U8_16 {
 			Vector<uint8_t, 16> vector;
 			__m128i intrinsic;
 		};
@@ -549,13 +590,19 @@ namespace anvil {
 		return a = a_.vector;\
 	}\
 
+#ifdef ANVIL_MMX
+	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, +, detail::Vec_S16_4, _mm_add_pi16)
+	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, -, detail::Vec_S16_4, _mm_sub_pi16)
+
+	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, +, detail::Vec_S8_8, _mm_add_pi8)
+	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, -, detail::Vec_S8_8, _mm_sub_pi8)
+#endif
 #ifdef ANVIL_SSE
 	ANVIL_SPECIALISE_VECTOR_OP(float, 4, +, detail::Vec_F32_4, _mm_add_ps)
 	ANVIL_SPECIALISE_VECTOR_OP(float, 4, -, detail::Vec_F32_4, _mm_sub_ps)
 	ANVIL_SPECIALISE_VECTOR_OP(float, 4, *, detail::Vec_F32_4, _mm_mul_ps)
 	ANVIL_SPECIALISE_VECTOR_OP(float, 4, /, detail::Vec_F32_4, _mm_div_ps)
 #endif
-
 #ifdef ANVIL_SSE2
 	ANVIL_SPECIALISE_VECTOR_OP(double, 2, +, detail::Vec_F64_2, _mm_add_pd)
 	ANVIL_SPECIALISE_VECTOR_OP(double, 2, -, detail::Vec_F64_2, _mm_sub_pd)

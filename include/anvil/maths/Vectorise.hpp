@@ -21,7 +21,7 @@ namespace anvil {
 
 	namespace detail {
 		enum {
-			VECTOR_LENGTH_SCALE = 2
+			VECTOR_LENGTH_SCALE = 1
 		};
 
 		template<class T> struct OptimalVectorLength;
