@@ -46,7 +46,7 @@ namespace anvil {
 
 #define ANVIL_VECTORISE_VV(NAME, OPERATION)\
 	template<class T>\
-	static void NAME(T* a, const T* b, size_t a_length) throw() {\
+	static void NAME(T* ANVIL_RESTRICT a, const T* ANVIL_RESTRICT b, size_t a_length) throw() {\
 		enum { LENGTH = detail::OptimalVectorLength<T>::value };\
 		\
 		detail::VectorPtr<T, LENGTH> a_;\
@@ -73,7 +73,7 @@ namespace anvil {
 #define ANVIL_VECTORISE_VVV(NAME, OPERATION, OPERATION2)\
 	ANVIL_VECTORISE_VV(NAME, OPERATION2)\
 	template<class T>\
-	static void NAME(const T* a, const T* b, T* c, size_t a_length) throw() {\
+	static void NAME(const T* ANVIL_RESTRICT a, const T* ANVIL_RESTRICT b, T* ANVIL_RESTRICT c, size_t a_length) throw() {\
 		enum { LENGTH = detail::OptimalVectorLength<T>::value };\
 		\
 		if (a == c) {\
