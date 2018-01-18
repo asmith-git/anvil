@@ -547,7 +547,7 @@ namespace anvil {
 	template<class T, size_t S>\
 	Vector<T, S>& ANVIL_CALL operator ## SYMBOL(Vector<T, S>& a, const Vector<T, S> b) throw() {\
 		enum { OPTIMAL = detail::OptimalVectorLength<T>::value };\
-		if(OPTIMAL < S){\
+		if(OPTIMAL < S && OPTIMAL > 1){\
 			enum {\
 				LOOP1 = S / OPTIMAL,\
 				LOOP2 = S % OPTIMAL\
@@ -584,7 +584,7 @@ namespace anvil {
 	Vector<T,S> ANVIL_CALL operator ## SYMBOL(const Vector<T,S> a, const Vector<T,S> b) throw() {\
 		Vector<T, S> c;\
 		enum { OPTIMAL = detail::OptimalVectorLength<T>::value };\
-		if(OPTIMAL < S){\
+		if(OPTIMAL < S && OPTIMAL > 1){\
 			enum {\
 				LOOP1 = S / OPTIMAL,\
 				LOOP2 = S % OPTIMAL\
