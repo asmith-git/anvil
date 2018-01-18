@@ -664,14 +664,14 @@ namespace anvil {
 	// Common.hpp overloads
 
 	template<class T, size_t S>
-	static inline const Vector<T, S> ANVIL_CALL abs(const Vector<T, S> a) {
+	static inline Vector<T, S> ANVIL_CALL abs(const Vector<T, S> a) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = abs(a[i]);
 		return tmp;
 	}
 
 	template<class T, size_t S>
-	static inline const Vector<T, S> ANVIL_CALL mod(const Vector<T, S> a, const Vector<T, S> b) {
+	static inline Vector<T, S> ANVIL_CALL mod(const Vector<T, S> a, const Vector<T, S> b) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp[i] = mod(a[i], b[i]);
 		return tmp;
@@ -1034,7 +1034,7 @@ namespace anvil {
 		b_.vector = b;\
 		c_.intrinsic = FUNCTION(a_.intrinsic, b_.intrinsic);\
 		return c_.vector;\
-	}
+		}
 
 #define ANVIL_SPECIALISE_VECTOR_OP_EQ(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)\
 	template<>\
@@ -1044,7 +1044,16 @@ namespace anvil {
 		b_.vector = b;\
 		a_.intrinsic = FUNCTION(a_.intrinsic, b_.intrinsic);\
 		return a = a_.vector;\
-		}
+				}
+
+#define ANVIL_SPECIALISE_VECTOR_FN_VV(TYPE,CHANNELS,NAME,UNION,FUNCTION)\
+	template<>\
+	inline Vector<TYPE, CHANNELS> ANVIL_CALL NAME<TYPE, CHANNELS>(const Vector<TYPE, CHANNELS> a) {\
+		UNION a_, b_;\
+		a_.vector = a;\
+		b_.intrinsic = FUNCTION(a_.intrinsic);\
+		return b_.vector;\
+	}
 
 #define ANVIL_SPECIALISE_VECTOR_FN_VVV(TYPE,CHANNELS,NAME,UNION,FUNCTION)\
 	template<>\
@@ -1192,6 +1201,19 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint8_t, 16, ==, detail::Vec_U8_16, _mm_cmpeq_epi8)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(uint8_t, 16, max, detail::Vec_U8_16, _mm_max_epu8)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(uint8_t, 16, min, detail::Vec_U8_16, _mm_max_epu8)
+#endif
+#ifdef ANVIL_SSSE3
+	ANVIL_SPECIALISE_VECTOR_FN_VV(int32_t, 4, abs, detail::Vec_S32_4, _mm_abs_epi32)
+
+	ANVIL_SPECIALISE_VECTOR_FN_VV(int16_t, 8, abs, detail::Vec_S16_8, _mm_abs_epi16)
+
+	ANVIL_SPECIALISE_VECTOR_FN_VV(int8_t, 16, abs, detail::Vec_S8_16, _mm_abs_epi8)
+
+	ANVIL_SPECIALISE_VECTOR_FN_VV(int32_t, 2, abs, detail::Vec_S32_2, _mm_abs_pi32)
+
+	ANVIL_SPECIALISE_VECTOR_FN_VV(int16_t, 4, abs, detail::Vec_S16_4, _mm_abs_pi16)
+
+	ANVIL_SPECIALISE_VECTOR_FN_VV(int8_t, 8, abs, detail::Vec_S8_8, _mm_abs_pi8)
 #endif
 #ifdef ANVIL_SSE4_1
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(int32_t, 4, max, detail::Vec_S32_4, _mm_max_epi32)
