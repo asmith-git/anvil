@@ -528,7 +528,7 @@ namespace anvil {
 					tmp[i] = mData[i] * mData[i];
 					mag += tmp[i];
 				}
-				tmp /= mag;
+				tmp /= fill<float_t, size>(mag);
 				return tmp;
 			} else {
 				return Vector<float_t, size>(*this).normalisef();
