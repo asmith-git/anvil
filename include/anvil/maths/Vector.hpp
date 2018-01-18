@@ -21,8 +21,6 @@
 #include "anvil/maths/Reflection.hpp"
 #include "anvil/maths/Common.hpp"
 
-#define ANVIL_AVX //! \todo Remove this line
-
 #ifdef ANVIL_AVX2
 	#define ANVIL_AVX
 	#include <zmmintrin.h>
