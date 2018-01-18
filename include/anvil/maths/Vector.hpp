@@ -365,27 +365,27 @@ namespace anvil {
 			return tmp;
 		}
 
-		inline type ANVIL_CALL operator[](const size_t aIndex) const throw() {
+		ANVIL_STRONG_INLINE type ANVIL_CALL operator[](const size_t aIndex) const throw() {
 			return mData[aIndex];
 		}
 
-		inline type& ANVIL_CALL operator[](const size_t aIndex) throw() {
+		ANVIL_STRONG_INLINE type& ANVIL_CALL operator[](const size_t aIndex) throw() {
 			return mData[aIndex];
 		}
 
-		inline const type* ANVIL_CALL begin() const throw() {
+		ANVIL_STRONG_INLINE const type* ANVIL_CALL begin() const throw() {
 			return mData;
 		}
 
-		inline type* ANVIL_CALL begin() throw() {
+		ANVIL_STRONG_INLINE type* ANVIL_CALL begin() throw() {
 			return mData;
 		}
 
-		inline const type* ANVIL_CALL end() const throw() {
+		ANVIL_STRONG_INLINE const type* ANVIL_CALL end() const throw() {
 			return mData + size;
 		}
 
-		inline type* ANVIL_CALL end() throw() {
+		ANVIL_STRONG_INLINE type* ANVIL_CALL end() throw() {
 			return mData + size;
 		}
 
@@ -400,15 +400,15 @@ namespace anvil {
 			}
 		}
 
-		inline float_t ANVIL_CALL avgf() const throw() {
+		ANVIL_STRONG_INLINE float_t ANVIL_CALL avgf() const throw() {
 			return sumf() / static_cast<float_t>(size);
 		}
 
-		inline type ANVIL_CALL sum() const throw() {
+		ANVIL_STRONG_INLINE type ANVIL_CALL sum() const throw() {
 			return static_cast<type>(sumf());
 		}
 
-		inline type ANVIL_CALL avg() const throw() {
+		ANVIL_STRONG_INLINE type ANVIL_CALL avg() const throw() {
 			return static_cast<type>(avgf());
 		}
 
@@ -466,15 +466,15 @@ namespace anvil {
 			}
 		}
 
-		inline float_t ANVIL_CALL magf() const throw() {
+		ANVIL_STRONG_INLINE float_t ANVIL_CALL magf() const throw() {
 			return sqrt(mag2f());
 		}
 
-		inline type ANVIL_CALL mag2() const throw() {
+		ANVIL_STRONG_INLINE type ANVIL_CALL mag2() const throw() {
 			return static_cast<type>(mag2f());
 		}
 
-		inline type ANVIL_CALL mag() const throw() {
+		ANVIL_STRONG_INLINE type ANVIL_CALL mag() const throw() {
 			return static_cast<type>(magf());
 		}
 
