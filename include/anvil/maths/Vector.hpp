@@ -511,6 +511,44 @@ namespace anvil {
 		return a;
 	}
 
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator==(const Vector<T, S> a, const Vector<T, S> b) throw() {
+		Vector<T, S> c;
+		for (size_t i = 0; i < S; ++i) c[i] = static_cast<T>(a[i] == b[i]);
+		return c;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator!=(const Vector<T, S> a, const Vector<T, S> b) throw() {
+		Vector<T, S> c;
+		for (size_t i = 0; i < S; ++i) c[i] = static_cast<T>(a[i] != b[i]);
+		return c;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator<(const Vector<T, S> a, const Vector<T, S> b) throw() {
+		Vector<T, S> c;
+		for (size_t i = 0; i < S; ++i) c[i] = static_cast<T>(a[i] < b[i]);
+		return c;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator>(const Vector<T, S> a, const Vector<T, S> b) throw() {
+		Vector<T, S> c;
+		for (size_t i = 0; i < S; ++i) c[i] = static_cast<T>(a[i] > b[i]);
+		return c;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator<=(const Vector<T, S> a, const Vector<T, S> b) throw() {
+		return operator|(operator<(a, b), operator==(a, b));
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator>=(const Vector<T, S> a, const Vector<T, S> b) throw() {
+		return operator|(operator>(a, b), operator==(a, b));
+	}
+
 	namespace detail{
 
 #ifdef ANVIL_MMX
@@ -655,7 +693,7 @@ namespace anvil {
 #endif
 	}
 
-#define ANVIL_SPECIALISE_VECTOR_OP(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)\
+#define ANVIL_SPECIALISE_VECTOR_OP_CMP(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)\
 	template<>\
 	inline Vector<TYPE, CHANNELS> ANVIL_CALL operator ## SYMBOL(const Vector<TYPE, CHANNELS> a, const Vector<TYPE, CHANNELS> b) throw() {\
 		UNION a_, b_, c_;\
@@ -663,7 +701,9 @@ namespace anvil {
 		b_.vector = b;\
 		c_.intrinsic = FUNCTION(a_.intrinsic, b_.intrinsic);\
 		return c_.vector;\
-	}\
+	}
+
+#define ANVIL_SPECIALISE_VECTOR_OP_EQ(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)\
 	template<>\
 	inline Vector<TYPE, CHANNELS>& ANVIL_CALL operator ## SYMBOL ## =(Vector<TYPE, CHANNELS>& a, const Vector<TYPE, CHANNELS> b) throw() {\
 		UNION a_, b_;\
@@ -671,32 +711,47 @@ namespace anvil {
 		b_.vector = b;\
 		a_.intrinsic = FUNCTION(a_.intrinsic, b_.intrinsic);\
 		return a = a_.vector;\
-	}\
+	}
+
+#define ANVIL_SPECIALISE_VECTOR_OP(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)\
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)\
+	ANVIL_SPECIALISE_VECTOR_OP_EQ(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)
 
 #ifdef ANVIL_MMX
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int32_t, 2, ==, detail::Vec_S32_2, _mm_cmpeq_pi32)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int32_t, 2, >, detail::Vec_S32_2, _mm_cmpgt_pi32)
+
 	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, +, detail::Vec_S16_4, _mm_adds_pi16)
 	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, -, detail::Vec_S16_4, _mm_subs_pi16)
 	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, &, detail::Vec_S16_4, _mm_and_si64)
 	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, |, detail::Vec_S16_4, _mm_or_si64)
 	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, ^, detail::Vec_S16_4, _mm_xor_si64)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int16_t, 4, == , detail::Vec_S16_4, _mm_cmpeq_pi16)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int16_t, 4, > , detail::Vec_S16_4, _mm_cmpgt_pi16)
 
 	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, +, detail::Vec_S8_8, _mm_adds_pi8)
 	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, -, detail::Vec_S8_8, _mm_subs_pi8)
 	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, &, detail::Vec_S8_8, _mm_and_si64)
 	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, |, detail::Vec_S8_8, _mm_or_si64)
 	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, ^, detail::Vec_S8_8, _mm_xor_si64)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int8_t, 8, == , detail::Vec_S8_8, _mm_cmpeq_pi8)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int8_t, 8, > , detail::Vec_S8_8, _mm_cmpgt_pi8)
+	
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint32_t, 2, ==, detail::Vec_U32_2, _mm_cmpeq_pi32)
 
 	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 4, +, detail::Vec_U16_4, _mm_adds_pu16)
 	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 4, -, detail::Vec_U16_4, _mm_subs_pu16)
 	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 4, &, detail::Vec_U16_4, _mm_and_si64)
 	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 4, |, detail::Vec_U16_4, _mm_or_si64)
 	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 4, ^, detail::Vec_U16_4, _mm_xor_si64)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint16_t, 4, == , detail::Vec_U16_4, _mm_cmpeq_pi16)
 
 	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 8, +, detail::Vec_U8_8, _mm_adds_pu8)
 	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 8, -, detail::Vec_U8_8, _mm_subs_pu8)
 	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 8, &, detail::Vec_U8_8, _mm_and_si64)
 	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 8, |, detail::Vec_U8_8, _mm_or_si64)
 	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 8, ^, detail::Vec_U8_8, _mm_xor_si64)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint8_t, 8, == , detail::Vec_U8_8, _mm_cmpeq_pi8)
 #endif
 #ifdef ANVIL_SSE
 	ANVIL_SPECIALISE_VECTOR_OP(float, 4, +, detail::Vec_F32_4, _mm_add_ps)
@@ -706,6 +761,12 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_OP(float, 4, & , detail::Vec_F32_4, _mm_and_ps)
 	ANVIL_SPECIALISE_VECTOR_OP(float, 4, | , detail::Vec_F32_4, _mm_or_ps)
 	ANVIL_SPECIALISE_VECTOR_OP(float, 4, ^ , detail::Vec_F32_4, _mm_xor_ps)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, ==, detail::Vec_F32_4, _mm_cmpeq_ps)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, !=, detail::Vec_F32_4, _mm_cmpneq_ps)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, >=, detail::Vec_F32_4, _mm_cmpge_ps)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, <=, detail::Vec_F32_4, _mm_cmple_ps)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, > , detail::Vec_F32_4, _mm_cmpgt_ps)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, < , detail::Vec_F32_4, _mm_cmplt_ps)
 #endif
 #ifdef ANVIL_SSE2
 	ANVIL_SPECIALISE_VECTOR_OP(double, 2, +, detail::Vec_F64_2, _mm_add_pd)
@@ -715,6 +776,12 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_OP(double, 2, & , detail::Vec_F64_2, _mm_and_pd)
 	ANVIL_SPECIALISE_VECTOR_OP(double, 2, | , detail::Vec_F64_2, _mm_or_pd)
 	ANVIL_SPECIALISE_VECTOR_OP(double, 2, ^ , detail::Vec_F64_2, _mm_xor_pd)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, ==, detail::Vec_F64_2, _mm_cmpeq_pd)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, !=, detail::Vec_F64_2, _mm_cmpneq_pd)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, >=, detail::Vec_F64_2, _mm_cmpge_pd)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, <=, detail::Vec_F64_2, _mm_cmple_pd)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, > , detail::Vec_F64_2, _mm_cmpgt_pd)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, < , detail::Vec_F64_2, _mm_cmplt_pd)
 
 	ANVIL_SPECIALISE_VECTOR_OP(int64_t, 2, +, detail::Vec_S64_2, _mm_add_epi64)
 	ANVIL_SPECIALISE_VECTOR_OP(int64_t, 2, -, detail::Vec_S64_2, _mm_sub_epi64)
@@ -727,30 +794,47 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_OP(int32_t, 4, &, detail::Vec_S32_4, _mm_and_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(int32_t, 4, |, detail::Vec_S32_4, _mm_and_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(int32_t, 4, ^, detail::Vec_S32_4, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int32_t, 4, ==, detail::Vec_S32_4, _mm_cmpeq_epi32)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int32_t, 4, > , detail::Vec_S32_4, _mm_cmpgt_epi32)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int32_t, 4, < , detail::Vec_S32_4, _mm_cmplt_epi32)
 
 	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, +, detail::Vec_S16_8, _mm_adds_epi16)
 	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, -, detail::Vec_S16_8, _mm_subs_epi16)
 	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, &, detail::Vec_S16_8, _mm_and_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, |, detail::Vec_S16_8, _mm_and_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, ^, detail::Vec_S16_8, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int16_t, 8, ==, detail::Vec_S16_8, _mm_cmpeq_epi16)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int16_t, 8, > , detail::Vec_S16_8, _mm_cmpgt_epi16)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int16_t, 8, < , detail::Vec_S16_8, _mm_cmplt_epi16)
 
 	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 16, +, detail::Vec_S8_16, _mm_adds_epi8)
 	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 16, -, detail::Vec_S8_16, _mm_subs_epi8)
 	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 16, &, detail::Vec_S8_16, _mm_and_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 16, |, detail::Vec_S8_16, _mm_and_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 16, ^, detail::Vec_S8_16, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int8_t, 16, ==, detail::Vec_S8_16, _mm_cmpeq_epi8)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int8_t, 16, > , detail::Vec_S8_16, _mm_cmpgt_epi8)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int8_t, 16, < , detail::Vec_S8_16, _mm_cmplt_epi8)
+
+	ANVIL_SPECIALISE_VECTOR_OP(uint64_t, 2, &, detail::Vec_U64_2, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP(uint64_t, 2, |, detail::Vec_U64_2, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP(uint64_t, 2, ^, detail::Vec_U64_2, _mm_and_si128)
+
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint32_t, 4, ==, detail::Vec_U32_4, _mm_cmpeq_epi32)
 
 	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 8, +, detail::Vec_U16_8, _mm_adds_epu16)
 	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 8, -, detail::Vec_U16_8, _mm_subs_epu16)
 	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 8, &, detail::Vec_U16_8, _mm_and_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 8, |, detail::Vec_U16_8, _mm_and_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 8, ^, detail::Vec_U16_8, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint16_t, 8, ==, detail::Vec_U16_8, _mm_cmpeq_epi16)
 
 	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, +, detail::Vec_U8_16, _mm_adds_epu8)
 	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, -, detail::Vec_U8_16, _mm_subs_epu8)
 	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, &, detail::Vec_U8_16, _mm_and_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, |, detail::Vec_U8_16, _mm_and_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, ^, detail::Vec_U8_16, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint8_t, 16, ==, detail::Vec_U8_16, _mm_cmpeq_epi8)
 #endif
 #ifdef ANVIL_AVX
 	ANVIL_SPECIALISE_VECTOR_OP(double, 4, +, detail::Vec_F64_4, _mm256_add_pd)
@@ -768,6 +852,8 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_OP(float, 8, &, detail::Vec_F32_8, _mm256_and_ps)
 	ANVIL_SPECIALISE_VECTOR_OP(float, 8, |, detail::Vec_F32_8, _mm256_or_ps)
 	ANVIL_SPECIALISE_VECTOR_OP(float, 8, ^, detail::Vec_F32_8, _mm256_xor_ps)
+
+	//! \todo Support _mm_cmp_pd and _mm_cmp_ps
 #endif
 
 #undef ANVIL_SPECIALISE_VECTOR_OP
@@ -836,36 +922,6 @@ namespace anvil {
 	template<class T, size_t S>
 	inline Vector<T, S> ANVIL_CALL operator||(const T a, const Vector<T, S> b) {
 		return Vector<T, S>(a) ^ b;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator==(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) == b;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator!=(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) != b;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator<(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) < b;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator>(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) > b;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator<=(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) <= b;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator>=(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) >= b;
 	}
 
 	template<class T, size_t S>
