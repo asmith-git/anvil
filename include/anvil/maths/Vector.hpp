@@ -488,14 +488,39 @@ namespace anvil {
 			}
 		}
 
-		template<size_t S2 = size>
-		inline typename std::enable_if<S2 == 3, this_t>::type ANVIL_CALL cross(const this_t aOther) const throw() {
-			const type tmp[3] = {
-				(mData[1] * aOther.mData[2]) - (mData[2] * aOther.mData[1]),
-				(mData[2] * aOther.mData[0]) - (mData[0] * aOther.mData[2]),
-				(mData[0] * aOther.mData[1]) - (mData[1] * aOther.mData[0])
+		inline Vector<float_t, 3> ANVIL_CALL crossf(const this_t aOther) const throw() {
+			Vector<float_t, 4> a, b, c, d;
+
+			a[0] = static_cast<float_t>(mData[1]);
+			a[1] = static_cast<float_t>(mData[2]);
+			a[2] = static_cast<float_t>(mData[0]);
+			a[3] = static_cast<float_t>(0.f);
+
+			c[0] = static_cast<float_t>(mData[2]);
+			c[1] = static_cast<float_t>(mData[0]);
+			c[2] = static_cast<float_t>(mData[1]);
+			c[3] = static_cast<float_t>(0.f);
+
+			b[0] = static_cast<float_t>(aOther.mData[2]);
+			b[1] = static_cast<float_t>(aOther.mData[0]);
+			b[2] = static_cast<float_t>(aOther.mData[1]);
+			b[3] = static_cast<float_t>(0.f);
+
+			d[0] = static_cast<float_t>(aOther.mData[1]);
+			d[1] = static_cast<float_t>(aOther.mData[2]);
+			d[2] = static_cast<float_t>(aOther.mData[0]);
+			d[3] = static_cast<float_t>(0.f);
+
+			union {
+				Vector<float_t, 4> v4;
+				Vector<float_t, 3> v3;
 			};
-			return this_t(tmp);
+			v4 = anvil::fms<type, 4>(a, b, c * d);
+			return v3;
+		}
+
+		inline Vector<T, 3> ANVIL_CALL cross(const this_t aOther) const throw() {
+			return static_cast<this_t>(crossf(aOther));
 		}
 
 		inline float_t ANVIL_CALL mag2f() const throw() {
