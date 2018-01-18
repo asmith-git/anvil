@@ -390,9 +390,14 @@ namespace anvil {
 		}
 
 		inline float_t ANVIL_CALL sumf() const throw() {
-			float_t tmp = static_cast<float_t>(0);
-			for (size_t i = 0; i < size; ++i) tmp += static_cast<float_t>(mData[i]);
-			return tmp;
+			enum { HALF_OPTIMISED = size > 2 && detail::VopOptimised<half_t::type, half_t::size, detail::VOP_ADD>::value };
+			if (HALF_OPTIMISED) {
+				return (lowerHalf() + upperHalf()).sumf();
+			} else {
+				type tmp = mData[0];
+				for (size_t i = 1; i < size; ++i) tmp += mData[i];
+				return tmp;
+			}
 		}
 
 		inline float_t ANVIL_CALL avgf() const throw() {
@@ -542,8 +547,8 @@ namespace anvil {
 			}\
 		} else if(OPTIMAL > S) {\
 			detail::RoundedVector<T, S, VOP> a_, b_;\
-			a_.unrounded = a;\
-			b_.unrounded = b;\
+			memcpy(&a_, &a, sizeof(a));\
+			memcpy(&b_, &b, sizeof(b));\
 			a_.rounded SYMBOL b_.rounded;\
 			a = a_.unrounded;\
 		} else {\
@@ -581,8 +586,8 @@ namespace anvil {
 			}\
 		} else if(OPTIMAL > S) {\
 			detail::RoundedVector<T, S, VOP> a_, b_, c_;\
-			a_.unrounded = a;\
-			b_.unrounded = b;\
+			memcpy(&a_, &a, sizeof(a));\
+			memcpy(&b_, &b, sizeof(b));\
 			c_.rounded = a_.rounded SYMBOL b_.rounded;\
 			c = c_.unrounded;\
 		} else {\
