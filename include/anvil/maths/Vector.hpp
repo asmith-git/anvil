@@ -21,18 +21,50 @@
 #include "anvil/maths/Reflection.hpp"
 #include "anvil/maths/Common.hpp"
 
-#define ANVIL_SSE2 //! \todo Remove this line
+#define ANVIL_AVX //! \todo Remove this line
+
+#ifdef ANVIL_AVX2
+	#define ANVIL_AVX
+	#include <zmmintrin.h>
+#endif
+
+#ifdef ANVIL_AVX
+	#define ANVIL_SSE4_2
+	#include <immintrin.h>
+#endif
+
+#ifdef ANVIL_SSE4_2
+	#define ANVIL_SSE4_1
+	#include <nmmintrin.h>
+#endif
+
+#ifdef ANVIL_SSE4_1
+	#define ANVIL_SSE3
+	#include <smmintrin.h>
+#endif
+
+#ifdef ANVIL_SSE3
+	#define ANVIL_SSSE3
+	#include <tmmintrin.h>
+#endif
+
+#ifdef ANVIL_SSSE3
+	#define ANVIL_SSE2
+	#include <pmmintrin.h>
+#endif
 
 #ifdef ANVIL_SSE2
 	#define ANVIL_SSE
+	#include <emmintrin.h>
 #endif
 
 #ifdef ANVIL_SSE
 	#define ANVIL_MMX
+	#include <xmmintrin.h>
 #endif
 
-#ifdef ANVIL_SSE
-	#include "xmmintrin.h"
+#ifdef ANVIL_MMX
+	#include <mmintrin.h>
 #endif
 
 namespace anvil {
