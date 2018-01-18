@@ -102,89 +102,10 @@ namespace anvil {
 			VOP_CIEL,  VOP_FLOOR,  VOP_TRUNC, VOP_ROUND
 		};
 
-		template<class T, size_t S, VectorOp OP>
+		template<class T, size_t S, VectorOp VOP>
 		struct VopOptimised {
 			enum { value = 0 };
 		};
-
-#if defined(ANVIL_AVX)
-		enum {
-			V8U_LEN = 32,
-			V8S_LEN = 32,
-			V16U_LEN = 16,
-			V16S_LEN = 16,
-			V32U_LEN = 8,
-			V32S_LEN = 8,
-			V64U_LEN = 4,
-			V64S_LEN = 4,
-			V32F_LEN = 8,
-			V64F_LEN = 4
-		};
-#elif defined(ANVIL_SSE2)
-		enum {
-			V8U_LEN = 16,
-			V8S_LEN = 16,
-			V16U_LEN = 8,
-			V16S_LEN = 8,
-			V32U_LEN = 4,
-			V32S_LEN = 4,
-			V64U_LEN = 2,
-			V64S_LEN = 2,
-			V32F_LEN = 4,
-			V64F_LEN = 2
-		};
-#elif defined(ANVIL_SSE)
-		enum {
-			V8U_LEN = 8,
-			V8S_LEN = 8,
-			V16U_LEN = 4,
-			V16S_LEN = 4,
-			V32U_LEN = 1,
-			V32S_LEN = 1,
-			V64U_LEN = 1,
-			V64S_LEN = 1,
-			V32F_LEN = 4,
-			V64F_LEN = 1
-		};
-#elif defined(ANVIL_MMX)
-		enum {
-			V8U_LEN = 8,
-			V8S_LEN = 8,
-			V16U_LEN = 4,
-			V16S_LEN = 4,
-			V32U_LEN = 1,
-			V32S_LEN = 1,
-			V64U_LEN = 1,
-			V64S_LEN = 1,
-			V32F_LEN = 1,
-			V64F_LEN = 1
-		};
-#else
-		enum {
-			V8U_LEN = 1,
-			V8S_LEN = 1,
-			V16U_LEN = 1,
-			V16S_LEN = 1,
-			V32U_LEN = 1,
-			V32S_LEN = 1,
-			V64U_LEN = 1,
-			V64S_LEN = 1,
-			V32F_LEN = 1,
-			V64F_LEN = 1
-		};
-#endif
-
-		template<class T> struct OptimalVectorLength { enum { value = 1 }; };
-		template<> struct OptimalVectorLength<int8_t> { enum   { value = V8S_LEN }; };
-		template<> struct OptimalVectorLength<uint8_t> { enum  { value = V8U_LEN }; };
-		template<> struct OptimalVectorLength<int16_t> { enum  { value = V16S_LEN }; };
-		template<> struct OptimalVectorLength<uint16_t> { enum { value = V16U_LEN }; };
-		template<> struct OptimalVectorLength<int32_t> { enum  { value = V32S_LEN }; };
-		template<> struct OptimalVectorLength<uint32_t> { enum { value = V32U_LEN }; };
-		template<> struct OptimalVectorLength<int64_t> { enum  { value = V64S_LEN }; };
-		template<> struct OptimalVectorLength<uint64_t> { enum { value = V64U_LEN }; };
-		template<> struct OptimalVectorLength<float> { enum    { value = V32F_LEN }; };
-		template<> struct OptimalVectorLength<double> { enum   { value = V64F_LEN }; };
 
 		template<int S> struct RoundVectorLength_ { enum { value = S }; };
 		template<> struct RoundVectorLength_<3> { enum { value = 4 }; };
@@ -214,10 +135,23 @@ namespace anvil {
 		template<> struct RoundVectorLength_<30> { enum { value = 32 }; };
 		template<> struct RoundVectorLength_<31> { enum { value = 32 }; };
 
-		template<class T, int S> 
+		template<class T, VectorOp VOP>
+		struct OptimalVectorLength {
+			enum {
+				value = 
+				VopOptimised<T, 32, VOP>::value ? 32 :
+				VopOptimised<T, 16, VOP>::value ? 16 :
+				VopOptimised<T, 8, VOP>::value ? 8 :
+				VopOptimised<T, 4, VOP>::value ? 4 :
+				VopOptimised<T, 2, VOP>::value ? 2 :
+				1
+			};
+		};
+
+		template<class T, int S, VectorOp VOP>
 		struct RoundVectorLength { 
 			enum { 
-				value = RoundVectorLength_<S>::value <= OptimalVectorLength<T>::value ? RoundVectorLength_<S>::value : S
+				value = RoundVectorLength_<S>::value <= OptimalVectorLength<T, VOP>::value ? RoundVectorLength_<S>::value : S
 			}; 
 		};
 	}
@@ -564,10 +498,10 @@ namespace anvil {
 	////
 
 	namespace detail {
-		template<class T, int S>
+		template<class T, int S, VectorOp OP>
 		union RoundedVector {
 			Vector<T, S> unrounded;
-			Vector<T, RoundVectorLength<T, S>::value> rounded;
+			Vector<T, RoundVectorLength<T, S, OP>::value> rounded;
 		};
 
 		template<class T, size_t S>
@@ -577,10 +511,10 @@ namespace anvil {
 		};
 	}
 
-#define ANVIL_VECTOR_OP_EQ(SYMBOL)\
+#define ANVIL_VECTOR_OP_EQ(VOP,SYMBOL)\
 	template<class T, size_t S>\
 	Vector<T, S>& ANVIL_CALL operator ## SYMBOL(Vector<T, S>& a, const Vector<T, S> b) throw() {\
-		enum { OPTIMAL = detail::OptimalVectorLength<T>::value };\
+		enum { OPTIMAL = detail::OptimalVectorLength<T, VOP>::value };\
 		if(OPTIMAL < S && OPTIMAL > 1){\
 			enum {\
 				LOOP1 = S / OPTIMAL,\
@@ -602,7 +536,7 @@ namespace anvil {
 				a_.scalar[i] SYMBOL b_.scalar[i];\
 			}\
 		} else if(OPTIMAL > S) {\
-			detail::RoundedVector<T, S> a_, b_;\
+			detail::RoundedVector<T, S, VOP> a_, b_;\
 			a_.unrounded = a;\
 			b_.unrounded = b;\
 			a_.rounded SYMBOL b_.rounded;\
@@ -613,11 +547,11 @@ namespace anvil {
 		return a;\
 	}
 
-#define ANVIL_VECTOR_OP(SYMBOL)\
+#define ANVIL_VECTOR_OP(VOP, SYMBOL)\
 	template<class T, size_t S>\
 	Vector<T,S> ANVIL_CALL operator ## SYMBOL(const Vector<T,S> a, const Vector<T,S> b) throw() {\
 		Vector<T, S> c;\
-		enum { OPTIMAL = detail::OptimalVectorLength<T>::value };\
+		enum { OPTIMAL = detail::OptimalVectorLength<T, VOP>::value };\
 		if(OPTIMAL < S && OPTIMAL > 1){\
 			enum {\
 				LOOP1 = S / OPTIMAL,\
@@ -641,7 +575,7 @@ namespace anvil {
 				c_.scalar[i] = a_.scalar[i] SYMBOL b_.scalar[i];\
 			}\
 		} else if(OPTIMAL > S) {\
-			detail::RoundedVector<T, S> a_, b_, c_;\
+			detail::RoundedVector<T, S, VOP> a_, b_, c_;\
 			a_.unrounded = a;\
 			b_.unrounded = b;\
 			c_.rounded = a_.rounded SYMBOL b_.rounded;\
@@ -652,28 +586,28 @@ namespace anvil {
 		return c;\
 	}
 
-	ANVIL_VECTOR_OP(+)
-	ANVIL_VECTOR_OP(-)
-	ANVIL_VECTOR_OP(*)
-	ANVIL_VECTOR_OP(/)
-	ANVIL_VECTOR_OP(&)
-	ANVIL_VECTOR_OP(|)
-	ANVIL_VECTOR_OP(^)
+	ANVIL_VECTOR_OP(detail::VOP_ADD, +)
+	ANVIL_VECTOR_OP(detail::VOP_SUB, -)
+	ANVIL_VECTOR_OP(detail::VOP_MUL, *)
+	ANVIL_VECTOR_OP(detail::VOP_DIV, /)
+	ANVIL_VECTOR_OP(detail::VOP_AND, &)
+	ANVIL_VECTOR_OP(detail::VOP_OR , |)
+	ANVIL_VECTOR_OP(detail::VOP_XOR, ^)
 
-	ANVIL_VECTOR_OP_EQ(+=)
-	ANVIL_VECTOR_OP_EQ(-=)
-	ANVIL_VECTOR_OP_EQ(*=)
-	ANVIL_VECTOR_OP_EQ(/=)
-	ANVIL_VECTOR_OP_EQ(&=)
-	ANVIL_VECTOR_OP_EQ(|=)
-	ANVIL_VECTOR_OP_EQ(^=)
+	ANVIL_VECTOR_OP_EQ(detail::VOP_ADD, +=)
+	ANVIL_VECTOR_OP_EQ(detail::VOP_SUB, -=)
+	ANVIL_VECTOR_OP_EQ(detail::VOP_MUL, *=)
+	ANVIL_VECTOR_OP_EQ(detail::VOP_DIV, /=)
+	ANVIL_VECTOR_OP_EQ(detail::VOP_AND, &=)
+	ANVIL_VECTOR_OP_EQ(detail::VOP_OR , |=)
+	ANVIL_VECTOR_OP_EQ(detail::VOP_XOR, ^=)
 
-	ANVIL_VECTOR_OP(==)
-	ANVIL_VECTOR_OP(!=)
-	ANVIL_VECTOR_OP(<)
-	ANVIL_VECTOR_OP(>)
-	ANVIL_VECTOR_OP(<=)
-	ANVIL_VECTOR_OP(>=)
+	ANVIL_VECTOR_OP(detail::VOP_EQ, ==)
+	ANVIL_VECTOR_OP(detail::VOP_NE, !=)
+	ANVIL_VECTOR_OP(detail::VOP_LT, <)
+	ANVIL_VECTOR_OP(detail::VOP_GT, >)
+	ANVIL_VECTOR_OP(detail::VOP_LE, <=)
+	ANVIL_VECTOR_OP(detail::VOP_GE, >=)
 	
 	template<class T, size_t S>
 	static inline Vector<size_t, S> ANVIL_CALL fill(const T a) {

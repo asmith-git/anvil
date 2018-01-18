@@ -19,10 +19,10 @@
 
 namespace anvil {
 
-#define ANVIL_VECTORISE_VS(NAME, OPERATION)\
+#define ANVIL_VECTORISE_VS(VOP, NAME, OPERATION)\
 	template<class T>\
 	static void NAME(T* ANVIL_RESTRICT a, const T b, size_t a_length) throw() {\
-		enum { LENGTH = detail::OptimalVectorLength<T>::value };\
+		enum { LENGTH = detail::OptimalVectorLength<T, VOP>::value };\
 		\
 		detail::VectorPtr<T, LENGTH> a_;\
 		\
@@ -42,11 +42,11 @@ namespace anvil {
 		}\
 	}
 
-#define ANVIL_VECTORISE_VV(NAME, OPERATION)\
-	ANVIL_VECTORISE_VS(NAME, OPERATION)\
+#define ANVIL_VECTORISE_VV(VOP, NAME, OPERATION)\
+	ANVIL_VECTORISE_VS(VOP, NAME, OPERATION)\
 	template<class T>\
 	static void NAME(T* ANVIL_RESTRICT a, const T* ANVIL_RESTRICT b, size_t a_length) throw() {\
-		enum { LENGTH = detail::OptimalVectorLength<T>::value };\
+		enum { LENGTH = detail::OptimalVectorLength<T, VOP>::value };\
 		\
 		detail::VectorPtr<T, LENGTH> a_;\
 		detail::VectorPtr<T, LENGTH> b_;\
@@ -68,10 +68,10 @@ namespace anvil {
 		}\
 	}
 
-#define ANVIL_VECTORISE_VSV(NAME, OPERATION)\
+#define ANVIL_VECTORISE_VSV(VOP, NAME, OPERATION)\
 	template<class T>\
 	static void NAME(const T* ANVIL_RESTRICT a, const T b, T* ANVIL_RESTRICT c, size_t a_length) throw() {\
-		enum { LENGTH = detail::OptimalVectorLength<T>::value };\
+		enum { LENGTH = detail::OptimalVectorLength<T, VOP>::value };\
 		\
 		if (a == c) {\
 			NAME<T>(c, b, a_length);\
@@ -100,12 +100,12 @@ namespace anvil {
 		}\
 	}
 
-#define ANVIL_VECTORISE_VVV(NAME, OPERATION, OPERATION2)\
-	ANVIL_VECTORISE_VV(NAME, OPERATION2)\
-	ANVIL_VECTORISE_VSV(NAME,OPERATION)\
+#define ANVIL_VECTORISE_VVV(VOP, NAME, OPERATION, OPERATION2)\
+	ANVIL_VECTORISE_VV(VOP, NAME, OPERATION2)\
+	ANVIL_VECTORISE_VSV(VOP, NAME,OPERATION)\
 	template<class T>\
 	static void NAME(const T* ANVIL_RESTRICT a, const T* ANVIL_RESTRICT b, T* ANVIL_RESTRICT c, size_t a_length) throw() {\
-		enum { LENGTH = detail::OptimalVectorLength<T>::value };\
+		enum { LENGTH = detail::OptimalVectorLength<T, VOP>::value };\
 		\
 		if (a == c) {\
 			NAME<T>(c, b, a_length);\
@@ -140,43 +140,43 @@ namespace anvil {
 #undef ANVIL_VECTOR_OP2
 #define ANVIL_VECTOR_OP(X,Y) X + Y
 #define ANVIL_VECTOR_OP2(X, Y) X += Y
-ANVIL_VECTORISE_VVV(vector_add, ANVIL_VECTOR_OP, ANVIL_VECTOR_OP2)
+ANVIL_VECTORISE_VVV(detail::VOP_ADD, vector_add, ANVIL_VECTOR_OP, ANVIL_VECTOR_OP2)
 
 #undef ANVIL_VECTOR_OP
 #undef ANVIL_VECTOR_OP2
 #define ANVIL_VECTOR_OP(X,Y) X - Y
 #define ANVIL_VECTOR_OP2(X, Y) X -= Y
-ANVIL_VECTORISE_VVV(vector_sub, ANVIL_VECTOR_OP, ANVIL_VECTOR_OP2)
+ANVIL_VECTORISE_VVV(detail::VOP_SUB, vector_sub, ANVIL_VECTOR_OP, ANVIL_VECTOR_OP2)
 
 #undef ANVIL_VECTOR_OP
 #undef ANVIL_VECTOR_OP2
 #define ANVIL_VECTOR_OP(X,Y) X * Y
 #define ANVIL_VECTOR_OP2(X, Y) X *= Y
-ANVIL_VECTORISE_VVV(vector_mul, ANVIL_VECTOR_OP, ANVIL_VECTOR_OP2)
+ANVIL_VECTORISE_VVV(detail::VOP_MUL, vector_mul, ANVIL_VECTOR_OP, ANVIL_VECTOR_OP2)
 
 #undef ANVIL_VECTOR_OP
 #undef ANVIL_VECTOR_OP2
 #define ANVIL_VECTOR_OP(X,Y) X / Y
 #define ANVIL_VECTOR_OP2(X, Y) X /= Y
-ANVIL_VECTORISE_VVV(vector_div, ANVIL_VECTOR_OP, ANVIL_VECTOR_OP2)
+ANVIL_VECTORISE_VVV(detail::VOP_DIV, vector_div, ANVIL_VECTOR_OP, ANVIL_VECTOR_OP2)
 
 #undef ANVIL_VECTOR_OP
 #undef ANVIL_VECTOR_OP2
 #define ANVIL_VECTOR_OP(X,Y) X & Y
 #define ANVIL_VECTOR_OP2(X, Y) X &= Y
-ANVIL_VECTORISE_VVV(vector_and, ANVIL_VECTOR_OP, ANVIL_VECTOR_OP2)
+ANVIL_VECTORISE_VVV(detail::VOP_AND, vector_and, ANVIL_VECTOR_OP, ANVIL_VECTOR_OP2)
 
 #undef ANVIL_VECTOR_OP
 #undef ANVIL_VECTOR_OP2
 #define ANVIL_VECTOR_OP(X,Y) X | Y
 #define ANVIL_VECTOR_OP2(X, Y) X |= Y
-ANVIL_VECTORISE_VVV(vector_or, ANVIL_VECTOR_OP, ANVIL_VECTOR_OP2)
+ANVIL_VECTORISE_VVV(detail::VOP_OR, vector_or, ANVIL_VECTOR_OP, ANVIL_VECTOR_OP2)
 
 #undef ANVIL_VECTOR_OP
 #undef ANVIL_VECTOR_OP2
 #define ANVIL_VECTOR_OP(X,Y) X ^ Y
 #define ANVIL_VECTOR_OP2(X, Y) X ^= Y
-ANVIL_VECTORISE_VVV(vector_xor, ANVIL_VECTOR_OP, ANVIL_VECTOR_OP2)
+ANVIL_VECTORISE_VVV(detail::VOP_XOR, vector_xor, ANVIL_VECTOR_OP, ANVIL_VECTOR_OP2)
 
 }
 
