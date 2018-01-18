@@ -124,7 +124,14 @@ namespace anvil {
 		template<class T, int S, VectorOp VOP>
 		struct RoundVectorLength { 
 			enum { 
-				value = S <= OptimalVectorLength<T, VOP>::value ? OptimalVectorLength<T, VOP>::value : S
+				value = 
+				VopOptimised<T, 2, VOP>::value && S <= 2 ? 2 :
+				VopOptimised<T, 4, VOP>::value && S <= 4 ? 4 :
+				VopOptimised<T, 8, VOP>::value && S <= 8 ? 8 :
+				VopOptimised<T, 16, VOP>::value && S <= 16 ? 16 :
+				VopOptimised<T, 32, VOP>::value && S <= 32 ? 32 :
+				VopOptimised<T, 64, VOP>::value && S <= 64 ? 64 :
+				S
 			}; 
 		};
 	}
