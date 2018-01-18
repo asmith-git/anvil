@@ -550,7 +550,7 @@ namespace anvil {
 		if(OPTIMAL < S){\
 			enum {\
 				LOOP1 = S / OPTIMAL,\
-				LOOP2 = S & OPTIMAL\
+				LOOP2 = S % OPTIMAL\
 				};\
 			size_t a_length = S;\
 			detail::VectorPtr<T, OPTIMAL> a_, b_;\
@@ -589,7 +589,7 @@ namespace anvil {
 		if(OPTIMAL < S){\
 			enum {\
 				LOOP1 = S / OPTIMAL,\
-				LOOP2 = S & OPTIMAL\
+				LOOP2 = S % OPTIMAL\
 			};\
 			size_t a_length = S;\
 			detail::VectorPtr<T, OPTIMAL> a_, b_, c_;\
