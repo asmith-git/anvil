@@ -521,18 +521,10 @@ namespace anvil {
 		}
 
 		inline Vector<float_t, size> ANVIL_CALL normalisef() const throw() {
-			if (std::is_same<float_t, type>::value) {
-				float_t mag = static_cast<float_t>(0);
-				Vector<float_t, size> tmp;
-				for (size_t i = 0; i < size; ++i) {
-					tmp[i] = mData[i] * mData[i];
-					mag += tmp[i];
-				}
-				tmp /= fill<float_t, size>(mag);
-				return tmp;
-			} else {
-				return Vector<float_t, size>(*this).normalisef();
-			}
+			Vector<float_t, size> tmp = static_cast<Vector<float_t, size>>(*this);
+			tmp = tmp * tmp;
+			tmp /= fill<float_t, size>(tmp.sumf());
+			return tmp;
 		}
 
 		ANVIL_STRONG_INLINE this_t ANVIL_CALL normalise() const throw() {
