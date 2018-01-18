@@ -174,83 +174,6 @@ namespace anvil {
 	private:
 		type mData[size];
 	public:
-		//ANVIL_CALL Vector() throw() {
-		//	memset(mData, 0, sizeof(type) * size);
-		//}
-
-		//ANVIL_CALL Vector(const type aScalar) throw() {
-		//	for (size_t i = 0; i < size; ++i) mData[i] = aScalar;
-		//}
-
-		//template<size_t S2 = 2, class ENABLE = typename std::enable_if<S2 == size>::type>
-		//ANVIL_CALL Vector(const type a, const type b) throw() {
-		//	mData[0] = a;
-		//	mData[1] = b;
-		//}
-
-		//template<size_t S2 = 3, class ENABLE = typename std::enable_if<S3 == size>::type>
-		//ANVIL_CALL Vector(const type a, const type b, const type c) throw() {
-		//	mData[0] = a;
-		//	mData[1] = b;
-		//	mData[2] = c;
-		//}
-
-		//template<size_t S2 = 4, class ENABLE = typename std::enable_if<S2 == size>::type>
-		//ANVIL_CALL Vector(const T a, const T b, const T c, const T d) throw() {
-		//	mData[0] = a;
-		//	mData[1] = b;
-		//	mData[2] = c;
-		//	mData[3] = d;
-		//}
-
-		//ANVIL_CALL Vector(const T* aData, size_t aSize) throw() {
-		//	const size_t s = aSize < size ? aSize : size;
-		//	for (size_t i = 0; i < s; ++i) mData[i] = aData[i];
-		//	if (aSize < size) memset(mData + aSize, 0, sizeof(type) * (size - aSize));
-		//}
-
-		//ANVIL_CALL Vector(const array_t aOther) throw() {
-		//	memcpy(mData, aOther, sizeof(type) * size);
-		//}
-		//
-		//template<size_t SA, size_t SB, class ENABLE = typename std::enable_if<(SA + SB) == size>::type>
-		//ANVIL_CALL Vector(const Vector<type, SA> a,  Vector<type, SB> b) throw() {
-		//	type* ptr = mData;
-		//	size_t s1 = sizeof(type) * size;
-		//	size_t s2 = std::min(s1, sizeof(type) * SA);
-		//	memcpy(ptr, &a, s2);
-		//	ptr += s2 / sizeof(type);
-		//	s1 -= s2; 
-		//	
-		//	s2 = std::min(s1, sizeof(type) * SB);
-		//	memcpy(ptr, &b, s2);
-		//	ptr += s2 / sizeof(type);
-		//	s1 = s1 > s2 ? s1 - s2 : 0;
-		//	
-		//	memset(ptr, 0, sizeof(type) * s1);
-		//}
-
-		//template<size_t SA, size_t SB, size_t SC, class ENABLE = typename std::enable_if<(SA + SB + SC) == size>::type>
-		//ANVIL_CALL Vector(const Vector<type, SA> a,  Vector<type, SB> b,  Vector<type, SC> c) throw() {
-		//	type* ptr = mData;
-		//	size_t s1 = sizeof(type) * size;
-		//	size_t s2 = std::min(s1, sizeof(type) * SA);
-		//	memcpy(ptr, &a, s2);
-		//	ptr += s2 / sizeof(type);
-		//	s1 -= s2;
-
-		//	s2 = std::min(s1, sizeof(type) * SB);
-		//	memcpy(ptr, &b, s2);
-		//	ptr += s2 / sizeof(type);
-		//	s1 -= s2;
-
-		//	s2 = std::min(s1, sizeof(type) * SC);
-		//	memcpy(ptr, &c, s2);
-		//	ptr += s2 / sizeof(type);
-		//	s1 -= s2;
-
-		//	memset(ptr, 0, sizeof(type) * s1);
-		//}
 
 		ANVIL_STRONG_INLINE half_t& lowerHalf() throw() {
 			return reinterpret_cast<half_t*>(this)[0];
@@ -428,6 +351,27 @@ namespace anvil {
 				for (size_t i = 1; i < size; ++i) tmp += mData[i];
 				return tmp;
 			}
+		}
+
+		inline bool ANVIL_CALL elementsEqual(const T a_scalar) const throw() {
+			typedef detail::VectorLoopInfo<type, size, detail::VOP_EQ> Info;
+			if (Info::HALF_OPTIMISED) {
+				return mData[0] == a_scalar && (lowerHalf() == upperHalf()).sumf() == static_cast<float_t>(half_t::size);
+			} else if (Info::OPTIMISED_SIZE) {
+				if(mData[0] != a_scalar) return false;
+				const Vector<type, Info::OPTIMISED_SIZE>* ptr = reinterpret_cast<const Vector<type, Info::OPTIMISED_SIZE>*>(this);
+				const Vector<type, Info::OPTIMISED_SIZE> tmp = fill<type, Info::OPTIMISED_SIZE>(a_scalar);
+				for (size_t i = 0; i < Info::OPTIMISED_LOOP; ++i) if((ptr[i] == tmp).sumf() != static_cast<float_t>(size)) return false;
+				for (size_t i = 0; i < Info::OPTIMISED_REMAINDER; ++i) if(a_scalar != ptr[Info::OPTIMISED_LOOP][i]) return false;
+				return true;
+			} else {
+				for (size_t i = 0; i < size; ++i) if(a_scalar != mData[i]) return false;
+				return true;
+			}
+		}
+
+		ANVIL_STRONG_INLINE bool ANVIL_CALL elementsEqual() const throw() {
+			return elementsEqual(mData[0]);
 		}
 
 		ANVIL_STRONG_INLINE float_t ANVIL_CALL avgf() const throw() {
