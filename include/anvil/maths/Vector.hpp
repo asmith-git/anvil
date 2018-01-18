@@ -641,511 +641,7 @@ namespace anvil {
 	ANVIL_VECTOR_OP(<=)
 	ANVIL_VECTOR_OP(>=)
 
-	namespace detail{
 
-#ifdef ANVIL_MMX
-		union Vec_F32_2 {
-			Vector<float, 2> vector;
-			__m64 intrinsic;
-		};
-
-		union Vec_S8_8 {
-			Vector<int8_t, 8> vector;
-			__m64 intrinsic;
-		};
-
-		union Vec_U8_8 {
-			Vector<uint8_t, 8> vector;
-			__m64 intrinsic;
-		};
-
-		union Vec_S16_4 {
-			Vector<int16_t, 4> vector;
-			__m64 intrinsic;
-		};
-
-		union Vec_U16_4 {
-			Vector<uint16_t, 4> vector;
-			__m64 intrinsic;
-		};
-
-		union Vec_S32_2 {
-			Vector<int32_t, 2> vector;
-			__m64 intrinsic;
-		};
-
-		union Vec_U32_2 {
-			Vector<uint32_t, 2> vector;
-			__m64 intrinsic;
-		};
-#endif
-#ifdef ANVIL_SSE
-		union Vec_F32_4 {
-			Vector<float, 4> vector;
-			__m128 intrinsic;
-		};
-#endif
-#ifdef ANVIL_SSE2
-		union Vec_S8_16 {
-			Vector<int8_t, 16> vector;
-			__m128i intrinsic;
-		};
-
-		union Vec_U8_16 {
-			Vector<uint8_t, 16> vector;
-			__m128i intrinsic;
-		};
-
-		union Vec_S16_8 {
-			Vector<int16_t, 8> vector;
-			__m128i intrinsic;
-		};
-
-		union Vec_U16_8 {
-			Vector<uint16_t, 8> vector;
-			__m128i intrinsic;
-		};
-
-		union Vec_S32_4 {
-			Vector<int32_t, 4> vector;
-			__m128i intrinsic;
-		};
-
-		union Vec_U32_4 {
-			Vector<uint32_t, 4> vector;
-			__m128i intrinsic;
-		};
-
-		union Vec_S64_2 {
-			Vector<int64_t, 2> vector;
-			__m128i intrinsic;
-		};
-
-		union Vec_U64_2 {
-			Vector<uint64_t, 2> vector;
-			__m128i intrinsic;
-		};
-
-		union Vec_F64_2 {
-			Vector<double, 2> vector;
-			__m128d intrinsic;
-		};
-#endif
-#ifdef ANVIL_AVX
-
-		union Vec_S8_32 {
-			Vector<int8_t, 32> vector;
-			__m256i intrinsic;
-		};
-
-		union Vec_U8_32 {
-			Vector<uint8_t, 32> vector;
-			__m256i intrinsic;
-		};
-
-		union Vec_S16_16 {
-			Vector<int16_t, 16> vector;
-			__m256i intrinsic;
-		};
-
-		union Vec_U16_16 {
-			Vector<uint16_t, 16> vector;
-			__m256i intrinsic;
-		};
-
-		union Vec_S32_16 {
-			Vector<int32_t, 16> vector;
-			__m256i intrinsic;
-		};
-
-		union Vec_U32_8 {
-			Vector<uint32_t, 8> vector;
-			__m256i intrinsic;
-		};
-
-		union Vec_S64_4 {
-			Vector<int64_t, 4> vector;
-			__m256i intrinsic;
-		};
-
-		union Vec_U64_4 {
-			Vector<uint64_t, 4> vector;
-			__m256i intrinsic;
-		};
-
-		union Vec_F32_8 {
-			Vector<float, 8> vector;
-			__m256 intrinsic;
-		};
-
-		union Vec_F64_4 {
-			Vector<double, 4> vector;
-			__m256d  intrinsic;
-		};
-#endif
-	}
-
-#define ANVIL_SPECIALISE_VECTOR_OP_CMP(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)\
-	template<>\
-	inline Vector<TYPE, CHANNELS> ANVIL_CALL operator ## SYMBOL(const Vector<TYPE, CHANNELS> a, const Vector<TYPE, CHANNELS> b) throw() {\
-		UNION a_, b_, c_;\
-		a_.vector = a;\
-		b_.vector = b;\
-		c_.intrinsic = FUNCTION(a_.intrinsic, b_.intrinsic);\
-		return c_.vector;\
-	}
-
-#define ANVIL_SPECIALISE_VECTOR_OP_EQ(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)\
-	template<>\
-	inline Vector<TYPE, CHANNELS>& ANVIL_CALL operator ## SYMBOL ## =(Vector<TYPE, CHANNELS>& a, const Vector<TYPE, CHANNELS> b) throw() {\
-		UNION a_, b_;\
-		a_.vector = a;\
-		b_.vector = b;\
-		a_.intrinsic = FUNCTION(a_.intrinsic, b_.intrinsic);\
-		return a = a_.vector;\
-	}
-
-#define ANVIL_SPECIALISE_VECTOR_OP(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)\
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)\
-	ANVIL_SPECIALISE_VECTOR_OP_EQ(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)
-
-#ifdef ANVIL_MMX
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(int32_t, 2, ==, detail::Vec_S32_2, _mm_cmpeq_pi32)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(int32_t, 2, >, detail::Vec_S32_2, _mm_cmpgt_pi32)
-
-	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, +, detail::Vec_S16_4, _mm_adds_pi16)
-	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, -, detail::Vec_S16_4, _mm_subs_pi16)
-	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, &, detail::Vec_S16_4, _mm_and_si64)
-	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, |, detail::Vec_S16_4, _mm_or_si64)
-	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, ^, detail::Vec_S16_4, _mm_xor_si64)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(int16_t, 4, == , detail::Vec_S16_4, _mm_cmpeq_pi16)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(int16_t, 4, > , detail::Vec_S16_4, _mm_cmpgt_pi16)
-
-	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, +, detail::Vec_S8_8, _mm_adds_pi8)
-	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, -, detail::Vec_S8_8, _mm_subs_pi8)
-	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, &, detail::Vec_S8_8, _mm_and_si64)
-	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, |, detail::Vec_S8_8, _mm_or_si64)
-	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, ^, detail::Vec_S8_8, _mm_xor_si64)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(int8_t, 8, == , detail::Vec_S8_8, _mm_cmpeq_pi8)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(int8_t, 8, > , detail::Vec_S8_8, _mm_cmpgt_pi8)
-	
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint32_t, 2, ==, detail::Vec_U32_2, _mm_cmpeq_pi32)
-
-	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 4, +, detail::Vec_U16_4, _mm_adds_pu16)
-	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 4, -, detail::Vec_U16_4, _mm_subs_pu16)
-	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 4, &, detail::Vec_U16_4, _mm_and_si64)
-	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 4, |, detail::Vec_U16_4, _mm_or_si64)
-	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 4, ^, detail::Vec_U16_4, _mm_xor_si64)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint16_t, 4, == , detail::Vec_U16_4, _mm_cmpeq_pi16)
-
-	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 8, +, detail::Vec_U8_8, _mm_adds_pu8)
-	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 8, -, detail::Vec_U8_8, _mm_subs_pu8)
-	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 8, &, detail::Vec_U8_8, _mm_and_si64)
-	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 8, |, detail::Vec_U8_8, _mm_or_si64)
-	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 8, ^, detail::Vec_U8_8, _mm_xor_si64)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint8_t, 8, == , detail::Vec_U8_8, _mm_cmpeq_pi8)
-#endif
-#ifdef ANVIL_SSE
-	ANVIL_SPECIALISE_VECTOR_OP(float, 4, +, detail::Vec_F32_4, _mm_add_ps)
-	ANVIL_SPECIALISE_VECTOR_OP(float, 4, -, detail::Vec_F32_4, _mm_sub_ps)
-	ANVIL_SPECIALISE_VECTOR_OP(float, 4, *, detail::Vec_F32_4, _mm_mul_ps)
-	ANVIL_SPECIALISE_VECTOR_OP(float, 4, / , detail::Vec_F32_4, _mm_div_ps)
-	ANVIL_SPECIALISE_VECTOR_OP(float, 4, & , detail::Vec_F32_4, _mm_and_ps)
-	ANVIL_SPECIALISE_VECTOR_OP(float, 4, | , detail::Vec_F32_4, _mm_or_ps)
-	ANVIL_SPECIALISE_VECTOR_OP(float, 4, ^ , detail::Vec_F32_4, _mm_xor_ps)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, ==, detail::Vec_F32_4, _mm_cmpeq_ps)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, !=, detail::Vec_F32_4, _mm_cmpneq_ps)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, >=, detail::Vec_F32_4, _mm_cmpge_ps)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, <=, detail::Vec_F32_4, _mm_cmple_ps)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, > , detail::Vec_F32_4, _mm_cmpgt_ps)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, < , detail::Vec_F32_4, _mm_cmplt_ps)
-#endif
-#ifdef ANVIL_SSE2
-	ANVIL_SPECIALISE_VECTOR_OP(double, 2, +, detail::Vec_F64_2, _mm_add_pd)
-	ANVIL_SPECIALISE_VECTOR_OP(double, 2, -, detail::Vec_F64_2, _mm_sub_pd)
-	ANVIL_SPECIALISE_VECTOR_OP(double, 2, *, detail::Vec_F64_2, _mm_mul_pd)
-	ANVIL_SPECIALISE_VECTOR_OP(double, 2, / , detail::Vec_F64_2, _mm_div_pd)
-	ANVIL_SPECIALISE_VECTOR_OP(double, 2, & , detail::Vec_F64_2, _mm_and_pd)
-	ANVIL_SPECIALISE_VECTOR_OP(double, 2, | , detail::Vec_F64_2, _mm_or_pd)
-	ANVIL_SPECIALISE_VECTOR_OP(double, 2, ^ , detail::Vec_F64_2, _mm_xor_pd)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, ==, detail::Vec_F64_2, _mm_cmpeq_pd)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, !=, detail::Vec_F64_2, _mm_cmpneq_pd)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, >=, detail::Vec_F64_2, _mm_cmpge_pd)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, <=, detail::Vec_F64_2, _mm_cmple_pd)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, > , detail::Vec_F64_2, _mm_cmpgt_pd)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, < , detail::Vec_F64_2, _mm_cmplt_pd)
-
-	ANVIL_SPECIALISE_VECTOR_OP(int64_t, 2, +, detail::Vec_S64_2, _mm_add_epi64)
-	ANVIL_SPECIALISE_VECTOR_OP(int64_t, 2, -, detail::Vec_S64_2, _mm_sub_epi64)
-	ANVIL_SPECIALISE_VECTOR_OP(int64_t, 2, &, detail::Vec_S64_2, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP(int64_t, 2, |, detail::Vec_S64_2, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP(int64_t, 2, ^, detail::Vec_S64_2, _mm_and_si128)
-
-	ANVIL_SPECIALISE_VECTOR_OP(int32_t, 4, +, detail::Vec_S32_4, _mm_add_epi32)
-	ANVIL_SPECIALISE_VECTOR_OP(int32_t, 4, -, detail::Vec_S32_4, _mm_sub_epi32)
-	ANVIL_SPECIALISE_VECTOR_OP(int32_t, 4, &, detail::Vec_S32_4, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP(int32_t, 4, |, detail::Vec_S32_4, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP(int32_t, 4, ^, detail::Vec_S32_4, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(int32_t, 4, ==, detail::Vec_S32_4, _mm_cmpeq_epi32)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(int32_t, 4, > , detail::Vec_S32_4, _mm_cmpgt_epi32)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(int32_t, 4, < , detail::Vec_S32_4, _mm_cmplt_epi32)
-
-	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, +, detail::Vec_S16_8, _mm_adds_epi16)
-	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, -, detail::Vec_S16_8, _mm_subs_epi16)
-	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, &, detail::Vec_S16_8, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, |, detail::Vec_S16_8, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, ^, detail::Vec_S16_8, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(int16_t, 8, ==, detail::Vec_S16_8, _mm_cmpeq_epi16)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(int16_t, 8, > , detail::Vec_S16_8, _mm_cmpgt_epi16)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(int16_t, 8, < , detail::Vec_S16_8, _mm_cmplt_epi16)
-
-	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 16, +, detail::Vec_S8_16, _mm_adds_epi8)
-	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 16, -, detail::Vec_S8_16, _mm_subs_epi8)
-	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 16, &, detail::Vec_S8_16, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 16, |, detail::Vec_S8_16, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 16, ^, detail::Vec_S8_16, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(int8_t, 16, ==, detail::Vec_S8_16, _mm_cmpeq_epi8)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(int8_t, 16, > , detail::Vec_S8_16, _mm_cmpgt_epi8)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(int8_t, 16, < , detail::Vec_S8_16, _mm_cmplt_epi8)
-
-	ANVIL_SPECIALISE_VECTOR_OP(uint64_t, 2, &, detail::Vec_U64_2, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP(uint64_t, 2, |, detail::Vec_U64_2, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP(uint64_t, 2, ^, detail::Vec_U64_2, _mm_and_si128)
-
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint32_t, 4, ==, detail::Vec_U32_4, _mm_cmpeq_epi32)
-
-	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 8, +, detail::Vec_U16_8, _mm_adds_epu16)
-	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 8, -, detail::Vec_U16_8, _mm_subs_epu16)
-	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 8, &, detail::Vec_U16_8, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 8, |, detail::Vec_U16_8, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 8, ^, detail::Vec_U16_8, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint16_t, 8, ==, detail::Vec_U16_8, _mm_cmpeq_epi16)
-
-	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, +, detail::Vec_U8_16, _mm_adds_epu8)
-	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, -, detail::Vec_U8_16, _mm_subs_epu8)
-	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, &, detail::Vec_U8_16, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, |, detail::Vec_U8_16, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, ^, detail::Vec_U8_16, _mm_and_si128)
-	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint8_t, 16, ==, detail::Vec_U8_16, _mm_cmpeq_epi8)
-#endif
-#ifdef ANVIL_AVX
-	ANVIL_SPECIALISE_VECTOR_OP(double, 4, +, detail::Vec_F64_4, _mm256_add_pd)
-	ANVIL_SPECIALISE_VECTOR_OP(double, 4, -, detail::Vec_F64_4, _mm256_sub_pd)
-	ANVIL_SPECIALISE_VECTOR_OP(double, 4, *, detail::Vec_F64_4, _mm256_mul_pd)
-	ANVIL_SPECIALISE_VECTOR_OP(double, 4, /, detail::Vec_F64_4, _mm256_div_pd)
-	ANVIL_SPECIALISE_VECTOR_OP(double, 4, &, detail::Vec_F64_4, _mm256_and_pd)
-	ANVIL_SPECIALISE_VECTOR_OP(double, 4, |, detail::Vec_F64_4, _mm256_or_pd)
-	ANVIL_SPECIALISE_VECTOR_OP(double, 4, ^, detail::Vec_F64_4, _mm256_xor_pd)
-
-	ANVIL_SPECIALISE_VECTOR_OP(float, 8, +, detail::Vec_F32_8, _mm256_add_ps)
-	ANVIL_SPECIALISE_VECTOR_OP(float, 8, -, detail::Vec_F32_8, _mm256_sub_ps)
-	ANVIL_SPECIALISE_VECTOR_OP(float, 8, *, detail::Vec_F32_8, _mm256_mul_ps)
-	ANVIL_SPECIALISE_VECTOR_OP(float, 8, /, detail::Vec_F32_8, _mm256_div_ps)
-	ANVIL_SPECIALISE_VECTOR_OP(float, 8, &, detail::Vec_F32_8, _mm256_and_ps)
-	ANVIL_SPECIALISE_VECTOR_OP(float, 8, |, detail::Vec_F32_8, _mm256_or_ps)
-	ANVIL_SPECIALISE_VECTOR_OP(float, 8, ^, detail::Vec_F32_8, _mm256_xor_ps)
-
-	//! \todo Support _mm_cmp_pd and _mm_cmp_ps
-#endif
-
-#undef ANVIL_SPECIALISE_VECTOR_OP
-
-	////
-
-	template<class T, size_t S>
-	std::ostream& ANVIL_CALL operator<<(std::ostream& aStream, Vector<T, S> aValue) {
-		aStream << '[';
-		for (size_t i = 0; i < S - 1; ++i) aStream << aValue[i] << ',';
-		aStream << aValue[S - 1];
-		aStream << ']';
-		return aStream;
-	}
-
-	template<class T, size_t S>
-	std::istream& ANVIL_CALL operator>>(std::istream& aStream, Vector<T, S>& aValue) {
-		char buf;
-		aStream >> buf;
-		for (size_t i = 0; i < S - 1; ++i) aStream >> aValue[i] >> buf;
-		aStream >> aValue[S - 1];
-		aStream >> buf;
-		return aStream;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator+(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) + b;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator-(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) - b;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator*(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) * b;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator/(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) / b;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator&(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) & b;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator|(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) | b;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator^(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) ^ b;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator&&(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) && b;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator||(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) ^ b;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator<<(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) << b;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator>>(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) >> b;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator%(const T a, const Vector<T, S> b) {
-		return Vector<T, S>(a) % b;
-	}
-
-	template<class T, size_t S>
-	struct Widen<Vector<T,S>> {
-		typedef Vector<typename Widen<T>::type, S> type;
-	};
-
-	template<class T, size_t S>
-	using VectorP4 = Vector<T, (S + 3) & (~3)>;
-
-	template<Type TYPE>
-	using AnvilVector = Vector<typename TypeFromEnum<GetPrimativeType(TYPE)>::type, GetChannels(TYPE)>;
-
-	typedef Vector<signed char, 2> char2;
-	typedef Vector<signed char, 3> char3;
-	typedef Vector<signed char, 4> char4;
-	typedef Vector<unsigned char, 2> uchar2;
-	typedef Vector<unsigned char, 3> uchar3;
-	typedef Vector<unsigned char, 4> uchar4;
-	typedef Vector<short, 2> short2;
-	typedef Vector<short, 3> short3;
-	typedef Vector<short, 4> short4;
-	typedef Vector<unsigned short, 2> ushort2;
-	typedef Vector<unsigned short, 3> ushort3;
-	typedef Vector<unsigned short, 4> ushort4;
-	typedef Vector<int, 2> int2;
-	typedef Vector<int, 3> int3;
-	typedef Vector<int, 4> int4;
-	typedef Vector<unsigned int, 2> uint2;
-	typedef Vector<unsigned int, 3> uint3;
-	typedef Vector<unsigned int, 4> uint4;
-	typedef Vector<float, 2> float2;
-	typedef Vector<float, 3> float3;
-	typedef Vector<float, 4> float4;
-	typedef Vector<double, 2> double2;
-	typedef Vector<double, 3> double3;
-	typedef Vector<double, 4> double4;
-
-	typedef Vector<uint8_t, 2>  uint8_2;
-	typedef Vector<uint8_t, 3>  uint8_3;
-	typedef Vector<uint8_t, 4>  uint8_4;
-	typedef Vector<uint8_t, 8>  uint8_8;
-	typedef Vector<uint8_t, 16> uint8_16;
-	typedef Vector<uint8_t, 32> uint8_32;
-	typedef Vector<uint8_t, 64> uint8_64;
-
-	typedef Vector<int8_t, 2>  int8_2;
-	typedef Vector<int8_t, 3>  int8_3;
-	typedef Vector<int8_t, 4>  int8_4;
-	typedef Vector<int8_t, 8>  int8_8;
-	typedef Vector<int8_t, 16> int8_16;
-	typedef Vector<int8_t, 32> int8_32;
-	typedef Vector<int8_t, 64> int8_64;
-
-	typedef Vector<uint16_t, 2>  uint16_2;
-	typedef Vector<uint16_t, 3>  uint16_3;
-	typedef Vector<uint16_t, 4>  uint16_4;
-	typedef Vector<uint16_t, 8>  uint16_8;
-	typedef Vector<uint16_t, 16> uint16_16;
-	typedef Vector<uint16_t, 32> uint16_32;
-	typedef Vector<uint16_t, 64> uint16_64;
-
-	typedef Vector<int16_t, 2>  int16_2;
-	typedef Vector<int16_t, 3>  int16_3;
-	typedef Vector<int16_t, 4>  int16_4;
-	typedef Vector<int16_t, 8>  int16_8;
-	typedef Vector<int16_t, 16> int16_16;
-	typedef Vector<int16_t, 32> int16_32;
-	typedef Vector<int16_t, 64> int16_64;
-
-	typedef Vector<uint32_t, 2>  uint32_2;
-	typedef Vector<uint32_t, 3>  uint32_3;
-	typedef Vector<uint32_t, 4>  uint32_4;
-	typedef Vector<uint32_t, 8>  uint32_8;
-	typedef Vector<uint32_t, 16> uint32_16;
-	typedef Vector<uint32_t, 32> uint32_32;
-	typedef Vector<uint32_t, 64> uint32_64;
-
-	typedef Vector<int32_t, 2>  int32_2;
-	typedef Vector<int32_t, 3>  int32_3;
-	typedef Vector<int32_t, 4>  int32_4;
-	typedef Vector<int32_t, 8>  int32_8;
-	typedef Vector<int32_t, 16> int32_16;
-	typedef Vector<int32_t, 32> int32_32;
-	typedef Vector<int32_t, 64> int32_64;
-
-	typedef Vector<uint64_t, 2>  uint64_2;
-	typedef Vector<uint64_t, 3>  uint64_3;
-	typedef Vector<uint64_t, 4>  uint64_4;
-	typedef Vector<uint64_t, 8>  uint64_8;
-	typedef Vector<uint64_t, 16> uint64_16;
-	typedef Vector<uint64_t, 32> uint64_32;
-	typedef Vector<uint64_t, 64> uint64_64;
-
-	typedef Vector<int64_t, 2>  int64_2;
-	typedef Vector<int64_t, 3>  int64_3;
-	typedef Vector<int64_t, 4>  int64_4;
-	typedef Vector<int64_t, 8>  int64_8;
-	typedef Vector<int64_t, 16> int64_16;
-	typedef Vector<int64_t, 32> int64_32;
-	typedef Vector<int64_t, 64> int64_64;
-
-	typedef Vector<float32_t, 2>  float32_2;
-	typedef Vector<float32_t, 3>  float32_3;
-	typedef Vector<float32_t, 4>  float32_4;
-	typedef Vector<float32_t, 8>  float32_8;
-	typedef Vector<float32_t, 16> float32_16;
-	typedef Vector<float32_t, 32> float32_32;
-	typedef Vector<float32_t, 64> float32_64;
-
-	typedef Vector<float64_t, 2>  float64_2;
-	typedef Vector<float64_t, 3>  float64_3;
-	typedef Vector<float64_t, 4>  float64_4;
-	typedef Vector<float64_t, 8>  float64_8;
-	typedef Vector<float64_t, 16> float64_16;
-	typedef Vector<float64_t, 32> float64_32;
-	typedef Vector<float64_t, 64> float64_64;
 
 	// Popcount.hpp overloads
 
@@ -1383,6 +879,555 @@ namespace anvil {
 		for (size_t i = 0; i < S; ++i) tmp[i] = round(a[i]);
 		return tmp;
 	}
+
+	// Instruction set optimisations
+
+	namespace detail{
+
+#ifdef ANVIL_MMX
+		union Vec_F32_2 {
+			Vector<float, 2> vector;
+			__m64 intrinsic;
+		};
+
+		union Vec_S8_8 {
+			Vector<int8_t, 8> vector;
+			__m64 intrinsic;
+		};
+
+		union Vec_U8_8 {
+			Vector<uint8_t, 8> vector;
+			__m64 intrinsic;
+		};
+
+		union Vec_S16_4 {
+			Vector<int16_t, 4> vector;
+			__m64 intrinsic;
+		};
+
+		union Vec_U16_4 {
+			Vector<uint16_t, 4> vector;
+			__m64 intrinsic;
+		};
+
+		union Vec_S32_2 {
+			Vector<int32_t, 2> vector;
+			__m64 intrinsic;
+		};
+
+		union Vec_U32_2 {
+			Vector<uint32_t, 2> vector;
+			__m64 intrinsic;
+		};
+#endif
+#ifdef ANVIL_SSE
+		union Vec_F32_4 {
+			Vector<float, 4> vector;
+			__m128 intrinsic;
+		};
+#endif
+#ifdef ANVIL_SSE2
+		union Vec_S8_16 {
+			Vector<int8_t, 16> vector;
+			__m128i intrinsic;
+		};
+
+		union Vec_U8_16 {
+			Vector<uint8_t, 16> vector;
+			__m128i intrinsic;
+		};
+
+		union Vec_S16_8 {
+			Vector<int16_t, 8> vector;
+			__m128i intrinsic;
+		};
+
+		union Vec_U16_8 {
+			Vector<uint16_t, 8> vector;
+			__m128i intrinsic;
+		};
+
+		union Vec_S32_4 {
+			Vector<int32_t, 4> vector;
+			__m128i intrinsic;
+		};
+
+		union Vec_U32_4 {
+			Vector<uint32_t, 4> vector;
+			__m128i intrinsic;
+		};
+
+		union Vec_S64_2 {
+			Vector<int64_t, 2> vector;
+			__m128i intrinsic;
+		};
+
+		union Vec_U64_2 {
+			Vector<uint64_t, 2> vector;
+			__m128i intrinsic;
+		};
+
+		union Vec_F64_2 {
+			Vector<double, 2> vector;
+			__m128d intrinsic;
+		};
+#endif
+#ifdef ANVIL_AVX
+
+		union Vec_S8_32 {
+			Vector<int8_t, 32> vector;
+			__m256i intrinsic;
+		};
+
+		union Vec_U8_32 {
+			Vector<uint8_t, 32> vector;
+			__m256i intrinsic;
+		};
+
+		union Vec_S16_16 {
+			Vector<int16_t, 16> vector;
+			__m256i intrinsic;
+		};
+
+		union Vec_U16_16 {
+			Vector<uint16_t, 16> vector;
+			__m256i intrinsic;
+		};
+
+		union Vec_S32_16 {
+			Vector<int32_t, 16> vector;
+			__m256i intrinsic;
+		};
+
+		union Vec_U32_8 {
+			Vector<uint32_t, 8> vector;
+			__m256i intrinsic;
+		};
+
+		union Vec_S64_4 {
+			Vector<int64_t, 4> vector;
+			__m256i intrinsic;
+		};
+
+		union Vec_U64_4 {
+			Vector<uint64_t, 4> vector;
+			__m256i intrinsic;
+		};
+
+		union Vec_F32_8 {
+			Vector<float, 8> vector;
+			__m256 intrinsic;
+		};
+
+		union Vec_F64_4 {
+			Vector<double, 4> vector;
+			__m256d  intrinsic;
+		};
+#endif
+	}
+
+#define ANVIL_SPECIALISE_VECTOR_OP_CMP(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)\
+	template<>\
+	inline Vector<TYPE, CHANNELS> ANVIL_CALL operator ## SYMBOL(const Vector<TYPE, CHANNELS> a, const Vector<TYPE, CHANNELS> b) throw() {\
+		UNION a_, b_, c_;\
+		a_.vector = a;\
+		b_.vector = b;\
+		c_.intrinsic = FUNCTION(a_.intrinsic, b_.intrinsic);\
+		return c_.vector;\
+	}
+
+#define ANVIL_SPECIALISE_VECTOR_OP_EQ(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)\
+	template<>\
+	inline Vector<TYPE, CHANNELS>& ANVIL_CALL operator ## SYMBOL ## =(Vector<TYPE, CHANNELS>& a, const Vector<TYPE, CHANNELS> b) throw() {\
+		UNION a_, b_;\
+		a_.vector = a;\
+		b_.vector = b;\
+		a_.intrinsic = FUNCTION(a_.intrinsic, b_.intrinsic);\
+		return a = a_.vector;\
+		}
+
+#define ANVIL_SPECIALISE_VECTOR_FN_VVV(TYPE,CHANNELS,NAME,UNION,FUNCTION)\
+	template<>\
+	inline Vector<TYPE, CHANNELS> ANVIL_CALL NAME<TYPE, CHANNELS>(const Vector<TYPE, CHANNELS> a, const Vector<TYPE, CHANNELS> b) throw() {\
+		UNION a_, b_, c_;\
+		a_.vector = a;\
+		b_.vector = b;\
+		c_.intrinsic = FUNCTION(a_.intrinsic, b_.intrinsic);\
+		return c_.vector;\
+	}
+
+#define ANVIL_SPECIALISE_VECTOR_OP(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)\
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)\
+	ANVIL_SPECIALISE_VECTOR_OP_EQ(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)
+
+#ifdef ANVIL_MMX
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int32_t, 2, ==, detail::Vec_S32_2, _mm_cmpeq_pi32)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int32_t, 2, >, detail::Vec_S32_2, _mm_cmpgt_pi32)
+
+	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, +, detail::Vec_S16_4, _mm_adds_pi16)
+	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, -, detail::Vec_S16_4, _mm_subs_pi16)
+	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, &, detail::Vec_S16_4, _mm_and_si64)
+	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, |, detail::Vec_S16_4, _mm_or_si64)
+	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 4, ^, detail::Vec_S16_4, _mm_xor_si64)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int16_t, 4, == , detail::Vec_S16_4, _mm_cmpeq_pi16)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int16_t, 4, > , detail::Vec_S16_4, _mm_cmpgt_pi16)
+
+	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, +, detail::Vec_S8_8, _mm_adds_pi8)
+	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, -, detail::Vec_S8_8, _mm_subs_pi8)
+	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, &, detail::Vec_S8_8, _mm_and_si64)
+	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, |, detail::Vec_S8_8, _mm_or_si64)
+	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 8, ^, detail::Vec_S8_8, _mm_xor_si64)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int8_t, 8, == , detail::Vec_S8_8, _mm_cmpeq_pi8)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int8_t, 8, > , detail::Vec_S8_8, _mm_cmpgt_pi8)
+	
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint32_t, 2, ==, detail::Vec_U32_2, _mm_cmpeq_pi32)
+
+	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 4, +, detail::Vec_U16_4, _mm_adds_pu16)
+	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 4, -, detail::Vec_U16_4, _mm_subs_pu16)
+	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 4, &, detail::Vec_U16_4, _mm_and_si64)
+	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 4, |, detail::Vec_U16_4, _mm_or_si64)
+	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 4, ^, detail::Vec_U16_4, _mm_xor_si64)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint16_t, 4, == , detail::Vec_U16_4, _mm_cmpeq_pi16)
+
+	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 8, +, detail::Vec_U8_8, _mm_adds_pu8)
+	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 8, -, detail::Vec_U8_8, _mm_subs_pu8)
+	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 8, &, detail::Vec_U8_8, _mm_and_si64)
+	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 8, |, detail::Vec_U8_8, _mm_or_si64)
+	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 8, ^, detail::Vec_U8_8, _mm_xor_si64)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint8_t, 8, == , detail::Vec_U8_8, _mm_cmpeq_pi8)
+#endif
+#ifdef ANVIL_SSE
+	ANVIL_SPECIALISE_VECTOR_OP(float, 4, +, detail::Vec_F32_4, _mm_add_ps)
+	ANVIL_SPECIALISE_VECTOR_OP(float, 4, -, detail::Vec_F32_4, _mm_sub_ps)
+	ANVIL_SPECIALISE_VECTOR_OP(float, 4, *, detail::Vec_F32_4, _mm_mul_ps)
+	ANVIL_SPECIALISE_VECTOR_OP(float, 4, / , detail::Vec_F32_4, _mm_div_ps)
+	ANVIL_SPECIALISE_VECTOR_OP(float, 4, & , detail::Vec_F32_4, _mm_and_ps)
+	ANVIL_SPECIALISE_VECTOR_OP(float, 4, | , detail::Vec_F32_4, _mm_or_ps)
+	ANVIL_SPECIALISE_VECTOR_OP(float, 4, ^ , detail::Vec_F32_4, _mm_xor_ps)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, ==, detail::Vec_F32_4, _mm_cmpeq_ps)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, !=, detail::Vec_F32_4, _mm_cmpneq_ps)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, >=, detail::Vec_F32_4, _mm_cmpge_ps)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, <=, detail::Vec_F32_4, _mm_cmple_ps)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, > , detail::Vec_F32_4, _mm_cmpgt_ps)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(float, 4, < , detail::Vec_F32_4, _mm_cmplt_ps)
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(float, 4, max, detail::Vec_F32_4, _mm_max_ps)
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(float, 4, min, detail::Vec_F32_4, _mm_min_ps)
+
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(int16_t, 4, max, detail::Vec_S16_4, _mm_max_pi16)
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(int16_t, 4, min, detail::Vec_S16_4, _mm_max_pi16)
+
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(uint8_t, 8, max, detail::Vec_U8_8, _mm_max_pu8)
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(uint8_t, 8, min, detail::Vec_U8_8, _mm_max_pu8)
+#endif
+#ifdef ANVIL_SSE2
+	ANVIL_SPECIALISE_VECTOR_OP(double, 2, +, detail::Vec_F64_2, _mm_add_pd)
+	ANVIL_SPECIALISE_VECTOR_OP(double, 2, -, detail::Vec_F64_2, _mm_sub_pd)
+	ANVIL_SPECIALISE_VECTOR_OP(double, 2, *, detail::Vec_F64_2, _mm_mul_pd)
+	ANVIL_SPECIALISE_VECTOR_OP(double, 2, / , detail::Vec_F64_2, _mm_div_pd)
+	ANVIL_SPECIALISE_VECTOR_OP(double, 2, & , detail::Vec_F64_2, _mm_and_pd)
+	ANVIL_SPECIALISE_VECTOR_OP(double, 2, | , detail::Vec_F64_2, _mm_or_pd)
+	ANVIL_SPECIALISE_VECTOR_OP(double, 2, ^ , detail::Vec_F64_2, _mm_xor_pd)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, ==, detail::Vec_F64_2, _mm_cmpeq_pd)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, !=, detail::Vec_F64_2, _mm_cmpneq_pd)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, >=, detail::Vec_F64_2, _mm_cmpge_pd)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, <=, detail::Vec_F64_2, _mm_cmple_pd)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, > , detail::Vec_F64_2, _mm_cmpgt_pd)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(double, 2, < , detail::Vec_F64_2, _mm_cmplt_pd)
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(double, 2, max, detail::Vec_F64_2, _mm_max_pd)
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(double, 2, min, detail::Vec_F64_2, _mm_min_pd)
+
+	ANVIL_SPECIALISE_VECTOR_OP(int64_t, 2, +, detail::Vec_S64_2, _mm_add_epi64)
+	ANVIL_SPECIALISE_VECTOR_OP(int64_t, 2, -, detail::Vec_S64_2, _mm_sub_epi64)
+	ANVIL_SPECIALISE_VECTOR_OP(int64_t, 2, &, detail::Vec_S64_2, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP(int64_t, 2, |, detail::Vec_S64_2, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP(int64_t, 2, ^, detail::Vec_S64_2, _mm_and_si128)
+
+	ANVIL_SPECIALISE_VECTOR_OP(int32_t, 4, +, detail::Vec_S32_4, _mm_add_epi32)
+	ANVIL_SPECIALISE_VECTOR_OP(int32_t, 4, -, detail::Vec_S32_4, _mm_sub_epi32)
+	ANVIL_SPECIALISE_VECTOR_OP(int32_t, 4, &, detail::Vec_S32_4, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP(int32_t, 4, |, detail::Vec_S32_4, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP(int32_t, 4, ^, detail::Vec_S32_4, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int32_t, 4, ==, detail::Vec_S32_4, _mm_cmpeq_epi32)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int32_t, 4, > , detail::Vec_S32_4, _mm_cmpgt_epi32)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int32_t, 4, < , detail::Vec_S32_4, _mm_cmplt_epi32)
+
+	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, +, detail::Vec_S16_8, _mm_adds_epi16)
+	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, -, detail::Vec_S16_8, _mm_subs_epi16)
+	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, &, detail::Vec_S16_8, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, |, detail::Vec_S16_8, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP(int16_t, 8, ^, detail::Vec_S16_8, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int16_t, 8, ==, detail::Vec_S16_8, _mm_cmpeq_epi16)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int16_t, 8, > , detail::Vec_S16_8, _mm_cmpgt_epi16)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int16_t, 8, < , detail::Vec_S16_8, _mm_cmplt_epi16)
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(int16_t, 8, max, detail::Vec_S16_8, _mm_max_epi16)
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(int16_t, 8, min, detail::Vec_S16_8, _mm_max_epi16)
+
+	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 16, +, detail::Vec_S8_16, _mm_adds_epi8)
+	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 16, -, detail::Vec_S8_16, _mm_subs_epi8)
+	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 16, &, detail::Vec_S8_16, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 16, |, detail::Vec_S8_16, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP(int8_t, 16, ^, detail::Vec_S8_16, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int8_t, 16, ==, detail::Vec_S8_16, _mm_cmpeq_epi8)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int8_t, 16, > , detail::Vec_S8_16, _mm_cmpgt_epi8)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(int8_t, 16, < , detail::Vec_S8_16, _mm_cmplt_epi8)
+
+	ANVIL_SPECIALISE_VECTOR_OP(uint64_t, 2, &, detail::Vec_U64_2, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP(uint64_t, 2, |, detail::Vec_U64_2, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP(uint64_t, 2, ^, detail::Vec_U64_2, _mm_and_si128)
+
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint32_t, 4, ==, detail::Vec_U32_4, _mm_cmpeq_epi32)
+
+	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 8, +, detail::Vec_U16_8, _mm_adds_epu16)
+	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 8, -, detail::Vec_U16_8, _mm_subs_epu16)
+	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 8, &, detail::Vec_U16_8, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 8, |, detail::Vec_U16_8, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP(uint16_t, 8, ^, detail::Vec_U16_8, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint16_t, 8, ==, detail::Vec_U16_8, _mm_cmpeq_epi16)
+
+	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, +, detail::Vec_U8_16, _mm_adds_epu8)
+	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, -, detail::Vec_U8_16, _mm_subs_epu8)
+	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, &, detail::Vec_U8_16, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, |, detail::Vec_U8_16, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP(uint8_t, 16, ^, detail::Vec_U8_16, _mm_and_si128)
+	ANVIL_SPECIALISE_VECTOR_OP_CMP(uint8_t, 16, ==, detail::Vec_U8_16, _mm_cmpeq_epi8)
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(uint8_t, 16, max, detail::Vec_U8_16, _mm_max_epu8)
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(uint8_t, 16, min, detail::Vec_U8_16, _mm_max_epu8)
+#endif
+#ifdef ANVIL_SSE4_1
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(int32_t, 4, max, detail::Vec_S32_4, _mm_max_epi32)
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(int32_t, 4, min, detail::Vec_S32_4, _mm_min_epi32)
+
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(int8_t, 16, max, detail::Vec_S8_16, _mm_max_epi8)
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(int8_t, 16, min, detail::Vec_S8_16, _mm_min_epi8)
+
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(uint32_t, 4, max, detail::Vec_U32_4, _mm_max_epu32)
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(uint32_t, 4, min, detail::Vec_U32_4, _mm_min_epu32)
+
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(uint16_t, 8, max, detail::Vec_U16_8, _mm_max_epu16)
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(uint16_t, 8, min, detail::Vec_U16_8, _mm_min_epu16)
+#endif
+#ifdef ANVIL_AVX
+	ANVIL_SPECIALISE_VECTOR_OP(double, 4, +, detail::Vec_F64_4, _mm256_add_pd)
+	ANVIL_SPECIALISE_VECTOR_OP(double, 4, -, detail::Vec_F64_4, _mm256_sub_pd)
+	ANVIL_SPECIALISE_VECTOR_OP(double, 4, *, detail::Vec_F64_4, _mm256_mul_pd)
+	ANVIL_SPECIALISE_VECTOR_OP(double, 4, /, detail::Vec_F64_4, _mm256_div_pd)
+	ANVIL_SPECIALISE_VECTOR_OP(double, 4, &, detail::Vec_F64_4, _mm256_and_pd)
+	ANVIL_SPECIALISE_VECTOR_OP(double, 4, |, detail::Vec_F64_4, _mm256_or_pd)
+	ANVIL_SPECIALISE_VECTOR_OP(double, 4, ^, detail::Vec_F64_4, _mm256_xor_pd)
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(double, 4, max, detail::Vec_F64_4, _mm256_max_pd)
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(double, 4, min, detail::Vec_F64_4, _mm256_min_pd)
+
+	ANVIL_SPECIALISE_VECTOR_OP(float, 8, +, detail::Vec_F32_8, _mm256_add_ps)
+	ANVIL_SPECIALISE_VECTOR_OP(float, 8, -, detail::Vec_F32_8, _mm256_sub_ps)
+	ANVIL_SPECIALISE_VECTOR_OP(float, 8, *, detail::Vec_F32_8, _mm256_mul_ps)
+	ANVIL_SPECIALISE_VECTOR_OP(float, 8, /, detail::Vec_F32_8, _mm256_div_ps)
+	ANVIL_SPECIALISE_VECTOR_OP(float, 8, &, detail::Vec_F32_8, _mm256_and_ps)
+	ANVIL_SPECIALISE_VECTOR_OP(float, 8, |, detail::Vec_F32_8, _mm256_or_ps)
+	ANVIL_SPECIALISE_VECTOR_OP(float, 8, ^, detail::Vec_F32_8, _mm256_xor_ps)
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(float, 8, max, detail::Vec_F32_8, _mm256_max_ps)
+	ANVIL_SPECIALISE_VECTOR_FN_VVV(float, 8, min, detail::Vec_F32_8, _mm256_min_ps)
+
+	//! \todo Support _mm_cmp_pd and _mm_cmp_ps
+#endif
+
+#undef ANVIL_SPECIALISE_VECTOR_OP
+
+	////
+
+	template<class T, size_t S>
+	std::ostream& ANVIL_CALL operator<<(std::ostream& aStream, Vector<T, S> aValue) {
+		aStream << '[';
+		for (size_t i = 0; i < S - 1; ++i) aStream << aValue[i] << ',';
+		aStream << aValue[S - 1];
+		aStream << ']';
+		return aStream;
+	}
+
+	template<class T, size_t S>
+	std::istream& ANVIL_CALL operator>>(std::istream& aStream, Vector<T, S>& aValue) {
+		char buf;
+		aStream >> buf;
+		for (size_t i = 0; i < S - 1; ++i) aStream >> aValue[i] >> buf;
+		aStream >> aValue[S - 1];
+		aStream >> buf;
+		return aStream;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator+(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) + b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator-(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) - b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator*(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) * b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator/(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) / b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator&(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) & b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator|(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) | b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator^(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) ^ b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator&&(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) && b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator||(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) ^ b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator<<(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) << b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator>>(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) >> b;
+	}
+
+	template<class T, size_t S>
+	inline Vector<T, S> ANVIL_CALL operator%(const T a, const Vector<T, S> b) {
+		return Vector<T, S>(a) % b;
+	}
+
+	template<class T, size_t S>
+	struct Widen<Vector<T,S>> {
+		typedef Vector<typename Widen<T>::type, S> type;
+	};
+
+	template<class T, size_t S>
+	using VectorP4 = Vector<T, (S + 3) & (~3)>;
+
+	template<Type TYPE>
+	using AnvilVector = Vector<typename TypeFromEnum<GetPrimativeType(TYPE)>::type, GetChannels(TYPE)>;
+
+	typedef Vector<signed char, 2> char2;
+	typedef Vector<signed char, 3> char3;
+	typedef Vector<signed char, 4> char4;
+	typedef Vector<unsigned char, 2> uchar2;
+	typedef Vector<unsigned char, 3> uchar3;
+	typedef Vector<unsigned char, 4> uchar4;
+	typedef Vector<short, 2> short2;
+	typedef Vector<short, 3> short3;
+	typedef Vector<short, 4> short4;
+	typedef Vector<unsigned short, 2> ushort2;
+	typedef Vector<unsigned short, 3> ushort3;
+	typedef Vector<unsigned short, 4> ushort4;
+	typedef Vector<int, 2> int2;
+	typedef Vector<int, 3> int3;
+	typedef Vector<int, 4> int4;
+	typedef Vector<unsigned int, 2> uint2;
+	typedef Vector<unsigned int, 3> uint3;
+	typedef Vector<unsigned int, 4> uint4;
+	typedef Vector<float, 2> float2;
+	typedef Vector<float, 3> float3;
+	typedef Vector<float, 4> float4;
+	typedef Vector<double, 2> double2;
+	typedef Vector<double, 3> double3;
+	typedef Vector<double, 4> double4;
+
+	typedef Vector<uint8_t, 2>  uint8_2;
+	typedef Vector<uint8_t, 3>  uint8_3;
+	typedef Vector<uint8_t, 4>  uint8_4;
+	typedef Vector<uint8_t, 8>  uint8_8;
+	typedef Vector<uint8_t, 16> uint8_16;
+	typedef Vector<uint8_t, 32> uint8_32;
+	typedef Vector<uint8_t, 64> uint8_64;
+
+	typedef Vector<int8_t, 2>  int8_2;
+	typedef Vector<int8_t, 3>  int8_3;
+	typedef Vector<int8_t, 4>  int8_4;
+	typedef Vector<int8_t, 8>  int8_8;
+	typedef Vector<int8_t, 16> int8_16;
+	typedef Vector<int8_t, 32> int8_32;
+	typedef Vector<int8_t, 64> int8_64;
+
+	typedef Vector<uint16_t, 2>  uint16_2;
+	typedef Vector<uint16_t, 3>  uint16_3;
+	typedef Vector<uint16_t, 4>  uint16_4;
+	typedef Vector<uint16_t, 8>  uint16_8;
+	typedef Vector<uint16_t, 16> uint16_16;
+	typedef Vector<uint16_t, 32> uint16_32;
+	typedef Vector<uint16_t, 64> uint16_64;
+
+	typedef Vector<int16_t, 2>  int16_2;
+	typedef Vector<int16_t, 3>  int16_3;
+	typedef Vector<int16_t, 4>  int16_4;
+	typedef Vector<int16_t, 8>  int16_8;
+	typedef Vector<int16_t, 16> int16_16;
+	typedef Vector<int16_t, 32> int16_32;
+	typedef Vector<int16_t, 64> int16_64;
+
+	typedef Vector<uint32_t, 2>  uint32_2;
+	typedef Vector<uint32_t, 3>  uint32_3;
+	typedef Vector<uint32_t, 4>  uint32_4;
+	typedef Vector<uint32_t, 8>  uint32_8;
+	typedef Vector<uint32_t, 16> uint32_16;
+	typedef Vector<uint32_t, 32> uint32_32;
+	typedef Vector<uint32_t, 64> uint32_64;
+
+	typedef Vector<int32_t, 2>  int32_2;
+	typedef Vector<int32_t, 3>  int32_3;
+	typedef Vector<int32_t, 4>  int32_4;
+	typedef Vector<int32_t, 8>  int32_8;
+	typedef Vector<int32_t, 16> int32_16;
+	typedef Vector<int32_t, 32> int32_32;
+	typedef Vector<int32_t, 64> int32_64;
+
+	typedef Vector<uint64_t, 2>  uint64_2;
+	typedef Vector<uint64_t, 3>  uint64_3;
+	typedef Vector<uint64_t, 4>  uint64_4;
+	typedef Vector<uint64_t, 8>  uint64_8;
+	typedef Vector<uint64_t, 16> uint64_16;
+	typedef Vector<uint64_t, 32> uint64_32;
+	typedef Vector<uint64_t, 64> uint64_64;
+
+	typedef Vector<int64_t, 2>  int64_2;
+	typedef Vector<int64_t, 3>  int64_3;
+	typedef Vector<int64_t, 4>  int64_4;
+	typedef Vector<int64_t, 8>  int64_8;
+	typedef Vector<int64_t, 16> int64_16;
+	typedef Vector<int64_t, 32> int64_32;
+	typedef Vector<int64_t, 64> int64_64;
+
+	typedef Vector<float32_t, 2>  float32_2;
+	typedef Vector<float32_t, 3>  float32_3;
+	typedef Vector<float32_t, 4>  float32_4;
+	typedef Vector<float32_t, 8>  float32_8;
+	typedef Vector<float32_t, 16> float32_16;
+	typedef Vector<float32_t, 32> float32_32;
+	typedef Vector<float32_t, 64> float32_64;
+
+	typedef Vector<float64_t, 2>  float64_2;
+	typedef Vector<float64_t, 3>  float64_3;
+	typedef Vector<float64_t, 4>  float64_4;
+	typedef Vector<float64_t, 8>  float64_8;
+	typedef Vector<float64_t, 16> float64_16;
+	typedef Vector<float64_t, 32> float64_32;
+	typedef Vector<float64_t, 64> float64_64;
 }
 
 #endif
