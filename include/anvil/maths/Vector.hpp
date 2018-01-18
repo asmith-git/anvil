@@ -144,6 +144,7 @@ namespace anvil {
 			size = S,
 		};
 		typedef Vector<type, size> this_t;
+		typedef Vector<type, size / 2> half_t;
 		typedef typename detail::VFloat<type>::type float_t;
 		typedef type array_t[size];
 	private:
@@ -392,16 +393,42 @@ namespace anvil {
 			return static_cast<type>(avgf());
 		}
 
+		ANVIL_STRONG_INLINE half_t& lowerHalf() throw() {
+			return reinterpret_cast<half_t*>(this)[0];
+		}
+
+		ANVIL_STRONG_INLINE half_t& upperHalf() throw() {
+			return reinterpret_cast<half_t*>(this)[1];
+		}
+
+		ANVIL_STRONG_INLINE half_t lowerHalf() const throw() {
+			return reinterpret_cast<const half_t*>(this)[0];
+		}
+
+		ANVIL_STRONG_INLINE half_t upperHalf() const throw() {
+			return reinterpret_cast<const half_t*>(this)[1];
+		}
+
 		inline type ANVIL_CALL min() const throw() {
-			type tmp = mData[0];
-			for (size_t i = 1; i < size; ++i) tmp = anvil::min(tmp, mData[i]);
-			return tmp;
+			enum { HALF_OPTIMISED = size > 2 && detail::VopOptimised<half_t::type, half_t::size, detail::VOP_MIN>::value };
+			if (HALF_OPTIMISED) {
+				return anvil::min<half_t::type, half_t::size>(lowerHalf(), upperHalf()).min();
+			} else {
+				type tmp = mData[0];
+				for (size_t i = 1; i < size; ++i) tmp = anvil::min(tmp, mData[i]);
+				return tmp;
+			}
 		}
 
 		inline type ANVIL_CALL max() const throw() {
-			type tmp = mData[0];
-			for (size_t i = 1; i < size; ++i) tmp = anvil::max(tmp, mData[i]);
-			return tmp;
+			enum { HALF_OPTIMISED = size > 2 && detail::VopOptimised<half_t::type, half_t::size, detail::VOP_MAX>::value };
+			if (HALF_OPTIMISED) {
+				return anvil::max<half_t::type, half_t::size>(lowerHalf(), upperHalf()).max();
+			} else {
+				type tmp = mData[0];
+				for (size_t i = 1; i < size; ++i) tmp = anvil::max(tmp, mData[i]);
+				return tmp;
+			}
 		}
 
 		inline float_t ANVIL_CALL dot(const this_t aOther) const throw() {
@@ -590,9 +617,17 @@ namespace anvil {
 	ANVIL_VECTOR_OP(detail::VOP_GE, >=)
 	
 	template<class T, size_t S>
-	static inline Vector<size_t, S> ANVIL_CALL fill(const T a) {
-		Vector<size_t, S> b;
+	static inline Vector<T, S> ANVIL_CALL fill(const T a) {
+		Vector<T, S> b;
 		for (size_t i = 0; i < S; ++i) b[i] = a;
+		return b;
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> ANVIL_CALL fill(const T* a, size_t a_length) {
+		Vector<T, S> b;
+		for (size_t i = 0; i < a_length; ++i) b[i] = a[i];
+		for (size_t i = a_length; i < S; ++i) b[i] = static_cast<T>(0);
 		return b;
 	}
 
