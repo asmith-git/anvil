@@ -1047,7 +1047,7 @@ namespace anvil {
 		b_.vector = b;\
 		c_.intrinsic = FUNCTION(a_.intrinsic, b_.intrinsic);\
 		return c_.vector;\
-		}
+	}
 
 #define ANVIL_SPECIALISE_VECTOR_OP_EQ(TYPE,CHANNELS,SYMBOL,UNION,FUNCTION)\
 	template<>\
@@ -1057,7 +1057,7 @@ namespace anvil {
 		b_.vector = b;\
 		a_.intrinsic = FUNCTION(a_.intrinsic, b_.intrinsic);\
 		return a = a_.vector;\
-				}
+	}
 
 #define ANVIL_SPECIALISE_VECTOR_FN_VV(TYPE,CHANNELS,NAME,UNION,FUNCTION)\
 	template<>\
@@ -1076,7 +1076,7 @@ namespace anvil {
 		b_.vector = b;\
 		c_.intrinsic = FUNCTION(a_.intrinsic, b_.intrinsic);\
 		return c_.vector;\
-		}
+	}
 
 #define ANVIL_SPECIALISE_VECTOR_FN_VVVV(TYPE,CHANNELS,NAME,UNION,FUNCTION)\
 	template<>\
