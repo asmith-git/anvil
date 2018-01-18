@@ -138,23 +138,24 @@ namespace anvil {
 		template<class T, int S, VectorOp VOP>
 		struct VectorLoopInfo {
 			enum {
-				HALF_OPTIMISED = S > 2 && VopOptimised<T, S/2, VOP>::value,
+				HALF_OPTIMISED = S > 2 && VopOptimised<T, S/2, VOP>::value,    //!< If the operation is optimised at half the vector's size
 
-				_OPTIMISED_4 = S >= 8 && VopOptimised<T, 4, VOP>::value,
-				_OPTIMISED_8 = S >= 16 && VopOptimised<T, 8, VOP>::value,
-				_OPTIMISED_16 = S >= 32 && VopOptimised<T, 16, VOP>::value,
-				_OPTIMISED_32 = S >= 64 && VopOptimised<T, 32, VOP>::value,
-				_OPTIMISED_64 = S >= 128 && VopOptimised<T, 64, VOP>::value,
+				_OPTIMISED_4 = S >= 8 && VopOptimised<T, 4, VOP>::value,       //!< If the operaton is optimised at size 4 and vector size is at aleast 8
+				_OPTIMISED_8 = S >= 16 && VopOptimised<T, 8, VOP>::value,      //!< If the operaton is optimised at size 8 and vector size is at aleast 16
+				_OPTIMISED_16 = S >= 32 && VopOptimised<T, 16, VOP>::value,    //!< If the operaton is optimised at size 16 and vector size is at aleast 32
+				_OPTIMISED_32 = S >= 64 && VopOptimised<T, 32, VOP>::value,    //!< If the operaton is optimised at size 32 and vector size is at aleast 64
+				_OPTIMISED_64 = S >= 128 && VopOptimised<T, 64, VOP>::value,   //!< If the operaton is optimised at size 64 and vector size is at aleast 128
+				
 				OPTIMISED_SIZE =
 					_OPTIMISED_64 ? 64 :
 					_OPTIMISED_32 ? 32 :
 					_OPTIMISED_16 ? 16 :
 					_OPTIMISED_8 ? 8 :
 					_OPTIMISED_4 ? 4 :
-					0,
+					0,                                                         //!< The largest optimised size that is smaller than half this vector
 
-				OPTIMISED_LOOP = OPTIMISED_SIZE == 0 ? 0 : S / OPTIMISED_SIZE,
-				OPTIMISED_REMAINDER = OPTIMISED_SIZE == 0 ? 0 : S % OPTIMISED_SIZE
+				OPTIMISED_LOOP = OPTIMISED_SIZE == 0 ? 0 : S / OPTIMISED_SIZE,     //!< The number of loops iterations with OPTIMISED_SIZE vectors
+				OPTIMISED_REMAINDER = OPTIMISED_SIZE == 0 ? 0 : S % OPTIMISED_SIZE //!< The number of loops iterations with trailing scalar values
 			};
 		};
 	}
