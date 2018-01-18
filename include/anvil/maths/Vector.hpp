@@ -545,23 +545,26 @@ namespace anvil {
 
 #define ANVIL_VECTOR_OP_EQ(SYMBOL)\
 	template<class T, size_t S>\
-	inline Vector<T,S>& ANVIL_CALL operator ## SYMBOL(Vector<T,S>& a, const Vector<T,S> b) throw() {\
+	Vector<T, S>& ANVIL_CALL operator ## SYMBOL(Vector<T, S>& a, const Vector<T, S> b) throw() {\
 		enum { OPTIMAL = detail::OptimalVectorLength<T>::value };\
 		if(OPTIMAL < S){\
+			enum {\
+				LOOP1 = S / OPTIMAL,\
+				LOOP2 = S & OPTIMAL\
+				};\
 			size_t a_length = S;\
 			detail::VectorPtr<T, OPTIMAL> a_, b_;\
 			\
 			a_.scalar = reinterpret_cast<T*>(&a);\
 			b_.scalar = const_cast<T*>(reinterpret_cast<const T*>(&b));\
 			\
-			while (a_length >= OPTIMAL) {\
+			for(int i = 0; i < LOOP1; ++i) {\
 				*a_.vector SYMBOL *b_.vector;\
 				++a_.vector;\
 				++b_.vector;\
-				a_length -= OPTIMAL;\
 			}\
 			\
-			for (size_t i = 0; i < a_length; ++i) {\
+			for (int i = 0; i < LOOP2; ++i) {\
 				*a_.scalar SYMBOL *b_.scalar;\
 				++a_.scalar;\
 				++b_.scalar;\
@@ -580,10 +583,14 @@ namespace anvil {
 
 #define ANVIL_VECTOR_OP(SYMBOL)\
 	template<class T, size_t S>\
-	inline Vector<T,S> ANVIL_CALL operator ## SYMBOL(const Vector<T,S> a, const Vector<T,S> b) throw() {\
+	Vector<T,S> ANVIL_CALL operator ## SYMBOL(const Vector<T,S> a, const Vector<T,S> b) throw() {\
 		Vector<T, S> c;\
 		enum { OPTIMAL = detail::OptimalVectorLength<T>::value };\
 		if(OPTIMAL < S){\
+			enum {\
+				LOOP1 = S / OPTIMAL,\
+				LOOP2 = S & OPTIMAL\
+			};\
 			size_t a_length = S;\
 			detail::VectorPtr<T, OPTIMAL> a_, b_, c_;\
 			\
@@ -591,15 +598,14 @@ namespace anvil {
 			b_.scalar = const_cast<T*>(reinterpret_cast<const T*>(&b));\
 			c_.scalar = reinterpret_cast<T*>(&c);\
 			\
-			while (a_length >= OPTIMAL) {\
+			for(int i = 0; i < LOOP1; ++i) {\
 				*c_.vector = *a_.vector SYMBOL *b_.vector;\
 				++a_.vector;\
 				++b_.vector;\
 				++c_.vector;\
-				a_length -= OPTIMAL;\
 			}\
 			\
-			for (size_t i = 0; i < a_length; ++i) {\
+			for (int i = 0; i < LOOP2; ++i) {\
 				*c_.scalar = *a_.scalar SYMBOL *b_.scalar;\
 				++a_.scalar;\
 				++b_.scalar;\
