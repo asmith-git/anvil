@@ -543,6 +543,41 @@ namespace anvil {
 		};
 	}
 
+#define ANVIL_VECTOR_OP_EQ(SYMBOL)\
+	template<class T, size_t S>\
+	inline Vector<T,S>& ANVIL_CALL operator ## SYMBOL(Vector<T,S>& a, const Vector<T,S> b) throw() {\
+		enum { OPTIMAL = detail::OptimalVectorLength<T>::value };\
+		if(OPTIMAL < S){\
+			size_t a_length = S;\
+			detail::VectorPtr<T, OPTIMAL> a_, b_;\
+			\
+			a_.scalar = reinterpret_cast<T*>(&a);\
+			b_.scalar = const_cast<T*>(reinterpret_cast<const T*>(&b));\
+			\
+			while (a_length >= OPTIMAL) {\
+				*a_.vector SYMBOL *b_.vector;\
+				++a_.vector;\
+				++b_.vector;\
+				a_length -= OPTIMAL;\
+			}\
+			\
+			for (size_t i = 0; i < a_length; ++i) {\
+				*a_.scalar SYMBOL *b_.scalar;\
+				++a_.scalar;\
+				++b_.scalar;\
+			}\
+		} else if(OPTIMAL > S) {\
+			detail::RoundedVector<T, S> a_, b_;\
+			a_.unrounded = a;\
+			b_.unrounded = b;\
+			a_.rounded SYMBOL b_.rounded;\
+			a = a_.unrounded;\
+		} else {\
+			for (size_t i = 0; i < S; ++i) a[i] SYMBOL b[i];\
+		}\
+		return a;\
+	}
+
 #define ANVIL_VECTOR_OP(SYMBOL)\
 	template<class T, size_t S>\
 	inline Vector<T,S> ANVIL_CALL operator ## SYMBOL(const Vector<T,S> a, const Vector<T,S> b) throw() {\
@@ -590,85 +625,20 @@ namespace anvil {
 	ANVIL_VECTOR_OP(|)
 	ANVIL_VECTOR_OP(^)
 
-	template<class T, size_t S>
-	inline Vector<T, S>& ANVIL_CALL operator+=(Vector<T, S>& a, const Vector<T, S> b) throw() {
-		for (size_t i = 0; i < S; ++i) a[i] += b[i];
-		return a;
-	}
+	ANVIL_VECTOR_OP_EQ(+=)
+	ANVIL_VECTOR_OP_EQ(-=)
+	ANVIL_VECTOR_OP_EQ(*=)
+	ANVIL_VECTOR_OP_EQ(/=)
+	ANVIL_VECTOR_OP_EQ(&=)
+	ANVIL_VECTOR_OP_EQ(|=)
+	ANVIL_VECTOR_OP_EQ(^=)
 
-	template<class T, size_t S>
-	inline Vector<T, S>& ANVIL_CALL operator-=(Vector<T, S>& a, const Vector<T, S> b) throw() {
-		for (size_t i = 0; i < S; ++i) a[i] -= b[i];
-		return a;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S>& ANVIL_CALL operator*=(Vector<T, S>& a, const Vector<T, S> b) throw() {
-		for (size_t i = 0; i < S; ++i) a[i] *= b[i];
-		return a;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S>& ANVIL_CALL operator/=(Vector<T, S>& a, const Vector<T, S> b) throw() {
-		for (size_t i = 0; i < S; ++i) a[i] /= b[i];
-		return a;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S>& ANVIL_CALL operator&=(Vector<T, S>& a, const Vector<T, S> b) throw() {
-		for (size_t i = 0; i < S; ++i) a[i] &= b[i];
-		return a;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S>& ANVIL_CALL operator|=(Vector<T, S>& a, const Vector<T, S> b) throw() {
-		for (size_t i = 0; i < S; ++i) a[i] |= b[i];
-		return a;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S>& ANVIL_CALL operator^=(Vector<T, S>& a, const Vector<T, S> b) throw() {
-		for (size_t i = 0; i < S; ++i) a[i] ^= b[i];
-		return a;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator==(const Vector<T, S> a, const Vector<T, S> b) throw() {
-		Vector<T, S> c;
-		for (size_t i = 0; i < S; ++i) c[i] = static_cast<T>(a[i] == b[i]);
-		return c;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator!=(const Vector<T, S> a, const Vector<T, S> b) throw() {
-		Vector<T, S> c;
-		for (size_t i = 0; i < S; ++i) c[i] = static_cast<T>(a[i] != b[i]);
-		return c;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator<(const Vector<T, S> a, const Vector<T, S> b) throw() {
-		Vector<T, S> c;
-		for (size_t i = 0; i < S; ++i) c[i] = static_cast<T>(a[i] < b[i]);
-		return c;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator>(const Vector<T, S> a, const Vector<T, S> b) throw() {
-		Vector<T, S> c;
-		for (size_t i = 0; i < S; ++i) c[i] = static_cast<T>(a[i] > b[i]);
-		return c;
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator<=(const Vector<T, S> a, const Vector<T, S> b) throw() {
-		return operator|(operator<(a, b), operator==(a, b));
-	}
-
-	template<class T, size_t S>
-	inline Vector<T, S> ANVIL_CALL operator>=(const Vector<T, S> a, const Vector<T, S> b) throw() {
-		return operator|(operator>(a, b), operator==(a, b));
-	}
+	ANVIL_VECTOR_OP(==)
+	ANVIL_VECTOR_OP(!=)
+	ANVIL_VECTOR_OP(<)
+	ANVIL_VECTOR_OP(>)
+	ANVIL_VECTOR_OP(<=)
+	ANVIL_VECTOR_OP(>=)
 
 	namespace detail{
 
