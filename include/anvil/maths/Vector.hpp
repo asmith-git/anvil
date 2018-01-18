@@ -21,6 +21,11 @@
 #include "anvil/maths/Reflection.hpp"
 #include "anvil/maths/Common.hpp"
 
+#ifdef ANVIL_AVX_512
+	#define ANVIL_AVX2
+	//#include ?
+#endif
+
 #ifdef ANVIL_AVX2
 	#define ANVIL_AVX
 	#include <zmmintrin.h>
