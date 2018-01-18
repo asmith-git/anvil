@@ -134,6 +134,29 @@ namespace anvil {
 				S
 			}; 
 		};
+
+		template<class T, int S, VectorOp VOP>
+		struct VectorLoopInfo {
+			enum {
+				HALF_OPTIMISED = S > 2 && VopOptimised<T, S/2, VOP>::value,
+
+				_OPTIMISED_4 = S > 4 && VopOptimised<T, 4, VOP>::value,
+				_OPTIMISED_8 = S > 8 && VopOptimised<T, 8, VOP>::value,
+				_OPTIMISED_16 = S > 16 && VopOptimised<T, 16, VOP>::value,
+				_OPTIMISED_32 = S > 32 && VopOptimised<T, 32, VOP>::value,
+				_OPTIMISED_64 = S > 64 && VopOptimised<T, 64, VOP>::value,
+				OPTIMISED_SIZE =
+					_OPTIMISED_64 ? 64 :
+					_OPTIMISED_32 ? 32 :
+					_OPTIMISED_16 ? 16 :
+					_OPTIMISED_8 ? 8 :
+					_OPTIMISED_4 ? 4 :
+					0,
+
+				OPTIMISED_LOOP = OPTIMISED_SIZE == 0 ? 0 : S / OPTIMISED_SIZE,
+				OPTIMISED_REMAINDER = OPTIMISED_SIZE == 0 ? 0 : S % OPTIMISED_SIZE
+			};
+		};
 	}
 
 	template<class T = float, size_t S = detail::OptimalVectorLength<T>::value>
@@ -390,9 +413,15 @@ namespace anvil {
 		}
 
 		inline float_t ANVIL_CALL sumf() const throw() {
-			enum { HALF_OPTIMISED = size > 2 && detail::VopOptimised<half_t::type, half_t::size, detail::VOP_ADD>::value };
-			if (HALF_OPTIMISED) {
+			typedef detail::VectorLoopInfo<type, size, detail::VOP_ADD> Info;
+			if (Info::HALF_OPTIMISED) {
 				return (lowerHalf() + upperHalf()).sumf();
+			} else if (Info::OPTIMISED_SIZE) {
+				const Vector<type, Info::OPTIMISED_SIZE>* ptr = reinterpret_cast<const Vector<type, Info::OPTIMISED_SIZE>*>(this);
+				Vector<type, Info::OPTIMISED_SIZE> tmp = ptr[0];
+				for (size_t i = 1; i < Info::OPTIMISED_LOOP; ++i) tmp += ptr[i];
+				for (size_t i = 0; i < Info::OPTIMISED_REMAINDER; ++i) tmp[0] += ptr[Info::OPTIMISED_LOOP][i];
+				return tmp.sumf();
 			} else {
 				type tmp = mData[0];
 				for (size_t i = 1; i < size; ++i) tmp += mData[i];
@@ -413,9 +442,15 @@ namespace anvil {
 		}
 
 		inline type ANVIL_CALL min() const throw() {
-			enum { HALF_OPTIMISED = size > 2 && detail::VopOptimised<half_t::type, half_t::size, detail::VOP_MIN>::value };
-			if (HALF_OPTIMISED) {
+			typedef detail::VectorLoopInfo<type, size, detail::VOP_MIN> Info;
+			if (Info::HALF_OPTIMISED) {
 				return anvil::min<half_t::type, half_t::size>(lowerHalf(), upperHalf()).min();
+			} else if (Info::OPTIMISED_SIZE) {
+				const Vector<type, Info::OPTIMISED_SIZE>* ptr = reinterpret_cast<const Vector<type, Info::OPTIMISED_SIZE>*>(this);
+				Vector<type, Info::OPTIMISED_SIZE> tmp = ptr[0];
+				for (size_t i = 1; i < Info::OPTIMISED_LOOP; ++i) anvil::min<type, Info::OPTIMISED_SIZE>(tmp, ptr[i]);
+				for (size_t i = 0; i < Info::OPTIMISED_REMAINDER; ++i) tmp[0] = anvil::min(tmp[0], ptr[Info::OPTIMISED_LOOP][i]);
+				return tmp.min();
 			} else {
 				type tmp = mData[0];
 				for (size_t i = 1; i < size; ++i) tmp = anvil::min(tmp, mData[i]);
@@ -424,9 +459,15 @@ namespace anvil {
 		}
 
 		inline type ANVIL_CALL max() const throw() {
-			enum { HALF_OPTIMISED = size > 2 && detail::VopOptimised<half_t::type, half_t::size, detail::VOP_MAX>::value };
-			if (HALF_OPTIMISED) {
+			typedef detail::VectorLoopInfo<type, size, detail::VOP_MAX> Info;
+			if (Info::HALF_OPTIMISED) {
 				return anvil::max<half_t::type, half_t::size>(lowerHalf(), upperHalf()).max();
+			} else if (Info::OPTIMISED_SIZE) {
+				const Vector<type, Info::OPTIMISED_SIZE>* ptr = reinterpret_cast<const Vector<type, Info::OPTIMISED_SIZE>*>(this);
+				Vector<type, Info::OPTIMISED_SIZE> tmp = ptr[0];
+				for (size_t i = 1; i < Info::OPTIMISED_LOOP; ++i) anvil::max<type, Info::OPTIMISED_SIZE>(tmp, ptr[i]);
+				for (size_t i = 0; i < Info::OPTIMISED_REMAINDER; ++i) tmp[0] = anvil::max(tmp[0], ptr[Info::OPTIMISED_LOOP][i]);
+				return tmp.max();
 			} else {
 				type tmp = mData[0];
 				for (size_t i = 1; i < size; ++i) tmp = anvil::max(tmp, mData[i]);
