@@ -99,7 +99,7 @@ namespace anvil {
 			VOP_LOG2,  VOP_LOG10,  VOP_POW,   VOP_CBRT,
 			VOP_HYPOT, VOP_ATAN2,  VOP_COSH, VOP_SINH,
 			VOP_TANH,  VOP_ACONSH, VOP_ASINH, VOP_ATANH, 
-			VOP_CIEL,  VOP_FLOOR,  VOP_TRUNC, VOP_ROUND
+			VOP_CEIL,  VOP_FLOOR,  VOP_TRUNC, VOP_ROUND
 		};
 
 		template<class T, size_t S, VectorOp VOP>

@@ -453,7 +453,7 @@ namespace anvil {
 		};
 
 		template<class T, size_t S>
-		struct VopDispatch<T, S, VOP_CIEL> {
+		struct VopDispatch<T, S, VOP_CEIL> {
 			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
 				return ceil<T, S>(a);
@@ -540,7 +540,6 @@ namespace anvil {
 				for (size_t i = 0; i < loop; ++i) cVec[i] = VopVec::call(aVec[i], bVec);
 				//for (size_t i = 0; i < remainder; ++i) cSca[i] = VopSca::call(aSca[i], bSca);
 			}
-#undef ANVIL_PAD_VECTOR
 		}
 
 		template<class T, size_t VEC_LEN, VectorOp VOP>
@@ -658,6 +657,32 @@ namespace anvil {
 				for (size_t i = 0; i < remainder; ++i) cSca[i] = VopSca::call(aSca[i], bSca[i]);
 			}
 		}
+
+		template<class T, VectorOp VOP>
+		static void vector_vv(const T* a, T* b, size_t a_size) throw() {
+			enum { LENGTH = detail::OptimalVectorLength<T, VOP>::value };
+			typedef Vector<T, LENGTH> Vec;
+			typedef Vector<T, 1> Sca;
+			typedef VopDispatch<T, LENGTH, VOP> VopVec;
+			typedef VopDispatch<T, 1, VOP> VopSca;
+
+			const size_t loop = a_size / LENGTH;
+			const size_t remainder = a_size % LENGTH;
+
+			const Vec* const aVec = reinterpret_cast<const Vec*>(a);
+			Vec* const bVec = reinterpret_cast<Vec*>(b);
+
+			const Sca* const aSca = reinterpret_cast<const Sca*>(aVec + loop);
+			Sca* const bSca = reinterpret_cast<Sca*>(bVec + loop);
+
+			if (b == a) {
+				for (size_t i = 0; i < loop; ++i) VopVec::call_assignment(bVec[i]);
+				for (size_t i = 0; i < remainder; ++i) VopSca::call_assignment(bSca[i]);
+			} else {
+				for (size_t i = 0; i < loop; ++i) bVec[i] = VopVec::call(aVec[i]);
+				for (size_t i = 0; i < remainder; ++i) bSca[i] = VopSca::call(aSca[i]);
+			}
+		}
 	}
 
 #define ANVIL_VECTORISE_VVV(VOP, NAME)\
@@ -674,6 +699,12 @@ static inline void NAME(const T* a, const T* b, T* c, size_t a_size) throw() {\
 	detail::vector_vsv<T, VEC_LEN, VOP>(a, b, c, a_size);\
 }\
 
+#define ANVIL_VECTORISE_VV(VOP, NAME)\
+template<class T>\
+static inline void NAME(const T* a, T* b, size_t a_size) throw() {\
+	detail::vector_vv<T, VOP>(a, b, a_size);\
+}
+
 ANVIL_VECTORISE_VVV(detail::VOP_ADD, vector_add)
 ANVIL_VECTORISE_VVV(detail::VOP_SUB, vector_sub)
 ANVIL_VECTORISE_VVV(detail::VOP_MUL, vector_mul)
@@ -689,6 +720,35 @@ ANVIL_VECTORISE_VVV(detail::VOP_LE, vector_le)
 ANVIL_VECTORISE_VVV(detail::VOP_GE, vector_ge)
 ANVIL_VECTORISE_VVV(detail::VOP_MIN, vector_min)
 ANVIL_VECTORISE_VVV(detail::VOP_MAX, vector_max)
+ANVIL_VECTORISE_VVV(detail::VOP_ATAN2, vector_atan2)
+ANVIL_VECTORISE_VVV(detail::VOP_DIM, vector_dim)
+ANVIL_VECTORISE_VVV(detail::VOP_MOD, vector_mod)
+ANVIL_VECTORISE_VVV(detail::VOP_HYPOT, vector_hypot)
+ANVIL_VECTORISE_VVV(detail::VOP_POW, vector_pow)
+
+ANVIL_VECTORISE_VV(detail::VOP_PCN, vector_popcount)
+ANVIL_VECTORISE_VV(detail::VOP_REF, vector_reflect)
+ANVIL_VECTORISE_VV(detail::VOP_ABS, vector_abs)
+ANVIL_VECTORISE_VV(detail::VOP_NOT, vector_not)
+ANVIL_VECTORISE_VV(detail::VOP_TRUNC, vector_trunc)
+ANVIL_VECTORISE_VV(detail::VOP_FLOOR, vector_floor)
+ANVIL_VECTORISE_VV(detail::VOP_CEIL, vector_ceil)
+ANVIL_VECTORISE_VV(detail::VOP_ROUND, vector_round)
+ANVIL_VECTORISE_VV(detail::VOP_SQRT, vector_sqrt)
+ANVIL_VECTORISE_VV(detail::VOP_CBRT, vector_cbrt)
+ANVIL_VECTORISE_VV(detail::VOP_EXP, vector_exp)
+ANVIL_VECTORISE_VV(detail::VOP_LOG, vector_log)
+ANVIL_VECTORISE_VV(detail::VOP_LOG2, vector_log2)
+ANVIL_VECTORISE_VV(detail::VOP_LOG10, vector_log10)
+ANVIL_VECTORISE_VV(detail::VOP_COS, vector_cos)
+ANVIL_VECTORISE_VV(detail::VOP_SIN, vector_sin)
+ANVIL_VECTORISE_VV(detail::VOP_TAN, vector_tan)
+ANVIL_VECTORISE_VV(detail::VOP_ACOS, vector_acos)
+ANVIL_VECTORISE_VV(detail::VOP_ASIN, vector_asin)
+ANVIL_VECTORISE_VV(detail::VOP_ATAN, vector_aton)
+ANVIL_VECTORISE_VV(detail::VOP_COSH, vector_cosh)
+ANVIL_VECTORISE_VV(detail::VOP_SINH, vector_sinh)
+ANVIL_VECTORISE_VV(detail::VOP_TANH, vector_tanh)
 
 }
 
