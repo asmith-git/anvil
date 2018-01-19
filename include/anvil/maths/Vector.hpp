@@ -532,14 +532,20 @@ namespace anvil {
 			for (size_t i = 1; i < Info::OPTIMISED_LOOP; ++i) a_[i] SYMBOL b_[i];\
 			for (size_t i = 0; i < Info::OPTIMISED_REMAINDER; ++i) a_[Info::OPTIMISED_LOOP][i] SYMBOL b_[Info::OPTIMISED_LOOP][i];\
 		} else if (Info::ROUND_UP_SIZE) {\
-			Vector<T, Info::ROUND_UP_SIZE> a_, b_;\
-			enum { OFFSET = sizeof(a), TO_SET = sizeof(T) * (Info::ROUND_UP_SIZE - S) };\
-			memcpy(&a_, &a, sizeof(a));\
-			memcpy(&b_, &b, sizeof(b));\
-			memset(reinterpret_cast<uint8_t*>(&a_) + OFFSET, 0, TO_SET);\
-			memset(reinterpret_cast<uint8_t*>(&b_) + OFFSET, 0, TO_SET);\
-			a_ SYMBOL b_;\
-			memcpy(&a, &a_, sizeof(a));\
+			union {\
+				Vector<T,S> a1;\
+				Vector<T, Info::ROUND_UP_SIZE> a2;\
+			};\
+			union {\
+				Vector<T,S> b1;\
+				Vector<T, Info::ROUND_UP_SIZE> b2;\
+			};\
+			memset(&a2, 0, sizeof(T) * Info::ROUND_UP_SIZE);\
+			memset(&b2, 0, sizeof(T) * Info::ROUND_UP_SIZE);\
+			a1 = a;\
+			b1 = b;\
+			a2 SYMBOL b2;\
+			a = a1;\
 		} else {\
 			for (size_t i = 1; i < S; ++i) a[i] SYMBOL b[i];\
 		}\
@@ -561,14 +567,20 @@ namespace anvil {
 			for (size_t i = 1; i < Info::OPTIMISED_LOOP; ++i) tmp_[i] = a_[i] SYMBOL b_[i];\
 			for (size_t i = 0; i < Info::OPTIMISED_REMAINDER; ++i) tmp_[Info::OPTIMISED_LOOP][i] = a_[Info::OPTIMISED_LOOP][i] SYMBOL b_[Info::OPTIMISED_LOOP][i];\
 		} else if (Info::ROUND_UP_SIZE) {\
-			Vector<T, Info::ROUND_UP_SIZE> a_, b_;\
-			enum { OFFSET = sizeof(a), TO_SET = sizeof(T) * (Info::ROUND_UP_SIZE - S) };\
-			memcpy(&a_, &a, sizeof(a));\
-			memcpy(&b_, &b, sizeof(b));\
-			memset(reinterpret_cast<uint8_t*>(&a_) + OFFSET, 0, TO_SET);\
-			memset(reinterpret_cast<uint8_t*>(&b_) + OFFSET, 0, TO_SET);\
-			a_ = a_ SYMBOL b_;\
-			memcpy(&tmp, &a_, sizeof(tmp));\
+			union {\
+				Vector<T,S> a1;\
+				Vector<T, Info::ROUND_UP_SIZE> a2;\
+			};\
+			union {\
+				Vector<T,S> b1;\
+				Vector<T, Info::ROUND_UP_SIZE> b2;\
+			};\
+			memset(&a2, 0, sizeof(T) * Info::ROUND_UP_SIZE);\
+			memset(&b2, 0, sizeof(T) * Info::ROUND_UP_SIZE);\
+			a1 = a;\
+			b1 = b;\
+			a2 = a2 SYMBOL b2;\
+			tmp = a1;\
 		} else {\
 			for (size_t i = 1; i < S; ++i) tmp[i] = a[i] SYMBOL b[i];\
 		}\
