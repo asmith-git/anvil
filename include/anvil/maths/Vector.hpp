@@ -140,11 +140,13 @@ namespace anvil {
 			enum {
 				HALF_OPTIMISED = S > 2 && VopOptimised<T, S/2, VOP>::value,    //!< If the operation is optimised at half the vector's size
 
+				ROUND_UP_SIZE = RoundVectorLength<T,S,VOP>::value > S ? RoundVectorLength<T,S,VOP>::value : 0,
+
 				_OPTIMISED_4 = S > 4 && VopOptimised<T, 4, VOP>::value,       //!< If the operaton is optimised at size 4 and vector size is larger
 				_OPTIMISED_8 = S > 8 && VopOptimised<T, 8, VOP>::value,      //!< If the operaton is optimised at size 8 and vector size is larger
 				_OPTIMISED_16 = S > 16 && VopOptimised<T, 16, VOP>::value,    //!< If the operaton is optimised at size 16 and vector size is larger
 				_OPTIMISED_32 = S > 32 && VopOptimised<T, 32, VOP>::value,    //!< If the operaton is optimised at size 32 and vector size is larger
-				_OPTIMISED_64 = S >= 64 && VopOptimised<T, 64, VOP>::value,   //!< If the operaton is optimised at size 64 and vector size is larger
+				_OPTIMISED_64 = S > 64 && VopOptimised<T, 64, VOP>::value,   //!< If the operaton is optimised at size 64 and vector size is larger
 				
 				OPTIMISED_SIZE =
 					_OPTIMISED_64 ? 64 :
@@ -154,8 +156,8 @@ namespace anvil {
 					_OPTIMISED_4 ? 4 :
 					0,                                                         //!< The largest optimised size that is smaller than half this vector
 
-				OPTIMISED_LOOP = OPTIMISED_SIZE == 0 ? 0 : S / OPTIMISED_SIZE,     //!< The number of loops iterations with OPTIMISED_SIZE vectors
-				OPTIMISED_REMAINDER = OPTIMISED_SIZE == 0 ? 0 : S % OPTIMISED_SIZE //!< The number of loops iterations with trailing scalar values
+				OPTIMISED_LOOP = OPTIMISED_SIZE == 0 ? 0 : S / (OPTIMISED_SIZE == 0 ? 1 : OPTIMISED_SIZE),     //!< The number of loops iterations with OPTIMISED_SIZE vectors
+				OPTIMISED_REMAINDER = OPTIMISED_SIZE == 0 ? 0 : S % (OPTIMISED_SIZE == 0 ? 1 : OPTIMISED_SIZE) //!< The number of loops iterations with trailing scalar values
 			};
 		};
 	}
@@ -534,76 +536,57 @@ namespace anvil {
 #define ANVIL_VECTOR_OP_EQ(VOP,SYMBOL)\
 	template<class T, size_t S>\
 	Vector<T, S>& ANVIL_CALL operator ## SYMBOL(Vector<T, S>& a, const Vector<T, S> b) throw() {\
-		enum { OPTIMAL = detail::OptimalVectorLength<T, VOP>::value };\
-		if(OPTIMAL < S && OPTIMAL > 1){\
-			enum {\
-				LOOP1 = S / OPTIMAL,\
-				LOOP2 = S % OPTIMAL\
-				};\
-			size_t a_length = S;\
-			detail::VectorPtr<T, OPTIMAL> a_, b_;\
-			\
-			a_.scalar = reinterpret_cast<T*>(&a);\
-			b_.scalar = const_cast<T*>(reinterpret_cast<const T*>(&b));\
-			\
-			for(int i = 0; i < LOOP1; ++i) {\
-				a_.vector[i] SYMBOL b_.vector[i];\
-			}\
-			a_.vector += LOOP1;\
-			b_.vector += LOOP1;\
-			\
-			for (int i = 0; i < LOOP2; ++i) {\
-				a_.scalar[i] SYMBOL b_.scalar[i];\
-			}\
-		} else if(OPTIMAL > S) {\
-			detail::RoundedVector<T, S, VOP> a_, b_;\
+		typedef detail::VectorLoopInfo<T, S, VOP> Info;\
+		if (Info::HALF_OPTIMISED) {\
+			a.lowerHalf() SYMBOL b.lowerHalf();\
+			a.upperHalf() SYMBOL b.upperHalf();\
+		} else if (Info::OPTIMISED_SIZE) {\
+			Vector<T, Info::OPTIMISED_SIZE>* a_ = reinterpret_cast<Vector<T, Info::OPTIMISED_SIZE>*>(&a);\
+			const Vector<T, Info::OPTIMISED_SIZE>* b_ = reinterpret_cast<const Vector<T, Info::OPTIMISED_SIZE>*>(&b);\
+			for (size_t i = 1; i < Info::OPTIMISED_LOOP; ++i) a_[i] SYMBOL b_[i];\
+			for (size_t i = 0; i < Info::OPTIMISED_REMAINDER; ++i) a_[Info::OPTIMISED_LOOP][i] SYMBOL b_[Info::OPTIMISED_LOOP][i];\
+		} else if (Info::ROUND_UP_SIZE) {\
+			Vector<T, Info::ROUND_UP_SIZE> a_, b_;\
+			enum { OFFSET = sizeof(a), TO_SET = sizeof(T) * (Info::ROUND_UP_SIZE - S) };\
 			memcpy(&a_, &a, sizeof(a));\
 			memcpy(&b_, &b, sizeof(b));\
-			a_.rounded SYMBOL b_.rounded;\
-			a = a_.unrounded;\
+			memset(reinterpret_cast<uint8_t*>(&a_) + OFFSET, 0, TO_SET);\
+			memset(reinterpret_cast<uint8_t*>(&b_) + OFFSET, 0, TO_SET);\
+			a_ SYMBOL b_;\
+			memcpy(&a, &a_, sizeof(a));\
 		} else {\
-			for (size_t i = 0; i < S; ++i) a[i] SYMBOL b[i];\
+			for (size_t i = 1; i < S; ++i) a[i] SYMBOL b[i];\
 		}\
-		return a;\
+		return a; \
 	}
 
 #define ANVIL_VECTOR_OP(VOP, SYMBOL)\
 	template<class T, size_t S>\
 	Vector<T,S> ANVIL_CALL operator ## SYMBOL(const Vector<T,S> a, const Vector<T,S> b) throw() {\
-		Vector<T, S> c;\
-		enum { OPTIMAL = detail::OptimalVectorLength<T, VOP>::value };\
-		if(OPTIMAL < S && OPTIMAL > 1){\
-			enum {\
-				LOOP1 = S / OPTIMAL,\
-				LOOP2 = S % OPTIMAL\
-			};\
-			size_t a_length = S;\
-			detail::VectorPtr<T, OPTIMAL> a_, b_, c_;\
-			\
-			a_.scalar = const_cast<T*>(reinterpret_cast<const T*>(&a));\
-			b_.scalar = const_cast<T*>(reinterpret_cast<const T*>(&b));\
-			c_.scalar = reinterpret_cast<T*>(&c);\
-			\
-			for(int i = 0; i < LOOP1; ++i) {\
-				c_.vector[i] = a_.vector[i] SYMBOL b_.vector[i];\
-			}\
-			a_.vector += LOOP1;\
-			b_.vector += LOOP1;\
-			c_.vector += LOOP1;\
-			\
-			for (int i = 0; i < LOOP2; ++i) {\
-				c_.scalar[i] = a_.scalar[i] SYMBOL b_.scalar[i];\
-			}\
-		} else if(OPTIMAL > S) {\
-			detail::RoundedVector<T, S, VOP> a_, b_, c_;\
+		typedef detail::VectorLoopInfo<T, S, VOP> Info;\
+		Vector<T,S> tmp;\
+		if (Info::HALF_OPTIMISED) {\
+			tmp.lowerHalf() = a.lowerHalf() SYMBOL b.lowerHalf();\
+			tmp.upperHalf() = a.upperHalf() SYMBOL b.upperHalf();\
+		} else if (Info::OPTIMISED_SIZE) {\
+			const Vector<T, Info::OPTIMISED_SIZE>* a_ = reinterpret_cast<const Vector<T, Info::OPTIMISED_SIZE>*>(&a);\
+			const Vector<T, Info::OPTIMISED_SIZE>* b_ = reinterpret_cast<const Vector<T, Info::OPTIMISED_SIZE>*>(&b);\
+			Vector<T, Info::OPTIMISED_SIZE>* tmp_ = reinterpret_cast<Vector<T, Info::OPTIMISED_SIZE>*>(&tmp);\
+			for (size_t i = 1; i < Info::OPTIMISED_LOOP; ++i) tmp_[i] = a_[i] SYMBOL b_[i];\
+			for (size_t i = 0; i < Info::OPTIMISED_REMAINDER; ++i) tmp_[Info::OPTIMISED_LOOP][i] = a_[Info::OPTIMISED_LOOP][i] SYMBOL b_[Info::OPTIMISED_LOOP][i];\
+		} else if (Info::ROUND_UP_SIZE) {\
+			Vector<T, Info::ROUND_UP_SIZE> a_, b_;\
+			enum { OFFSET = sizeof(a), TO_SET = sizeof(T) * (Info::ROUND_UP_SIZE - S) };\
 			memcpy(&a_, &a, sizeof(a));\
 			memcpy(&b_, &b, sizeof(b));\
-			c_.rounded = a_.rounded SYMBOL b_.rounded;\
-			c = c_.unrounded;\
+			memset(reinterpret_cast<uint8_t*>(&a_) + OFFSET, 0, TO_SET);\
+			memset(reinterpret_cast<uint8_t*>(&b_) + OFFSET, 0, TO_SET);\
+			a_ = a_ SYMBOL b_;\
+			memcpy(&tmp, &a_, sizeof(tmp));\
 		} else {\
-			for (size_t i = 0; i < S; ++i) c[i] = a[i] SYMBOL b[i];\
+			for (size_t i = 1; i < S; ++i) tmp[i] = a[i] SYMBOL b[i];\
 		}\
-		return c;\
+		return tmp; \
 	}
 
 	ANVIL_VECTOR_OP(detail::VOP_ADD, +)
