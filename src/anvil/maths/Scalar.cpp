@@ -126,7 +126,7 @@ namespace anvil {
 	ANVIL_CALL Scalar::Scalar(const T* aValue, size_t aLength) throw() :\
 		type(CreateType(GetPrimativeType(E), aLength))\
 		{\
-			for (int i = 0; i < aLength; ++i) N[i] = aValue[i];\
+			for (size_t i = 0; i < aLength; ++i) N[i] = aValue[i];\
 		}\
 	ANVIL_CALL Scalar::Scalar(Type aType, T aValue) throw() :\
 		type(aType)\
@@ -164,25 +164,25 @@ namespace anvil {
 		type = CreateType(primative, aLength);\
 		switch(primative) {\
 		case ANVIL_8U:\
-			for (int i = 0; i < aLength; ++i) u8[i] = static_cast<uint8_t>(aValue[i]);\
+			for (size_t i = 0; i < aLength; ++i) u8[i] = static_cast<uint8_t>(aValue[i]);\
 			break;\
 		case ANVIL_8S:\
-			for (int i = 0; i < aLength; ++i) s8[i] = static_cast<int8_t>(aValue[i]);\
+			for (size_t i = 0; i < aLength; ++i) s8[i] = static_cast<int8_t>(aValue[i]);\
 			break;\
 		case ANVIL_16U:\
-			for (int i = 0; i < aLength; ++i) u16[i] = static_cast<uint16_t>(aValue[i]);\
+			for (size_t i = 0; i < aLength; ++i) u16[i] = static_cast<uint16_t>(aValue[i]);\
 			break;\
 		case ANVIL_16S:\
-			for (int i = 0; i < aLength; ++i) s16[i] = static_cast<int16_t>(aValue[i]);\
+			for (size_t i = 0; i < aLength; ++i) s16[i] = static_cast<int16_t>(aValue[i]);\
 			break;\
 		case ANVIL_32S:\
-			for (int i = 0; i < aLength; ++i) s32[i] = static_cast<int32_t>(aValue[i]);\
+			for (size_t i = 0; i < aLength; ++i) s32[i] = static_cast<int32_t>(aValue[i]);\
 			break;\
 		case ANVIL_32F:\
-			for (int i = 0; i < aLength; ++i) f32[i] = static_cast<float32_t>(aValue[i]);\
+			for (size_t i = 0; i < aLength; ++i) f32[i] = static_cast<float32_t>(aValue[i]);\
 			break;\
 		case ANVIL_64F:\
-			for (int i = 0; i < aLength; ++i) f64[i] = static_cast<float64_t>(aValue[i]);\
+			for (size_t i = 0; i < aLength; ++i) f64[i] = static_cast<float64_t>(aValue[i]);\
 			break;\
 		default:\
 			break;\
@@ -256,7 +256,7 @@ namespace anvil {
 	ANVIL_CALL Scalar::Scalar(const T* aValue, size_t aLength) throw() :\
 		type(CreateType(GetPrimativeType(E), aLength))\
 	{\
-		for (int i = 0; i < aLength; ++i) N[i] = aValue[i];\
+		for (size_t i = 0; i < aLength; ++i) N[i] = aValue[i];\
 	}\
 	ANVIL_CALL Scalar::Scalar(Type aType, T aValue) throw() :\
 		type(aType)\
@@ -304,37 +304,37 @@ namespace anvil {
 	{\
 		switch(GetPrimativeType(aType)) {\
 		case ANVIL_8U:\
-			for (int i = 0; i < aLength; ++i) u8[i] = static_cast<uint8_t>(aValue[i]);\
+			for (size_t i = 0; i < aLength; ++i) u8[i] = static_cast<uint8_t>(aValue[i]);\
 			break;\
 		case ANVIL_8S:\
-			for (int i = 0; i < aLength; ++i) s8[i] = static_cast<int8_t>(aValue[i]);\
+			for (size_t i = 0; i < aLength; ++i) s8[i] = static_cast<int8_t>(aValue[i]);\
 			break;\
 		case ANVIL_16U:\
-			for (int i = 0; i < aLength; ++i) u16[i] = static_cast<uint16_t>(aValue[i]);\
+			for (size_t i = 0; i < aLength; ++i) u16[i] = static_cast<uint16_t>(aValue[i]);\
 			break;\
 		case ANVIL_16S:\
-			for (int i = 0; i < aLength; ++i) s16[i] = static_cast<int16_t>(aValue[i]);\
+			for (size_t i = 0; i < aLength; ++i) s16[i] = static_cast<int16_t>(aValue[i]);\
 			break;\
 		case ANVIL_32U:\
-			for (int i = 0; i < aLength; ++i) u32[i] = static_cast<uint32_t>(aValue[i]);\
+			for (size_t i = 0; i < aLength; ++i) u32[i] = static_cast<uint32_t>(aValue[i]);\
 			break;\
 		case ANVIL_32S:\
-			for (int i = 0; i < aLength; ++i) s32[i] = static_cast<int32_t>(aValue[i]);\
+			for (size_t i = 0; i < aLength; ++i) s32[i] = static_cast<int32_t>(aValue[i]);\
 			break;\
 		case ANVIL_64U:\
-			for (int i = 0; i < aLength; ++i) u64[i] = static_cast<uint64_t>(aValue[i]);\
+			for (size_t i = 0; i < aLength; ++i) u64[i] = static_cast<uint64_t>(aValue[i]);\
 			break;\
 		case ANVIL_64S:\
-			for (int i = 0; i < aLength; ++i) s64[i] = static_cast<int64_t>(aValue[i]);\
+			for (size_t i = 0; i < aLength; ++i) s64[i] = static_cast<int64_t>(aValue[i]);\
 			break;\
 		case ANVIL_32F:\
-			for (int i = 0; i < aLength; ++i) f32[i] = static_cast<float32_t>(aValue[i]);\
+			for (size_t i = 0; i < aLength; ++i) f32[i] = static_cast<float32_t>(aValue[i]);\
 			break;\
 		case ANVIL_64F:\
-			for (int i = 0; i < aLength; ++i) f64[i] = static_cast<float64_t>(aValue[i]);\
+			for (size_t i = 0; i < aLength; ++i) f64[i] = static_cast<float64_t>(aValue[i]);\
 			break;\
 		case ANVIL_8B:\
-			for (int i = 0; i < aLength; ++i) b8[i] = static_cast<bool>(aValue[i]);\
+			for (size_t i = 0; i < aLength; ++i) b8[i] = static_cast<bool>(aValue[i]);\
 			break;\
 		default:\
 			break;\
