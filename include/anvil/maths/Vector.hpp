@@ -519,20 +519,6 @@ namespace anvil {
 
 	////
 
-	namespace detail {
-		template<class T, int S, VectorOp OP>
-		union RoundedVector {
-			Vector<T, S> unrounded;
-			Vector<T, RoundVectorLength<T, S, OP>::value> rounded;
-		};
-
-		template<class T, size_t S>
-		union VectorPtr {
-			Vector<T, S>* vector;
-			T* scalar;
-		};
-	}
-
 #define ANVIL_VECTOR_OP_EQ(VOP,SYMBOL)\
 	template<class T, size_t S>\
 	Vector<T, S>& ANVIL_CALL operator ## SYMBOL(Vector<T, S>& a, const Vector<T, S> b) throw() {\
