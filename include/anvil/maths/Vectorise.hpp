@@ -305,7 +305,7 @@ static inline void NAME(const T* a, const T b, T* c, size_t a_size) throw() {\
 	detail::vector_vsv<T, VOP>(a, b, c, a_size);\
 }\
 template<class T, size_t VEC_LEN>\
-static inline void NAME ## _scalar(const T* a, const T* b, T* c, size_t a_size) throw() {\
+static inline void NAME(const T* a, const T* b, T* c, size_t a_size) throw() {\
 	detail::vector_vsv<T, VEC_LEN, VOP>(a, b, c, a_size);\
 }\
 
