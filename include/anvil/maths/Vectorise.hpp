@@ -187,9 +187,29 @@ namespace anvil {
 					LEN_2 = VEC_LEN * 2,
 					LEN_4 = VEC_LEN * 4,
 					LEN_8 = VEC_LEN * 8,
+					LEN_16 = VEC_LEN * 16,
 					BYTES = sizeof(T) * VEC_LEN
 				};
-				if (VopOptimised<T, LEN_8, VOP>::value && (a_size % 8) == 0) {
+				if (VopOptimised<T, LEN_16, VOP>::value && (a_size % 16) == 0) {
+					T buffer[LEN_16];
+					memcpy(buffer, b, BYTES);
+					memcpy(buffer + VEC_LEN, b, BYTES);
+					memcpy(buffer + (VEC_LEN * 2), b, BYTES);
+					memcpy(buffer + (VEC_LEN * 3), b, BYTES);
+					memcpy(buffer + (VEC_LEN * 4), b, BYTES);
+					memcpy(buffer + (VEC_LEN * 5), b, BYTES);
+					memcpy(buffer + (VEC_LEN * 6), b, BYTES);
+					memcpy(buffer + (VEC_LEN * 7), b, BYTES);
+					memcpy(buffer + (VEC_LEN * 8), b, BYTES);
+					memcpy(buffer + (VEC_LEN * 9), b, BYTES);
+					memcpy(buffer + (VEC_LEN * 10), b, BYTES);
+					memcpy(buffer + (VEC_LEN * 11), b, BYTES);
+					memcpy(buffer + (VEC_LEN * 12), b, BYTES);
+					memcpy(buffer + (VEC_LEN * 13), b, BYTES);
+					memcpy(buffer + (VEC_LEN * 14), b, BYTES);
+					memcpy(buffer + (VEC_LEN * 15), b, BYTES);
+					vector_vsv_<T, LEN_16, VOP>(a, buffer, c, a_size);
+				} else if (VopOptimised<T, LEN_8, VOP>::value && (a_size % 8) == 0) {
 					T buffer[LEN_8];
 					memcpy(buffer, b, BYTES);
 					memcpy(buffer + VEC_LEN, b, BYTES);
