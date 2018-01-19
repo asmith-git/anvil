@@ -153,6 +153,26 @@ namespace anvil {
 			}
 		};
 
+		template<class T, size_t S>
+		struct VopDispatch<T, S, VOP_MIN> {
+			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
+				return min<T,S>(a, b);
+			}
+			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a, const Vector<T, S> b) throw() {
+				a = min<T, S>(a, b);
+			}
+		};
+
+		template<class T, size_t S>
+		struct VopDispatch<T, S, VOP_MAX> {
+			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
+				return max<T, S>(a, b);
+			}
+			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a, const Vector<T, S> b) throw() {
+				a = max<T, S>(a, b);
+			}
+		};
+
 		template<class T, size_t VEC_LEN, VectorOp VOP>
 		static void vector_vsv_(const T* a, const T* b, T* c, size_t a_size) throw() {
 			typedef Vector<T, VEC_LEN> Vec;
@@ -322,6 +342,8 @@ ANVIL_VECTORISE_VVV(detail::VOP_LT, vector_lt)
 ANVIL_VECTORISE_VVV(detail::VOP_GT, vector_gt)
 ANVIL_VECTORISE_VVV(detail::VOP_LE, vector_le)
 ANVIL_VECTORISE_VVV(detail::VOP_GE, vector_ge)
+ANVIL_VECTORISE_VVV(detail::VOP_MIN, vector_min)
+ANVIL_VECTORISE_VVV(detail::VOP_MAX, vector_max)
 
 }
 
