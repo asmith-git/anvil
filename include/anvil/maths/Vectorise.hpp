@@ -25,6 +25,7 @@ namespace anvil {
 		
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_ADD> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return a + b;
 			}
@@ -35,6 +36,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_SUB> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return a - b;
 			}
@@ -45,6 +47,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_MUL> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return a * b;
 			}
@@ -55,6 +58,7 @@ namespace anvil {
 		
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_DIV> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return a / b;
 			}
@@ -65,6 +69,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_AND> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return a & b;
 			}
@@ -75,6 +80,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_OR> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return a | b;
 			}
@@ -85,6 +91,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_XOR> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return a ^ b;
 			}
@@ -95,6 +102,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_EQ> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return a == b;
 			}
@@ -105,6 +113,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_NE> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return a != b;
 			}
@@ -115,6 +124,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_LT> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return a < b;
 			}
@@ -125,6 +135,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_GT> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return a > b;
 			}
@@ -135,6 +146,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_LE> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return a <= b;
 			}
@@ -145,6 +157,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_GE> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return a >= b;
 			}
@@ -155,6 +168,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_MIN> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return min<T,S>(a, b);
 			}
@@ -165,6 +179,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_MAX> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return max<T, S>(a, b);
 			}
@@ -175,6 +190,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_POW> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return pow<T, S>(a, b);
 			}
@@ -185,6 +201,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_HYPOT> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return hypot<T, S>(a, b);
 			}
@@ -195,6 +212,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_MOD> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return mod<T, S>(a, b);
 			}
@@ -205,6 +223,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_DIM> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return dim<T, S>(a, b);
 			}
@@ -215,6 +234,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_ATAN2> {
+			enum { params = 2 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b) throw() {
 				return atan2<T, S>(a, b);
 			}
@@ -225,236 +245,260 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_REF> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return reflect<T, S>(a, b);
+				return reflect<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = reflect<T, S>(a, b);
+				a = reflect<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_PCN> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return popcount<T, S>(a, b);
+				return popcount<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = popcount<T, S>(a, b);
+				a = popcount<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_EXP> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return exp<T, S>(a, b);
+				return exp<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = exp<T, S>(a, b);
+				a = exp<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_ABS> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return abs<T, S>(a, b);
+				return abs<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = abs<T, S>(a, b);
+				a = abs<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_LOG> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return log<T, S>(a, b);
+				return log<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = log<T, S>(a, b);
+				a = log<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_LOG2> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return log2<T, S>(a, b);
+				return log2<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = log2<T, S>(a, b);
+				a = log2<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_LOG10> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return log10<T, S>(a, b);
+				return log10<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = log10<T, S>(a, b);
+				a = log10<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_SQRT> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return sqrt<T, S>(a, b);
+				return sqrt<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = sqrt<T, S>(a, b);
+				a = sqrt<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_CBRT> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return cbrt<T, S>(a, b);
+				return cbrt<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = cbrt<T, S>(a, b);
+				a = cbrt<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_NOT> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return not<T, S>(a, b);
+				return not<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = not<T, S>(a, b);
+				a = not<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_COS> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return cos<T, S>(a, b);
+				return cos<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = cos<T, S>(a, b);
+				a = cos<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_SIN> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return sin<T, S>(a, b);
+				return sin<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = sin<T, S>(a, b);
+				a = sin<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_TAN> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return tan<T, S>(a, b);
+				return tan<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = tan<T, S>(a, b);
+				a = tan<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_ACOS> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return acos<T, S>(a, b);
+				return acos<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = acos<T, S>(a, b);
+				a = acos<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_ASIN> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return asin<T, S>(a, b);
+				return asin<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = asin<T, S>(a, b);
+				a = asin<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_ATAN> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return atan<T, S>(a, b);
+				return atan<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = atan<T, S>(a, b);
+				a = atan<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_COSH> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return cosh<T, S>(a, b);
+				return cosh<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = cosh<T, S>(a, b);
+				a = cosh<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_SINH> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return sinh<T, S>(a, b);
+				return sinh<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = sinh<T, S>(a, b);
+				a = sinh<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_TANH> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return tanh<T, S>(a, b);
+				return tanh<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = tanh<T, S>(a, b);
+				a = tanh<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_CIEL> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return ceil<T, S>(a, b);
+				return ceil<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = ceil<T, S>(a, b);
+				a = ceil<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_FLOOR> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return floor<T, S>(a, b);
+				return floor<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = floor<T, S>(a, b);
+				a = floor<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_TRUNC> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return trunc<T, S>(a, b);
+				return trunc<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = trunc<T, S>(a, b);
+				a = trunc<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_ROUND> {
+			enum { params = 1 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a) throw() {
-				return round<T, S>(a, b);
+				return round<T, S>(a);
 			}
 			ANVIL_STRONG_INLINE static void call_assignment(Vector<T, S>& a) throw() {
-				a = round<T, S>(a, b);
+				a = round<T, S>(a);
 			}
 		};
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_FMA> {
+			enum { params = 3 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b, const Vector<T, S> c) throw() {
 				return fma<T, S>(a, b, c);
 			}
@@ -465,6 +509,7 @@ namespace anvil {
 
 		template<class T, size_t S>
 		struct VopDispatch<T, S, VOP_FMS> {
+			enum { params = 3 };
 			ANVIL_STRONG_INLINE static Vector<T, S> call(const Vector<T, S> a, const Vector<T, S> b, const Vector<T, S> c) throw() {
 				return fms<T, S>(a, b, c);
 			}
