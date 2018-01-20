@@ -565,7 +565,11 @@ namespace anvil {
 	static inline Vector<T, S> ANVIL_CALL fill(const T a) {
 		Vector<T, S> b;
 		if (a == static_cast<T>(0)) {
-			memset(&b, 0, sizeof(T) * S);
+			if (detail::VopOptimised<T, S, detail::VOP_XOR>::value) {
+				return a ^ a;
+			}else {
+				memset(&b, 0, sizeof(T) * S);
+			}
 		} else {
 			for (size_t i = 0; i < S; ++i) b[i] = a;
 		}
