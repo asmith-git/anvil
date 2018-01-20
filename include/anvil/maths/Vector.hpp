@@ -497,7 +497,7 @@ namespace anvil {
 			a2 SYMBOL b2;\
 			a = a1;\
 		} else {\
-			for (size_t i = 1; i < S; ++i) a[i] SYMBOL b[i];\
+			for (size_t i = 0; i < S; ++i) a[i] SYMBOL b[i];\
 		}\
 		return a; \
 	}
@@ -532,7 +532,7 @@ namespace anvil {
 			a2 = a2 SYMBOL b2;\
 			tmp = a1;\
 		} else {\
-			for (size_t i = 1; i < S; ++i) tmp[i] = a[i] SYMBOL b[i];\
+			for (size_t i = 0; i < S; ++i) tmp[i] = a[i] SYMBOL b[i];\
 		}\
 		return tmp; \
 	}
@@ -565,11 +565,11 @@ namespace anvil {
 	static inline Vector<T, S> ANVIL_CALL fill(const T a) {
 		Vector<T, S> b;
 		if (a == static_cast<T>(0)) {
-			if (detail::VopOptimised<T, S, detail::VOP_XOR>::value) {
-				return a ^ a;
-			}else {
+			//if (detail::VopOptimised<T, S, detail::VOP_XOR>::value) {
+			//	return a ^ a;
+			//}else {
 				memset(&b, 0, sizeof(T) * S);
-			}
+			//}
 		} else {
 			for (size_t i = 0; i < S; ++i) b[i] = a;
 		}
@@ -580,7 +580,7 @@ namespace anvil {
 	static inline Vector<T, S> ANVIL_CALL fill(const T* a, size_t a_length) {
 		Vector<T, S> b;
 		for (size_t i = 0; i < a_length; ++i) b[i] = a[i];
-		for (size_t i = a_length; i < S; ++i) b[i] = static_cast<T>(0);
+		memset(reinterpret_cast<T*>(&b) + a_length, 0, S - a_length);
 		return b;
 	}
 
