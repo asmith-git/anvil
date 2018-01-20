@@ -101,7 +101,8 @@ namespace anvil {
 			VOP_LOG2,  VOP_LOG10,  VOP_POW,   VOP_CBRT,
 			VOP_HYPOT, VOP_ATAN2,  VOP_COSH, VOP_SINH,
 			VOP_TANH,  VOP_ACONSH, VOP_ASINH, VOP_ATANH, 
-			VOP_CEIL,  VOP_FLOOR,  VOP_TRUNC, VOP_ROUND
+			VOP_CEIL,  VOP_FLOOR,  VOP_TRUNC, VOP_ROUND,
+			VOP_FILL
 		};
 
 		template<class T, size_t S, VectorOp VOP>
@@ -880,8 +881,8 @@ namespace anvil {
 		template<> struct IntrinsicVectorType<uint16_t, 16> { typedef __m256i type; };
 		template<> struct IntrinsicVectorType<int32_t, 8> { typedef __m256i type; };
 		template<> struct IntrinsicVectorType<uint32_t, 8> { typedef __m256i type; };
-		template<> struct IntrinsicVectorType<int64_t, 4> { typedef __m128i type; };
-		template<> struct IntrinsicVectorType<uint64_t, 4> { typedef __m128i type; };
+		template<> struct IntrinsicVectorType<int64_t, 4> { typedef __m256i type; };
+		template<> struct IntrinsicVectorType<uint64_t, 4> { typedef __m256i type; };
 		template<> struct IntrinsicVectorType<float, 8> { typedef __m256 type; };
 		template<> struct IntrinsicVectorType<double, 4> { typedef __m256d type; };
 #endif
@@ -960,6 +961,20 @@ namespace anvil {
 		return d_.vector;\
 	}
 
+#define ANVIL_SPECIALISE_FILL(TYPE,CHANNELS,TYPE2,FUNCTION)\
+	ANVIL_MARK_OPTIMISED(TYPE, CHANNELS, detail::VOP_FILL)\
+	template<>\
+	inline Vector<TYPE, CHANNELS> fill(TYPE v) throw() {\
+		union {\
+			TYPE a;\
+			TYPE2 b;\
+		};\
+		a = v;\
+		detail::IntinsicVectorUnion<TYPE, CHANNELS> tmp;\
+		tmp.intrinsic = FUNCTION(b);\
+		return tmp.vector;\
+	}
+
 #define ANVIL_SPECIALISE_VECTOR_OP(VOP, TYPE,CHANNELS,SYMBOL,FUNCTION)\
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(VOP, TYPE,CHANNELS,SYMBOL,FUNCTION)\
 	ANVIL_SPECIALISE_VECTOR_OP_EQ(VOP, TYPE,CHANNELS,SYMBOL,FUNCTION)
@@ -1017,6 +1032,7 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MAX, float, 4, max, _mm_max_ps)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MIN, float, 4, min, _mm_min_ps)
 	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_SQRT, float, 4, sqrt, _mm_sqrt_ps)
+	ANVIL_SPECIALISE_FILL(float, 4, float, _mm_set_ps1)
 
 #if ANVIL_ARCHITECTURE_BITS == 32
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MAX, int16_t, 4, max, _mm_max_pi16)
@@ -1043,12 +1059,14 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MAX, double, 2, max, _mm_max_pd)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MIN, double, 2, min, _mm_min_pd)
 	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_SQRT, double, 2, sqrt, _mm_sqrt_pd)
+	ANVIL_SPECIALISE_FILL(double, 2, double, _mm_set1_pd)
 
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_ADD, int64_t, 2, +, _mm_add_epi64)
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_SUB, int64_t, 2, -, _mm_sub_epi64)
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_AND, int64_t, 2, &, _mm_and_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_OR, int64_t, 2, | , _mm_or_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_XOR, int64_t, 2, ^, _mm_xor_si128)
+	ANVIL_SPECIALISE_FILL(int64_t, 2, int64_t, _mm_set1_epi64x)
 
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_ADD, int32_t, 4, +, _mm_add_epi32)
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_SUB, int32_t, 4, -, _mm_sub_epi32)
@@ -1058,6 +1076,7 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(detail::VOP_EQ, int32_t, 4, ==,_mm_cmpeq_epi32)
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(detail::VOP_GT, int32_t, 4, >, _mm_cmpgt_epi32)
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(detail::VOP_LT, int32_t, 4, <, _mm_cmplt_epi32)
+	ANVIL_SPECIALISE_FILL(int32_t, 4, int32_t, _mm_set1_epi32)
 
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_ADD, int16_t, 8, +, _mm_adds_epi16)
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_SUB, int16_t, 8, -, _mm_subs_epi16)
@@ -1069,6 +1088,7 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(detail::VOP_LT, int16_t, 8, <, _mm_cmplt_epi16)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MAX, int16_t, 8, max, _mm_max_epi16)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MIN, int16_t, 8, min, _mm_min_epi16)
+	ANVIL_SPECIALISE_FILL(int16_t, 8, int16_t, _mm_set1_epi16)
 
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_ADD, int8_t, 16, +, _mm_adds_epi8)
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_SUB, int8_t, 16, -, _mm_subs_epi8)
@@ -1078,12 +1098,15 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(detail::VOP_EQ, int8_t, 16, ==, _mm_cmpeq_epi8)
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(detail::VOP_GT, int8_t, 16, >, _mm_cmpgt_epi8)
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(detail::VOP_LT , int8_t, 16, <, _mm_cmplt_epi8)
+	ANVIL_SPECIALISE_FILL(int8_t, 16, int8_t, _mm_set1_epi16)
 
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_AND, uint64_t, 2, &, _mm_and_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_OR, uint64_t, 2, |,  _mm_or_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_XOR, uint64_t, 2, ^, _mm_xor_si128)
+	ANVIL_SPECIALISE_FILL(uint64_t, 2, int64_t, _mm_set1_epi64x)
 
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(detail::VOP_EQ, uint32_t, 4, ==, _mm_cmpeq_epi32)
+	ANVIL_SPECIALISE_FILL(uint32_t, 4, int32_t, _mm_set1_epi32)
 
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_ADD, uint16_t, 8, +, _mm_adds_epu16)
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_SUB, uint16_t, 8, -, _mm_subs_epu16)
@@ -1091,6 +1114,7 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_OR, uint16_t, 8, |,  _mm_and_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_XOR, uint16_t, 8, ^, _mm_and_si128)
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(detail::VOP_EQ, uint16_t, 8, ==,_mm_cmpeq_epi16)
+	ANVIL_SPECIALISE_FILL(uint16_t, 8, int16_t, _mm_set1_epi32)
 
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_ADD, uint8_t, 16, +, _mm_adds_epu8)
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_SUB, uint8_t, 16, -, _mm_subs_epu8)
@@ -1100,6 +1124,7 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(detail::VOP_EQ, uint8_t, 16, ==,_mm_cmpeq_epi8)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MAX, uint8_t, 16, max, _mm_max_epu8)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MIN, uint8_t, 16, min, _mm_min_epu8)
+	ANVIL_SPECIALISE_FILL(uint8_t, 16, int8_t, _mm_set1_epi32)
 #endif
 #ifdef ANVIL_SSSE3
 	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_ABS, int32_t, 4, abs, _mm_abs_epi32)
@@ -1117,6 +1142,12 @@ namespace anvil {
 #endif
 #endif
 #ifdef ANVIL_SSE4_1
+	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_CEIL, double, 2, ceil, _mm_ceil_pd)
+	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_FLOOR, double, 2, floor, _mm_floor_pd)
+
+	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_CEIL, float, 4, ceil, _mm_ceil_ps)
+	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_FLOOR, float, 4, floor, _mm_floor_ps)
+
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MAX, int32_t, 4, max, _mm_max_epi32)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MIN, int32_t, 4, min, _mm_min_epi32)
 
@@ -1140,6 +1171,9 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MAX, double, 4, max, _mm256_max_pd)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MIN, double, 4, min, _mm256_min_pd)
 	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_SQRT, double, 4, sqrt, _mm256_sqrt_pd)
+	ANVIL_SPECIALISE_FILL(double, 4, double, _mm256_set1_pd)
+	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_CEIL, double, 4, ceil, _mm256_ceil_pd)
+	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_FLOOR, double, 4, floor, _mm256_floor_pd)
 
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_ADD, float, 8, +, _mm256_add_ps)
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_SUB, float, 8, -, _mm256_sub_ps)
@@ -1151,6 +1185,18 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MIN, float, 8, max,  _mm256_max_ps)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MAX, float, 8, min,  _mm256_min_ps)
 	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_SQRT, float, 8, sqrt, _mm256_sqrt_ps)
+	ANVIL_SPECIALISE_FILL(float, 8, float, _mm256_set1_ps)
+	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_CEIL, float, 8, ceil, _mm256_ceil_ps)
+	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_FLOOR, float, 8, floor, _mm256_floor_ps)
+
+	ANVIL_SPECIALISE_FILL(int64_t, 4, int64_t, _mm256_set1_epi64x)
+	ANVIL_SPECIALISE_FILL(int32_t, 8, int32_t, _mm256_set1_epi32)
+	ANVIL_SPECIALISE_FILL(int16_t, 16, int16_t, _mm256_set1_epi16)
+	ANVIL_SPECIALISE_FILL(int8_t, 32, int8_t, _mm256_set1_epi8)
+	ANVIL_SPECIALISE_FILL(uint64_t, 4, int64_t, _mm256_set1_epi64x)
+	ANVIL_SPECIALISE_FILL(uint32_t, 8, int32_t, _mm256_set1_epi32)
+	ANVIL_SPECIALISE_FILL(uint16_t, 16, int16_t, _mm256_set1_epi16)
+	ANVIL_SPECIALISE_FILL(uint8_t, 32, int8_t, _mm256_set1_epi8)
 
 	//! \todo Support _mm_cmp_pd and _mm_cmp_ps
 #endif
@@ -1261,6 +1307,7 @@ namespace anvil {
 #undef ANVIL_SPECIALISE_VECTOR_FN_VV
 #undef ANVIL_SPECIALISE_VECTOR_FN_VVV
 #undef ANVIL_SPECIALISE_VECTOR_FN_VVVV
+#undef ANVIL_SPECIALISE_FILL
 
 	////
 
