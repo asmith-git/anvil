@@ -578,7 +578,7 @@ namespace anvil {
 				Vector<T,S> a1;
 				Vector<T, Info::ROUND_UP_SIZE> a2;
 			};
-			a2 = fill<T, Info::ROUND_UP_SIZE>(a2);
+			a2 = fill<T, Info::ROUND_UP_SIZE>(a);
 			tmp = a1;
 		} else {
 			for (size_t i = 0; i < S; ++i) tmp[i] = a;
