@@ -964,7 +964,7 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(VOP, TYPE,CHANNELS,SYMBOL,FUNCTION)\
 	ANVIL_SPECIALISE_VECTOR_OP_EQ(VOP, TYPE,CHANNELS,SYMBOL,FUNCTION)
 
-#ifdef ANVIL_MMX
+#if defined(ANVIL_MMX) && ANVIL_ARCHITECTURE_BITS == 32
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(detail::VOP_EQ, int32_t, 2, ==, _mm_cmpeq_pi32)
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(detail::VOP_GT, int32_t, 2, >, _mm_cmpgt_pi32)
 
@@ -1018,11 +1018,13 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MIN, float, 4, min, _mm_min_ps)
 	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_SQRT, float, 4, sqrt, _mm_sqrt_ps)
 
+#if ANVIL_ARCHITECTURE_BITS == 32
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MAX, int16_t, 4, max, _mm_max_pi16)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MIN, int16_t, 4, min, _mm_min_pi16)
 
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MAX, uint8_t, 8, max, _mm_max_pu8)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MIN, uint8_t, 8, min, _mm_min_pu8)
+#endif
 #endif
 #ifdef ANVIL_SSE2
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_ADD, double, 2, +, _mm_add_pd)
@@ -1106,11 +1108,13 @@ namespace anvil {
 
 	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_ABS, int8_t, 16, abs, _mm_abs_epi8)
 
+#if ANVIL_ARCHITECTURE_BITS == 32
 	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_ABS, int32_t, 2, abs, _mm_abs_pi32)
 
 	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_ABS, int16_t, 4, abs, _mm_abs_pi16)
 
 	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_ABS, int8_t, 8, abs, _mm_abs_pi8)
+#endif
 #endif
 #ifdef ANVIL_SSE4_1
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MAX, int32_t, 4, max, _mm_max_epi32)
