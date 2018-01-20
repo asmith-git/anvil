@@ -1168,6 +1168,7 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_FN_VVVV(detail::VOP_FMS, float, 4, fms, _mm_fmsub_ps)
 #endif
 #ifdef ANVIL_AVX2
+#if ANVIL_ARCHITECTURE_BITS == 32
 		//ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_ABS, int64_t, 4, abs, detail::Vec_S64_4, _mm256_abs_epi64)
 		ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_ADD, int64_t, 4, +, _mm256_add_epi64)
 		ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_SUB, int64_t, 4, -, _mm256_sub_epi64)
@@ -1176,6 +1177,7 @@ namespace anvil {
 		ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_XOR, int64_t, 4, ^, _mm256_xor_si256)
 
 		ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_ABS, int32_t, 8, abs, detail::Vec_S32_8, _mm256_abs_epi32)
+#endif
 		ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_ADD, int32_t, 8, +, _mm256_add_epi32)
 		ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_SUB, int32_t, 8, -, _mm256_sub_epi32)
 		ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_AND, int32_t, 8, &, _mm256_and_si256)
@@ -1203,9 +1205,11 @@ namespace anvil {
 		ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MIN, int8_t, 32, min, _mm256_min_epi8)
 
 
+#if ANVIL_ARCHITECTURE_BITS == 32
 		ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_AND, uint64_t, 4, &, _mm256_and_si256)
 		ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_OR, uint64_t, 4, | , _mm256_or_si256)
 		ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_XOR, uint64_t, 4, ^, _mm256_xor_si256)
+#endif
 
 		//ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_ADD, uint32_t, 8, +, detail::Vec_U32_8, _mm256_adds_epu32)
 		ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_AND, uint32_t, 8, &, _mm256_and_si256)
