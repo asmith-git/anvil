@@ -16,6 +16,7 @@
 #define ANVIL_MATHS_VECTOR_HPP
 
 #include <iostream>
+#include "anvil/Core/Cpu.hpp"
 #include "anvil/maths/Type.hpp"
 #include "anvil/maths/Popcount.hpp"
 #include "anvil/maths/Reflection.hpp"
@@ -999,6 +1000,38 @@ namespace anvil {
 		return tmp.vector;\
 	}
 
+#define ANVIL_SPECIALISE_CAST(TYPE,CHANNELS,INTRINSIC,TYPE2,CHANNELS2, INTRINSIC2,FUNCTION)\
+	template<>\
+	inline Vector<TYPE, CHANNELS> vector_cast(Vector<TYPE2, CHANNELS2> b) throw() {\
+		union {\
+			Vector<TYPE, CHANNELS> a_vec;\
+			INTRINSIC a_intrinsic;\
+		};\
+		union {\
+			Vector<TYPE2, CHANNELS2> b_vec;\
+			INTRINSIC2 b_intrinsic;\
+		};\
+		b_vec = b;\
+		a_intrinsic = FUNCTION(b_intrinsic);\
+		return a_vec;\
+	}
+
+#define ANVIL_SPECIALISE_CAST2(TYPE,CHANNELS,INTRINSIC,TYPE2,CHANNELS2, INTRINSIC2,FUNCTION)\
+	template<>\
+	inline Vector<TYPE, CHANNELS> vector_cast(Vector<TYPE2, CHANNELS2> b) throw() {\
+		union {\
+			Vector<TYPE, CHANNELS> a_vec;\
+			INTRINSIC a_intrinsic;\
+		};\
+		union {\
+			Vector<TYPE2, CHANNELS2> b_vec;\
+			INTRINSIC2 b_intrinsic[2];\
+		};\
+		b_vec = b;\
+		a_intrinsic = FUNCTION(b_intrinsic[0], b_intrinsic[1]);\
+		return a_vec;\
+	}
+
 #define ANVIL_SPECIALISE_VECTOR_OP(VOP, TYPE,CHANNELS,SYMBOL,FUNCTION)\
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(VOP, TYPE,CHANNELS,SYMBOL,FUNCTION)\
 	ANVIL_SPECIALISE_VECTOR_OP_EQ(VOP, TYPE,CHANNELS,SYMBOL,FUNCTION)
@@ -1057,8 +1090,16 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MIN, float, 4, min, _mm_min_ps)
 	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_SQRT, float, 4, sqrt, _mm_sqrt_ps)
 	ANVIL_SPECIALISE_FILL(float, 4, float, _mm_set1_ps)
-
 #if ANVIL_ARCHITECTURE_BITS == 32
+	ANVIL_SPECIALISE_CAST(int8_t, 4, __m64, float, 4, __m128, _mm_cvtps_pi8)
+	ANVIL_SPECIALISE_CAST(int16_t, 4, __m64, float, 4, __m128, _mm_cvtps_pi16)
+	ANVIL_SPECIALISE_CAST(int32_t, 4, __m64, float, 4, __m128, _mm_cvtps_pi32)
+	ANVIL_SPECIALISE_CAST(float, 4, __m128, int8_t, 4, __m64, _mm_cvtpi16_ps)
+	ANVIL_SPECIALISE_CAST(float, 4, __m128, uint8_t, 4, __m64, _mm_cvtpu16_ps)
+	ANVIL_SPECIALISE_CAST(float, 4, __m128, int16_t, 4, __m64, _mm_cvtpi16_ps)
+	ANVIL_SPECIALISE_CAST(float, 4, __m128, uint16_t, 4, __m64, _mm_cvtpu16_ps)
+	ANVIL_SPECIALISE_CAST2(float, 4, __m128, int32_t, 4, __m64, _mm_cvtpi32x2_ps)
+
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MAX, int16_t, 4, max, _mm_max_pi16)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MIN, int16_t, 4, min, _mm_min_pi16)
 
@@ -1332,6 +1373,7 @@ namespace anvil {
 #undef ANVIL_SPECIALISE_VECTOR_FN_VVV
 #undef ANVIL_SPECIALISE_VECTOR_FN_VVVV
 #undef ANVIL_SPECIALISE_FILL
+#undef ANVIL_SPECIALISE_CAST
 
 	////
 
