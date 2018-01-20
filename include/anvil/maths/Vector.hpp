@@ -564,17 +564,26 @@ namespace anvil {
 	
 	template<class T, size_t S>
 	static inline Vector<T, S> ANVIL_CALL fill(const T a) {
-		Vector<T, S> b;
-		if (a == static_cast<T>(0)) {
-			//if (detail::VopOptimised<T, S, detail::VOP_XOR>::value) {
-			//	return a ^ a;
-			//}else {
-				memset(&b, 0, sizeof(T) * S);
-			//}
+		typedef detail::VectorLoopInfo<T, S, detail::VOP_FILL> Info;
+		Vector<T,S> tmp;
+		if (Info::HALF_OPTIMISED) {
+			tmp.lowerHalf() = fill<T, S/2>(a);
+			tmp.upperHalf() = fill<T, S/2>(a);
+		} else if (Info::OPTIMISED_SIZE) {
+			Vector<T, Info::OPTIMISED_SIZE>* tmp_ = reinterpret_cast<Vector<T, Info::OPTIMISED_SIZE>*>(&tmp);
+			for (size_t i = 1; i < Info::OPTIMISED_LOOP; ++i) tmp_[i] = fill<T, Info::OPTIMISED_SIZE>(a);
+			for (size_t i = 0; i < Info::OPTIMISED_REMAINDER; ++i) tmp_[Info::OPTIMISED_LOOP][i] = a;
+		} else if (Info::ROUND_UP_SIZE) {
+			union {
+				Vector<T,S> a1;
+				Vector<T, Info::ROUND_UP_SIZE> a2;
+			};
+			a2 = fill<T, Info::ROUND_UP_SIZE>(a2);
+			tmp = a1;
 		} else {
-			for (size_t i = 0; i < S; ++i) b[i] = a;
+			for (size_t i = 0; i < S; ++i) tmp[i] = a;
 		}
-		return b;
+		return tmp; 
 	}
 
 	template<class T, size_t S>
