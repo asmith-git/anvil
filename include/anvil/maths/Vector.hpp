@@ -1041,7 +1041,7 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MAX, float, 4, max, _mm_max_ps)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MIN, float, 4, min, _mm_min_ps)
 	ANVIL_SPECIALISE_VECTOR_FN_VV(detail::VOP_SQRT, float, 4, sqrt, _mm_sqrt_ps)
-	ANVIL_SPECIALISE_FILL(float, 4, float, _mm_set_ps1)
+	ANVIL_SPECIALISE_FILL(float, 4, float, _mm_set1_ps)
 
 #if ANVIL_ARCHITECTURE_BITS == 32
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MAX, int16_t, 4, max, _mm_max_pi16)
