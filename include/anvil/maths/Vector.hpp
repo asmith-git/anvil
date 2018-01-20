@@ -1233,6 +1233,19 @@ namespace anvil {
 
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MAX, uint16_t, 8, max, _mm_max_epu16)
 	ANVIL_SPECIALISE_VECTOR_FN_VVV(detail::VOP_MIN, uint16_t, 8, min, _mm_min_epu16)
+		
+	ANVIL_SPECIALISE_CAST(int64_t, 2, __m128i, int32_t, __m128i, _mm_cvtepi32_epi64)
+	ANVIL_SPECIALISE_CAST(int64_t, 2, __m128i, int16_t, __m128i, _mm_cvtepi16_epi64)
+	ANVIL_SPECIALISE_CAST(int64_t, 2, __m128i, int8_t, __m128i, _mm_cvtepi8_epi64)
+	ANVIL_SPECIALISE_CAST(int64_t, 2, __m128i, uint32_t, __m128i, _mm_cvtepu32_epi64)
+	ANVIL_SPECIALISE_CAST(int64_t, 2, __m128i, uint16_t, __m128i, _mm_cvtepu16_epi64)
+	ANVIL_SPECIALISE_CAST(int64_t, 2, __m128i, uint8_t, __m128i, _mm_cvtepu8_epi64)
+	ANVIL_SPECIALISE_CAST(int32_t, 4, __m128i, int16_t, __m128i, _mm_cvtepi16_epi32)
+	ANVIL_SPECIALISE_CAST(int32_t, 4, __m128i, int8_t, __m128i, _mm_cvtepi8_epi32)
+	ANVIL_SPECIALISE_CAST(int32_t, 4, __m128i, uint16_t, __m128i, _mm_cvtepu16_epi32)
+	ANVIL_SPECIALISE_CAST(int32_t, 4, __m128i, uint8_t, __m128i, _mm_cvtepu8_epi32)
+	ANVIL_SPECIALISE_CAST(int16_t, 8, __m128i, int8_t, __m128i, _mm_cvtepi8_epi16)
+	ANVIL_SPECIALISE_CAST(int16_t, 4, __m128i, uint8_t, __m128i, _mm_cvtepu8_epi16)
 #endif
 #ifdef ANVIL_AVX
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_ADD, double, 4, +, _mm256_add_pd)
