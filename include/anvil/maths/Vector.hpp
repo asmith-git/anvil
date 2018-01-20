@@ -612,6 +612,21 @@ namespace anvil {
 		return tmp;
 	}
 
+	template<class T, size_t S>
+	static inline Vector<T, S> nand(const Vector<T, S> a, const Vector<T, S> b) {
+		return ~(a & b);
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> nor(const Vector<T, S> a, const Vector<T, S> b) {
+		return ~(a | b);
+	}
+
+	template<class T, size_t S>
+	static inline Vector<T, S> xnor(const Vector<T, S> a, const Vector<T, S> b) {
+		return ~(a ^ b);
+	}
+
 	// Popcount.hpp overloads
 
 	template<class T, size_t S>
