@@ -750,6 +750,46 @@ ANVIL_VECTORISE_VV(detail::VOP_COSH, vector_cosh)
 ANVIL_VECTORISE_VV(detail::VOP_SINH, vector_sinh)
 ANVIL_VECTORISE_VV(detail::VOP_TANH, vector_tanh)
 
+template<class T>
+static T vector_sum(const T* a, size_t a_size) throw() {
+	enum { LENGTH = detail::OptimalVectorLength<T, detail::VOP_ADD>::value };
+	typedef Vector<T, LENGTH> Vec;
+
+	const size_t loop = a_size / LENGTH;
+	const size_t remainder = a_size % LENGTH;
+
+	Vec tmp = fill<T, LENGTH>(static_cast<T>(0));
+	const Vec* const aVec = reinterpret_cast<const Vec*>(a);
+	const T* const aSca = reinterpret_cast<const T*>(aVec + loop);
+
+	for (size_t i = 0; i < loop; ++i) tmp += aVec[i];
+	for (size_t i = 0; i < remainder; ++i) tmp[0] += aSca[i];
+
+	return tmp.sum();
+}
+
+template<class T>
+static typename detail::VFloat<T>::type vector_sumf(const T* a, size_t a_size) throw() {
+	enum { LENGTH = detail::OptimalVectorLength<T, detail::VOP_ADD>::value };
+	typedef typename detail::VFloat<T>::type float_t;
+	typedef Vector<float_t, LENGTH> VecF;
+	typedef Vector<T, LENGTH> Vec;
+	typedef Vector<float_t, 1> ScaF;
+	typedef Vector<T, 1> Sca;
+
+	const size_t loop = a_size / LENGTH;
+	const size_t remainder = a_size % LENGTH;
+
+	VecF tmp = fill<float_t, LENGTH>(static_cast<float_t>(0));
+	const Vec* const aVec = reinterpret_cast<const Vec*>(a);
+	const T* const aSca = reinterpret_cast<const T*>(aVec + loop);
+
+	for (size_t i = 0; i < loop; ++i) tmp += vector_cast<float_t, LENGTH>(aVec[i]);
+	for (size_t i = 0; i < remainder; ++i) tmp[0] += static_cast<float_t>(aSca[i]);
+
+	return tmp.sumf();
+}
+
 }
 
 #endif
