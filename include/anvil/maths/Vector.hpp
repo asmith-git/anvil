@@ -212,12 +212,6 @@ namespace anvil {
 			return tmp;
 		}
 
-		inline this_t ANVIL_CALL operator%(const this_t aOther) const throw() {
-			this_t tmp;
-			for (size_t i = 0; i < size; ++i) tmp.mData[i] = mod<type>(mData[i], aOther.mData[i]);
-			return tmp;
-		}
-
 		template<class T2 = type>
 		inline typename std::enable_if<std::is_integral<T2>::value, this_t>::type ANVIL_CALL operator<<(const this_t aOther) const throw() {
 			this_t tmp;
@@ -245,24 +239,24 @@ namespace anvil {
 		}
 
 		inline this_t& ANVIL_CALL operator++() throw() {
-			*this += fill<type, size>(static_cast<type>(1));
+			*this += static_cast<type>(1);
 			return *this;
 		}
 
 		inline this_t& ANVIL_CALL operator--() throw() {
-			*this -= fill<type, size>(static_cast<type>(1));
+			*this -= static_cast<type>(1);
 			return *this;
 		}
 
 		inline this_t ANVIL_CALL operator++(int) throw() {
 			const this_t tmp(*this);
-			*this += fill<type, size>(static_cast<type>(1));
+			*this += static_cast<type>(1);
 			return tmp;
 		}
 
 		inline this_t ANVIL_CALL operator--(int) throw() {
 			const this_t tmp(*this);
-			*this -= fill<type, size>(static_cast<type>(1));
+			*this -= static_cast<type>(1);
 			return tmp;
 		}
 
@@ -546,6 +540,7 @@ namespace anvil {
 	ANVIL_VECTOR_OP(detail::VOP_AND, &)
 	ANVIL_VECTOR_OP(detail::VOP_OR , |)
 	ANVIL_VECTOR_OP(detail::VOP_XOR, ^)
+	ANVIL_VECTOR_OP(detail::VOP_MOD, %)
 
 	ANVIL_VECTOR_OP_EQ(detail::VOP_ADD, +=)
 	ANVIL_VECTOR_OP_EQ(detail::VOP_SUB, -=)
