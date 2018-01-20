@@ -335,6 +335,10 @@ namespace anvil {
 			return static_cast<type>(avgf());
 		}
 
+		ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount() const throw() {
+			return popcount<sizeof(type) * size>(this);
+		}
+
 		inline type ANVIL_CALL min() const throw() {
 			typedef detail::VectorLoopInfo<type, size, detail::VOP_MIN> Info;
 			if (Info::HALF_OPTIMISED) {
