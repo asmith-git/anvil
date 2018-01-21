@@ -77,9 +77,6 @@ namespace anvil {
 
 	namespace detail {
 
-		template<class T, size_t S>
-		struct IntrinsicVectorType;
-
 		template<class T>
 		struct VFloat {
 			typedef float type;
@@ -107,6 +104,11 @@ namespace anvil {
 			VOP_FILL
 		};
 
+		template<size_t BYTES>
+		struct DefaultIntrinsic {
+			uint8_t data[BYTES];
+		};
+
 		template<class T, size_t S, class ENABLE = void>
 		struct VecInfo {
 			enum {
@@ -114,9 +116,7 @@ namespace anvil {
 				has_intrinsic = 0
 			};
 			typedef T type;
-			struct intrinsic {
-				T data[S];
-			};
+			typedef DefaultIntrinsic<sizeof(T) * S> intrinsic_t;
 		};
 
 #define ANVIL_SPECIALISE_VEC_INFO(N,M,TYPE,INTRINSIC)\
@@ -127,7 +127,7 @@ namespace anvil {
 				has_intrinsic = 1\
 			};\
 			typedef TYPE type;\
-			typedef INTRINSIC intrinsic;\
+			typedef INTRINSIC intrinsic_t;\
 		};
 
 #if defined(ANVIL_MMX) && ANVIL_ARCHITECTURE_BITS <= 32
@@ -215,6 +215,228 @@ namespace anvil {
 		#define ANVIL_VEC_INFO_LOW_16 33
 		#define ANVIL_VEC_INFO_LOW_32 17
 		#define ANVIL_VEC_INFO_LOW_64 9
+#endif
+
+		template<class INTRINSIC, class T, VectorOp VOP>
+		struct VopInfo;
+
+		template<class INTRINSIC, class T>
+		struct VopInfo<INTRINSIC, T,VOP_ADD> {
+			enum { optimised = 0 };
+
+			static inline INTRINSIC execute(INTRINSIC a, INTRINSIC b) {
+				enum { LENGTH = sizeof(INTRINSIC) / sizeof(T) };
+				INTRINSIC c;
+				const T* const a_ = reinterpret_cast<const T*>(&a);
+				const T* const b_ = reinterpret_cast<const T*>(&b);
+				T* const c_ = reinterpret_cast<T*>(&c);
+				for (size_t i = 0; i < LENGTH; ++i) c_[i] = a_[i] + b_[i];
+				return c;
+			}
+		};
+
+#define ANVIL_SPECIALISE_VOP_INFO_VVV(VOP,TYPE,INTRINSIC,FUNCTION)\
+		template<>\
+		struct VopInfo<INTRINSIC, TYPE, VOP> {\
+			enum { optimised = 1 };\
+			static ANVIL_STRONG_INLINE INTRINSIC execute(INTRINSIC a, INTRINSIC b) {\
+				return FUNCTION(a, b);\
+			}\
+		};
+
+#define ANVIL_SPECIALISE_VOP_INFO_VV(VOP,TYPE,INTRINSIC,FUNCTION)\
+		template<>\
+		struct VopInfo<INTRINSIC, TYPE, VOP> {\
+			enum { optimised = 1 };\
+			static ANVIL_STRONG_INLINE INTRINSIC execute(INTRINSIC a) {\
+				return FUNCTION(a);\
+			}\
+		};
+
+#define ANVIL_SPECIALISE_VOP_INFO_VS(VOP,TYPE,INTRINSIC,FUNCTION)\
+		template<>\
+		struct VopInfo<INTRINSIC, TYPE, VOP> {\
+			enum { optimised = 1 };\
+			static ANVIL_STRONG_INLINE INTRINSIC execute(TYPE a) {\
+				return FUNCTION(a);\
+			}\
+		};
+
+#define ANVIL_SPECIALISE_VOP_INFO_SV(VOP,TYPE,INTRINSIC,FUNCTION)\
+		template<>\
+		struct VopInfo<INTRINSIC, TYPE, VOP> {\
+			enum { optimised = 1 };\
+			static ANVIL_STRONG_INLINE TYPE execute(INTRINSIC a) {\
+				return FUNCTION(a);\
+			}\
+		};
+
+#if defined(ANVIL_SSE) && ANVIL_ARCHITECTURE_BITS <= 32
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_EQ, int32_t, __m64, _mm_cmpeq_pi32)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_GT, int32_t, __m64, _mm_cmpgt_pi32)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, int32_t, __m64, _mm_and_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  int32_t, __m64, _mm_or_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, int32_t, __m64, _mm_xor_si64)
+
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_ADD, int16_t, __m64, _mm_add_pi16)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_SUB, int16_t, __m64, _mm_sub_pi16)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, int16_t, __m64, _mm_and_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  int16_t, __m64, _mm_or_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, int16_t, __m64, _mm_xor_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_EQ,  int16_t,  __m64, _mm_cmpeq_pi16)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_GT,  int16_t,  __m64, _mm_cmpgt_pi16)
+
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_ADD, int8_t, __m64, _mm_add_pi8)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_SUB, int8_t, __m64, _mm_sub_pi8)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, int8_t, __m64, _mm_and_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  int8_t, __m64, _mm_or_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, int8_t, __m64, _mm_xor_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_EQ,  int8_t,  __m64, _mm_cmpeq_pi8)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_GT,  int8_t,  __m64, _mm_cmpgt_pi8)
+		
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_EQ,  uint32_t,  __m64, _mm_cmpeq_pi32)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, uint32_t, __m64, _mm_and_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  uint32_t, __m64, _mm_or_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, uint32_t, __m64, _mm_xor_si64)
+
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_ADD, uint16_t, __m64, _mm_adds_pu16)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_SUB, uint16_t, __m64, _mm_subs_pu16)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, uint16_t, __m64, _mm_and_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  uint16_t, __m64, _mm_or_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, uint16_t, __m64, _mm_xor_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_EQ,  uint16_t,  __m64, _mm_cmpeq_pi16)
+
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_ADD, uint8_t, __m64, _mm_adds_pu8)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_SUB, uint8_t, __m64, _mm_subs_pu8)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, uint8_t, __m64, _mm_and_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  uint8_t, __m64, _mm_or_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, uint8_t, __m64, _mm_xor_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_EQ,  uint8_t, __m64, _mm_cmpeq_pi8)
+
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, float, __m64, _mm_and_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  float, __m64, _mm_or_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, float, __m64, _mm_xor_si64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_EQ,  float, __m64, _mm_cmpeq_pi32)
+#endif
+#if defined(ANVIL_SSE)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_ADD, float, __m128, _mm_add_ps)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_SUB, float, __m128, _mm_sub_ps)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_MUL, float, __m128, _mm_mul_ps)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_DIV, float, __m128, _mm_div_ps)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, float, __m128, _mm_and_ps)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  float, __m128, _mm_or_ps)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, float, __m128, _mm_xor_ps)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_EQ,  float, __m128, _mm_cmpeq_ps)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_NE,  float, __m128, _mm_cmpneq_ps)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_GE,  float, __m128, _mm_cmpge_ps)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_LE,  float, __m128, _mm_cmple_ps)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_GT,  float, __m128, _mm_cmpgt_ps)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_LT,  float, __m128, _mm_cmplt_ps)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_MIN, float, __m128, _mm_min_ps)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_MAX, float, __m128, _mm_max_ps)
+		ANVIL_SPECIALISE_VOP_INFO_VV(VOP_SQRT, float, __m128, _mm_sqrt_ps)
+		ANVIL_SPECIALISE_VOP_INFO_VS(VOP_FILL, float, __m128, _mm_set1_ps)
+#if ANVIL_ARCHITECTURE_BITS <= 32
+		//! \todo casts
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_MAX, int16_t, __m64, _mm_max_pi16)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_MIN, int16_t, __m64, _mm_min_pi16)
+
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_MAX, uint8_t, __m64, _mm_max_pu8)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_MIN, uint8_t, __m64, _mm_min_pu8)
+#endif
+#endif
+#ifdef ANVIL_SSE2
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_ADD, double, __m128d, _mm_add_pd)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_SUB, double, __m128d, _mm_sub_pd)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_MUL, double, __m128d, _mm_mul_pd)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_DIV, double, __m128d, _mm_div_pd)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, double, __m128d, _mm_and_pd)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  double, __m128d, _mm_or_pd)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, double, __m128d, _mm_xor_pd)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_EQ,  double, __m128d, _mm_cmpeq_pd)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_NE,  double, __m128d, _mm_cmpneq_pd)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_GE,  double, __m128d, _mm_cmpge_pd)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_LE,  double, __m128d, _mm_cmple_pd)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_GT,  double, __m128d, _mm_cmpgt_pd)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_LT,  double, __m128d, _mm_cmplt_pd)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_MIN, double, __m128d, _mm_min_pd)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_MAX, double, __m128d, _mm_max_pd)
+		ANVIL_SPECIALISE_VOP_INFO_VV(VOP_SQRT, double, __m128d, _mm_sqrt_pd)
+		ANVIL_SPECIALISE_VOP_INFO_VS(VOP_FILL, double, __m128d, _mm_set1_pd)
+
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_ADD, int64_t, __m128i, _mm_add_epi64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_SUB, int64_t, __m128i, _mm_sub_epi64)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, int64_t, __m128i, _mm_and_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  int64_t, __m128i, _mm_or_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, int64_t, __m128i, _mm_xor_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VS(VOP_FILL, int64_t, __m128i, _mm_set1_epi64x)
+
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_ADD, int32_t, __m128i, _mm_add_epi32)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_SUB, int32_t, __m128i, _mm_sub_epi32)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, int32_t, __m128i, _mm_and_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  int32_t, __m128i, _mm_or_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, int32_t, __m128i, _mm_xor_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_EQ,  int32_t, __m128i, _mm_cmpeq_epi32)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_GT,  int32_t, __m128i, _mm_cmpgt_epi32)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_LT,  int32_t, __m128i, _mm_cmplt_epi32)
+		ANVIL_SPECIALISE_VOP_INFO_VS(VOP_FILL, int32_t, __m128i, _mm_set1_epi32)
+
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_ADD, int16_t, __m128i, _mm_add_epi16)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_SUB, int16_t, __m128i, _mm_sub_epi16)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, int16_t, __m128i, _mm_and_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  int16_t, __m128i, _mm_or_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, int16_t, __m128i, _mm_xor_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_EQ,  int16_t, __m128i, _mm_cmpeq_epi16)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_GT,  int16_t, __m128i, _mm_cmpgt_epi16)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_LT,  int16_t, __m128i, _mm_cmplt_epi16)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_MIN, int16_t, __m128i, _mm_min_epi16)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_MAX, int16_t, __m128i, _mm_max_epi16)
+		ANVIL_SPECIALISE_VOP_INFO_VS(VOP_FILL, int16_t, __m128i, _mm_set1_epi16)
+
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_ADD, int8_t, __m128i, _mm_add_epi8)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_SUB, int8_t, __m128i, _mm_sub_epi8)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, int8_t, __m128i, _mm_and_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  int8_t, __m128i, _mm_or_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, int8_t, __m128i, _mm_xor_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_EQ,  int8_t, __m128i, _mm_cmpeq_epi8)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_GT,  int8_t, __m128i, _mm_cmpgt_epi8)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_LT,  int8_t, __m128i, _mm_cmplt_epi8)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_MIN, int8_t, __m128i, _mm_min_epi8)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_MAX, int8_t, __m128i, _mm_max_epi8)
+		ANVIL_SPECIALISE_VOP_INFO_VS(VOP_FILL, int8_t, __m128i, _mm_set1_epi8)
+
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, uint64_t, __m128i, _mm_and_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  uint64_t, __m128i, _mm_or_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, uint64_t, __m128i, _mm_xor_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VS(VOP_FILL, uint64_t, __m128i, _mm_set1_epi64x)
+
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, uint32_t, __m128i, _mm_and_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  uint32_t, __m128i, _mm_or_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, uint32_t, __m128i, _mm_xor_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_EQ,  uint32_t, __m128i, _mm_cmpeq_epi32)
+		ANVIL_SPECIALISE_VOP_INFO_VS(VOP_FILL, uint32_t, __m128i, _mm_set1_epi32)
+			
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_ADD, uint16_t, __m128i, _mm_adds_epu16)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_SUB, uint16_t, __m128i, _mm_subs_epu16)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, uint16_t, __m128i, _mm_and_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  uint16_t, __m128i, _mm_or_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, uint16_t, __m128i, _mm_xor_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_EQ,  uint16_t, __m128i, _mm_cmpeq_epi16)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_MIN, uint16_t, __m128i, _mm_min_epu8)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_MAX, uint16_t, __m128i, _mm_max_epu8)
+		ANVIL_SPECIALISE_VOP_INFO_VS(VOP_FILL, uint16_t, __m128i, _mm_set1_epi16)
+			
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_ADD, uint8_t, __m128i, _mm_adds_epu8)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_SUB, uint8_t, __m128i, _mm_subs_epu8)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, uint8_t, __m128i, _mm_and_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  uint8_t, __m128i, _mm_or_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, uint8_t, __m128i, _mm_xor_si128)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_EQ,  uint8_t, __m128i, _mm_cmpeq_epi8)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_MIN, uint8_t, __m128i, _mm_min_epu8)
+		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_MAX, uint8_t, __m128i, _mm_max_epu8)
+		ANVIL_SPECIALISE_VOP_INFO_VS(VOP_FILL, uint8_t, __m128i, _mm_set1_epi8)
+
+		//! \todo casts
 #endif
 
 		template<class T, size_t S, VectorOp VOP>
@@ -987,57 +1209,10 @@ namespace anvil {
 
 	namespace detail{
 
-#ifdef ANVIL_MMX
-		template<> struct IntrinsicVectorType<int8_t, 8> { typedef __m64 type; };
-		template<> struct IntrinsicVectorType<uint8_t, 8> { typedef __m64 type; };
-		template<> struct IntrinsicVectorType<int16_t, 4> { typedef __m64 type; };
-		template<> struct IntrinsicVectorType<uint16_t, 4> { typedef __m64 type; };
-		template<> struct IntrinsicVectorType<int32_t, 2> { typedef __m64 type; };
-		template<> struct IntrinsicVectorType<uint32_t, 2> { typedef __m64 type; };
-		template<> struct IntrinsicVectorType<float, 2> { typedef __m64 type; };
-#endif
-#ifdef ANVIL_SSE
-		template<> struct IntrinsicVectorType<float, 4> { typedef __m128 type; };
-#endif
-#ifdef ANVIL_SSE2
-		template<> struct IntrinsicVectorType<int8_t, 16> { typedef __m128i type; };
-		template<> struct IntrinsicVectorType<uint8_t, 16> { typedef __m128i type; };
-		template<> struct IntrinsicVectorType<int16_t, 8> { typedef __m128i type; };
-		template<> struct IntrinsicVectorType<uint16_t, 8> { typedef __m128i type; };
-		template<> struct IntrinsicVectorType<int32_t, 4> { typedef __m128i type; };
-		template<> struct IntrinsicVectorType<uint32_t, 4> { typedef __m128i type; };
-		template<> struct IntrinsicVectorType<int64_t, 2> { typedef __m128i type; };
-		template<> struct IntrinsicVectorType<uint64_t, 2> { typedef __m128i type; };
-		template<> struct IntrinsicVectorType<double, 2> { typedef __m128d type; };
-#endif
-#ifdef ANVIL_AVX
-		template<> struct IntrinsicVectorType<int8_t, 32> { typedef __m256i type; };
-		template<> struct IntrinsicVectorType<uint8_t, 32> { typedef __m256i type; };
-		template<> struct IntrinsicVectorType<int16_t, 16> { typedef __m256i type; };
-		template<> struct IntrinsicVectorType<uint16_t, 16> { typedef __m256i type; };
-		template<> struct IntrinsicVectorType<int32_t, 8> { typedef __m256i type; };
-		template<> struct IntrinsicVectorType<uint32_t, 8> { typedef __m256i type; };
-		template<> struct IntrinsicVectorType<int64_t, 4> { typedef __m256i type; };
-		template<> struct IntrinsicVectorType<uint64_t, 4> { typedef __m256i type; };
-		template<> struct IntrinsicVectorType<float, 8> { typedef __m256 type; };
-		template<> struct IntrinsicVectorType<double, 4> { typedef __m256d type; };
-#endif
-#ifdef ANVIL_AVX_512
-		template<> struct IntrinsicVectorType<int8_t, 64> { typedef __m512i type; };
-		template<> struct IntrinsicVectorType<uint8_t, 64> { typedef __m512i type; };
-		template<> struct IntrinsicVectorType<int16_t, 32> { typedef __m512i type; };
-		template<> struct IntrinsicVectorType<uint16_t, 32> { typedef __m512i type; };
-		template<> struct IntrinsicVectorType<int32_t, 16> { typedef __m512i type; };
-		template<> struct IntrinsicVectorType<uint32_t, 16> { typedef __m512i type; };
-		template<> struct IntrinsicVectorType<int64_t, 8> { typedef __m128i type; };
-		template<> struct IntrinsicVectorType<uint64_t, 8> { typedef __m128i type; };
-		template<> struct IntrinsicVectorType<float, 16> { typedef __m512 type; };
-		template<> struct IntrinsicVectorType<double, 8> { typedef __m512d type; };
-#endif
 		template<class T, size_t S>
 		union IntinsicVectorUnion {
 			Vector<T, S> vector;
-			typename IntrinsicVectorType<T, S>::type intrinsic;
+			typename VecInfo<T, S>::intrinsic_t intrinsic;
 		};
 	}
 
