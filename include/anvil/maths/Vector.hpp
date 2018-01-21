@@ -220,20 +220,104 @@ namespace anvil {
 		template<class INTRINSIC, class T, VectorOp VOP>
 		struct VopInfo;
 
-		template<class INTRINSIC, class T>
-		struct VopInfo<INTRINSIC, T,VOP_ADD> {
-			enum { optimised = 0 };
-
-			static inline INTRINSIC execute(INTRINSIC a, INTRINSIC b) {
-				enum { LENGTH = sizeof(INTRINSIC) / sizeof(T) };
-				INTRINSIC c;
-				const T* const a_ = reinterpret_cast<const T*>(&a);
-				const T* const b_ = reinterpret_cast<const T*>(&b);
-				T* const c_ = reinterpret_cast<T*>(&c);
-				for (size_t i = 0; i < LENGTH; ++i) c_[i] = a_[i] + b_[i];
-				return c;
-			}
+#define ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP,SYMBOL)\
+		template<class INTRINSIC, class T>\
+		struct VopInfo<INTRINSIC, T, VOP> {\
+			enum { optimised = 0 };\
+			static inline INTRINSIC execute(INTRINSIC a, INTRINSIC b) {\
+				enum { LENGTH = sizeof(INTRINSIC) / sizeof(T) };\
+				INTRINSIC c;\
+				const T* const a_ = reinterpret_cast<const T*>(&a);\
+				const T* const b_ = reinterpret_cast<const T*>(&b);\
+				T* const c_ = reinterpret_cast<T*>(&c);\
+				for (size_t i = 0; i < LENGTH; ++i) c_[i] = a_[i] SYMBOL b_[i];\
+				return c;\
+			}\
 		};
+
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_GT, > )
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_LE, <= )
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_GE, >= )
+
+#define ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP,FUNCTION)\
+		template<class INTRINSIC, class T>\
+		struct VopInfo<INTRINSIC, T, VOP> {\
+			enum { optimised = 0 };\
+			static inline INTRINSIC execute(INTRINSIC a, INTRINSIC b) {\
+				enum { LENGTH = sizeof(INTRINSIC) / sizeof(T) };\
+				INTRINSIC c;\
+				const T* const a_ = reinterpret_cast<const T*>(&a);\
+				const T* const b_ = reinterpret_cast<const T*>(&b);\
+				T* const c_ = reinterpret_cast<T*>(&c);\
+				for (size_t i = 0; i < LENGTH; ++i) c_[i] = FUNCTION(a_[i], b_[i]);\
+				return c;\
+			}\
+		};
+
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_MIN, min)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_MAX, max)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_ATAN2, atan2)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_POW, pow)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_HYPOT, hypot)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_DIM, dim)
+
+#define ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP,FUNCTION)\
+		template<class INTRINSIC, class T>\
+		struct VopInfo<INTRINSIC, T, VOP> {\
+			enum { optimised = 0 };\
+			static inline INTRINSIC execute(INTRINSIC a, INTRINSIC b, INTRINSIC c) {\
+				enum { LENGTH = sizeof(INTRINSIC) / sizeof(T) };\
+				INTRINSIC c;\
+				const T* const a_ = reinterpret_cast<const T*>(&a);\
+				const T* const b_ = reinterpret_cast<const T*>(&b);\
+				T* const c_ = reinterpret_cast<T*>(&c);\
+				for (size_t i = 0; i < LENGTH; ++i) c_[i] = FUNCTION(a_[i], b_[i], c_[i]);\
+				return c;\
+			}\
+		};
+
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_FMA, fma)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_FMS, fms)
+
+#define ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP,FUNCTION)\
+		template<class INTRINSIC, class T>\
+		struct VopInfo<INTRINSIC, T, VOP> {\
+			enum { optimised = 0 };\
+			static inline INTRINSIC execute(INTRINSIC a) {\
+				enum { LENGTH = sizeof(INTRINSIC) / sizeof(T) };\
+				INTRINSIC c;\
+				const T* const a_ = reinterpret_cast<const T*>(&a);\
+				const T* const b_ = reinterpret_cast<const T*>(&b);\
+				T* const c_ = reinterpret_cast<T*>(&c);\
+				for (size_t i = 0; i < LENGTH; ++i) c_[i] = FUNCTION(a_[i]);\
+				return c;\
+			}\
+		};
+
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_NOT, not)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_SQRT, sqrt)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_CBRT, cbrt)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_SIN, sin)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_COS, cos)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_TAN, tan)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_ASIN, asin)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_ACOS, acos)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_ATAN, atan)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_SINH, sinh)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_COSH, cosh)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_TANH, tanh)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_PCN, popcount)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_REF, reflect)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_EXP, exp)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_LOG, log)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_LOG2, log2)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_LOG10, log10)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_CEIL, ceil)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_FLOOR, floor)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_TRUNC, trunc)
+	ANVIL_SPECIALISE_DEFAULT_VOP_INFO(VOP_ROUND, round)
+
+		//TODO VOP_SUM, VOP_AVG, VOP_FILL
 
 #define ANVIL_SPECIALISE_VOP_INFO_VVV(VOP,TYPE,INTRINSIC,FUNCTION)\
 		template<>\
