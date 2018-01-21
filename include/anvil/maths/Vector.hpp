@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include "anvil/Core/Cpu.hpp"
+#include "anvil/Core/Constants.hpp"
 #include "anvil/maths/Type.hpp"
 #include "anvil/maths/Popcount.hpp"
 #include "anvil/maths/Reflection.hpp"
@@ -105,6 +106,116 @@ namespace anvil {
 			VOP_CEIL,  VOP_FLOOR,  VOP_TRUNC, VOP_ROUND,
 			VOP_FILL
 		};
+
+		template<class T, size_t S, class ENABLE = void>
+		struct VecInfo {
+			enum {
+				size = S,
+				has_intrinsic = 0
+			};
+			typedef T type;
+			struct intrinsic {
+				T data[S];
+			};
+		};
+
+#define ANVIL_SPECIALISE_VEC_INFO(N,M,TYPE,INTRINSIC)\
+		template<size_t SIZE>\
+		struct VecInfo<TYPE, SIZE, typename std::enable_if<ConstantOperation<size_t, SIZE, N>::ge && ConstantOperation<size_t, SIZE, M>::le>::type> {\
+			enum {\
+				size = SIZE,\
+				has_intrinsic = 1\
+			};\
+			typedef TYPE type;\
+			typedef INTRINSIC intrinsic;\
+		};
+
+#if defined(ANVIL_MMX) && ANVIL_ARCHITECTURE_BITS <= 32
+		ANVIL_SPECIALISE_VEC_INFO(1, 8, int8_t, __m64)
+		ANVIL_SPECIALISE_VEC_INFO(1, 8, uint8_t, __m64)
+		ANVIL_SPECIALISE_VEC_INFO(1, 4, int16_t, __m64)
+		ANVIL_SPECIALISE_VEC_INFO(1, 4, uint16_t, __m64)
+		ANVIL_SPECIALISE_VEC_INFO(1, 2, int32_t, __m64)
+		ANVIL_SPECIALISE_VEC_INFO(1, 2, uint32_t, __m64)
+		ANVIL_SPECIALISE_VEC_INFO(1, 2, float, __m64)
+
+		#define ANVIL_VEC_INFO_LOW_8 9
+		#define ANVIL_VEC_INFO_LOW_16 5
+		#define ANVIL_VEC_INFO_LOW_32 3
+		#define ANVIL_VEC_INFO_LOW_64 1
+#endif
+#if defined(ANVIL_SSE)
+	#if ! defined ANVIL_VEC_INFO_LOW_8
+		#define ANVIL_VEC_INFO_LOW_8 1
+		#define ANVIL_VEC_INFO_LOW_16 1
+		#define ANVIL_VEC_INFO_LOW_32 1
+		#define ANVIL_VEC_INFO_LOW_64 1
+	#endif
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_32, 4, float, __m128)
+#else
+#endif
+#if defined(ANVIL_SSE2)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_8, 16, int8_t,    __m128i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_8, 16, uint8_t,   __m128i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_16, 8, int16_t,   __m128i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_16, 8, uint16_t,  __m128i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_32, 4, int32_t,   __m128i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_32, 4, uint32_t,  __m128i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_64, 2, int64_t,   __m128i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_64, 2, uint64_t,  __m128i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_64, 2, float64_t, __m128d)
+
+		#undef ANVIL_VEC_INFO_LOW_8
+		#undef ANVIL_VEC_INFO_LOW_16
+		#undef ANVIL_VEC_INFO_LOW_32
+		#undef ANVIL_VEC_INFO_LOW_64
+		#define ANVIL_VEC_INFO_LOW_8 17
+		#define ANVIL_VEC_INFO_LOW_16 9
+		#define ANVIL_VEC_INFO_LOW_32 5
+		#define ANVIL_VEC_INFO_LOW_64 3
+#endif
+#if defined(ANVIL_AVX)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_8, 32, int8_t,    __m256i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_8, 32, uint8_t,   __m256i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_16, 16, int16_t,  __m256i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_16, 16, uint16_t, __m256i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_32, 8, int32_t,   __m256i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_32, 8, uint32_t,  __m256i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_64, 4, int64_t,   __m256i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_64, 4, uint64_t,  __m256i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_32, 8, float32_t, __m256)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_64, 4, float64_t, __m256d)
+
+		#undef ANVIL_VEC_INFO_LOW_8
+		#undef ANVIL_VEC_INFO_LOW_16
+		#undef ANVIL_VEC_INFO_LOW_32
+		#undef ANVIL_VEC_INFO_LOW_64
+		#define ANVIL_VEC_INFO_LOW_8 33
+		#define ANVIL_VEC_INFO_LOW_16 17
+		#define ANVIL_VEC_INFO_LOW_32 9
+		#define ANVIL_VEC_INFO_LOW_64 5
+#endif
+#if defined(ANVIL_AVX_512)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_8, 64,  int8_t,    __m512i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_8, 64,  uint8_t,   __m512i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_16, 32, int16_t,   __m512i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_16, 32, uint16_t,  __m512i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_32, 16, int32_t,   __m512i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_32, 16, uint32_t,  __m512i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_64, 8,  int64_t,   __m512i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_64, 8,  uint64_t,  __m512i)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_32, 16, float32_t, __m512)
+		ANVIL_SPECIALISE_VEC_INFO(ANVIL_VEC_INFO_LOW_64, 8,  float64_t, __m512d)
+
+		#undef ANVIL_VEC_INFO_LOW_8
+		#undef ANVIL_VEC_INFO_LOW_16
+		#undef ANVIL_VEC_INFO_LOW_32
+		#undef ANVIL_VEC_INFO_LOW_64
+		#define ANVIL_VEC_INFO_LOW_8 65
+		#define ANVIL_VEC_INFO_LOW_16 33
+		#define ANVIL_VEC_INFO_LOW_32 17
+		#define ANVIL_VEC_INFO_LOW_64 9
+#endif
 
 		template<class T, size_t S, VectorOp VOP>
 		struct VopOptimised {
