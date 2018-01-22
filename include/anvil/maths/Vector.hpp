@@ -112,6 +112,9 @@
 #endif
 
 namespace anvil {
+
+	// ---- FILL ----
+
 	template<class T, size_t S>
 	struct Vector {
 		T elements[S];
@@ -162,7 +165,7 @@ namespace anvil {
 
 #define ANVIL_SPECIALISE_VEC_FILL_XN(TYPE,TYPE2,SIZE,INTRINSIC,FUNCTION) \
 		template<>\
-		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill(TYPE x) {\
+		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill<TYPE, SIZE>(TYPE x) {\
 			static_assert(sizeof(TYPE) == sizeof(TYPE2), "Types must be the same size");\
 			union {\
 				Vector<TYPE, SIZE> vector;\
@@ -174,7 +177,7 @@ namespace anvil {
 
 #define ANVIL_SPECIALISE_VEC_FILL_XY2(TYPE,TYPE2,SIZE,INTRINSIC,FUNCTION) \
 		template<>\
-		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill(TYPE x, TYPE y) {\
+		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill<TYPE, SIZE>(TYPE x, TYPE y) {\
 			static_assert(sizeof(TYPE) == sizeof(TYPE2), "Types must be the same size");\
 			union {\
 				Vector<TYPE, SIZE> vector;\
@@ -186,7 +189,7 @@ namespace anvil {
 
 #define ANVIL_SPECIALISE_VEC_FILL_XYZ3(TYPE,TYPE2,SIZE,INTRINSIC,FUNCTION) \
 		template<>\
-		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill(TYPE x, TYPE y, TYPE z) {\
+		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill<TYPE, SIZE>(TYPE x, TYPE y, TYPE z) {\
 			static_assert(sizeof(TYPE) == sizeof(TYPE2), "Types must be the same size");\
 			union {\
 				Vector<TYPE, SIZE> vector;\
@@ -198,7 +201,7 @@ namespace anvil {
 
 #define ANVIL_SPECIALISE_VEC_FILL_XYZ4(TYPE,TYPE2,SIZE,INTRINSIC,FUNCTION) \
 		template<>\
-		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill(TYPE x, TYPE y, TYPE z, TYPE w) {\
+		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill<TYPE, SIZE>(TYPE x, TYPE y, TYPE z, TYPE w) {\
 			static_assert(sizeof(TYPE) == sizeof(TYPE2), "Types must be the same size");\
 			union {\
 				Vector<TYPE, SIZE> vector;\
@@ -210,7 +213,7 @@ namespace anvil {
 
 #define ANVIL_SPECIALISE_VEC_FILL_XY4(TYPE,TYPE2,SIZE,INTRINSIC,FUNCTION) \
 		template<>\
-		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill(TYPE x, TYPE y) {\
+		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill<TYPE, SIZE>(TYPE x, TYPE y) {\
 			static_assert(sizeof(TYPE) == sizeof(TYPE2), "Types must be the same size");\
 			union {\
 				Vector<TYPE, SIZE> vector;\
@@ -222,7 +225,7 @@ namespace anvil {
 
 #define ANVIL_SPECIALISE_VEC_FILL_XYZ4(TYPE,TYPE2,SIZE,INTRINSIC,FUNCTION) \
 		template<>\
-		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill(TYPE x, TYPE y, TYPE z) {\
+		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill<TYPE, SIZE>(TYPE x, TYPE y, TYPE z) {\
 			static_assert(sizeof(TYPE) == sizeof(TYPE2), "Types must be the same size");\
 			union {\
 				Vector<TYPE, SIZE> vector;\
@@ -234,7 +237,7 @@ namespace anvil {
 
 #define ANVIL_SPECIALISE_VEC_FILL_XYZW4(TYPE,TYPE2,SIZE,INTRINSIC,FUNCTION) \
 		template<>\
-		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill(TYPE x, TYPE y, TYPE z, TYPE w) {\
+		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill<TYPE, SIZE>(TYPE x, TYPE y, TYPE z, TYPE w) {\
 			static_assert(sizeof(TYPE) == sizeof(TYPE2), "Types must be the same size");\
 			union {\
 				Vector<TYPE, SIZE> vector;\
@@ -246,7 +249,7 @@ namespace anvil {
 
 #define ANVIL_SPECIALISE_VEC_FILL_XY8(TYPE,TYPE2,SIZE,INTRINSIC,FUNCTION) \
 		template<>\
-		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill(TYPE x, TYPE y) {\
+		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill<TYPE, SIZE>(TYPE x, TYPE y) {\
 			static_assert(sizeof(TYPE) == sizeof(TYPE2), "Types must be the same size");\
 			union {\
 				Vector<TYPE, SIZE> vector;\
@@ -259,7 +262,7 @@ namespace anvil {
 
 #define ANVIL_SPECIALISE_VEC_FILL_XYZ8(TYPE,TYPE2,SIZE,INTRINSIC,FUNCTION) \
 		template<>\
-		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill(TYPE x, TYPE y, TYPE z) {\
+		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill<TYPE, SIZE>(TYPE x, TYPE y, TYPE z) {\
 			static_assert(sizeof(TYPE) == sizeof(TYPE2), "Types must be the same size");\
 			union {\
 				Vector<TYPE, SIZE> vector;\
@@ -272,7 +275,7 @@ namespace anvil {
 
 #define ANVIL_SPECIALISE_VEC_FILL_XYZW8(TYPE,TYPE2,SIZE,INTRINSIC,FUNCTION) \
 		template<>\
-		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill(TYPE x, TYPE y, TYPE z, TYPE w) {\
+		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill<TYPE, SIZE>(TYPE x, TYPE y, TYPE z, TYPE w) {\
 			static_assert(sizeof(TYPE) == sizeof(TYPE2), "Types must be the same size");\
 			union {\
 				Vector<TYPE, SIZE> vector;\
@@ -285,7 +288,7 @@ namespace anvil {
 
 #define ANVIL_SPECIALISE_VEC_FILL_XY16(TYPE,TYPE2,SIZE,INTRINSIC,FUNCTION) \
 		template<>\
-		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill(TYPE x, TYPE y) {\
+		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill<TYPE, SIZE>(TYPE x, TYPE y) {\
 			static_assert(sizeof(TYPE) == sizeof(TYPE2), "Types must be the same size");\
 			union {\
 				Vector<TYPE, SIZE> vector;\
@@ -300,7 +303,7 @@ namespace anvil {
 
 #define ANVIL_SPECIALISE_VEC_FILL_XYZ16(TYPE,TYPE2,SIZE,INTRINSIC,FUNCTION) \
 		template<>\
-		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill(TYPE x, TYPE y, TYPE z) {\
+		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill<TYPE, SIZE>(TYPE x, TYPE y, TYPE z) {\
 			static_assert(sizeof(TYPE) == sizeof(TYPE2), "Types must be the same size");\
 			union {\
 				Vector<TYPE, SIZE> vector;\
@@ -315,7 +318,7 @@ namespace anvil {
 
 #define ANVIL_SPECIALISE_VEC_FILL_XYZW16(TYPE,TYPE2,SIZE,INTRINSIC,FUNCTION) \
 		template<>\
-		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill(TYPE x, TYPE y, TYPE z, TYPE w) {\
+		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> fill<TYPE, SIZE>(TYPE x, TYPE y, TYPE z, TYPE w) {\
 			static_assert(sizeof(TYPE) == sizeof(TYPE2), "Types must be the same size");\
 			union {\
 				Vector<TYPE, SIZE> vector;\
@@ -444,6 +447,126 @@ namespace anvil {
 		ANVIL_SPECIALISE_VEC_FILL_16(int8_t,  int8_t,   __m128i, _mm_set1_epi8,   _mm_set_epi8)
 		ANVIL_SPECIALISE_VEC_FILL_16(uint8_t, int8_t,   __m128i, _mm_set1_epi8,   _mm_set_epi8)
 #endif
+
+		// ---- ADD, SUB, MUL, DIV ----
+
+		template<class T, size_t S>
+		static Vector<T, S> add(Vector<T, S> x, Vector<T, S> y) {
+			Vector<T, S> tmp;
+			for (size_t i = 0; i < S; ++i) tmp.elements[i] = x.elements[i] + y.elements[i];
+			return tmp;
+		}
+
+		template<class T, size_t S>
+		static Vector<T, S> sub(Vector<T, S> x, Vector<T, S> y) {
+			Vector<T, S> tmp;
+			for (size_t i = 0; i < S; ++i) tmp.elements[i] = x.elements[i] - y.elements[i];
+			return tmp;
+		}
+
+		template<class T, size_t S>
+		static Vector<T, S> mul(Vector<T, S> x, Vector<T, S> y) {
+			Vector<T, S> tmp;
+			for (size_t i = 0; i < S; ++i) tmp.elements[i] = x.elements[i] * y.elements[i];
+			return tmp;
+		}
+
+		template<class T, size_t S>
+		static Vector<T, S> div(Vector<T, S> x, Vector<T, S> y) {
+			Vector<T, S> tmp;
+			for (size_t i = 0; i < S; ++i) tmp.elements[i] = x.elements[i] / y.elements[i];
+			return tmp;
+		}
+
+#define ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,SIZE,INTRINSIC,FUNCTION) \
+		template<>\
+		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> NAME <TYPE,SIZE>(Vector<TYPE, SIZE> x, Vector<TYPE, SIZE> y) {\
+			union {\
+				Vector<TYPE, SIZE> xv;\
+				INTRINSIC xi;\
+			};\
+			union {\
+				Vector<TYPE, SIZE> yv;\
+				INTRINSIC yi;\
+			};\
+			union {\
+				Vector<TYPE, SIZE> rv;\
+				INTRINSIC ri;\
+			};\
+			xv = x;\
+			yv = y;\
+			ri = FUNCTION(xi, yi);\
+			return rv;\
+		}
+
+#define ANVIL_SPECIALISE_VEC_VVV2(NAME,TYPE,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,2,INTRINSIC,FUNCTION)
+
+#define ANVIL_SPECIALISE_VEC_VVV4(NAME,TYPE,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,4,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,3,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,2,INTRINSIC,FUNCTION)
+
+#define ANVIL_SPECIALISE_VEC_VVV8(NAME,TYPE,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,8,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,7,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,6,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,5,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,4,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,3,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,2,INTRINSIC,FUNCTION)
+
+#define ANVIL_SPECIALISE_VEC_VVV16(NAME,TYPE,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,16,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,15,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,14,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,13,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,12,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,11,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,10,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,9,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,8,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,7,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,6,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,5,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,4,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,3,INTRINSIC,FUNCTION)\
+	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,2,INTRINSIC,FUNCTION)
+
+#ifdef ANVIL_SSE
+	ANVIL_SPECIALISE_VEC_VVV4(add, float, __m128, _mm_add_ps)
+	ANVIL_SPECIALISE_VEC_VVV4(sub, float, __m128, _mm_sub_ps)
+	ANVIL_SPECIALISE_VEC_VVV4(mul, float, __m128, _mm_mul_ps)
+	ANVIL_SPECIALISE_VEC_VVV4(div, float, __m128, _mm_div_ps)
+#endif
+
+#ifdef ANVIL_SSE2
+		ANVIL_SPECIALISE_VEC_VVV2(add, double, __m128d, _mm_add_pd)
+		ANVIL_SPECIALISE_VEC_VVV2(sub, double, __m128d, _mm_sub_pd)
+		ANVIL_SPECIALISE_VEC_VVV2(mul, double, __m128d, _mm_mul_pd)
+		ANVIL_SPECIALISE_VEC_VVV2(div, double, __m128d, _mm_div_pd)
+
+		ANVIL_SPECIALISE_VEC_VVV2(add, int64_t, __m128i, _mm_add_epi64)
+		ANVIL_SPECIALISE_VEC_VVV2(sub, int64_t, __m128i, _mm_sub_epi64)
+
+		ANVIL_SPECIALISE_VEC_VVV4(add, int32_t, __m128i, _mm_add_epi32)
+		ANVIL_SPECIALISE_VEC_VVV4(sub, int32_t, __m128i, _mm_sub_epi32)
+
+		ANVIL_SPECIALISE_VEC_VVV4(mul, uint32_t, __m128i, _mm_mul_epu32)
+
+		ANVIL_SPECIALISE_VEC_VVV8(add, int16_t, __m128i, _mm_add_epi16)
+		ANVIL_SPECIALISE_VEC_VVV8(sub, int16_t, __m128i, _mm_sub_epi16)
+
+		ANVIL_SPECIALISE_VEC_VVV8(add, uint16_t, __m128i, _mm_adds_epu16)
+		ANVIL_SPECIALISE_VEC_VVV8(sub, uint16_t, __m128i, _mm_subs_epu16)
+
+		ANVIL_SPECIALISE_VEC_VVV16(add, int8_t, __m128i, _mm_add_epi8)
+		ANVIL_SPECIALISE_VEC_VVV16(sub, int8_t, __m128i, _mm_sub_epi8)
+
+		ANVIL_SPECIALISE_VEC_VVV16(add, uint8_t, __m128i, _mm_adds_epi8)
+		ANVIL_SPECIALISE_VEC_VVV16(sub, uint8_t, __m128i, _mm_subs_epi8)
+#endif
+
 	}
 }
 #endif
