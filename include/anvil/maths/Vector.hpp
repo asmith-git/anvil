@@ -460,7 +460,7 @@ namespace anvil {
 		ANVIL_SPECIALISE_VEC_FILL_16(uint8_t, int8_t,   __m128i, _mm_set1_epi8,   _mm_set_epi8)
 #endif
 
-		// ---- ADD, SUB, MUL, DIV, MIN, MAX ----
+		// ---- ADD, SUB, MUL, DIV, MIN, MAX, CMPEQ, CMPNE, CMPLT, CMPGT, CMPLE, CMPGE ----
 
 		template<class T, size_t S>
 		static Vector<T, S> ANVIL_CALL add(Vector<T, S> x, Vector<T, S> y) {
@@ -501,6 +501,48 @@ namespace anvil {
 		static Vector<T, S> ANVIL_CALL max(Vector<T, S> x, Vector<T, S> y) {
 			Vector<T, S> tmp;
 			for (size_t i = 0; i < S; ++i) tmp.elements[i] = max(x.elements[i], y.elements[i]);
+			return tmp;
+		}
+
+		template<class T, size_t S>
+		static Vector<T, S> ANVIL_CALL cmpeq(Vector<T, S> x, Vector<T, S> y) {
+			Vector<T, S> tmp;
+			for (size_t i = 0; i < S; ++i) tmp.elements[i] = static_cast<T>(x.elements[i] == y.elements[i]);
+			return tmp;
+		}
+
+		template<class T, size_t S>
+		static Vector<T, S> ANVIL_CALL cmpne(Vector<T, S> x, Vector<T, S> y) {
+			Vector<T, S> tmp;
+			for (size_t i = 0; i < S; ++i) tmp.elements[i] = static_cast<T>(x.elements[i] != y.elements[i]);
+			return tmp;
+		}
+
+		template<class T, size_t S>
+		static Vector<T, S> ANVIL_CALL cmplt(Vector<T, S> x, Vector<T, S> y) {
+			Vector<T, S> tmp;
+			for (size_t i = 0; i < S; ++i) tmp.elements[i] = static_cast<T>(x.elements[i] < y.elements[i]);
+			return tmp;
+		}
+
+		template<class T, size_t S>
+		static Vector<T, S> ANVIL_CALL cmpgt(Vector<T, S> x, Vector<T, S> y) {
+			Vector<T, S> tmp;
+			for (size_t i = 0; i < S; ++i) tmp.elements[i] = static_cast<T>(x.elements[i] > y.elements[i]);
+			return tmp;
+		}
+
+		template<class T, size_t S>
+		static Vector<T, S> ANVIL_CALL cmple (Vector<T, S> x, Vector<T, S> y) {
+			Vector<T, S> tmp;
+			for (size_t i = 0; i < S; ++i) tmp.elements[i] = static_cast<T>(x.elements[i] <= y.elements[i]);
+			return tmp;
+		}
+
+		template<class T, size_t S>
+		static Vector<T, S> ANVIL_CALL cmpge(Vector<T, S> x, Vector<T, S> y) {
+			Vector<T, S> tmp;
+			for (size_t i = 0; i < S; ++i) tmp.elements[i] = static_cast<T>(x.elements[i] >= y.elements[i]);
 			return tmp;
 		}
 
@@ -557,45 +599,71 @@ namespace anvil {
 	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,2,16,INTRINSIC,FUNCTION,ZERO_FUNCTION,ZERO_FLAG)
 
 #ifdef ANVIL_SSE
-	ANVIL_SPECIALISE_VEC_VVV4(add, float, __m128, _mm_add_ps, _mm_setzero_ps, false)
-	ANVIL_SPECIALISE_VEC_VVV4(sub, float, __m128, _mm_sub_ps, _mm_setzero_ps, false)
-	ANVIL_SPECIALISE_VEC_VVV4(mul, float, __m128, _mm_mul_ps, _mm_setzero_ps, false)
-	ANVIL_SPECIALISE_VEC_VVV4(div, float, __m128, _mm_div_ps, _mm_setzero_ps, false)
-	ANVIL_SPECIALISE_VEC_VVV4(min, float, __m128, _mm_min_ps, _mm_setzero_ps, false)
-	ANVIL_SPECIALISE_VEC_VVV4(max, float, __m128, _mm_max_ps, _mm_setzero_ps, false)
+	ANVIL_SPECIALISE_VEC_VVV4(add,   float, __m128, _mm_add_ps,    _mm_setzero_ps, false)
+	ANVIL_SPECIALISE_VEC_VVV4(sub,   float, __m128, _mm_sub_ps,    _mm_setzero_ps, false)
+	ANVIL_SPECIALISE_VEC_VVV4(mul,   float, __m128, _mm_mul_ps,    _mm_setzero_ps, false)
+	ANVIL_SPECIALISE_VEC_VVV4(div,   float, __m128, _mm_div_ps,    _mm_setzero_ps, false)
+	ANVIL_SPECIALISE_VEC_VVV4(min,   float, __m128, _mm_min_ps,    _mm_setzero_ps, false)
+	ANVIL_SPECIALISE_VEC_VVV4(max,   float, __m128, _mm_max_ps,    _mm_setzero_ps, false)
+	ANVIL_SPECIALISE_VEC_VVV4(cmpeq, float, __m128, _mm_cmpeq_ps,  _mm_setzero_ps, false)
+	ANVIL_SPECIALISE_VEC_VVV4(cmpne, float, __m128, _mm_cmpneq_ps, _mm_setzero_ps, false)
+	ANVIL_SPECIALISE_VEC_VVV4(cmplt, float, __m128, _mm_cmplt_ps,  _mm_setzero_ps, false)
+	ANVIL_SPECIALISE_VEC_VVV4(cmpgt, float, __m128, _mm_cmpgt_ps,  _mm_setzero_ps, false)
+	ANVIL_SPECIALISE_VEC_VVV4(cmple, float, __m128, _mm_cmple_ps,  _mm_setzero_ps, false)
+	ANVIL_SPECIALISE_VEC_VVV4(cmpge, float, __m128, _mm_cmpge_ps,  _mm_setzero_ps, false)
 #endif
 
 #ifdef ANVIL_SSE2
-	ANVIL_SPECIALISE_VEC_VVV2(add, double, __m128d, _mm_add_pd, _mm_setzero_pd, false)
-	ANVIL_SPECIALISE_VEC_VVV2(sub, double, __m128d, _mm_sub_pd, _mm_setzero_pd, false)
-	ANVIL_SPECIALISE_VEC_VVV2(mul, double, __m128d, _mm_mul_pd, _mm_setzero_pd, false)
-	ANVIL_SPECIALISE_VEC_VVV2(div, double, __m128d, _mm_div_pd, _mm_setzero_pd, false)
-	ANVIL_SPECIALISE_VEC_VVV2(min, double, __m128d, _mm_min_pd, _mm_setzero_pd, false)
-	ANVIL_SPECIALISE_VEC_VVV2(max, double, __m128d, _mm_max_pd, _mm_setzero_pd, false)
+	ANVIL_SPECIALISE_VEC_VVV2(add,   double, __m128d, _mm_add_pd,    _mm_setzero_pd, false)
+	ANVIL_SPECIALISE_VEC_VVV2(sub,   double, __m128d, _mm_sub_pd,    _mm_setzero_pd, false)
+	ANVIL_SPECIALISE_VEC_VVV2(mul,   double, __m128d, _mm_mul_pd,    _mm_setzero_pd, false)
+	ANVIL_SPECIALISE_VEC_VVV2(div,   double, __m128d, _mm_div_pd,    _mm_setzero_pd, false)
+	ANVIL_SPECIALISE_VEC_VVV2(min,   double, __m128d, _mm_min_pd,    _mm_setzero_pd, false)
+	ANVIL_SPECIALISE_VEC_VVV2(max,   double, __m128d, _mm_max_pd,    _mm_setzero_pd, false)
+	ANVIL_SPECIALISE_VEC_VVV2(cmpeq, double, __m128d, _mm_cmpeq_pd,  _mm_setzero_pd, false)
+	ANVIL_SPECIALISE_VEC_VVV2(cmpne, double, __m128d, _mm_cmpneq_pd, _mm_setzero_pd, false)
+	ANVIL_SPECIALISE_VEC_VVV2(cmplt, double, __m128d, _mm_cmplt_pd,  _mm_setzero_pd, false)
+	ANVIL_SPECIALISE_VEC_VVV2(cmpgt, double, __m128d, _mm_cmpgt_pd,  _mm_setzero_pd, false)
+	ANVIL_SPECIALISE_VEC_VVV2(cmple, double, __m128d, _mm_cmple_pd,  _mm_setzero_pd, false)
+	ANVIL_SPECIALISE_VEC_VVV2(cmpge, double, __m128d, _mm_cmpge_pd,  _mm_setzero_pd, false)
 
 	ANVIL_SPECIALISE_VEC_VVV2(add, int64_t, __m128i, _mm_add_epi64, _mm_setzero_si128, false)
 	ANVIL_SPECIALISE_VEC_VVV2(sub, int64_t, __m128i, _mm_sub_epi64, _mm_setzero_si128, false)
 
-	ANVIL_SPECIALISE_VEC_VVV4(add, int32_t, __m128i, _mm_add_epi32, _mm_setzero_si128, false)
-	ANVIL_SPECIALISE_VEC_VVV4(sub, int32_t, __m128i, _mm_sub_epi32, _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV4(add,   int32_t, __m128i, _mm_add_epi32,   _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV4(sub,   int32_t, __m128i, _mm_sub_epi32,   _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV4(cmpeq, int32_t, __m128i, _mm_cmpeq_epi32, _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV4(cmplt, int32_t, __m128i, _mm_cmplt_epi32, _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV4(cmpgt, int32_t, __m128i, _mm_cmpgt_epi32, _mm_setzero_si128, false)
 
-	ANVIL_SPECIALISE_VEC_VVV4(mul, uint32_t, __m128i, _mm_mul_epu32, _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV4(mul,   uint32_t, __m128i, _mm_mul_epu32,   _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV4(cmpeq, uint32_t, __m128i, _mm_cmpeq_epi32, _mm_setzero_si128, false)
 
-	ANVIL_SPECIALISE_VEC_VVV8(add, int16_t, __m128i, _mm_add_epi16, _mm_setzero_si128, false)
-	ANVIL_SPECIALISE_VEC_VVV8(sub, int16_t, __m128i, _mm_sub_epi16, _mm_setzero_si128, false)
-	ANVIL_SPECIALISE_VEC_VVV8(min, int16_t, __m128i, _mm_min_epi16, _mm_setzero_si128, false)
-	ANVIL_SPECIALISE_VEC_VVV8(max, int16_t, __m128i, _mm_max_epi16, _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV8(add,   int16_t, __m128i, _mm_add_epi16,   _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV8(sub,   int16_t, __m128i, _mm_sub_epi16,   _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV8(min,   int16_t, __m128i, _mm_min_epi16,   _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV8(max,   int16_t, __m128i, _mm_max_epi16,   _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV8(cmpeq, int16_t, __m128i, _mm_cmpeq_epi16, _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV8(cmplt, int16_t, __m128i, _mm_cmplt_epi16, _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV8(cmpgt, int16_t, __m128i, _mm_cmpgt_epi16, _mm_setzero_si128, false)
 
-	ANVIL_SPECIALISE_VEC_VVV8(add, uint16_t, __m128i, _mm_adds_epu16, _mm_setzero_si128, false)
-	ANVIL_SPECIALISE_VEC_VVV8(sub, uint16_t, __m128i, _mm_subs_epu16, _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV8(add,   uint16_t, __m128i, _mm_adds_epu16,  _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV8(sub,   uint16_t, __m128i, _mm_subs_epu16,  _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV8(cmpeq, uint16_t, __m128i, _mm_cmpeq_epi16, _mm_setzero_si128, false)
 
-	ANVIL_SPECIALISE_VEC_VVV16(add, int8_t, __m128i, _mm_add_epi8,_mm_setzero_si128, false)
-	ANVIL_SPECIALISE_VEC_VVV16(sub, int8_t, __m128i, _mm_sub_epi8,_mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV16(add,   int8_t, __m128i, _mm_add_epi8,    _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV16(sub,   int8_t, __m128i, _mm_sub_epi8,    _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV16(cmpeq, int8_t, __m128i, _mm_cmpeq_epi16, _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV16(cmplt, int8_t, __m128i, _mm_cmplt_epi16, _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV16(cmpgt, int8_t, __m128i, _mm_cmpgt_epi16, _mm_setzero_si128, false)
 
-	ANVIL_SPECIALISE_VEC_VVV16(add, uint8_t, __m128i, _mm_adds_epi8, _mm_setzero_si128, false)
-	ANVIL_SPECIALISE_VEC_VVV16(sub, uint8_t, __m128i, _mm_subs_epi8, _mm_setzero_si128, false)
-	ANVIL_SPECIALISE_VEC_VVV16(min, uint8_t, __m128i, _mm_min_epu8,  _mm_setzero_si128, false)
-	ANVIL_SPECIALISE_VEC_VVV16(max, uint8_t, __m128i, _mm_max_epu8,  _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV16(add,   uint8_t, __m128i, _mm_adds_epi8,   _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV16(sub,   uint8_t, __m128i, _mm_subs_epi8,   _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV16(min,   uint8_t, __m128i, _mm_min_epu8,    _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV16(max,   uint8_t, __m128i, _mm_max_epu8,    _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV16(cmpeq, uint8_t, __m128i, _mm_cmpeq_epi16, _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV16(cmplt, uint8_t, __m128i, _mm_cmplt_epi16, _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV16(cmpgt, uint8_t, __m128i, _mm_cmpgt_epi16, _mm_setzero_si128, false)
 #endif
 
 	}
