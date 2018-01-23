@@ -897,14 +897,26 @@ namespace anvil {
 		};
 
 #define ANVIL_SPECIALISE_VEC_VVV2(NAME,TYPE,INTRINSIC,FUNCTION,ZERO_FLAG)\
+	template<>\
+	struct VectorOperationWidth<TYPE, VOP_ ## NAME > {\
+		enum { value = 2 };\
+	};\
 	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,2,2,INTRINSIC,FUNCTION,false)
 
 #define ANVIL_SPECIALISE_VEC_VVV4(NAME,TYPE,INTRINSIC,FUNCTION,ZERO_FLAG)\
+	template<>\
+	struct VectorOperationWidth<TYPE, VOP_ ## NAME > {\
+		enum { value = 4 };\
+	};\
 	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,4,4,INTRINSIC,FUNCTION,false)\
 	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,3,4,INTRINSIC,FUNCTION,ZERO_FLAG)\
 	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,2,4,INTRINSIC,FUNCTION,ZERO_FLAG)
 
 #define ANVIL_SPECIALISE_VEC_VVV8(NAME,TYPE,INTRINSIC,FUNCTION,ZERO_FLAG)\
+	template<>\
+	struct VectorOperationWidth<TYPE, VOP_ ## NAME > {\
+		enum { value = 8 };\
+	};\
 	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,8,8,INTRINSIC,FUNCTION,false)\
 	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,7,8,INTRINSIC,FUNCTION,ZERO_FLAG)\
 	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,6,8,INTRINSIC,FUNCTION,ZERO_FLAG)\
@@ -914,6 +926,10 @@ namespace anvil {
 	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,2,8,INTRINSIC,FUNCTION,ZERO_FLAG)
 
 #define ANVIL_SPECIALISE_VEC_VVV16(NAME,TYPE,INTRINSIC,FUNCTION,ZERO_FLAG)\
+	template<>\
+	struct VectorOperationWidth<TYPE, VOP_ ## NAME > {\
+		enum { value = 16 };\
+	};\
 	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,16,16,INTRINSIC,FUNCTION,false)\
 	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,15,16,INTRINSIC,FUNCTION,ZERO_FLAG)\
 	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,14,16,INTRINSIC,FUNCTION,ZERO_FLAG)\
@@ -1251,14 +1267,26 @@ namespace anvil {
 	};
 
 #define ANVIL_SPECIALISE_VEC_VV2(NAME,TYPE,INTRINSIC,FUNCTION,ZERO_FLAG)\
+	template<>\
+	struct VectorOperationWidth<TYPE, VOP_ ## NAME > {\
+		enum { value = 2 };\
+	};\
 	ANVIL_SPECIALISE_VEC_VV_(NAME,TYPE,2,2,INTRINSIC,FUNCTION,false)
 
 #define ANVIL_SPECIALISE_VEC_VV4(NAME,TYPE,INTRINSIC,FUNCTION,ZERO_FLAG)\
+	template<>\
+	struct VectorOperationWidth<TYPE, VOP_ ## NAME > {\
+		enum { value = 4 };\
+	};\
 	ANVIL_SPECIALISE_VEC_VV_(NAME,TYPE,4,4,INTRINSIC,FUNCTION,false)\
 	ANVIL_SPECIALISE_VEC_VV_(NAME,TYPE,3,4,INTRINSIC,FUNCTION,ZERO_FLAG)\
 	ANVIL_SPECIALISE_VEC_VV_(NAME,TYPE,2,4,INTRINSIC,FUNCTION,ZERO_FLAG)
 
 #define ANVIL_SPECIALISE_VEC_VV8(NAME,TYPE,INTRINSIC,FUNCTION,ZERO_FLAG)\
+	template<>\
+	struct VectorOperationWidth<TYPE, VOP_ ## NAME > {\
+		enum { value = 8 };\
+	};\
 	ANVIL_SPECIALISE_VEC_VV_(NAME,TYPE,8,8,INTRINSIC,FUNCTION,false)\
 	ANVIL_SPECIALISE_VEC_VV_(NAME,TYPE,7,8,INTRINSIC,FUNCTION,ZERO_FLAG)\
 	ANVIL_SPECIALISE_VEC_VV_(NAME,TYPE,6,8,INTRINSIC,FUNCTION,ZERO_FLAG)\
@@ -1268,6 +1296,10 @@ namespace anvil {
 	ANVIL_SPECIALISE_VEC_VV_(NAME,TYPE,2,8,INTRINSIC,FUNCTION,ZERO_FLAG)
 
 #define ANVIL_SPECIALISE_VEC_VV16(NAME,TYPE,INTRINSIC,FUNCTION,ZERO_FLAG)\
+	template<>\
+	struct VectorOperationWidth<TYPE, VOP_ ## NAME > {\
+		enum { value = 16 };\
+	};\
 	ANVIL_SPECIALISE_VEC_VV_(NAME,TYPE,16,16,INTRINSIC,FUNCTION,false)\
 	ANVIL_SPECIALISE_VEC_VV_(NAME,TYPE,15,16,INTRINSIC,FUNCTION,ZERO_FLAG)\
 	ANVIL_SPECIALISE_VEC_VV_(NAME,TYPE,14,16,INTRINSIC,FUNCTION,ZERO_FLAG)\
@@ -1306,6 +1338,116 @@ namespace anvil {
 	ANVIL_SPECIALISE_VEC_VV4(floor, float, __m128, _mm_floor_ps, false)
 #endif
 
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator+(Vector<T, S> x, Vector<T, S> y) {
+		return vec::VectorOperation<T, S, vec::VOP_add>::execute(x, y);
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator-(Vector<T, S> x, Vector<T, S> y) {
+		return vec::VectorOperation<T, S, vec::VOP_sub>::execute(x, y);
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator*(Vector<T, S> x, Vector<T, S> y) {
+		return vec::VectorOperation<T, S, vec::VOP_mul>::execute(x, y);
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator/(Vector<T, S> x, Vector<T, S> y) {
+		return vec::VectorOperation<T, S, vec::VOP_div>::execute(x, y);
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator&(Vector<T, S> x, Vector<T, S> y) {
+		return vec::VectorOperation<T, S, vec::VOP_and>::execute(x, y);
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator|(Vector<T, S> x, Vector<T, S> y) {
+		return vec::VectorOperation<T, S, vec::VOP_or>::execute(x, y);
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator^(Vector<T, S> x, Vector<T, S> y) {
+		return vec::VectorOperation<T, S, vec::VOP_xor>::execute(x, y);
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator+(Vector<T, S> x, T y) {
+		return vec::VectorOperation<T, S, vec::VOP_add>::execute(x, vec::fill<T, S>(y));
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator-(Vector<T, S> x, T y) {
+		return vec::VectorOperation<T, S, vec::VOP_sub>::execute(x, vec::fill<T, S>(y));
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator*(Vector<T, S> x, T y) {
+		return vec::VectorOperation<T, S, vec::VOP_mul>::execute(x, vec::fill<T, S>(y));
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator/(Vector<T, S> x, T y) {
+		return vec::VectorOperation<T, S, vec::VOP_div>::execute(x, vec::fill<T, S>(y));
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator&(Vector<T, S> x, T y) {
+		return vec::VectorOperation<T, S, vec::VOP_and>::execute(x, vec::fill<T, S>(y));
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator|(Vector<T, S> x, T y) {
+		return vec::VectorOperation<T, S, vec::VOP_or>::execute(x, vec::fill<T, S>(y));
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator^(Vector<T, S> x, T y) {
+		return vec::VectorOperation<T, S, vec::VOP_xor>::execute(x, vec::fill<T,S>(y));
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator+(T x, Vector<T, S> y) {
+		return vec::VectorOperation<T, S, vec::VOP_add>::execute(vec::fill<T, S>(x), y);
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator-(T x, Vector<T, S> y) {
+		return vec::VectorOperation<T, S, vec::VOP_sub>::execute(vec::fill<T, S>(x), y);
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator*(T x, Vector<T, S> y) {
+		return vec::VectorOperation<T, S, vec::VOP_mul>::execute(vec::fill<T, S>(x), y);
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator/(T x, Vector<T, S> y) {
+		return vec::VectorOperation<T, S, vec::VOP_div>::execute(vec::fill<T, S>(x), y);
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator&(T x, Vector<T, S> y) {
+		return vec::VectorOperation<T, S, vec::VOP_and>::execute(vec::fill<T, S>(x), y);
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator|(T x, Vector<T, S> y) {
+		return vec::VectorOperation<T, S, vec::VOP_or>::execute(vec::fill<T, S>(x), y);
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator^(T x, Vector<T, S> y) {
+		return vec::VectorOperation<T, S, vec::VOP_xor>::execute(vec::fill<T, S>(x), y);
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator~(Vector<T, S> x) {
+		return vec::VectorOperation<T, S, vec::VOP_not>::execute(x);
 	}
 }
 #endif
