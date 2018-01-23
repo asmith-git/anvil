@@ -17,7 +17,7 @@
 
 #include "anvil/core/Keywords.hpp"
 
-namespace as {
+namespace anvil {
 	bool ANVIL_CALL IsUpperCase(char) throw();
 	bool ANVIL_CALL IsLowerCase(char) throw();
 	bool ANVIL_CALL IsLetter(char) throw();
