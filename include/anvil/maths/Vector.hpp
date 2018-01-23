@@ -131,7 +131,7 @@ namespace anvil {
 		template<class T, size_t S>
 		static ANVIL_CALL Vector<T, S> fill(T x) {
 			Vector<T, S> tmp;
-			for (size_t i = 0; i < S; ++i) tmp.elements[i] = aValue;
+			for (size_t i = 0; i < S; ++i) tmp.elements[i] = x;
 			return tmp;
 		}
 
@@ -159,7 +159,7 @@ namespace anvil {
 		template<class T, size_t S>
 		static ANVIL_CALL Vector<T, S> fill(T x, T y, T z, T w) {
 			static_assert(S >= 4, "Vector must have at least 3 elements")
-				Vector<T, S> tmp;
+			Vector<T, S> tmp;
 			tmp.elements[0] = x;
 			tmp.elements[1] = y;
 			tmp.elements[2] = z;
@@ -588,129 +588,313 @@ namespace anvil {
 
 		// ---- ADD, SUB, MUL, DIV, MIN, MAX, CMPEQ, CMPNE, CMPLT, CMPGT, CMPLE, CMPGE, AND, OR, XOR ----
 
-		template<class T, size_t S>
-		static Vector<T, S> ANVIL_CALL add(Vector<T, S> x, Vector<T, S> y) {
-			Vector<T, S> tmp;
-			for (size_t i = 0; i < S; ++i) tmp.elements[i] = x.elements[i] + y.elements[i];
-			return tmp;
-		}
+		enum VectorOperationID {
+			VOP_add,
+			VOP_sub,
+			VOP_mul,
+			VOP_div,
+			VOP_min,
+			VOP_max,
+			VOP_cmpeq,
+			VOP_cmpne,
+			VOP_cmplt,
+			VOP_cmpgt,
+			VOP_cmple,
+			VOP_cmpge,
+			VOP_and,
+			VOP_or,
+			VOP_xor,
 
-		template<class T, size_t S>
-		static Vector<T, S> ANVIL_CALL sub(Vector<T, S> x, Vector<T, S> y) {
-			Vector<T, S> tmp;
-			for (size_t i = 0; i < S; ++i) tmp.elements[i] = x.elements[i] - y.elements[i];
-			return tmp;
-		}
+			VOP_abs,
+			VOP_sqrt,
+			VOP_cbrt,
+			VOP_not,
+			VOP_ceil,
+			VOP_floor
+		};
 
-		template<class T, size_t S>
-		static Vector<T, S> ANVIL_CALL mul(Vector<T, S> x, Vector<T, S> y) {
-			Vector<T, S> tmp;
-			for (size_t i = 0; i < S; ++i) tmp.elements[i] = x.elements[i] * y.elements[i];
-			return tmp;
-		}
+		template<VectorOperationID>
+		struct VectorOperationArgs {
+			enum { value = 2 };
+		};
 
-		template<class T, size_t S>
-		static Vector<T, S> ANVIL_CALL div(Vector<T, S> x, Vector<T, S> y) {
-			Vector<T, S> tmp;
-			for (size_t i = 0; i < S; ++i) tmp.elements[i] = x.elements[i] / y.elements[i];
-			return tmp;
-		}
+		template<class T, VectorOperationID>
+		struct VectorOperationWidth {
+			enum { value = 4 };
+		};
 
-		template<class T, size_t S>
-		static Vector<T, S> ANVIL_CALL min(Vector<T, S> x, Vector<T, S> y) {
-			Vector<T, S> tmp;
-			for (size_t i = 0; i < S; ++i) tmp.elements[i] = min(x.elements[i], y.elements[i]);
-			return tmp;
-		}
+		template<class T, size_t S, VectorOperationID VOP, size_t ARGS = VectorOperationArgs<VOP>::value>
+		struct VectorOperation;
 
-		template<class T, size_t S>
-		static Vector<T, S> ANVIL_CALL max(Vector<T, S> x, Vector<T, S> y) {
-			Vector<T, S> tmp;
-			for (size_t i = 0; i < S; ++i) tmp.elements[i] = max(x.elements[i], y.elements[i]);
-			return tmp;
-		}
+		template<class T, size_t S, VectorOperationID VOP>
+		struct VectorOperation<T,S,VOP,2> {
+			static Vector<T, S> ANVIL_CALL execute(Vector<T, S> x, Vector<T, S> y) {
+				enum {
+					W = VectorOperationWidth<T,VOP>::value,
+					LOOPS = S / W,
+					REMAINDER = S % W
+				};
 
-		template<class T, size_t S>
-		static Vector<T, S> ANVIL_CALL cmpeq(Vector<T, S> x, Vector<T, S> y) {
-			Vector<T, S> tmp;
-			for (size_t i = 0; i < S; ++i) tmp.elements[i] = static_cast<T>(x.elements[i] == y.elements[i]);
-			return tmp;
-		}
+				Vector<T, S> tmp;
+				const Vector<T, W>* a = reinterpret_cast<const Vector<T, W>*>(&x);
+				const Vector<T, W>* b = reinterpret_cast<const Vector<T, W>*>(&y);
+				Vector<T, W>* t = reinterpret_cast<Vector<T, W>*>(&tmp);
 
-		template<class T, size_t S>
-		static Vector<T, S> ANVIL_CALL cmpne(Vector<T, S> x, Vector<T, S> y) {
-			Vector<T, S> tmp;
-			for (size_t i = 0; i < S; ++i) tmp.elements[i] = static_cast<T>(x.elements[i] != y.elements[i]);
-			return tmp;
-		}
+				for (size_t i = 0; i < LOOPS; ++i) t[i] = VectorOperation<T, W, VOP>::execute(a[i], b[i]);
+				for (size_t i = 0; i < REMAINDER; ++i) t[LOOPS].elements[i] = VectorOperation<T, 1, VOP>::execute(a[LOOPS].elements[i], b[LOOPS].elements[i]);
 
-		template<class T, size_t S>
-		static Vector<T, S> ANVIL_CALL cmplt(Vector<T, S> x, Vector<T, S> y) {
-			Vector<T, S> tmp;
-			for (size_t i = 0; i < S; ++i) tmp.elements[i] = static_cast<T>(x.elements[i] < y.elements[i]);
-			return tmp;
-		}
+				return tmp;
+			}
+		};
 
-		template<class T, size_t S>
-		static Vector<T, S> ANVIL_CALL cmpgt(Vector<T, S> x, Vector<T, S> y) {
-			Vector<T, S> tmp;
-			for (size_t i = 0; i < S; ++i) tmp.elements[i] = static_cast<T>(x.elements[i] > y.elements[i]);
-			return tmp;
-		}
+		template<class T, VectorOperationID VOP>
+		struct VectorOperation<T, 2, VOP,2> {
+			static inline Vector<T, 2> ANVIL_CALL execute(Vector<T,2> x, Vector<T, 2> y) {
+				Vector<T, 2> tmp;
+				tmp.elements[0] = VectorOperation<T, 1, VOP>::execute(x.elements[0], y.elements[0]);
+				tmp.elements[1] = VectorOperation<T, 1, VOP>::execute(x.elements[1], y.elements[1]);
+				return tmp;
+			}
+		};
 
-		template<class T, size_t S>
-		static Vector<T, S> ANVIL_CALL cmple (Vector<T, S> x, Vector<T, S> y) {
-			Vector<T, S> tmp;
-			for (size_t i = 0; i < S; ++i) tmp.elements[i] = static_cast<T>(x.elements[i] <= y.elements[i]);
-			return tmp;
-		}
+		template<class T, VectorOperationID VOP>
+		struct VectorOperation<T, 3, VOP, 2> {
+			static inline Vector<T, 3> ANVIL_CALL execute(Vector<T, 3> x, Vector<T, 3> y) {
+				Vector<T, 3> tmp;
+				tmp.elements[0] = VectorOperation<T, 1, VOP>::execute(x.elements[0], y.elements[0]);
+				tmp.elements[1] = VectorOperation<T, 1, VOP>::execute(x.elements[1], y.elements[1]);
+				tmp.elements[2] = VectorOperation<T, 1, VOP>::execute(x.elements[2], y.elements[2]);
+				return tmp;
+			}
+		};
 
-		template<class T, size_t S>
-		static Vector<T, S> ANVIL_CALL cmpge(Vector<T, S> x, Vector<T, S> y) {
-			Vector<T, S> tmp;
-			for (size_t i = 0; i < S; ++i) tmp.elements[i] = static_cast<T>(x.elements[i] >= y.elements[i]);
-			return tmp;
-		}
+		template<class T, VectorOperationID VOP>
+		struct VectorOperation<T, 4, VOP, 2> {
+			static inline Vector<T, 4> ANVIL_CALL execute(Vector<T, 4> x, Vector<T, 4> y) {
+				Vector<T, 4> tmp;
+				tmp.elements[0] = VectorOperation<T, 1, VOP>::execute(x.elements[0], y.elements[0]);
+				tmp.elements[1] = VectorOperation<T, 1, VOP>::execute(x.elements[1], y.elements[1]);
+				tmp.elements[2] = VectorOperation<T, 1, VOP>::execute(x.elements[2], y.elements[2]);
+				tmp.elements[3] = VectorOperation<T, 1, VOP>::execute(x.elements[3], y.elements[3]);
+				return tmp;
+			}
+		};
 
-		template<class T, size_t S>
-		static Vector<T, S> ANVIL_CALL and(Vector<T, S> x, Vector<T, S> y) {
-			Vector<T, S> tmp;
-			for (size_t i = 0; i < S; ++i) tmp.elements[i] = x.elements[i] & y.elements[i];
-			return tmp;
-		}
+		template<class T>
+		struct VectorOperation<T,1,VOP_add, 2> {
+			static ANVIL_STRONG_INLINE T ANVIL_CALL execute(T x, T y) {
+				return x + y;
+			}
+		}; 
 
-		template<class T, size_t S>
-		static Vector<T, S> ANVIL_CALL or(Vector<T, S> x, Vector<T, S> y) {
-			Vector<T, S> tmp;
-			for (size_t i = 0; i < S; ++i) tmp.elements[i] = x.elements[i] | y.elements[i];
-			return tmp;
-		}
+		template<class T>
+		struct VectorOperation<T, 1, VOP_sub, 2> {
+			static ANVIL_STRONG_INLINE T ANVIL_CALL execute(T x, T y) {
+				return x - y;
+			}
+		};
 
-		template<class T, size_t S>
-		static Vector<T, S> ANVIL_CALL xor(Vector<T, S> x, Vector<T, S> y) {
-			Vector<T, S> tmp;
-			for (size_t i = 0; i < S; ++i) tmp.elements[i] = x.elements[i] ^ y.elements[i];
-			return tmp;
-		}
+		template<class T>
+		struct VectorOperation<T, 1, VOP_mul, 2> {
+			static ANVIL_STRONG_INLINE T ANVIL_CALL execute(T x, T y) {
+				return x * y;
+			}
+		};
+
+		template<class T>
+		struct div {
+			static ANVIL_STRONG_INLINE T ANVIL_CALL execute(T x, T y) {
+				return x / y;
+			}
+		};
+
+		template<class T>
+		struct VectorOperation<T, 1, VOP_min, 2> {
+			static ANVIL_STRONG_INLINE T ANVIL_CALL execute(T x, T y) {
+				return std::min<T>(x, y);
+			}
+		};
+
+		template<class T>
+		struct VectorOperation<T, 1, VOP_max, 2> {
+			static ANVIL_STRONG_INLINE Vector<T, 1> ANVIL_CALL execute(Vector<T, 1> x, Vector<T, 1> y) {
+				return std::max<T>(x, y);
+			}
+		};
+
+		template<class T>
+		struct VectorOperation<T, 1, VOP_cmpeq, 2> {
+			static ANVIL_STRONG_INLINE Vector<T, 1> ANVIL_CALL execute(Vector<T, 1> x, Vector<T, 1> y) {
+				return static_cast<T>(x == y);
+			}
+		};
+
+		template<class T>
+		struct VectorOperation<T, 1, VOP_cmpne, 2> {
+			static ANVIL_STRONG_INLINE Vector<T, 1> ANVIL_CALL execute(Vector<T, 1> x, Vector<T, 1> y) {
+				return static_cast<T>(x != y);
+			}
+		};
+
+		template<class T>
+		struct VectorOperation<T, 1, VOP_cmplt, 2> {
+			static ANVIL_STRONG_INLINE Vector<T, 1> ANVIL_CALL execute(Vector<T, 1> x, Vector<T, 1> y) {
+				return static_cast<T>(x < y);
+			}
+		};
+
+		template<class T>
+		struct VectorOperation<T, 1, VOP_cmpgt, 2> {
+			static ANVIL_STRONG_INLINE Vector<T, 1> ANVIL_CALL execute(Vector<T, 1> x, Vector<T, 1> y) {
+				return static_cast<T>(x > y);
+			}
+		};
+
+		template<class T>
+		struct VectorOperation<T, 1, VOP_cmple, 2> {
+			static ANVIL_STRONG_INLINE Vector<T, 1> ANVIL_CALL execute(Vector<T, 1> x, Vector<T, 1> y) {
+				return static_cast<T>(x <= y);
+			}
+		};
+
+		template<class T>
+		struct VectorOperation<T, 1, VOP_cmpge, 2> {
+			static ANVIL_STRONG_INLINE Vector<T, 1> ANVIL_CALL execute(Vector<T, 1> x, Vector<T, 1> y) {
+				return static_cast<T>(x >= y);
+			}
+		};
+
+		template<class T>
+		struct VectorOperation<T, 1, VOP_and, 2> {
+			static ANVIL_STRONG_INLINE Vector<T, 1> ANVIL_CALL execute(Vector<T, 1> x, Vector<T, 1> y) {
+				return x & y;
+			}
+		};
+
+		template<>
+		struct VectorOperation<double, 1, VOP_and, 2> {
+			static ANVIL_STRONG_INLINE double ANVIL_CALL execute(double x, double y) {
+				union Union{
+					double f;
+					uint64_t i;
+				};
+				Union a, b;
+				a.f = x;
+				b.f = y;
+				a.i = a.i & b.i;
+				return a.f;
+			}
+		};
+
+		template<>
+		struct VectorOperation<float, 1, VOP_and, 2> {
+			static ANVIL_STRONG_INLINE float ANVIL_CALL execute(float x, float y) {
+				union Union {
+					float f;
+					uint32_t i;
+				};
+				Union a, b;
+				a.f = x;
+				b.f = y;
+				a.i = a.i & b.i;
+				return a.f;
+			}
+		};
+
+		template<class T>
+		struct VectorOperation<T, 1, VOP_or, 2> {
+			static ANVIL_STRONG_INLINE Vector<T, 1> ANVIL_CALL execute(Vector<T, 1> x, Vector<T, 1> y) {
+				return x | y;
+			}
+		};
+
+		template<>
+		struct VectorOperation<double, 1, VOP_or, 2> {
+			static ANVIL_STRONG_INLINE double ANVIL_CALL execute(double x, double y) {
+				union Union {
+					double f;
+					uint64_t i;
+				};
+				Union a, b;
+				a.f = x;
+				b.f = y;
+				a.i = a.i | b.i;
+				return a.f;
+			}
+		};
+
+		template<>
+		struct VectorOperation<float, 1, VOP_or, 2> {
+			static ANVIL_STRONG_INLINE float ANVIL_CALL execute(float x, float y) {
+				union Union {
+					float f;
+					uint32_t i;
+				};
+				Union a, b;
+				a.f = x;
+				b.f = y;
+				a.i = a.i | b.i;
+				return a.f;
+			}
+		};
+
+		template<class T>
+		struct VectorOperation<T, 1, VOP_xor, 2> {
+			static ANVIL_STRONG_INLINE Vector<T, 1> ANVIL_CALL execute(Vector<T, 1> x, Vector<T, 1> y) {
+				return x ^ y;
+			}
+		};
+
+		template<>
+		struct VectorOperation<double, 1, VOP_xor, 2> {
+			static ANVIL_STRONG_INLINE double ANVIL_CALL execute(double x, double y) {
+				union Union {
+					double f;
+					uint64_t i;
+				};
+				Union a, b;
+				a.f = x;
+				b.f = y;
+				a.i = a.i ^ b.i;
+				return a.f;
+			}
+		};
+
+		template<>
+		struct VectorOperation<float, 1, VOP_xor, 2> {
+			static ANVIL_STRONG_INLINE float ANVIL_CALL execute(float x, float y) {
+				union Union {
+					float f;
+					uint32_t i;
+				};
+				Union a, b;
+				a.f = x;
+				b.f = y;
+				a.i = a.i ^ b.i;
+				return a.f;
+			}
+		};
 
 #define ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,SIZE,SIZE2,INTRINSIC,FUNCTION,ZERO_FLAG) \
 		template<>\
-		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> ANVIL_CALL NAME <TYPE,SIZE>(Vector<TYPE, SIZE> x, Vector<TYPE, SIZE> y) {\
-			union IntrinsicUnion {\
-				Vector<TYPE,SIZE> v;\
-				Vector<TYPE,SIZE2> v2;\
-				INTRINSIC i;\
-			};\
-			IntrinsicUnion x_, y_;\
-			if (ZERO_FLAG) {\
-				x_.v2 = fill_0<TYPE,SIZE2>();\
-				y_.v2 = fill_0<TYPE,SIZE2>();\
+		struct VectorOperation<TYPE,SIZE,VOP_ ## NAME ,2> {\
+			static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> ANVIL_CALL execute(Vector<TYPE, SIZE> x, Vector<TYPE, SIZE> y) {\
+				union IntrinsicUnion {\
+					Vector<TYPE,SIZE> v;\
+					Vector<TYPE,SIZE2> v2;\
+					INTRINSIC i;\
+				};\
+				IntrinsicUnion x_, y_;\
+				if (ZERO_FLAG) {\
+					x_.v2 = fill_0<TYPE,SIZE2>();\
+					y_.v2 = fill_0<TYPE,SIZE2>();\
+				}\
+				x_.v = x;\
+				y_.v = y;\
+				x_.i = FUNCTION(x_.i, y_.i);\
+				return x_.v;\
 			}\
-			x_.v = x;\
-			y_.v = y;\
-			x_.i = FUNCTION(x_.i, y_.i);\
-			return x_.v;\
-		}
+		};
 
 #define ANVIL_SPECIALISE_VEC_VVV2(NAME,TYPE,INTRINSIC,FUNCTION,ZERO_FLAG)\
 	ANVIL_SPECIALISE_VEC_VVV_(NAME,TYPE,2,2,INTRINSIC,FUNCTION,false)
@@ -871,55 +1055,189 @@ namespace anvil {
 	ANVIL_SPECIALISE_VEC_VVV16(min, int8_t, __m128i, _mm_min_epi8, false)
 	ANVIL_SPECIALISE_VEC_VVV16(max, int8_t, __m128i, _mm_max_epi8, false)
 #endif
-		
 
 	// ---- ABS, SQRT, CBRT, NOT, CEIL, FLOOR ----
 
-	template<class T, size_t S>
-	static Vector<T, S> ANVIL_CALL abs(Vector<T, S> x) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp.elements[i] = abs(x.elements[i]);
-		return tmp;
-	}
+	template<> struct VectorOperationArgs<VOP_abs> { enum { value = 1 }; };
+	template<> struct VectorOperationArgs<VOP_sqrt> { enum { value = 1 }; };
+	template<> struct VectorOperationArgs<VOP_cbrt> { enum { value = 1 }; };
+	template<> struct VectorOperationArgs<VOP_not> { enum { value = 1 }; };
+	template<> struct VectorOperationArgs<VOP_ceil> { enum { value = 1 }; };
+	template<> struct VectorOperationArgs<VOP_floor> { enum { value = 1 }; };
 
-	template<class T, size_t S>
-	static Vector<T, S> ANVIL_CALL sqrt(Vector<T, S> x) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp.elements[i] = sqrt(x.elements[i]);
-		return tmp;
-	}
+	template<class T, size_t S, VectorOperationID VOP>
+	struct VectorOperation<T, S, VOP, 1> {
+		static Vector<T, S> ANVIL_CALL execute(Vector<T, S> x) {
+			enum {
+				W = VectorOperationWidth<T, VOP>::value,
+				LOOPS = S / W,
+				REMAINDER = S % W
+			};
 
-	template<class T, size_t S>
-	static Vector<T, S> ANVIL_CALL cbrt(Vector<T, S> x) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp.elements[i] = sqrt(x.elements[i]);
-		return tmp;
-	}
+			Vector<T, S> tmp;
+			const Vector<T, W>* a = reinterpret_cast<const Vector<T, W>*>(&x);
+			Vector<T, W>* t = reinterpret_cast<Vector<T, W>*>(&tmp);
 
-	template<class T, size_t S>
-	static Vector<T, S> ANVIL_CALL not(Vector<T, S> x) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp.elements[i] = ~ x.elements[i];
-		return tmp;
-	}
+			for (size_t i = 0; i < LOOPS; ++i) t[i] = VectorOperation<T, W, VOP>::execute(a[i]);
+			for (size_t i = 0; i < REMAINDER; ++i) t[LOOPS].elements[i] = VectorOperation<T, 1, VOP>::execute(a[LOOPS].elements[i]);
 
-	template<class T, size_t S>
-	static Vector<T, S> ANVIL_CALL ceil(Vector<T, S> x) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp.elements[i] = ceil(x.elements[i]);
-		return tmp;
-	}
+			return tmp;
+		}
+	};
 
-	template<class T, size_t S>
-	static Vector<T, S> ANVIL_CALL floor(Vector<T, S> x) {
-		Vector<T, S> tmp;
-		for (size_t i = 0; i < S; ++i) tmp.elements[i] = floor(x.elements[i]);
-		return tmp;
-	}
+	template<class T, VectorOperationID VOP>
+	struct VectorOperation<T, 2, VOP, 1> {
+		static inline Vector<T, 2> ANVIL_CALL execute(Vector<T, 2> x) {
+			Vector<T, 2> tmp;
+			tmp.elements[0] = VectorOperation<T, 1, VOP>::execute(x.elements[0]);
+			tmp.elements[1] = VectorOperation<T, 1, VOP>::execute(x.elements[1]);
+			return tmp;
+		}
+	};
+
+	template<class T, VectorOperationID VOP>
+	struct VectorOperation<T, 3, VOP, 1> {
+		static inline Vector<T, 3> ANVIL_CALL execute(Vector<T, 3> x) {
+			Vector<T, 3> tmp;
+			tmp.elements[0] = VectorOperation<T, 1, VOP>::execute(x.elements[0]);
+			tmp.elements[1] = VectorOperation<T, 1, VOP>::execute(x.elements[1]);
+			tmp.elements[2] = VectorOperation<T, 1, VOP>::execute(x.elements[2]);
+			return tmp;
+		}
+	};
+
+	template<class T, VectorOperationID VOP>
+	struct VectorOperation<T, 4, VOP, 1> {
+		static inline Vector<T, 4> ANVIL_CALL execute(Vector<T, 4> x) {
+			Vector<T, 4> tmp;
+			tmp.elements[0] = VectorOperation<T, 1, VOP>::execute(x.elements[0]);
+			tmp.elements[1] = VectorOperation<T, 1, VOP>::execute(x.elements[1]);
+			tmp.elements[2] = VectorOperation<T, 1, VOP>::execute(x.elements[2]);
+			tmp.elements[3] = VectorOperation<T, 1, VOP>::execute(x.elements[3]);
+			return tmp;
+		}
+	};
+
+	template<class T>
+	struct VectorOperation<T, 1, VOP_abs, 1> {
+		static ANVIL_STRONG_INLINE T ANVIL_CALL execute(T x) { return std::abs(x); }
+	};
+
+	template<>
+	struct VectorOperation<int64_t, 1, VOP_abs, 1> {
+		static ANVIL_STRONG_INLINE int64_t ANVIL_CALL execute(int64_t x) { return x * x < 0 ? -1 : 1; }
+	};
+
+	template<>
+	struct VectorOperation<int32_t, 1, VOP_abs, 1> {
+		static ANVIL_STRONG_INLINE int32_t ANVIL_CALL execute(int32_t x) { return x * x < 0 ? -1 : 1; }
+	};
+
+	template<>
+	struct VectorOperation<int16_t, 1, VOP_abs, 1> {
+		static ANVIL_STRONG_INLINE int16_t ANVIL_CALL execute(int16_t x) { return x * x < 0 ? -1 : 1; }
+	};
+
+	template<>
+	struct VectorOperation<int8_t, 1, VOP_abs, 1> {
+		static ANVIL_STRONG_INLINE int8_t ANVIL_CALL execute(int8_t x) { return x * x < 0 ? -1 : 1; }
+	};
+
+	template<>
+	struct VectorOperation<uint64_t, 1, VOP_abs, 1> {
+		static ANVIL_STRONG_INLINE uint64_t ANVIL_CALL execute(uint64_t x) { return x; }
+	};
+
+	template<>
+	struct VectorOperation<uint32_t, 1, VOP_abs, 1> {
+		static ANVIL_STRONG_INLINE uint32_t ANVIL_CALL execute(uint32_t x) { return x; }
+	};
+
+	template<>
+	struct VectorOperation<uint16_t, 1, VOP_abs, 1> {
+		static ANVIL_STRONG_INLINE uint16_t ANVIL_CALL execute(uint16_t x) { return x; }
+	};
+
+	template<>
+	struct VectorOperation<uint8_t, 1, VOP_abs, 1> {
+		static ANVIL_STRONG_INLINE uint8_t ANVIL_CALL execute(uint8_t x) { return x; }
+	};
+
+	template<class T>
+	struct VectorOperation<T, 1, VOP_sqrt, 1> {
+		static ANVIL_STRONG_INLINE T ANVIL_CALL execute(T x) { return std::sqrt(x); }
+	};
+
+	template<class T>
+	struct VectorOperation<T, 1, VOP_cbrt, 1> {
+		static ANVIL_STRONG_INLINE T ANVIL_CALL execute(T x) { return std::cbrt(x); }
+	};
+
+	template<class T>
+	struct VectorOperation<T, 1, VOP_not, 1> {
+		static ANVIL_STRONG_INLINE T ANVIL_CALL execute(T x) { return ~ x; }
+	};
+
+	template<>
+	struct VectorOperation<float, 1, VOP_not, 1> {
+		static ANVIL_STRONG_INLINE float ANVIL_CALL execute(float x) { 
+			union {
+				float f;
+				uint32_t i;
+			};
+			f = x;
+			i = ~i;
+			return f;
+		}
+	};
+
+	template<>
+	struct VectorOperation<double, 1, VOP_not, 1> {
+		static ANVIL_STRONG_INLINE double ANVIL_CALL execute(double x) {
+			union {
+				double f;
+				uint64_t i;
+			};
+			f = x;
+			i = ~i;
+			return f;
+		}
+	};
+
+	template<class T>
+	struct VectorOperation<T, 1, VOP_ceil, 1> {
+		static ANVIL_STRONG_INLINE T ANVIL_CALL execute(T x) { return x; }
+	};
+
+	template<>
+	struct VectorOperation<float, 1, VOP_ceil, 1> {
+		static ANVIL_STRONG_INLINE float ANVIL_CALL execute(float x) { return std::ceil(x); }
+	};
+
+	template<>
+	struct VectorOperation<double, 1, VOP_ceil, 1> {
+		static ANVIL_STRONG_INLINE double ANVIL_CALL execute(double x) { return std::ceil(x); }
+	};
+
+	template<class T>
+	struct VectorOperation<T, 1, VOP_floor, 1> {
+		static ANVIL_STRONG_INLINE T ANVIL_CALL execute(T x) { return x; }
+	};
+
+	template<>
+	struct VectorOperation<float, 1, VOP_floor, 1> {
+		static ANVIL_STRONG_INLINE float ANVIL_CALL execute(float x) { return std::floor(x); }
+	};
+
+	template<>
+	struct VectorOperation<double, 1, VOP_floor, 1> {
+		static ANVIL_STRONG_INLINE double ANVIL_CALL execute(double x) { return std::floor(x); }
+	};
 
 #define ANVIL_SPECIALISE_VEC_VV_(NAME,TYPE,SIZE,SIZE2,INTRINSIC,FUNCTION,ZERO_FLAG) \
-		template<>\
-		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> ANVIL_CALL NAME <TYPE,SIZE>(Vector<TYPE, SIZE> x) {\
+	template<>\
+	struct VectorOperation<TYPE,SIZE, VOP_ ## NAME ,1> {\
+		static ANVIL_STRONG_INLINE Vector<TYPE, SIZE> ANVIL_CALL execute(Vector<TYPE, SIZE> x) {\
 			union {\
 				Vector<TYPE,SIZE> v;\
 				Vector<TYPE,SIZE2> v2;\
@@ -929,7 +1247,8 @@ namespace anvil {
 			v = x;\
 			i = FUNCTION(i);\
 			return v;\
-		}
+		}\
+	};
 
 #define ANVIL_SPECIALISE_VEC_VV2(NAME,TYPE,INTRINSIC,FUNCTION,ZERO_FLAG)\
 	ANVIL_SPECIALISE_VEC_VV_(NAME,TYPE,2,2,INTRINSIC,FUNCTION,false)
