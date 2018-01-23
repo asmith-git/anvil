@@ -460,6 +460,53 @@ namespace anvil {
 		ANVIL_SPECIALISE_VEC_FILL_16(uint8_t, int8_t,   __m128i, _mm_set1_epi8,   _mm_set_epi8)
 #endif
 
+		// ---- CAST ----
+
+		template<class T, size_t S, class T2>
+		static ANVIL_CALL Vector<T, S> cast(Vector<T2,S> x) {
+			Vector<T, S> tmp;
+			for (size_t i = 0; i < S; ++i) tmp.elements[i] = static_cast<T>(x.elements[i]);
+			return tmp;
+		}
+
+#define ANVIL_SPECIALISE_VEC_CAST(TYPE,TYPE2,SIZE,INTRINSIC,INTRINSIC2,FUNCTION) \
+		template<>\
+		static ANVIL_CALL Vector<TYPE, SIZE> cast<TYPE,SIZE,TYPE2>(Vector<TYPE2, SIZE> x) {\
+			union {\
+				Vector<TYPE, SIZE> v1;\
+				Vector<TYPE2, SIZE> v2;\
+				INTRINSIC i1;\
+				INTRINSIC2 i2;\
+			};\
+			v2 = x;\
+			i1 = FUNCTION(i2);\
+			return v1;\
+		}
+
+#ifdef ANVIL_SSE2
+		ANVIL_SPECIALISE_VEC_CAST(double, int32_t, 2, __m128d, __m128i, _mm_cvtepi32_pd)
+		ANVIL_SPECIALISE_VEC_CAST(float,  int32_t, 4, __m128, __m128i,  _mm_cvtepi32_ps)
+		ANVIL_SPECIALISE_VEC_CAST(int32_t, double, 2, __m128i, __m128d, _mm_cvtpd_epi32)
+		ANVIL_SPECIALISE_VEC_CAST(int32_t, float,  4, __m128i, __m128,  _mm_cvtps_epi32)
+		ANVIL_SPECIALISE_VEC_CAST(double,  float,  2, __m128d, __m128,  _mm_cvtps_pd)
+		ANVIL_SPECIALISE_VEC_CAST(float,   double, 2, __m128, __m128d,  _mm_cvtpd_ps)
+#endif
+
+#ifdef ANVIL_SSE4_1
+		ANVIL_SPECIALISE_VEC_CAST(int64_t, int32_t,  2, __m128i, __m128i, _mm_cvtepi32_epi64)
+		ANVIL_SPECIALISE_VEC_CAST(int32_t, int16_t,  4, __m128i, __m128i, _mm_cvtepi16_epi32)
+		ANVIL_SPECIALISE_VEC_CAST(int64_t, int16_t,  2, __m128i, __m128i, _mm_cvtepi16_epi64)
+		ANVIL_SPECIALISE_VEC_CAST(int32_t, int16_t,  8, __m128i, __m128i, _mm_cvtepi8_epi16)
+		ANVIL_SPECIALISE_VEC_CAST(int32_t, int8_t,   4, __m128i, __m128i, _mm_cvtepi8_epi32)
+		ANVIL_SPECIALISE_VEC_CAST(int64_t, int8_t,   2, __m128i, __m128i, _mm_cvtepi8_epi64)
+		ANVIL_SPECIALISE_VEC_CAST(int64_t, uint32_t, 2, __m128i, __m128i, _mm_cvtepu32_epi64)
+		ANVIL_SPECIALISE_VEC_CAST(int64_t, uint16_t, 2, __m128i, __m128i, _mm_cvtepu16_epi64)
+		ANVIL_SPECIALISE_VEC_CAST(int32_t, uint16_t, 4, __m128i, __m128i, _mm_cvtepu16_epi32)
+		ANVIL_SPECIALISE_VEC_CAST(int64_t, uint8_t,  2, __m128i, __m128i, _mm_cvtepu8_epi64)
+		ANVIL_SPECIALISE_VEC_CAST(int32_t, uint8_t,  4, __m128i, __m128i, _mm_cvtepu8_epi32)
+		ANVIL_SPECIALISE_VEC_CAST(int32_t, uint8_t,  8, __m128i, __m128i, _mm_cvtepu8_epi16)
+#endif
+
 		// ---- ADD, SUB, MUL, DIV, MIN, MAX, CMPEQ, CMPNE, CMPLT, CMPGT, CMPLE, CMPGE, AND, OR, XOR ----
 
 		template<class T, size_t S>
