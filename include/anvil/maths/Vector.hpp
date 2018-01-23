@@ -512,23 +512,36 @@ namespace anvil {
 		ANVIL_SPECIALISE_VEC_CAST(int32_t, uint8_t,  4, __m128i, __m128i, _mm_cvtepu8_epi32)
 		ANVIL_SPECIALISE_VEC_CAST(int32_t, uint8_t,  8, __m128i, __m128i, _mm_cvtepu8_epi16)
 
-		ANVIL_SPECIALISE_VEC_CAST2(float,  int32_t, int64_t,  2)
-		ANVIL_SPECIALISE_VEC_CAST2(double, int32_t, int64_t,  2)
-		ANVIL_SPECIALISE_VEC_CAST2(float,  int32_t, uint32_t, 2)
-		ANVIL_SPECIALISE_VEC_CAST2(double, int32_t, uint32_t, 4)
-		ANVIL_SPECIALISE_VEC_CAST2(float,  int32_t, uint16_t, 2)
-		ANVIL_SPECIALISE_VEC_CAST2(double, int32_t, uint16_t, 4)
-		ANVIL_SPECIALISE_VEC_CAST2(float,  int32_t, uint8_t,  2)
-		ANVIL_SPECIALISE_VEC_CAST2(double, int32_t, uint8_t,  4)
-		ANVIL_SPECIALISE_VEC_CAST2(int64_t,  int32_t, float,  2)
-		ANVIL_SPECIALISE_VEC_CAST2(int64_t,  int32_t, double, 2)
-		ANVIL_SPECIALISE_VEC_CAST2(uint32_t, int32_t, float,  2)
-		ANVIL_SPECIALISE_VEC_CAST2(uint32_t, int32_t, double, 4)
-		ANVIL_SPECIALISE_VEC_CAST2(uint16_t, int32_t, float,  2)
-		ANVIL_SPECIALISE_VEC_CAST2(uint16_t, int32_t, double, 4)
-		ANVIL_SPECIALISE_VEC_CAST2(uint8_t,   int32_t, float,  2)
-		ANVIL_SPECIALISE_VEC_CAST2(uint8_t,   int32_t, double, 4)
+		ANVIL_SPECIALISE_VEC_CAST2(float,    int32_t, int64_t,  2)
+		ANVIL_SPECIALISE_VEC_CAST2(double,   int32_t, int64_t,  2)
+		ANVIL_SPECIALISE_VEC_CAST2(float,    int32_t, uint32_t, 2)
+		ANVIL_SPECIALISE_VEC_CAST2(double,   int32_t, uint32_t, 4)
+		ANVIL_SPECIALISE_VEC_CAST2(float,    int32_t, uint16_t, 2)
+		ANVIL_SPECIALISE_VEC_CAST2(double,   int32_t, uint16_t, 4)
+		ANVIL_SPECIALISE_VEC_CAST2(float,    int32_t, uint8_t,  2)
+		ANVIL_SPECIALISE_VEC_CAST2(double,   int32_t, uint8_t,  4)
+		ANVIL_SPECIALISE_VEC_CAST2(int64_t,  int32_t, float,    2)
+		ANVIL_SPECIALISE_VEC_CAST2(int64_t,  int32_t, double,   2)
+		ANVIL_SPECIALISE_VEC_CAST2(uint32_t, int32_t, float,    2)
+		ANVIL_SPECIALISE_VEC_CAST2(uint32_t, int32_t, double,   4)
+		ANVIL_SPECIALISE_VEC_CAST2(uint16_t, int32_t, float,    2)
+		ANVIL_SPECIALISE_VEC_CAST2(uint16_t, int32_t, double,   4)
+		ANVIL_SPECIALISE_VEC_CAST2(uint8_t,  int32_t, float,    2)
+		ANVIL_SPECIALISE_VEC_CAST2(uint8_t,  int32_t, double,   4)
 #endif
+
+		// ---- RESIZE ----
+
+		template<class T, size_t S, size_t S2>
+		static ANVIL_CALL Vector<T, S> resize(Vector<T,S2> x) {
+			union {
+				Vector<T,S> v1;
+				Vector<T, S2> v2;
+			};
+			if (S > S2) v1 = fill<T, S>(0);
+			v2 = x;
+			return v2;
+		}
 
 		// ---- ADD, SUB, MUL, DIV, MIN, MAX, CMPEQ, CMPNE, CMPLT, CMPGT, CMPLE, CMPGE, AND, OR, XOR ----
 
