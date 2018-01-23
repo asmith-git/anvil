@@ -636,7 +636,7 @@ namespace anvil {
 	ANVIL_SPECIALISE_VEC_VVV4(or,    float, __m128, _mm_or_ps,     _mm_setzero_ps, false)
 	ANVIL_SPECIALISE_VEC_VVV4(xor,   float, __m128, _mm_xor_ps,    _mm_setzero_ps, false)
 #endif
-
+		
 #ifdef ANVIL_SSE2
 	ANVIL_SPECIALISE_VEC_VVV2(add,   double, __m128d, _mm_add_pd,    _mm_setzero_pd, false)
 	ANVIL_SPECIALISE_VEC_VVV2(sub,   double, __m128d, _mm_sub_pd,    _mm_setzero_pd, false)
@@ -713,9 +713,23 @@ namespace anvil {
 	ANVIL_SPECIALISE_VEC_VVV16(or,    uint8_t, __m128i, _mm_or_si128,    _mm_setzero_si128, false)
 	ANVIL_SPECIALISE_VEC_VVV16(xor,   uint8_t, __m128i, _mm_xor_si128,   _mm_setzero_si128, false)
 #endif
+
+#ifdef ANVIL_SSE4_1
+	ANVIL_SPECIALISE_VEC_VVV4(min, int32_t, __m128i, _mm_min_epi32, _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV4(max, int32_t, __m128i, _mm_max_epi32, _mm_setzero_si128, false)
+
+	ANVIL_SPECIALISE_VEC_VVV4(min, uint32_t, __m128i, _mm_min_epu32, _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV4(max, uint32_t, __m128i, _mm_max_epu32, _mm_setzero_si128, false)
+
+	ANVIL_SPECIALISE_VEC_VVV8(min, uint16_t, __m128i, _mm_min_epu16, _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV8(max, uint16_t, __m128i, _mm_max_epu16, _mm_setzero_si128, false)
+
+	ANVIL_SPECIALISE_VEC_VVV16(min, int8_t, __m128i, _mm_min_epi8, _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VVV16(max, int8_t, __m128i, _mm_max_epi8, _mm_setzero_si128, false)
+#endif
 		
 
-	// ---- ABS, SQRT, CBRT, NOT ----
+	// ---- ABS, SQRT, CBRT, NOT, CEIL, FLOOR ----
 
 	template<class T, size_t S>
 	static Vector<T, S> ANVIL_CALL abs(Vector<T, S> x) {
@@ -742,6 +756,20 @@ namespace anvil {
 	static Vector<T, S> ANVIL_CALL not(Vector<T, S> x) {
 		Vector<T, S> tmp;
 		for (size_t i = 0; i < S; ++i) tmp.elements[i] = ~ x.elements[i];
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static Vector<T, S> ANVIL_CALL ceil(Vector<T, S> x) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp.elements[i] = ceil(x.elements[i]);
+		return tmp;
+	}
+
+	template<class T, size_t S>
+	static Vector<T, S> ANVIL_CALL floor(Vector<T, S> x) {
+		Vector<T, S> tmp;
+		for (size_t i = 0; i < S; ++i) tmp.elements[i] = floor(x.elements[i]);
 		return tmp;
 	}
 
@@ -798,13 +826,23 @@ namespace anvil {
 #ifdef ANVIL_SSE
 	ANVIL_SPECIALISE_VEC_VV4(sqrt, float, __m128, _mm_sqrt_ps, _mm_setzero_ps, false)
 #endif
+
 #ifdef ANVIL_SSE2
 	ANVIL_SPECIALISE_VEC_VV2(sqrt, double, __m128d, _mm_sqrt_pd, _mm_setzero_pd, false)
 #endif
+
 #ifdef ANVIL_SSE3
-		ANVIL_SPECIALISE_VEC_VV4( abs, int32_t, __m128i, _mm_abs_epi32, _mm_setzero_si128, false)
-		ANVIL_SPECIALISE_VEC_VV8( abs, int16_t, __m128i, _mm_abs_epi16, _mm_setzero_si128, false)
-		ANVIL_SPECIALISE_VEC_VV16(abs, int8_t,  __m128i, _mm_abs_epi8,  _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VV4( abs, int32_t, __m128i, _mm_abs_epi32, _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VV8( abs, int16_t, __m128i, _mm_abs_epi16, _mm_setzero_si128, false)
+	ANVIL_SPECIALISE_VEC_VV16(abs, int8_t,  __m128i, _mm_abs_epi8,  _mm_setzero_si128, false)
+#endif
+
+#ifdef ANVIL_SSE4_1
+	ANVIL_SPECIALISE_VEC_VV2(ceil,  double, __m128d, _mm_ceil_pd,  _mm_setzero_pd, false)
+	ANVIL_SPECIALISE_VEC_VV2(floor, double, __m128d, _mm_floor_pd, _mm_setzero_pd, false)
+
+	ANVIL_SPECIALISE_VEC_VV4(ceil,  float, __m128, _mm_ceil_ps,  _mm_setzero_ps, false)
+	ANVIL_SPECIALISE_VEC_VV4(floor, float, __m128, _mm_floor_ps, _mm_setzero_ps, false)
 #endif
 
 	}
