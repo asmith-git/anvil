@@ -93,6 +93,10 @@ namespace anvil { namespace simd {
 		enum { value = IS_NONE };
 	};
 
+	template<Operation O, class T> struct OptimalOperationSize {
+		enum { value = 1 };
+	};
+
 	template<Operation O>
 	struct OperationParams {
 		enum { value = 0 };
@@ -288,8 +292,8 @@ namespace anvil { namespace simd {
 	struct OperationImplementation<T, 1, O> {\
 		static ANVIL_STRONG_INLINE T ANVIL_CALL execute(T x) {\
 			return F(x);\
-				}\
-			};\
+		}\
+	};\
 
 	ANVIL_SIMD_IMPLEMENTATION_S_SSS_1(OP_FMA, ANVIL_SIMD_FMA)
 	ANVIL_SIMD_IMPLEMENTATION_S_SSS_1(OP_FMS, ANVIL_SIMD_FMS)
