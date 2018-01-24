@@ -132,10 +132,6 @@ namespace anvil { namespace simd {
 		OP_AVG, OP_SUM, OP_POPCN
 	};
 
-	template<Operation O, class T, size_t S> struct OperationSupport {
-		enum { value = IS_NONE };
-	};
-
 	template<Operation O, class T> struct OptimalOperationSize {
 		enum { value = 2 };
 	};
@@ -201,18 +197,39 @@ namespace anvil { namespace simd {
 			PARAMS = OperationParams<O>::value,
 			OPTIMAL = OptimalOperationSize<O,T>::value,
 			LOOP = S / OPTIMAL,
-			REMAINDER = S % OPTIMAL,
+			REMAINDER = S % OPTIMAL
 		};
+
+		typedef OperationImplementation<T, OPTIMAL, O> optimal_t;
 
 		static void ANVIL_CALL execute(const T* x, const T* y, T* o) {
 			size_t offset = 0;
-			for (size_t i = 0; i < LOOP; ++i) {
-				OperationImplementation<T, OPTIMAL, O>::execute(x + offset, y + offset, o + offset);
-				offset += OPTIMAL;
+			if (optimal_t::optimised()) {
+				for (size_t i = 0; i < LOOP; ++i) {
+					optimal_t::execute_op(x + offset, y + offset, o + offset);
+					offset += OPTIMAL;
+				}
+			} else {
+				for (size_t i = 0; i < LOOP; ++i) {
+					optimal_t::execute_nop(x + offset, y + offset, o + offset);
+					offset += OPTIMAL;
+				}
 			}
 			for (size_t i = 0; i < REMAINDER; ++i) {
 				o[i] = OperationImplementation<T, 1, O>::execute(x[offset + i], y[offset + i]);
 			}
+		}
+
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(const T* x, const T* y, T* o) {
+			execute(x, y, o);
+		}
+
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(const T* x, const T* y, T* o) {
+			execute(x, y, o);
+		}
+
+		static ANVIL_STRONG_INLINE bool ANVIL_CALL optimised() {
+			return false;
 		}
 	};
 
@@ -237,6 +254,40 @@ namespace anvil { namespace simd {
 			o[0] = OperationImplementation<T, 1, O>::execute(x[0]);
 			o[1] = OperationImplementation<T, 1, O>::execute(x[1]);
 		}
+
+		template<size_t S = PARAMS>
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(const T* x, const T* y, const T* z, T* o) {
+			execute(x, y, z, o);
+		}
+
+		template<size_t S = PARAMS>
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(const T* x, const T* y, T* o) {
+			execute(x, y, o);
+		}
+
+		template<size_t S = PARAMS>
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(const T* x, T* o) {
+			execute(x, o);
+		}
+
+		template<size_t S = PARAMS>
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(const T* x, const T* y, const T* z, T* o) {
+			execute(x, y, z, o);
+		}
+
+		template<size_t S = PARAMS>
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(const T* x, const T* y, T* o) {
+			execute(x, y, o);
+		}
+
+		template<size_t S = PARAMS>
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(const T* x, T* o) {
+			execute(x, o);
+		}
+
+		static ANVIL_STRONG_INLINE bool ANVIL_CALL optimised() {
+			return false;
+		}
 	};
 
 	template<class T, size_t S>
@@ -249,25 +300,61 @@ namespace anvil { namespace simd {
 			for (size_t i = 0; i < S; ++i) o[i] = x;
 		}
 
-		static ANVIL_CALL void execute(T x, T y, T* o) {
+		static void ANVIL_CALL execute(T x, T y, T* o) {
 			if (S > 2) execute(aOutput);
 			o[0] = x;
 			if (S > 1) o[1] = y;
 		}
 
-		static ANVIL_CALL void execute(T x, T y, T z, T* o) {
+		static void ANVIL_CALL execute(T x, T y, T z, T* o) {
 			if (S > 3) execute(aOutput);
 			o[0] = x;
 			if (S > 1) o[1] = y;
 			if (S > 2) o[2] = z;
 		}
 
-		static ANVIL_CALL void execute(T x, T y, T z, T w, T* o) {
+		static void ANVIL_CALL execute(T x, T y, T z, T w, T* o) {
 			if (S > 4) execute(aOutput);
 			o[0] = x;
 			if (S > 1) o[1] = y;
 			if (S > 2) o[2] = z;
 			if (S > 3) o[3] = w;
+		}
+
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(T x, T* o) {
+			execute(x, o);
+		}
+
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(T x, T y, T* o) {
+			execute(x, y, o);
+		}
+
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(T x, T y, T z, T* o) {
+			execute(x, y, z, o);
+		}
+
+		static ANVIL_STRONG_INLINE void  ANVIL_CALL execute_op(T x, T y, T z, T w, T* o) {
+			execute(x, y, z, w, o);
+		}
+
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(T x, T* o) {
+			execute(x, o);
+		}
+
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(T x, T y, T* o) {
+			execute(x, y, o);
+		}
+
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(T x, T y, T z, T* o) {
+			execute(x, y, z, o);
+		}
+
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(T x, T y, T z, T w, T* o) {
+			execute(x, y, z, w, o);
+		}
+
+		static ANVIL_STRONG_INLINE bool ANVIL_CALL optimised() {
+			return false;
 		}
 	};
 
@@ -442,15 +529,23 @@ namespace anvil { namespace simd {
 #ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
 
 	#define ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,TYPE,SIZE,INSTRUCTION,INTRINSIC,UP,DOWN,FUNCTION1,FUNCTION2)\
-	template<> struct OperationSupport<OP,TYPE,SIZE> { enum { value = OP }; };\
 	template<>\
 	struct OperationImplementation<TYPE, SIZE, OP> {\
+		static ANVIL_STRONG_INLINE bool ANVIL_CALL optimised() {\
+			return ANVIL_USE_ ## INSTRUCTION;\
+		}\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(const TYPE* x, const TYPE* y, TYPE* o) {\
+			INTRINSIC tmp = FUNCTION1(UP(x), UP(y));\
+			DOWN(o,tmp);\
+		}\
+		static inline void ANVIL_CALL execute_nop(const TYPE* x, const TYPE* y, TYPE* o) {\
+			for (size_t i = 0; i < SIZE; ++i) o[i] = FUNCTION2(x[i], y[i]); \
+		}\
 		static inline void ANVIL_CALL execute(const TYPE* x, const TYPE* y, TYPE* o) {\
-			if(ANVIL_USE_ ## INSTRUCTION) {\
-				INTRINSIC tmp = FUNCTION1(UP(x), UP(y));\
-				DOWN(o,tmp);\
+			if(optimised()) {\
+				execute_op(x,y,o);\
 			} else {\
-				for(size_t i = 0; i < SIZE; ++i) o[i] = FUNCTION2(x[i], y[i]);\
+				execute_nop(x,y,o);\
 			}\
 		}\
 	};
