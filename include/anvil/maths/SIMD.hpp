@@ -288,12 +288,12 @@ namespace anvil { namespace simd {
 #define ANVIL_SIMD_OR(X,Y) (X | Y)
 #define ANVIL_SIMD_XOR(X,Y) (X ^ Y)
 #if defined(ANVIL_USE_INTEL_SIMD_INTRINSICS) && ANVIL_CPP_VER >= 2011
-#define ANVIL_SIMD_AND_F(X,Y) _castu32_f32 (_castf32_u32 (X) & _castf32_u32 (Y))
-#define ANVIL_SIMD_OR_F(X,Y) _castu32_f32 (_castf32_u32 (X) | _castf32_u32 (Y))
-#define ANVIL_SIMD_XOR_F(X,Y) _castu32_f32 (_castf32_u32 (X) ^ _castf32_u32 (Y))
-#define ANVIL_SIMD_AND_D(X,Y) _castu64_f64 (_castf64_u64 (X) & _castf64_u64 (Y))
-#define ANVIL_SIMD_OR_D(X,Y) _castu64_f64 (_castf64_u64 (X) | _castf64_u64 (Y))
-#define ANVIL_SIMD_XOR_D(X,Y) _castu64_f64 (_castf64_u64 (X) ^ _castf64_u64(Y))
+#define ANVIL_SIMD_AND_F(X,Y) _castu32_f32(_castf32_u32 (X) & _castf32_u32 (Y))
+#define ANVIL_SIMD_OR_F(X,Y) _castu32_f32(_castf32_u32 (X) | _castf32_u32 (Y))
+#define ANVIL_SIMD_XOR_F(X,Y) _castu32_f32(_castf32_u32 (X) ^ _castf32_u32 (Y))
+#define ANVIL_SIMD_AND_D(X,Y) _castu64_f64(_castf64_u64 (X) & _castf64_u64 (Y))
+#define ANVIL_SIMD_OR_D(X,Y) _castu64_f64(_castf64_u64 (X) | _castf64_u64 (Y))
+#define ANVIL_SIMD_XOR_D(X,Y) _castu64_f64(_castf64_u64 (X) ^ _castf64_u64(Y))
 #else
 #define ANVIL_SIMD_AND_F(X,Y) value_cast<float>(value_cast<int32_t>(X) & value_cast<int32_t>(Y))
 #define ANVIL_SIMD_OR_F(X,Y) value_cast<float>(value_cast<int32_t>(X) | value_cast<int32_t>(Y))
