@@ -94,7 +94,7 @@ namespace anvil { namespace simd {
 	};
 
 	template<Operation O, class T> struct OptimalOperationSize {
-		enum { value = 1 };
+		enum { value = 2 };
 	};
 
 	template<Operation O>
@@ -151,9 +151,62 @@ namespace anvil { namespace simd {
 	template<> struct OperationParams<OP_POPCN>{ enum { value = 1 }; };
 
 	// Default Operation Implementation
-	
+
 	template<class T, size_t S, Operation O>
-	struct OperationImplementation;
+	struct OperationImplementation {
+		enum { 
+			PARAMS = OperationParams<O>::value,
+			OPTIMAL = OptimalOperationSize<O,T>::value,
+			LOOP = OPTIMAL == S / OPTIMAL,
+			REMAINDER = OPTIMAL == S % OPTIMAL,
+		};
+
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(const void* x, const void* y, void* o) {
+			const T* const a = static_cast<const T*>(x);
+			const T* const b = static_cast<const T*>(y);
+			T* const o_ = static_cast<T*>(o);
+			size_t offset = 0;
+			for (size_t i = 0; i < LOOP; ++i) {
+				OperationImplementation<T, OPTIMAL, O>::execute(a + offset, b + offset, o_ + offset);
+				offset += OPTIMAL;
+			}
+			for (size_t i = 0; i < REMAINDER; ++i) {
+				o_[i] = OperationImplementation<T, 1, O>::execute(a[offset + i], b[offset + i]);
+			}
+		}
+	};
+
+	template<class T, Operation O>
+	struct OperationImplementation<T,2,O> {
+		enum { PARAMS = OperationParams<O>::value };
+
+		template<size_t S = PARAMS>
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(const void* x, const void* y, const void* z, void* o) {
+			const T* const a = static_cast<const T*>(x);
+			const T* const b = static_cast<const T*>(y);
+			const T* const c = static_cast<const T*>(z);
+			T* const o_ = static_cast<T*>(o);
+			o_[0] = OperationImplementation<T, 1, O>::execute(a[0], b[0], c[0]);
+			o_[1] = OperationImplementation<T, 1, O>::execute(a[1], b[1], c[1]);
+		}
+
+		template<size_t S = PARAMS>
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(const void* x, const void* y, void* o) {
+			const T* const a = static_cast<const T*>(x);
+			const T* const b = static_cast<const T*>(y);
+			T* const o_ = static_cast<T*>(o);
+			o_[0] = OperationImplementation<T, 1, O>::execute(a[0], b[0]);
+			o_[1] = OperationImplementation<T, 1, O>::execute(a[1], b[1]);
+		}
+
+		template<size_t S = PARAMS>
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(const void* x, void* o) {
+			const T* const a = static_cast<const T*>(x);
+			T* const o_ = static_cast<T*>(o);
+			o_[0] = OperationImplementation<T, 1, O>::execute(a[0]);
+			o_[1] = OperationImplementation<T, 1, O>::execute(a[1]);
+		}
+	};
 
 	template<class T, size_t S>
 	struct OperationImplementation<T, S, OP_FILL> {
@@ -166,7 +219,6 @@ namespace anvil { namespace simd {
 			for (size_t i = 0; i < S; ++i) out[i] == x;
 		}
 
-		template<size_t S2 = S>
 		static ANVIL_CALL void execute(T x, T y, void* aOutput) {
 			if (S > 2) execute(aOutput);
 			T* const out = static_cast<T*>(aOutput);
@@ -175,7 +227,6 @@ namespace anvil { namespace simd {
 			if (S > 2) out[2] = z;
 		}
 
-		template<size_t S2 = S>
 		static ANVIL_CALL void execute(T x, T y, T z, void* aOutput) {
 			if (S > 3) execute(aOutput);
 			T* const out = static_cast<T*>(aOutput);
@@ -184,7 +235,6 @@ namespace anvil { namespace simd {
 			if (S > 2) out[2] = z;
 		}
 
-		template<size_t S2 = S>
 		static ANVIL_CALL void execute(T x, T y, T z, T w, void* aOutput) {
 			if (S > 4) execute(aOutput);
 			T* const out = static_cast<T*>(aOutput);
@@ -252,8 +302,9 @@ namespace anvil { namespace simd {
 #define ANVIL_SIMD_CMPLE(X,Y) (X <= Y)
 #define ANVIL_SIMD_CMPGE(X,Y) (X >= Y)
 #define ANVIL_SIMD_DIM(X,Y) (X > Y ? X - Y : 0)
+#define ANVIL_SIMD_NOP2(X, Y) X
 #define ANVIL_SIMD_NOT(X) (~X)
-#define ANVIL_SIMD_NOP(X) X
+#define ANVIL_SIMD_NOP1(X) X
 
 #define ANVIL_SIMD_IMPLEMENTATION_S_SSS_1(O,F)\
 	template<class T>\
@@ -312,8 +363,8 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_IMPLEMENTATION_S_SS_1_SPECIALISE(OP_XOR, double, ANVIL_SIMD_XOR_D)
 	ANVIL_SIMD_IMPLEMENTATION_S_SS_1(OP_LSHIFT, ANVIL_SIMD_LSHIFT)
 	ANVIL_SIMD_IMPLEMENTATION_S_SS_1(OP_RSHIFT, ANVIL_SIMD_RSHIFT)
-	ANVIL_SIMD_IMPLEMENTATION_S_SS_1_SPECIALISE(OP_LSHIFT, float, ANVIL_SIMD_NOP)
-	ANVIL_SIMD_IMPLEMENTATION_S_SS_1_SPECIALISE(OP_RSHIFT, double, ANVIL_SIMD_NOP)
+	ANVIL_SIMD_IMPLEMENTATION_S_SS_1_SPECIALISE(OP_LSHIFT, float, ANVIL_SIMD_NOP2)
+	ANVIL_SIMD_IMPLEMENTATION_S_SS_1_SPECIALISE(OP_RSHIFT, double, ANVIL_SIMD_NOP2)
 	ANVIL_SIMD_IMPLEMENTATION_S_SS_1(OP_MOD, ANVIL_SIMD_MOD)
 	ANVIL_SIMD_IMPLEMENTATION_S_SS_1_SPECIALISE(OP_MOD, float, std::fmod)
 	ANVIL_SIMD_IMPLEMENTATION_S_SS_1_SPECIALISE(OP_MOD, double, std::fmod)
@@ -332,21 +383,21 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_ABS, std::abs)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1_SPECIALISE(OP_ABS, float, std::fabs)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1_SPECIALISE(OP_ABS, double, std::fabs)
-	ANVIL_SIMD_IMPLEMENTATION_S_S_1_SPECIALISE(OP_ABS, uint64_t, ANVIL_SIMD_NOP)
-	ANVIL_SIMD_IMPLEMENTATION_S_S_1_SPECIALISE(OP_ABS, uint32_t, ANVIL_SIMD_NOP)
-	ANVIL_SIMD_IMPLEMENTATION_S_S_1_SPECIALISE(OP_ABS, uint16_t, ANVIL_SIMD_NOP)
-	ANVIL_SIMD_IMPLEMENTATION_S_S_1_SPECIALISE(OP_ABS, uint8_t, ANVIL_SIMD_NOP)
+	ANVIL_SIMD_IMPLEMENTATION_S_S_1_SPECIALISE(OP_ABS, uint64_t, ANVIL_SIMD_NOP1)
+	ANVIL_SIMD_IMPLEMENTATION_S_S_1_SPECIALISE(OP_ABS, uint32_t, ANVIL_SIMD_NOP1)
+	ANVIL_SIMD_IMPLEMENTATION_S_S_1_SPECIALISE(OP_ABS, uint16_t, ANVIL_SIMD_NOP1)
+	ANVIL_SIMD_IMPLEMENTATION_S_S_1_SPECIALISE(OP_ABS, uint8_t, ANVIL_SIMD_NOP1)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_EXP, std::exp)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_LOG, std::log)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_LOG2, std::log2)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_LOG10, std::log10)
-	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_CEIL, ANVIL_SIMD_NOP)
+	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_CEIL, ANVIL_SIMD_NOP1)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1_SPECIALISE(OP_CEIL, float, std::ceil)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1_SPECIALISE(OP_CEIL, double, std::ceil)
-	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_FLOOR, ANVIL_SIMD_NOP)
+	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_FLOOR, ANVIL_SIMD_NOP1)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1_SPECIALISE(OP_FLOOR, float, std::floor)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1_SPECIALISE(OP_FLOOR, double, std::floor)
-	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_ROUND, ANVIL_SIMD_NOP)
+	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_ROUND, ANVIL_SIMD_NOP1)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1_SPECIALISE(OP_ROUND, float, std::round)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1_SPECIALISE(OP_ROUND, double, std::round)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_SIN, std::sin)
@@ -360,8 +411,8 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_TANH, std::tanh)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_SQRT, std::sqrt)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_CBRT, std::cbrt)
-	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_AVG, ANVIL_SIMD_NOP)
-	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_SUM, ANVIL_SIMD_NOP)
+	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_AVG, ANVIL_SIMD_NOP1)
+	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_SUM, ANVIL_SIMD_NOP1)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_POPCN, popcount)
 }}
 
