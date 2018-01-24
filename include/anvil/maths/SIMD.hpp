@@ -487,6 +487,7 @@ namespace anvil { namespace simd {
 #ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
 
 	#define ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,TYPE,SIZE,INSTRUCTION,INTRINSIC,FUNCTION,FUNCTION2)\
+	template<> struct OperationSupport<OP,TYPE,SIZE> { enum { value = OP }; };\
 	template<>\
 	struct OperationImplementation<TYPE, SIZE, OP> {\
 		static inline void ANVIL_CALL execute(const void* x, const void* y, void* o) {\
