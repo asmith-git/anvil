@@ -213,12 +213,12 @@ namespace anvil { namespace simd {
 	template<class T, size_t S>
 	struct OperationImplementation<T, S, OP_FILL> {
 		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(void* aOutput) {
-			if (S > 2) memset(aOutput, 0, sizeof(T) * S);
+			memset(aOutput, 0, sizeof(T) * S);
 		}
 
 		static void ANVIL_CALL execute(T x, void* aOutput) {
 			T* const out = static_cast<T*>(aOutput);
-			for (size_t i = 0; i < S; ++i) out[i] == x;
+			for (size_t i = 0; i < S; ++i) out[i] = x;
 		}
 
 		static ANVIL_CALL void execute(T x, T y, void* aOutput) {
@@ -226,7 +226,6 @@ namespace anvil { namespace simd {
 			T* const out = static_cast<T*>(aOutput);
 			out[0] = x;
 			if (S > 1) out[1] = y;
-			if (S > 2) out[2] = z;
 		}
 
 		static ANVIL_CALL void execute(T x, T y, T z, void* aOutput) {
