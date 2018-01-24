@@ -68,11 +68,11 @@ namespace anvil { namespace simd {
 		__cpuid(data[0], 0);
 		const int ids = data[0][0];
 		if (ids < 7) {
-			memset(data[1], 0, sizeof(int) * 4);
 			if (ids < 1) {
 				return false;
 			}else {
 				__cpuidex(data[0], 1, 0);
+				memset(data[1], 0, sizeof(int) * 4);
 			}
 		}else {
 			__cpuidex(data[0], 1, 0);
