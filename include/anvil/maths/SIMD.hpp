@@ -22,6 +22,7 @@
 #if ANVIL_ARCHITECTURE == ANVIL_X86 || ANVIL_ARCHITECTURE == ANVIL_X64
 	#define ANVIL_USE_INTEL_SIMD_INTRINSICS
 	#include "immintrin.h"
+	#include <intrin.h>
 #endif
 
 namespace anvil { namespace simd {
@@ -31,7 +32,6 @@ namespace anvil { namespace simd {
 	enum InstructionSet {
 		IS_NONE,
 #ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
-#if ANVIL_CPP_VER < 2011
 		IS_MMX,
 		IS_SSE,
 		IS_SSE_2,
@@ -44,20 +44,6 @@ namespace anvil { namespace simd {
 		IS_AVX_2,
 		IS_KNC,
 		IS_AVX_512
-#else
-		IS_MMX     = _FEATURE_MMX,
-		IS_SSE     = _FEATURE_SSE,
-		IS_SSE_2   = _FEATURE_SSE2,
-		IS_SSE_3   = _FEATURE_SSE3,
-		IS_SSSE_3  = _FEATURE_SSSE3,
-		IS_SSE_4_1 = _FEATURE_SSE4_1,
-		IS_SSE_4_2 = _FEATURE_SSE4_2,
-		IS_AVX     = _FEATURE_AVX,
-		IS_FMA     = _FEATURE_FMA,
-		IS_AVX_2   = _FEATURE_AVX2,
-		IS_KNC     = _FEATURE_KNCNI,
-		IS_AVX_512 = _FEATURE_AVX512F | _FEATURE_AVX512ER | _FEATURE_AVX512PF | _FEATURE_AVX512CD
-#endif
 #endif
 	};
 
@@ -409,6 +395,8 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_IMPLEMENTATION_S_SS_1(OP_MUL, ANVIL_SIMD_MUL)
 	ANVIL_SIMD_IMPLEMENTATION_S_SS_1(OP_DIV, ANVIL_SIMD_DIV)
 	ANVIL_SIMD_IMPLEMENTATION_S_SS_1(OP_AND, ANVIL_SIMD_AND)
+	ANVIL_SIMD_IMPLEMENTATION_S_SS_1(OP_MIN, std::min)
+	ANVIL_SIMD_IMPLEMENTATION_S_SS_1(OP_MAX, std::max)
 	ANVIL_SIMD_IMPLEMENTATION_S_SS_1_SPECIALISE(OP_AND, float, ANVIL_SIMD_AND_F)
 	ANVIL_SIMD_IMPLEMENTATION_S_SS_1_SPECIALISE(OP_AND, double, ANVIL_SIMD_AND_D)
 	ANVIL_SIMD_IMPLEMENTATION_S_SS_1(OP_OR, ANVIL_SIMD_OR)
@@ -497,12 +485,22 @@ namespace anvil { namespace simd {
 #define _up3(X) _mm_set_ps(X[0], X[1], X[2], 0)
 #define _up2(X) _mm_set_ps(X[0], X[1], 0, 0)
 #define _down4(X,Y) *reinterpret_cast<__m128*>(X) = Y
-#define _down3(X,Y)
-#define _down2(X,Y)
-	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_ADD, float, SSE, __m128, _mm_add_ps, ANVIL_SIMD_ADD)
-	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_SUB, float, SSE, __m128, _mm_sub_ps, ANVIL_SIMD_SUB)
-	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_MUL, float, SSE, __m128, _mm_mul_ps, ANVIL_SIMD_MUL)
-	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_DIV, float, SSE, __m128, _mm_div_ps, ANVIL_SIMD_DIV)
+#define _down3(X,Y) X[0] = Y.m128_f32[0]; X[1] = Y.m128_f32[1]; X[2] = Y.m128_f32[2];
+#define _down2(X,Y) X[0] = Y.m128_f32[0]; X[1] = Y.m128_f32[1];
+
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_ADD,   float, SSE, __m128, _mm_add_ps,    ANVIL_SIMD_ADD)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_SUB,   float, SSE, __m128, _mm_sub_ps,    ANVIL_SIMD_SUB)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_MUL,   float, SSE, __m128, _mm_mul_ps,    ANVIL_SIMD_MUL)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_DIV,   float, SSE, __m128, _mm_div_ps,    ANVIL_SIMD_DIV)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_MIN,   float, SSE, __m128, _mm_min_ps,    std::min)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_MAX,   float, SSE, __m128, _mm_max_ps,    std::max)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_CMPEQ, float, SSE, __m128, _mm_cmpeq_ps,  ANVIL_SIMD_CMPEQ)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_CMPNE, float, SSE, __m128, _mm_cmpneq_ps, ANVIL_SIMD_CMPNE)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_CMPLT, float, SSE, __m128, _mm_cmplt_ps,  ANVIL_SIMD_CMPLT)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_CMPGT, float, SSE, __m128, _mm_cmpgt_ps,  ANVIL_SIMD_CMPGT)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_CMPLE, float, SSE, __m128, _mm_cmple_ps,  ANVIL_SIMD_CMPLE)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_CMPGE, float, SSE, __m128, _mm_cmpge_ps,  ANVIL_SIMD_CMPGE)
+
 #undef _up4
 #undef _up3
 #undef _up2
