@@ -204,17 +204,14 @@ namespace anvil { namespace simd {
 			REMAINDER = S % OPTIMAL,
 		};
 
-		static void ANVIL_CALL execute(const void* x, const void* y, void* o) {
-			const T* const a = static_cast<const T*>(x);
-			const T* const b = static_cast<const T*>(y);
-			T* const o_ = static_cast<T*>(o);
+		static void ANVIL_CALL execute(const T* x, const T* y, T* o) {
 			size_t offset = 0;
 			for (size_t i = 0; i < LOOP; ++i) {
-				OperationImplementation<T, OPTIMAL, O>::execute(a + offset, b + offset, o_ + offset);
+				OperationImplementation<T, OPTIMAL, O>::execute(x + offset, y + offset, o + offset);
 				offset += OPTIMAL;
 			}
 			for (size_t i = 0; i < REMAINDER; ++i) {
-				o_[i] = OperationImplementation<T, 1, O>::execute(a[offset + i], b[offset + i]);
+				o[i] = OperationImplementation<T, 1, O>::execute(x[offset + i], y[offset + i]);
 			}
 		}
 	};
@@ -224,88 +221,71 @@ namespace anvil { namespace simd {
 		enum { PARAMS = OperationParams<O>::value };
 
 		template<size_t S = PARAMS>
-		static inline void ANVIL_CALL execute(const void* x, const void* y, const void* z, void* o) {
-			const T* const a = static_cast<const T*>(x);
-			const T* const b = static_cast<const T*>(y);
-			const T* const c = static_cast<const T*>(z);
-			T* const o_ = static_cast<T*>(o);
-			o_[0] = OperationImplementation<T, 1, O>::execute(a[0], b[0], c[0]);
-			o_[1] = OperationImplementation<T, 1, O>::execute(a[1], b[1], c[1]);
+		static inline void ANVIL_CALL execute(const T* x, const T* y, const T* z, T* o) {
+			o[0] = OperationImplementation<T, 1, O>::execute(x[0], y[0], z[0]);
+			o[1] = OperationImplementation<T, 1, O>::execute(x[1], y[1], z[1]);
 		}
 
 		template<size_t S = PARAMS>
-		static inline void ANVIL_CALL execute(const void* x, const void* y, void* o) {
-			const T* const a = static_cast<const T*>(x);
-			const T* const b = static_cast<const T*>(y);
-			T* const o_ = static_cast<T*>(o);
-			o_[0] = OperationImplementation<T, 1, O>::execute(a[0], b[0]);
-			o_[1] = OperationImplementation<T, 1, O>::execute(a[1], b[1]);
+		static inline void ANVIL_CALL execute(const T* x, const T* y, T* o) {
+			o[0] = OperationImplementation<T, 1, O>::execute(x[0], y[0]);
+			o[1] = OperationImplementation<T, 1, O>::execute(x[1], y[1]);
 		}
 
 		template<size_t S = PARAMS>
-		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(const void* x, void* o) {
-			const T* const a = static_cast<const T*>(x);
-			T* const o_ = static_cast<T*>(o);
-			o_[0] = OperationImplementation<T, 1, O>::execute(a[0]);
-			o_[1] = OperationImplementation<T, 1, O>::execute(a[1]);
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(const T* x, T* o) {
+			o[0] = OperationImplementation<T, 1, O>::execute(x[0]);
+			o[1] = OperationImplementation<T, 1, O>::execute(x[1]);
 		}
 	};
 
 	template<class T, size_t S>
 	struct OperationImplementation<T, S, OP_FILL> {
-		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(void* aOutput) {
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(T* aOutput) {
 			memset(aOutput, 0, sizeof(T) * S);
 		}
 
-		static void ANVIL_CALL execute(T x, void* aOutput) {
-			T* const out = static_cast<T*>(aOutput);
-			for (size_t i = 0; i < S; ++i) out[i] = x;
+		static void ANVIL_CALL execute(T x, T* o) {
+			for (size_t i = 0; i < S; ++i) o[i] = x;
 		}
 
-		static ANVIL_CALL void execute(T x, T y, void* aOutput) {
+		static ANVIL_CALL void execute(T x, T y, T* o) {
 			if (S > 2) execute(aOutput);
-			T* const out = static_cast<T*>(aOutput);
-			out[0] = x;
-			if (S > 1) out[1] = y;
+			o[0] = x;
+			if (S > 1) o[1] = y;
 		}
 
-		static ANVIL_CALL void execute(T x, T y, T z, void* aOutput) {
+		static ANVIL_CALL void execute(T x, T y, T z, T* o) {
 			if (S > 3) execute(aOutput);
-			T* const out = static_cast<T*>(aOutput);
-			out[0] = x;
-			if (S > 1) out[1] = y;
-			if (S > 2) out[2] = z;
+			o[0] = x;
+			if (S > 1) o[1] = y;
+			if (S > 2) o[2] = z;
 		}
 
-		static ANVIL_CALL void execute(T x, T y, T z, T w, void* aOutput) {
+		static ANVIL_CALL void execute(T x, T y, T z, T w, T* o) {
 			if (S > 4) execute(aOutput);
-			T* const out = static_cast<T*>(aOutput);
-			out[0] = x;
-			if (S > 1) out[1] = y;
-			if (S > 2) out[2] = z;
-			if (S > 3) out[3] = w;
+			o[0] = x;
+			if (S > 1) o[1] = y;
+			if (S > 2) o[2] = z;
+			if (S > 3) o[3] = w;
 		}
 	};
 
 	template<class T, size_t S>
 	struct OperationImplementation<T, S, OP_CAST> {
 		template<class T2>
-		static void ANVIL_CALL execute(const void* x, void* y) {
-			const T2* const a = static_cast<const T2*>(x);
-			T* const b = static_cast<T*>(y);
-			for (size_t i = 0; i < S; ++i) b[i] = static_cast<T>(a[i]);
+		static void ANVIL_CALL execute(const T2* x, T* y) {
+			for (size_t i = 0; i < S; ++i) y[i] = static_cast<T>(x[i]);
 		}
 	};
 
 	template<class T, size_t S>
 	struct OperationImplementation<T, S, OP_RESIZE> {
 		template<size_t S2>
-		static void ANVIL_CALL execute(const void* x, void* y) {
+		static void ANVIL_CALL execute(const T* x, T* y) {
 			if (S > S2) Operation<T, S, OP_FILL>::execute(y);
-			const T* const a = static_cast<const T*>(x);
-			T* const b = static_cast<T*>(y);
 			enum {S3 = S > S2 ? S2 : S };
-			for (size_t i = 0; i < S3; ++i) b[i] = a[i];
+			for (size_t i = 0; i < S3; ++i) y[i] = x[i];
 		}
 	};
 
