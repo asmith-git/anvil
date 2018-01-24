@@ -218,8 +218,8 @@ namespace anvil { namespace simd {
 		enum { 
 			PARAMS = OperationParams<O>::value,
 			OPTIMAL = OptimalOperationSize<O,T>::value,
-			LOOP = OPTIMAL == S / OPTIMAL,
-			REMAINDER = OPTIMAL == S % OPTIMAL,
+			LOOP = S / OPTIMAL,
+			REMAINDER = S % OPTIMAL,
 		};
 
 		static void ANVIL_CALL execute(const void* x, const void* y, void* o) {
@@ -396,8 +396,8 @@ namespace anvil { namespace simd {
 	struct OperationImplementation<T, 1, O> {\
 		static ANVIL_STRONG_INLINE T ANVIL_CALL execute(T x, T y) {\
 			return F(x, y);\
-			}\
-		};\
+		}\
+	};\
 
 #define ANVIL_SIMD_IMPLEMENTATION_S_S_1(O,F)\
 	template<class T>\
@@ -483,6 +483,45 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_AVG, ANVIL_SIMD_NOP1)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_SUM, ANVIL_SIMD_NOP1)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_POPCN, popcount)
+
+#ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
+
+	#define ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,TYPE,SIZE,INSTRUCTION,INTRINSIC,FUNCTION,FUNCTION2)\
+	template<>\
+	struct OperationImplementation<TYPE, SIZE, OP> {\
+		static inline void ANVIL_CALL execute(const void* x, const void* y, void* o) {\
+			struct vec_t { TYPE data[SIZE]; };\
+			const vec_t* const xv = static_cast<const vec_t*>(x);\
+			const vec_t* const yv = static_cast<const vec_t*>(y);\
+			vec_t* const ov = static_cast<vec_t*>(o);\
+			if(ANVIL_USE_ ## INSTRUCTION) {\
+				union Union {\
+					vec_t v;\
+					INTRINSIC i;\
+				};\
+				Union a, b;\
+				a.v = *xv;\
+				b.v = *yv;\
+				a.i = FUNCTION(a.i, b.i);\
+				*ov = a.v;\
+			} else {\
+				for(size_t i = 0; i < SIZE; ++i) ov->data[i] = FUNCTION2(xv->data[i], yv->data[i]);\
+			}\
+		}\
+	};
+
+	#define ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP,TYPE,INSTRUCTION,INTRINSIC,FUNCTION, FUNCTION2)\
+		template<> struct OptimalOperationSize<OP,TYPE> { enum { value = 4 }; };\
+		ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,TYPE,4,INSTRUCTION,INTRINSIC, FUNCTION, FUNCTION2)\
+		ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,TYPE,3,INSTRUCTION,INTRINSIC, FUNCTION, FUNCTION2)\
+		ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,TYPE,2,INSTRUCTION,INTRINSIC, FUNCTION, FUNCTION2)
+
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_ADD, float, SSE, __m128, _mm_add_ps, ANVIL_SIMD_ADD)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_SUB, float, SSE, __m128, _mm_sub_ps, ANVIL_SIMD_SUB)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_MUL, float, SSE, __m128, _mm_mul_ps, ANVIL_SIMD_MUL)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_DIV, float, SSE, __m128, _mm_div_ps, ANVIL_SIMD_DIV)
+
+#endif
 }}
 
 #endif
