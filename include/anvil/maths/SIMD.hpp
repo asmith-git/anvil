@@ -64,8 +64,52 @@ namespace anvil { namespace simd {
 	static ANVIL_STRONG_INLINE bool ANVIL_CALL IsInstructionSetSupported(InstructionSet aSet) {
 #ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
 #if ANVIL_CPP_VER < 2011
-		//! \todo Better CPU feature detection on older compilers
-		return aSet >= (ANVIL_ARCHITECTURE_BITS <= 32 ? IS_MMX : IS_SSE) && aSet <= IS_SSE_2;
+		int data[2][4];
+		__cpuid(data[0], 0);
+		const int ids = data[0][0];
+		if (ids < 7) {
+			memset(data[1], 0, sizeof(int) * 4);
+			if (ids < 1) {
+				return false;
+			}else {
+				__cpuidex(data[0], 1, 0);
+			}
+		}else {
+			__cpuidex(data[0], 1, 0);
+			__cpuidex(data[1], 7, 0);
+		}
+		enum {
+			EAX_,
+			EBX_,
+			ECX_,
+			EDX_
+		};
+		switch (aSet) {
+		case IS_MMX:
+			return data[0][EDX_] & (1 << 23);
+		case IS_SSE:
+			return data[0][EDX_] & (1 << 25);
+		case IS_SSE_2:
+			return data[0][EDX_] & (1 << 26);
+		case IS_SSE_3:
+			return data[0][ECX_] & (1 << 0);
+		case IS_SSSE_3:
+			return data[0][ECX_] & (1 << 9);
+		case IS_SSE_4_1:
+			return data[0][ECX_] & (1 << 19);
+		case IS_SSE_4_2:
+			return data[0][ECX_] & (1 << 20);
+		case IS_AVX:
+			return data[0][ECX_] & (1 << 28);
+		case IS_FMA:
+			return data[0][ECX_] & (1 << 12);
+		case IS_AVX_2:
+			return data[1][EBX_] & (1 << 5);
+		case IS_KNC:
+			return false; //! \todo Implement
+		case IS_AVX_512:
+			return (data[1][EBX_] & (1 << 16)) && (data[1][EBX_] & (1 << 26)) && (data[1][EBX_] & (1 << 27)) && (data[1][EBX_] & (1 << 28));
+		}
 #else
 		return _may_i_use_cpu_feature(aSet);
 #endif
@@ -73,6 +117,21 @@ namespace anvil { namespace simd {
 		return false;
 #endif
 	}
+
+#ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
+	static const bool ANVIL_USE_MMX        = IsInstructionSetSupported(IS_MMX);
+	static const bool ANVIL_USE_SSE        = IsInstructionSetSupported(IS_SSE);
+	static const bool ANVIL_USE_SSE_2      = IsInstructionSetSupported(IS_SSE_2);
+	static const bool ANVIL_USE_SSE_3      = IsInstructionSetSupported(IS_SSE_3);
+	static const bool ANVIL_USE_SSSE_3     = IsInstructionSetSupported(IS_SSSE_3);
+	static const bool ANVIL_USE_SSE_4_1    = IsInstructionSetSupported(IS_SSE_4_1);
+	static const bool ANVIL_USE_SSE_4_2    = IsInstructionSetSupported(IS_SSE_4_2);
+	static const bool ANVIL_USE_AVX        = IsInstructionSetSupported(IS_AVX);
+	static const bool ANVIL_USE_FMA        = IsInstructionSetSupported(IS_FMA);
+	static const bool ANVIL_USE_AVX_2      = IsInstructionSetSupported(IS_AVX_2);
+	static const bool ANVIL_USE_KNC        = IsInstructionSetSupported(IS_KNC);
+	static const bool ANVIL_USE_AVX_512    = IsInstructionSetSupported(IS_AVX_512);
+#endif
 
 	// Operation definitions
 
