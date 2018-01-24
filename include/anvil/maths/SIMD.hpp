@@ -69,6 +69,8 @@ namespace anvil { namespace simd {
 #else
 		return _may_i_use_cpu_feature(aSet);
 #endif
+#else
+		return false;
 #endif
 	}
 
