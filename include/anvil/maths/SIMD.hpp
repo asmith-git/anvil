@@ -161,7 +161,7 @@ namespace anvil { namespace simd {
 			REMAINDER = OPTIMAL == S % OPTIMAL,
 		};
 
-		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(const void* x, const void* y, void* o) {
+		static void ANVIL_CALL execute(const void* x, const void* y, void* o) {
 			const T* const a = static_cast<const T*>(x);
 			const T* const b = static_cast<const T*>(y);
 			T* const o_ = static_cast<T*>(o);
@@ -181,7 +181,7 @@ namespace anvil { namespace simd {
 		enum { PARAMS = OperationParams<O>::value };
 
 		template<size_t S = PARAMS>
-		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(const void* x, const void* y, const void* z, void* o) {
+		static inline void ANVIL_CALL execute(const void* x, const void* y, const void* z, void* o) {
 			const T* const a = static_cast<const T*>(x);
 			const T* const b = static_cast<const T*>(y);
 			const T* const c = static_cast<const T*>(z);
@@ -191,7 +191,7 @@ namespace anvil { namespace simd {
 		}
 
 		template<size_t S = PARAMS>
-		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(const void* x, const void* y, void* o) {
+		static inline void ANVIL_CALL execute(const void* x, const void* y, void* o) {
 			const T* const a = static_cast<const T*>(x);
 			const T* const b = static_cast<const T*>(y);
 			T* const o_ = static_cast<T*>(o);
