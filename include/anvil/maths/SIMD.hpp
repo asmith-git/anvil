@@ -98,6 +98,8 @@ namespace anvil { namespace simd {
 			return false; //! \todo Implement
 		case IS_AVX_512:
 			return (data[1][EBX_] & (1 << 16)) && (data[1][EBX_] & (1 << 26)) && (data[1][EBX_] & (1 << 27)) && (data[1][EBX_] & (1 << 28));
+		default:
+			return false;
 		}
 #else
 		return false;
