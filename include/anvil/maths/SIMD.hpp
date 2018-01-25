@@ -15,6 +15,10 @@
 #ifndef ANVIL_MATHS_SIMD_HPP
 #define ANVIL_MATHS_SIMD_HPP
 
+	//! \todo Specialise OP_CAST
+	//! \todo Implement OP_POPCN
+	//! \todo Implement OP_REFLECT
+
 #include <cmath>
 #include "anvil/core/Cpu.hpp"
 #include "anvil/core/Keywords.hpp"
