@@ -193,6 +193,65 @@ namespace anvil { namespace simd {
 	template<> struct OperationParams<OP_SUM>{ enum { value = 1 }; };
 	template<> struct OperationParams<OP_POPCN>{ enum { value = 1 }; };
 
+	// Data Helpers
+
+	template<class T, size_t S>
+	struct DefaultSIMD {
+		T elements[S];
+	};
+
+	template<class T, size_t S>
+	struct SIMDHelper {
+		typedef DefaultSIMD<T, S> simd_t;
+		static_assert(sizeof(simd_t) == (sizeof(T) * S), "simd_t size error");
+
+		static simd_t load(const T* x) {
+			simd_t tmp;
+			memcpy(tmp, x, sizeof(simd_t));
+			return tmp;
+		}
+
+		static simd_t setu() {
+			return simd_t();
+		}
+
+		static simd_t set0() {
+			simd_t tmp;
+			memset(&tmp, sizeof(T) * S);
+			return tmp;
+		}
+
+		static simd_t set1(T x) {
+			simd_t tmp;
+			for (size_t i = 0; i < S; ++i) tmp.elements[i] = x;
+			return tmp;
+		}
+
+		static simd_t set2(T x, T y) {
+			simd_t tmp = S > 2 ? load_0 : simd_t();
+			tmp.elements[0] = x;
+			if (S >= 2) tmp.elements[1] = y;
+			return tmp;
+		}
+
+		static simd_t set3(T x, T y, T z) {
+			simd_t tmp = S > 3 ? load_0 : simd_t();
+			tmp.elements[0] = x;
+			if (S >= 2) tmp.elements[1] = y;
+			if (S >= 3) tmp.elements[2] = z;
+			return tmp;
+		}
+
+		static simd_t set4(T x, T y, T z, T w) {
+			simd_t tmp = S > 3 ? load_0 : simd_t();
+			tmp.elements[0] = x;
+			if (S >= 2) tmp.elements[1] = y;
+			if (S >= 3) tmp.elements[2] = z;
+			if (S >= 4) tmp.elements[3] = w;
+			return tmp;
+		}
+	};
+
 	// Default Operation Implementation
 
 	template<class T, size_t S, Operation O>
