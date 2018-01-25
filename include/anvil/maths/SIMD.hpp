@@ -207,20 +207,26 @@ namespace anvil { namespace simd {
 		typedef OperationImplementation<T, OPTIMAL, O> optimal_t;
 
 		static void ANVIL_CALL execute(const T* x, const T* y, T* o) {
-			size_t offset = 0;
 			if (optimal_t::optimised()) {
 				for (size_t i = 0; i < LOOP; ++i) {
-					optimal_t::execute_op(x + offset, y + offset, o + offset);
-					offset += OPTIMAL;
+					optimal_t::execute_op(x, y, o);
+					x += OPTIMAL;
+					y += OPTIMAL;
+					o += OPTIMAL;
 				}
 			} else {
 				for (size_t i = 0; i < LOOP; ++i) {
-					optimal_t::execute_nop(x + offset, y + offset, o + offset);
-					offset += OPTIMAL;
+					optimal_t::execute_nop(x, y, o);
+					x += OPTIMAL;
+					y += OPTIMAL;
+					o += OPTIMAL;
 				}
 			}
 			for (size_t i = 0; i < REMAINDER; ++i) {
-				o[i] = OperationImplementation<T, 1, O>::execute(x[offset + i], y[offset + i]);
+				o[i] = OperationImplementation<T, 1, O>::execute(*x, *y);
+				++x;
+				++y;
+				++o;
 			}
 		}
 
@@ -546,9 +552,11 @@ namespace anvil { namespace simd {
 		static ANVIL_STRONG_INLINE bool ANVIL_CALL optimised() {\
 			return ANVIL_USE_ ## INSTRUCTION;\
 		}\
+		static ANVIL_STRONG_INLINE _simd_type ANVIL_CALL execute_in(_simd_type x, _simd_type y) {\
+			return FUNCTION1(x,y);\
+		}\
 		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(const _simd_element_type* x, const _simd_element_type* y, _simd_element_type* o) {\
-			_simd_type tmp = FUNCTION1(UPLOAD(x), UPLOAD(y));\
-			DOWNLOAD(o,tmp);\
+			DOWNLOAD(o,execute_in(UPLOAD(x), UPLOAD(y)));\
 		}\
 		static inline void ANVIL_CALL execute_nop(const _simd_element_type* x, const _simd_element_type* y, _simd_element_type* o) {\
 			for (size_t i = 0; i < SIZE; ++i) o[i] = FUNCTION2(x[i], y[i]); \
@@ -568,9 +576,11 @@ namespace anvil { namespace simd {
 		static ANVIL_STRONG_INLINE bool ANVIL_CALL optimised() {\
 			return ANVIL_USE_ ## INSTRUCTION;\
 		}\
+		static ANVIL_STRONG_INLINE _simd_type ANVIL_CALL execute_in(_simd_type x) {\
+			return FUNCTION1(x);\
+		}\
 		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(const _simd_element_type* x, _simd_element_type* o) {\
-			_simd_type tmp = FUNCTION1(UPLOAD(x));\
-			DOWNLOAD(o,tmp);\
+			DOWNLOAD(o,execute_in(UPLOAD(x)));\
 		}\
 		static inline void ANVIL_CALL execute_nop(const _simd_element_type* x, _simd_element_type* o) {\
 			for (size_t i = 0; i < SIZE; ++i) o[i] = FUNCTION2(x[i]); \
