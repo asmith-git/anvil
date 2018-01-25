@@ -301,24 +301,28 @@ namespace anvil { namespace simd {
 		}
 
 		static void ANVIL_CALL execute(T x, T y, T* o) {
-			if (S > 2) execute(aOutput);
+			if (S > 2) execute(o);
 			o[0] = x;
 			if (S > 1) o[1] = y;
 		}
 
 		static void ANVIL_CALL execute(T x, T y, T z, T* o) {
-			if (S > 3) execute(aOutput);
+			if (S > 3) execute(o);
 			o[0] = x;
 			if (S > 1) o[1] = y;
 			if (S > 2) o[2] = z;
 		}
 
 		static void ANVIL_CALL execute(T x, T y, T z, T w, T* o) {
-			if (S > 4) execute(aOutput);
+			if (S > 4) execute(o);
 			o[0] = x;
 			if (S > 1) o[1] = y;
 			if (S > 2) o[2] = z;
 			if (S > 3) o[3] = w;
+		}
+
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(T* o) {
+			execute(o);
 		}
 
 		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(T x, T* o) {
@@ -335,6 +339,10 @@ namespace anvil { namespace simd {
 
 		static ANVIL_STRONG_INLINE void  ANVIL_CALL execute_op(T x, T y, T z, T w, T* o) {
 			execute(x, y, z, w, o);
+		}
+
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(T* o) {
+			execute(o);
 		}
 
 		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(T x, T* o) {
@@ -572,6 +580,93 @@ namespace anvil { namespace simd {
 		}\
 	};
 
+	#define ANVIL_SIMD_SPECIALISE_FILL(SIZE,INSTRUCTION,DOWNLOAD,F0,F1,F2,F3,F4)\
+	template<>\
+	struct OperationImplementation<_simd_element_type, SIZE, OP_FILL> {\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(_simd_element_type* o) {\
+			if(optimised()) execute_op(o);\
+			else execute_nop(o);\
+		}\
+		\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(_simd_element_type x, _simd_element_type* o) {\
+			if(optimised()) execute_op(x,o);\
+			else execute_nop(x,o);\
+		}\
+		\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(_simd_element_type x, _simd_element_type y, _simd_element_type* o) {\
+			if(optimised()) execute_op(x,y,o);\
+			else execute_nop(x,y,o);\
+		}\
+		\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(_simd_element_type x, _simd_element_type y, _simd_element_type z, _simd_element_type* o) {\
+			if(optimised()) execute_op(x,y,z,o);\
+			else execute_nop(x,y,z,o);\
+		}\
+		\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(_simd_element_type x, _simd_element_type y, _simd_element_type z, _simd_element_type w, _simd_element_type* o) {\
+			if(optimised()) execute_op(x,y,z,w,o);\
+			else execute_nop(x,y,z,w,o);\
+		}\
+		\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(_simd_element_type* o) {\
+			memset(o, 0, sizeof(_simd_element_type) * SIZE);\
+		}\
+		\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(_simd_element_type x, _simd_element_type* o) {\
+			for (size_t i = 0; i < SIZE; ++i) o[i] = x;\
+		}\
+		\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(_simd_element_type x, _simd_element_type y, _simd_element_type* o) {\
+			if (SIZE > 2) execute_nop(o);\
+			o[0] = x;\
+			if (SIZE > 1) o[1] = y;\
+		}\
+		\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(_simd_element_type x, _simd_element_type y, _simd_element_type z, _simd_element_type* o) {\
+			if (SIZE > 3) execute_nop(o);\
+			o[0] = x;\
+			if (SIZE > 1) o[1] = y;\
+			if (SIZE > 2) o[2] = z;\
+		}\
+		\
+		static ANVIL_STRONG_INLINE void  ANVIL_CALL execute_nop(_simd_element_type x, _simd_element_type y, _simd_element_type z, _simd_element_type w, _simd_element_type* o) {\
+			if (SIZE > 4) execute_nop(o);\
+			o[0] = x;\
+			if (SIZE > 1) o[1] = y;\
+			if (SIZE > 2) o[2] = z;\
+			if (SIZE > 3) o[3] = w;\
+		}\
+		\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(_simd_element_type* o) {\
+			_simd_type tmp = F0();\
+			DOWNLOAD(o,tmp);\
+		}\
+		\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(_simd_element_type x, _simd_element_type* o) {\
+			_simd_type tmp = F1(x);\
+			DOWNLOAD(o,tmp);\
+		}\
+		\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(_simd_element_type x, _simd_element_type y, _simd_element_type* o) {\
+			_simd_type tmp = F2(x, y);\
+			DOWNLOAD(o,tmp);\
+		}\
+		\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(_simd_element_type x, _simd_element_type y, _simd_element_type z, _simd_element_type* o) {\
+			_simd_type tmp = F3(x, y, z);\
+			DOWNLOAD(o,tmp);\
+		}\
+		\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(_simd_element_type x, _simd_element_type y, _simd_element_type z, _simd_element_type w, _simd_element_type* o) {\
+			_simd_type tmp = F4(x, y, z, w);\
+			DOWNLOAD(o,tmp);\
+		}\
+		\
+		static ANVIL_STRONG_INLINE bool ANVIL_CALL optimised() {\
+			return ANVIL_USE_ ## INSTRUCTION;\
+		}\
+	};
+
 #define _simd_upload_16_16(X) _simd_load(X)
 #define _simd_upload_16_15(X) _simd_set(X[0], X[1], X[2], X[3], X[4], X[5], X[6], X[7], X[8], X[9], X[10], X[11], X[12], X[13], X[14], 0)
 #define _simd_upload_16_14(X) _simd_set(X[0], X[1], X[2], X[3], X[4], X[5], X[6], X[7], X[8], X[9], X[10], X[11], X[12], X[13], 0,     0)
@@ -715,6 +810,40 @@ namespace anvil { namespace simd {
 	template<> struct OptimalOperationSize<OP,_simd_element_type> { enum { value = 2 }; };\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,2,INSTRUCTION, _simd_upload_2_2, _simd_download_2_2, FUNCTION1, FUNCTION2)
 
+#define ANVIL_SIMD_SPECIALISE_FILL_16(INSTRUCTION)\
+	ANVIL_SIMD_SPECIALISE_FILL(16, SSE, _simd_download_16_16, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(15, SSE, _simd_download_n_15, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(14, SSE, _simd_download_n_14, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(13, SSE, _simd_download_n_13, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(12, SSE, _simd_download_n_12, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(11, SSE, _simd_download_n_11, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(10, SSE, _simd_download_n_10, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(9, SSE, _simd_download_n_9, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(8, SSE, _simd_download_n_8, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(7, SSE, _simd_download_n_7, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(6, SSE, _simd_download_n_6, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(5, SSE, _simd_download_n_5, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(4, SSE, _simd_download_n_4, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(3, SSE, _simd_download_n_3, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(2, SSE, _simd_download_n_2, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)
+
+#define ANVIL_SIMD_SPECIALISE_FILL_8(INSTRUCTION)\
+	ANVIL_SIMD_SPECIALISE_FILL(8, SSE, _simd_download_8_8, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(7, SSE, _simd_download_n_7, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(6, SSE, _simd_download_n_6, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(5, SSE, _simd_download_n_5, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(4, SSE, _simd_download_n_4, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(3, SSE, _simd_download_n_3, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(2, SSE, _simd_download_n_2, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)
+
+#define ANVIL_SIMD_SPECIALISE_FILL_4(INSTRUCTION)\
+	ANVIL_SIMD_SPECIALISE_FILL(4, SSE, _simd_download_4_4, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(3, SSE, _simd_download_n_3, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
+	ANVIL_SIMD_SPECIALISE_FILL(2, SSE, _simd_download_n_2, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)
+
+#define ANVIL_SIMD_SPECIALISE_FILL_2(INSTRUCTION)\
+	ANVIL_SIMD_SPECIALISE_FILL(2, SSE, _simd_download_2_2, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)
+
 #define _simd_round_ps(X) _mm_round_ps(X,_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC)
 #define _simd_round_pd(X) _mm_round_pd(X,_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC)
 
@@ -723,6 +852,12 @@ namespace anvil { namespace simd {
 #define _simd_data(X) X.m128_f32
 #define _simd_load(X) _mm_load_ps(X)
 #define _simd_set(X,Y,Z,W) _mm_set_ps(X,Y,Z,W)
+#define _simd_fill_0() _mm_setzero_ps()
+#define _simd_fill_1(X) _mm_set1_ps(X)
+#define _simd_fill_2(X,Y) _mm_set_ps(X,Y,0.f,0.f)
+#define _simd_fill_3(X,Y,Z) _mm_set_ps(X,Y,Z,0.f)
+#define _simd_fill_4(X,Y,Z,W) _mm_set_ps(X,Y,Z,W)
+	ANVIL_SIMD_SPECIALISE_FILL_4(SSE)
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_ADD,   SSE,     _mm_add_ps,     ANVIL_SIMD_ADD)
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_SUB,   SSE,     _mm_sub_ps,     ANVIL_SIMD_SUB)
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_MUL,   SSE,     _mm_mul_ps,     ANVIL_SIMD_MUL)
@@ -741,17 +876,29 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_IMPLEMENTATION_V_V_4( OP_CEIL,  SSE_4_1, _mm_ceil_ps,    std::ceil)
 	ANVIL_SIMD_IMPLEMENTATION_V_V_4( OP_FLOOR, SSE_4_1, _mm_floor_ps,   std::ceil)
 	ANVIL_SIMD_IMPLEMENTATION_V_V_4( OP_ROUND, SSE_4_1, _simd_round_ps, std::round)
-
+	ANVIL_SIMD_IMPLEMENTATION_V_V_4( OP_SQRT,  SSE,     _mm_sqrt_ps,    std::sqrt)
 #undef _simd_element_type
 #undef _simd_type
 #undef _simd_data
 #undef _simd_load
 #undef _simd_set
+#undef _simd_fill_0
+#undef _simd_fill_1
+#undef _simd_fill_2
+#undef _simd_fill_3
+#undef _simd_fill_4
+
 #define _simd_element_type double
 #define _simd_type __m128d
 #define _simd_data(X) X.m128d_f64
 #define _simd_load(X) _mm_load_pd(X)
 #define _simd_set(X,Y) _mm_set_pd(X,Y)
+#define _simd_fill_0() _mm_setzero_pd()
+#define _simd_fill_1(X) _mm_set1_pd(X)
+#define _simd_fill_2(X,Y) _mm_set_pd(X,Y)
+#define _simd_fill_3(X,Y,Z) _mm_set_pd(X,Y)
+#define _simd_fill_4(X,Y,Z,W) _mm_set_pd(X,Y)
+	ANVIL_SIMD_SPECIALISE_FILL_2(SSE_2)
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP_ADD,   SSE_2,   _mm_add_pd,     ANVIL_SIMD_ADD)
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP_SUB,   SSE_2,   _mm_sub_pd,     ANVIL_SIMD_SUB)
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP_MUL,   SSE_2,   _mm_mul_pd,     ANVIL_SIMD_MUL)
@@ -770,47 +917,71 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_IMPLEMENTATION_V_V_2( OP_CEIL,  SSE_4_1, _mm_ceil_pd,    std::ceil)
 	ANVIL_SIMD_IMPLEMENTATION_V_V_2( OP_FLOOR, SSE_4_1, _mm_floor_pd,   std::ceil)
 	ANVIL_SIMD_IMPLEMENTATION_V_V_2( OP_ROUND, SSE_4_1, _simd_round_pd, std::round)
-
+	ANVIL_SIMD_IMPLEMENTATION_V_V_2( OP_SQRT,  SSE_2,   _mm_sqrt_pd,    std::sqrt)
 #undef _simd_element_type
 #undef _simd_type
 #undef _simd_data
 #undef _simd_load
 #undef _simd_set
+#undef _simd_fill_0
+#undef _simd_fill_1
+#undef _simd_fill_2
+#undef _simd_fill_3
+#undef _simd_fill_4
+
 #define _simd_element_type int64_t
 #define _simd_type __m128i
 #define _simd_data(X) X.m128i_i64
 #define _simd_load(X) _mm_load_si128(reinterpret_cast<const _simd_type*>(X))
 #define _simd_set(X,Y) _mm_set_epi32(reinterpet_cast<const int32_t*>(&X)[0],reinterpet_cast<const int32_t*>(&X)[1],reinterpet_cast<const int32_t*>(&Y)[0],reinterpet_cast<const int32_t*>(&Y)[1])
+		//ANVIL_SIMD_SPECIALISE_FILL_2(SSE_2)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP_ADD, SSE_2, _mm_add_epi64, ANVIL_SIMD_ADD)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP_SUB, SSE_2, _mm_sub_epi64, ANVIL_SIMD_SUB)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP_AND, SSE_2, _mm_and_si128, ANVIL_SIMD_AND)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP_OR,  SSE_2, _mm_or_si128,  ANVIL_SIMD_OR)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP_XOR, SSE_2, _mm_xor_si128, ANVIL_SIMD_XOR)
-
 #undef _simd_element_type
 #undef _simd_type
 #undef _simd_data
 #undef _simd_load
 #undef _simd_set
+#undef _simd_fill_0
+#undef _simd_fill_1
+#undef _simd_fill_2
+#undef _simd_fill_3
+#undef _simd_fill_4
+
 #define _simd_element_type uint64_t
 #define _simd_type __m128i
 #define _simd_data(X) X.m128i_u64
 #define _simd_load(X) _mm_load_si128(reinterpret_cast<const _simd_type*>(X))
 #define _simd_set(X,Y) _mm_set_epi32(reinterpet_cast<const int32_t*>(&X)[0],reinterpet_cast<const int32_t*>(&X)[1],reinterpet_cast<const int32_t*>(&Y)[0],reinterpet_cast<const int32_t*>(&Y)[1])
+		//ANVIL_SIMD_SPECIALISE_FILL_2(SSE_2)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP_AND, SSE_2, _mm_and_si128, ANVIL_SIMD_AND)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP_OR,  SSE_2, _mm_or_si128,  ANVIL_SIMD_OR)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP_XOR, SSE_2, _mm_xor_si128, ANVIL_SIMD_XOR)
-
 #undef _simd_element_type
 #undef _simd_type
 #undef _simd_data
 #undef _simd_load
 #undef _simd_set
+#undef _simd_fill_0
+#undef _simd_fill_1
+#undef _simd_fill_2
+#undef _simd_fill_3
+#undef _simd_fill_4
+
 #define _simd_element_type int32_t
 #define _simd_type __m128i
 #define _simd_data(X) X.m128i_i32
 #define _simd_load(X) _mm_load_si128(reinterpret_cast<const _simd_type*>(X))
 #define _simd_set(X,Y,Z,W) _mm_set_epi32(X,Y,Z,W)
+#define _simd_fill_0() _mm_setzero_si128()
+#define _simd_fill_1(X) _mm_set1_epi32(X)
+#define _simd_fill_2(X,Y) _mm_set_epi32(X,Y,0,0)
+#define _simd_fill_3(X,Y,Z) _mm_set_epi32(X,Y,Z,0)
+#define _simd_fill_4(X,Y,Z,W) _mm_set_epi32(X,Y,Z,W)
+		ANVIL_SIMD_SPECIALISE_FILL_4(SSE_2)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_ADD,   SSE_2,   _mm_add_epi32,   ANVIL_SIMD_ADD)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_SUB,   SSE_2,   _mm_sub_epi32,   ANVIL_SIMD_SUB)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_MUL,   SSE_4_1, _mm_mullo_epi32, ANVIL_SIMD_SUB)
@@ -823,34 +994,56 @@ namespace anvil { namespace simd {
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_CMPLT, SSE_2,   _mm_cmplt_epi32, ANVIL_SIMD_CMPLT)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_CMPGT, SSE_2,   _mm_cmpgt_epi32, ANVIL_SIMD_CMPGT)
 		ANVIL_SIMD_IMPLEMENTATION_V_V_4( OP_ABS,   SSSE_3,  _mm_abs_epi32,   std::abs)
-
 #undef _simd_element_type
 #undef _simd_type
 #undef _simd_data
 #undef _simd_load
 #undef _simd_set
+#undef _simd_fill_0
+#undef _simd_fill_1
+#undef _simd_fill_2
+#undef _simd_fill_3
+#undef _simd_fill_4
+
 #define _simd_element_type uint32_t
 #define _simd_type __m128i
 #define _simd_data(X) X.m128i_u32
 #define _simd_load(X) _mm_load_si128(reinterpret_cast<const _simd_type*>(X))
 #define _simd_set(X,Y,Z,W) _mm_set_epi32(value_cast<int32_t>(X), value_cast<int32_t>(Y), value_cast<int32_t>(Z), value_cast<int32_t>(W))
+#define _simd_fill_0() _mm_setzero_si128()
+#define _simd_fill_1(X) _mm_set1_epi32(value_cast<int32_t>(X))
+#define _simd_fill_2(X,Y) _mm_set_epi32(value_cast<int32_t>(X),value_cast<int32_t>(Y),0,0)
+#define _simd_fill_3(X,Y,Z) _mm_set_epi32(value_cast<int32_t>(X),value_cast<int32_t>(Y),value_cast<int32_t>(Z),0)
+#define _simd_fill_4(X,Y,Z,W) _mm_set_epi32(value_cast<int32_t>(X),value_cast<int32_t>(Y),value_cast<int32_t>(Z),value_cast<int32_t>(W))
+		ANVIL_SIMD_SPECIALISE_FILL_4(SSE_2)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_AND, SSE_2,   _mm_and_si128, ANVIL_SIMD_AND)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_OR,  SSE_2,   _mm_or_si128,  ANVIL_SIMD_OR)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_XOR, SSE_2,   _mm_xor_si128, ANVIL_SIMD_XOR)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_MIN, SSE_4_1, _mm_min_epu32, std::min)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_MAX, SSE_4_1, _mm_max_epu32, std::max)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP_CMPEQ, SSE_2, _mm_cmpeq_epi32, ANVIL_SIMD_CMPEQ)
-
 #undef _simd_element_type
 #undef _simd_type
 #undef _simd_data
 #undef _simd_load
 #undef _simd_set
+#undef _simd_fill_0
+#undef _simd_fill_1
+#undef _simd_fill_2
+#undef _simd_fill_3
+#undef _simd_fill_4
+
 #define _simd_element_type int16_t
 #define _simd_type __m128i
 #define _simd_data(X) X.m128i_i16
 #define _simd_load(X) _mm_load_si128(reinterpret_cast<const _simd_type*>(X))
 #define _simd_set(X,Y,Z,W, A,B,C,D) _mm_set_epi16(X,Y,Z,W, A,B,C,D)
+#define _simd_fill_0() _mm_setzero_si128()
+#define _simd_fill_1(X) _mm_set1_epi16(X)
+#define _simd_fill_2(X,Y) _mm_set_epi16(X,Y,0,0,0,0,0,0)
+#define _simd_fill_3(X,Y,Z) _mm_set_epi16(X,Y,Z,0,0,0,0,0)
+#define _simd_fill_4(X,Y,Z,W) _mm_set_epi16(X,Y,Z,W,0,0,0,0)
+	ANVIL_SIMD_SPECIALISE_FILL_8(SSE_2)
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_8(OP_ADD, SSE_2,   _mm_add_epi16,   ANVIL_SIMD_ADD)
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_8(OP_SUB, SSE_2,   _mm_sub_epi16,   ANVIL_SIMD_SUB)
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_8(OP_MUL, SSE_2,   _mm_mullo_epi16, ANVIL_SIMD_SUB)
@@ -863,17 +1056,28 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_8(OP_CMPLT, SSE_2, _mm_cmplt_epi16, ANVIL_SIMD_CMPLT)
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_8(OP_CMPGT, SSE_2, _mm_cmpgt_epi16, ANVIL_SIMD_CMPGT)
 	ANVIL_SIMD_IMPLEMENTATION_V_V_8( OP_ABS, SSSE_3,  _mm_abs_epi16,   std::abs)
-
 #undef _simd_element_type
 #undef _simd_type
 #undef _simd_data
 #undef _simd_load
 #undef _simd_set
+#undef _simd_fill_0
+#undef _simd_fill_1
+#undef _simd_fill_2
+#undef _simd_fill_3
+#undef _simd_fill_4
+
 #define _simd_element_type uint16_t
 #define _simd_type __m128i
 #define _simd_data(X) X.m128i_u16
 #define _simd_load(X) _mm_load_si128(reinterpret_cast<const _simd_type*>(X))
 #define _simd_set(X,Y,Z,W, A,B,C,D) _mm_set_epi16(X,Y,Z,W, A,B,C,D)
+#define _simd_fill_0() _mm_setzero_si128()
+#define _simd_fill_1(X) _mm_set1_epi16(value_cast<int16_t>(X))
+#define _simd_fill_2(X,Y) _mm_set_epi16(value_cast<int16_t>(X),value_cast<int16_t>(Y),0,0,0,0,0,0)
+#define _simd_fill_3(X,Y,Z) _mm_set_epi16(value_cast<int16_t>(X),value_cast<int16_t>(Y),value_cast<int16_t>(Z),0,0,0,0,0)
+#define _simd_fill_4(X,Y,Z,W) _mm_set_epi16(value_cast<int16_t>(X),value_cast<int16_t>(Y),value_cast<int16_t>(Z),value_cast<int16_t>(W),0,0,0,0)
+	ANVIL_SIMD_SPECIALISE_FILL_8(SSE_2)
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_8(OP_ADD,   SSE_2,   _mm_adds_epu16, ANVIL_SIMD_ADD)
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_8(OP_SUB,   SSE_2,   _mm_subs_epu16, ANVIL_SIMD_SUB)
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_8(OP_AND,   SSE_2,   _mm_and_si128,  ANVIL_SIMD_AND)
@@ -882,17 +1086,28 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_8(OP_CMPEQ, SSE_2, _mm_cmpeq_epi16, ANVIL_SIMD_CMPEQ)
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_8(OP_MIN,   SSE_4_1, _mm_min_epu16,  std::min)
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_8(OP_MAX,   SSE_4_1, _mm_max_epu16,  std::max)
-
 #undef _simd_element_type
 #undef _simd_type
 #undef _simd_data
 #undef _simd_load
 #undef _simd_set
+#undef _simd_fill_0
+#undef _simd_fill_1
+#undef _simd_fill_2
+#undef _simd_fill_3
+#undef _simd_fill_4
+
 #define _simd_element_type int8_t
 #define _simd_type __m128i
 #define _simd_data(X) X.m128i_i8
 #define _simd_load(X) _mm_load_si128(reinterpret_cast<const _simd_type*>(X))
 #define _simd_set(X,Y,Z,W, A,B,C,D, E,F,G,H, I,J,L,M) _mm_set_epi8(X,Y,Z,W, A,B,C,D, E,F,G,H, I,J,L,M)
+#define _simd_fill_0() _mm_setzero_si128()
+#define _simd_fill_1(X) _mm_set1_epi8(X)
+#define _simd_fill_2(X,Y) _mm_set_epi8(X,Y,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+#define _simd_fill_3(X,Y,Z) _mm_set_epi8(X,Y,Z,0,0,0,0,0,0,0,0,0,0,0,0,0)
+#define _simd_fill_4(X,Y,Z,W) _mm_set_epi8(X,Y,Z,W,0,0,0,0,0,0,0,0,0,0,0,0)
+		ANVIL_SIMD_SPECIALISE_FILL_16(SSE_2)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP_ADD,   SSE_2,   _mm_adds_epi8,  ANVIL_SIMD_ADD)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP_SUB,   SSE_2,   _mm_subs_epi8,  ANVIL_SIMD_SUB)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP_AND,   SSE_2,   _mm_and_si128,  ANVIL_SIMD_AND)
@@ -904,17 +1119,28 @@ namespace anvil { namespace simd {
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP_CMPLT, SSE_2,   _mm_cmplt_epi8, ANVIL_SIMD_CMPLT)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP_CMPGT, SSE_2,   _mm_cmpgt_epi8, ANVIL_SIMD_CMPGT)
 		ANVIL_SIMD_IMPLEMENTATION_V_V_16( OP_ABS,   SSSE_3,  _mm_abs_epi8,   std::abs)
-
 #undef _simd_element_type
 #undef _simd_type
 #undef _simd_data
 #undef _simd_load
 #undef _simd_set
+#undef _simd_fill_0
+#undef _simd_fill_1
+#undef _simd_fill_2
+#undef _simd_fill_3
+#undef _simd_fill_4
+
 #define _simd_element_type uint8_t
 #define _simd_type __m128i
 #define _simd_data(X) X.m128i_u8
 #define _simd_load(X) _mm_load_si128(reinterpret_cast<const _simd_type*>(X))
 #define _simd_set(X,Y,Z,W, A,B,C,D, E,F,G,H, I,J,L,M) _mm_set_epi8(X,Y,Z,W, A,B,C,D, E,F,G,H, I,J,L,M)
+#define _simd_fill_0() _mm_setzero_si128()
+#define _simd_fill_1(X) _mm_set1_epi8(value_cast<int8_t>(X))
+#define _simd_fill_2(X,Y) _mm_set_epi8(value_cast<int8_t>(X),value_cast<int8_t>(Y),0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+#define _simd_fill_3(X,Y,Z) _mm_set_epi8(value_cast<int8_t>(X),value_cast<int8_t>(Y),value_cast<int8_t>(Z),0,0,0,0,0,0,0,0,0,0,0,0,0)
+#define _simd_fill_4(X,Y,Z,W) _mm_set_epi8(value_cast<int8_t>(X),value_cast<int8_t>(Y),value_cast<int8_t>(Z),value_cast<int8_t>(W),0,0,0,0,0,0,0,0,0,0,0,0)
+		ANVIL_SIMD_SPECIALISE_FILL_16(SSE_2)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP_ADD,   SSE_2, _mm_adds_epu8,  ANVIL_SIMD_ADD)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP_SUB,   SSE_2, _mm_subs_epu8,  ANVIL_SIMD_SUB)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP_AND,   SSE_2, _mm_and_si128,  ANVIL_SIMD_AND)
@@ -923,12 +1149,16 @@ namespace anvil { namespace simd {
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP_CMPEQ, SSE_2, _mm_cmpeq_epi8, ANVIL_SIMD_CMPEQ)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP_MAX,   SSE_2, _mm_max_epu8,   std::max)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP_MIN,   SSE_2, _mm_min_epu8,   std::min)
-
 #undef _simd_element_type
 #undef _simd_type
 #undef _simd_data
 #undef _simd_load
 #undef _simd_set
+#undef _simd_fill_0
+#undef _simd_fill_1
+#undef _simd_fill_2
+#undef _simd_fill_3
+#undef _simd_fill_4
 
 #endif
 }}
