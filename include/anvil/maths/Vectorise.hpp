@@ -24,7 +24,6 @@ namespace anvil {
 		static void ANVIL_CALL dynamic_operation(const T* x_, const T* y_, const T* z_, T* o_, const size_t s) {
 			enum { OPTIMAL = OptimalOperationSize<O, T>::value };
 			typedef OperationImplementation<T, OPTIMAL, O> optimal_t;
-			typedef DefaultSIMD<T, OPTIMAL> optimal_simd_t;
 
 			union simd_ptr {
 				SIMDHelper<T, OPTIMAL>::simd_t* vo;
@@ -58,7 +57,6 @@ namespace anvil {
 		static void ANVIL_CALL dynamic_operation(const T* x_, const T* y_, T* o_, const size_t s) {
 			enum { OPTIMAL = OptimalOperationSize<O, T>::value };
 			typedef OperationImplementation<T, OPTIMAL, O> optimal_t;
-			typedef DefaultSIMD<T, OPTIMAL> optimal_simd_t;
 
 			union simd_ptr {
 				SIMDHelper<T, OPTIMAL>::simd_t* vo;
@@ -91,7 +89,6 @@ namespace anvil {
 		static void ANVIL_CALL dynamic_operation(const T* x_, T* o_, const size_t s) {
 			enum { OPTIMAL = OptimalOperationSize<O, T>::value };
 			typedef OperationImplementation<T, OPTIMAL, O> optimal_t;
-			typedef DefaultSIMD<T, OPTIMAL> optimal_simd_t;
 
 			union simd_ptr {
 				SIMDHelper<T, OPTIMAL>::simd_t* vo;

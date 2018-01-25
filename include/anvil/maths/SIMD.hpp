@@ -258,36 +258,35 @@ namespace anvil { namespace simd {
 
 	template<class T, size_t S, Operation O>
 	struct OperationImplementation {
-		enum { 
-			PARAMS = OperationParams<O>::value,
-			OPTIMAL = OptimalOperationSize<O,T>::value,
-			LOOP = S / OPTIMAL,
-			REMAINDER = S % OPTIMAL
-		};
 
-		typedef OperationImplementation<T, OPTIMAL, O> optimal_t;
+		static void ANVIL_CALL execute(const T* x_, const T* y_, T* o_) {
+			enum {
+				OPTIMAL = OptimalOperationSize<O, T>::value,
+				LOOP = S / OPTIMAL,
+				REMAINDER = S % OPTIMAL
+			};
+			typedef OperationImplementation<T, OPTIMAL, O> optimal_t;
+			union simd_ptr {
+				SIMDHelper<T, OPTIMAL>::simd_t* vo;
+				DefaultSIMD<T, OPTIMAL>* vn;
+				const T* s;
+			};
+			simd_ptr x, y, o;
+			x.s = x_;
+			y.s = y_;
+			o.s = o_;
 
-		static void ANVIL_CALL execute(const T* x, const T* y, T* o) {
 			if (optimal_t::optimised()) {
-				for (size_t i = 0; i < LOOP; ++i) {
-					optimal_t::execute_op(x, y, o);
-					x += OPTIMAL;
-					y += OPTIMAL;
-					o += OPTIMAL;
+				for (size_t i = 0; i < OPTIMAL; ++i) {
+					o.vo[i] = optimal_t::execute_in(x.vo[i], y.vo[i]);
 				}
 			} else {
-				for (size_t i = 0; i < LOOP; ++i) {
-					optimal_t::execute_nop(x, y, o);
-					x += OPTIMAL;
-					y += OPTIMAL;
-					o += OPTIMAL;
+				for (size_t i = 0; i < OPTIMAL; ++i) {
+					optimal_t::execute_nop(x.vn[i].elements, y.vn[i].elements, o.vn[i].elements);
 				}
 			}
 			for (size_t i = 0; i < REMAINDER; ++i) {
-				o[i] = OperationImplementation<T, 1, O>::execute(*x, *y);
-				++x;
-				++y;
-				++o;
+				o.vn[LOOP].elements[i] = OperationImplementation<T, 1, O>::execute(x.vn[LOOP].elements[i], y.vn[LOOP].elements[i]);
 			}
 		}
 
