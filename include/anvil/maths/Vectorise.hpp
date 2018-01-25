@@ -26,25 +26,31 @@ namespace anvil {
 			typedef OperationImplementation<T, OPTIMAL, O> optimal_t;
 			typedef DefaultSIMD<T, OPTIMAL> optimal_simd_t;
 
-			const optimal_simd_t* const x = reinterpret_cast<const optimal_simd_t*>(x_);
-			const optimal_simd_t* const y = reinterpret_cast<const optimal_simd_t*>(y_);
-			const optimal_simd_t* const z = reinterpret_cast<const optimal_simd_t*>(z_);
-			optimal_simd_t* const o = reinterpret_cast<optimal_simd_t*>(o_);
+			union simd_ptr {
+				SIMDHelper<T, OPTIMAL>::simd_t* vo;
+				DefaultSIMD<T, OPTIMAL>* vn;
+				const T* s;
+			};
+			simd_ptr x, y, z, o;
+			x.s = x_;
+			y.s = y_;
+			z.s = z_;
+			o.s = o_;
 
 			const size_t loop = s / OPTIMAL;
 			const size_t remainder = s % OPTIMAL;
 
 			if (optimal_t::optimised()) {
 				for (size_t i = 0; i < loop; ++i) {
-					optimal_t::execute_op(x[i].elements, y[i].elements, z[i].elements, o[i].elements);
+					o.vo[i] = optimal_t::execute_in(x.vo[i], y.vo[i], z.vo[i]);
 				}
 			} else {
 				for (size_t i = 0; i < loop; ++i) {
-					optimal_t::execute_nop(x[i].elements, y[i].elements, z[i].elements, o[i].elements);
+					optimal_t::execute_nop(x.vn[i].elements, y.vn[i].elements, z.vn[i].elements, o.vn[i].elements);
 				}
 			}
 			for (size_t i = 0; i < remainder; ++i) {
-				o[loop].elements[i] = OperationImplementation<T, 1, O>::execute(x[loop].elements[i], y[loop].elements[i], z[loop].elements[i]);
+				o.vn[loop].elements[i] = OperationImplementation<T, 1, O>::execute(x.vn[loop].elements[i], y.vn[loop].elements[i], z.vn[loop].elements[i]);
 			}
 		}
 
@@ -54,24 +60,30 @@ namespace anvil {
 			typedef OperationImplementation<T, OPTIMAL, O> optimal_t;
 			typedef DefaultSIMD<T, OPTIMAL> optimal_simd_t;
 
-			const optimal_simd_t* const x = reinterpret_cast<const optimal_simd_t*>(x_);
-			const optimal_simd_t* const y = reinterpret_cast<const optimal_simd_t*>(y_);
-			optimal_simd_t* const o = reinterpret_cast<optimal_simd_t*>(o_);
+			union simd_ptr {
+				SIMDHelper<T, OPTIMAL>::simd_t* vo;
+				DefaultSIMD<T, OPTIMAL>* vn;
+				const T* s;
+			};
+			simd_ptr x, y, o;
+			x.s = x_;
+			y.s = y_;
+			o.s = o_;
 
 			const size_t loop = s / OPTIMAL;
 			const size_t remainder = s % OPTIMAL;
 
 			if (optimal_t::optimised()) {
 				for (size_t i = 0; i < loop; ++i) {
-					optimal_t::execute_op(x[i].elements, y[i].elements, o[i].elements);
+					o.vo[i] = optimal_t::execute_in(x.vo[i], y.vo[i]);
 				}
 			} else {
 				for (size_t i = 0; i < loop; ++i) {
-					optimal_t::execute_nop(x[i].elements, y[i].elements, o[i].elements);
+					optimal_t::execute_nop(x.vn[i].elements, y.vn[i].elements, o.vn[i].elements);
 				}
 			}
 			for (size_t i = 0; i < remainder; ++i) {
-				o[loop].elements[i] = OperationImplementation<T, 1, O>::execute(x[loop].elements[i], y[loop].elements[i]);
+				o.vn[loop].elements[i] = OperationImplementation<T, 1, O>::execute(x.vn[loop].elements[i], y.vn[loop].elements[i]);
 			}
 		}
 
@@ -81,23 +93,29 @@ namespace anvil {
 			typedef OperationImplementation<T, OPTIMAL, O> optimal_t;
 			typedef DefaultSIMD<T, OPTIMAL> optimal_simd_t;
 
-			const optimal_simd_t* const x = reinterpret_cast<const optimal_simd_t*>(x_);
-			optimal_simd_t* const o = reinterpret_cast<optimal_simd_t*>(o_);
+			union simd_ptr {
+				SIMDHelper<T, OPTIMAL>::simd_t* vo;
+				DefaultSIMD<T, OPTIMAL>* vn;
+				const T* s;
+			};
+			simd_ptr x, o;
+			x.s = x_;
+			o.s = o_;
 
 			const size_t loop = s / OPTIMAL;
 			const size_t remainder = s % OPTIMAL;
 
 			if (optimal_t::optimised()) {
 				for (size_t i = 0; i < loop; ++i) {
-					optimal_t::execute_op(x[i].elements, o[i].elements);
+					o.vo[i] = optimal_t::execute_in(x.vo[i]);
 				}
 			} else {
 				for (size_t i = 0; i < loop; ++i) {
-					optimal_t::execute_nop(x[i].elements, o[i].elements);
+					optimal_t::execute_nop(x.vn[i].elements, o.vn[i].elements);
 				}
 			}
 			for (size_t i = 0; i < remainder; ++i) {
-				o[loop].elements[i] = OperationImplementation<T, 1, O>::execute(x[loop].elements[i]);
+				o.vn[loop].elements[i] = OperationImplementation<T, 1, O>::execute(x.vn[loop].elements[i]);
 			}
 		}
 	}
