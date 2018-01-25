@@ -549,10 +549,11 @@ namespace anvil { namespace simd {
 	#define ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,SIZE,INSTRUCTION,UPLOAD,DOWNLOAD,FUNCTION1,FUNCTION2)\
 	template<>\
 	struct OperationImplementation<_simd_element_type, SIZE, OP> {\
+		typedef _simd_type simd_t;\
 		static ANVIL_STRONG_INLINE bool ANVIL_CALL optimised() {\
 			return ANVIL_USE_ ## INSTRUCTION;\
 		}\
-		static ANVIL_STRONG_INLINE _simd_type ANVIL_CALL execute_in(_simd_type x, _simd_type y) {\
+		static ANVIL_STRONG_INLINE _simd_type ANVIL_CALL execute_in(simd_t x, simd_t y) {\
 			return FUNCTION1(x,y);\
 		}\
 		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(const _simd_element_type* x, const _simd_element_type* y, _simd_element_type* o) {\
@@ -573,10 +574,11 @@ namespace anvil { namespace simd {
 	#define ANVIL_SIMD_IMPLEMENTATION_V_V(OP,SIZE,INSTRUCTION,UPLOAD,DOWNLOAD,FUNCTION1,FUNCTION2)\
 	template<>\
 	struct OperationImplementation<_simd_element_type, SIZE, OP> {\
+		typedef _simd_type simd_t;\
 		static ANVIL_STRONG_INLINE bool ANVIL_CALL optimised() {\
 			return ANVIL_USE_ ## INSTRUCTION;\
 		}\
-		static ANVIL_STRONG_INLINE _simd_type ANVIL_CALL execute_in(_simd_type x) {\
+		static ANVIL_STRONG_INLINE _simd_type ANVIL_CALL execute_in(simd_t x) {\
 			return FUNCTION1(x);\
 		}\
 		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(const _simd_element_type* x, _simd_element_type* o) {\
