@@ -557,14 +557,14 @@ namespace anvil { namespace simd {
 #define _simd_upload_16_12(X) _simd_set(X[0], X[1], X[2], X[3], X[4], X[5], X[6], X[7], X[8], X[9], X[10], X[11], 0,     0,     0,     0)
 #define _simd_upload_16_11(X) _simd_set(X[0], X[1], X[2], X[3], X[4], X[5], X[6], X[7], X[8], X[9], X[10], 0,     0,     0,     0,     0)
 #define _simd_upload_16_10(X) _simd_set(X[0], X[1], X[2], X[3], X[4], X[5], X[6], X[7], X[8], X[9], 0,     0,     0,     0,     0,     0)
-#define _simd_upload_16_9(X) _simd_set( X[0], X[1], X[2], X[3], X[4], X[5], X[6], X[7], X[8],  0,   0,     0,     0,     0,     0,     0)
-#define _simd_upload_16_8(X) _simd_set( X[0], X[1], X[2], X[3], X[4], X[5], X[6], X[7], 0,     0,   0,     0,     0,     0,     0,     0)
-#define _simd_upload_16_7(X) _simd_set( X[0], X[1], X[2], X[3], X[4], X[5], X[6], 0,    0,     0,   0,     0,     0,     0,     0,     0)
-#define _simd_upload_16_6(X) _simd_set( X[0], X[1], X[2], X[3], X[4], X[5], 0,    0,    0,     0,   0,     0,     0,     0,     0,     0)
-#define _simd_upload_16_5(X) _simd_set( X[0], X[1], X[2], X[3], X[4], 0,    0,    0,    0,     0,   0,     0,     0,     0      0,     0)
-#define _simd_upload_16_4(X) _simd_set( X[0], X[1], X[2], X[3], 0,    0,    0,    0,    0,     0,   0,     0,     0,     0,     0,     0)
-#define _simd_upload_16_3(X) _simd_set( X[0], X[1], X[2], 0,    0,    0,    0,    0,    0,     0,   0,     0,     0,     0,     0,     0)
-#define _simd_upload_16_2(X) _simd_set( X[0], X[1], 0,    0,    0,    0,    0,    0,    0,     0,   0,     0,     0,     0,     0,     0)
+#define _simd_upload_16_9(X)  _simd_set(X[0], X[1], X[2], X[3], X[4], X[5], X[6], X[7], X[8], 0,    0,     0,     0,     0,     0,     0)
+#define _simd_upload_16_8(X)  _simd_set(X[0], X[1], X[2], X[3], X[4], X[5], X[6], X[7], 0,    0,    0,     0,     0,     0,     0,     0)
+#define _simd_upload_16_7(X)  _simd_set(X[0], X[1], X[2], X[3], X[4], X[5], X[6], 0,    0,    0,    0,     0,     0,     0,     0,     0)
+#define _simd_upload_16_6(X)  _simd_set(X[0], X[1], X[2], X[3], X[4], X[5], 0,    0,    0,    0,    0,     0,     0,     0,     0,     0)
+#define _simd_upload_16_5(X)  _simd_set(X[0], X[1], X[2], X[3], X[4], 0,    0,    0,    0,    0,    0,     0,     0,     0,     0,     0)
+#define _simd_upload_16_4(X)  _simd_set(X[0], X[1], X[2], X[3], 0,    0,    0,    0,    0,    0,    0,     0,     0,     0,     0,     0)
+#define _simd_upload_16_3(X)  _simd_set(X[0], X[1], X[2], 0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,     0,     0)
+#define _simd_upload_16_2(X)  _simd_set(X[0], X[1], 0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,     0,     0)
 
 #define _simd_upload_8_8(X) _simd_load(X)
 #define _simd_upload_8_7(X) _simd_set(X[0], X[1], X[2], X[3], X[4], X[5], X[6], 0)
@@ -730,16 +730,16 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_8(OP_ADD, int16_t, SSE_2, _mm_add_epi16, ANVIL_SIMD_ADD)
 	ANVIL_SIMD_IMPLEMENTATION_V_VV_8(OP_SUB, int16_t, SSE_2, _mm_sub_epi16, ANVIL_SIMD_SUB)
 
-//#undef _simd_type
-//#undef _simd_data
-//#undef _simd_load
-//#undef _simd_set
-//#define _simd_type __m128i
-//#define _simd_data(X) X.m128i_i8
-//#define _simd_load(X) _mm_load_si128(reinterpret_cast<const _simd_type*>(X))
-//#define _simd_set(X,Y,Z,W, A,B,C,D, E,F,G,H, I,J,L,M) _mm_set_epi8(X,Y,Z,W, A,B,C,D, E,F,G,H, I,J,L,M)
-//		ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP_ADD, int8_t, SSE_2, _mm_add_epi8, ANVIL_SIMD_ADD)
-//		ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP_SUB, int8_t, SSE_2, _mm_sub_epi8, ANVIL_SIMD_SUB)
+#undef _simd_type
+#undef _simd_data
+#undef _simd_load
+#undef _simd_set
+#define _simd_type __m128i
+#define _simd_data(X) X.m128i_i8
+#define _simd_load(X) _mm_load_si128(reinterpret_cast<const _simd_type*>(X))
+#define _simd_set(X,Y,Z,W, A,B,C,D, E,F,G,H, I,J,L,M) _mm_set_epi8(X,Y,Z,W, A,B,C,D, E,F,G,H, I,J,L,M)
+		ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP_ADD, int8_t, SSE_2, _mm_add_epi8, ANVIL_SIMD_ADD)
+		ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP_SUB, int8_t, SSE_2, _mm_sub_epi8, ANVIL_SIMD_SUB)
 
 #undef _simd_type
 #undef _simd_data

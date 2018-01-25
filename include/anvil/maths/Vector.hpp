@@ -73,6 +73,8 @@
 	#include <mmintrin.h>
 #endif
 
+#include "anvil/maths/SIMD.hpp"
+
 namespace anvil {
 
 	namespace detail {
@@ -462,7 +464,7 @@ namespace anvil {
 		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, int64_t, __m128i, _mm_and_si128)
 		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  int64_t, __m128i, _mm_or_si128)
 		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, int64_t, __m128i, _mm_xor_si128)
-		ANVIL_SPECIALISE_VOP_INFO_VS(VOP_FILL, int64_t, __m128i, _mm_set1_epi64x)
+		//ANVIL_SPECIALISE_VOP_INFO_VS(VOP_FILL, int64_t, __m128i, _mm_set1_epi64x)
 
 		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_ADD, int32_t, __m128i, _mm_add_epi32)
 		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_SUB, int32_t, __m128i, _mm_sub_epi32)
@@ -501,7 +503,7 @@ namespace anvil {
 		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, uint64_t, __m128i, _mm_and_si128)
 		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  uint64_t, __m128i, _mm_or_si128)
 		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_XOR, uint64_t, __m128i, _mm_xor_si128)
-		ANVIL_SPECIALISE_VOP_INFO_VS(VOP_FILL, uint64_t, __m128i, _mm_set1_epi64x)
+		//ANVIL_SPECIALISE_VOP_INFO_VS(VOP_FILL, uint64_t, __m128i, _mm_set1_epi64x)
 
 		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_AND, uint32_t, __m128i, _mm_and_si128)
 		ANVIL_SPECIALISE_VOP_INFO_VVV(VOP_OR,  uint32_t, __m128i, _mm_or_si128)
@@ -1686,7 +1688,7 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_AND, int64_t, 2, &, _mm_and_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_OR, int64_t, 2, | , _mm_or_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_XOR, int64_t, 2, ^, _mm_xor_si128)
-	ANVIL_SPECIALISE_FILL(int64_t, 2, int64_t, _mm_set1_epi64x)
+	//ANVIL_SPECIALISE_FILL(int64_t, 2, int64_t, _mm_set1_epi64x)
 
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_ADD, int32_t, 4, +, _mm_add_epi32)
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_SUB, int32_t, 4, -, _mm_sub_epi32)
@@ -1723,7 +1725,7 @@ namespace anvil {
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_AND, uint64_t, 2, &, _mm_and_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_OR, uint64_t, 2, |,  _mm_or_si128)
 	ANVIL_SPECIALISE_VECTOR_OP(detail::VOP_XOR, uint64_t, 2, ^, _mm_xor_si128)
-	ANVIL_SPECIALISE_FILL(uint64_t, 2, int64_t, _mm_set1_epi64x)
+	//ANVIL_SPECIALISE_FILL(uint64_t, 2, int64_t, _mm_set1_epi64x)
 
 	ANVIL_SPECIALISE_VECTOR_OP_CMP(detail::VOP_EQ, uint32_t, 4, ==, _mm_cmpeq_epi32)
 	ANVIL_SPECIALISE_FILL(uint32_t, 4, int32_t, _mm_set1_epi32)
