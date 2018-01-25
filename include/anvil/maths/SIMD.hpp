@@ -933,8 +933,13 @@ namespace anvil { namespace simd {
 #define _simd_type __m128i
 #define _simd_data(X) X.m128i_i64
 #define _simd_load(X) _mm_load_si128(reinterpret_cast<const _simd_type*>(X))
-#define _simd_set(X,Y) _mm_set_epi32(reinterpet_cast<const int32_t*>(&X)[0],reinterpet_cast<const int32_t*>(&X)[1],reinterpet_cast<const int32_t*>(&Y)[0],reinterpet_cast<const int32_t*>(&Y)[1])
-		//ANVIL_SIMD_SPECIALISE_FILL_2(SSE_2)
+#define _simd_set(X,Y) _mm_set_epi32(reinterpret_cast<const int32_t*>(&X)[0],reinterpret_cast<const int32_t*>(&X)[1],reinterpret_cast<const int32_t*>(&Y)[0],reinterpret_cast<const int32_t*>(&Y)[1])
+#define _simd_fill_0() _mm_setzero_si128()
+#define _simd_fill_1(X) _mm_set_epi32(reinterpret_cast<const int32_t*>(&X)[0],reinterpret_cast<const int32_t*>(&X)[1], reinterpret_cast<const int32_t*>(&X)[0],reinterpret_cast<const int32_t*>(&X)[1])
+#define _simd_fill_2(X,Y) _mm_set_epi32(reinterpret_cast<const int32_t*>(&X)[0],reinterpret_cast<const int32_t*>(&X)[1], reinterpret_cast<const int32_t*>(&Y)[0],reinterpret_cast<const int32_t*>(&Y)[1])
+#define _simd_fill_3(X,Y,Z) _mm_set_epi32(reinterpret_cast<const int32_t*>(&X)[0],reinterpret_cast<const int32_t*>(&X)[1], reinterpret_cast<const int32_t*>(&Y)[0],reinterpret_cast<const int32_t*>(&Y)[1])
+#define _simd_fill_4(X,Y,Z,W) _mm_set_epi32(reinterpret_cast<const int32_t*>(&X)[0],reinterpret_cast<const int32_t*>(&X)[1], reinterpret_cast<const int32_t*>(&Y)[0],reinterpret_cast<const int32_t*>(&Y)[1])
+		ANVIL_SIMD_SPECIALISE_FILL_2(SSE_2)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP_ADD, SSE_2, _mm_add_epi64, ANVIL_SIMD_ADD)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP_SUB, SSE_2, _mm_sub_epi64, ANVIL_SIMD_SUB)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP_AND, SSE_2, _mm_and_si128, ANVIL_SIMD_AND)
@@ -955,8 +960,13 @@ namespace anvil { namespace simd {
 #define _simd_type __m128i
 #define _simd_data(X) X.m128i_u64
 #define _simd_load(X) _mm_load_si128(reinterpret_cast<const _simd_type*>(X))
-#define _simd_set(X,Y) _mm_set_epi32(reinterpet_cast<const int32_t*>(&X)[0],reinterpet_cast<const int32_t*>(&X)[1],reinterpet_cast<const int32_t*>(&Y)[0],reinterpet_cast<const int32_t*>(&Y)[1])
-		//ANVIL_SIMD_SPECIALISE_FILL_2(SSE_2)
+#define _simd_set(X,Y) _mm_set_epi32(reinterpret_cast<const int32_t*>(&X)[0],reinterpret_cast<const int32_t*>(&X)[1],reinterpret_cast<const int32_t*>(&Y)[0],reinterpret_cast<const int32_t*>(&Y)[1])
+#define _simd_fill_0() _mm_setzero_si128()
+#define _simd_fill_1(X) _mm_set_epi32(reinterpret_cast<const int32_t*>(&X)[0],reinterpret_cast<const int32_t*>(&X)[1], reinterpret_cast<const int32_t*>(&X)[0],reinterpret_cast<const int32_t*>(&X)[1])
+#define _simd_fill_2(X,Y) _mm_set_epi32(reinterpret_cast<const int32_t*>(&X)[0],reinterpret_cast<const int32_t*>(&X)[1], reinterpret_cast<const int32_t*>(&Y)[0],reinterpret_cast<const int32_t*>(&Y)[1])
+#define _simd_fill_3(X,Y,Z) _mm_set_epi32(reinterpret_cast<const int32_t*>(&X)[0],reinterpret_cast<const int32_t*>(&X)[1], reinterpret_cast<const int32_t*>(&Y)[0],reinterpret_cast<const int32_t*>(&Y)[1])
+#define _simd_fill_4(X,Y,Z,W) _mm_set_epi32(reinterpret_cast<const int32_t*>(&X)[0],reinterpret_cast<const int32_t*>(&X)[1], reinterpret_cast<const int32_t*>(&Y)[0],reinterpret_cast<const int32_t*>(&Y)[1])
+		ANVIL_SIMD_SPECIALISE_FILL_2(SSE_2)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP_AND, SSE_2, _mm_and_si128, ANVIL_SIMD_AND)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP_OR,  SSE_2, _mm_or_si128,  ANVIL_SIMD_OR)
 		ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP_XOR, SSE_2, _mm_xor_si128, ANVIL_SIMD_XOR)
