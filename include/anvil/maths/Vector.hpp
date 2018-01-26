@@ -107,97 +107,97 @@ namespace anvil {
 			simd::OperationImplementation<type, size, simd::OP_FILL>::execute(elements);
 		}
 
-		ANVIL_CALL Vector(T x) {
+		ANVIL_SIMD_CALL Vector(const T x) {
 			simd::OperationImplementation<type, size, simd::OP_FILL>::execute(x, elements);
 		}
 
-		ANVIL_CALL Vector(T x, T y) {
+		ANVIL_SIMD_CALL Vector(const T x, const T y) {
 			simd::OperationImplementation<type, size, simd::OP_FILL>::execute(x, y, elements);
 		}
 
-		ANVIL_CALL Vector(T x, T y, T z) {
+		ANVIL_SIMD_CALL Vector(const T x, const T y, const T z) {
 			simd::OperationImplementation<type, size, simd::OP_FILL>::execute(x, y, z, elements);
 		}
 
-		ANVIL_CALL Vector(T x, T y, T z, T w) {
+		ANVIL_SIMD_CALL Vector(const T x, const T y, const T z, const T w) {
 			simd::OperationImplementation<type, size, simd::OP_FILL>::execute(x, y, z, w, elements);
 		}
 
-		ANVIL_STRONG_INLINE half_t& ANVIL_CALL lowerHalf() throw() {
+		ANVIL_STRONG_INLINE half_t& ANVIL_SIMD_CALL lowerHalf() throw() {
 			return reinterpret_cast<half_t*>(this)[0];
 		}
 
-		ANVIL_STRONG_INLINE half_t& ANVIL_CALL upperHalf() throw() {
+		ANVIL_STRONG_INLINE half_t& ANVIL_SIMD_CALL upperHalf() throw() {
 			return reinterpret_cast<half_t*>(this)[1];
 		}
 
-		ANVIL_STRONG_INLINE half_t ANVIL_CALL lowerHalf() const throw() {
+		ANVIL_STRONG_INLINE half_t ANVIL_SIMD_CALL lowerHalf() const throw() {
 			return reinterpret_cast<const half_t*>(this)[0];
 		}
 
-		ANVIL_STRONG_INLINE half_t ANVIL_CALL upperHalf() const throw() {
+		ANVIL_STRONG_INLINE half_t ANVIL_SIMD_CALL upperHalf() const throw() {
 			return reinterpret_cast<const half_t*>(this)[1];
 		}
 
-		explicit ANVIL_CALL operator bool() const throw() {
+		explicit ANVIL_SIMD_CALL operator bool() const throw() {
 			return !elementsEqual(static_cast<type>(0));
 		}
 
-		inline this_t ANVIL_CALL operator!() const throw() {
+		inline this_t ANVIL_SIMD_CALL operator!() const throw() {
 			this_t tmp;
 			for (size_t i = 0; i < size; ++i) tmp.elements[i] = !elements[i];
 			return tmp;
 		}
 
-		ANVIL_STRONG_INLINE this_t ANVIL_CALL operator~() const throw() {
+		ANVIL_STRONG_INLINE this_t ANVIL_SIMD_CALL operator~() const throw() {
 			this_t tmp;
 			simd::OperationImplementation<T, S, simd::OP_NOT>::execute(elements, tmp.elements);
 			return tmp;
 		}
 
-		ANVIL_STRONG_INLINE this_t& ANVIL_CALL operator++() throw() {
+		ANVIL_STRONG_INLINE this_t& ANVIL_SIMD_CALL operator++() throw() {
 			*this += static_cast<type>(1);
 			return *this;
 		}
 
-		ANVIL_STRONG_INLINE this_t& ANVIL_CALL operator--() throw() {
+		ANVIL_STRONG_INLINE this_t& ANVIL_SIMD_CALL operator--() throw() {
 			*this -= static_cast<type>(1);
 			return *this;
 		}
 
-		inline this_t ANVIL_CALL operator++(int) throw() {
+		inline this_t ANVIL_SIMD_CALL operator++(int) throw() {
 			const this_t tmp(*this);
 			*this += static_cast<type>(1);
 			return tmp;
 		}
 
-		inline this_t ANVIL_CALL operator--(int) throw() {
+		inline this_t ANVIL_SIMD_CALL operator--(int) throw() {
 			const this_t tmp(*this);
 			*this -= static_cast<type>(1);
 			return tmp;
 		}
 
-		ANVIL_STRONG_INLINE type ANVIL_CALL operator[](const size_t aIndex) const throw() {
+		ANVIL_STRONG_INLINE type ANVIL_SIMD_CALL operator[](const size_t aIndex) const throw() {
 			return elements[aIndex];
 		}
 
-		ANVIL_STRONG_INLINE type& ANVIL_CALL operator[](const size_t aIndex) throw() {
+		ANVIL_STRONG_INLINE type& ANVIL_SIMD_CALL operator[](const size_t aIndex) throw() {
 			return elements[aIndex];
 		}
 
-		ANVIL_STRONG_INLINE const type* ANVIL_CALL begin() const throw() {
+		ANVIL_STRONG_INLINE const type* ANVIL_SIMD_CALL begin() const throw() {
 			return elements;
 		}
 
-		ANVIL_STRONG_INLINE type* ANVIL_CALL begin() throw() {
+		ANVIL_STRONG_INLINE type* ANVIL_SIMD_CALL begin() throw() {
 			return elements;
 		}
 
-		ANVIL_STRONG_INLINE const type* ANVIL_CALL end() const throw() {
+		ANVIL_STRONG_INLINE const type* ANVIL_SIMD_CALL end() const throw() {
 			return elements + size;
 		}
 
-		ANVIL_STRONG_INLINE type* ANVIL_CALL end() throw() {
+		ANVIL_STRONG_INLINE type* ANVIL_SIMD_CALL end() throw() {
 			return elements + size;
 		}
 
@@ -218,7 +218,7 @@ namespace anvil {
 		//	}
 		//}
 
-		ANVIL_STRONG_INLINE bool ANVIL_CALL elementsEqual(const T a_scalar) const throw() {
+		ANVIL_STRONG_INLINE bool ANVIL_SIMD_CALL elementsEqual(const T a_scalar) const throw() {
 			return elements[0] == a_scalar ? elementsEqual() : false;
 		}
 
@@ -240,19 +240,19 @@ namespace anvil {
 		//	}
 		//}
 
-		ANVIL_STRONG_INLINE float_t ANVIL_CALL avgf() const throw() {
+		ANVIL_STRONG_INLINE float_t ANVIL_SIMD_CALL avgf() const throw() {
 			return sumf() / static_cast<float_t>(size);
 		}
 
-		ANVIL_STRONG_INLINE type ANVIL_CALL sum() const throw() {
+		ANVIL_STRONG_INLINE type ANVIL_SIMD_CALL sum() const throw() {
 			return static_cast<type>(sumf());
 		}
 
-		ANVIL_STRONG_INLINE type ANVIL_CALL avg() const throw() {
+		ANVIL_STRONG_INLINE type ANVIL_SIMD_CALL avg() const throw() {
 			return static_cast<type>(avgf());
 		}
 
-		ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount() const throw() {
+		ANVIL_STRONG_INLINE size_t ANVIL_SIMD_CALL popcount() const throw() {
 			return popcount<sizeof(type) * size>(this);
 		}
 
@@ -347,37 +347,37 @@ namespace anvil {
 		//	}
 		//}
 
-		ANVIL_STRONG_INLINE float_t ANVIL_CALL magf() const throw() {
+		ANVIL_STRONG_INLINE float_t ANVIL_SIMD_CALL magf() const throw() {
 			return sqrt(mag2f());
 		}
 
-		ANVIL_STRONG_INLINE type ANVIL_CALL mag2() const throw() {
+		ANVIL_STRONG_INLINE type ANVIL_SIMD_CALL mag2() const throw() {
 			return static_cast<type>(mag2f());
 		}
 
-		ANVIL_STRONG_INLINE type ANVIL_CALL mag() const throw() {
+		ANVIL_STRONG_INLINE type ANVIL_SIMD_CALL mag() const throw() {
 			return static_cast<type>(magf());
 		}
 
-		inline Vector<float_t, size> ANVIL_CALL normalisef() const throw() {
+		inline Vector<float_t, size> ANVIL_SIMD_CALL normalisef() const throw() {
 			Vector<float_t, size> tmp = static_cast<Vector<float_t, size>>(*this);
 			tmp = tmp * tmp;
 			tmp /= fill<float_t, size>(tmp.sumf());
 			return tmp;
 		}
 
-		ANVIL_STRONG_INLINE this_t ANVIL_CALL normalise() const throw() {
+		ANVIL_STRONG_INLINE this_t ANVIL_SIMD_CALL normalise() const throw() {
 			return vector_cast<type, size>(normalisef());
 		}
 
 		template<class T2, size_t S2>
-		Vector<type, S2> ANVIL_CALL swizzle(const Vector<T2, S2> aOther) const throw() {
+		Vector<type, S2> ANVIL_SIMD_CALL swizzle(const Vector<T2, S2> aOther) const throw() {
 			Vector<type, S2> tmp;
 			for (size_t i = 0; i < S2; ++i) tmp[i] = elements[static_cast<size_t>(aOther[i])];
 			return tmp;
 		}
 
-		inline this_t ANVIL_CALL sort() const throw() {
+		inline this_t ANVIL_SIMD_CALL sort() const throw() {
 			this_t tmp(*this);
 			std::sort(tmp.begin(), tmp.end());
 			return tmp;
@@ -387,172 +387,172 @@ namespace anvil {
 	// Vector Operators
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator+(const Vector<T, S> x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_SIMD_CALL operator+(const Vector<T, S> x, const Vector<T, S> y) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_ADD>::execute(x.elements, y.elements, tmp);
 		return *reinterpret_cast<Vector<T,S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator-(const Vector<T, S> x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_SIMD_CALL operator-(const Vector<T, S> x, const Vector<T, S> y) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_SUB>::execute(x.elements, y.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator*(const Vector<T, S> x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_SIMD_CALL operator*(const Vector<T, S> x, const Vector<T, S> y) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_MUL>::execute(x.elements, y.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator/(const Vector<T, S> x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_SIMD_CALL operator/(const Vector<T, S> x, const Vector<T, S> y) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_DIV>::execute(x.elements, y.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator&(const Vector<T, S> x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_SIMD_CALL operator&(const Vector<T, S> x, const Vector<T, S> y) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_AND>::execute(x.elements, y.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator|(const Vector<T, S> x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_SIMD_CALL operator|(const Vector<T, S> x, const Vector<T, S> y) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_OR>::execute(x.elements, y.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator^(const Vector<T, S> x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_SIMD_CALL operator^(const Vector<T, S> x, const Vector<T, S> y) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_XOR>::execute(x.elements, y.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator<<(const Vector<T, S> x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_SIMD_CALL operator<<(const Vector<T, S> x, const Vector<T, S> y) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_LSHIFT>::execute(x.elements, y.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator>>(const Vector<T, S> x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_SIMD_CALL operator>>(const Vector<T, S> x, const Vector<T, S> y) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_RSHIFT>::execute(x.elements, y.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator%(const Vector<T, S> x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_SIMD_CALL operator%(const Vector<T, S> x, const Vector<T, S> y) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_MOD>::execute(x.elements, y.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_CALL operator+=(Vector<T, S>& x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_SIMD_CALL operator+=(Vector<T, S>& x, const Vector<T, S> y) {
 		simd::OperationImplementation<T, S, simd::OP_ADD>::execute(x.elements, y.elements, x.elements);
 		return x;
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_CALL operator-=(Vector<T, S>& x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_SIMD_CALL operator-=(Vector<T, S>& x, const Vector<T, S> y) {
 		simd::OperationImplementation<T, S, simd::OP_SUB>::execute(x.elements, y.elements, x.elements);
 		return x;
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_CALL operator*=(Vector<T, S>& x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_SIMD_CALL operator*=(Vector<T, S>& x, const Vector<T, S> y) {
 		simd::OperationImplementation<T, S, simd::OP_MUL>::execute(x.elements, y.elements, x.elements);
 		return x;
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_CALL operator/=(Vector<T, S>& x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_SIMD_CALL operator/=(Vector<T, S>& x, const Vector<T, S> y) {
 		simd::OperationImplementation<T, S, simd::OP_DIV>::execute(x.elements, y.elements, x.elements);
 		return x;
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_CALL operator&=(Vector<T, S>& x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_SIMD_CALL operator&=(Vector<T, S>& x, const Vector<T, S> y) {
 		simd::OperationImplementation<T, S, simd::OP_AND>::execute(x.elements, y.elements, x.elements);
 		return x;
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_CALL operator|=(Vector<T, S>& x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_SIMD_CALL operator|=(Vector<T, S>& x, const Vector<T, S> y) {
 		simd::OperationImplementation<T, S, simd::OP_OR>::execute(x.elements, y.elements, x.elements);
 		return x;
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_CALL operator^=(Vector<T, S>& x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_SIMD_CALL operator^=(Vector<T, S>& x, const Vector<T, S> y) {
 		simd::OperationImplementation<T, S, simd::OP_XOR>::execute(x.elements, y.elements, x.elements);
 		return x;
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_CALL operator<<=(Vector<T, S>& x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_SIMD_CALL operator<<=(Vector<T, S>& x, const Vector<T, S> y) {
 		simd::OperationImplementation<T, S, simd::OP_LSHIFT>::execute(x.elements, y.elements, x.elements);
 		return x;
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_CALL operator>>=(Vector<T, S>& x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_SIMD_CALL operator>>=(Vector<T, S>& x, const Vector<T, S> y) {
 		simd::OperationImplementation<T, S, simd::OP_RSHIFT>::execute(x.elements, y.elements, x.elements);
 		return x;
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_CALL operator%=(Vector<T, S>& x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S>& ANVIL_SIMD_CALL operator%=(Vector<T, S>& x, const Vector<T, S> y) {
 		simd::OperationImplementation<T, S, simd::OP_MOD>::execute(x.elements, y.elements, x.elements);
 		return x;
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator==(const Vector<T, S> x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_SIMD_CALL operator==(const Vector<T, S> x, const Vector<T, S> y) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_CMPEQ>::execute(x.elements, y.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator!=(const Vector<T, S> x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_SIMD_CALL operator!=(const Vector<T, S> x, const Vector<T, S> y) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_CMPNE>::execute(x.elements, y.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator<(const Vector<T, S> x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_SIMD_CALL operator<(const Vector<T, S> x, const Vector<T, S> y) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_CMPLT>::execute(x.elements, y.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator>(const Vector<T, S> x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_SIMD_CALL operator>(const Vector<T, S> x, const Vector<T, S> y) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_CMPGT>::execute(x.elements, y.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator<=(const Vector<T, S> x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_SIMD_CALL operator<=(const Vector<T, S> x, const Vector<T, S> y) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_CMPLE>::execute(x.elements, y.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_CALL operator>=(const Vector<T, S> x, const Vector<T, S> y) {
+	ANVIL_STRONG_INLINE Vector<T, S> ANVIL_SIMD_CALL operator>=(const Vector<T, S> x, const Vector<T, S> y) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_CMPGT>::execute(x.elements, y.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
@@ -561,185 +561,185 @@ namespace anvil {
 	// Vector functions
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL reflect(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL reflect(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_REFLECT>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL fma(const Vector<T, S> x, const Vector<T, S> y, const Vector<T, S> z) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL fma(const Vector<T, S> x, const Vector<T, S> y, const Vector<T, S> z) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_FMA>::execute(x.elements, y.elements, z.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL fms(const Vector<T, S> x, const Vector<T, S> y, const Vector<T, S> z) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL fms(const Vector<T, S> x, const Vector<T, S> y, const Vector<T, S> z) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_FMS>::execute(x.elements, y.elements, z.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL dim(const Vector<T, S> x, const Vector<T, S> y) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL dim(const Vector<T, S> x, const Vector<T, S> y) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_DIM>::execute(x.elements, y.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL atan2(const Vector<T, S> x, const Vector<T, S> y) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL atan2(const Vector<T, S> x, const Vector<T, S> y) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_ATAN2>::execute(x.elements, y.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL abs(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL abs(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_ABS>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL exp(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL exp(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_EXP>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL log(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL log(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_LOG>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL log2(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL log2(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_LOG2>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL log10(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL log10(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_LOG10>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL ceil(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL ceil(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_CEIL>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL floor(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL floor(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_FLOOR>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL round(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL round(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_ROUND>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL sin(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL sin(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_SIN>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL cos(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL cos(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_COS>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL tan(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL tan(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_TAN>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL asin(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL asin(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_ASIN>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL acos(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL acos(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_ACOS>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL atan(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL atan(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_ATAN>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL sinh(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL sinh(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_SINH>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL cosh(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL cosh(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_COSH>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL tanh(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL tanh(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_TANH>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL sqrt(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL sqrt(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_SQRT>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_CALL cbrt(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE Vector<size_t, S> ANVIL_SIMD_CALL cbrt(const Vector<T, S> x) {
 		T tmp[S];
 		simd::OperationImplementation<T, S, simd::OP_CBRT>::execute(x.elements, tmp);
 		return *reinterpret_cast<Vector<T, S>*>(tmp);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL avg(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE T ANVIL_SIMD_CALL avg(const Vector<T, S> x) {
 		return simd::OperationImplementation<T, S, simd::OP_AVG>::execute(x.elements);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL sum(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE T ANVIL_SIMD_CALL sum(const Vector<T, S> x) {
 		return simd::OperationImplementation<T, S, simd::OP_SUM>::execute(x.elements);
 	}
 
 	template<class T, size_t S>
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount(const Vector<T, S> x) {
+	static ANVIL_STRONG_INLINE size_t ANVIL_SIMD_CALL popcount(const Vector<T, S> x) {
 		return simd::OperationImplementation<T, S, simd::OP_POPCN>::execute(x.elements);
 	}
 
