@@ -716,14 +716,14 @@ namespace anvil { namespace simd {
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const double* x) { _mm_load_pd(x); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_pd(); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_pd(); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(double x) { return _mm_set1_pd(x); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(double x) { return set2(x, 0.0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(double x, double y) { return _mm_setr_pd(x, y); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(double x, double y, double z) { return set2(x, y); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(double x, double y, double z, double w) { return set2(x, y); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(const register double x) { return _mm_set1_pd(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(const register double x) { return set2(x, 0.0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(const register double x, const register double y) { return _mm_setr_pd(x, y); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(const register double x, const register double y, const register double z) { return set2(x, y); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(const register double x, const register double y, const register double z, const register double w) { return set2(x, y); }
 
 		template<size_t GS>
-		static void ANVIL_CALL get(simd_t x, double* y) {
+		static void ANVIL_CALL get(const register simd_t x, double* y) {
 			typedef DefaultSIMD<double, GS> simd2_t;
 			union {
 				simd2_t s2;
@@ -757,17 +757,17 @@ namespace anvil { namespace simd {
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_si128(); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_si128(); }
 #if ANVIL_CPP_VER < 2011
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(int64_t x) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1]); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(const register int64_t x) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1]); }
 #else
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(int64_t x) { _mm_set1_epi64x(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(const register int64_t x) { _mm_set1_epi64x(x); }
 #endif
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(int64_t x) { return set2(x, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(int64_t x, int64_t y) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&y)[0], reinterpret_cast<const int32_t*>(&y)[1]); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(int64_t x, int64_t y, int64_t z) { return set2(x, y); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(int64_t x, int64_t y, int64_t z, int64_t w) { return set2(x, y); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(const register int64_t x) { return set2(x, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(const register int64_t x, const register int64_t y) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&y)[0], reinterpret_cast<const int32_t*>(&y)[1]); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(const register int64_t x, const register int64_t y, const register int64_t z) { return set2(x, y); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(const register int64_t x, const register int64_t y, const register int64_t z, const register int64_t w) { return set2(x, y); }
 
 		template<size_t GS>
-		static void ANVIL_CALL get(simd_t x, int64_t* y) {
+		static void ANVIL_CALL get(const register simd_t x, int64_t* y) {
 			for (size_t i = 0; i < GS; ++i)  y[i] = x.m128i_i64[i];
 		}
 
@@ -795,17 +795,17 @@ namespace anvil { namespace simd {
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_si128(); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_si128(); }
 #if ANVIL_CPP_VER < 2011
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(uint64_t x) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1]); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(const register uint64_t x) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1]); }
 #else
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(uint64_t x) { _mm_set1_epi64x(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(const register uint64_t x) { _mm_set1_epi64x(x); }
 #endif
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(uint64_t x) { return set2(x, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(uint64_t x, uint64_t y) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&y)[0], reinterpret_cast<const int32_t*>(&y)[1]); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(uint64_t x, uint64_t y, uint64_t z) { return set2(x, y); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(uint64_t x, uint64_t y, uint64_t z, uint64_t w) { return set2(x, y); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(const register uint64_t x) { return set2(x, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(const register uint64_t x, const register uint64_t y) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&y)[0], reinterpret_cast<const int32_t*>(&y)[1]); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(const register uint64_t x, const register uint64_t y, const register uint64_t z) { return set2(x, y); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(const register uint64_t x, const register uint64_t y, const register uint64_t z, const register uint64_t w) { return set2(x, y); }
 
 		template<size_t GS>
-		static void ANVIL_CALL get(simd_t x, uint64_t* y) {
+		static void ANVIL_CALL get(const register simd_t x, uint64_t* y) {
 			typedef DefaultSIMD<uint64_t, GS> simd2_t;
 			union {
 				simd2_t s2;
@@ -838,14 +838,14 @@ namespace anvil { namespace simd {
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const float* x) { _mm_load_ps(x); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm256_undefined_ps(); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm256_setzero_ps(); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(float x) { return _mm256_set1_ps(x); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(float x) { set4(x, 0.f, 0.f, 0.f); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(float x, float y) { return set4(x, y, 0.f, 0.f); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(float x, float y, float z) { return set4(x, y, z, 0.f); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(float x, float y, float z, float w) { return _mm256_setr_ps(x, y, z, w, 0.f, 0.f, 0.f, 0.f); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(const register float x) { return _mm256_set1_ps(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(const register float x) { set4(x, 0.f, 0.f, 0.f); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(const register float x, const register float y) { return set4(x, y, 0.f, 0.f); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(const register float x, const register float y, const register float z) { return set4(x, y, z, 0.f); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(const register float x, const register float y, const register float z, const register float w) { return _mm256_setr_ps(x, y, z, w, 0.f, 0.f, 0.f, 0.f); }
 
 		template<size_t GS>
-		static void ANVIL_CALL get(simd_t x, float* y) {
+		static void ANVIL_CALL get(const register simd_t x, float* y) {
 			typedef DefaultSIMD<float, GS> simd2_t;
 			union {
 				simd2_t s2;
@@ -878,14 +878,14 @@ namespace anvil { namespace simd {
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const float* x) { _mm_load_ps(x); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_ps(); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_ps(); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(float x) { return _mm_set1_ps(x); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(float x) { set4(x, 0.f, 0.f, 0.f); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(float x, float y) { return set4(x, y, 0.f, 0.f); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(float x, float y, float z) { return set4(x, y, z, 0.f); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(float x, float y, float z, float w) { return _mm_setr_ps(x, y, z, w); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(const register float x) { return _mm_set1_ps(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(const register float x) { set4(x, 0.f, 0.f, 0.f); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(const register float x, const register float y) { return set4(x, y, 0.f, 0.f); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(const register float x, const register float y, const register float z) { return set4(x, y, z, 0.f); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(const register float x, const register float y, const register float z, const register float w) { return _mm_setr_ps(x, y, z, w); }
 
 		template<size_t GS>
-		static void ANVIL_CALL get(simd_t x, float* y) {
+		static void ANVIL_CALL get(const register simd_t x, float* y) {
 			typedef DefaultSIMD<float, GS> simd2_t;
 			union {
 				simd2_t s2;
@@ -918,14 +918,14 @@ namespace anvil { namespace simd {
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const int32_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_si128(); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_si128(); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(int32_t x) { return _mm_set1_epi32(x); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(int32_t x) { set4(x, 0, 0, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(int32_t x, int32_t y) { return set4(x, y, 0, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(int32_t x, int32_t y, int32_t z) { return set4(x, y, z, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(int32_t x, int32_t y, int32_t z, int32_t w) { return _mm_setr_epi32(x, y, z, w); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(const register int32_t x) { return _mm_set1_epi32(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(const register int32_t x) { set4(x, 0, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(const register int32_t x, const register int32_t y) { return set4(x, y, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(const register int32_t x, const register int32_t y, const register int32_t z) { return set4(x, y, z, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(const register int32_t x, const register int32_t y, const register int32_t z, const register int32_t w) { return _mm_setr_epi32(x, y, z, w); }
 
 		template<size_t GS>
-		static void ANVIL_CALL get(simd_t x, int32_t* y) {
+		static void ANVIL_CALL get(const register simd_t x, int32_t* y) {
 			typedef DefaultSIMD<int32_t, GS> simd2_t;
 			union {
 				simd2_t s2;
@@ -958,14 +958,14 @@ namespace anvil { namespace simd {
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const uint32_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_si128(); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_si128(); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(uint32_t x) { return _mm_set1_epi32(x); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(uint32_t x) { set4(x, 0, 0, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(uint32_t x, uint32_t y) { return set4(x, y, 0, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(uint32_t x, uint32_t y, uint32_t z) { return set4(x, y, z, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(uint32_t x, uint32_t y, uint32_t z, uint32_t w) { return _mm_setr_epi32(x, y, z, w); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(const register uint32_t x) { return _mm_set1_epi32(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(const register uint32_t x) { set4(x, 0, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(const register uint32_t x, const register uint32_t y) { return set4(x, y, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(const register uint32_t x, const register uint32_t y, const register uint32_t z) { return set4(x, y, z, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(const register uint32_t x, const register uint32_t y, const register uint32_t z, const register uint32_t w) { return _mm_setr_epi32(x, y, z, w); }
 
 		template<size_t GS>
-		static void ANVIL_CALL get(simd_t x, uint32_t* y) {
+		static void ANVIL_CALL get(const register simd_t x, uint32_t* y) {
 			typedef DefaultSIMD<uint32_t, GS> simd2_t;
 			union {
 				simd2_t s2;
@@ -998,14 +998,14 @@ namespace anvil { namespace simd {
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const int16_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_si128(); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_si128(); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(int16_t x) { return _mm_set1_epi16(x); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(int16_t x) { set4(x, 0, 0, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(int16_t x, int16_t y) { return set4(x, y, 0, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(int16_t x, int16_t y, int16_t z) { return set4(x, y, z, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(int16_t x, int16_t y, int16_t z, int16_t w) { return _mm_setr_epi16(x, y, z, w, 0, 0, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(const register int16_t x) { return _mm_set1_epi16(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(const register int16_t x) { set4(x, 0, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(const register int16_t x, const register int16_t y) { return set4(x, y, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(const register int16_t x, const register int16_t y, const register int16_t z) { return set4(x, y, z, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(const register int16_t x, const register int16_t y, const register int16_t z, const register int16_t w) { return _mm_setr_epi16(x, y, z, w, 0, 0, 0, 0); }
 
 		template<size_t GS>
-		static void ANVIL_CALL get(simd_t x, int16_t* y) {
+		static void ANVIL_CALL get(const register simd_t x, int16_t* y) {
 			typedef DefaultSIMD<int16_t, GS> simd2_t;
 			union {
 				simd2_t s2;
@@ -1038,14 +1038,14 @@ namespace anvil { namespace simd {
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const uint16_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_si128(); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_si128(); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(uint16_t x) { return _mm_set1_epi16(x); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(uint16_t x) { set4(x, 0, 0, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(uint16_t x, uint16_t y) { return set4(x, y, 0, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(uint16_t x, uint16_t y, uint16_t z) { return set4(x, y, z, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(uint16_t x, uint16_t y, uint16_t z, uint16_t w) { return _mm_setr_epi16(x, y, z, w, 0, 0, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(const register uint16_t x) { return _mm_set1_epi16(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(const register uint16_t x) { set4(x, 0, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(const register uint16_t x, const register uint16_t y) { return set4(x, y, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(const register uint16_t x, const register uint16_t y, const register uint16_t z) { return set4(x, y, z, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(const register uint16_t x, const register uint16_t y, const register uint16_t z, const register uint16_t w) { return _mm_setr_epi16(x, y, z, w, 0, 0, 0, 0); }
 
 		template<size_t GS>
-		static void ANVIL_CALL get(simd_t x, uint16_t* y) {
+		static void ANVIL_CALL get(const register simd_t x, uint16_t* y) {
 			typedef DefaultSIMD<uint16_t, GS> simd2_t;
 			union {
 				simd2_t s2;
@@ -1078,14 +1078,14 @@ namespace anvil { namespace simd {
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const int8_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_si128(); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_si128(); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(int8_t x) { return _mm_set1_epi8(x); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(int8_t x) { set4(x, 0, 0, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(int8_t x, int8_t y) { return set4(x, y, 0, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(int8_t x, int8_t y, int8_t z) { return set4(x, y, z, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(int8_t x, int8_t y, int8_t z, int8_t w) { return _mm_setr_epi8(x, y, z, w, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(const register int8_t x) { return _mm_set1_epi8(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(const register int8_t x) { set4(x, 0, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(const register int8_t x, const register int8_t y) { return set4(x, y, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(const register int8_t x, const register int8_t y, const register int8_t z) { return set4(x, y, z, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(const register int8_t x, const register int8_t y, const register int8_t z, const register int8_t w) { return _mm_setr_epi8(x, y, z, w, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); }
 
 		template<size_t GS>
-		static void ANVIL_CALL get(simd_t x, int8_t* y) {
+		static void ANVIL_CALL get(const register simd_t x, int8_t* y) {
 			typedef DefaultSIMD<int8_t, GS> simd2_t;
 			union {
 				simd2_t s2;
@@ -1118,14 +1118,14 @@ namespace anvil { namespace simd {
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const uint8_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_si128(); }
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_si128(); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(uint8_t x) { return _mm_set1_epi8(x); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(uint8_t x) { set4(x, 0, 0, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(uint8_t x, uint8_t y) { return set4(x, y, 0, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(uint8_t x, uint8_t y, uint8_t z) { return set4(x, y, z, 0); }
-		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(uint8_t x, uint8_t y, uint8_t z, uint8_t w) { return _mm_setr_epi8(x, y, z, w, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(const register uint8_t x) { return _mm_set1_epi8(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(const register uint8_t x) { set4(x, 0, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(const register uint8_t x, const register uint8_t y) { return set4(x, y, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(const register uint8_t x, const register uint8_t y, const register uint8_t z) { return set4(x, y, z, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(const register uint8_t x, const register uint8_t y, const register uint8_t z, const register uint8_t w) { return _mm_setr_epi8(x, y, z, w, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); }
 
 		template<size_t GS>
-		static void ANVIL_CALL get(simd_t x, uint8_t* y) {
+		static void ANVIL_CALL get(const register simd_t x, uint8_t* y) {
 			typedef DefaultSIMD<uint8_t, GS> simd2_t;
 			union {
 				simd2_t s2;
@@ -1161,16 +1161,16 @@ namespace anvil { namespace simd {
 		static ANVIL_STRONG_INLINE bool ANVIL_CALL optimised() {\
 			return IsInstructionSetSupported( IS_ ## INSTRUCTION );\
 		}\
-		static ANVIL_STRONG_INLINE _simd_type ANVIL_CALL execute_in(simd_t x, simd_t y) {\
+		static ANVIL_STRONG_INLINE _simd_type ANVIL_CALL execute_in(const register simd_t x, const register simd_t y) {\
 			return FUNCTION1(x,y);\
 		}\
-		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(const _simd_element_type* x, const _simd_element_type* y, _simd_element_type* o) {\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(const register _simd_element_type* x, const register _simd_element_type* y, _simd_element_type* o) {\
 			helper_t::get<SIZE>(execute_in(helper_t::setn<SIZE>(x), helper_t::setn<SIZE>(y)), o);\
 		}\
-		static inline void ANVIL_CALL execute_nop(const _simd_element_type* x, const _simd_element_type* y, _simd_element_type* o) {\
+		static inline void ANVIL_CALL execute_nop(const register _simd_element_type* x, const register _simd_element_type* y, _simd_element_type* o) {\
 			for (size_t i = 0; i < SIZE; ++i) o[i] = FUNCTION2(x[i], y[i]); \
 		}\
-		static inline void ANVIL_CALL execute(const _simd_element_type* x, const _simd_element_type* y, _simd_element_type* o) {\
+		static inline void ANVIL_CALL execute(const register _simd_element_type* x, const register _simd_element_type* y, _simd_element_type* o) {\
 			if(optimised()) {\
 				execute_op(x,y,o);\
 			} else {\
@@ -1187,16 +1187,16 @@ namespace anvil { namespace simd {
 		static ANVIL_STRONG_INLINE bool ANVIL_CALL optimised() {\
 			return IsInstructionSetSupported( IS_ ## INSTRUCTION );\
 		}\
-		static ANVIL_STRONG_INLINE _simd_type ANVIL_CALL execute_in(simd_t x) {\
+		static ANVIL_STRONG_INLINE _simd_type ANVIL_CALL execute_in(const register simd_t x) {\
 			return FUNCTION1(x);\
 		}\
-		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(const _simd_element_type* x, _simd_element_type* o) {\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(const register _simd_element_type* x, _simd_element_type* o) {\
 			helper_t::get<SIZE>(execute_in(helper_t::setn<SIZE>(x)), o);\
 		}\
-		static inline void ANVIL_CALL execute_nop(const _simd_element_type* x, _simd_element_type* o) {\
+		static inline void ANVIL_CALL execute_nop(const register _simd_element_type* x, _simd_element_type* o) {\
 			for (size_t i = 0; i < SIZE; ++i) o[i] = FUNCTION2(x[i]); \
 		}\
-		static inline void ANVIL_CALL execute(const _simd_element_type* x, _simd_element_type* o) {\
+		static inline void ANVIL_CALL execute(const register _simd_element_type* x, _simd_element_type* o) {\
 			if(optimised()) {\
 				execute_op(x,o);\
 			} else {\
@@ -1214,22 +1214,22 @@ namespace anvil { namespace simd {
 			else execute_nop(o);\
 		}\
 		\
-		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(_simd_element_type x, _simd_element_type* o) {\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(const register _simd_element_type x, _simd_element_type* o) {\
 			if(optimised()) execute_op(x,o);\
 			else execute_nop(x,o);\
 		}\
 		\
-		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(_simd_element_type x, _simd_element_type y, _simd_element_type* o) {\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(const register _simd_element_type x, const register _simd_element_type y, _simd_element_type* o) {\
 			if(optimised()) execute_op(x,y,o);\
 			else execute_nop(x,y,o);\
 		}\
 		\
-		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(_simd_element_type x, _simd_element_type y, _simd_element_type z, _simd_element_type* o) {\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(const register _simd_element_type x, const register _simd_element_type y, const register _simd_element_type z, _simd_element_type* o) {\
 			if(optimised()) execute_op(x,y,z,o);\
 			else execute_nop(x,y,z,o);\
 		}\
 		\
-		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(_simd_element_type x, _simd_element_type y, _simd_element_type z, _simd_element_type w, _simd_element_type* o) {\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(const register _simd_element_type x, const register _simd_element_type y, const register _simd_element_type z, const register _simd_element_type w, _simd_element_type* o) {\
 			if(optimised()) execute_op(x,y,z,w,o);\
 			else execute_nop(x,y,z,w,o);\
 		}\
@@ -1238,24 +1238,24 @@ namespace anvil { namespace simd {
 			memset(o, 0, sizeof(_simd_element_type) * SIZE);\
 		}\
 		\
-		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(_simd_element_type x, _simd_element_type* o) {\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(const register _simd_element_type x, _simd_element_type* o) {\
 			for (size_t i = 0; i < SIZE; ++i) o[i] = x;\
 		}\
 		\
-		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(_simd_element_type x, _simd_element_type y, _simd_element_type* o) {\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(const register _simd_element_type x, const register _simd_element_type y, _simd_element_type* o) {\
 			if (SIZE > 2) execute_nop(o);\
 			o[0] = x;\
 			if (SIZE > 1) o[1] = y;\
 		}\
 		\
-		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(_simd_element_type x, _simd_element_type y, _simd_element_type z, _simd_element_type* o) {\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_nop(const register _simd_element_type x, const register _simd_element_type y, const register _simd_element_type z, _simd_element_type* o) {\
 			if (SIZE > 3) execute_nop(o);\
 			o[0] = x;\
 			if (SIZE > 1) o[1] = y;\
 			if (SIZE > 2) o[2] = z;\
 		}\
 		\
-		static ANVIL_STRONG_INLINE void  ANVIL_CALL execute_nop(_simd_element_type x, _simd_element_type y, _simd_element_type z, _simd_element_type w, _simd_element_type* o) {\
+		static ANVIL_STRONG_INLINE void  ANVIL_CALL execute_nop(const register _simd_element_type x, const register _simd_element_type y, const register _simd_element_type z, const register _simd_element_type w, _simd_element_type* o) {\
 			if (SIZE > 4) execute_nop(o);\
 			o[0] = x;\
 			if (SIZE > 1) o[1] = y;\
@@ -1267,19 +1267,19 @@ namespace anvil { namespace simd {
 			helper_t::get<SIZE>(helper_t::fill0(), o);\
 		}\
 		\
-		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(_simd_element_type x, _simd_element_type* o) {\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(const register _simd_element_type x, _simd_element_type* o) {\
 			helper_t::get<SIZE>(helper_t::fill(x), o);\
 		}\
 		\
-		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(_simd_element_type x, _simd_element_type y, _simd_element_type* o) {\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(const register _simd_element_type x, const register _simd_element_type y, _simd_element_type* o) {\
 			helper_t::get<SIZE>(helper_t::set2(x,y), o);\
 		}\
 		\
-		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(_simd_element_type x, _simd_element_type y, _simd_element_type z, _simd_element_type* o) {\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(const register _simd_element_type x, const register _simd_element_type y, const register _simd_element_type z, _simd_element_type* o) {\
 			helper_t::get<SIZE>(helper_t::set3(x,y,z), o);\
 		}\
 		\
-		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(_simd_element_type x, _simd_element_type y, _simd_element_type z, _simd_element_type w, _simd_element_type* o) {\
+		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(const register _simd_element_type x, const register _simd_element_type y, const register _simd_element_type z, const register _simd_element_type w, _simd_element_type* o) {\
 			helper_t::get<SIZE>(helper_t::set4(x,y,z,w), o);\
 		}\
 		\
