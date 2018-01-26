@@ -380,11 +380,11 @@ namespace anvil { namespace simd {
 			o.s = o_;
 
 			if (optimal_t::optimised()) {
-				for (size_t i = 0; i < OPTIMAL; ++i) {
+				for (size_t i = 0; i < LOOP; ++i) {
 					o.vo[i] = optimal_t::execute_in(x.vo[i], y.vo[i]);
 				}
 			} else {
-				for (size_t i = 0; i < OPTIMAL; ++i) {
+				for (size_t i = 0; i < LOOP; ++i) {
 					optimal_t::execute_nop(x.vn[i].elements, y.vn[i].elements, o.vn[i].elements);
 				}
 			}
