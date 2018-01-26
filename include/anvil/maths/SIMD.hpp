@@ -833,6 +833,46 @@ namespace anvil { namespace simd {
 	};
 
 	template<>
+	struct SIMDHelper<float, 8> {
+		typedef __m256 simd_t;
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const float* x) { _mm_load_ps(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm256_undefined_ps(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm256_setzero_ps(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(float x) { return _mm256_set1_ps(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(float x) { set4(x, 0.f, 0.f, 0.f); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(float x, float y) { return set4(x, y, 0.f, 0.f); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(float x, float y, float z) { return set4(x, y, z, 0.f); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(float x, float y, float z, float w) { return _mm256_setr_ps(x, y, z, w, 0.f, 0.f, 0.f, 0.f); }
+
+		template<size_t GS>
+		static void ANVIL_CALL get(simd_t x, float* y) {
+			typedef DefaultSIMD<float, GS> simd2_t;
+			union {
+				simd2_t s2;
+				simd_t s;
+			};
+			s = x;
+			*reinterpret_cast<simd2_t*>(y) = s2;
+		}
+
+		template<size_t GS>
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL setn(const float* y) {
+			typedef DefaultSIMD<float, GS> simd2_t;
+			union {
+				simd2_t s2;
+				simd_t s;
+			};
+			s2 = *reinterpret_cast<const simd2_t*>(y);
+			return s;
+		}
+
+		template<>
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL setn<4>(const float* y) {
+			return *reinterpret_cast<const simd_t*>(y);
+		}
+	};
+
+	template<>
 	struct SIMDHelper<float, 4> {
 		typedef __m128 simd_t;
 		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const float* x) { _mm_load_ps(x); }
@@ -1248,6 +1288,38 @@ namespace anvil { namespace simd {
 		}\
 	};
 
+#define ANVIL_SIMD_IMPLEMENTATION_V_VV_8_TO_16(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	namespace detail { template<>\
+	struct OperationInstructionSet<OP, _simd_element_type, 16> {\
+		enum : int64_t  { value = IS_## INSTRUCTION };\
+	};}\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,16,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,15,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,14,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,13,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,12,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,11,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,10,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,9, INSTRUCTION, FUNCTION1, FUNCTION2)
+
+#define ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	namespace detail { template<>\
+	struct OperationInstructionSet<OP, _simd_element_type, 8> {\
+		enum : int64_t  { value = IS_## INSTRUCTION };\
+		};}\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,8,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,7,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,6,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,5,INSTRUCTION, FUNCTION1, FUNCTION2)
+
+#define ANVIL_SIMD_IMPLEMENTATION_V_VV_2_TO_4(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	namespace detail { template<>\
+	struct OperationInstructionSet<OP, _simd_element_type, 4> {\
+		enum : int64_t  { value = IS_## INSTRUCTION };\
+				};}\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,4,4,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,4,3,INSTRUCTION, FUNCTION1, FUNCTION2)
+
 #define ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
 	namespace detail { template<>\
 	struct OperationInstructionSet<OP, _simd_element_type, 16> {\
@@ -1423,6 +1495,12 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_IMPLEMENTATION_V_V_4( OP_FLOOR, SSE_4_1, _mm_floor_ps,   std::ceil)
 	ANVIL_SIMD_IMPLEMENTATION_V_V_4( OP_ROUND, SSE_4_1, _simd_round_ps, std::round)
 	ANVIL_SIMD_IMPLEMENTATION_V_V_4( OP_SQRT,  SSE,     _mm_sqrt_ps,    std::sqrt)
+#undef _simd_element_type
+#undef _simd_type
+
+#define _simd_element_type float
+#define _simd_type __m256
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP_ADD, AVX, _mm256_add_ps, ANVIL_SIMD_ADD)
 #undef _simd_element_type
 #undef _simd_type
 
