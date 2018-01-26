@@ -298,7 +298,7 @@ namespace anvil { namespace simd {
 
 		static simd_t ANVIL_CALL fill0() {
 			simd_t tmp;
-			memset(&tmp, sizeof(T) * S);
+			memset(&tmp, 0, sizeof(T) * S);
 			return tmp;
 		}
 
