@@ -401,7 +401,7 @@ namespace anvil { namespace simd {
 
 			if (optimal_t::optimised()) {
 				for (size_t i = 0; i < LOOP; ++i) {
-					o.vo[i] = optimal_t::execute_in(x.vo[i], y.vo[i]);
+					o.vo[i] = optimal_t::execute_op(x.vo[i], y.vo[i]);
 				}
 			} else {
 				for (size_t i = 0; i < LOOP; ++i) {
