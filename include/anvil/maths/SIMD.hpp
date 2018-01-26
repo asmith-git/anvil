@@ -1190,15 +1190,18 @@ namespace anvil { namespace simd {
 		static ANVIL_STRONG_INLINE bool ANVIL_SIMD_CALL optimised() {\
 			return IsInstructionSetSupported( IS_ ## INSTRUCTION );\
 		}\
-		static ANVIL_STRONG_INLINE _simd_type ANVIL_SIMD_CALL execute_op(const register simd_t x, const register simd_t y) {\
+		static ANVIL_STRONG_INLINE _simd_type ANVIL_SIMD_CALL execute_in(const register simd_t x, const register simd_t y) {\
 			return FUNCTION1(x,y);\
+		}\
+		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_op(const register _simd_element_type* x, const register _simd_element_type* y, _simd_element_type* o) {\
+			helper_t::get<SIZE>(execute_in(helper_t::setn<SIZE>(x), helper_t::setn<SIZE>(y)), o);\
 		}\
 		static inline void ANVIL_SIMD_CALL execute_nop(const register _simd_element_type* x, const register _simd_element_type* y, _simd_element_type* o) {\
 			for (size_t i = 0; i < SIZE; ++i) o[i] = FUNCTION2(x[i], y[i]); \
 		}\
 		static inline void ANVIL_SIMD_CALL execute(const register _simd_element_type* x, const register _simd_element_type* y, _simd_element_type* o) {\
 			if(optimised()) {\
-				helper_t::get<SIZE>(execute_op(helper_t::setn<SIZE>(x),helper_t::setn<SIZE>(y)),o);\
+				execute_op(x,y,o);\
 			} else {\
 				execute_nop(x,y,o);\
 			}\
@@ -1213,15 +1216,18 @@ namespace anvil { namespace simd {
 		static ANVIL_STRONG_INLINE bool ANVIL_SIMD_CALL optimised() {\
 			return IsInstructionSetSupported( IS_ ## INSTRUCTION );\
 		}\
-		static ANVIL_STRONG_INLINE _simd_type ANVIL_SIMD_CALL execute_op(const register simd_t x) {\
+		static ANVIL_STRONG_INLINE _simd_type ANVIL_SIMD_CALL execute_in(const register simd_t x) {\
 			return FUNCTION1(x);\
+		}\
+		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_op(const register _simd_element_type* x, _simd_element_type* o) {\
+			helper_t::get<SIZE>(execute_in(helper_t::setn<SIZE>(x)), o);\
 		}\
 		static inline void ANVIL_SIMD_CALL execute_nop(const register _simd_element_type* x, _simd_element_type* o) {\
 			for (size_t i = 0; i < SIZE; ++i) o[i] = FUNCTION2(x[i]); \
 		}\
 		static inline void ANVIL_SIMD_CALL execute(const register _simd_element_type* x, _simd_element_type* o) {\
 			if(optimised()) {\
-				helper_t::get<SIZE>(execute_op(helper_t::setn<SIZE>(x)),o);\
+				execute_op(x,o);\
 			} else {\
 				execute_nop(x,o);\
 			}\

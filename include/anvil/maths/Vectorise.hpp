@@ -41,7 +41,7 @@ namespace anvil {
 
 			if (optimal_t::optimised()) {
 				for (size_t i = 0; i < loop; ++i) {
-					o.vo[i] = optimal_t::execute_op(x.vo[i], y.vo[i], z.vo[i]);
+					o.vo[i] = optimal_t::execute_in(x.vo[i], y.vo[i], z.vo[i]);
 				}
 			} else {
 				for (size_t i = 0; i < loop; ++i) {
@@ -73,7 +73,7 @@ namespace anvil {
 
 			if (optimal_t::optimised()) {
 				for (size_t i = 0; i < loop; ++i) {
-					o.vo[i] = optimal_t::execute_op(x.vo[i], y.vo[i]);
+					o.vo[i] = optimal_t::execute_in(x.vo[i], y.vo[i]);
 				}
 			} else {
 				for (size_t i = 0; i < loop; ++i) {
@@ -104,7 +104,7 @@ namespace anvil {
 
 			if (optimal_t::optimised()) {
 				for (size_t i = 0; i < loop; ++i) {
-					o.vo[i] = optimal_t::execute_op(x.vo[i]);
+					o.vo[i] = optimal_t::execute_in(x.vo[i]);
 				}
 			} else {
 				for (size_t i = 0; i < loop; ++i) {
