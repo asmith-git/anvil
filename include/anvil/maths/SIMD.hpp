@@ -306,25 +306,25 @@ namespace anvil { namespace simd {
 			return tmp;
 		}
 
-		static simd_t ANVIL_SIMD_CALL fill(T x) {
+		static simd_t ANVIL_SIMD_CALL fill(const T x) {
 			simd_t tmp;
 			for (size_t i = 0; i < S; ++i) tmp.elements[i] = x;
 			return tmp;
 		}
 
-		static simd_t ANVIL_SIMD_CALL set1(T x) {
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL set1(const T x) {
 			set4(x, static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
 		}
 
-		static simd_t ANVIL_SIMD_CALL set2(T x, T y) {
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL set2(const T x, const T y) {
 			set4(x, y, static_cast<T>(0), static_cast<T>(0));
 		}
 
-		static simd_t ANVIL_SIMD_CALL set3(T x, T y, T z) {
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL set3(const T x, const T y, const T z) {
 			set4(x, y, z, static_cast<T>(0));
 		}
 
-		static simd_t ANVIL_SIMD_CALL set4(T x, T y, T z, T w) {
+		static simd_t ANVIL_SIMD_CALL set4(const T x, const T y, const T z, const T w) {
 			simd_t tmp = S > 3 ? load_0 : simd_t();
 			tmp.elements[0] = x;
 			if (S >= 2) tmp.elements[1] = y;
@@ -334,7 +334,7 @@ namespace anvil { namespace simd {
 		}
 
 		template<size_t GS>
-		static void get(simd_t x, T* y) {
+		static void ANVIL_SIMD_CALL get(const simd_t x, T* y) {
 			typedef DefaultSIMD<T, GS> simd2_t;
 			union {
 				simd2_t s2;
@@ -359,6 +359,21 @@ namespace anvil { namespace simd {
 		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL setn<S>(const T* y) {
 			return *reinterpret_cast<const simd_t*>(y);
 		}
+	};
+
+	template<class T>
+	struct SIMDHelper<T,1> {
+		typedef T simd_t;
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL load(const T* x) { return x[0]; }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL fillu() { return simd_t(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL fill0() { return static_cast<simd_t>(0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL fill(const T x) { return x; }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL set1(const T x) { return x; }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL set2(const T x, const T y) { return x; }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL set3(const T x, const T y, const T z) { return x; }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL set4(const T x, const T y, const T z, const T w) { return x; }
+		template<size_t GS> static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL get(simd_t x, T* y) { y[0] = x; }
+		template<size_t GS> static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL setn(const T* y) { return y[0]; }
 	};
 
 	// Default Operation Implementation
