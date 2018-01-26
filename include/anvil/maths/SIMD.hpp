@@ -292,35 +292,32 @@ namespace anvil { namespace simd {
 			return tmp;
 		}
 
-		static simd_t ANVIL_CALL setu() {
+		static simd_t ANVIL_CALL fillu() {
 			return simd_t();
 		}
 
-		static simd_t ANVIL_CALL set0() {
+		static simd_t ANVIL_CALL fill0() {
 			simd_t tmp;
 			memset(&tmp, sizeof(T) * S);
 			return tmp;
 		}
 
-		static simd_t ANVIL_CALL set1(T x) {
+		static simd_t ANVIL_CALL fill(T x) {
 			simd_t tmp;
 			for (size_t i = 0; i < S; ++i) tmp.elements[i] = x;
 			return tmp;
 		}
 
+		static simd_t ANVIL_CALL set1(T x) {
+			set4(x, static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
+		}
+
 		static simd_t ANVIL_CALL set2(T x, T y) {
-			simd_t tmp = S > 2 ? load_0 : simd_t();
-			tmp.elements[0] = x;
-			if (S >= 2) tmp.elements[1] = y;
-			return tmp;
+			set4(x, y, static_cast<T>(0), static_cast<T>(0));
 		}
 
 		static simd_t ANVIL_CALL set3(T x, T y, T z) {
-			simd_t tmp = S > 3 ? load_0 : simd_t();
-			tmp.elements[0] = x;
-			if (S >= 2) tmp.elements[1] = y;
-			if (S >= 3) tmp.elements[2] = z;
-			return tmp;
+			set4(x, y, z, static_cast<T>(0));
 		}
 
 		static simd_t ANVIL_CALL set4(T x, T y, T z, T w) {
@@ -330,6 +327,11 @@ namespace anvil { namespace simd {
 			if (S >= 3) tmp.elements[2] = z;
 			if (S >= 4) tmp.elements[3] = w;
 			return tmp;
+		}
+
+		template<size_t GS>
+		static void get(simd_t x, T* y) {
+			for (size_t i = 0; i < GS; ++i)  y[i] = x.elements[i];
 		}
 	};
 
@@ -685,10 +687,200 @@ namespace anvil { namespace simd {
 
 #ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
 
-	#define ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,SIZE,INSTRUCTION,UPLOAD,DOWNLOAD,FUNCTION1,FUNCTION2)\
+
+	template<>
+	struct SIMDHelper<double, 2> {
+		typedef __m128d simd_t;
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const double* x) { _mm_load_pd(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_pd(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_pd(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(double x) { return _mm_set1_pd(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(double x) { return set2(x, 0.0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(double x, double y) { return _mm_setr_pd(x, y); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(double x, double y, double z) { return set2(x, y); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(double x, double y, double z, double w) { return set2(x, y); }
+
+		template<size_t GS>
+		static void ANVIL_CALL get(simd_t x, double* y) {
+			for (size_t i = 0; i < GS; ++i)  y[i] = x.m128d_f64[i];
+		}
+	};
+
+	template<>
+	struct SIMDHelper<int64_t, 2> {
+		typedef __m128i simd_t;
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const int64_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_si128(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_si128(); }
+#if ANVIL_CPP_VER < 2011
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(int64_t x) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1]); }
+#else
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(int64_t x) { _mm_set1_epi64x(x); }
+#endif
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(int64_t x) { return set2(x, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(int64_t x, int64_t y) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&y)[0], reinterpret_cast<const int32_t*>(&y)[1]); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(int64_t x, int64_t y, int64_t z) { return set2(x, y); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(int64_t x, int64_t y, int64_t z, int64_t w) { return set2(x, y); }
+
+		template<size_t GS>
+		static void ANVIL_CALL get(simd_t x, int64_t* y) {
+			for (size_t i = 0; i < GS; ++i)  y[i] = x.m128i_i64[i];
+		}
+	};
+
+	template<>
+	struct SIMDHelper<uint64_t, 2> {
+		typedef __m128i simd_t;
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const uint64_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_si128(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_si128(); }
+#if ANVIL_CPP_VER < 2011
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(uint64_t x) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1]); }
+#else
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(uint64_t x) { _mm_set1_epi64x(x); }
+#endif
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(uint64_t x) { return set2(x, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(uint64_t x, uint64_t y) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&y)[0], reinterpret_cast<const int32_t*>(&y)[1]); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(uint64_t x, uint64_t y, uint64_t z) { return set2(x, y); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(uint64_t x, uint64_t y, uint64_t z, uint64_t w) { return set2(x, y); }
+
+		template<size_t GS>
+		static void ANVIL_CALL get(simd_t x, uint64_t* y) {
+			for (size_t i = 0; i < GS; ++i)  y[i] = x.m128i_u64[i];
+		}
+	};
+
+	template<>
+	struct SIMDHelper<float, 4> {
+		typedef __m128 simd_t;
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const float* x) { _mm_load_ps(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_ps(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_ps(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(float x) { return _mm_set1_ps(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(float x) { set4(x, 0.f, 0.f, 0.f); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(float x, float y) { return set4(x, y, 0.f, 0.f); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(float x, float y, float z) { return set4(x, y, z, 0.f); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(float x, float y, float z, float w) { return _mm_setr_ps(x, y, z, w); }
+
+		template<size_t GS>
+		static void ANVIL_CALL get(simd_t x, float* y) {
+			for (size_t i = 0; i < GS; ++i)  y[i] = x.m128_f32[i];
+		}
+	};
+
+	template<>
+	struct SIMDHelper<int32_t, 4> {
+		typedef __m128i simd_t;
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const int32_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_si128(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_si128(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(int32_t x) { return _mm_set1_epi32(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(int32_t x) { set4(x, 0, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(int32_t x, int32_t y) { return set4(x, y, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(int32_t x, int32_t y, int32_t z) { return set4(x, y, z, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(int32_t x, int32_t y, int32_t z, int32_t w) { return _mm_setr_epi32(x, y, z, w); }
+
+		template<size_t GS>
+		static void ANVIL_CALL get(simd_t x, int32_t* y) {
+			for (size_t i = 0; i < GS; ++i)  y[i] = x.m128i_i32[i];
+		}
+	};
+
+	template<>
+	struct SIMDHelper<uint32_t, 4> {
+		typedef __m128i simd_t;
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const uint32_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_si128(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_si128(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(uint32_t x) { return _mm_set1_epi32(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(uint32_t x) { set4(x, 0, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(uint32_t x, uint32_t y) { return set4(x, y, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(uint32_t x, uint32_t y, uint32_t z) { return set4(x, y, z, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(uint32_t x, uint32_t y, uint32_t z, uint32_t w) { return _mm_setr_epi32(x, y, z, w); }
+
+		template<size_t GS>
+		static void ANVIL_CALL get(simd_t x, uint32_t* y) {
+			for (size_t i = 0; i < GS; ++i)  y[i] = x.m128i_u32[i];
+		}
+	};
+
+	template<>
+	struct SIMDHelper<int16_t, 8> {
+		typedef __m128i simd_t;
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const int16_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_si128(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_si128(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(int16_t x) { return _mm_set1_epi16(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(int16_t x) { set4(x, 0, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(int16_t x, int16_t y) { return set4(x, y, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(int16_t x, int16_t y, int16_t z) { return set4(x, y, z, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(int16_t x, int16_t y, int16_t z, int16_t w) { return _mm_setr_epi16(x, y, z, w, 0, 0, 0, 0); }
+
+		template<size_t GS>
+		static void ANVIL_CALL get(simd_t x, int16_t* y) {
+			for (size_t i = 0; i < GS; ++i)  y[i] = x.m128i_i16[i];
+		}
+	};
+
+	template<>
+	struct SIMDHelper<uint16_t, 8> {
+		typedef __m128i simd_t;
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const uint16_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_si128(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_si128(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(uint16_t x) { return _mm_set1_epi16(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(uint16_t x) { set4(x, 0, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(uint16_t x, uint16_t y) { return set4(x, y, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(uint16_t x, uint16_t y, uint16_t z) { return set4(x, y, z, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(uint16_t x, uint16_t y, uint16_t z, uint16_t w) { return _mm_setr_epi16(x, y, z, w, 0, 0, 0, 0); }
+
+		template<size_t GS>
+		static void ANVIL_CALL get(simd_t x, uint16_t* y) {
+			for (size_t i = 0; i < GS; ++i)  y[i] = x.m128i_u16[i];
+		}
+	};
+
+	template<>
+	struct SIMDHelper<int8_t, 16> {
+		typedef __m128i simd_t;
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const int8_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_si128(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_si128(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(int8_t x) { return _mm_set1_epi8(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(int8_t x) { set4(x, 0, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(int8_t x, int8_t y) { return set4(x, y, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(int8_t x, int8_t y, int8_t z) { return set4(x, y, z, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(int8_t x, int8_t y, int8_t z, int8_t w) { return _mm_setr_epi8(x, y, z, w, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); }
+
+		template<size_t GS>
+		static void ANVIL_CALL get(simd_t x, int8_t* y) {
+			for (size_t i = 0; i < GS; ++i)  y[i] = x.m128i_i8[i];
+		}
+	};
+
+	template<>
+	struct SIMDHelper<uint8_t, 16> {
+		typedef __m128i simd_t;
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const uint8_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fillu() { return _mm_undefined_si128(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill0() { return _mm_setzero_si128(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL fill(uint8_t x) { return _mm_set1_epi8(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set1(uint8_t x) { set4(x, 0, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set2(uint8_t x, uint8_t y) { return set4(x, y, 0, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set3(uint8_t x, uint8_t y, uint8_t z) { return set4(x, y, z, 0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_CALL set4(uint8_t x, uint8_t y, uint8_t z, uint8_t w) { return _mm_setr_epi8(x, y, z, w, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); }
+
+		template<size_t GS>
+		static void ANVIL_CALL get(simd_t x, uint8_t* y) {
+			for (size_t i = 0; i < GS; ++i)  y[i] = x.m128i_u8[i];
+		}
+	};
+
+#define ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,OP_SIZE,SIZE,INSTRUCTION,UPLOAD,DOWNLOAD,FUNCTION1,FUNCTION2)\
 	template<>\
 	struct OperationImplementation<_simd_element_type, SIZE, OP> {\
-		typedef _simd_type simd_t;\
+		typedef SIMDHelper<_simd_element_type,OP_SIZE> helper_t;\
+		typedef helper_t::simd_t simd_t;\
 		static ANVIL_STRONG_INLINE bool ANVIL_CALL optimised() {\
 			return IsInstructionSetSupported( IS_ ## INSTRUCTION );\
 		}\
@@ -696,7 +888,7 @@ namespace anvil { namespace simd {
 			return FUNCTION1(x,y);\
 		}\
 		static ANVIL_STRONG_INLINE void ANVIL_CALL execute_op(const _simd_element_type* x, const _simd_element_type* y, _simd_element_type* o) {\
-			DOWNLOAD(o,execute_in(UPLOAD(x), UPLOAD(y)));\
+			helper_t::get<SIZE>(execute_in(UPLOAD(x), UPLOAD(y)), o);\
 		}\
 		static inline void ANVIL_CALL execute_nop(const _simd_element_type* x, const _simd_element_type* y, _simd_element_type* o) {\
 			for (size_t i = 0; i < SIZE; ++i) o[i] = FUNCTION2(x[i], y[i]); \
@@ -710,10 +902,11 @@ namespace anvil { namespace simd {
 		}\
 	};
 
-	#define ANVIL_SIMD_IMPLEMENTATION_V_V(OP,SIZE,INSTRUCTION,UPLOAD,DOWNLOAD,FUNCTION1,FUNCTION2)\
+#define ANVIL_SIMD_IMPLEMENTATION_V_V(OP,OP_SIZE,SIZE,INSTRUCTION,UPLOAD,DOWNLOAD,FUNCTION1,FUNCTION2)\
 	template<>\
 	struct OperationImplementation<_simd_element_type, SIZE, OP> {\
-		typedef _simd_type simd_t;\
+		typedef SIMDHelper<_simd_element_type,OP_SIZE> helper_t;\
+		typedef helper_t::simd_t simd_t;\
 		static ANVIL_STRONG_INLINE bool ANVIL_CALL optimised() {\
 			return IsInstructionSetSupported( IS_ ## INSTRUCTION );\
 		}\
@@ -735,7 +928,7 @@ namespace anvil { namespace simd {
 		}\
 	};
 
-	#define ANVIL_SIMD_SPECIALISE_FILL(SIZE,INSTRUCTION,DOWNLOAD,F0,F1,F2,F3,F4)\
+#define ANVIL_SIMD_SPECIALISE_FILL(SIZE,INSTRUCTION,DOWNLOAD,F0,F1,F2,F3,F4)\
 	template<>\
 	struct OperationImplementation<_simd_element_type, SIZE, OP_FILL> {\
 		static ANVIL_STRONG_INLINE void ANVIL_CALL execute(_simd_element_type* o) {\
@@ -894,100 +1087,100 @@ namespace anvil { namespace simd {
 	struct OperationInstructionSet<OP, _simd_element_type, 16> {\
 		enum : int64_t  { value = IS_## INSTRUCTION };\
 	};}\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,INSTRUCTION, _simd_upload_16_16, _simd_download_16_16, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,15,INSTRUCTION, _simd_upload_16_15, _simd_download_n_15, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,14,INSTRUCTION, _simd_upload_16_14, _simd_download_n_14, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,13,INSTRUCTION, _simd_upload_16_13, _simd_download_n_13, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,12,INSTRUCTION, _simd_upload_16_12, _simd_download_n_12, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,11,INSTRUCTION, _simd_upload_16_11, _simd_download_n_11, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,10,INSTRUCTION, _simd_upload_16_10, _simd_download_n_10, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,9, INSTRUCTION, _simd_upload_16_9,  _simd_download_n_9,  FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8, INSTRUCTION, _simd_upload_16_8,  _simd_download_n_8,  FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,7, INSTRUCTION, _simd_upload_16_7,  _simd_download_n_7,  FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,6, INSTRUCTION, _simd_upload_16_6,  _simd_download_n_6,  FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,5, INSTRUCTION, _simd_upload_16_5,  _simd_download_n_5,  FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,4, INSTRUCTION, _simd_upload_16_4,  _simd_download_n_4,  FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,3, INSTRUCTION, _simd_upload_16_3,  _simd_download_n_3,  FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,2, INSTRUCTION, _simd_upload_16_2,  _simd_download_n_2,  FUNCTION1, FUNCTION2)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,16,INSTRUCTION, _simd_upload_16_16, _simd_download_16_16, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,15,INSTRUCTION, _simd_upload_16_15, _simd_download_n_15, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,14,INSTRUCTION, _simd_upload_16_14, _simd_download_n_14, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,13,INSTRUCTION, _simd_upload_16_13, _simd_download_n_13, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,12,INSTRUCTION, _simd_upload_16_12, _simd_download_n_12, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,11,INSTRUCTION, _simd_upload_16_11, _simd_download_n_11, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,10,INSTRUCTION, _simd_upload_16_10, _simd_download_n_10, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,9, INSTRUCTION, _simd_upload_16_9,  _simd_download_n_9,  FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,8, INSTRUCTION, _simd_upload_16_8,  _simd_download_n_8,  FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,7, INSTRUCTION, _simd_upload_16_7,  _simd_download_n_7,  FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,6, INSTRUCTION, _simd_upload_16_6,  _simd_download_n_6,  FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,5, INSTRUCTION, _simd_upload_16_5,  _simd_download_n_5,  FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,4, INSTRUCTION, _simd_upload_16_4,  _simd_download_n_4,  FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,3, INSTRUCTION, _simd_upload_16_3,  _simd_download_n_3,  FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,2, INSTRUCTION, _simd_upload_16_2,  _simd_download_n_2,  FUNCTION1, FUNCTION2)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VV_8(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
 	namespace detail { template<>\
 	struct OperationInstructionSet<OP, _simd_element_type, 8> {\
 		enum : int64_t  { value = IS_## INSTRUCTION };\
 	};}\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,INSTRUCTION, _simd_upload_8_8, _simd_download_8_8, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,7,INSTRUCTION, _simd_upload_8_7, _simd_download_n_7, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,6,INSTRUCTION, _simd_upload_8_6, _simd_download_n_6, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,5,INSTRUCTION, _simd_upload_8_5, _simd_download_n_5, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,4,INSTRUCTION, _simd_upload_8_4, _simd_download_n_4, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,3,INSTRUCTION, _simd_upload_8_3, _simd_download_n_3, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,2,INSTRUCTION, _simd_upload_8_2, _simd_download_n_2, FUNCTION1, FUNCTION2)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,8,INSTRUCTION, _simd_upload_8_8, _simd_download_8_8, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,7,INSTRUCTION, _simd_upload_8_7, _simd_download_n_7, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,6,INSTRUCTION, _simd_upload_8_6, _simd_download_n_6, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,5,INSTRUCTION, _simd_upload_8_5, _simd_download_n_5, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,4,INSTRUCTION, _simd_upload_8_4, _simd_download_n_4, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,3,INSTRUCTION, _simd_upload_8_3, _simd_download_n_3, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,2,INSTRUCTION, _simd_upload_8_2, _simd_download_n_2, FUNCTION1, FUNCTION2)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
 	namespace detail { template<>\
 	struct OperationInstructionSet<OP, _simd_element_type, 4> {\
 		enum : int64_t  { value = IS_## INSTRUCTION };\
 	};}\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,4,INSTRUCTION, _simd_upload_4_4, _simd_download_4_4, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,3,INSTRUCTION, _simd_upload_4_3, _simd_download_n_3, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,2,INSTRUCTION, _simd_upload_4_2, _simd_download_n_2, FUNCTION1, FUNCTION2)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,4,4,INSTRUCTION, _simd_upload_4_4, _simd_download_4_4, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,4,3,INSTRUCTION, _simd_upload_4_3, _simd_download_n_3, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,4,2,INSTRUCTION, _simd_upload_4_2, _simd_download_n_2, FUNCTION1, FUNCTION2)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
 	namespace detail { template<>\
 	struct OperationInstructionSet<OP, _simd_element_type, 2> {\
 		enum : int64_t  { value = IS_## INSTRUCTION };\
 	};}\
-	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,2,INSTRUCTION, _simd_upload_2_2, _simd_download_2_2, FUNCTION1, FUNCTION2)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,2,2,INSTRUCTION, _simd_upload_2_2, _simd_download_2_2, FUNCTION1, FUNCTION2)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_16(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
 	namespace detail { template<>\
 	struct OperationInstructionSet<OP, _simd_element_type, 16> {\
 		enum : int64_t  { value = IS_## INSTRUCTION };\
 	};}\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,INSTRUCTION, _simd_upload_16_16, _simd_download_16_16, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,15,INSTRUCTION, _simd_upload_16_15, _simd_download_n_15, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,14,INSTRUCTION, _simd_upload_16_14, _simd_download_n_14, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,13,INSTRUCTION, _simd_upload_16_13, _simd_download_n_13, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,12,INSTRUCTION, _simd_upload_16_12, _simd_download_n_12, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,11,INSTRUCTION, _simd_upload_16_11, _simd_download_n_11, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,10,INSTRUCTION, _simd_upload_16_10, _simd_download_n_10, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,9, INSTRUCTION, _simd_upload_16_9,  _simd_download_n_9,  FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8, INSTRUCTION, _simd_upload_16_8,  _simd_download_n_8,  FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,7, INSTRUCTION, _simd_upload_16_7,  _simd_download_n_7,  FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,6, INSTRUCTION, _simd_upload_16_6,  _simd_download_n_6,  FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,5, INSTRUCTION, _simd_upload_16_5,  _simd_download_n_5,  FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,4, INSTRUCTION, _simd_upload_16_4,  _simd_download_n_4,  FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,3, INSTRUCTION, _simd_upload_16_3,  _simd_download_n_3,  FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,2, INSTRUCTION, _simd_upload_16_2,  _simd_download_n_2,  FUNCTION1, FUNCTION2)
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,16,INSTRUCTION, _simd_upload_16_16, _simd_download_16_16, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,15,INSTRUCTION, _simd_upload_16_15, _simd_download_n_15, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,14,INSTRUCTION, _simd_upload_16_14, _simd_download_n_14, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,13,INSTRUCTION, _simd_upload_16_13, _simd_download_n_13, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,12,INSTRUCTION, _simd_upload_16_12, _simd_download_n_12, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,11,INSTRUCTION, _simd_upload_16_11, _simd_download_n_11, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,10,INSTRUCTION, _simd_upload_16_10, _simd_download_n_10, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,9, INSTRUCTION, _simd_upload_16_9,  _simd_download_n_9,  FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,8, INSTRUCTION, _simd_upload_16_8,  _simd_download_n_8,  FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,7, INSTRUCTION, _simd_upload_16_7,  _simd_download_n_7,  FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,6, INSTRUCTION, _simd_upload_16_6,  _simd_download_n_6,  FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,5, INSTRUCTION, _simd_upload_16_5,  _simd_download_n_5,  FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,4, INSTRUCTION, _simd_upload_16_4,  _simd_download_n_4,  FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,3, INSTRUCTION, _simd_upload_16_3,  _simd_download_n_3,  FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,2, INSTRUCTION, _simd_upload_16_2,  _simd_download_n_2,  FUNCTION1, FUNCTION2)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_8(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
 	namespace detail { template<>\
 	struct OperationInstructionSet<OP, _simd_element_type, 8> {\
 		enum : int64_t  { value = IS_## INSTRUCTION };\
 	};}\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,INSTRUCTION, _simd_upload_8_8, _simd_download_8_8, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,7,INSTRUCTION, _simd_upload_8_7, _simd_download_n_7, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,6,INSTRUCTION, _simd_upload_8_6, _simd_download_n_6, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,5,INSTRUCTION, _simd_upload_8_5, _simd_download_n_5, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,4,INSTRUCTION, _simd_upload_8_4, _simd_download_n_4, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,3,INSTRUCTION, _simd_upload_8_3, _simd_download_n_3, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,2,INSTRUCTION, _simd_upload_8_2, _simd_download_n_2, FUNCTION1, FUNCTION2)
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,8,INSTRUCTION, _simd_upload_8_8, _simd_download_8_8, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,7,INSTRUCTION, _simd_upload_8_7, _simd_download_n_7, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,6,INSTRUCTION, _simd_upload_8_6, _simd_download_n_6, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,5,INSTRUCTION, _simd_upload_8_5, _simd_download_n_5, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,4,INSTRUCTION, _simd_upload_8_4, _simd_download_n_4, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,3,INSTRUCTION, _simd_upload_8_3, _simd_download_n_3, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,2,INSTRUCTION, _simd_upload_8_2, _simd_download_n_2, FUNCTION1, FUNCTION2)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_4(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
 	namespace detail { template<>\
 	struct OperationInstructionSet<OP, _simd_element_type, 4> {\
 		enum : int64_t  { value = IS_## INSTRUCTION };\
 	};}\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,4,INSTRUCTION, _simd_upload_4_4, _simd_download_4_4, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,3,INSTRUCTION, _simd_upload_4_3, _simd_download_n_3, FUNCTION1, FUNCTION2)\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,2,INSTRUCTION, _simd_upload_4_2, _simd_download_n_2, FUNCTION1, FUNCTION2)
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,4,4,INSTRUCTION, _simd_upload_4_4, _simd_download_4_4, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,4,3,INSTRUCTION, _simd_upload_4_3, _simd_download_n_3, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,4,2,INSTRUCTION, _simd_upload_4_2, _simd_download_n_2, FUNCTION1, FUNCTION2)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_2(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
 	namespace detail { template<>\
 	struct OperationInstructionSet<OP, _simd_element_type, 2> {\
 		enum : int64_t  { value = IS_## INSTRUCTION };\
 	};}\
-	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,2,INSTRUCTION, _simd_upload_2_2, _simd_download_2_2, FUNCTION1, FUNCTION2)
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,2,2,INSTRUCTION, _simd_upload_2_2, _simd_download_2_2, FUNCTION1, FUNCTION2)
 
 #define ANVIL_SIMD_SPECIALISE_FILL_16(INSTRUCTION)\
 	namespace detail { template<>\
@@ -1041,134 +1234,6 @@ namespace anvil { namespace simd {
 
 #define _simd_round_ps(X) _mm_round_ps(X,_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC)
 #define _simd_round_pd(X) _mm_round_pd(X,_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC)
-
-template<>
-struct SIMDHelper<double,2> {
-	typedef __m128d simd_t;
-	static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const double* x) { _mm_load_pd(x); }
-	static ANVIL_STRONG_INLINE simd_t setu() { return _mm_undefined_pd(); }
-	static ANVIL_STRONG_INLINE simd_t set0() { return _mm_setzero_pd(); }
-	static ANVIL_STRONG_INLINE simd_t set1(double x) { _mm_set1_pd(x); }
-	static ANVIL_STRONG_INLINE simd_t set2(double x, double y) { return _mm_setr_pd(x, y); }
-	static ANVIL_STRONG_INLINE simd_t set3(double x, double y, double z) { return set2(x, y); }
-	static ANVIL_STRONG_INLINE simd_t set4(double x, double y, double z, double w) { return set2(x, y); }
-};
-
-template<>
-struct SIMDHelper<int64_t, 2> {
-	typedef __m128i simd_t;
-	static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const int64_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
-	static ANVIL_STRONG_INLINE simd_t setu() { return _mm_undefined_si128(); }
-	static ANVIL_STRONG_INLINE simd_t set0() { return _mm_setzero_si128(); }
-#if ANVIL_CPP_VER < 2011
-	static ANVIL_STRONG_INLINE simd_t set1(int64_t x) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1]); }
-#else
-	static ANVIL_STRONG_INLINE simd_t set1(int64_t x) { _mm_set1_epi64x(x); }
-#endif
-	static ANVIL_STRONG_INLINE simd_t set2(int64_t x, int64_t y) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&y)[0], reinterpret_cast<const int32_t*>(&y)[1]); }
-	static ANVIL_STRONG_INLINE simd_t set3(int64_t x, int64_t y, int64_t z) { return set2(x, y); }
-	static ANVIL_STRONG_INLINE simd_t set4(int64_t x, int64_t y, int64_t z, int64_t w) { return set2(x, y); }
-};
-
-template<>
-struct SIMDHelper<uint64_t, 2> {
-	typedef __m128i simd_t;
-	static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const uint64_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
-	static ANVIL_STRONG_INLINE simd_t setu() { return _mm_undefined_si128(); }
-	static ANVIL_STRONG_INLINE simd_t set0() { return _mm_setzero_si128(); }
-#if ANVIL_CPP_VER < 2011
-	static ANVIL_STRONG_INLINE simd_t set1(uint64_t x) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1]); }
-#else
-	static ANVIL_STRONG_INLINE simd_t set1(uint64_t x) { _mm_set1_epi64x(x); }
-#endif
-	static ANVIL_STRONG_INLINE simd_t set2(uint64_t x, uint64_t y) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&y)[0], reinterpret_cast<const int32_t*>(&y)[1]); }
-	static ANVIL_STRONG_INLINE simd_t set3(uint64_t x, uint64_t y, uint64_t z) { return set2(x, y); }
-	static ANVIL_STRONG_INLINE simd_t set4(uint64_t x, uint64_t y, uint64_t z, uint64_t w) { return set2(x, y); }
-};
-
-template<>
-struct SIMDHelper<float,4> {
-	typedef __m128 simd_t;
-	static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const float* x) { _mm_load_ps(x); }
-	static ANVIL_STRONG_INLINE simd_t setu() { return _mm_undefined_ps(); }
-	static ANVIL_STRONG_INLINE simd_t set0() { return _mm_setzero_ps(); }
-	static ANVIL_STRONG_INLINE simd_t set1(float x) { _mm_set1_ps(x); }
-	static ANVIL_STRONG_INLINE simd_t set2(float x, float y) { return _mm_setr_ps(x, y, 0.f, 0.f); }
-	static ANVIL_STRONG_INLINE simd_t set3(float x, float y, float z) { return _mm_setr_ps(x, y, z, 0.f); }
-	static ANVIL_STRONG_INLINE simd_t set4(float x, float y, float z, float w) { return _mm_setr_ps(x, y, z, w); }
-};
-
-template<>
-struct SIMDHelper<int32_t, 4> {
-	typedef __m128i simd_t;
-	static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const int32_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
-	static ANVIL_STRONG_INLINE simd_t setu() { return _mm_undefined_si128(); }
-	static ANVIL_STRONG_INLINE simd_t set0() { return _mm_setzero_si128(); }
-	static ANVIL_STRONG_INLINE simd_t set1(int32_t x) { _mm_set1_epi32(x); }
-	static ANVIL_STRONG_INLINE simd_t set2(int32_t x, int32_t y) { return _mm_setr_epi32(x, y, 0, 0); }
-	static ANVIL_STRONG_INLINE simd_t set3(int32_t x, int32_t y, int32_t z) { return _mm_setr_epi32(x, y, z, 0); }
-	static ANVIL_STRONG_INLINE simd_t set4(int32_t x, int32_t y, int32_t z, int32_t w) { return _mm_setr_epi32(x, y, z, w); }
-};
-
-template<>
-struct SIMDHelper<uint32_t, 4> {
-	typedef __m128i simd_t;
-	static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const uint32_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
-	static ANVIL_STRONG_INLINE simd_t setu() { return _mm_undefined_si128(); }
-	static ANVIL_STRONG_INLINE simd_t set0() { return _mm_setzero_si128(); }
-	static ANVIL_STRONG_INLINE simd_t set1(uint32_t x) { _mm_set1_epi32(x); }
-	static ANVIL_STRONG_INLINE simd_t set2(uint32_t x, uint32_t y) { return _mm_setr_epi32(x, y, 0, 0); }
-	static ANVIL_STRONG_INLINE simd_t set3(uint32_t x, uint32_t y, uint32_t z) { return _mm_setr_epi32(x, y, z, 0); }
-	static ANVIL_STRONG_INLINE simd_t set4(uint32_t x, uint32_t y, uint32_t z, uint32_t w) { return _mm_setr_epi32(x, y, z, w); }
-};
-
-template<>
-struct SIMDHelper<int16_t, 8> {
-	typedef __m128i simd_t;
-	static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const int16_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
-	static ANVIL_STRONG_INLINE simd_t setu() { return _mm_undefined_si128(); }
-	static ANVIL_STRONG_INLINE simd_t set0() { return _mm_setzero_si128(); }
-	static ANVIL_STRONG_INLINE simd_t set1(int16_t x) { _mm_set1_epi16(x); }
-	static ANVIL_STRONG_INLINE simd_t set2(int16_t x, int16_t y) { return _mm_setr_epi16(x, y, 0, 0, 0, 0, 0, 0); }
-	static ANVIL_STRONG_INLINE simd_t set3(int16_t x, int16_t y, int16_t z) { return _mm_setr_epi16(x, y, z, 0, 0, 0, 0, 0); }
-	static ANVIL_STRONG_INLINE simd_t set4(int16_t x, int16_t y, int16_t z, int16_t w) { return _mm_setr_epi16(x, y, z, w, 0, 0, 0, 0); }
-};
-
-template<>
-struct SIMDHelper<uint16_t, 8> {
-	typedef __m128i simd_t;
-	static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const uint16_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
-	static ANVIL_STRONG_INLINE simd_t setu() { return _mm_undefined_si128(); }
-	static ANVIL_STRONG_INLINE simd_t set0() { return _mm_setzero_si128(); }
-	static ANVIL_STRONG_INLINE simd_t set1(uint16_t x) { _mm_set1_epi16(x); }
-	static ANVIL_STRONG_INLINE simd_t set2(uint16_t x, uint16_t y) { return _mm_setr_epi16(x, y, 0, 0, 0, 0, 0, 0); }
-	static ANVIL_STRONG_INLINE simd_t set3(uint16_t x, uint16_t y, uint16_t z) { return _mm_setr_epi16(x, y, z, 0, 0, 0, 0, 0); }
-	static ANVIL_STRONG_INLINE simd_t set4(uint16_t x, uint16_t y, uint16_t z, uint16_t w) { return _mm_setr_epi16(x, y, z, w, 0, 0, 0, 0); }
-};
-
-template<>
-struct SIMDHelper<int8_t, 16> {
-	typedef __m128i simd_t;
-	static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const int8_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
-	static ANVIL_STRONG_INLINE simd_t setu() { return _mm_undefined_si128(); }
-	static ANVIL_STRONG_INLINE simd_t set0() { return _mm_setzero_si128(); }
-	static ANVIL_STRONG_INLINE simd_t set1(int8_t x) { _mm_set1_epi8(x); }
-	static ANVIL_STRONG_INLINE simd_t set2(int8_t x, int8_t y) { return _mm_setr_epi8(x, y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); }
-	static ANVIL_STRONG_INLINE simd_t set3(int8_t x, int8_t y, int8_t z) { return _mm_setr_epi8(x, y, z, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); }
-	static ANVIL_STRONG_INLINE simd_t set4(int8_t x, int8_t y, int8_t z, int8_t w) { return _mm_setr_epi8(x, y, z, w, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); }
-};
-
-template<>
-struct SIMDHelper<uint8_t, 16> {
-	typedef __m128i simd_t;
-	static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const uint8_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
-	static ANVIL_STRONG_INLINE simd_t setu() { return _mm_undefined_si128(); }
-	static ANVIL_STRONG_INLINE simd_t set0() { return _mm_setzero_si128(); }
-	static ANVIL_STRONG_INLINE simd_t set1(uint8_t x) { _mm_set1_epi8(x); }
-	static ANVIL_STRONG_INLINE simd_t set2(uint8_t x, uint8_t y) { return _mm_setr_epi8(x, y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); }
-	static ANVIL_STRONG_INLINE simd_t set3(uint8_t x, uint8_t y, uint8_t z) { return _mm_setr_epi8(x, y, z, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); }
-	static ANVIL_STRONG_INLINE simd_t set4(uint8_t x, uint8_t y, uint8_t z, uint8_t w) { return _mm_setr_epi8(x, y, z, w, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); }
-};
 
 #define _simd_element_type float
 #define _simd_type __m128
