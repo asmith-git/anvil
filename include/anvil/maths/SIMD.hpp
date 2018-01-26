@@ -33,25 +33,25 @@ namespace anvil { namespace simd {
 
 	// Instruction set definitions
 
-	enum InstructionSet {
+	enum InstructionSet : int16_t {
 		IS_NONE,
 #ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
-		IS_MMX,
-		IS_SSE,
-		IS_SSE_2,
-		IS_SSE_3,
-		IS_SSSE_3,
-		IS_SSE_4_1,
-		IS_SSE_4_2,
-		IS_AVX,
-		IS_FMA,
-		IS_AVX_2,
-		IS_KNC,
-		IS_AVX_512
+		IS_MMX     = 1 << 0,
+		IS_SSE     = 1 << 1,
+		IS_SSE_2   = 1 << 2,
+		IS_SSE_3   = 1 << 3,
+		IS_SSSE_3  = 1 << 4,
+		IS_SSE_4_1 = 1 << 5,
+		IS_SSE_4_2 = 1 << 6,
+		IS_AVX     = 1 << 7,
+		IS_FMA     = 1 << 8,
+		IS_AVX_2   = 1 << 9,
+		IS_KNC     = 1 << 10,
+		IS_AVX_512 = 1 << 11,
 #endif
 	};
 
-	static ANVIL_STRONG_INLINE bool ANVIL_CALL IsInstructionSetSupported(InstructionSet aSet) {
+	static bool ANVIL_CALL IsInstructionSetSupported_(InstructionSet aSet) {
 #ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
 		int data[2][4];
 		__cpuid(data[0], 0);
@@ -98,28 +98,33 @@ namespace anvil { namespace simd {
 			return false; //! \todo Implement
 		case IS_AVX_512:
 			return (data[1][EBX_] & (1 << 16)) && (data[1][EBX_] & (1 << 26)) && (data[1][EBX_] & (1 << 27)) && (data[1][EBX_] & (1 << 28));
-		default:
-			return false;
 		}
 #else
 		return false;
 #endif
 	}
 
+
+	static ANVIL_STRONG_INLINE int16_t ANVIL_CALL IsInstructionSetSupported(InstructionSet aSet) {
+		static const int16_t g_enabled_sets =
 #ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
-	static const bool ANVIL_USE_MMX        = IsInstructionSetSupported(IS_MMX);
-	static const bool ANVIL_USE_SSE        = IsInstructionSetSupported(IS_SSE);
-	static const bool ANVIL_USE_SSE_2      = IsInstructionSetSupported(IS_SSE_2);
-	static const bool ANVIL_USE_SSE_3      = IsInstructionSetSupported(IS_SSE_3);
-	static const bool ANVIL_USE_SSSE_3     = IsInstructionSetSupported(IS_SSSE_3);
-	static const bool ANVIL_USE_SSE_4_1    = IsInstructionSetSupported(IS_SSE_4_1);
-	static const bool ANVIL_USE_SSE_4_2    = IsInstructionSetSupported(IS_SSE_4_2);
-	static const bool ANVIL_USE_AVX        = IsInstructionSetSupported(IS_AVX);
-	static const bool ANVIL_USE_FMA        = IsInstructionSetSupported(IS_FMA);
-	static const bool ANVIL_USE_AVX_2      = IsInstructionSetSupported(IS_AVX_2);
-	static const bool ANVIL_USE_KNC        = IsInstructionSetSupported(IS_KNC);
-	static const bool ANVIL_USE_AVX_512    = IsInstructionSetSupported(IS_AVX_512);
+			(IsInstructionSetSupported_(IS_MMX) ? IS_MMX : 0) |
+			(IsInstructionSetSupported_(IS_SSE) ? IS_SSE : 0) |
+			(IsInstructionSetSupported_(IS_SSE_2) ? IS_SSE_2 : 0) |
+			(IsInstructionSetSupported_(IS_SSE_3) ? IS_SSE_3 : 0) |
+			(IsInstructionSetSupported_(IS_SSSE_3) ? IS_SSSE_3 : 0) |
+			(IsInstructionSetSupported_(IS_SSE_4_1) ? IS_SSE_4_1 : 0) |
+			(IsInstructionSetSupported_(IS_SSE_4_2) ? IS_SSE_4_2 : 0) |
+			(IsInstructionSetSupported_(IS_AVX) ? IS_AVX : 0) |
+			(IsInstructionSetSupported_(IS_FMA) ? IS_FMA : 0) |
+			(IsInstructionSetSupported_(IS_AVX_2) ? IS_AVX_2 : 0) |
+			(IsInstructionSetSupported_(IS_KNC) ? IS_KNC : 0) |
+			(IsInstructionSetSupported_(IS_AVX_512) ? IS_AVX_512 : 0);
+#else
+			0;
 #endif
+		return g_enabled_sets & aSet;
+	}
 
 	// Operation definitions
 
@@ -611,7 +616,7 @@ namespace anvil { namespace simd {
 	struct OperationImplementation<_simd_element_type, SIZE, OP> {\
 		typedef _simd_type simd_t;\
 		static ANVIL_STRONG_INLINE bool ANVIL_CALL optimised() {\
-			return ANVIL_USE_ ## INSTRUCTION;\
+			return IsInstructionSetSupported( IS_ ## INSTRUCTION );\
 		}\
 		static ANVIL_STRONG_INLINE _simd_type ANVIL_CALL execute_in(simd_t x, simd_t y) {\
 			return FUNCTION1(x,y);\
@@ -636,7 +641,7 @@ namespace anvil { namespace simd {
 	struct OperationImplementation<_simd_element_type, SIZE, OP> {\
 		typedef _simd_type simd_t;\
 		static ANVIL_STRONG_INLINE bool ANVIL_CALL optimised() {\
-			return ANVIL_USE_ ## INSTRUCTION;\
+			return IsInstructionSetSupported( IS_ ## INSTRUCTION );\
 		}\
 		static ANVIL_STRONG_INLINE _simd_type ANVIL_CALL execute_in(simd_t x) {\
 			return FUNCTION1(x);\
@@ -739,7 +744,7 @@ namespace anvil { namespace simd {
 		}\
 		\
 		static ANVIL_STRONG_INLINE bool ANVIL_CALL optimised() {\
-			return ANVIL_USE_ ## INSTRUCTION;\
+			return IsInstructionSetSupported( IS_ ## INSTRUCTION );\
 		}\
 	};
 
@@ -941,7 +946,11 @@ struct SIMDHelper<int64_t, 2> {
 	static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const int64_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
 	static ANVIL_STRONG_INLINE simd_t setu() { return _mm_undefined_si128(); }
 	static ANVIL_STRONG_INLINE simd_t set0() { return _mm_setzero_si128(); }
+#if ANVIL_CPP_VER < 2011
+	static ANVIL_STRONG_INLINE simd_t set1(int64_t x) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1]); }
+#else
 	static ANVIL_STRONG_INLINE simd_t set1(int64_t x) { _mm_set1_epi64x(x); }
+#endif
 	static ANVIL_STRONG_INLINE simd_t set2(int64_t x, int64_t y) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&y)[0], reinterpret_cast<const int32_t*>(&y)[1]); }
 	static ANVIL_STRONG_INLINE simd_t set3(int64_t x, int64_t y, int64_t z) { return set2(x, y); }
 	static ANVIL_STRONG_INLINE simd_t set4(int64_t x, int64_t y, int64_t z, int64_t w) { return set2(x, y); }
@@ -953,7 +962,11 @@ struct SIMDHelper<uint64_t, 2> {
 	static ANVIL_STRONG_INLINE simd_t ANVIL_CALL load(const uint64_t* x) { _mm_load_si128(reinterpret_cast<const __m128i*>(x)); }
 	static ANVIL_STRONG_INLINE simd_t setu() { return _mm_undefined_si128(); }
 	static ANVIL_STRONG_INLINE simd_t set0() { return _mm_setzero_si128(); }
+#if ANVIL_CPP_VER < 2011
+	static ANVIL_STRONG_INLINE simd_t set1(uint64_t x) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1]); }
+#else
 	static ANVIL_STRONG_INLINE simd_t set1(uint64_t x) { _mm_set1_epi64x(x); }
+#endif
 	static ANVIL_STRONG_INLINE simd_t set2(uint64_t x, uint64_t y) { return _mm_set_epi32(reinterpret_cast<const int32_t*>(&x)[0], reinterpret_cast<const int32_t*>(&x)[1], reinterpret_cast<const int32_t*>(&y)[0], reinterpret_cast<const int32_t*>(&y)[1]); }
 	static ANVIL_STRONG_INLINE simd_t set3(uint64_t x, uint64_t y, uint64_t z) { return set2(x, y); }
 	static ANVIL_STRONG_INLINE simd_t set4(uint64_t x, uint64_t y, uint64_t z, uint64_t w) { return set2(x, y); }
