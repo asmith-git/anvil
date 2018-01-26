@@ -128,19 +128,61 @@ namespace anvil { namespace simd {
 
 	// Operation definitions
 
-	enum Operation {
+	enum Operation : int64_t {
 		// Misc operations
-		OP_FILL, OP_CAST, OP_RESIZE,
+		OP_FILL    = 1i64 << 0i64,
+		OP_CAST    = 1i64 << 1i64,
+		OP_RESIZE  = 1i64 << 2i64,
 		// 3 parameters
-		OP_FMA, OP_FMS,
+		OP_FMA     = 1i64 << 3i64,
+		OP_FMS     = 1i64 << 4i64,
 		// 2 parameters
-		OP_ADD, OP_SUB, OP_MUL, OP_DIV, OP_MIN, OP_MAX, OP_AND, OP_OR, OP_XOR, OP_LSHIFT, OP_RSHIFT, OP_MOD, 
-		OP_DIM, OP_CMPEQ, OP_CMPNE, OP_CMPLT, OP_CMPGT, OP_CMPLE, OP_CMPGE, OP_ATAN2, OP_REFLECT,
+		OP_ADD     = 1i64 << 5i64,
+		OP_SUB     = 1i64 << 6i64,
+		OP_MUL     = 1i64 << 7i64,
+		OP_DIV     = 1i64 << 8i64,
+		OP_MIN     = 1i64 << 9i64,
+		OP_MAX     = 1i64 << 10i64,
+		OP_AND     = 1i64 << 11i64,
+		OP_OR      = 1i64 << 12i64,
+		OP_XOR     = 1i64 << 13i64,
+		OP_LSHIFT  = 1i64 << 14i64, 
+		OP_RSHIFT  = 1i64 << 15i64, 
+		OP_MOD     = 1i64 << 16i64, 
+		OP_DIM     = 1i64 << 17i64, 
+		OP_CMPEQ   = 1i64 << 18i64, 
+		OP_CMPNE   = 1i64 << 19i64, 
+		OP_CMPLT   = 1i64 << 20i64, 
+		OP_CMPGT   = 1i64 << 21i64, 
+		OP_CMPLE   = 1i64 << 22i64, 
+		OP_CMPGE   = 1i64 << 23i64, 
+		OP_ATAN2   = 1i64 << 24i64, 
+		OP_REFLECT = 1i64 << 25i64,
 		// 1 parameter
-		OP_NOT, OP_ABS, OP_EXP, OP_LOG, OP_LOG2, OP_LOG10, OP_CEIL, OP_FLOOR, OP_ROUND, OP_SIN, OP_COS, 
-		OP_TAN, OP_ASIN, OP_ACOS, OP_ATAN, OP_COSH, OP_SINH, OP_TANH, OP_SQRT, OP_CBRT,
+		OP_NOT     = 1i64 << 26i64, 
+		OP_ABS     = 1i64 << 27i64, 
+		OP_EXP     = 1i64 << 28i64, 
+		OP_LOG     = 1i64 << 29i64, 
+		OP_LOG2    = 1i64 << 30i64,
+		OP_LOG10   = 1i64 << 31i64,
+		OP_CEIL    = 1i64 << 32i64,
+		OP_FLOOR   = 1i64 << 33i64, 
+		OP_ROUND   = 1i64 << 34i64, 
+		OP_SIN     = 1i64 << 35i64, 
+		OP_COS     = 1i64 << 36i64, 
+		OP_TAN     = 1i64 << 37i64, 
+		OP_ASIN    = 1i64 << 38i64, 
+		OP_ACOS    = 1i64 << 39i64, 
+		OP_ATAN    = 1i64 << 40i64, 
+		OP_COSH    = 1i64 << 41i64, 
+		OP_SINH    = 1i64 << 42i64, 
+		OP_TANH    = 1i64 << 43i64, 
+		OP_SQRT    = 1i64 << 44i64, 
+		OP_CBRT    = 1i64 << 45i64,
 		// 1 Parameter, scalar output
-		OP_AVG, OP_SUM, OP_POPCN
+		OP_AVG     = 1i64 << 46i64, 
+		OP_SUM     = 1i64 << 47i64, 
+		OP_POPCN   = 1i64 << 48i64
 	};
 
 	template<Operation O, class T> struct OptimalOperationSize {
