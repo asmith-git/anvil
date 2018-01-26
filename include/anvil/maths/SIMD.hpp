@@ -380,6 +380,7 @@ namespace anvil { namespace simd {
 
 	template<class T, size_t S, Operation O>
 	struct OperationImplementation {
+		typedef typename SIMDHelper<T, S>::simd_t simd_t;
 
 		static void ANVIL_SIMD_CALL execute(const T* x_, const T* y_, T* o_) {
 			enum {
@@ -412,8 +413,10 @@ namespace anvil { namespace simd {
 			}
 		}
 
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_op(const T* x, const T* y, T* o) {
-			execute(x, y, o);
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL execute_op(const register simd_t x, const register simd_t y) {
+			simd_t tmp;
+			execute(reinterpret_cast<const T*>(&x), reinterpret_cast<const T*>(&y), reinterpret_cast<T*>(&tmp))
+			return tmp;
 		}
 
 		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_nop(const T* x, const T* y, T* o) {
@@ -428,6 +431,8 @@ namespace anvil { namespace simd {
 	template<class T, Operation O>
 	struct OperationImplementation<T,2,O> {
 		enum { PARAMS = OperationParams<O>::value };
+		typedef typename SIMDHelper<T, 2>::simd_t simd_t;
+
 
 		template<size_t S = PARAMS>
 		static inline void ANVIL_SIMD_CALL execute(const T* x, const T* y, const T* z, T* o) {
@@ -448,18 +453,24 @@ namespace anvil { namespace simd {
 		}
 
 		template<size_t S = PARAMS>
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_op(const T* x, const T* y, const T* z, T* o) {
-			execute(x, y, z, o);
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL execute_op(const register simd_t x, const register simd_t y, const const register simd_t z) {
+			simd_t tmp;
+			execute(reinterpret_cast<const T*>(&x), reinterpret_cast<const T*>(&y), reinterpret_cast<const T*>(&z), reinterpret_cast<T*>(&tmp))
+			return tmp;
 		}
 
 		template<size_t S = PARAMS>
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_op(const T* x, const T* y, T* o) {
-			execute(x, y, o);
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL execute_op(const register simd_t x, const register simd_t y) {
+			simd_t tmp;
+			execute(reinterpret_cast<const T*>(&x), reinterpret_cast<const T*>(&y), reinterpret_cast<T*>(&tmp))
+			return tmp;
 		}
 
 		template<size_t S = PARAMS>
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_op(const T* x, T* o) {
-			execute(x, o);
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL execute_op(const register simd_t x, T* o) {
+			simd_t tmp;
+			execute(reinterpret_cast<const T*>(&x), reinterpret_cast<T*>(&tmp))
+			return tmp;
 		}
 
 		template<size_t S = PARAMS>
