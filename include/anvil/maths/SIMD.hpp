@@ -185,62 +185,94 @@ namespace anvil { namespace simd {
 		OP_POPCN   = 1i64 << 48i64
 	};
 
-	template<Operation O, class T> struct OptimalOperationSize {
-		enum { value = 2 };
-	};
+	namespace detail {
+		template<Operation O>
+		struct OperationParams {
+			enum { value = 0 };
+		};
 
-	template<Operation O>
-	struct OperationParams {
-		enum { value = 0 };
-	};
+		template<Operation O, class T, size_t S>
+		struct OperationInstructionSet {
+			enum : int64_t { value = IS_NONE };
+		};
+		
+		template<> struct OperationParams<OP_FILL>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_CAST>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_RESIZE>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_FMA>{ enum { value = 3 }; };
+		template<> struct OperationParams<OP_FMS>{ enum { value = 3 }; };
+		template<> struct OperationParams<OP_ADD>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_SUB>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_MUL>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_DIV>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_MIN>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_MAX>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_OR>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_LSHIFT>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_RSHIFT>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_MOD>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_DIM>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_CMPEQ>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_CMPNE>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_CMPLT>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_CMPGT>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_CMPLE>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_CMPGE>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_ATAN2>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_REFLECT>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_NOT>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_ABS>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_EXP>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_LOG>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_LOG2>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_LOG10>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_CEIL>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_FLOOR>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_ROUND>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_SIN>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_COS>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_TAN>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_ASIN>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_ACOS>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_ATAN>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_COSH>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_SINH>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_TANH>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_SQRT>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_CBRT>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_AVG>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_SUM>{ enum { value = 1 }; };
+		template<> struct OperationParams<OP_POPCN>{ enum { value = 1 }; };
+	}
 
-	template<> struct OperationParams<OP_FILL>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_CAST>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_RESIZE>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_FMA>{ enum { value = 3 }; };
-	template<> struct OperationParams<OP_FMS>{ enum { value = 3 }; };
-	template<> struct OperationParams<OP_ADD>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_SUB>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_MUL>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_DIV>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_MIN>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_MAX>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_OR>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_LSHIFT>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_RSHIFT>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_MOD>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_DIM>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_CMPEQ>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_CMPNE>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_CMPLT>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_CMPGT>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_CMPLE>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_CMPGE>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_ATAN2>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_REFLECT>{ enum { value = 2 }; };
-	template<> struct OperationParams<OP_NOT>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_ABS>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_EXP>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_LOG>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_LOG2>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_LOG10>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_CEIL>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_FLOOR>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_ROUND>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_SIN>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_COS>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_TAN>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_ASIN>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_ACOS>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_ATAN>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_COSH>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_SINH>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_TANH>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_SQRT>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_CBRT>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_AVG>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_SUM>{ enum { value = 1 }; };
-	template<> struct OperationParams<OP_POPCN>{ enum { value = 1 }; };
+	template<Operation O, class T>
+	struct OperationInfo {
+		enum : int64_t { 
+			instruction_set_64 = detail::OperationInstructionSet<O, T, 64>::value,
+			instruction_set_32 = detail::OperationInstructionSet<O, T, 32>::value,
+			instruction_set_16 = detail::OperationInstructionSet<O, T, 16>::value,
+			instruction_set_8 = detail::OperationInstructionSet<O, T, 8>::value,
+			instruction_set_4 = detail::OperationInstructionSet<O, T, 4>::value,
+			instruction_set_2 = detail::OperationInstructionSet<O, T, 2>::value,
+			instruction_set_max = 
+				instruction_set_64 ? instruction_set_64 :
+				instruction_set_32 ? instruction_set_32 :
+				instruction_set_16 ? instruction_set_16 :
+				instruction_set_8 ? instruction_set_8 :
+				instruction_set_4 ? instruction_set_4 :
+				IS_NONE
+		};
+		enum {
+			params = detail::OperationParams<O>::value,
+			size_max = 
+				instruction_set_64 ? 64 :
+				instruction_set_32 ? 32 :
+				instruction_set_16 ? 16 :
+				instruction_set_8 ? 8 :
+				instruction_set_4 ? 4 :
+				2
+		};
+	};
 
 	// Data Helpers
 
@@ -308,7 +340,7 @@ namespace anvil { namespace simd {
 
 		static void ANVIL_CALL execute(const T* x_, const T* y_, T* o_) {
 			enum {
-				OPTIMAL = OptimalOperationSize<O, T>::value,
+				OPTIMAL = OperationInfo<O, T>::size_max,
 				LOOP = S / OPTIMAL,
 				REMAINDER = S % OPTIMAL
 			};
@@ -858,7 +890,10 @@ namespace anvil { namespace simd {
 #define _simd_download_2_2(X,Y)*reinterpret_cast< _simd_type *>(X) = Y
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
-	template<> struct OptimalOperationSize<OP,_simd_element_type> { enum { value = 16 }; };\
+	namespace detail { template<>\
+	struct OperationInstructionSet<OP, _simd_element_type, 16> {\
+		enum : int64_t  { value = IS_## INSTRUCTION };\
+	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,INSTRUCTION, _simd_upload_16_16, _simd_download_16_16, FUNCTION1, FUNCTION2)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,15,INSTRUCTION, _simd_upload_16_15, _simd_download_n_15, FUNCTION1, FUNCTION2)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,14,INSTRUCTION, _simd_upload_16_14, _simd_download_n_14, FUNCTION1, FUNCTION2)\
@@ -876,7 +911,10 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,2, INSTRUCTION, _simd_upload_16_2,  _simd_download_n_2,  FUNCTION1, FUNCTION2)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VV_8(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
-	template<> struct OptimalOperationSize<OP,_simd_element_type> { enum { value = 8 }; };\
+	namespace detail { template<>\
+	struct OperationInstructionSet<OP, _simd_element_type, 8> {\
+		enum : int64_t  { value = IS_## INSTRUCTION };\
+	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,INSTRUCTION, _simd_upload_8_8, _simd_download_8_8, FUNCTION1, FUNCTION2)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,7,INSTRUCTION, _simd_upload_8_7, _simd_download_n_7, FUNCTION1, FUNCTION2)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,6,INSTRUCTION, _simd_upload_8_6, _simd_download_n_6, FUNCTION1, FUNCTION2)\
@@ -886,17 +924,26 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,2,INSTRUCTION, _simd_upload_8_2, _simd_download_n_2, FUNCTION1, FUNCTION2)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
-	template<> struct OptimalOperationSize<OP,_simd_element_type> { enum { value = 4 }; };\
+	namespace detail { template<>\
+	struct OperationInstructionSet<OP, _simd_element_type, 4> {\
+		enum : int64_t  { value = IS_## INSTRUCTION };\
+	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,4,INSTRUCTION, _simd_upload_4_4, _simd_download_4_4, FUNCTION1, FUNCTION2)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,3,INSTRUCTION, _simd_upload_4_3, _simd_download_n_3, FUNCTION1, FUNCTION2)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,2,INSTRUCTION, _simd_upload_4_2, _simd_download_n_2, FUNCTION1, FUNCTION2)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
-	template<> struct OptimalOperationSize<OP,_simd_element_type> { enum { value = 2 }; };\
+	namespace detail { template<>\
+	struct OperationInstructionSet<OP, _simd_element_type, 2> {\
+		enum : int64_t  { value = IS_## INSTRUCTION };\
+	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,2,INSTRUCTION, _simd_upload_2_2, _simd_download_2_2, FUNCTION1, FUNCTION2)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_16(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
-	template<> struct OptimalOperationSize<OP,_simd_element_type> { enum { value = 16 }; };\
+	namespace detail { template<>\
+	struct OperationInstructionSet<OP, _simd_element_type, 16> {\
+		enum : int64_t  { value = IS_## INSTRUCTION };\
+	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,INSTRUCTION, _simd_upload_16_16, _simd_download_16_16, FUNCTION1, FUNCTION2)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,15,INSTRUCTION, _simd_upload_16_15, _simd_download_n_15, FUNCTION1, FUNCTION2)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,14,INSTRUCTION, _simd_upload_16_14, _simd_download_n_14, FUNCTION1, FUNCTION2)\
@@ -914,7 +961,10 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,2, INSTRUCTION, _simd_upload_16_2,  _simd_download_n_2,  FUNCTION1, FUNCTION2)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_8(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
-	template<> struct OptimalOperationSize<OP,_simd_element_type> { enum { value = 8 }; };\
+	namespace detail { template<>\
+	struct OperationInstructionSet<OP, _simd_element_type, 8> {\
+		enum : int64_t  { value = IS_## INSTRUCTION };\
+	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,INSTRUCTION, _simd_upload_8_8, _simd_download_8_8, FUNCTION1, FUNCTION2)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,7,INSTRUCTION, _simd_upload_8_7, _simd_download_n_7, FUNCTION1, FUNCTION2)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,6,INSTRUCTION, _simd_upload_8_6, _simd_download_n_6, FUNCTION1, FUNCTION2)\
@@ -924,16 +974,26 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,2,INSTRUCTION, _simd_upload_8_2, _simd_download_n_2, FUNCTION1, FUNCTION2)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_4(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
-	template<> struct OptimalOperationSize<OP,_simd_element_type> { enum { value = 4 }; };\
+	namespace detail { template<>\
+	struct OperationInstructionSet<OP, _simd_element_type, 4> {\
+		enum : int64_t  { value = IS_## INSTRUCTION };\
+	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,4,INSTRUCTION, _simd_upload_4_4, _simd_download_4_4, FUNCTION1, FUNCTION2)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,3,INSTRUCTION, _simd_upload_4_3, _simd_download_n_3, FUNCTION1, FUNCTION2)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,2,INSTRUCTION, _simd_upload_4_2, _simd_download_n_2, FUNCTION1, FUNCTION2)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_2(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
-	template<> struct OptimalOperationSize<OP,_simd_element_type> { enum { value = 2 }; };\
+	namespace detail { template<>\
+	struct OperationInstructionSet<OP, _simd_element_type, 2> {\
+		enum : int64_t  { value = IS_## INSTRUCTION };\
+	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,2,INSTRUCTION, _simd_upload_2_2, _simd_download_2_2, FUNCTION1, FUNCTION2)
 
 #define ANVIL_SIMD_SPECIALISE_FILL_16(INSTRUCTION)\
+	namespace detail { template<>\
+	struct OperationInstructionSet<OP_FILL, _simd_element_type, 16> {\
+		enum : int64_t  { value = IS_## INSTRUCTION };\
+	};}\
 	ANVIL_SIMD_SPECIALISE_FILL(16, SSE, _simd_download_16_16, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
 	ANVIL_SIMD_SPECIALISE_FILL(15, SSE, _simd_download_n_15, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
 	ANVIL_SIMD_SPECIALISE_FILL(14, SSE, _simd_download_n_14, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
@@ -951,6 +1011,10 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_SPECIALISE_FILL(2, SSE, _simd_download_n_2, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)
 
 #define ANVIL_SIMD_SPECIALISE_FILL_8(INSTRUCTION)\
+	namespace detail { template<>\
+	struct OperationInstructionSet<OP_FILL, _simd_element_type, 8> {\
+		enum : int64_t  { value = IS_## INSTRUCTION };\
+	};}\
 	ANVIL_SIMD_SPECIALISE_FILL(8, SSE, _simd_download_8_8, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
 	ANVIL_SIMD_SPECIALISE_FILL(7, SSE, _simd_download_n_7, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
 	ANVIL_SIMD_SPECIALISE_FILL(6, SSE, _simd_download_n_6, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
@@ -960,11 +1024,19 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_SPECIALISE_FILL(2, SSE, _simd_download_n_2, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)
 
 #define ANVIL_SIMD_SPECIALISE_FILL_4(INSTRUCTION)\
+	namespace detail { template<>\
+	struct OperationInstructionSet<OP_FILL, _simd_element_type, 8> {\
+		enum : int64_t  { value = IS_## INSTRUCTION };\
+	};}\
 	ANVIL_SIMD_SPECIALISE_FILL(4, SSE, _simd_download_4_4, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
 	ANVIL_SIMD_SPECIALISE_FILL(3, SSE, _simd_download_n_3, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)\
 	ANVIL_SIMD_SPECIALISE_FILL(2, SSE, _simd_download_n_2, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)
 
 #define ANVIL_SIMD_SPECIALISE_FILL_2(INSTRUCTION)\
+	namespace detail { template<>\
+	struct OperationInstructionSet<OP_FILL, _simd_element_type, 2> {\
+		enum : int64_t  { value = IS_## INSTRUCTION };\
+	};}\
 	ANVIL_SIMD_SPECIALISE_FILL(2, SSE, _simd_download_2_2, _simd_fill_0, _simd_fill_1, _simd_fill_2, _simd_fill_3, _simd_fill_4)
 
 #define _simd_round_ps(X) _mm_round_ps(X,_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC)
