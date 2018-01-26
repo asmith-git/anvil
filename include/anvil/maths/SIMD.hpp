@@ -105,8 +105,8 @@ namespace anvil { namespace simd {
 	}
 
 
-	static ANVIL_STRONG_INLINE int16_t ANVIL_CALL IsInstructionSetSupported(InstructionSet aSet) {
-		static const int16_t g_enabled_sets =
+	static ANVIL_STRONG_INLINE bool ANVIL_CALL IsInstructionSetSupported(InstructionSet aSet) {
+		static const bool g_enabled_sets =
 #ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
 			(IsInstructionSetSupported_(IS_MMX) ? IS_MMX : 0) |
 			(IsInstructionSetSupported_(IS_SSE) ? IS_SSE : 0) |
@@ -123,7 +123,7 @@ namespace anvil { namespace simd {
 #else
 			0;
 #endif
-		return g_enabled_sets & aSet;
+		return (g_enabled_sets & aSet) == aSet;
 	}
 
 	// Operation definitions
