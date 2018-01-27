@@ -778,6 +778,46 @@ namespace anvil { namespace simd {
 #ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
 
 	template<>
+	struct SIMDHelper<double, 4> {
+		typedef __m256d simd_t;
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL load(const double* x) { _mm256_load_pd(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL fillu() { return _mm256_undefined_pd(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL fill0() { return _mm256_setzero_pd(); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL fill(const register double x) { return _mm256_set1_pd(x); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL set1(const register double x) { return set4(x, 0.0, 0.0, 0.0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL set2(const register double x, const register double y) { return set4(x, y, 0.0, 0.0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL set3(const register double x, const register double y, const register double z) { return set4(x, y, z, 0.0); }
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL set4(const register double x, const register double y, const register double z, const register double w) { return _mm256_setr_pd(x, y, z, w); }
+
+		template<size_t GS>
+		static void ANVIL_SIMD_CALL get(const register simd_t x, double* y) {
+			typedef DefaultSIMD<double, GS> simd2_t;
+			union {
+				simd2_t s2;
+				simd_t s;
+			};
+			s = x;
+			*reinterpret_cast<simd2_t*>(y) = s2;
+		}
+
+		template<size_t GS>
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL setn(const double* y) {
+			typedef DefaultSIMD<double, GS> simd2_t;
+			union {
+				simd2_t s2;
+				simd_t s;
+			};
+			s2 = *reinterpret_cast<const simd2_t*>(y);
+			return s;
+		}
+
+		template<>
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL setn<2>(const double* y) {
+			return *reinterpret_cast<const simd_t*>(y);
+		}
+	};
+
+	template<>
 	struct SIMDHelper<double, 2> {
 		typedef __m128d simd_t;
 		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL load(const double* x) { _mm_load_pd(x); }
@@ -1381,6 +1421,38 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,4,4,INSTRUCTION, FUNCTION1, FUNCTION2)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,4,3,INSTRUCTION, FUNCTION1, FUNCTION2)
 
+#define ANVIL_SIMD_IMPLEMENTATION_V_V_8_TO_16(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	namespace detail { template<>\
+	struct OperationInstructionSet<OP, _simd_element_type, 16> {\
+		enum : int64_t  { value = IS_## INSTRUCTION };\
+	};}\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,16,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,15,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,14,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,13,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,12,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,11,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,10,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,9, INSTRUCTION, FUNCTION1, FUNCTION2)
+
+#define ANVIL_SIMD_IMPLEMENTATION_V_V_4_TO_8(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	namespace detail { template<>\
+	struct OperationInstructionSet<OP, _simd_element_type, 8> {\
+		enum : int64_t  { value = IS_## INSTRUCTION };\
+	};}\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,8,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,7,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,6,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,5,INSTRUCTION, FUNCTION1, FUNCTION2)
+
+#define ANVIL_SIMD_IMPLEMENTATION_V_V_2_TO_4(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	namespace detail { template<>\
+	struct OperationInstructionSet<OP, _simd_element_type, 4> {\
+		enum : int64_t  { value = IS_## INSTRUCTION };\
+	};}\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,4,4,INSTRUCTION, FUNCTION1, FUNCTION2)\
+	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,4,3,INSTRUCTION, FUNCTION1, FUNCTION2)
+
 #define ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP,INSTRUCTION, FUNCTION1, FUNCTION2)\
 	namespace detail { template<>\
 	struct OperationInstructionSet<OP, _simd_element_type, 16> {\
@@ -1533,6 +1605,20 @@ namespace anvil { namespace simd {
 
 #define _simd_round_ps(X) _mm_round_ps(X,_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC)
 #define _simd_round_pd(X) _mm_round_pd(X,_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC)
+#define _simd256_round_ps(X) _mm256_round_ps(X,_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC)
+#define _simd256_round_pd(X) _mm256_round_pd(X,_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC)
+#define _simd256_cmpeq_ps(X,Y) _mm256_cmp_ps (X,Y,_CMP_EQ_OQ)
+#define _simd256_cmpneq_ps(X,Y) _mm256_cmp_ps (X,Y,_CMP_NEQ_OQ)
+#define _simd256_cmplt_ps(X,Y) _mm256_cmp_ps (X,Y,_CMP_LT_OQ)
+#define _simd256_cmpgt_ps(X,Y) _mm256_cmp_ps (X,Y,_CMP_GT_OQ)
+#define _simd256_cmple_ps(X,Y) _mm256_cmp_ps (X,Y,_CMP_LE_OQ)
+#define _simd256_cmpge_ps(X,Y) _mm256_cmp_ps (X,Y,_CMP_GE_OQ)
+#define _simd256_cmpeq_pd(X,Y) _mm256_cmp_pd (X,Y,_CMP_EQ_OQ)
+#define _simd256_cmpneq_pd(X,Y) _mm256_cmp_pd (X,Y,_CMP_NEQ_OQ)
+#define _simd256_cmplt_pd(X,Y) _mm256_cmp_pd (X,Y,_CMP_LT_OQ)
+#define _simd256_cmpgt_pd(X,Y) _mm256_cmp_pd (X,Y,_CMP_GT_OQ)
+#define _simd256_cmple_pd(X,Y) _mm256_cmp_pd (X,Y,_CMP_LE_OQ)
+#define _simd256_cmpge_pd(X,Y) _mm256_cmp_pd (X,Y,_CMP_GE_OQ)
 
 #define _simd_element_type float
 #define _simd_type __m128
@@ -1561,7 +1647,26 @@ namespace anvil { namespace simd {
 
 #define _simd_element_type float
 #define _simd_type __m256
-	ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP_ADD, AVX, _mm256_add_ps, ANVIL_SIMD_ADD)
+	//ANVIL_SIMD_SPECIALISE_FILL_4(SSE)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP_ADD,   AVX, _mm256_add_ps,     ANVIL_SIMD_ADD)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP_SUB,   AVX, _mm256_sub_ps,     ANVIL_SIMD_SUB)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP_MUL,   AVX, _mm256_mul_ps,     ANVIL_SIMD_MUL)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP_DIV,   AVX, _mm256_div_ps,     ANVIL_SIMD_DIV)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP_AND,   AVX, _mm256_and_ps,     ANVIL_SIMD_AND_F)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP_OR,    AVX, _mm256_or_ps,      ANVIL_SIMD_OR_F)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP_XOR,   AVX, _mm256_xor_ps,     ANVIL_SIMD_XOR_F)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP_MIN,   AVX, _mm256_min_ps,     std::min)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP_MAX,   AVX, _mm256_max_ps,     std::max)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP_CMPEQ, AVX, _simd256_cmpeq_ps,   ANVIL_SIMD_CMPEQ)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP_CMPNE, AVX, _simd256_cmpneq_ps,  ANVIL_SIMD_CMPNE)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP_CMPLT, AVX, _simd256_cmplt_ps,   ANVIL_SIMD_CMPLT)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP_CMPGT, AVX, _simd256_cmpgt_ps,   ANVIL_SIMD_CMPGT)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP_CMPLE, AVX, _simd256_cmple_ps,   ANVIL_SIMD_CMPLE)
+	ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP_CMPGE, AVX, _simd256_cmpge_ps,   ANVIL_SIMD_CMPGE)
+	ANVIL_SIMD_IMPLEMENTATION_V_V_4_TO_8( OP_CEIL,  AVX, _mm256_ceil_ps,    std::ceil)
+	ANVIL_SIMD_IMPLEMENTATION_V_V_4_TO_8( OP_FLOOR, AVX, _mm256_floor_ps,   std::ceil)
+	ANVIL_SIMD_IMPLEMENTATION_V_V_4_TO_8( OP_ROUND, AVX, _simd256_round_ps, std::round)
+	ANVIL_SIMD_IMPLEMENTATION_V_V_4_TO_8( OP_SQRT,  AVX, _mm256_sqrt_ps,    std::sqrt)
 #undef _simd_element_type
 #undef _simd_type
 
@@ -1587,6 +1692,31 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_IMPLEMENTATION_V_V_2( OP_FLOOR, SSE_4_1, _mm_floor_pd,   std::ceil)
 	ANVIL_SIMD_IMPLEMENTATION_V_V_2( OP_ROUND, SSE_4_1, _simd_round_pd, std::round)
 	ANVIL_SIMD_IMPLEMENTATION_V_V_2( OP_SQRT,  SSE_2,   _mm_sqrt_pd,    std::sqrt)
+#undef _simd_element_type
+#undef _simd_type
+
+#define _simd_element_type double
+#define _simd_type __m256d
+		//ANVIL_SIMD_SPECIALISE_FILL_4(SSE)
+		ANVIL_SIMD_IMPLEMENTATION_V_VV_2_TO_4(OP_ADD, AVX, _mm256_add_pd, ANVIL_SIMD_ADD)
+		ANVIL_SIMD_IMPLEMENTATION_V_VV_2_TO_4(OP_SUB, AVX, _mm256_sub_pd, ANVIL_SIMD_SUB)
+		ANVIL_SIMD_IMPLEMENTATION_V_VV_2_TO_4(OP_MUL, AVX, _mm256_mul_pd, ANVIL_SIMD_MUL)
+		ANVIL_SIMD_IMPLEMENTATION_V_VV_2_TO_4(OP_DIV, AVX, _mm256_div_pd, ANVIL_SIMD_DIV)
+		ANVIL_SIMD_IMPLEMENTATION_V_VV_2_TO_4(OP_AND, AVX, _mm256_and_pd, ANVIL_SIMD_AND_F)
+		ANVIL_SIMD_IMPLEMENTATION_V_VV_2_TO_4(OP_OR, AVX, _mm256_or_pd, ANVIL_SIMD_OR_F)
+		ANVIL_SIMD_IMPLEMENTATION_V_VV_2_TO_4(OP_XOR, AVX, _mm256_xor_pd, ANVIL_SIMD_XOR_F)
+		ANVIL_SIMD_IMPLEMENTATION_V_VV_2_TO_4(OP_MIN, AVX, _mm256_min_pd, std::min)
+		ANVIL_SIMD_IMPLEMENTATION_V_VV_2_TO_4(OP_MAX, AVX, _mm256_max_pd, std::max)
+		ANVIL_SIMD_IMPLEMENTATION_V_VV_2_TO_4(OP_CMPEQ, AVX, _simd256_cmpeq_pd, ANVIL_SIMD_CMPEQ)
+		ANVIL_SIMD_IMPLEMENTATION_V_VV_2_TO_4(OP_CMPNE, AVX, _simd256_cmpneq_pd, ANVIL_SIMD_CMPNE)
+		ANVIL_SIMD_IMPLEMENTATION_V_VV_2_TO_4(OP_CMPLT, AVX, _simd256_cmplt_pd, ANVIL_SIMD_CMPLT)
+		ANVIL_SIMD_IMPLEMENTATION_V_VV_2_TO_4(OP_CMPGT, AVX, _simd256_cmpgt_pd, ANVIL_SIMD_CMPGT)
+		ANVIL_SIMD_IMPLEMENTATION_V_VV_2_TO_4(OP_CMPLE, AVX, _simd256_cmple_pd, ANVIL_SIMD_CMPLE)
+		ANVIL_SIMD_IMPLEMENTATION_V_VV_2_TO_4(OP_CMPGE, AVX, _simd256_cmpge_pd, ANVIL_SIMD_CMPGE)
+		ANVIL_SIMD_IMPLEMENTATION_V_V_2_TO_4(OP_CEIL, AVX, _mm256_ceil_pd, std::ceil)
+		ANVIL_SIMD_IMPLEMENTATION_V_V_2_TO_4(OP_FLOOR, AVX, _mm256_floor_pd, std::ceil)
+		ANVIL_SIMD_IMPLEMENTATION_V_V_2_TO_4(OP_ROUND, AVX, _simd256_round_pd, std::round)
+		ANVIL_SIMD_IMPLEMENTATION_V_V_2_TO_4(OP_SQRT, AVX, _mm256_sqrt_pd, std::sqrt)
 #undef _simd_element_type
 #undef _simd_type
 
