@@ -325,7 +325,7 @@ namespace anvil { namespace simd {
 	template<class T, size_t S>
 	struct SIMDHelper {
 		typedef DefaultSIMD<T, S> simd_t;
-		static_assert(sizeof(simd_t) == (sizeof(T) * S), "simd_t size error");
+		//static_assert(sizeof(simd_t) == (sizeof(T) * S), "simd_t size error");
 
 		static simd_t ANVIL_SIMD_CALL load(const T* x) {
 			simd_t tmp;
@@ -415,124 +415,26 @@ namespace anvil { namespace simd {
 
 	// Default Operation Implementation
 
-	template<class T, size_t S, Operation O>
+	template<class T, size_t S, Operation O, bool OPTIMISED = false>
 	struct OperationImplementation {
-		typedef typename SIMDHelper<T, S>::simd_t simd_t;
-		typedef OperationInfo<O, T> info;
-
-		static void ANVIL_SIMD_CALL execute(const T* x_, const T* y_, T* o_) {
-			enum {
-				OPTIMAL = info::LoopInfo<S>::size,
-				LOOP = info::LoopInfo<S>::loops,
-				REMAINDER = info::LoopInfo<S>::remainder
-			};
-			typedef OperationImplementation<T, OPTIMAL, O> optimal_t;
-			union simd_ptr {
-				SIMDHelper<T, OPTIMAL>::simd_t* vo;
-				DefaultSIMD<T, OPTIMAL>* vn;
-				const T* s;
-			};
-			simd_ptr x, y, o;
-			x.s = x_;
-			y.s = y_;
-			o.s = o_;
-
-			if (optimal_t::optimised()) {
-				for (size_t i = 0; i < LOOP; ++i) {
-					o.vo[i] = optimal_t::execute_op(x.vo[i], y.vo[i]);
-				}
-			} else {
-				for (size_t i = 0; i < LOOP; ++i) {
-					optimal_t::execute_nop(x.vn[i].elements, y.vn[i].elements, o.vn[i].elements);
-				}
-			}
-			for (size_t i = 0; i < REMAINDER; ++i) {
-				o.vn[LOOP].elements[i] = OperationImplementation<T, 1, O>::execute(x.vn[LOOP].elements[i], y.vn[LOOP].elements[i]);
-			}
+		template<size_t P = 3>
+		static void ANVIL_SIMD_CALL execute(const T* x, const T* y, const T* z, T* o) {
+			for (size_t i = 0; i < S; ++i) o[i] = OperationImplementation<T, 1, O, false>::execute(x[i], y[i], z[i]);
 		}
 
-		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL execute_op(const register simd_t x, const register simd_t y) {
-			simd_t tmp;
-			execute(reinterpret_cast<const T*>(&x), reinterpret_cast<const T*>(&y), reinterpret_cast<T*>(&tmp))
-			return tmp;
+		template<size_t P = 2>
+		static void ANVIL_SIMD_CALL execute(const T* x, const T* y, T* o) {
+			for (size_t i = 0; i < S; ++i) o[i] = OperationImplementation<T, 1, O, false>::execute(x[i], y[i]);
 		}
 
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_nop(const T* x, const T* y, T* o) {
-			execute(x, y, o);
-		}
-
-		static ANVIL_STRONG_INLINE bool ANVIL_SIMD_CALL optimised() {
-			return false;
-		}
-	};
-
-	template<class T, Operation O>
-	struct OperationImplementation<T,2,O> {
-		enum { PARAMS = OperationParams<O>::value };
-		typedef typename SIMDHelper<T, 2>::simd_t simd_t;
-
-
-		template<size_t S = PARAMS>
-		static inline void ANVIL_SIMD_CALL execute(const T* x, const T* y, const T* z, T* o) {
-			o[0] = OperationImplementation<T, 1, O>::execute(x[0], y[0], z[0]);
-			o[1] = OperationImplementation<T, 1, O>::execute(x[1], y[1], z[1]);
-		}
-
-		template<size_t S = PARAMS>
-		static inline void ANVIL_SIMD_CALL execute(const T* x, const T* y, T* o) {
-			o[0] = OperationImplementation<T, 1, O>::execute(x[0], y[0]);
-			o[1] = OperationImplementation<T, 1, O>::execute(x[1], y[1]);
-		}
-
-		template<size_t S = PARAMS>
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const T* x, T* o) {
-			o[0] = OperationImplementation<T, 1, O>::execute(x[0]);
-			o[1] = OperationImplementation<T, 1, O>::execute(x[1]);
-		}
-
-		template<size_t S = PARAMS>
-		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL execute_op(const register simd_t x, const register simd_t y, const register simd_t z) {
-			simd_t tmp;
-			execute(reinterpret_cast<const T*>(&x), reinterpret_cast<const T*>(&y), reinterpret_cast<const T*>(&z), reinterpret_cast<T*>(&tmp))
-			return tmp;
-		}
-
-		template<size_t S = PARAMS>
-		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL execute_op(const register simd_t x, const register simd_t y) {
-			simd_t tmp;
-			execute(reinterpret_cast<const T*>(&x), reinterpret_cast<const T*>(&y), reinterpret_cast<T*>(&tmp))
-			return tmp;
-		}
-
-		template<size_t S = PARAMS>
-		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL execute_op(const register simd_t x, T* o) {
-			simd_t tmp;
-			execute(reinterpret_cast<const T*>(&x), reinterpret_cast<T*>(&tmp))
-			return tmp;
-		}
-
-		template<size_t S = PARAMS>
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_nop(const T* x, const T* y, const T* z, T* o) {
-			execute(x, y, z, o);
-		}
-
-		template<size_t S = PARAMS>
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_nop(const T* x, const T* y, T* o) {
-			execute(x, y, o);
-		}
-
-		template<size_t S = PARAMS>
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_nop(const T* x, T* o) {
-			execute(x, o);
-		}
-
-		static ANVIL_STRONG_INLINE bool ANVIL_SIMD_CALL optimised() {
-			return false;
+		template<size_t P = 1>
+		static void ANVIL_SIMD_CALL execute(const T* x, T* o) {
+			for (size_t i = 0; i < S; ++i) o[i] = OperationImplementation<T, 1, O, false>::execute(x[i]);
 		}
 	};
 
 	template<class T, size_t S>
-	struct OperationImplementation<T, S, OP_FILL> {
+	struct OperationImplementation<T, S, OP_FILL, false> {
 		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(T* aOutput) {
 			memset(aOutput, 0, sizeof(T) * S);
 		}
@@ -561,54 +463,10 @@ namespace anvil { namespace simd {
 			if (S > 2) o[2] = z;
 			if (S > 3) o[3] = w;
 		}
-
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_op(T* o) {
-			execute(o);
-		}
-
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_op(T x, T* o) {
-			execute(x, o);
-		}
-
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_op(T x, T y, T* o) {
-			execute(x, y, o);
-		}
-
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_op(T x, T y, T z, T* o) {
-			execute(x, y, z, o);
-		}
-
-		static ANVIL_STRONG_INLINE void  ANVIL_SIMD_CALL execute_op(T x, T y, T z, T w, T* o) {
-			execute(x, y, z, w, o);
-		}
-
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_nop(T* o) {
-			execute(o);
-		}
-
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_nop(T x, T* o) {
-			execute(x, o);
-		}
-
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_nop(T x, T y, T* o) {
-			execute(x, y, o);
-		}
-
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_nop(T x, T y, T z, T* o) {
-			execute(x, y, z, o);
-		}
-
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_nop(T x, T y, T z, T w, T* o) {
-			execute(x, y, z, w, o);
-		}
-
-		static ANVIL_STRONG_INLINE bool ANVIL_SIMD_CALL optimised() {
-			return false;
-		}
 	};
 
 	template<class T, size_t S>
-	struct OperationImplementation<T, S, OP_CAST> {
+	struct OperationImplementation<T, S, OP_CAST, false> {
 		template<class T2>
 		static void ANVIL_SIMD_CALL execute(const T2* x, T* y) {
 			for (size_t i = 0; i < S; ++i) y[i] = static_cast<T>(x[i]);
@@ -616,7 +474,7 @@ namespace anvil { namespace simd {
 	};
 
 	template<class T, size_t S>
-	struct OperationImplementation<T, S, OP_RESIZE> {
+	struct OperationImplementation<T, S, OP_RESIZE, false> {
 		template<size_t S2>
 		static void ANVIL_SIMD_CALL execute(const T* x, T* y) {
 			if (S > S2) Operation<T, S, OP_FILL>::execute(y);
@@ -666,41 +524,56 @@ namespace anvil { namespace simd {
 
 #define ANVIL_SIMD_IMPLEMENTATION_S_SSS_1(O,F)\
 	template<class T>\
-	struct OperationImplementation<T, 1, O> {\
+	struct OperationImplementation<T, 1, O, false> {\
 		static ANVIL_STRONG_INLINE T ANVIL_SIMD_CALL execute(T x, T y, T z) {\
 			return F(x, y, z);\
+		}\
+		static ANVIL_STRONG_INLINE T ANVIL_SIMD_CALL execute(const T* x, const T* y, const T* z, T* o) {\
+			return *o = F(*x,*y,*z);\
 		}\
 	};\
 
 #define ANVIL_SIMD_IMPLEMENTATION_S_SS_1(O,F)\
 	template<class T>\
-	struct OperationImplementation<T, 1, O> {\
+	struct OperationImplementation<T, 1, O, false> {\
 		static ANVIL_STRONG_INLINE T ANVIL_SIMD_CALL execute(T x, T y) {\
 			return F(x, y);\
+		}\
+		static ANVIL_STRONG_INLINE T ANVIL_SIMD_CALL execute(const T* x, const T* y, T* o) {\
+			return *o = F(*x,*y);\
 		}\
 	};\
 
 #define ANVIL_SIMD_IMPLEMENTATION_S_SS_1_SPECIALISE(O,T,F)\
 	template<>\
-	struct OperationImplementation<T, 1, O> {\
+	struct OperationImplementation<T, 1, O, false> {\
 		static ANVIL_STRONG_INLINE T ANVIL_SIMD_CALL execute(T x, T y) {\
 			return F(x, y);\
+		}\
+		static ANVIL_STRONG_INLINE T ANVIL_SIMD_CALL execute(const T* x, const T* y, T* o) {\
+			return *o = F(*x,*y);\
 		}\
 	};\
 
 #define ANVIL_SIMD_IMPLEMENTATION_S_S_1(O,F)\
 	template<class T>\
-	struct OperationImplementation<T, 1, O> {\
+	struct OperationImplementation<T, 1, O, false> {\
 		static ANVIL_STRONG_INLINE T ANVIL_SIMD_CALL execute(T x) {\
 			return F(x);\
+		}\
+		static ANVIL_STRONG_INLINE T ANVIL_SIMD_CALL execute(const T* x, T* o) {\
+			return *o = F(*x);\
 		}\
 	};\
 
 #define ANVIL_SIMD_IMPLEMENTATION_S_S_1_SPECIALISE(O,T,F)\
 	template<>\
-	struct OperationImplementation<T, 1, O> {\
+	struct OperationImplementation<T, 1, O, false> {\
 		static ANVIL_STRONG_INLINE T ANVIL_SIMD_CALL execute(T x) {\
 			return F(x);\
+		}\
+		static ANVIL_STRONG_INLINE T ANVIL_SIMD_CALL execute(const T* x, T* o) {\
+			return *o = F(*x);\
 		}\
 	};\
 
@@ -774,6 +647,193 @@ namespace anvil { namespace simd {
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_AVG, ANVIL_SIMD_NOP1)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_SUM, ANVIL_SIMD_NOP1)
 	ANVIL_SIMD_IMPLEMENTATION_S_S_1(OP_POPCN, popcount)
+
+
+	template<class T, size_t S, Operation O>
+	struct OperationDispatcher {
+		typedef typename SIMDHelper<T, S>::simd_t simd_t;
+		typedef OperationInfo<O, T> info;
+
+		enum {
+			loop_64 = S / 64,
+			loop_32 = S / 32,
+			loop_16 = S / 16,
+			loop_8 = S / 8,
+			loop_4 = S / 4,
+			loop_2 = S / 2,
+			remainder_64 = S % 64,
+			remainder_32 = S % 32,
+			remainder_16 = S % 16,
+			remainder_8 = S % 8,
+			remainder_4 = S % 4,
+			remainder_2 = S % 2,
+		};
+
+		template<size_t P = 3>
+		static void ANVIL_SIMD_CALL execute(const T* x, const T* y, const T* z, T* o) {
+			if (S >= 64 && info::instruction_set_64 != IS_NONE && IsInstructionSetSupported<static_cast<InstructionSet>(info::instruction_set_64)>()) {
+				for (size_t i = 0; i < loop_64; ++i) {
+					OperationImplementation<T, 64, O, false>::execute(x, y, z, o);
+					x += 64;
+					y += 64;
+					z += 64;
+					o += 64;
+				}
+				OperationDispatcher<T, remainder_64, O>::execute(x, y, z, o);
+			} else if (S >= 32 && info::instruction_set_32 != IS_NONE && IsInstructionSetSupported<static_cast<InstructionSet>(info::instruction_set_32)>()) {
+				for (size_t i = 0; i < loop_32; ++i) {
+					OperationImplementation<T, 32, O, true>::execute(x, y, z, o);
+					x += 32;
+					y += 32;
+					z += 32;
+					o += 32;
+				}
+				OperationDispatcher<T, remainder_32, O>::execute(x, y, z, o);
+			} else if (S >= 16 && info::instruction_set_16 != IS_NONE && IsInstructionSetSupported<static_cast<InstructionSet>(info::instruction_set_16)>()) {
+				for (size_t i = 0; i < loop_16; ++i) {
+					OperationImplementation<T, 16, O, true>::execute(x, y, z, o);
+					x += 16;
+					y += 16;
+					z += 16;
+					o += 16;
+				}
+				OperationDispatcher<T, remainder_16, O>::execute(x, y, z, o);
+			} else if (S >= 8 && info::instruction_set_8 != IS_NONE && IsInstructionSetSupported<static_cast<InstructionSet>(info::instruction_set_8)>()) {
+				for (size_t i = 0; i < loop_8; ++i) {
+					OperationImplementation<T, 8, O, true>::execute(x, y, z, o);
+					x += 8;
+					y += 8;
+					z += 8;
+					o += 8;
+				}
+				OperationDispatcher<T, remainder_8, O>::execute(x, y, o);
+			} else if (S >= 4 && info::instruction_set_4 != IS_NONE && IsInstructionSetSupported<static_cast<InstructionSet>(info::instruction_set_4)>()) {
+				for (size_t i = 0; i < loop_4; ++i) {
+					OperationImplementation<T, 4, O, true>::execute(x, y, z, o);
+					x += 4;
+					y += 4;
+					z += 4;
+					o += 4;
+				}
+				OperationImplementation<T, remainder_4, O, false>::execute(x, y, z, o);
+			} else if (S >= 2 && info::instruction_set_2 != IS_NONE &&IsInstructionSetSupported<static_cast<InstructionSet>(info::instruction_set_2)>()) {
+				for (size_t i = 0; i < loop_2; ++i) {
+					OperationImplementation<T, 2, O, true>::execute(x, y, z, o);
+					x += 2;
+					y += 2;
+					z += 2;
+					o += 2;
+				}
+				OperationDispatcher<T, remainder_2, O>::execute(x, y, z, o);
+			} else {
+				OperationImplementation<T, S, O, false>::execute(x, y, z, o);
+			}
+		}
+
+		template<size_t P = 2>
+		static void ANVIL_SIMD_CALL execute(const T* x, const T* y, T* o) {
+			if (S >= 64 && info::instruction_set_64 != IS_NONE && IsInstructionSetSupported<static_cast<InstructionSet>(info::instruction_set_64)>()) {
+				for (size_t i = 0; i < loop_64; ++i) {
+					OperationImplementation<T, 64, O, false>::execute(x, y, o);
+					x += 64;
+					y += 64;
+					o += 64;
+				}
+				OperationDispatcher<T, remainder_64, O>::execute(x, y, o);
+			} else if (S >= 32 && info::instruction_set_32 != IS_NONE && IsInstructionSetSupported<static_cast<InstructionSet>(info::instruction_set_32)>()) {
+				for (size_t i = 0; i < loop_32; ++i) {
+					OperationImplementation<T, 32, O, true>::execute(x, y, o);
+					x += 32;
+					y += 32;
+					o += 32;
+				}
+				OperationDispatcher<T, remainder_32, O>::execute(x, y, o);
+			} else if (S >= 16 && info::instruction_set_16 != IS_NONE && IsInstructionSetSupported<static_cast<InstructionSet>(info::instruction_set_16)>()) {
+				for (size_t i = 0; i < loop_16; ++i) {
+					OperationImplementation<T, 16, O, true>::execute(x, y, o);
+					x += 16;
+					y += 16;
+					o += 16;
+				}
+				OperationDispatcher<T, remainder_16, O>::execute(x, y, o);
+			} else if (S >= 8 && info::instruction_set_8 != IS_NONE && IsInstructionSetSupported<static_cast<InstructionSet>(info::instruction_set_8)>()) {
+				for (size_t i = 0; i < loop_8; ++i) {
+					OperationImplementation<T, 8, O, true>::execute(x, y, o);
+					x += 8;
+					y += 8;
+					o += 8;
+				}
+				OperationDispatcher<T, remainder_8, O>::execute(x, y, o);
+			} else if (S >= 4 && info::instruction_set_4 != IS_NONE && IsInstructionSetSupported<static_cast<InstructionSet>(info::instruction_set_4)>()) {
+				for (size_t i = 0; i < loop_4; ++i) {
+					OperationImplementation<T, 4, O, true>::execute(x, y, o);
+					x += 4;
+					y += 4;
+					o += 4;
+				}
+				OperationImplementation<T, remainder_4, O, false>::execute(x, y, o);
+			} else if (S >= 2 && info::instruction_set_2 != IS_NONE &&IsInstructionSetSupported<static_cast<InstructionSet>(info::instruction_set_2)>()) {
+				for (size_t i = 0; i < loop_2; ++i) {
+					OperationImplementation<T, 2, O, true>::execute(x, y, o);
+					x += 2;
+					y += 2;
+					o += 2;
+				}
+				OperationDispatcher<T, remainder_2, O>::execute(x, y, o);
+			} else {
+				OperationImplementation<T, S, O, false>::execute(x, y, o);
+			}
+		}
+
+		template<size_t P = 1>
+		static void ANVIL_SIMD_CALL execute(const T* x, T* o) {
+			if (S >= 64 && info::instruction_set_64 != IS_NONE && IsInstructionSetSupported<static_cast<InstructionSet>(info::instruction_set_64)>()) {
+				for (size_t i = 0; i < loop_64; ++i) {
+					OperationImplementation<T, 64, O, false>::execute(x, o);
+					x += 64;
+					o += 64;
+				}
+				OperationDispatcher<T, remainder_64, O>::execute(x, o);
+			} else if (S >= 32 && info::instruction_set_32 != IS_NONE && IsInstructionSetSupported<static_cast<InstructionSet>(info::instruction_set_32)>()) {
+				for (size_t i = 0; i < loop_32; ++i) {
+					OperationImplementation<T, 32, O, true>::execute(x, o);
+					x += 32;
+					o += 32;
+				}
+				OperationDispatcher<T, remainder_32, O>::execute(x, o);
+			} else if (S >= 16 && info::instruction_set_16 != IS_NONE && IsInstructionSetSupported<static_cast<InstructionSet>(info::instruction_set_16)>()) {
+				for (size_t i = 0; i < loop_16; ++i) {
+					OperationImplementation<T, 16, O, true>::execute(x, o);
+					x += 16;
+					o += 16;
+				}
+				OperationDispatcher<T, remainder_16, O>::execute(x, o);
+			} else if (S >= 8 && info::instruction_set_8 != IS_NONE && IsInstructionSetSupported<static_cast<InstructionSet>(info::instruction_set_8)>()) {
+				for (size_t i = 0; i < loop_8; ++i) {
+					OperationImplementation<T, 8, O, true>::execute(x, o);
+					x += 8;
+					o += 8;
+				}
+				OperationDispatcher<T, remainder_8, O>::execute(x, o);
+			} else if (S >= 4 && info::instruction_set_4 != IS_NONE && IsInstructionSetSupported<static_cast<InstructionSet>(info::instruction_set_4)>()) {
+				for (size_t i = 0; i < loop_4; ++i) {
+					OperationImplementation<T, 4, O, true>::execute(x, o);
+					x += 4;
+					o += 4;
+				}
+				OperationImplementation<T, remainder_4, O, false>::execute(x, o);
+			} else if (S >= 2 && info::instruction_set_2 != IS_NONE &&IsInstructionSetSupported<static_cast<InstructionSet>(info::instruction_set_2)>()) {
+				for (size_t i = 0; i < loop_2; ++i) {
+					OperationImplementation<T, 2, O, true>::execute(x, o);
+					x += 2;
+					o += 2;
+				}
+				OperationDispatcher<T, remainder_2, O>::execute(x, o);
+			} else {
+				OperationImplementation<T, S, O, false>::execute(x, o);
+			}
+		}
+	};
 
 #ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
 
@@ -1078,131 +1138,59 @@ ANVIL_SIMD_HELPER()
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,OP_SIZE,SIZE,INSTRUCTION,FUNCTION1,FUNCTION2)\
 	template<>\
-	struct OperationImplementation<_simd_element_type, SIZE, OP> {\
+	struct OperationImplementation<_simd_element_type, SIZE, OP, true> {\
 		typedef SIMDHelper<_simd_element_type,OP_SIZE> helper_t;\
 		typedef helper_t::simd_t simd_t;\
 		typedef DefaultSIMD<_simd_element_type,SIZE> default_simd_t;\
 		static ANVIL_STRONG_INLINE bool ANVIL_SIMD_CALL optimised() {\
 			return IsInstructionSetSupported< IS_ ## INSTRUCTION >();\
 		}\
-		static ANVIL_STRONG_INLINE _simd_type ANVIL_SIMD_CALL execute_op(const register simd_t x, const register simd_t y) {\
+		static ANVIL_STRONG_INLINE _simd_type ANVIL_SIMD_CALL execute(const register simd_t x, const register simd_t y) {\
 			return FUNCTION1(x,y);\
 		}\
-		static inline void ANVIL_SIMD_CALL execute_nop(const register _simd_element_type* x, const register _simd_element_type* y, _simd_element_type* o) {\
-			for (size_t i = 0; i < SIZE; ++i) o[i] = FUNCTION2(x[i], y[i]); \
-		}\
-		static inline void ANVIL_SIMD_CALL execute(const register _simd_element_type* x, const register _simd_element_type* y, _simd_element_type* o) {\
-			if(optimised()) {\
-				helper_t::get<SIZE>(execute_op(helper_t::setn<SIZE>(x),helper_t::setn<SIZE>(y)),o);\
-			} else {\
-				execute_nop(x,y,o);\
-			}\
+		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const register _simd_element_type* x, const register _simd_element_type* y, _simd_element_type* o) {\
+			helper_t::get<SIZE>(execute(helper_t::setn<SIZE>(x),helper_t::setn<SIZE>(y)),o);\
 		}\
 	};
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V(OP,OP_SIZE,SIZE,INSTRUCTION,FUNCTION1,FUNCTION2)\
 	template<>\
-	struct OperationImplementation<_simd_element_type, SIZE, OP> {\
+	struct OperationImplementation<_simd_element_type, SIZE, OP, true> {\
 		typedef SIMDHelper<_simd_element_type,OP_SIZE> helper_t;\
 		typedef helper_t::simd_t simd_t;\
 		static ANVIL_STRONG_INLINE bool ANVIL_SIMD_CALL optimised() {\
 			return IsInstructionSetSupported< IS_ ## INSTRUCTION >();\
 		}\
-		static ANVIL_STRONG_INLINE _simd_type ANVIL_SIMD_CALL execute_op(const register simd_t x) {\
+		static ANVIL_STRONG_INLINE _simd_type ANVIL_SIMD_CALL execute(const register simd_t x) {\
 			return FUNCTION1(x);\
 		}\
-		static inline void ANVIL_SIMD_CALL execute_nop(const register _simd_element_type* x, _simd_element_type* o) {\
-			for (size_t i = 0; i < SIZE; ++i) o[i] = FUNCTION2(x[i]); \
-		}\
-		static inline void ANVIL_SIMD_CALL execute(const register _simd_element_type* x, _simd_element_type* o) {\
-			if(optimised()) {\
-				helper_t::get<SIZE>(execute_op(helper_t::setn<SIZE>(x)),o);\
-			} else {\
-				execute_nop(x,o);\
-			}\
+		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const register _simd_element_type* x, _simd_element_type* o) {\
+			helper_t::get<SIZE>(execute(helper_t::setn<SIZE>(x)),o);\
 		}\
 	};
 
 #define ANVIL_SIMD_SPECIALISE_FILL(OP_SIZE,SIZE,INSTRUCTION)\
 	template<>\
-	struct OperationImplementation<_simd_element_type, SIZE, OP_FILL> {\
+	struct OperationImplementation<_simd_element_type, SIZE, OP_FILL, true> {\
 		typedef SIMDHelper<_simd_element_type,OP_SIZE> helper_t;\
 		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(_simd_element_type* o) {\
-			if(optimised()) execute_op(o);\
-			else execute_nop(o);\
-		}\
-		\
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const register _simd_element_type x, _simd_element_type* o) {\
-			if(optimised()) execute_op(x,o);\
-			else execute_nop(x,o);\
-		}\
-		\
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const register _simd_element_type x, const register _simd_element_type y, _simd_element_type* o) {\
-			if(optimised()) execute_op(x,y,o);\
-			else execute_nop(x,y,o);\
-		}\
-		\
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const register _simd_element_type x, const register _simd_element_type y, const register _simd_element_type z, _simd_element_type* o) {\
-			if(optimised()) execute_op(x,y,z,o);\
-			else execute_nop(x,y,z,o);\
-		}\
-		\
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const register _simd_element_type x, const register _simd_element_type y, const register _simd_element_type z, const register _simd_element_type w, _simd_element_type* o) {\
-			if(optimised()) execute_op(x,y,z,w,o);\
-			else execute_nop(x,y,z,w,o);\
-		}\
-		\
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_nop(_simd_element_type* o) {\
-			memset(o, 0, sizeof(_simd_element_type) * SIZE);\
-		}\
-		\
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_nop(const register _simd_element_type x, _simd_element_type* o) {\
-			for (size_t i = 0; i < SIZE; ++i) o[i] = x;\
-		}\
-		\
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_nop(const register _simd_element_type x, const register _simd_element_type y, _simd_element_type* o) {\
-			if (SIZE > 2) execute_nop(o);\
-			o[0] = x;\
-			if (SIZE > 1) o[1] = y;\
-		}\
-		\
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_nop(const register _simd_element_type x, const register _simd_element_type y, const register _simd_element_type z, _simd_element_type* o) {\
-			if (SIZE > 3) execute_nop(o);\
-			o[0] = x;\
-			if (SIZE > 1) o[1] = y;\
-			if (SIZE > 2) o[2] = z;\
-		}\
-		\
-		static ANVIL_STRONG_INLINE void  ANVIL_SIMD_CALL execute_nop(const register _simd_element_type x, const register _simd_element_type y, const register _simd_element_type z, const register _simd_element_type w, _simd_element_type* o) {\
-			if (SIZE > 4) execute_nop(o);\
-			o[0] = x;\
-			if (SIZE > 1) o[1] = y;\
-			if (SIZE > 2) o[2] = z;\
-			if (SIZE > 3) o[3] = w;\
-		}\
-		\
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_op(_simd_element_type* o) {\
 			helper_t::get<SIZE>(helper_t::fill0(), o);\
 		}\
 		\
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_op(const register _simd_element_type x, _simd_element_type* o) {\
+		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const register _simd_element_type x, _simd_element_type* o) {\
 			helper_t::get<SIZE>(helper_t::fill(x), o);\
 		}\
 		\
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_op(const register _simd_element_type x, const register _simd_element_type y, _simd_element_type* o) {\
+		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const register _simd_element_type x, const register _simd_element_type y, _simd_element_type* o) {\
 			helper_t::get<SIZE>(helper_t::set2(x,y), o);\
 		}\
 		\
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_op(const register _simd_element_type x, const register _simd_element_type y, const register _simd_element_type z, _simd_element_type* o) {\
+		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const register _simd_element_type x, const register _simd_element_type y, const register _simd_element_type z, _simd_element_type* o) {\
 			helper_t::get<SIZE>(helper_t::set3(x,y,z), o);\
 		}\
 		\
-		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute_op(const register _simd_element_type x, const register _simd_element_type y, const register _simd_element_type z, const register _simd_element_type w, _simd_element_type* o) {\
+		static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const register _simd_element_type x, const register _simd_element_type y, const register _simd_element_type z, const register _simd_element_type w, _simd_element_type* o) {\
 			helper_t::get<SIZE>(helper_t::set4(x,y,z,w), o);\
-		}\
-		\
-		static ANVIL_STRONG_INLINE bool ANVIL_SIMD_CALL optimised() {\
-			return IsInstructionSetSupported< IS_ ## INSTRUCTION >();\
 		}\
 	};
 
