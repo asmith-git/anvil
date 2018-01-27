@@ -54,81 +54,93 @@ namespace anvil { namespace simd {
 		IS_AVX_512 = 1 << 11,
 #endif
 	};
-
-	static bool ANVIL_SIMD_CALL IsInstructionSetSupported_(InstructionSet aSet) {
-#ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
-		int data[2][4];
-		__cpuid(data[0], 0);
-		const int ids = data[0][0];
-		if (ids < 7) {
-			if (ids < 1) {
-				return false;
+	namespace detail {
+	static int16_t ANVIL_SIMD_CALL CheckInstructionSetSupport() {
+		int16_t flags = 0;
+	#ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
+			int data[2][4];
+			__cpuid(data[0], 0);
+			const int ids = data[0][0];
+			if (ids < 7) {
+				if (ids < 1) {
+					return false;
+				}else {
+					__cpuidex(data[0], 1, 0);
+					memset(data[1], 0, sizeof(int) * 4);
+				}
 			}else {
 				__cpuidex(data[0], 1, 0);
-				memset(data[1], 0, sizeof(int) * 4);
+				__cpuidex(data[1], 7, 0);
 			}
-		}else {
-			__cpuidex(data[0], 1, 0);
-			__cpuidex(data[1], 7, 0);
+			enum {
+				EAX_,
+				EBX_,
+				ECX_,
+				EDX_
+			};
+
+			if (data[0][EDX_] & (1 << 23)) {
+				flags |= IS_MMX;
+			} if (data[0][EDX_] & (1 << 25)) {
+				flags |= IS_SSE;
+			} if (data[0][EDX_] & (1 << 26)) {
+				flags |= IS_SSE_2;
+			} if (data[0][ECX_] & (1 << 0)) {
+				flags |= IS_SSE_3;
+			} if (data[0][ECX_] & (1 << 9)) {
+				flags |= IS_SSSE_3;
+			} if (data[0][ECX_] & (1 << 19)) {
+				flags |= IS_SSE_4_1;
+			} if (data[0][ECX_] & (1 << 20)) {
+				flags |= IS_SSE_4_2;
+			} if (data[0][ECX_] & (1 << 28)) {
+				flags |= IS_AVX;
+			} if (data[0][ECX_] & (1 << 12)) {
+				flags |= IS_AVX_2;
+			} if (false) { //! \todo Implement
+				flags |= IS_KNC;
+			} if ((data[1][EBX_] & (1 << 16)) && (data[1][EBX_] & (1 << 26)) && (data[1][EBX_] & (1 << 27)) && (data[1][EBX_] & (1 << 28))) {
+				flags |= IS_AVX_512;
+			}
+	#endif
+			return flags;
 		}
-		enum {
-			EAX_,
-			EBX_,
-			ECX_,
-			EDX_
-		};
-		switch (aSet) {
-		case IS_MMX:
-			return data[0][EDX_] & (1 << 23);
-		case IS_SSE:
-			return data[0][EDX_] & (1 << 25);
-		case IS_SSE_2:
-			return data[0][EDX_] & (1 << 26);
-		case IS_SSE_3:
-			return data[0][ECX_] & (1 << 0);
-		case IS_SSSE_3:
-			return data[0][ECX_] & (1 << 9);
-		case IS_SSE_4_1:
-			return data[0][ECX_] & (1 << 19);
-		case IS_SSE_4_2:
-			return data[0][ECX_] & (1 << 20);
-		case IS_AVX:
-			return data[0][ECX_] & (1 << 28);
-		case IS_FMA:
-			return data[0][ECX_] & (1 << 12);
-		case IS_AVX_2:
-			return data[1][EBX_] & (1 << 5);
-		case IS_KNC:
-			return false; //! \todo Implement
-		case IS_AVX_512:
-			return (data[1][EBX_] & (1 << 16)) && (data[1][EBX_] & (1 << 26)) && (data[1][EBX_] & (1 << 27)) && (data[1][EBX_] & (1 << 28));
-		}
-#else
-		return false;
-#endif
 	}
 
 
 	static ANVIL_STRONG_INLINE bool ANVIL_SIMD_CALL IsInstructionSetSupported(InstructionSet aSet) {
-		static const int64_t g_enabled_sets =
-#ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
-			(IsInstructionSetSupported_(IS_MMX) ? IS_MMX : 0) |
-			(IsInstructionSetSupported_(IS_SSE) ? IS_SSE : 0) |
-			(IsInstructionSetSupported_(IS_SSE_2) ? IS_SSE_2 : 0) |
-			(IsInstructionSetSupported_(IS_SSE_3) ? IS_SSE_3 : 0) |
-			(IsInstructionSetSupported_(IS_SSSE_3) ? IS_SSSE_3 : 0) |
-			(IsInstructionSetSupported_(IS_SSE_4_1) ? IS_SSE_4_1 : 0) |
-			(IsInstructionSetSupported_(IS_SSE_4_2) ? IS_SSE_4_2 : 0) |
-			(IsInstructionSetSupported_(IS_AVX) ? IS_AVX : 0) |
-			(IsInstructionSetSupported_(IS_FMA) ? IS_FMA : 0) |
-			(IsInstructionSetSupported_(IS_AVX_2) ? IS_AVX_2 : 0) |
-			(IsInstructionSetSupported_(IS_KNC) ? IS_KNC : 0) |
-			(IsInstructionSetSupported_(IS_AVX_512) ? IS_AVX_512 : 0);
-#else
-			0;
-#endif
+		static const int64_t g_enabled_sets = detail::CheckInstructionSetSupport();
 		return (g_enabled_sets & aSet) == aSet;
 	}
+
+	template<InstructionSet IS>
+	static ANVIL_STRONG_INLINE bool IsInstructionSetSupported() {
+		return IsInstructionSetSupported(IS);
+	}
+
+#if ANVIL_ARCHITECTURE == ANVIL_X86
+	template<>
+	static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_MMX>() {
+		return true;
+	}
+#endif
+
+#if ANVIL_ARCHITECTURE == ANVIL_X64
+	template<>
+	static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_MMX>() {
+		return false;
+	}
+
+	template<>
+	static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_SSE>() {
+		return true;
+	}
+
+	template<>
+	static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_SSE_2>() {
+		return true;
+	}
+#endif
 
 	// Operation definitions
 
@@ -1188,7 +1200,7 @@ namespace anvil { namespace simd {
 		typedef helper_t::simd_t simd_t;\
 		typedef DefaultSIMD<_simd_element_type,SIZE> default_simd_t;\
 		static ANVIL_STRONG_INLINE bool ANVIL_SIMD_CALL optimised() {\
-			return IsInstructionSetSupported( IS_ ## INSTRUCTION );\
+			return IsInstructionSetSupported< IS_ ## INSTRUCTION >();\
 		}\
 		static ANVIL_STRONG_INLINE _simd_type ANVIL_SIMD_CALL execute_op(const register simd_t x, const register simd_t y) {\
 			return FUNCTION1(x,y);\
@@ -1211,7 +1223,7 @@ namespace anvil { namespace simd {
 		typedef SIMDHelper<_simd_element_type,OP_SIZE> helper_t;\
 		typedef helper_t::simd_t simd_t;\
 		static ANVIL_STRONG_INLINE bool ANVIL_SIMD_CALL optimised() {\
-			return IsInstructionSetSupported( IS_ ## INSTRUCTION );\
+			return IsInstructionSetSupported< IS_ ## INSTRUCTION >();\
 		}\
 		static ANVIL_STRONG_INLINE _simd_type ANVIL_SIMD_CALL execute_op(const register simd_t x) {\
 			return FUNCTION1(x);\
@@ -1307,7 +1319,7 @@ namespace anvil { namespace simd {
 		}\
 		\
 		static ANVIL_STRONG_INLINE bool ANVIL_SIMD_CALL optimised() {\
-			return IsInstructionSetSupported( IS_ ## INSTRUCTION );\
+			return IsInstructionSetSupported< IS_ ## INSTRUCTION >();\
 		}\
 	};
 
