@@ -418,12 +418,13 @@ namespace anvil { namespace simd {
 	template<class T, size_t S, Operation O>
 	struct OperationImplementation {
 		typedef typename SIMDHelper<T, S>::simd_t simd_t;
+		typedef OperationInfo<O, T> info;
 
 		static void ANVIL_SIMD_CALL execute(const T* x_, const T* y_, T* o_) {
 			enum {
-				OPTIMAL = OperationInfo<O, T>::size_max,
-				LOOP = S / OPTIMAL,
-				REMAINDER = S % OPTIMAL
+				OPTIMAL = info::LoopInfo<S>::size,
+				LOOP = info::LoopInfo<S>::loops,
+				REMAINDER = info::LoopInfo<S>::remainder
 			};
 			typedef OperationImplementation<T, OPTIMAL, O> optimal_t;
 			union simd_ptr {
@@ -490,7 +491,7 @@ namespace anvil { namespace simd {
 		}
 
 		template<size_t S = PARAMS>
-		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL execute_op(const register simd_t x, const register simd_t y, const const register simd_t z) {
+		static ANVIL_STRONG_INLINE simd_t ANVIL_SIMD_CALL execute_op(const register simd_t x, const register simd_t y, const register simd_t z) {
 			simd_t tmp;
 			execute(reinterpret_cast<const T*>(&x), reinterpret_cast<const T*>(&y), reinterpret_cast<const T*>(&z), reinterpret_cast<T*>(&tmp))
 			return tmp;

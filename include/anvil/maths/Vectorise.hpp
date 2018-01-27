@@ -22,7 +22,8 @@ namespace anvil {
 
 		template<class T, Operation O>
 		static void ANVIL_CALL dynamic_operation(const T* x_, const T* y_, const T* z_, T* o_, const size_t s) {
-			enum { OPTIMAL = OperationInfo<O, T>::size_max };
+			typedef OperationInfo<O, T> info;
+			enum { OPTIMAL = info::LoopInfo<S>::size };
 			typedef OperationImplementation<T, OPTIMAL, O> optimal_t;
 
 			union simd_ptr {
@@ -55,7 +56,8 @@ namespace anvil {
 
 		template<class T, Operation O>
 		static void ANVIL_CALL dynamic_operation(const T* x_, const T* y_, T* o_, const size_t s) {
-			enum { OPTIMAL = OperationInfo<O, T>::size_max };
+			typedef OperationInfo<O, T> info;
+			enum { OPTIMAL = info::LoopInfo<S>::size };
 			typedef OperationImplementation<T, OPTIMAL, O> optimal_t;
 
 			union simd_ptr {
@@ -87,7 +89,8 @@ namespace anvil {
 
 		template<class T, Operation O>
 		static void ANVIL_CALL dynamic_operation(const T* x_, T* o_, const size_t s) {
-			enum { OPTIMAL = OperationInfo<O, T>::size_max };
+			typedef OperationInfo<O, T> info;
+			enum { OPTIMAL = info::LoopInfo<S>::size };
 			typedef OperationImplementation<T, OPTIMAL, O> optimal_t;
 
 			union simd_ptr {

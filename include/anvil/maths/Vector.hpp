@@ -107,19 +107,19 @@ namespace anvil {
 			simd::OperationImplementation<type, size, simd::OP_FILL>::execute(elements);
 		}
 
-		ANVIL_SIMD_CALL Vector(const T x) {
+		Vector(const T x) {
 			simd::OperationImplementation<type, size, simd::OP_FILL>::execute(x, elements);
 		}
 
-		ANVIL_SIMD_CALL Vector(const T x, const T y) {
+		Vector(const T x, const T y) {
 			simd::OperationImplementation<type, size, simd::OP_FILL>::execute(x, y, elements);
 		}
 
-		ANVIL_SIMD_CALL Vector(const T x, const T y, const T z) {
+		Vector(const T x, const T y, const T z) {
 			simd::OperationImplementation<type, size, simd::OP_FILL>::execute(x, y, z, elements);
 		}
 
-		ANVIL_SIMD_CALL Vector(const T x, const T y, const T z, const T w) {
+		Vector(const T x, const T y, const T z, const T w) {
 			simd::OperationImplementation<type, size, simd::OP_FILL>::execute(x, y, z, w, elements);
 		}
 
