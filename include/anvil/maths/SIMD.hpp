@@ -120,24 +120,24 @@ namespace anvil { namespace simd {
 
 #if ANVIL_ARCHITECTURE == ANVIL_X86
 	template<>
-	static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_MMX>() {
+	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_MMX>() {
 		return true;
 	}
 #endif
 
 #if ANVIL_ARCHITECTURE == ANVIL_X64
 	template<>
-	static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_MMX>() {
+	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_MMX>() {
 		return false;
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_SSE>() {
+	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_SSE>() {
 		return true;
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_SSE_2>() {
+	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_SSE_2>() {
 		return true;
 	}
 #endif
@@ -287,6 +287,31 @@ namespace anvil { namespace simd {
 				instruction_set_8 ? 8 :
 				instruction_set_4 ? 4 :
 				2
+		};
+
+		template<size_t S>
+		struct LoopInfo {
+			enum {
+				size = 
+					instruction_set_64 && S >= 64 ? 64 :
+					instruction_set_32 && S >= 32 ? 32 :
+					instruction_set_16 && S >= 16 ? 16 :
+					instruction_set_8 && S >= 8 ? 8 :
+					instruction_set_4 && S >= 4 ? 4 :
+					S >= 2 ? 2 :
+					1,
+				loops = S / size,
+				remainder = S % S
+			};
+			enum : int64_t {
+				instruction_set =
+					size == 64 ? instruction_set_64 :
+					size == 32 ? instruction_set_32 :
+					size == 16 ? instruction_set_16 :
+					size == 8 ? instruction_set_8  :
+					size == 4 ? instruction_set_4  :
+					IS_NONE
+			};
 		};
 	};
 
