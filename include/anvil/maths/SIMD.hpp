@@ -65,16 +65,16 @@
 #define _simd_u8x16 __m128i
 #define _simd_u8x32 __m256i
 
-#define _simd_add_f64x2(X,Y) _mm_add_pd(X,Y)
+#define _simd_add_f64x2(X,Y) _mm_add_pd_(X,Y)
 #define _simd_add_f64x2_enable() anvil::simd::IsInstructionSetSupported<anvil::simd::IS_SSE_2>()
 
-#define _simd_add_f64x4(X,Y) _mm256_add_pd(X,Y)
+#define _simd_add_f64x4(X,Y) _mm256_add_pd_(X,Y)
 #define _simd_add_f64x4_enable() anvil::simd::IsInstructionSetSupported<anvil::simd::IS_AVX>()
 
-#define _simd_add_f32x4(X,Y) _mm_add_ps(X,Y)
+#define _simd_add_f32x4(X,Y) _mm_add_ps_(X,Y)
 #define _simd_add_f32x4_enable() anvil::simd::IsInstructionSetSupported<anvil::simd::IS_SSE>()
 
-#define _simd_add_f32x8(X,Y) _mm256_add_ps(X,Y)
+#define _simd_add_f32x8(X,Y) _mm256_add_ps_(X,Y)
 #define _simd_add_f32x8_enable() anvil::simd::IsInstructionSetSupported<anvil::simd::IS_AVX>()
 
 #endif
