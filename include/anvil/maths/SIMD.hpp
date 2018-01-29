@@ -40,18 +40,23 @@ namespace anvil { namespace simd {
 	enum InstructionSet : int16_t {
 		IS_NONE,
 #ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
-		IS_MMX     = 1 << 0,
-		IS_SSE     = 1 << 1,
-		IS_SSE_2   = 1 << 2,
-		IS_SSE_3   = 1 << 3,
-		IS_SSSE_3  = 1 << 4,
-		IS_SSE_4_1 = 1 << 5,
-		IS_SSE_4_2 = 1 << 6,
-		IS_AVX     = 1 << 7,
-		IS_FMA     = 1 << 8,
-		IS_AVX_2   = 1 << 9,
-		IS_KNC     = 1 << 10,
-		IS_AVX_512 = 1 << 11,
+		IS_MMX        = 1 << 0,
+		IS_SSE        = 1 << 1,
+		IS_SSE_2      = 1 << 2,
+		IS_SSE_3      = 1 << 3,
+		IS_SSSE_3     = 1 << 4,
+		IS_SSE_4_1    = 1 << 5,
+		IS_SSE_4_2    = 1 << 6,
+		IS_AVX        = 1 << 7,
+		IS_FMA        = 1 << 8,
+		IS_AVX_2      = 1 << 9,
+		IS_KNC        = 1 << 10,
+		IS_AVX_512_F  = 1 << 11,
+		IS_AVX_512_PF = 1 << 12,
+		IS_AVX_512_ER = 1 << 13,
+		IS_AVX_512_CD = 1 << 14,
+
+		IS_AVX_512    = IS_AVX_512_F | IS_AVX_512_PF | IS_AVX_512_ER | IS_AVX_512_CD
 #endif
 	};
 	namespace detail {
@@ -95,12 +100,18 @@ namespace anvil { namespace simd {
 				flags |= IS_SSE_4_2;
 			} if (data[0][ECX_] & (1 << 28)) {
 				flags |= IS_AVX;
-			} if (data[0][ECX_] & (1 << 12)) {
+			} if (data[0][EBX_] & (1 << 5)) {
 				flags |= IS_AVX_2;
 			} if (false) { //! \todo Implement
 				flags |= IS_KNC;
-			} if ((data[1][EBX_] & (1 << 16)) && (data[1][EBX_] & (1 << 26)) && (data[1][EBX_] & (1 << 27)) && (data[1][EBX_] & (1 << 28))) {
-				flags |= IS_AVX_512;
+			} if (data[1][EBX_] & (1 << 16)) {
+				flags |= IS_AVX_512_F;
+			} if (data[1][EBX_] & (1 << 26)) {
+				flags |= IS_AVX_512_PF;
+			} if (data[1][EBX_] & (1 << 27)) {
+				flags |= IS_AVX_512_ER;
+			} if (data[1][EBX_] & (1 << 28)) {
+				flags |= IS_AVX_512_CD;
 			}
 	#endif
 			return flags;
