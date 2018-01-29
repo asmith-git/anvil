@@ -65,7 +65,21 @@
 #define _simd_u8x16 __m128i
 #define _simd_u8x32 __m256i
 
+#define _simd_add_f64x2(X,Y) _mm_add_pd(X,Y)
+#define _simd_add_f64x2_enable() anvil::simd::IsInstructionSetSupported<anvil::simd::IS_SSE_2>()
+
+#define _simd_add_f64x4(X,Y) _mm256_add_pd(X,Y)
+#define _simd_add_f64x4_enable() anvil::simd::IsInstructionSetSupported<anvil::simd::IS_AVX>()
+
+#define _simd_add_f32x4(X,Y) _mm_add_ps(X,Y)
+#define _simd_add_f32x4_enable() anvil::simd::IsInstructionSetSupported<anvil::simd::IS_SSE>()
+
+#define _simd_add_f32x8(X,Y) _mm256_add_ps(X,Y)
+#define _simd_add_f32x8_enable() anvil::simd::IsInstructionSetSupported<anvil::simd::IS_AVX>()
+
 #endif
+
+// Types
 
 #ifndef _simd_f64x2
 	struct _simd_f64x2 {
@@ -486,6 +500,257 @@
 		_simd_u8x32 hi;
 	};
 #endif
+
+// Split
+
+#define _simd_f64x4_splitlo_safe(X)  (reinterpret_cast<const _simd_f64x2*>(&X)[0])
+#define _simd_f64x4_splithi_safe(X)  (reinterpret_cast<const _simd_f64x2*>(&X)[1])
+#define _simd_f64x8_splitlo_safe(X)  (reinterpret_cast<const _simd_f64x4*>(&X)[0])
+#define _simd_f64x8_splithi_safe(X)  (reinterpret_cast<const _simd_f64x4*>(&X)[1])
+#define _simd_f64x16_splitlo_safe(X) (reinterpret_cast<const _simd_f64x8*>(&X)[0])
+#define _simd_f64x16_splithi_safe(X) (reinterpret_cast<const _simd_f64x8*>(&X)[1])
+#define _simd_f64x32_splitlo_safe(X) (reinterpret_cast<const _simd_f64x16*>(&X)[0])
+#define _simd_f64x32_splithi_safe(X) (reinterpret_cast<const _simd_f64x16*>(&X)[1])
+#define _simd_f64x64_splitlo_safe(X) (reinterpret_cast<const _simd_f64x32*>(&X)[0])
+#define _simd_f64x64_splithi_safe(X) (reinterpret_cast<const _simd_f64x32*>(&X)[1])
+
+#define _simd_f32x4_splitlo_safe(X)  (reinterpret_cast<const _simd_f32x2*>(&X)[0])
+#define _simd_f32x4_splithi_safe(X)  (reinterpret_cast<const _simd_f32x2*>(&X)[1])
+#define _simd_f32x8_splitlo_safe(X)  (reinterpret_cast<const _simd_f32x4*>(&X)[0])
+#define _simd_f32x8_splithi_safe(X)  (reinterpret_cast<const _simd_f32x4*>(&X)[1])
+#define _simd_f32x16_splitlo_safe(X) (reinterpret_cast<const _simd_f32x8*>(&X)[0])
+#define _simd_f32x16_splithi_safe(X) (reinterpret_cast<const _simd_f32x8*>(&X)[1])
+#define _simd_f32x32_splitlo_safe(X) (reinterpret_cast<const _simd_f32x16*>(&X)[0])
+#define _simd_f32x32_splithi_safe(X) (reinterpret_cast<const _simd_f32x16*>(&X)[1])
+#define _simd_f32x64_splitlo_safe(X) (reinterpret_cast<const _simd_f32x32*>(&X)[0])
+#define _simd_f32x64_splithi_safe(X) (reinterpret_cast<const _simd_f32x32*>(&X)[1])
+
+// Combine
+
+static ANVIL_STRONG_INLINE _simd_f64x4  ANVIL_SIMD_CALL _simd_f64x4_combine_safe( const register _simd_f64x2 x,  const register _simd_f64x2 y)  { _simd_f64x4 tmp;  reinterpret_cast<_simd_f64x2*>(&tmp)[0] = x;  reinterpret_cast<_simd_f64x2*>(&tmp)[1] = x;  return tmp; }
+static ANVIL_STRONG_INLINE _simd_f64x8  ANVIL_SIMD_CALL _simd_f64x8_combine_safe( const register _simd_f64x4 x,  const register _simd_f64x4 y)  { _simd_f64x8 tmp;  reinterpret_cast<_simd_f64x4*>(&tmp)[0] = x;  reinterpret_cast<_simd_f64x4*>(&tmp)[1] = x;  return tmp; }
+static ANVIL_STRONG_INLINE _simd_f64x16 ANVIL_SIMD_CALL _simd_f64x16_combine_safe(const register _simd_f64x8 x,  const register _simd_f64x8 y)  { _simd_f64x16 tmp; reinterpret_cast<_simd_f64x8*>(&tmp)[0] = x;  reinterpret_cast<_simd_f64x8*>(&tmp)[1] = x;  return tmp; }
+static ANVIL_STRONG_INLINE _simd_f64x32 ANVIL_SIMD_CALL _simd_f64x32_combine_safe(const register _simd_f64x16 x, const register _simd_f64x16 y) { _simd_f64x32 tmp; reinterpret_cast<_simd_f64x16*>(&tmp)[0] = x; reinterpret_cast<_simd_f64x16*>(&tmp)[1] = x; return tmp; }
+static ANVIL_STRONG_INLINE _simd_f64x64 ANVIL_SIMD_CALL _simd_f64x64_combine_safe(const register _simd_f64x32 x, const register _simd_f64x32 y) { _simd_f64x64 tmp; reinterpret_cast<_simd_f64x32*>(&tmp)[0] = x; reinterpret_cast<_simd_f64x32*>(&tmp)[1] = x; return tmp; }
+
+static ANVIL_STRONG_INLINE _simd_f32x4  ANVIL_SIMD_CALL _simd_f32x4_combine_safe( const register _simd_f32x2 x,  const register _simd_f32x2 y)  { _simd_f32x4 tmp;  reinterpret_cast<_simd_f32x2*>(&tmp)[0] = x;  reinterpret_cast<_simd_f32x2*>(&tmp)[1] = x;  return tmp; }
+static ANVIL_STRONG_INLINE _simd_f32x8  ANVIL_SIMD_CALL _simd_f32x8_combine_safe( const register _simd_f32x4 x,  const register _simd_f32x4 y)  { _simd_f32x8 tmp;  reinterpret_cast<_simd_f32x4*>(&tmp)[0] = x;  reinterpret_cast<_simd_f32x4*>(&tmp)[1] = x;  return tmp; }
+static ANVIL_STRONG_INLINE _simd_f32x16 ANVIL_SIMD_CALL _simd_f32x16_combine_safe(const register _simd_f32x8 x,  const register _simd_f32x8 y)  { _simd_f32x16 tmp; reinterpret_cast<_simd_f32x8*>(&tmp)[0] = x;  reinterpret_cast<_simd_f32x8*>(&tmp)[1] = x;  return tmp; }
+static ANVIL_STRONG_INLINE _simd_f32x32 ANVIL_SIMD_CALL _simd_f32x32_combine_safe(const register _simd_f32x16 x, const register _simd_f32x16 y) { _simd_f32x32 tmp; reinterpret_cast<_simd_f32x16*>(&tmp)[0] = x; reinterpret_cast<_simd_f32x16*>(&tmp)[1] = x; return tmp; }
+static ANVIL_STRONG_INLINE _simd_f32x64 ANVIL_SIMD_CALL _simd_f32x64_combine_safe(const register _simd_f32x32 x, const register _simd_f32x32 y) { _simd_f32x64 tmp; reinterpret_cast<_simd_f32x32*>(&tmp)[0] = x; reinterpret_cast<_simd_f32x32*>(&tmp)[1] = x; return tmp; }
+
+// Insert
+
+static ANVIL_STRONG_INLINE _simd_f64x2 ANVIL_SIMD_CALL _simd_f64x2_insert_safe(_simd_f64x2 x, int i, double s) { reinterpret_cast<double*>(&x)[i] = s;  return x; }
+static ANVIL_STRONG_INLINE _simd_f64x4 ANVIL_SIMD_CALL _simd_f64x4_insert_safe(_simd_f64x4 x, int i, double s) { reinterpret_cast<double*>(&x)[i] = s;  return x; }
+static ANVIL_STRONG_INLINE _simd_f64x8 ANVIL_SIMD_CALL _simd_f64x8_insert_safe(_simd_f64x8 x, int i, double s) { reinterpret_cast<double*>(&x)[i] = s;  return x; }
+static ANVIL_STRONG_INLINE _simd_f64x16 ANVIL_SIMD_CALL _simd_f64x16_insert_safe(_simd_f64x16 x, int i, double s) { reinterpret_cast<double*>(&x)[i] = s;  return x; }
+static ANVIL_STRONG_INLINE _simd_f64x32 ANVIL_SIMD_CALL _simd_f64x32_insert_safe(_simd_f64x32 x, int i, double s) { reinterpret_cast<double*>(&x)[i] = s;  return x; }
+static ANVIL_STRONG_INLINE _simd_f64x64 ANVIL_SIMD_CALL _simd_f64x64_insert_safe(_simd_f64x64 x, int i, double s) { reinterpret_cast<double*>(&x)[i] = s;  return x; }
+
+#ifndef _simd_f64x2_insert
+	#define _simd_f64x2_insert(X,I,S) _simd_f64x2_insert_safe(X,I,S)
+#endif
+
+#ifndef _simd_f64x4_insert
+	#define _simd_f64x4_insert(X,I,S) _simd_f64x4_insert_safe(X,I,S)
+#endif
+
+#ifndef _simd_f64x8_insert
+	#define _simd_f64x8_insert(X,I,S) _simd_f64x8_insert_safe(X,I,S)
+#endif
+
+#ifndef _simd_f64x16_insert
+	#define _simd_f64x16_insert(X,I,S) _simd_f64x16_insert_safe(X,I,S)
+#endif
+
+#ifndef _simd_f64x32_insert
+	#define _simd_f64x32_insert(X,I,S) _simd_f64x32_insert_safe(X,I,S)
+#endif
+
+#ifndef _simd_f64x64_insert
+	#define _simd_f64x64_insert(X,I,S) _simd_f64x64_insert_safe(X,I,S)
+#endif
+
+static ANVIL_STRONG_INLINE _simd_f32x2 ANVIL_SIMD_CALL _simd_f32x2_insert_safe(_simd_f32x2 x, int i, float s) { reinterpret_cast<float*>(&x)[i] = s;  return x; }
+static ANVIL_STRONG_INLINE _simd_f32x4 ANVIL_SIMD_CALL _simd_f32x4_insert_safe(_simd_f32x4 x, int i, float s) { reinterpret_cast<float*>(&x)[i] = s;  return x; }
+static ANVIL_STRONG_INLINE _simd_f32x8 ANVIL_SIMD_CALL _simd_f32x8_insert_safe(_simd_f32x8 x, int i, float s) { reinterpret_cast<float*>(&x)[i] = s;  return x; }
+static ANVIL_STRONG_INLINE _simd_f32x16 ANVIL_SIMD_CALL _simd_f32x16_insert_safe(_simd_f32x16 x, int i, float s) { reinterpret_cast<float*>(&x)[i] = s;  return x; }
+static ANVIL_STRONG_INLINE _simd_f32x32 ANVIL_SIMD_CALL _simd_f32x32_insert_safe(_simd_f32x32 x, int i, float s) { reinterpret_cast<float*>(&x)[i] = s;  return x; }
+static ANVIL_STRONG_INLINE _simd_f32x64 ANVIL_SIMD_CALL _simd_f32x64_insert_safe(_simd_f32x64 x, int i, float s) { reinterpret_cast<float*>(&x)[i] = s;  return x; }
+
+#ifndef _simd_f32x2_insert
+	#define _simd_f32x2_insert(X,I,S) _simd_f32x2_insert_safe(X,I,S)
+#endif
+
+#ifndef _simd_f32x4_insert
+	#define _simd_f32x4_insert(X,I,S) _simd_f32x4_insert_safe(X,I,S)
+#endif
+
+#ifndef _simd_f32x8_insert
+	#define _simd_f32x8_insert(X,I,S) _simd_f32x8_insert_safe(X,I,S)
+#endif
+
+#ifndef _simd_f32x16_insert
+	#define _simd_f32x16_insert(X,I,S) _simd_f32x16_insert_safe(X,I,S)
+#endif
+
+#ifndef _simd_f32x32_insert
+	#define _simd_f32x32_insert(X,I,S) _simd_f32x32_insert_safe(X,I,S)
+#endif
+
+#ifndef _simd_f32x64_insert
+	#define _simd_f32x64_insert(X,I,S) _simd_f32x64_insert_safe(X,I,S)
+#endif
+
+// Get
+
+#define _simd_f64x2_get_safe(X,I) (reinterpret_cast<const double*>(&X)[I])
+#define _simd_f64x4_get_safe(X,I) _simd_f64x2_get_safe(X,I)
+#define _simd_f64x4_get_safe(X,I) _simd_f64x2_get_safe(X,I)
+#define _simd_f64x8_get_safe(X,I) _simd_f64x2_get_safe(X,I)
+#define _simd_f64x16_get_safe(X,I) _simd_f64x2_get_safe(X,I)
+#define _simd_f64x32_get_safe(X,I) _simd_f64x2_get_safe(X,I)
+#define _simd_f64x64_get_safe(X,I) _simd_f64x2_get_safe(X,I)
+
+#ifndef _simd_f64x2_get
+	#define _simd_f64x2_get(X,I) _simd_f64x2_get_safe(X,I)
+	#define _simd_f64x2_get_condition() true
+#endif
+
+#ifndef _simd_f64x4_get
+	#define _simd_f64x4_get(X,I) _simd_f64x4_get_safe(X,I)
+	#define _simd_f64x4_get_condition() true
+#endif
+
+#ifndef _simd_f64x8_get
+	#define _simd_f64x8_get(X,I) _simd_f64x8_get_safe(X,I)
+	#define _simd_f64x8_get_condition() true
+#endif
+
+#ifndef _simd_f64x16_get
+	#define _simd_f64x16_get(X,I) _simd_f64x16_get_safe(X,I)
+	#define _simd_f64x16_get_condition() true
+#endif
+
+#ifndef _simd_f64x32_get
+	#define _simd_f64x32_get(X,I) _simd_f64x32_get_safe(X,I)
+	#define _simd_f64x32_get_condition() true
+#endif
+
+#ifndef _simd_f64x64_get
+	#define _simd_f64x64_get(X,I) _simd_f64x64_get_safe(X,I)
+	#define _simd_f64x64_get_condition() true
+#endif
+
+#define _simd_f32x2_get_safe(X,I) (reinterpret_cast<const float*>(&X)[I])
+#define _simd_f32x4_get_safe(X,I) _simd_f32x2_get_safe(X,I)
+#define _simd_f32x8_get_safe(X,I) _simd_f32x2_get_safe(X,I)
+#define _simd_f32x16_get_safe(X,I) _simd_f32x2_get_safe(X,I)
+#define _simd_f32x32_get_safe(X,I) _simd_f32x2_get_safe(X,I)
+#define _simd_f32x64_get_safe(X,I) _simd_f32x2_get_safe(X,I)
+
+#ifndef _simd_f32x2_get
+	#define _simd_f32x2_get(X,I) _simd_f32x2_get_safe(X,I)
+	#define _simd_f32x2_get_condition() true
+#endif
+
+#ifndef _simd_f32x4_get
+	#define _simd_f32x4_get(X,I) _simd_f32x4_get_safe(X,I)
+	#define _simd_f32x4_get_condition() true
+#endif
+
+#ifndef _simd_f32x8_get
+	#define _simd_f32x8_get(X,I) _simd_f32x8_get_safe(X,I)
+	#define _simd_f32x8_get_condition() true
+#endif
+
+#ifndef _simd_f32x16_get
+	#define _simd_f32x16_get(X,I) _simd_f32x16_get_safe(X,I)
+	#define _simd_f32x16_get_condition() true
+#endif
+
+#ifndef _simd_f32x32_get
+	#define _simd_f32x32_get(X,I) _simd_f32x32_get_safe(X,I)
+	#define _simd_f32x32_get_condition() true
+#endif
+
+#ifndef _simd_f32x64_get
+	#define _simd_f32x64_get(X,I) _simd_f32x64_get_safe(X,I)
+	#define _simd_f32x64_get_condition() true
+#endif
+
+// Add
+
+static ANVIL_STRONG_INLINE _simd_f64x2 ANVIL_SIMD_CALL _simd_add_f64x2_safe(_simd_f64x2 x, _simd_f64x2 y) {
+	_simd_f64x2 tmp;
+	tmp = _simd_f64x2_insert_safe(tmp, 0, _simd_f64x2_get_safe(x, 0) + _simd_f64x2_get_safe(y, 0));
+	tmp = _simd_f64x2_insert_safe(tmp, 1, _simd_f64x2_get_safe(x, 1) + _simd_f64x2_get_safe(y, 1));
+	return tmp;
+}
+
+static ANVIL_STRONG_INLINE _simd_f64x4 ANVIL_SIMD_CALL _simd_add_f64x4_safe(_simd_f64x4 x, _simd_f64x4 y) {
+	return _simd_f64x4_combine_safe(
+		_simd_add_f64x2_safe(_simd_f64x4_splitlo_safe(x), _simd_f64x4_splitlo_safe(y)),
+		_simd_add_f64x2_safe(_simd_f64x4_splithi_safe(x), _simd_f64x4_splithi_safe(y))
+	);
+}
+
+static ANVIL_STRONG_INLINE _simd_f64x8 ANVIL_SIMD_CALL _simd_add_f64x8_safe(_simd_f64x8 x, _simd_f64x8 y) {
+	return _simd_f64x8_combine_safe(
+		_simd_add_f64x4_safe(_simd_f64x8_splitlo_safe(x), _simd_f64x8_splitlo_safe(y)),
+		_simd_add_f64x4_safe(_simd_f64x8_splithi_safe(x), _simd_f64x8_splithi_safe(y))
+	);
+}
+
+static ANVIL_STRONG_INLINE _simd_f64x16 ANVIL_SIMD_CALL _simd_add_f64x16_safe(_simd_f64x16 x, _simd_f64x16 y) {
+	return _simd_f64x16_combine_safe(
+		_simd_add_f64x8_safe(_simd_f64x16_splitlo_safe(x), _simd_f64x16_splitlo_safe(y)),
+		_simd_add_f64x8_safe(_simd_f64x16_splithi_safe(x), _simd_f64x16_splithi_safe(y))
+	);
+}
+
+static ANVIL_STRONG_INLINE _simd_f64x32 ANVIL_SIMD_CALL _simd_add_f64x32_safe(_simd_f64x32 x, _simd_f64x32 y) {
+	return _simd_f64x32_combine_safe(
+		_simd_add_f64x16_safe(_simd_f64x32_splitlo_safe(x), _simd_f64x32_splitlo_safe(y)),
+		_simd_add_f64x16_safe(_simd_f64x32_splithi_safe(x), _simd_f64x32_splithi_safe(y))
+	);
+}
+
+static ANVIL_STRONG_INLINE _simd_f32x2 ANVIL_SIMD_CALL _simd_add_f32x2_safe(_simd_f32x2 x, _simd_f32x2 y) {
+	_simd_f32x2 tmp;
+	tmp = _simd_f32x2_insert_safe(tmp, 0, _simd_f32x2_get_safe(x, 0) + _simd_f32x2_get_safe(y, 0));
+	tmp = _simd_f32x2_insert_safe(tmp, 1, _simd_f32x2_get_safe(x, 1) + _simd_f32x2_get_safe(y, 1));
+	return tmp;
+}
+
+static ANVIL_STRONG_INLINE _simd_f32x4 ANVIL_SIMD_CALL _simd_add_f32x4_safe(_simd_f32x4 x, _simd_f32x4 y) {
+	return _simd_f32x4_combine_safe(
+		_simd_add_f32x2_safe(_simd_f32x4_splitlo_safe(x), _simd_f32x4_splitlo_safe(y)),
+		_simd_add_f32x2_safe(_simd_f32x4_splithi_safe(x), _simd_f32x4_splithi_safe(y))
+	);
+}
+
+static ANVIL_STRONG_INLINE _simd_f32x8 ANVIL_SIMD_CALL _simd_add_f32x8_safe(_simd_f32x8 x, _simd_f32x8 y) {
+	return _simd_f32x8_combine_safe(
+		_simd_add_f32x4_safe(_simd_f32x8_splitlo_safe(x), _simd_f32x8_splitlo_safe(y)),
+		_simd_add_f32x4_safe(_simd_f32x8_splithi_safe(x), _simd_f32x8_splithi_safe(y))
+	);
+}
+
+static ANVIL_STRONG_INLINE _simd_f32x16 ANVIL_SIMD_CALL _simd_add_f32x16_safe(_simd_f32x16 x, _simd_f32x16 y) {
+	return _simd_f32x16_combine_safe(
+		_simd_add_f32x8_safe(_simd_f32x16_splitlo_safe(x), _simd_f32x16_splitlo_safe(y)),
+		_simd_add_f32x8_safe(_simd_f32x16_splithi_safe(x), _simd_f32x16_splithi_safe(y))
+	);
+}
+
+static ANVIL_STRONG_INLINE _simd_f32x32 ANVIL_SIMD_CALL _simd_add_f32x32_safe(_simd_f32x32 x, _simd_f32x32 y) {
+	return _simd_f32x32_combine_safe(
+		_simd_add_f32x16_safe(_simd_f32x32_splitlo_safe(x), _simd_f32x32_splitlo_safe(y)),
+		_simd_add_f32x16_safe(_simd_f32x32_splithi_safe(x), _simd_f32x32_splithi_safe(y))
+	);
+}
 
 namespace anvil { namespace simd {
 
