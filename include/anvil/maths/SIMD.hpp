@@ -33,6 +33,460 @@
 	#define ANVIL_SIMD_CALL ANVIL_CALL
 #endif
 
+#ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
+
+#define _simd_f64x2 __m128d
+#define _simd_f64x4 __m256d
+
+#define _simd_f32x4 __m128
+#define _simd_f32x8 __m256
+
+#define _simd_s64x2 __m128i
+#define _simd_s64x4 __m256i
+
+#define _simd_u64x2 __m128i
+#define _simd_u64x4 __m256i
+
+#define _simd_s32x4 __m128i
+#define _simd_s32x8 __m256i
+
+#define _simd_u32x4 __m128i
+#define _simd_u32x8 __m256i
+
+#define _simd_s16x8 __m128i
+#define _simd_s16x16 __m256i
+
+#define _simd_u16x8 __m128i
+#define _simd_u16x16 __m256i
+
+#define _simd_s8x16 __m128i
+#define _simd_s8x32 __m256i
+
+#define _simd_u8x16 __m128i
+#define _simd_u8x32 __m256i
+
+#endif
+
+#ifndef _simd_f64x2
+	struct _simd_f64x2 {
+		double lo;
+		double hi;
+	};
+#endif
+
+#ifndef _simd_f64x4 
+	struct _simd_f64x4 {
+		_simd_f64x2 lo;
+		_simd_f64x2 hi;
+	};
+#endif
+
+#ifndef _simd_f64x8 
+	struct _simd_f64x8 {
+		_simd_f64x4 lo;
+		_simd_f64x4 hi;
+	};
+#endif
+
+#ifndef _simd_f64x16 
+	struct _simd_f64x16 {
+		_simd_f64x8 lo;
+		_simd_f64x8 hi;
+	};
+#endif
+
+#ifndef f64x32 
+	struct _simd_f64x32 {
+		_simd_f64x16 lo;
+		_simd_f64x16 hi;
+	};
+#endif
+
+#ifndef _simd_f64x64 
+	struct _simd_f64x64 {
+		_simd_f64x32 lo;
+		_simd_f64x32 hi;
+	};
+#endif
+
+#ifndef _simd_f32x2 
+	struct _simd_f32x2 {
+		float lo;
+		float hi;
+	};
+#endif
+
+#ifndef _simd_f32x4 
+	struct _simd_f32x4 {
+		_simd_f32x2 lo;
+		_simd_f32x2 hi;
+	};
+#endif
+
+#ifndef _simd_f32x8 
+	struct _simd_f32x8 {
+		_simd_f32x4 lo;
+		_simd_f32x4 hi;
+	};
+#endif
+
+#ifndef _simd_f32x16 
+	struct _simd_f32x16 {
+		_simd_f32x8 lo;
+		_simd_f32x8 hi;
+	};
+#endif
+
+#ifndef _simd_f32x32 
+	struct _simd_f32x32 {
+		_simd_f32x16 lo;
+		_simd_f32x16 hi;
+	};
+#endif
+
+#ifndef _simd_f32x64 
+	struct _simd_f32x64 {
+		_simd_f32x32 lo;
+		_simd_f32x32 hi;
+	};
+#endif
+
+#ifndef _simd_s64x2 
+	struct _simd_s64x2 {
+		int64_t lo;
+		int64_t hi;
+	};
+#endif
+
+#ifndef _simd_s64x4 
+	struct _simd_s64x4 {
+		_simd_s64x2 lo;
+		_simd_s64x2 hi;
+	};
+#endif
+
+#ifndef _simd_s64x8 
+	struct _simd_s64x8 {
+		_simd_s64x4 lo;
+		_simd_s64x4 hi;
+	};
+#endif
+
+#ifndef _simd_s64x16 
+	struct _simd_s64x16 {
+		_simd_s64x8 lo;
+		_simd_s64x8 hi;
+	};
+#endif
+
+#ifndef _simd_s64x32 
+	struct _simd_s64x32 {
+		_simd_s64x16 lo;
+		_simd_s64x16 hi;
+	};
+#endif
+
+#ifndef _simd_s64x64 
+	struct _simd_s64x64 {
+		_simd_s64x32 lo;
+		_simd_s64x32 hi;
+	};
+#endif
+
+#ifndef _simd_u64x2 
+	struct _simd_u64x2 {
+		uint64_t lo;
+		uint64_t hi;
+	};
+#endif
+
+#ifndef _simd_u64x4 
+	struct _simd_u64x4 {
+		_simd_u64x2 lo;
+		_simd_u64x2 hi;
+	};
+#endif
+
+#ifndef _simd_u64x8 
+	struct _simd_u64x8 {
+		_simd_u64x4 lo;
+		_simd_u64x4 hi;
+	};
+#endif
+
+#ifndef _simd_u64x16 
+	struct _simd_u64x16 {
+		_simd_u64x8 lo;
+		_simd_u64x8 hi;
+	};
+#endif
+
+#ifndef _simd_u64x32 
+	struct _simd_u64x32 {
+		_simd_u64x16 lo;
+		_simd_u64x16 hi;
+	};
+#endif
+
+#ifndef _simd_u64x64 
+	struct _simd_u64x64 {
+		_simd_u64x32 lo;
+		_simd_u64x32 hi;
+	};
+#endif
+
+#ifndef _simd_s32x2 
+	struct _simd_s32x2 {
+		int32_t lo;
+		int32_t hi;
+	};
+#endif
+
+#ifndef _simd_s32x4 
+	struct _simd_s32x4 {
+		_simd_s32x2 lo;
+		_simd_s32x2 hi;
+	};
+#endif
+
+#ifndef _simd_s32x8 
+	struct _simd_s32x8 {
+		_simd_s32x4 lo;
+		_simd_s32x4 hi;
+	};
+#endif
+
+#ifndef _simd_s32x16 
+	struct _simd_s32x16 {
+		_simd_s32x8 lo;
+		_simd_s32x8 hi;
+	};
+#endif
+
+#ifndef _simd_s32x32 
+	struct _simd_s32x32 {
+		_simd_s32x16 lo;
+		_simd_s32x16 hi;
+	};
+#endif
+
+#ifndef _simd_s32x64 
+	struct _simd_s32x64 {
+		_simd_s32x32 lo;
+		_simd_s32x32 hi;
+	};
+#endif
+
+#ifndef _simd_u32x2 
+	struct _simd_u32x2 {
+		uint32_t lo;
+		uint32_t hi;
+	};
+#endif
+
+#ifndef _simd_u32x4 
+	struct _simd_u32x4 {
+		_simd_u32x2 lo;
+		_simd_u32x2 hi;
+	};
+#endif
+
+#ifndef _simd_u32x8 
+	struct _simd_u32x8 {
+		_simd_u32x4 lo;
+		_simd_u32x4 hi;
+	};
+#endif
+
+#ifndef _simd_u32x16 
+	struct _simd_u32x16 {
+		_simd_u32x8 lo;
+		_simd_u32x8 hi;
+	};
+#endif
+
+#ifndef _simd_u32x32 
+	struct _simd_u32x32 {
+		_simd_u32x16 lo;
+		_simd_u32x16 hi;
+	};
+#endif
+
+#ifndef _simd_u32x64 
+	struct _simd_u32x64 {
+		_simd_u32x32 lo;
+		_simd_u32x32 hi;
+	};
+#endif
+
+#ifndef _simd_s16x2 
+	struct _simd_s16x2 {
+		uint16_t lo;
+		uint16_t hi;
+	};
+#endif
+
+#ifndef _simd_s16x4 
+	struct _simd_s16x4 {
+		_simd_s16x2 lo;
+		_simd_s16x2 hi;
+	};
+#endif
+
+#ifndef _simd_s16x8 
+	struct _simd_s16x8 {
+		_simd_s16x4 lo;
+		_simd_s16x4 hi;
+	};
+#endif
+
+#ifndef _simd_s16x16 
+	struct _simd_s16x16 {
+		_simd_s16x8 lo;
+		_simd_s16x8 hi;
+	};
+#endif
+
+#ifndef _simd_s16x32 
+	struct _simd_s16x32 {
+		_simd_s16x16 lo;
+		_simd_s16x16 hi;
+	};
+#endif
+
+#ifndef _simd_s16x64 
+	struct _simd_s16x64 {
+		_simd_s16x32 lo;
+		_simd_s16x32 hi;
+	};
+#endif
+
+#ifndef _simd_u16x2 
+	struct _simd_u16x2 {
+		uint16_t lo;
+		uint16_t hi;
+	};
+#endif
+
+#ifndef _simd_u16x4 
+	struct _simd_u16x4 {
+		_simd_u16x2 lo;
+		_simd_u16x2 hi;
+	};
+#endif
+
+#ifndef _simd_u16x8 
+	struct _simd_u16x8 {
+		_simd_u16x4 lo;
+		_simd_u16x4 hi;
+	};
+#endif
+
+#ifndef _simd_u16x16 
+	struct _simd_u16x16 {
+		_simd_u16x8 lo;
+		_simd_u16x8 hi;
+	};
+#endif
+
+#ifndef _simd_u16x32 
+	struct _simd_u16x32 {
+		_simd_u16x16 lo;
+		_simd_u16x16 hi;
+	};
+#endif
+
+#ifndef _simd_u16x64 
+	struct _simd_u16x64 {
+		_simd_u16x32 lo;
+		_simd_u16x32 hi;
+	};
+#endif
+
+#ifndef _simd_s8x2 
+	struct _simd_s8x2 {
+		int8_t lo;
+		int8_t hi;
+	};
+#endif
+
+#ifndef _simd_s8x4 
+	struct _simd_s8x4 {
+		_simd_s8x2 lo;
+		_simd_s8x2 hi;
+	};
+#endif
+
+#ifndef _simd_s8x8 
+	struct _simd_s8x8 {
+		_simd_s8x4 lo;
+		_simd_s8x4 hi;
+	};
+#endif
+
+#ifndef _simd_s8x16 
+	struct _simd_s8x16 {
+		_simd_s8x8 lo;
+		_simd_s8x8 hi;
+	};
+#endif
+
+#ifndef _simd_s8x32 
+	struct _simd_s8x32 {
+		_simd_s8x16 lo;
+		_simd_s8x16 hi;
+	};
+#endif
+
+#ifndef _simd_s8x64 
+	struct _simd_s8x64 {
+		_simd_s8x32 lo;
+		_simd_s8x32 hi;
+	};
+#endif
+
+#ifndef _simd_u8x2 
+	struct _simd_u8x2 {
+		uint8_t lo;
+		uint8_t hi;
+	};
+#endif
+
+#ifndef _simd_u8x4 
+	struct _simd_u8x4 {
+		_simd_u8x2 lo;
+		_simd_u8x2 hi;
+	};
+#endif
+
+#ifndef _simd_u8x8 
+	struct _simd_u8x8 {
+		_simd_u8x4 lo;
+		_simd_u8x4 hi;
+	};
+#endif
+
+#ifndef _simd_u8x16 
+	struct _simd_u8x16 {
+		_simd_u8x8 lo;
+		_simd_u8x8 hi;
+	};
+#endif
+
+#ifndef _simd_u8x32 
+	struct _simd_u8x32 {
+		_simd_u8x16 lo;
+		_simd_u8x16 hi;
+	};
+#endif
+
+#ifndef u8x64 
+	struct u8x64 {
+		_simd_u8x32 lo;
+		_simd_u8x32 hi;
+	};
+#endif
+
 namespace anvil { namespace simd {
 
 	// Instruction set definitions
