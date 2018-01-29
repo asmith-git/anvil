@@ -503,6 +503,31 @@
 
 // Split
 
+#define _simd_split_(A,B)\
+	static ANVIL_STRONG_INLINE _simd_ ## B  ANVIL_SIMD_CALL _simd_ ## A ## _splitlo_safe(const register _simd_ ## A x)  { return reinterpret_cast<const _simd_ ## B*>(&x)[0]; }\
+	static ANVIL_STRONG_INLINE _simd_ ## B  ANVIL_SIMD_CALL _simd_ ## A ## _splithi_safe(const register _simd_ ## A x)  { return reinterpret_cast<const _simd_ ## B*>(&x)[1]; }
+
+#define _simd_split(T)\
+	_simd_split_(T ## x4, T ## x2)\
+	_simd_split_(T ## x8, T ## x4)\
+	_simd_split_(T ## x16, T ## x8)\
+	_simd_split_(T ## x32, T ## x16)\
+	_simd_split_(T ## x64, T ## x32)
+
+	_simd_split(f64)
+	_simd_split(f32)
+	_simd_split(s64)
+	_simd_split(u64)
+	_simd_split(s32)
+	_simd_split(u32)
+	_simd_split(s16)
+	_simd_split(u16)
+	_simd_split(s8)
+	_simd_split(u8)
+
+#undef _simd_split
+#undef _simd_split_
+
 #define _simd_f64x4_splitlo_safe(X)  (reinterpret_cast<const _simd_f64x2*>(&X)[0])
 #define _simd_f64x4_splithi_safe(X)  (reinterpret_cast<const _simd_f64x2*>(&X)[1])
 #define _simd_f64x8_splitlo_safe(X)  (reinterpret_cast<const _simd_f64x4*>(&X)[0])
