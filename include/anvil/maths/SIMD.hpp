@@ -160,7 +160,7 @@ namespace anvil { namespace simd {
 		OP_FILL    = 1i64 << 0i64,
 		OP_CAST    = 1i64 << 1i64,
 		OP_RESIZE  = 1i64 << 2i64,
-		OP_PERM    = 1i64 << 49i64,
+		OP_SHUFF   = 1i64 << 49i64,
 		// 3 parameters
 		OP_FMA     = 1i64 << 3i64,
 		OP_FMS     = 1i64 << 4i64,
@@ -227,7 +227,7 @@ namespace anvil { namespace simd {
 		template<> struct OperationParams<OP_FILL>{ enum { value = 1 }; };
 		template<> struct OperationParams<OP_CAST>{ enum { value = 1 }; };
 		template<> struct OperationParams<OP_RESIZE>{ enum { value = 1 }; };
-		template<> struct OperationParams<OP_PERM>{ enum { value = 2 }; };
+		template<> struct OperationParams<OP_SHUFF>{ enum { value = 2 }; };
 		template<> struct OperationParams<OP_FMA>{ enum { value = 3 }; };
 		template<> struct OperationParams<OP_FMS>{ enum { value = 3 }; };
 		template<> struct OperationParams<OP_ADD>{ enum { value = 2 }; };
@@ -663,7 +663,7 @@ namespace anvil { namespace simd {
 
 	
 	template<class T, size_t S>
-	struct OperationImplementation<T, S, OP_PERM, false> {
+	struct OperationImplementation<T, S, OP_SHUFF, false> {
 		static ANVIL_STRONG_INLINE T ANVIL_SIMD_CALL execute(const T* x, const int* y, T* o) {
 			for (size_t i = 0; i < S; ++i) o[i] = x[y[i]];
 		}
@@ -898,30 +898,6 @@ namespace anvil { namespace simd {
 			return *reinterpret_cast<const simd_t*>(y);\
 		}\
 	};
-
-	static ANVIL_STRONG_INLINE __m128 ANVIL_SIMD_CALL _simd_permute_ps(const register __m128 x, const int* const y) {
-		register __m128i i = _mm_load_si128(reinterpret_cast<const __m128i*>(y));
-		i = _mm_sub_epi32(_mm_set1_epi32(4), i);
-		return _mm_permutevar_ps(x, i);
-	}
-
-	static ANVIL_STRONG_INLINE __m128d ANVIL_SIMD_CALL _simd_permute_pd(const register __m128d x, const int* const y) {
-		register __m128i i = _mm_load_si128(reinterpret_cast<const __m128i*>(y));
-		i = _mm_sub_epi32(_mm_set1_epi32(4), i);
-		return _mm_permutevar_pd(x, i);
-	}
-
-	static ANVIL_STRONG_INLINE __m256 ANVIL_SIMD_CALL _simd256_permute_ps(const register __m256 x, const int* const y) {
-		register __m256i i = _mm256_load_si256(reinterpret_cast<const __m256i*>(y));
-		i = _mm256_sub_epi32(_mm256_set1_epi32(4), i);
-		return _mm256_permutevar_ps(x, i);
-	}
-
-	static ANVIL_STRONG_INLINE __m256d ANVIL_SIMD_CALL _simd256_permute_pd(const register __m256d x, const int* const y) {
-		register __m256i i = _mm256_load_si256(reinterpret_cast<const __m256i*>(y));
-		i = _mm256_sub_epi32(_mm256_set1_epi32(4), i);
-		return _mm256_permutevar_pd(x, i);
-	}
 
 #define _simd_scalar double
 #define _simd_type __m256d
@@ -1692,6 +1668,16 @@ ANVIL_SIMD_HELPER()
 #define _simd256_cmpgt_pd(X,Y) _mm256_cmp_pd (X,Y,_CMP_GT_OQ)
 #define _simd256_cmple_pd(X,Y) _mm256_cmp_pd (X,Y,_CMP_LE_OQ)
 #define _simd256_cmpge_pd(X,Y) _mm256_cmp_pd (X,Y,_CMP_GE_OQ)
+
+template<int X, int Y, int Z, int W>
+static ANVIL_STRONG_INLINE __m128 ANVIL_SIMD_CALL _simd_shuffle_ps(const register __m128 x) {
+	return _mm_shuffle_ps(x, x, _MM_SHUFFLE(X, Y, Z, W));
+}
+
+template<int X, int Y, int Z, int W>
+static ANVIL_STRONG_INLINE __m128i ANVIL_SIMD_CALL _simd_shuffle_epi32(const register __m128i x) {
+	return _mm_shuffle_epi32(x, x, _MM_SHUFFLE(X, Y, Z, W));
+}
 
 #define _simd_element_type float
 #define _simd_type __m128
