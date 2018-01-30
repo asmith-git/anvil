@@ -78,31 +78,31 @@
 #define _simd_f32x8_add_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s32x4_add_(X,Y) _mm_add_epi32(X,Y)
-#define _simd_s32x4_add_instruction_set anvil::simd::IS_SSE2
+#define _simd_s32x4_add_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s32x8_add_(X,Y) _mm256_add_epi32(X,Y)
 #define _simd_s32x8_add_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s16x8_add_(X,Y) _mm_add_epi16(X,Y)
-#define _simd_s16x8_add_instruction_set anvil::simd::IS_SSE2
+#define _simd_s16x8_add_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s16x16_add_(X,Y) _mm256_add_epi16(X,Y)
 #define _simd_s16x16_add_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s8x16_add_(X,Y) _mm_add_epi8(X,Y)
-#define _simd_s8x16_add_instruction_set anvil::simd::IS_SSE2
+#define _simd_s8x16_add_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s8x32_add_(X,Y) _mm256_add_epi8(X,Y)
 #define _simd_s8x32_add_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_u16x8_add_(X,Y) _mm_adds_epu16(X,Y)
-#define _simd_u16x8_add_instruction_set anvil::simd::IS_SSE2
+#define _simd_u16x8_add_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_u16x16_add_(X,Y) _mm256_adds_epu16(X,Y)
 #define _simd_u16x16_add_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_u8x16_add_(X,Y) _mm_adds_epu8(X,Y)
-#define _simd_u8x16_add_instruction_set anvil::simd::IS_SSE2
+#define _simd_u8x16_add_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_u8x32_add_(X,Y) _mm256_adds_epu8(X,Y)
 #define _simd_u8x32_add_instruction_set anvil::simd::IS_AVX_2
@@ -120,31 +120,31 @@
 #define _simd_f32x8_sub_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s32x4_sub_(X,Y) _mm_sub_epi32(X,Y)
-#define _simd_s32x4_sub_instruction_set anvil::simd::IS_SSE2
+#define _simd_s32x4_sub_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s32x8_sub_(X,Y) _mm256_sub_epi32(X,Y)
 #define _simd_s32x8_sub_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s16x8_sub_(X,Y) _mm_sub_epi16(X,Y)
-#define _simd_s16x8_sub_instruction_set anvil::simd::IS_SSE2
+#define _simd_s16x8_sub_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s16x16_sub_(X,Y) _mm256_sub_epi16(X,Y)
 #define _simd_s16x16_sub_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s8x16_sub_(X,Y) _mm_sub_epi8(X,Y)
-#define _simd_s8x16_sub_instruction_set anvil::simd::IS_SSE2
+#define _simd_s8x16_sub_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s8x32_sub_(X,Y) _mm256_sub_epi8(X,Y)
 #define _simd_s8x32_sub_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_u16x8_sub_(X,Y) _mm_subs_epu16(X,Y)
-#define _simd_u16x8_sub_instruction_set anvil::simd::IS_SSE2
+#define _simd_u16x8_sub_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_u16x16_sub_(X,Y) _mm256_subs_epu16(X,Y)
 #define _simd_u16x16_sub_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_u8x16_sub_(X,Y) _mm_subs_epu8(X,Y)
-#define _simd_u8x16_sub_instruction_set anvil::simd::IS_SSE2
+#define _simd_u8x16_sub_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_u8x32_sub_(X,Y) _mm256_subs_epu8(X,Y)
 #define _simd_u8x32_sub_instruction_set anvil::simd::IS_AVX_2
@@ -162,7 +162,7 @@
 #define _simd_f32x8_mul_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s16x8_mul_(X,Y) _mm_mullo_epi16 (X,Y)
-#define _simd_s16x8_mul_instruction_set anvil::simd::IS_SSE2
+#define _simd_s16x8_mul_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s16x16_mul_(X,Y) _mm256_mullo_epi16(X,Y)
 #define _simd_s16x16_mul_instruction_set anvil::simd::IS_AVX_2
@@ -198,7 +198,7 @@
 #define _simd_s32x8_min_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s16x8_min_(X,Y) _mm_min_epi16(X,Y)
-#define _simd_s16x8_min_instruction_set anvil::simd::IS_SSE2
+#define _simd_s16x8_min_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s16x16_min_(X,Y) _mm256_min_epi16(X,Y)
 #define _simd_s16x16_min_instruction_set anvil::simd::IS_AVX_2
@@ -222,7 +222,7 @@
 #define _simd_u16x16_min_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_u8x16_min_(X,Y) _mm_min_epu8(X,Y)
-#define _simd_u8x16_min_instruction_set anvil::simd::IS_SSE2
+#define _simd_u8x16_min_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_u8x32_min_(X,Y) _mm256_min_epu8(X,Y)
 #define _simd_u8x32_min_instruction_set anvil::simd::IS_AVX_2
@@ -246,7 +246,7 @@
 #define _simd_s32x8_max_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s16x8_max_(X,Y) _mm_max_epi16(X,Y)
-#define _simd_s16x8_max_instruction_set anvil::simd::IS_SSE2
+#define _simd_s16x8_max_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s16x16_max_(X,Y) _mm256_max_epi16(X,Y)
 #define _simd_s16x16_max_instruction_set anvil::simd::IS_AVX_2
@@ -270,7 +270,7 @@
 #define _simd_u16x16_max_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_u8x16_max_(X,Y) _mm_max_epu8(X,Y)
-#define _simd_u8x16_max_instruction_set anvil::simd::IS_SSE2
+#define _simd_u8x16_max_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_u8x32_max_(X,Y) _mm256_max_epu8(X,Y)
 #define _simd_u8x32_max_instruction_set anvil::simd::IS_AVX_2
@@ -288,31 +288,31 @@
 #define _simd_f32x8_fill_undefined_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s32x4_fill_undefined_() _mm_undefined_si128()
-#define _simd_s32x4_fill_undefined_instruction_set anvil::simd::IS_SSE2
+#define _simd_s32x4_fill_undefined_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s32x8_fill_undefined_() _mm256_undefined_si256()
 #define _simd_s32x8_fill_undefined_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s16x8_fill_undefined_() _mm_undefined_si128()
-#define _simd_s16x8_fill_undefined_instruction_set anvil::simd::IS_SSE2
+#define _simd_s16x8_fill_undefined_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s16x16_fill_undefined_() _mm256_undefined_si256()
 #define _simd_s16x16_fill_undefined_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s8x16_fill_undefined_() _mm_undefined_si128()
-#define _simd_s8x16_fill_undefined_instruction_set anvil::simd::IS_SSE2
+#define _simd_s8x16_fill_undefined_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s8x32_fill_undefined_() _mm256_undefined_si256()
 #define _simd_s8x32_fill_undefined_instruction_set anvil::simd::IS_AVX
 
 #define _simd_u16x8_fill_undefined_() _mm_undefined_si128()
-#define _simd_u16x8_fill_undefined_instruction_set anvil::simd::IS_SSE2
+#define _simd_u16x8_fill_undefined_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_u16x16_fill_undefined_() _mm256_undefined_si256()
 #define _simd_u16x16_fill_undefined_instruction_set anvil::simd::IS_AVX
 
 #define _simd_u8x16_fill_undefined_() _mm_undefined_si128()
-#define _simd_u8x16_fill_undefined_instruction_set anvil::simd::IS_SSE2
+#define _simd_u8x16_fill_undefined_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_u8x32_fill_undefined_() _mm256_undefined_si256()
 #define _simd_u8x32_fill_undefined_instruction_set anvil::simd::IS_AVX
@@ -330,31 +330,31 @@
 #define _simd_f32x8_fill_zero_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s32x4_fill_zero_() _mm_setzero_si128()
-#define _simd_s32x4_fill_zero_instruction_set anvil::simd::IS_SSE2
+#define _simd_s32x4_fill_zero_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s32x8_fill_zero_() _mm256_setzero_si256()
 #define _simd_s32x8_fill_zero_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s16x8_fill_zero_() _mm_setzero_si128()
-#define _simd_s16x8_fill_zero_instruction_set anvil::simd::IS_SSE2
+#define _simd_s16x8_fill_zero_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s16x16_fill_zero_() _mm256_setzero_si256()
 #define _simd_s16x16_fill_zero_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s8x16_fill_zero_() _mm_setzero_si128()
-#define _simd_s8x16_fill_zero_instruction_set anvil::simd::IS_SSE2
+#define _simd_s8x16_fill_zero_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s8x32_fill_zero_() _mm256_setzero_si256()
 #define _simd_s8x32_fill_zero_instruction_set anvil::simd::IS_AVX
 
 #define _simd_u16x8_fill_zero_() _mm_setzero_si128()
-#define _simd_u16x8_fill_zero_instruction_set anvil::simd::IS_SSE2
+#define _simd_u16x8_fill_zero_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_u16x16_fill_zero_() _mm256_setzero_si256()
 #define _simd_u16x16_fill_zero_instruction_set anvil::simd::IS_AVX
 
 #define _simd_u8x16_fill_zero_() _mm_setzero_si128()
-#define _simd_u8x16_fill_zero_instruction_set anvil::simd::IS_SSE2
+#define _simd_u8x16_fill_zero_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_u8x32_fill_zero_() _mm256_setzero_si256()
 #define _simd_u8x32_fill_zero_instruction_set anvil::simd::IS_AVX
@@ -372,25 +372,25 @@
 #define _simd_f32x8_fill_scalar_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s64x2_fill_scalar_(X) _mm_set1_epi64x(X)
-#define _simd_s64x2_fill_scalar_instruction_set anvil::simd::IS_SSE2
+#define _simd_s64x2_fill_scalar_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s64x4_fill_scalar_(X) _mm256_set1_epi64x(X)
 #define _simd_s64x4_fill_scalar_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s32x4_fill_scalar_(X) _mm_set1_epi32(X)
-#define _simd_s32x4_fill_scalar_instruction_set anvil::simd::IS_SSE2
+#define _simd_s32x4_fill_scalar_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s32x8_fill_scalar_(X) _mm256_set1_epi32(X)
 #define _simd_s32x8_fill_scalar_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s16x8_fill_scalar_(X) _mm_set1_epi16(X)
-#define _simd_s16x8_fill_scalar_instruction_set anvil::simd::IS_SSE2
+#define _simd_s16x8_fill_scalar_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s16x16_fill_scalar_(X) _mm256_set1_epi16(X)
 #define _simd_s16x16_fill_scalar_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s8x16_fill_scalar_(X) _mm_set1_epi8(X)
-#define _simd_s8x16_fill_scalar_instruction_set anvil::simd::IS_SSE2
+#define _simd_s8x16_fill_scalar_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s8x32_fill_scalar_(X) _mm256_set1_epi8(X)
 #define _simd_s8x32_fill_scalar_instruction_set anvil::simd::IS_AVX_2
@@ -432,25 +432,25 @@
 #define _simd_f32x8_set_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s64x2_set_(X,Y) _mm_set_epi64x(X,Y)
-#define _simd_s64x2_set_instruction_set anvil::simd::IS_SSE2
+#define _simd_s64x2_set_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s64x4_set_(X,Y,Z,W) _mm256_set_epi64x(X,Y,Z,W)
 #define _simd_s64x4_set_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s32x4_set_(X,Y,Z,W) _mm_set_epi32(X,Y,Z,W)
-#define _simd_s32x4_set_instruction_set anvil::simd::IS_SSE2
+#define _simd_s32x4_set_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s32x8_set_(X,Y,Z,W,A,B,C,D) _mm256_set_epi32(X,Y,Z,W,A,B,C,D)
 #define _simd_s32x8_set_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s16x8_set_(X,Y,Z,W,A,B,C,D) _mm_set1_epi16(X,Y,Z,W,A,B,C,D)
-#define _simd_s16x8_set_instruction_set anvil::simd::IS_SSE2
+#define _simd_s16x8_set_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s16x16_set_(X,Y,Z,W,A,B,C,D,E,F,G,H,I,J,K,L) _mm256_set1_epi16(X,Y,Z,W,A,B,C,D,E,F,G,H,I,J,K,L)
 #define _simd_s16x16_set_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s8x16_set_(X,Y,Z,W,A,B,C,D,E,F,G,H,I,J,K,L) _mm_set1_epi8(X,Y,Z,W,A,B,C,D,E,F,G,H,I,J,K,L)
-#define _simd_s8x16_set_instruction_set anvil::simd::IS_SSE2
+#define _simd_s8x16_set_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s8x32_set_(a0, b0, c0, d0, e0, f0, g0, h0, i0, j0, k0, l0, m0, n0, o0, p0, q0, r0, s0, t0, u0, v0, w0, x0, y0, z0, a1, b1, c1, d1, e1, f1) _mm256_set1_epi8(a0, b0, c0, d0, e0, f0, g0, h0, i0, j0, k0, l0, m0, n0, o0, p0, q0, r0, s0, t0, u0, v0, w0, x0, y0, z0, a1, b1, c1, d1, e1, f1)
 #define _simd_s8x32_set_instruction_set anvil::simd::IS_AVX_2
@@ -492,19 +492,19 @@
 #define _simd_f32x8_cmpeq_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s32x4_cmpeq_(X,Y) _mm_cmpeq_epi32(X,Y)
-#define _simd_s32x4_cmpeq_instruction_set anvil::simd::IS_SSE2
+#define _simd_s32x4_cmpeq_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s32x8_cmpeq_(X,Y) _mm256_cmpeq_epi32(X,Y)
 #define _simd_s32x8_cmpeq_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s16x8_cmpeq_(X,Y) _mm_cmpeq_epi16(X,Y)
-#define _simd_s16x8_cmpeq_instruction_set anvil::simd::IS_SSE2
+#define _simd_s16x8_cmpeq_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s16x16_cmpeq_(X,Y) _mm256_cmpeq_epi16(X,Y)
 #define _simd_s16x16_cmpeq_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s8x16_cmpeq_(X,Y) _mm_cmpeq_epi8(X,Y)
-#define _simd_s8x16_cmpeq_instruction_set anvil::simd::IS_SSE2
+#define _simd_s8x16_cmpeq_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s8x32_cmpeq_(X,Y) _mm256_cmpeq_epi8(X,Y)
 #define _simd_s8x32_cmpeq_instruction_set anvil::simd::IS_AVX_2
@@ -576,16 +576,16 @@
 #define _simd_f32x8_cmplt_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s32x4_cmplt_(X,Y) _mm_cmplt_epi32(X,Y)
-#define _simd_s32x4_cmplt_instruction_set anvil::simd::IS_SSE2
+#define _simd_s32x4_cmplt_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s32x8_cmplt_(X,Y) _mm256_cmplt_epi32(X,Y)
 #define _simd_s32x8_cmplt_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s16x8_cmplt_(X,Y) _mm_cmplt_epi16(X,Y)
-#define _simd_s16x8_cmplt_instruction_set anvil::simd::IS_SSE2
+#define _simd_s16x8_cmplt_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s8x16_cmplt_(X,Y) _mm_cmplt_epi8(X,Y)
-#define _simd_s8x16_cmplt_instruction_set anvil::simd::IS_SSE2
+#define _simd_s8x16_cmplt_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_f64x2_cmpgt_(X,Y) _mm_cmpgt_pd(X,Y)
 #define _simdf64x2_cmpgt_instruction_set anvil::simd::IS_SSE_2
@@ -600,7 +600,7 @@
 #define _simd_f32x8_cmpgt_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s32x4_cmpgt_(X,Y) _mm_cmpgt_epi32(X,Y)
-#define _simd_s32x4_cmpgt_instruction_set anvil::simd::IS_SSE2
+#define _simd_s32x4_cmpgt_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s32x8_cmpgt_(X,Y) _mm256_cmpgt_epi32(X,Y)
 #define _simd_s32x8_cmpgt_instruction_set anvil::simd::IS_AVX_2
@@ -609,13 +609,13 @@
 #define _simd_s32x8_cmpgt_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s16x8_cmpgt_(X,Y) _mm_cmpgt_epi16(X,Y)
-#define _simd_s16x8_cmpgt_instruction_set anvil::simd::IS_SSE2
+#define _simd_s16x8_cmpgt_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s16x16_cmpgt_(X,Y) _mm256_cmpgt_epi16(X,Y)
 #define _simd_s16x16_cmpgt_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s8x16_cmpgt_(X,Y) _mm_cmpgt_epi8(X,Y)
-#define _simd_s8x16_cmpgt_instruction_set anvil::simd::IS_SSE2
+#define _simd_s8x16_cmpgt_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s8x32_cmpgt_(X,Y) _mm256_cmpgt_epi8(X,Y)
 #define _simd_s8x32_cmpgt_instruction_set anvil::simd::IS_AVX_2
@@ -633,31 +633,31 @@
 #define _simd_f32x8_and_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s32x4_and_(X,Y) _mm_and_si128(X,Y)
-#define _simd_s32x4_and_instruction_set anvil::simd::IS_SSE2
+#define _simd_s32x4_and_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s32x8_and_(X,Y) _mm256_and_si256(X,Y)
 #define _simd_s32x8_and_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s16x8_and_(X,Y) _mm_and_si128(X,Y)
-#define _simd_s16x8_and_instruction_set anvil::simd::IS_SSE2
+#define _simd_s16x8_and_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s16x16_and_(X,Y) _mm256_and_si256(X,Y)
 #define _simd_s16x16_and_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s8x16_and_(X,Y) _mm_and_si128(X,Y)
-#define _simd_s8x16_and_instruction_set anvil::simd::IS_SSE2
+#define _simd_s8x16_and_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s8x32_and_(X,Y) _mm256_and_si256(X,Y)
 #define _simd_s8x32_and_instruction_set anvil::simd::IS_AVX
 
 #define _simd_u16x8_and_(X,Y) _mm_and_si128(X,Y)
-#define _simd_u16x8_and_instruction_set anvil::simd::IS_SSE2
+#define _simd_u16x8_and_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_u16x16_and_(X,Y) _mm256_and_si256(X,Y)
 #define _simd_u16x16_and_instruction_set anvil::simd::IS_AVX
 
 #define _simd_u8x16_and_(X,Y) _mm_and_si128(X,Y)
-#define _simd_u8x16_and_instruction_set anvil::simd::IS_SSE2
+#define _simd_u8x16_and_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_u8x32_and_(X,Y) _mm256_and_si256(X,Y)
 #define _simd_u8x32_and_instruction_set anvil::simd::IS_AVX
@@ -675,31 +675,31 @@
 #define _simd_f32x8_or_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s32x4_or_(X,Y) _mm_or_si128(X,Y)
-#define _simd_s32x4_or_instruction_set anvil::simd::IS_SSE2
+#define _simd_s32x4_or_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s32x8_or_(X,Y) _mm256_or_si256(X,Y)
 #define _simd_s32x8_or_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s16x8_or_(X,Y) _mm_or_si128(X,Y)
-#define _simd_s16x8_or_instruction_set anvil::simd::IS_SSE2
+#define _simd_s16x8_or_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s16x16_or_(X,Y) _mm256_or_si256(X,Y)
 #define _simd_s16x16_or_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s8x16_or_(X,Y) _mm_or_si128(X,Y)
-#define _simd_s8x16_or_instruction_set anvil::simd::IS_SSE2
+#define _simd_s8x16_or_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s8x32_or_(X,Y) _mm256_or_si256(X,Y)
 #define _simd_s8x32_or_instruction_set anvil::simd::IS_AVX
 
 #define _simd_u16x8_or_(X,Y) _mm_or_si128(X,Y)
-#define _simd_u16x8_or_instruction_set anvil::simd::IS_SSE2
+#define _simd_u16x8_or_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_u16x16_or_(X,Y) _mm256_or_si256(X,Y)
 #define _simd_u16x16_or_instruction_set anvil::simd::IS_AVX
 
 #define _simd_u8x16_or_(X,Y) _mm_or_si128(X,Y)
-#define _simd_u8x16_or_instruction_set anvil::simd::IS_SSE2
+#define _simd_u8x16_or_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_u8x32_or_(X,Y) _mm256_or_si256(X,Y)
 #define _simd_u8x32_or_instruction_set anvil::simd::IS_AVX
@@ -717,31 +717,31 @@
 #define _simd_f32x8_xor_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s32x4_xor_(X,Y) _mm_xor_si128(X,Y)
-#define _simd_s32x4_xor_instruction_set anvil::simd::IS_SSE2
+#define _simd_s32x4_xor_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s32x8_xor_(X,Y) _mm256_xor_si256(X,Y)
 #define _simd_s32x8_xor_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s16x8_xor_(X,Y) _mm_xor_si128(X,Y)
-#define _simd_s16x8_xor_instruction_set anvil::simd::IS_SSE2
+#define _simd_s16x8_xor_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s16x16_xor_(X,Y) _mm256_xor_si256(X,Y)
 #define _simd_s16x16_xor_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s8x16_xor_(X,Y) _mm_xor_si128(X,Y)
-#define _simd_s8x16_xor_instruction_set anvil::simd::IS_SSE2
+#define _simd_s8x16_xor_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_s8x32_xor_(X,Y) _mm256_xor_si256(X,Y)
 #define _simd_s8x32_xor_instruction_set anvil::simd::IS_AVX
 
 #define _simd_u16x8_xor_(X,Y) _mm_xor_si128(X,Y)
-#define _simd_u16x8_xor_instruction_set anvil::simd::IS_SSE2
+#define _simd_u16x8_xor_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_u16x16_xor_(X,Y) _mm256_xor_si256(X,Y)
 #define _simd_u16x16_xor_instruction_set anvil::simd::IS_AVX
 
 #define _simd_u8x16_xor_(X,Y) _mm_xor_si128(X,Y)
-#define _simd_u8x16_xor_instruction_set anvil::simd::IS_SSE2
+#define _simd_u8x16_xor_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_u8x32_xor_(X,Y) _mm256_xor_si256(X,Y)
 #define _simd_u8x32_xor_instruction_set anvil::simd::IS_AVX
@@ -1861,6 +1861,8 @@ namespace anvil { namespace simd {
 		template<> struct OperationParams<OP_AVG>{ enum { value = 1 }; };
 		template<> struct OperationParams<OP_SUM>{ enum { value = 1 }; };
 		template<> struct OperationParams<OP_POPCN>{ enum { value = 1 }; };
+
+#include "anvil/maths/simd/OperationInstructionSet.hpp"
 	}
 
 	template<Operation O, class T>
@@ -2822,10 +2824,6 @@ ANVIL_SIMD_HELPER()
 	};
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VVV_16_TO_32(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 32> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-			};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,32,32,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,32,31,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,32,30,INSTRUCTION, FUNCTION1)\
@@ -2844,10 +2842,6 @@ ANVIL_SIMD_HELPER()
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,32,17,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VVV_8_TO_16(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 16> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-			};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,16,16,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,16,15,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,16,14,INSTRUCTION, FUNCTION1)\
@@ -2858,30 +2852,18 @@ ANVIL_SIMD_HELPER()
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,16,9, INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VVV_4_TO_8(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 8> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-				};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,8,8,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,8,7,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,8,6,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,8,5,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VVV_2_TO_4(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 4> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-						};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,4,4,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,4,3,INSTRUCTION, FUNCTION1)
 
 
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_16_TO_32(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 32> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-			};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,32,32,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,32,31,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,32,30,INSTRUCTION, FUNCTION1)\
@@ -2900,10 +2882,6 @@ ANVIL_SIMD_HELPER()
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,32,17,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_8_TO_16(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 16> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-			};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,16,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,15,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,14,INSTRUCTION, FUNCTION1)\
@@ -2914,28 +2892,16 @@ ANVIL_SIMD_HELPER()
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,9, INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_4_TO_8(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 8> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-			};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,8,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,7,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,6,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,5,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_2_TO_4(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 4> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-			};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,4,4,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,4,3,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VVV_16(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 16> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-			};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,16,16,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,16,15,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,16,14,INSTRUCTION, FUNCTION1)\
@@ -2953,10 +2919,6 @@ ANVIL_SIMD_HELPER()
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,16,2, INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VVV_8(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 8> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-			};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,8,8,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,8,7,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,8,6,INSTRUCTION, FUNCTION1)\
@@ -2966,26 +2928,14 @@ ANVIL_SIMD_HELPER()
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,8,2,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VVV_4(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 4> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-			};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,4,4,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,4,3,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,4,2,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VVV_2(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 2> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-			};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VVV(OP,2,2,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VV_16_TO_32(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 32> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,32,32,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,32,31,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,32,30,INSTRUCTION, FUNCTION1)\
@@ -3004,10 +2954,6 @@ ANVIL_SIMD_HELPER()
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,32,17,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VV_8_TO_16(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 16> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,16,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,15,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,14,INSTRUCTION, FUNCTION1)\
@@ -3018,30 +2964,16 @@ ANVIL_SIMD_HELPER()
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,9, INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VV_4_TO_8(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 8> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-		};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,8,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,7,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,6,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,5,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VV_2_TO_4(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 4> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-				};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,4,4,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,4,3,INSTRUCTION, FUNCTION1)
 
-
-
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_16_TO_32(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 32> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,32,32,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,32,31,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,32,30,INSTRUCTION, FUNCTION1)\
@@ -3060,10 +2992,6 @@ ANVIL_SIMD_HELPER()
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,32,17,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_8_TO_16(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 16> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,16,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,15,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,14,INSTRUCTION, FUNCTION1)\
@@ -3074,28 +3002,16 @@ ANVIL_SIMD_HELPER()
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,9, INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_4_TO_8(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 8> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,8,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,7,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,6,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,5,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_2_TO_4(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 4> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,4,4,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,4,3,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VV_16(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 16> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,16,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,15,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,14,INSTRUCTION, FUNCTION1)\
@@ -3113,10 +3029,6 @@ ANVIL_SIMD_HELPER()
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,16,2, INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VV_8(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 8> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,8,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,7,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,6,INSTRUCTION, FUNCTION1)\
@@ -3126,26 +3038,14 @@ ANVIL_SIMD_HELPER()
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,8,2,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VV_4(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 4> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,4,4,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,4,3,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,4,2,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_VV_2(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 2> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_VV(OP,2,2,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_16(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 16> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,16,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,15,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,14,INSTRUCTION, FUNCTION1)\
@@ -3163,10 +3063,6 @@ ANVIL_SIMD_HELPER()
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,16,2, INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_8(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 8> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,8,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,7,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,6,INSTRUCTION, FUNCTION1)\
@@ -3176,26 +3072,14 @@ ANVIL_SIMD_HELPER()
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,8,2,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_4(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 4> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,4,4,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,4,3,INSTRUCTION, FUNCTION1)\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,4,2,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_IMPLEMENTATION_V_V_2(OP,INSTRUCTION, FUNCTION1)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP, _simd_element_type, 2> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-	};}\
 	ANVIL_SIMD_IMPLEMENTATION_V_V(OP,2,2,INSTRUCTION, FUNCTION1)
 
 #define ANVIL_SIMD_SPECIALISE_FILL_16(INSTRUCTION)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP_FILL, _simd_element_type, 16> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-	};}\
 	ANVIL_SIMD_SPECIALISE_FILL(16,16, INSTRUCTION)\
 	ANVIL_SIMD_SPECIALISE_FILL(16,15, INSTRUCTION)\
 	ANVIL_SIMD_SPECIALISE_FILL(16,14, INSTRUCTION)\
@@ -3213,10 +3097,6 @@ ANVIL_SIMD_HELPER()
 	ANVIL_SIMD_SPECIALISE_FILL(16,2, INSTRUCTION)
 
 #define ANVIL_SIMD_SPECIALISE_FILL_8(INSTRUCTION)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP_FILL, _simd_element_type, 8> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-	};}\
 	ANVIL_SIMD_SPECIALISE_FILL(8,8, INSTRUCTION)\
 	ANVIL_SIMD_SPECIALISE_FILL(8,7, INSTRUCTION)\
 	ANVIL_SIMD_SPECIALISE_FILL(8,6, INSTRUCTION)\
@@ -3226,19 +3106,11 @@ ANVIL_SIMD_HELPER()
 	ANVIL_SIMD_SPECIALISE_FILL(8,2, INSTRUCTION)
 
 #define ANVIL_SIMD_SPECIALISE_FILL_4(INSTRUCTION)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP_FILL, _simd_element_type, 8> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-	};}\
 	ANVIL_SIMD_SPECIALISE_FILL(4,4, INSTRUCTION)\
 	ANVIL_SIMD_SPECIALISE_FILL(4,3, INSTRUCTION)\
 	ANVIL_SIMD_SPECIALISE_FILL(4,2, INSTRUCTION)
 
 #define ANVIL_SIMD_SPECIALISE_FILL_2(INSTRUCTION)\
-	namespace detail { template<>\
-	struct OperationInstructionSet<OP_FILL, _simd_element_type, 2> {\
-		enum : int64_t  { value = IS_## INSTRUCTION };\
-	};}\
 	ANVIL_SIMD_SPECIALISE_FILL(2,2, SSE)
 
 #define _simd_round_ps(X) _mm_round_ps(X,_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC)
