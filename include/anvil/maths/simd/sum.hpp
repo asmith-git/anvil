@@ -174,7 +174,8 @@ static _simd_f32x1 ANVIL_SIMD_CALL _simd_f32x16_sum_safe(const register _simd_f3
 	#define _simd_f32x16_sum(X) _simd_f32x16_sum_(X)
 	#define _simd_f32x16_sum_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x16_sum_instruction_set>()
 #elif defined(_simd_f32x8_add_)
-	#define _simd_f32x16_sum(X) _simd_f32x8_sum(_mm256_add_ps(X.lo, X.hi))
+	#define _simd_f32x16_sum(X) _simd_f32x8_sum(_simd_f32x8_add_(\
+		_simd_f32x16_splitlo(X), _simd_f32x16_splithi(X)))
 	#define _simd_f32x16_sum_enable() (_simd_f32x8_add_enable() && _simd_f32x8_sum_enable() && _simd_f32x2_splitlo_enable() && _simd_f32x2_splithi_enable())
 #else
 	#define _simd_f32x16_sum(X) _simd_f32x16_sum_safe(X)
