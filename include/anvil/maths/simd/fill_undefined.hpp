@@ -13,8 +13,8 @@
 //limitations under the License.
 
 #define _simd_f64x2_fill_undefined_safe() _simd_f64x2()
-	#ifdef _simd_f64x2_fill_undefined_
-#define _simd_f64x2_fill_undefined() _simd_f64x2_fill_undefined_()
+#ifdef _simd_f64x2_fill_undefined_
+	#define _simd_f64x2_fill_undefined() _simd_f64x2_fill_undefined_()
 	#define _simd_f64x2_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x2_fill_undefined_instruction_set>()
 #else
 	#define _simd_f64x2_fill_undefined() _simd_f64x2_fill_undefined_safe()
@@ -22,8 +22,8 @@
 #endif
 
 #define _simd_f64x4_fill_undefined_safe() _simd_f64x4()
-	#ifdef _simd_f64x4_fill_undefined_
-#define _simd_f64x4_fill_undefined() _simd_f64x4_fill_undefined_()
+#ifdef _simd_f64x4_fill_undefined_
+	#define _simd_f64x4_fill_undefined() _simd_f64x4_fill_undefined_()
 	#define _simd_f64x4_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x4_fill_undefined_instruction_set>()
 #else
 	#define _simd_f64x4_fill_undefined() _simd_f64x4_fill_undefined_safe()
@@ -31,8 +31,8 @@
 #endif
 
 #define _simd_f64x8_fill_undefined_safe() _simd_f64x8()
-	#ifdef _simd_f64x8_fill_undefined_
-#define _simd_f64x8_fill_undefined() _simd_f64x8_fill_undefined_()
+#ifdef _simd_f64x8_fill_undefined_
+	#define _simd_f64x8_fill_undefined() _simd_f64x8_fill_undefined_()
 	#define _simd_f64x8_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x8_fill_undefined_instruction_set>()
 #else
 	#define _simd_f64x8_fill_undefined() _simd_f64x8_fill_undefined_safe()
@@ -40,8 +40,8 @@
 #endif
 
 #define _simd_f64x16_fill_undefined_safe() _simd_f64x16()
-	#ifdef _simd_f64x16_fill_undefined_
-#define _simd_f64x16_fill_undefined() _simd_f64x16_fill_undefined_()
+#ifdef _simd_f64x16_fill_undefined_
+	#define _simd_f64x16_fill_undefined() _simd_f64x16_fill_undefined_()
 	#define _simd_f64x16_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x16_fill_undefined_instruction_set>()
 #else
 	#define _simd_f64x16_fill_undefined() _simd_f64x16_fill_undefined_safe()
@@ -49,8 +49,8 @@
 #endif
 
 #define _simd_f64x32_fill_undefined_safe() _simd_f64x32()
-	#ifdef _simd_f64x32_fill_undefined_
-#define _simd_f64x32_fill_undefined() _simd_f64x32_fill_undefined_()
+#ifdef _simd_f64x32_fill_undefined_
+	#define _simd_f64x32_fill_undefined() _simd_f64x32_fill_undefined_()
 	#define _simd_f64x32_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x32_fill_undefined_instruction_set>()
 #else
 	#define _simd_f64x32_fill_undefined() _simd_f64x32_fill_undefined_safe()
@@ -58,8 +58,8 @@
 #endif
 
 #define _simd_f64x64_fill_undefined_safe() _simd_f64x64()
-	#ifdef _simd_f64x64_fill_undefined_
-#define _simd_f64x64_fill_undefined() _simd_f64x64_fill_undefined_()
+#ifdef _simd_f64x64_fill_undefined_
+	#define _simd_f64x64_fill_undefined() _simd_f64x64_fill_undefined_()
 	#define _simd_f64x64_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x64_fill_undefined_instruction_set>()
 #else
 	#define _simd_f64x64_fill_undefined() _simd_f64x64_fill_undefined_safe()
@@ -67,8 +67,8 @@
 #endif
 
 #define _simd_f32x2_fill_undefined_safe() _simd_f32x2()
-	#ifdef _simd_f32x2_fill_undefined_
-#define _simd_f32x2_fill_undefined() _simd_f32x2_fill_undefined_()
+#ifdef _simd_f32x2_fill_undefined_
+	#define _simd_f32x2_fill_undefined() _simd_f32x2_fill_undefined_()
 	#define _simd_f32x2_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x2_fill_undefined_instruction_set>()
 #else
 	#define _simd_f32x2_fill_undefined() _simd_f32x2_fill_undefined_safe()
@@ -76,8 +76,8 @@
 #endif
 
 #define _simd_f32x4_fill_undefined_safe() _simd_f32x4()
-	#ifdef _simd_f32x4_fill_undefined_
-#define _simd_f32x4_fill_undefined() _simd_f32x4_fill_undefined_()
+#ifdef _simd_f32x4_fill_undefined_
+	#define _simd_f32x4_fill_undefined() _simd_f32x4_fill_undefined_()
 	#define _simd_f32x4_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x4_fill_undefined_instruction_set>()
 #else
 	#define _simd_f32x4_fill_undefined() _simd_f32x4_fill_undefined_safe()
@@ -85,8 +85,8 @@
 #endif
 
 #define _simd_f32x8_fill_undefined_safe() _simd_f32x8()
-	#ifdef _simd_f32x8_fill_undefined_
-#define _simd_f32x8_fill_undefined() _simd_f32x8_fill_undefined_()
+#ifdef _simd_f32x8_fill_undefined_
+	#define _simd_f32x8_fill_undefined() _simd_f32x8_fill_undefined_()
 	#define _simd_f32x8_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x8_fill_undefined_instruction_set>()
 #else
 	#define _simd_f32x8_fill_undefined() _simd_f32x8_fill_undefined_safe()
@@ -94,8 +94,8 @@
 #endif
 
 #define _simd_f32x16_fill_undefined_safe() _simd_f32x16()
-	#ifdef _simd_f32x16_fill_undefined_
-#define _simd_f32x16_fill_undefined() _simd_f32x16_fill_undefined_()
+#ifdef _simd_f32x16_fill_undefined_
+	#define _simd_f32x16_fill_undefined() _simd_f32x16_fill_undefined_()
 	#define _simd_f32x16_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x16_fill_undefined_instruction_set>()
 #else
 	#define _simd_f32x16_fill_undefined() _simd_f32x16_fill_undefined_safe()
@@ -103,8 +103,8 @@
 #endif
 
 #define _simd_f32x32_fill_undefined_safe() _simd_f32x32()
-	#ifdef _simd_f32x32_fill_undefined_
-#define _simd_f32x32_fill_undefined() _simd_f32x32_fill_undefined_()
+#ifdef _simd_f32x32_fill_undefined_
+	#define _simd_f32x32_fill_undefined() _simd_f32x32_fill_undefined_()
 	#define _simd_f32x32_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x32_fill_undefined_instruction_set>()
 #else
 	#define _simd_f32x32_fill_undefined() _simd_f32x32_fill_undefined_safe()
@@ -112,8 +112,8 @@
 #endif
 
 #define _simd_f32x64_fill_undefined_safe() _simd_f32x64()
-	#ifdef _simd_f32x64_fill_undefined_
-#define _simd_f32x64_fill_undefined() _simd_f32x64_fill_undefined_()
+#ifdef _simd_f32x64_fill_undefined_
+	#define _simd_f32x64_fill_undefined() _simd_f32x64_fill_undefined_()
 	#define _simd_f32x64_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x64_fill_undefined_instruction_set>()
 #else
 	#define _simd_f32x64_fill_undefined() _simd_f32x64_fill_undefined_safe()
@@ -121,8 +121,8 @@
 #endif
 
 #define _simd_s64x2_fill_undefined_safe() _simd_s64x2()
-	#ifdef _simd_s64x2_fill_undefined_
-#define _simd_s64x2_fill_undefined() _simd_s64x2_fill_undefined_()
+#ifdef _simd_s64x2_fill_undefined_
+	#define _simd_s64x2_fill_undefined() _simd_s64x2_fill_undefined_()
 	#define _simd_s64x2_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x2_fill_undefined_instruction_set>()
 #else
 	#define _simd_s64x2_fill_undefined() _simd_s64x2_fill_undefined_safe()
@@ -130,8 +130,8 @@
 #endif
 
 #define _simd_s64x4_fill_undefined_safe() _simd_s64x4()
-	#ifdef _simd_s64x4_fill_undefined_
-#define _simd_s64x4_fill_undefined() _simd_s64x4_fill_undefined_()
+#ifdef _simd_s64x4_fill_undefined_
+	#define _simd_s64x4_fill_undefined() _simd_s64x4_fill_undefined_()
 	#define _simd_s64x4_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x4_fill_undefined_instruction_set>()
 #else
 	#define _simd_s64x4_fill_undefined() _simd_s64x4_fill_undefined_safe()
@@ -139,8 +139,8 @@
 #endif
 
 #define _simd_s64x8_fill_undefined_safe() _simd_s64x8()
-	#ifdef _simd_s64x8_fill_undefined_
-#define _simd_s64x8_fill_undefined() _simd_s64x8_fill_undefined_()
+#ifdef _simd_s64x8_fill_undefined_
+	#define _simd_s64x8_fill_undefined() _simd_s64x8_fill_undefined_()
 	#define _simd_s64x8_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x8_fill_undefined_instruction_set>()
 #else
 	#define _simd_s64x8_fill_undefined() _simd_s64x8_fill_undefined_safe()
@@ -148,8 +148,8 @@
 #endif
 
 #define _simd_s64x16_fill_undefined_safe() _simd_s64x16()
-	#ifdef _simd_s64x16_fill_undefined_
-#define _simd_s64x16_fill_undefined() _simd_s64x16_fill_undefined_()
+#ifdef _simd_s64x16_fill_undefined_
+	#define _simd_s64x16_fill_undefined() _simd_s64x16_fill_undefined_()
 	#define _simd_s64x16_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x16_fill_undefined_instruction_set>()
 #else
 	#define _simd_s64x16_fill_undefined() _simd_s64x16_fill_undefined_safe()
@@ -157,8 +157,8 @@
 #endif
 
 #define _simd_s64x32_fill_undefined_safe() _simd_s64x32()
-	#ifdef _simd_s64x32_fill_undefined_
-#define _simd_s64x32_fill_undefined() _simd_s64x32_fill_undefined_()
+#ifdef _simd_s64x32_fill_undefined_
+	#define _simd_s64x32_fill_undefined() _simd_s64x32_fill_undefined_()
 	#define _simd_s64x32_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x32_fill_undefined_instruction_set>()
 #else
 	#define _simd_s64x32_fill_undefined() _simd_s64x32_fill_undefined_safe()
@@ -166,8 +166,8 @@
 #endif
 
 #define _simd_s64x64_fill_undefined_safe() _simd_s64x64()
-	#ifdef _simd_s64x64_fill_undefined_
-#define _simd_s64x64_fill_undefined() _simd_s64x64_fill_undefined_()
+#ifdef _simd_s64x64_fill_undefined_
+	#define _simd_s64x64_fill_undefined() _simd_s64x64_fill_undefined_()
 	#define _simd_s64x64_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x64_fill_undefined_instruction_set>()
 #else
 	#define _simd_s64x64_fill_undefined() _simd_s64x64_fill_undefined_safe()
@@ -175,8 +175,8 @@
 #endif
 
 #define _simd_u64x2_fill_undefined_safe() _simd_u64x2()
-	#ifdef _simd_u64x2_fill_undefined_
-#define _simd_u64x2_fill_undefined() _simd_u64x2_fill_undefined_()
+#ifdef _simd_u64x2_fill_undefined_
+	#define _simd_u64x2_fill_undefined() _simd_u64x2_fill_undefined_()
 	#define _simd_u64x2_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x2_fill_undefined_instruction_set>()
 #else
 	#define _simd_u64x2_fill_undefined() _simd_u64x2_fill_undefined_safe()
@@ -184,8 +184,8 @@
 #endif
 
 #define _simd_u64x4_fill_undefined_safe() _simd_u64x4()
-	#ifdef _simd_u64x4_fill_undefined_
-#define _simd_u64x4_fill_undefined() _simd_u64x4_fill_undefined_()
+#ifdef _simd_u64x4_fill_undefined_
+	#define _simd_u64x4_fill_undefined() _simd_u64x4_fill_undefined_()
 	#define _simd_u64x4_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x4_fill_undefined_instruction_set>()
 #else
 	#define _simd_u64x4_fill_undefined() _simd_u64x4_fill_undefined_safe()
@@ -193,8 +193,8 @@
 #endif
 
 #define _simd_u64x8_fill_undefined_safe() _simd_u64x8()
-	#ifdef _simd_u64x8_fill_undefined_
-#define _simd_u64x8_fill_undefined() _simd_u64x8_fill_undefined_()
+#ifdef _simd_u64x8_fill_undefined_
+	#define _simd_u64x8_fill_undefined() _simd_u64x8_fill_undefined_()
 	#define _simd_u64x8_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x8_fill_undefined_instruction_set>()
 #else
 	#define _simd_u64x8_fill_undefined() _simd_u64x8_fill_undefined_safe()
@@ -202,8 +202,8 @@
 #endif
 
 #define _simd_u64x16_fill_undefined_safe() _simd_u64x16()
-	#ifdef _simd_u64x16_fill_undefined_
-#define _simd_u64x16_fill_undefined() _simd_u64x16_fill_undefined_()
+#ifdef _simd_u64x16_fill_undefined_
+	#define _simd_u64x16_fill_undefined() _simd_u64x16_fill_undefined_()
 	#define _simd_u64x16_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x16_fill_undefined_instruction_set>()
 #else
 	#define _simd_u64x16_fill_undefined() _simd_u64x16_fill_undefined_safe()
@@ -211,8 +211,8 @@
 #endif
 
 #define _simd_u64x32_fill_undefined_safe() _simd_u64x32()
-	#ifdef _simd_u64x32_fill_undefined_
-#define _simd_u64x32_fill_undefined() _simd_u64x32_fill_undefined_()
+#ifdef _simd_u64x32_fill_undefined_
+	#define _simd_u64x32_fill_undefined() _simd_u64x32_fill_undefined_()
 	#define _simd_u64x32_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x32_fill_undefined_instruction_set>()
 #else
 	#define _simd_u64x32_fill_undefined() _simd_u64x32_fill_undefined_safe()
@@ -220,8 +220,8 @@
 #endif
 
 #define _simd_u64x64_fill_undefined_safe() _simd_u64x64()
-	#ifdef _simd_u64x64_fill_undefined_
-#define _simd_u64x64_fill_undefined() _simd_u64x64_fill_undefined_()
+#ifdef _simd_u64x64_fill_undefined_
+	#define _simd_u64x64_fill_undefined() _simd_u64x64_fill_undefined_()
 	#define _simd_u64x64_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x64_fill_undefined_instruction_set>()
 #else
 	#define _simd_u64x64_fill_undefined() _simd_u64x64_fill_undefined_safe()
@@ -229,8 +229,8 @@
 #endif
 
 #define _simd_s32x2_fill_undefined_safe() _simd_s32x2()
-	#ifdef _simd_s32x2_fill_undefined_
-#define _simd_s32x2_fill_undefined() _simd_s32x2_fill_undefined_()
+#ifdef _simd_s32x2_fill_undefined_
+	#define _simd_s32x2_fill_undefined() _simd_s32x2_fill_undefined_()
 	#define _simd_s32x2_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x2_fill_undefined_instruction_set>()
 #else
 	#define _simd_s32x2_fill_undefined() _simd_s32x2_fill_undefined_safe()
@@ -238,8 +238,8 @@
 #endif
 
 #define _simd_s32x4_fill_undefined_safe() _simd_s32x4()
-	#ifdef _simd_s32x4_fill_undefined_
-#define _simd_s32x4_fill_undefined() _simd_s32x4_fill_undefined_()
+#ifdef _simd_s32x4_fill_undefined_
+	#define _simd_s32x4_fill_undefined() _simd_s32x4_fill_undefined_()
 	#define _simd_s32x4_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x4_fill_undefined_instruction_set>()
 #else
 	#define _simd_s32x4_fill_undefined() _simd_s32x4_fill_undefined_safe()
@@ -247,8 +247,8 @@
 #endif
 
 #define _simd_s32x8_fill_undefined_safe() _simd_s32x8()
-	#ifdef _simd_s32x8_fill_undefined_
-#define _simd_s32x8_fill_undefined() _simd_s32x8_fill_undefined_()
+#ifdef _simd_s32x8_fill_undefined_
+	#define _simd_s32x8_fill_undefined() _simd_s32x8_fill_undefined_()
 	#define _simd_s32x8_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x8_fill_undefined_instruction_set>()
 #else
 	#define _simd_s32x8_fill_undefined() _simd_s32x8_fill_undefined_safe()
@@ -256,8 +256,8 @@
 #endif
 
 #define _simd_s32x16_fill_undefined_safe() _simd_s32x16()
-	#ifdef _simd_s32x16_fill_undefined_
-#define _simd_s32x16_fill_undefined() _simd_s32x16_fill_undefined_()
+#ifdef _simd_s32x16_fill_undefined_
+	#define _simd_s32x16_fill_undefined() _simd_s32x16_fill_undefined_()
 	#define _simd_s32x16_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x16_fill_undefined_instruction_set>()
 #else
 	#define _simd_s32x16_fill_undefined() _simd_s32x16_fill_undefined_safe()
@@ -265,8 +265,8 @@
 #endif
 
 #define _simd_s32x32_fill_undefined_safe() _simd_s32x32()
-	#ifdef _simd_s32x32_fill_undefined_
-#define _simd_s32x32_fill_undefined() _simd_s32x32_fill_undefined_()
+#ifdef _simd_s32x32_fill_undefined_
+	#define _simd_s32x32_fill_undefined() _simd_s32x32_fill_undefined_()
 	#define _simd_s32x32_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x32_fill_undefined_instruction_set>()
 #else
 	#define _simd_s32x32_fill_undefined() _simd_s32x32_fill_undefined_safe()
@@ -274,8 +274,8 @@
 #endif
 
 #define _simd_s32x64_fill_undefined_safe() _simd_s32x64()
-	#ifdef _simd_s32x64_fill_undefined_
-#define _simd_s32x64_fill_undefined() _simd_s32x64_fill_undefined_()
+#ifdef _simd_s32x64_fill_undefined_
+	#define _simd_s32x64_fill_undefined() _simd_s32x64_fill_undefined_()
 	#define _simd_s32x64_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x64_fill_undefined_instruction_set>()
 #else
 	#define _simd_s32x64_fill_undefined() _simd_s32x64_fill_undefined_safe()
@@ -283,8 +283,8 @@
 #endif
 
 #define _simd_u32x2_fill_undefined_safe() _simd_u32x2()
-	#ifdef _simd_u32x2_fill_undefined_
-#define _simd_u32x2_fill_undefined() _simd_u32x2_fill_undefined_()
+#ifdef _simd_u32x2_fill_undefined_
+	#define _simd_u32x2_fill_undefined() _simd_u32x2_fill_undefined_()
 	#define _simd_u32x2_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x2_fill_undefined_instruction_set>()
 #else
 	#define _simd_u32x2_fill_undefined() _simd_u32x2_fill_undefined_safe()
@@ -292,8 +292,8 @@
 #endif
 
 #define _simd_u32x4_fill_undefined_safe() _simd_u32x4()
-	#ifdef _simd_u32x4_fill_undefined_
-#define _simd_u32x4_fill_undefined() _simd_u32x4_fill_undefined_()
+#ifdef _simd_u32x4_fill_undefined_
+	#define _simd_u32x4_fill_undefined() _simd_u32x4_fill_undefined_()
 	#define _simd_u32x4_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x4_fill_undefined_instruction_set>()
 #else
 	#define _simd_u32x4_fill_undefined() _simd_u32x4_fill_undefined_safe()
@@ -301,8 +301,8 @@
 #endif
 
 #define _simd_u32x8_fill_undefined_safe() _simd_u32x8()
-	#ifdef _simd_u32x8_fill_undefined_
-#define _simd_u32x8_fill_undefined() _simd_u32x8_fill_undefined_()
+#ifdef _simd_u32x8_fill_undefined_
+	#define _simd_u32x8_fill_undefined() _simd_u32x8_fill_undefined_()
 	#define _simd_u32x8_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x8_fill_undefined_instruction_set>()
 #else
 	#define _simd_u32x8_fill_undefined() _simd_u32x8_fill_undefined_safe()
@@ -310,8 +310,8 @@
 #endif
 
 #define _simd_u32x16_fill_undefined_safe() _simd_u32x16()
-	#ifdef _simd_u32x16_fill_undefined_
-#define _simd_u32x16_fill_undefined() _simd_u32x16_fill_undefined_()
+#ifdef _simd_u32x16_fill_undefined_
+	#define _simd_u32x16_fill_undefined() _simd_u32x16_fill_undefined_()
 	#define _simd_u32x16_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x16_fill_undefined_instruction_set>()
 #else
 	#define _simd_u32x16_fill_undefined() _simd_u32x16_fill_undefined_safe()
@@ -319,8 +319,8 @@
 #endif
 
 #define _simd_u32x32_fill_undefined_safe() _simd_u32x32()
-	#ifdef _simd_u32x32_fill_undefined_
-#define _simd_u32x32_fill_undefined() _simd_u32x32_fill_undefined_()
+#ifdef _simd_u32x32_fill_undefined_
+	#define _simd_u32x32_fill_undefined() _simd_u32x32_fill_undefined_()
 	#define _simd_u32x32_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x32_fill_undefined_instruction_set>()
 #else
 	#define _simd_u32x32_fill_undefined() _simd_u32x32_fill_undefined_safe()
@@ -328,8 +328,8 @@
 #endif
 
 #define _simd_u32x64_fill_undefined_safe() _simd_u32x64()
-	#ifdef _simd_u32x64_fill_undefined_
-#define _simd_u32x64_fill_undefined() _simd_u32x64_fill_undefined_()
+#ifdef _simd_u32x64_fill_undefined_
+	#define _simd_u32x64_fill_undefined() _simd_u32x64_fill_undefined_()
 	#define _simd_u32x64_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x64_fill_undefined_instruction_set>()
 #else
 	#define _simd_u32x64_fill_undefined() _simd_u32x64_fill_undefined_safe()
@@ -337,8 +337,8 @@
 #endif
 
 #define _simd_s16x2_fill_undefined_safe() _simd_s16x2()
-	#ifdef _simd_s16x2_fill_undefined_
-#define _simd_s16x2_fill_undefined() _simd_s16x2_fill_undefined_()
+#ifdef _simd_s16x2_fill_undefined_
+	#define _simd_s16x2_fill_undefined() _simd_s16x2_fill_undefined_()
 	#define _simd_s16x2_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x2_fill_undefined_instruction_set>()
 #else
 	#define _simd_s16x2_fill_undefined() _simd_s16x2_fill_undefined_safe()
@@ -346,8 +346,8 @@
 #endif
 
 #define _simd_s16x4_fill_undefined_safe() _simd_s16x4()
-	#ifdef _simd_s16x4_fill_undefined_
-#define _simd_s16x4_fill_undefined() _simd_s16x4_fill_undefined_()
+#ifdef _simd_s16x4_fill_undefined_
+	#define _simd_s16x4_fill_undefined() _simd_s16x4_fill_undefined_()
 	#define _simd_s16x4_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x4_fill_undefined_instruction_set>()
 #else
 	#define _simd_s16x4_fill_undefined() _simd_s16x4_fill_undefined_safe()
@@ -355,8 +355,8 @@
 #endif
 
 #define _simd_s16x8_fill_undefined_safe() _simd_s16x8()
-	#ifdef _simd_s16x8_fill_undefined_
-#define _simd_s16x8_fill_undefined() _simd_s16x8_fill_undefined_()
+#ifdef _simd_s16x8_fill_undefined_
+	#define _simd_s16x8_fill_undefined() _simd_s16x8_fill_undefined_()
 	#define _simd_s16x8_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x8_fill_undefined_instruction_set>()
 #else
 	#define _simd_s16x8_fill_undefined() _simd_s16x8_fill_undefined_safe()
@@ -364,8 +364,8 @@
 #endif
 
 #define _simd_s16x16_fill_undefined_safe() _simd_s16x16()
-	#ifdef _simd_s16x16_fill_undefined_
-#define _simd_s16x16_fill_undefined() _simd_s16x16_fill_undefined_()
+#ifdef _simd_s16x16_fill_undefined_
+	#define _simd_s16x16_fill_undefined() _simd_s16x16_fill_undefined_()
 	#define _simd_s16x16_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x16_fill_undefined_instruction_set>()
 #else
 	#define _simd_s16x16_fill_undefined() _simd_s16x16_fill_undefined_safe()
@@ -373,8 +373,8 @@
 #endif
 
 #define _simd_s16x32_fill_undefined_safe() _simd_s16x32()
-	#ifdef _simd_s16x32_fill_undefined_
-#define _simd_s16x32_fill_undefined() _simd_s16x32_fill_undefined_()
+#ifdef _simd_s16x32_fill_undefined_
+	#define _simd_s16x32_fill_undefined() _simd_s16x32_fill_undefined_()
 	#define _simd_s16x32_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x32_fill_undefined_instruction_set>()
 #else
 	#define _simd_s16x32_fill_undefined() _simd_s16x32_fill_undefined_safe()
@@ -382,8 +382,8 @@
 #endif
 
 #define _simd_s16x64_fill_undefined_safe() _simd_s16x64()
-	#ifdef _simd_s16x64_fill_undefined_
-#define _simd_s16x64_fill_undefined() _simd_s16x64_fill_undefined_()
+#ifdef _simd_s16x64_fill_undefined_
+	#define _simd_s16x64_fill_undefined() _simd_s16x64_fill_undefined_()
 	#define _simd_s16x64_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x64_fill_undefined_instruction_set>()
 #else
 	#define _simd_s16x64_fill_undefined() _simd_s16x64_fill_undefined_safe()
@@ -391,8 +391,8 @@
 #endif
 
 #define _simd_u16x2_fill_undefined_safe() _simd_u16x2()
-	#ifdef _simd_u16x2_fill_undefined_
-#define _simd_u16x2_fill_undefined() _simd_u16x2_fill_undefined_()
+#ifdef _simd_u16x2_fill_undefined_
+	#define _simd_u16x2_fill_undefined() _simd_u16x2_fill_undefined_()
 	#define _simd_u16x2_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x2_fill_undefined_instruction_set>()
 #else
 	#define _simd_u16x2_fill_undefined() _simd_u16x2_fill_undefined_safe()
@@ -400,8 +400,8 @@
 #endif
 
 #define _simd_u16x4_fill_undefined_safe() _simd_u16x4()
-	#ifdef _simd_u16x4_fill_undefined_
-#define _simd_u16x4_fill_undefined() _simd_u16x4_fill_undefined_()
+#ifdef _simd_u16x4_fill_undefined_
+	#define _simd_u16x4_fill_undefined() _simd_u16x4_fill_undefined_()
 	#define _simd_u16x4_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x4_fill_undefined_instruction_set>()
 #else
 	#define _simd_u16x4_fill_undefined() _simd_u16x4_fill_undefined_safe()
@@ -409,8 +409,8 @@
 #endif
 
 #define _simd_u16x8_fill_undefined_safe() _simd_u16x8()
-	#ifdef _simd_u16x8_fill_undefined_
-#define _simd_u16x8_fill_undefined() _simd_u16x8_fill_undefined_()
+#ifdef _simd_u16x8_fill_undefined_
+	#define _simd_u16x8_fill_undefined() _simd_u16x8_fill_undefined_()
 	#define _simd_u16x8_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x8_fill_undefined_instruction_set>()
 #else
 	#define _simd_u16x8_fill_undefined() _simd_u16x8_fill_undefined_safe()
@@ -418,8 +418,8 @@
 #endif
 
 #define _simd_u16x16_fill_undefined_safe() _simd_u16x16()
-	#ifdef _simd_u16x16_fill_undefined_
-#define _simd_u16x16_fill_undefined() _simd_u16x16_fill_undefined_()
+#ifdef _simd_u16x16_fill_undefined_
+	#define _simd_u16x16_fill_undefined() _simd_u16x16_fill_undefined_()
 	#define _simd_u16x16_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x16_fill_undefined_instruction_set>()
 #else
 	#define _simd_u16x16_fill_undefined() _simd_u16x16_fill_undefined_safe()
@@ -427,8 +427,8 @@
 #endif
 
 #define _simd_u16x32_fill_undefined_safe() _simd_u16x32()
-	#ifdef _simd_u16x32_fill_undefined_
-#define _simd_u16x32_fill_undefined() _simd_u16x32_fill_undefined_()
+#ifdef _simd_u16x32_fill_undefined_
+	#define _simd_u16x32_fill_undefined() _simd_u16x32_fill_undefined_()
 	#define _simd_u16x32_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x32_fill_undefined_instruction_set>()
 #else
 	#define _simd_u16x32_fill_undefined() _simd_u16x32_fill_undefined_safe()
@@ -436,8 +436,8 @@
 #endif
 
 #define _simd_u16x64_fill_undefined_safe() _simd_u16x64()
-	#ifdef _simd_u16x64_fill_undefined_
-#define _simd_u16x64_fill_undefined() _simd_u16x64_fill_undefined_()
+#ifdef _simd_u16x64_fill_undefined_
+	#define _simd_u16x64_fill_undefined() _simd_u16x64_fill_undefined_()
 	#define _simd_u16x64_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x64_fill_undefined_instruction_set>()
 #else
 	#define _simd_u16x64_fill_undefined() _simd_u16x64_fill_undefined_safe()
@@ -445,8 +445,8 @@
 #endif
 
 #define _simd_s8x2_fill_undefined_safe() _simd_s8x2()
-	#ifdef _simd_s8x2_fill_undefined_
-#define _simd_s8x2_fill_undefined() _simd_s8x2_fill_undefined_()
+#ifdef _simd_s8x2_fill_undefined_
+	#define _simd_s8x2_fill_undefined() _simd_s8x2_fill_undefined_()
 	#define _simd_s8x2_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x2_fill_undefined_instruction_set>()
 #else
 	#define _simd_s8x2_fill_undefined() _simd_s8x2_fill_undefined_safe()
@@ -454,8 +454,8 @@
 #endif
 
 #define _simd_s8x4_fill_undefined_safe() _simd_s8x4()
-	#ifdef _simd_s8x4_fill_undefined_
-#define _simd_s8x4_fill_undefined() _simd_s8x4_fill_undefined_()
+#ifdef _simd_s8x4_fill_undefined_
+	#define _simd_s8x4_fill_undefined() _simd_s8x4_fill_undefined_()
 	#define _simd_s8x4_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x4_fill_undefined_instruction_set>()
 #else
 	#define _simd_s8x4_fill_undefined() _simd_s8x4_fill_undefined_safe()
@@ -463,8 +463,8 @@
 #endif
 
 #define _simd_s8x8_fill_undefined_safe() _simd_s8x8()
-	#ifdef _simd_s8x8_fill_undefined_
-#define _simd_s8x8_fill_undefined() _simd_s8x8_fill_undefined_()
+#ifdef _simd_s8x8_fill_undefined_
+	#define _simd_s8x8_fill_undefined() _simd_s8x8_fill_undefined_()
 	#define _simd_s8x8_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x8_fill_undefined_instruction_set>()
 #else
 	#define _simd_s8x8_fill_undefined() _simd_s8x8_fill_undefined_safe()
@@ -472,8 +472,8 @@
 #endif
 
 #define _simd_s8x16_fill_undefined_safe() _simd_s8x16()
-	#ifdef _simd_s8x16_fill_undefined_
-#define _simd_s8x16_fill_undefined() _simd_s8x16_fill_undefined_()
+#ifdef _simd_s8x16_fill_undefined_
+	#define _simd_s8x16_fill_undefined() _simd_s8x16_fill_undefined_()
 	#define _simd_s8x16_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x16_fill_undefined_instruction_set>()
 #else
 	#define _simd_s8x16_fill_undefined() _simd_s8x16_fill_undefined_safe()
@@ -481,8 +481,8 @@
 #endif
 
 #define _simd_s8x32_fill_undefined_safe() _simd_s8x32()
-	#ifdef _simd_s8x32_fill_undefined_
-#define _simd_s8x32_fill_undefined() _simd_s8x32_fill_undefined_()
+#ifdef _simd_s8x32_fill_undefined_
+	#define _simd_s8x32_fill_undefined() _simd_s8x32_fill_undefined_()
 	#define _simd_s8x32_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x32_fill_undefined_instruction_set>()
 #else
 	#define _simd_s8x32_fill_undefined() _simd_s8x32_fill_undefined_safe()
@@ -490,8 +490,8 @@
 #endif
 
 #define _simd_s8x64_fill_undefined_safe() _simd_s8x64()
-	#ifdef _simd_s8x64_fill_undefined_
-#define _simd_s8x64_fill_undefined() _simd_s8x64_fill_undefined_()
+#ifdef _simd_s8x64_fill_undefined_
+	#define _simd_s8x64_fill_undefined() _simd_s8x64_fill_undefined_()
 	#define _simd_s8x64_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x64_fill_undefined_instruction_set>()
 #else
 	#define _simd_s8x64_fill_undefined() _simd_s8x64_fill_undefined_safe()
@@ -499,8 +499,8 @@
 #endif
 
 #define _simd_u8x2_fill_undefined_safe() _simd_u8x2()
-	#ifdef _simd_u8x2_fill_undefined_
-#define _simd_u8x2_fill_undefined() _simd_u8x2_fill_undefined_()
+#ifdef _simd_u8x2_fill_undefined_
+	#define _simd_u8x2_fill_undefined() _simd_u8x2_fill_undefined_()
 	#define _simd_u8x2_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x2_fill_undefined_instruction_set>()
 #else
 	#define _simd_u8x2_fill_undefined() _simd_u8x2_fill_undefined_safe()
@@ -508,8 +508,8 @@
 #endif
 
 #define _simd_u8x4_fill_undefined_safe() _simd_u8x4()
-	#ifdef _simd_u8x4_fill_undefined_
-#define _simd_u8x4_fill_undefined() _simd_u8x4_fill_undefined_()
+#ifdef _simd_u8x4_fill_undefined_
+	#define _simd_u8x4_fill_undefined() _simd_u8x4_fill_undefined_()
 	#define _simd_u8x4_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x4_fill_undefined_instruction_set>()
 #else
 	#define _simd_u8x4_fill_undefined() _simd_u8x4_fill_undefined_safe()
@@ -517,8 +517,8 @@
 #endif
 
 #define _simd_u8x8_fill_undefined_safe() _simd_u8x8()
-	#ifdef _simd_u8x8_fill_undefined_
-#define _simd_u8x8_fill_undefined() _simd_u8x8_fill_undefined_()
+#ifdef _simd_u8x8_fill_undefined_
+	#define _simd_u8x8_fill_undefined() _simd_u8x8_fill_undefined_()
 	#define _simd_u8x8_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x8_fill_undefined_instruction_set>()
 #else
 	#define _simd_u8x8_fill_undefined() _simd_u8x8_fill_undefined_safe()
@@ -526,8 +526,8 @@
 #endif
 
 #define _simd_u8x16_fill_undefined_safe() _simd_u8x16()
-	#ifdef _simd_u8x16_fill_undefined_
-#define _simd_u8x16_fill_undefined() _simd_u8x16_fill_undefined_()
+#ifdef _simd_u8x16_fill_undefined_
+	#define _simd_u8x16_fill_undefined() _simd_u8x16_fill_undefined_()
 	#define _simd_u8x16_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x16_fill_undefined_instruction_set>()
 #else
 	#define _simd_u8x16_fill_undefined() _simd_u8x16_fill_undefined_safe()
@@ -535,8 +535,8 @@
 #endif
 
 #define _simd_u8x32_fill_undefined_safe() _simd_u8x32()
-	#ifdef _simd_u8x32_fill_undefined_
-#define _simd_u8x32_fill_undefined() _simd_u8x32_fill_undefined_()
+#ifdef _simd_u8x32_fill_undefined_
+	#define _simd_u8x32_fill_undefined() _simd_u8x32_fill_undefined_()
 	#define _simd_u8x32_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x32_fill_undefined_instruction_set>()
 #else
 	#define _simd_u8x32_fill_undefined() _simd_u8x32_fill_undefined_safe()
@@ -544,8 +544,8 @@
 #endif
 
 #define _simd_u8x64_fill_undefined_safe() _simd_u8x64()
-	#ifdef _simd_u8x64_fill_undefined_
-#define _simd_u8x64_fill_undefined() _simd_u8x64_fill_undefined_()
+#ifdef _simd_u8x64_fill_undefined_
+	#define _simd_u8x64_fill_undefined() _simd_u8x64_fill_undefined_()
 	#define _simd_u8x64_fill_undefined_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x64_fill_undefined_instruction_set>()
 #else
 	#define _simd_u8x64_fill_undefined() _simd_u8x64_fill_undefined_safe()
