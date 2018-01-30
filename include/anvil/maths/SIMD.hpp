@@ -1481,6 +1481,38 @@
 	#define _simd_u8x64_combine_instruction_set(X) anvil::simd::IS_NONE
 #endif
 
+// Split / Combine
+
+#include "anvil/maths/simd/splitlo.hpp"
+#include "anvil/maths/simd/splithi.hpp"
+
+#define _simd_combine_(A,B)\
+	static ANVIL_STRONG_INLINE _simd_ ## A  ANVIL_SIMD_CALL _simd_ ## A ## _combine_safe(const register _simd_ ## B x, const register _simd_ ## B y)  { _simd_ ## A tmp;  reinterpret_cast<_simd_ ## B *>(&tmp)[0] = x;  reinterpret_cast<_simd_ ## B *>(&tmp)[1] = x;  return tmp; }
+
+#define _simd_combine(T)\
+	_simd_combine_(T ## x2, T ## x1)\
+	_simd_combine_(T ## x4, T ## x2)\
+	_simd_combine_(T ## x8, T ## x4)\
+	_simd_combine_(T ## x16, T ## x8)\
+	_simd_combine_(T ## x32, T ## x16)\
+	_simd_combine_(T ## x64, T ## x32)
+
+	_simd_combine(f64)
+		_simd_combine(f32)
+		_simd_combine(s64)
+		_simd_combine(u64)
+		_simd_combine(s32)
+		_simd_combine(u32)
+		_simd_combine(s16)
+		_simd_combine(u16)
+		_simd_combine(s8)
+		_simd_combine(u8)
+
+#undef _simd_combine
+#undef _simd_combine_
+
+#include "anvil/maths/simd/combine.hpp"
+
 
 // Fill undefined
 
@@ -1497,68 +1529,6 @@
 // Set
 
 #include "anvil/maths/simd/set.hpp"
-
-// Split
-
-#define _simd_split_(A,B)\
-	static ANVIL_STRONG_INLINE _simd_ ## B  ANVIL_SIMD_CALL _simd_ ## A ## _splitlo_safe(const register _simd_ ## A x)  { return reinterpret_cast<const _simd_ ## B*>(&x)[0]; }\
-	static ANVIL_STRONG_INLINE _simd_ ## B  ANVIL_SIMD_CALL _simd_ ## A ## _splithi_safe(const register _simd_ ## A x)  { return reinterpret_cast<const _simd_ ## B*>(&x)[1]; }
-
-#define _simd_split(T)\
-	_simd_split_(T ## x2, T ## x1)\
-	_simd_split_(T ## x4, T ## x2)\
-	_simd_split_(T ## x8, T ## x4)\
-	_simd_split_(T ## x16, T ## x8)\
-	_simd_split_(T ## x32, T ## x16)\
-	_simd_split_(T ## x64, T ## x32)
-
-
-_simd_split(f64)
-_simd_split(f32)
-_simd_split(s64)
-_simd_split(u64)
-_simd_split(s32)
-_simd_split(u32)
-_simd_split(s16)
-_simd_split(u16)
-_simd_split(s8)
-_simd_split(u8)
-
-#undef _simd_split
-#undef _simd_split_
-
-#include "anvil/maths/simd/splitlo.hpp"
-#include "anvil/maths/simd/splithi.hpp"
-
-// Combine
-
-#define _simd_combine_(A,B)\
-	static ANVIL_STRONG_INLINE _simd_ ## A  ANVIL_SIMD_CALL _simd_ ## A ## _combine_safe(const register _simd_ ## B x, const register _simd_ ## B y)  { _simd_ ## A tmp;  reinterpret_cast<_simd_ ## B *>(&tmp)[0] = x;  reinterpret_cast<_simd_ ## B *>(&tmp)[1] = x;  return tmp; }
-
-#define _simd_combine(T)\
-	_simd_combine_(T ## x2, T ## x1)\
-	_simd_combine_(T ## x4, T ## x2)\
-	_simd_combine_(T ## x8, T ## x4)\
-	_simd_combine_(T ## x16, T ## x8)\
-	_simd_combine_(T ## x32, T ## x16)\
-	_simd_combine_(T ## x64, T ## x32)
-
-_simd_combine(f64)
-_simd_combine(f32)
-_simd_combine(s64)
-_simd_combine(u64)
-_simd_combine(s32)
-_simd_combine(u32)
-_simd_combine(s16)
-_simd_combine(u16)
-_simd_combine(s8)
-_simd_combine(u8)
-
-#undef _simd_combine
-#undef _simd_combine_
-
-#include "anvil/maths/simd/combine.hpp"
-
 // Insert
 
 #define _simd_insert_(A,S)\
