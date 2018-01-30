@@ -617,40 +617,42 @@ _simd_insert(u8)
 
 #include "anvil/maths/simd/insert.hpp"
 
-// Get
+// Extract
 
-#define _simd_get_(A,S)\
-	static ANVIL_STRONG_INLINE S ANVIL_SIMD_CALL _simd_ ## A ## _get_safe(const register _simd_ ## A x, int i)  { return reinterpret_cast<const S*>(&x)[i]; }
+#define _simd_extract_(A,S)\
+	static ANVIL_STRONG_INLINE S ANVIL_SIMD_CALL _simd_ ## A ## _extract_safe(const register _simd_ ## A x, int i)  { return reinterpret_cast<const S*>(&x)[i]; }
 
-#define _simd_get(T)\
-	_simd_get_(T ## x2, _simd_ ## T ## x1)\
-	_simd_get_(T ## x4, _simd_ ## T ## x1)\
-	_simd_get_(T ## x8, _simd_ ## T ## x1)\
-	_simd_get_(T ## x16, _simd_ ## T ## x1)\
-	_simd_get_(T ## x32, _simd_ ## T ## x1)\
-	_simd_get_(T ## x64, _simd_ ## T ## x1)
+#define _simd_extract(T)\
+	_simd_extract_(T ## x2, _simd_ ## T ## x1)\
+	_simd_extract_(T ## x4, _simd_ ## T ## x1)\
+	_simd_extract_(T ## x8, _simd_ ## T ## x1)\
+	_simd_extract_(T ## x16, _simd_ ## T ## x1)\
+	_simd_extract_(T ## x32, _simd_ ## T ## x1)\
+	_simd_extract_(T ## x64, _simd_ ## T ## x1)
 
-_simd_get(f64)
-_simd_get(f32)
-_simd_get(s64)
-_simd_get(u64)
-_simd_get(s32)
-_simd_get(u32)
-_simd_get(s16)
-_simd_get(u16)
-_simd_get(s8)
-_simd_get(u8)
+_simd_extract(f64)
+_simd_extract(f32)
+_simd_extract(s64)
+_simd_extract(u64)
+_simd_extract(s32)
+_simd_extract(u32)
+_simd_extract(s16)
+_simd_extract(u16)
+_simd_extract(s8)
+_simd_extract(u8)
 
-#undef _simd_get
-#undef _simd_get_
+#undef _simd_extract
+#undef _simd_extract_
+
+#include "anvil/maths/simd/extract.hpp"
 
 // Add
 
 #define _simd_add2_(A)\
 	static ANVIL_STRONG_INLINE _simd_ ## A ANVIL_SIMD_CALL _simd_ ## A ## _add_safe(_simd_ ## A x, _simd_ ## A y) {\
 		_simd_ ## A tmp;\
-		tmp = _simd_ ## A ## _insert_safe(tmp, 0, _simd_ ## A ## _get_safe(x, 0) + _simd_ ## A ## _get_safe(y, 0));\
-		tmp = _simd_ ## A ## _insert_safe(tmp, 1, _simd_ ## A ## _get_safe(x, 1) + _simd_ ## A ## _get_safe(y, 1));\
+		tmp = _simd_ ## A ## _insert_safe(tmp, 0, _simd_ ## A ## _extract_safe(x, 0) + _simd_ ## A ## _extract_safe(y, 0));\
+		tmp = _simd_ ## A ## _insert_safe(tmp, 1, _simd_ ## A ## _extract_safe(x, 1) + _simd_ ## A ## _extract_safe(y, 1));\
 		return tmp;\
 	}
 
