@@ -210,9 +210,9 @@
 		_simd_f64x1 lo;
 		_simd_f64x1 hi;
 	};
-	#define _simd_f64x2_splitlo_(X) x.lo
+	#define _simd_f64x2_splitlo_(X) X.lo
 	#define _simd_f64x2_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_f64x2_splithi_(X) x.hi
+	#define _simd_f64x2_splithi_(X) X.hi
 	#define _simd_f64x2_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_f64x2_combine_(X,Y) _simd_f64x2({X,Y})
 	#define _simd_f64x2_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -222,9 +222,9 @@
 		_simd_f64x2 lo;
 		_simd_f64x2 hi;
 	};
-	#define _simd_f64x4_splitlo_(X) x.lo
+	#define _simd_f64x4_splitlo_(X) X.lo
 	#define _simd_f64x4_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_f64x4_splithi_(X) x.hi
+	#define _simd_f64x4_splithi_(X) X.hi
 	#define _simd_f64x4_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_f64x4_combine_(X,Y) _simd_f64x4({X,Y})
 	#define _simd_f64x4_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -234,9 +234,9 @@
 		_simd_f64x4 lo;
 		_simd_f64x4 hi;
 	};
-	#define _simd_f64x8_splitlo_(X) x.lo
+	#define _simd_f64x8_splitlo_(X) X.lo
 	#define _simd_f64x8_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_f64x8_splithi_(X) x.hi
+	#define _simd_f64x8_splithi_(X) X.hi
 	#define _simd_f64x8_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_f64x8_combine_(X,Y) _simd_f64x8({X,Y})
 	#define _simd_f64x8_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -246,9 +246,9 @@
 		_simd_f64x8 lo;
 		_simd_f64x8 hi;
 	};
-	#define _simd_f64x16_splitlo_(X) x.lo
+	#define _simd_f64x16_splitlo_(X) X.lo
 	#define _simd_f64x16_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_f64x16_splithi_(X) x.hi
+	#define _simd_f64x16_splithi_(X) X.hi
 	#define _simd_f64x16_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_f64x16_combine_(X,Y) _simd_f64x16({X,Y})
 	#define _simd_f64x16_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -258,9 +258,9 @@
 		_simd_f64x16 lo;
 		_simd_f64x16 hi;
 	};
-	#define _simd_f64x32_splitlo_(X) x.lo
+	#define _simd_f64x32_splitlo_(X) X.lo
 	#define _simd_f64x32_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_f64x32_splithi_(X) x.hi
+	#define _simd_f64x32_splithi_(X) X.hi
 	#define _simd_f64x32_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_f64x32_combine_(X,Y) _simd_f64x32({X,Y})
 	#define _simd_f64x32_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -270,9 +270,9 @@
 		_simd_f64x32 lo;
 		_simd_f64x32 hi;
 	};
-	#define _simd_f64x64_splitlo_(X) x.lo
+	#define _simd_f64x64_splitlo_(X) X.lo
 	#define _simd_f64x64_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_f64x64_splithi_(X) x.hi
+	#define _simd_f64x64_splithi_(X) X.hi
 	#define _simd_f64x64_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_f64x64_combine_(X,Y) _simd_f64x64({X,Y})
 	#define _simd_f64x64_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -282,9 +282,9 @@
 		_simd_f32x1 lo;
 		_simd_f32x1 hi;
 	};
-	#define _simd_f32x2_splitlo_(X) x.lo
+	#define _simd_f32x2_splitlo_(X) X.lo
 	#define _simd_f32x2_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_f32x2_splithi_(X) x.hi
+	#define _simd_f32x2_splithi_(X) X.hi
 	#define _simd_f32x2_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_f32x2_combine_(X,Y) _simd_f32x2({X,Y})
 	#define _simd_f32x2_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -294,9 +294,9 @@
 		_simd_f32x2 lo;
 		_simd_f32x2 hi;
 	};
-	#define _simd_f32x4_splitlo_(X) x.lo
+	#define _simd_f32x4_splitlo_(X) X.lo
 	#define _simd_f32x4_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_f32x4_splithi_(X) x.hi
+	#define _simd_f32x4_splithi_(X) X.hi
 	#define _simd_f32x4_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_f32x4_combine_(X,Y) _simd_f32x4({X,Y})
 	#define _simd_f32x4_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -306,9 +306,9 @@
 		_simd_f32x4 lo;
 		_simd_f32x4 hi;
 	};
-	#define _simd_f32x8_splitlo_(X) x.lo
+	#define _simd_f32x8_splitlo_(X) X.lo
 	#define _simd_f32x8_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_f32x8_splithi_(X) x.hi
+	#define _simd_f32x8_splithi_(X) X.hi
 	#define _simd_f32x8_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_f32x8_combine_(X,Y) _simd_f32x8({X,Y})
 	#define _simd_f32x8_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -318,9 +318,9 @@
 		_simd_f32x8 lo;
 		_simd_f32x8 hi;
 	};
-	#define _simd_f32x16_splitlo_(X) x.lo
+	#define _simd_f32x16_splitlo_(X) X.lo
 	#define _simd_f32x16_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_f32x16_splithi_(X) x.hi
+	#define _simd_f32x16_splithi_(X) X.hi
 	#define _simd_f32x16_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_f32x16_combine_(X,Y) _simd_f32x16({X,Y})
 	#define _simd_f32x16_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -330,9 +330,9 @@
 		_simd_f32x16 lo;
 		_simd_f32x16 hi;
 	};
-	#define _simd_f32x32_splitlo_(X) x.lo
+	#define _simd_f32x32_splitlo_(X) X.lo
 	#define _simd_f32x32_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_f32x32_splithi_(X) x.hi
+	#define _simd_f32x32_splithi_(X) X.hi
 	#define _simd_f32x32_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_f32x32_combine_(X,Y) _simd_f32x32({X,Y})
 	#define _simd_f32x32_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -342,9 +342,9 @@
 		_simd_f32x32 lo;
 		_simd_f32x32 hi;
 	};
-	#define _simd_f32x64_splitlo_(X) x.lo
+	#define _simd_f32x64_splitlo_(X) X.lo
 	#define _simd_f32x64_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_f32x64_splithi_(X) x.hi
+	#define _simd_f32x64_splithi_(X) X.hi
 	#define _simd_f32x64_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_f32x64_combine_(X,Y) _simd_f32x64({X,Y})
 	#define _simd_f32x64_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -354,9 +354,9 @@
 		_simd_s64x1 lo;
 		_simd_s64x1 hi;
 	};
-	#define _simd_s64x2_splitlo_(X) x.lo
+	#define _simd_s64x2_splitlo_(X) X.lo
 	#define _simd_s64x2_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s64x2_splithi_(X) x.hi
+	#define _simd_s64x2_splithi_(X) X.hi
 	#define _simd_s64x2_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s64x2_combine_(X,Y) _simd_s64x2({X,Y})
 	#define _simd_s64x2_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -366,9 +366,9 @@
 		_simd_s64x2 lo;
 		_simd_s64x2 hi;
 	};
-	#define _simd_s64x4_splitlo_(X) x.lo
+	#define _simd_s64x4_splitlo_(X) X.lo
 	#define _simd_s64x4_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s64x4_splithi_(X) x.hi
+	#define _simd_s64x4_splithi_(X) X.hi
 	#define _simd_s64x4_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s64x4_combine_(X,Y) _simd_s64x4({X,Y})
 	#define _simd_s64x4_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -378,9 +378,9 @@
 		_simd_s64x4 lo;
 		_simd_s64x4 hi;
 	};
-	#define _simd_s64x8_splitlo_(X) x.lo
+	#define _simd_s64x8_splitlo_(X) X.lo
 	#define _simd_s64x8_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s64x8_splithi_(X) x.hi
+	#define _simd_s64x8_splithi_(X) X.hi
 	#define _simd_s64x8_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s64x8_combine_(X,Y) _simd_s64x8({X,Y})
 	#define _simd_s64x8_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -390,9 +390,9 @@
 		_simd_s64x8 lo;
 		_simd_s64x8 hi;
 	};
-	#define _simd_s64x16_splitlo_(X) x.lo
+	#define _simd_s64x16_splitlo_(X) X.lo
 	#define _simd_s64x16_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s64x16_splithi_(X) x.hi
+	#define _simd_s64x16_splithi_(X) X.hi
 	#define _simd_s64x16_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s64x16_combine_(X,Y) _simd_s64x16({X,Y})
 	#define _simd_s64x16_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -402,9 +402,9 @@
 		_simd_s64x16 lo;
 		_simd_s64x16 hi;
 	};
-	#define _simd_s64x32_splitlo_(X) x.lo
+	#define _simd_s64x32_splitlo_(X) X.lo
 	#define _simd_s64x32_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s64x32_splithi_(X) x.hi
+	#define _simd_s64x32_splithi_(X) X.hi
 	#define _simd_s64x32_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s64x32_combine_(X,Y) _simd_s64x32({X,Y})
 	#define _simd_s64x32_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -414,9 +414,9 @@
 		_simd_s64x32 lo;
 		_simd_s64x32 hi;
 	};
-	#define _simd_s64x64_splitlo_(X) x.lo
+	#define _simd_s64x64_splitlo_(X) X.lo
 	#define _simd_s64x64_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s64x64_splithi_(X) x.hi
+	#define _simd_s64x64_splithi_(X) X.hi
 	#define _simd_s64x64_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s64x64_combine_(X,Y) _simd_s64x64({X,Y})
 	#define _simd_s64x64_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -426,9 +426,9 @@
 		_simd_u64x1 lo;
 		_simd_u64x1 hi;
 	};
-	#define _simd_u64x2_splitlo_(X) x.lo
+	#define _simd_u64x2_splitlo_(X) X.lo
 	#define _simd_u64x2_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u64x2_splithi_(X) x.hi
+	#define _simd_u64x2_splithi_(X) X.hi
 	#define _simd_u64x2_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u64x2_combine_(X,Y) _simd_u64x2({X,Y})
 	#define _simd_u64x2_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -438,9 +438,9 @@
 		_simd_u64x2 lo;
 		_simd_u64x2 hi;
 	};
-	#define _simd_u64x4_splitlo_(X) x.lo
+	#define _simd_u64x4_splitlo_(X) X.lo
 	#define _simd_u64x4_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u64x4_splithi_(X) x.hi
+	#define _simd_u64x4_splithi_(X) X.hi
 	#define _simd_u64x4_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u64x4_combine_(X,Y) _simd_u64x4({X,Y})
 	#define _simd_u64x4_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -450,9 +450,9 @@
 		_simd_u64x4 lo;
 		_simd_u64x4 hi;
 	};
-	#define _simd_u64x8_splitlo_(X) x.lo
+	#define _simd_u64x8_splitlo_(X) X.lo
 	#define _simd_u64x8_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u64x8_splithi_(X) x.hi
+	#define _simd_u64x8_splithi_(X) X.hi
 	#define _simd_u64x8_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u64x8_combine_(X,Y) _simd_u64x8({X,Y})
 	#define _simd_u64x8_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -462,9 +462,9 @@
 		_simd_u64x8 lo;
 		_simd_u64x8 hi;
 	};
-	#define _simd_u64x16_splitlo_(X) x.lo
+	#define _simd_u64x16_splitlo_(X) X.lo
 	#define _simd_u64x16_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u64x16_splithi_(X) x.hi
+	#define _simd_u64x16_splithi_(X) X.hi
 	#define _simd_u64x16_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u64x16_combine_(X,Y) _simd_u64x16({X,Y})
 	#define _simd_u64x16_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -474,9 +474,9 @@
 		_simd_u64x16 lo;
 		_simd_u64x16 hi;
 	};
-	#define _simd_u64x32_splitlo_(X) x.lo
+	#define _simd_u64x32_splitlo_(X) X.lo
 	#define _simd_u64x32_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u64x32_splithi_(X) x.hi
+	#define _simd_u64x32_splithi_(X) X.hi
 	#define _simd_u64x32_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u64x32_combine_(X,Y) _simd_u64x32({X,Y})
 	#define _simd_u64x32_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -486,9 +486,9 @@
 		_simd_u64x32 lo;
 		_simd_u64x32 hi;
 	};
-	#define _simd_u64x64_splitlo_(X) x.lo
+	#define _simd_u64x64_splitlo_(X) X.lo
 	#define _simd_u64x64_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u64x64_splithi_(X) x.hi
+	#define _simd_u64x64_splithi_(X) X.hi
 	#define _simd_u64x64_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u64x64_combine_(X,Y) _simd_u64x64({X,Y})
 	#define _simd_u64x64_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -498,9 +498,9 @@
 		_simd_s32x1 lo;
 		_simd_s32x1 hi;
 	};
-	#define _simd_s32x2_splitlo_(X) x.lo
+	#define _simd_s32x2_splitlo_(X) X.lo
 	#define _simd_s32x2_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s32x2_splithi_(X) x.hi
+	#define _simd_s32x2_splithi_(X) X.hi
 	#define _simd_s32x2_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s32x2_combine_(X,Y) _simd_s32x2({X,Y})
 	#define _simd_s32x2_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -510,9 +510,9 @@
 		_simd_s32x2 lo;
 		_simd_s32x2 hi;
 	};
-	#define _simd_s32x4_splitlo_(X) x.lo
+	#define _simd_s32x4_splitlo_(X) X.lo
 	#define _simd_s32x4_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s32x4_splithi_(X) x.hi
+	#define _simd_s32x4_splithi_(X) X.hi
 	#define _simd_s32x4_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s32x4_combine_(X,Y) _simd_s32x4({X,Y})
 	#define _simd_s32x4_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -522,9 +522,9 @@
 		_simd_s32x4 lo;
 		_simd_s32x4 hi;
 	};
-	#define _simd_s32x8_splitlo_(X) x.lo
+	#define _simd_s32x8_splitlo_(X) X.lo
 	#define _simd_s32x8_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s32x8_splithi_(X) x.hi
+	#define _simd_s32x8_splithi_(X) X.hi
 	#define _simd_s32x8_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s32x8_combine_(X,Y) _simd_s32x8({X,Y})
 	#define _simd_s32x8_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -534,9 +534,9 @@
 		_simd_s32x8 lo;
 		_simd_s32x8 hi;
 	};
-	#define _simd_s32x16_splitlo_(X) x.lo
+	#define _simd_s32x16_splitlo_(X) X.lo
 	#define _simd_s32x16_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s32x16_splithi_(X) x.hi
+	#define _simd_s32x16_splithi_(X) X.hi
 	#define _simd_s32x16_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s32x16_combine_(X,Y) _simd_s32x16({X,Y})
 	#define _simd_s32x16_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -546,9 +546,9 @@
 		_simd_s32x16 lo;
 		_simd_s32x16 hi;
 	};
-	#define _simd_s32x32_splitlo_(X) x.lo
+	#define _simd_s32x32_splitlo_(X) X.lo
 	#define _simd_s32x32_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s32x32_splithi_(X) x.hi
+	#define _simd_s32x32_splithi_(X) X.hi
 	#define _simd_s32x32_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s32x32_combine_(X,Y) _simd_s32x32({X,Y})
 	#define _simd_s32x32_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -558,9 +558,9 @@
 		_simd_s32x32 lo;
 		_simd_s32x32 hi;
 	};
-	#define _simd_s32x64_splitlo_(X) x.lo
+	#define _simd_s32x64_splitlo_(X) X.lo
 	#define _simd_s32x64_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s32x64_splithi_(X) x.hi
+	#define _simd_s32x64_splithi_(X) X.hi
 	#define _simd_s32x64_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s32x64_combine_(X,Y) _simd_s32x64({X,Y})
 	#define _simd_s32x64_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -570,9 +570,9 @@
 		_simd_u32x1 lo;
 		_simd_u32x1 hi;
 	};
-	#define _simd_u32x2_splitlo_(X) x.lo
+	#define _simd_u32x2_splitlo_(X) X.lo
 	#define _simd_u32x2_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u32x2_splithi_(X) x.hi
+	#define _simd_u32x2_splithi_(X) X.hi
 	#define _simd_u32x2_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u32x2_combine_(X,Y) _simd_u32x2({X,Y})
 	#define _simd_u32x2_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -582,9 +582,9 @@
 		_simd_u32x2 lo;
 		_simd_u32x2 hi;
 	};
-	#define _simd_u32x4_splitlo_(X) x.lo
+	#define _simd_u32x4_splitlo_(X) X.lo
 	#define _simd_u32x4_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u32x4_splithi_(X) x.hi
+	#define _simd_u32x4_splithi_(X) X.hi
 	#define _simd_u32x4_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u32x4_combine_(X,Y) _simd_u32x4({X,Y})
 	#define _simd_u32x4_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -594,9 +594,9 @@
 		_simd_u32x4 lo;
 		_simd_u32x4 hi;
 	};
-	#define _simd_u32x8_splitlo_(X) x.lo
+	#define _simd_u32x8_splitlo_(X) X.lo
 	#define _simd_u32x8_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u32x8_splithi_(X) x.hi
+	#define _simd_u32x8_splithi_(X) X.hi
 	#define _simd_u32x8_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u32x8_combine_(X,Y) _simd_u32x8({X,Y})
 	#define _simd_u32x8_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -606,9 +606,9 @@
 		_simd_u32x8 lo;
 		_simd_u32x8 hi;
 	};
-	#define _simd_u32x16_splitlo_(X) x.lo
+	#define _simd_u32x16_splitlo_(X) X.lo
 	#define _simd_u32x16_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u32x16_splithi_(X) x.hi
+	#define _simd_u32x16_splithi_(X) X.hi
 	#define _simd_u32x16_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u32x16_combine_(X,Y) _simd_u32x16({X,Y})
 	#define _simd_u32x16_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -618,9 +618,9 @@
 		_simd_u32x16 lo;
 		_simd_u32x16 hi;
 	};
-	#define _simd_u32x32_splitlo_(X) x.lo
+	#define _simd_u32x32_splitlo_(X) X.lo
 	#define _simd_u32x32_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u32x32_splithi_(X) x.hi
+	#define _simd_u32x32_splithi_(X) X.hi
 	#define _simd_u32x32_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u32x32_combine_(X,Y) _simd_u32x32({X,Y})
 	#define _simd_u32x32_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -630,9 +630,9 @@
 		_simd_u32x32 lo;
 		_simd_u32x32 hi;
 	};
-	#define _simd_u32x64_splitlo_(X) x.lo
+	#define _simd_u32x64_splitlo_(X) X.lo
 	#define _simd_u32x64_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u32x64_splithi_(X) x.hi
+	#define _simd_u32x64_splithi_(X) X.hi
 	#define _simd_u32x64_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u32x64_combine_(X,Y) _simd_u32x64({X,Y})
 	#define _simd_u32x64_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -642,9 +642,9 @@
 		_simd_s16x1 lo;
 		_simd_s16x1 hi;
 	};
-	#define _simd_s16x2_splitlo_(X) x.lo
+	#define _simd_s16x2_splitlo_(X) X.lo
 	#define _simd_s16x2_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s16x2_splithi_(X) x.hi
+	#define _simd_s16x2_splithi_(X) X.hi
 	#define _simd_s16x2_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s16x2_combine_(X,Y) _simd_s16x2({X,Y})
 	#define _simd_s16x2_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -654,9 +654,9 @@
 		_simd_s16x2 lo;
 		_simd_s16x2 hi;
 	};
-	#define _simd_s16x4_splitlo_(X) x.lo
+	#define _simd_s16x4_splitlo_(X) X.lo
 	#define _simd_s16x4_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s16x4_splithi_(X) x.hi
+	#define _simd_s16x4_splithi_(X) X.hi
 	#define _simd_s16x4_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s16x4_combine_(X,Y) _simd_s16x4({X,Y})
 	#define _simd_s16x4_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -666,9 +666,9 @@
 		_simd_s16x4 lo;
 		_simd_s16x4 hi;
 	};
-	#define _simd_s16x8_splitlo_(X) x.lo
+	#define _simd_s16x8_splitlo_(X) X.lo
 	#define _simd_s16x8_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s16x8_splithi_(X) x.hi
+	#define _simd_s16x8_splithi_(X) X.hi
 	#define _simd_s16x8_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s16x8_combine_(X,Y) _simd_s16x8({X,Y})
 	#define _simd_s16x8_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -678,9 +678,9 @@
 		_simd_s16x8 lo;
 		_simd_s16x8 hi;
 	};
-	#define _simd_s16x16_splitlo_(X) x.lo
+	#define _simd_s16x16_splitlo_(X) X.lo
 	#define _simd_s16x16_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s16x16_splithi_(X) x.hi
+	#define _simd_s16x16_splithi_(X) X.hi
 	#define _simd_s16x16_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s16x16_combine_(X,Y) _simd_s16x16({X,Y})
 	#define _simd_s16x16_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -690,9 +690,9 @@
 		_simd_s16x16 lo;
 		_simd_s16x16 hi;
 	};
-	#define _simd_s16x32_splitlo_(X) x.lo
+	#define _simd_s16x32_splitlo_(X) X.lo
 	#define _simd_s16x32_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s16x32_splithi_(X) x.hi
+	#define _simd_s16x32_splithi_(X) X.hi
 	#define _simd_s16x32_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s16x32_combine_(X,Y) _simd_s16x32({X,Y})
 	#define _simd_s16x32_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -702,9 +702,9 @@
 		_simd_s16x32 lo;
 		_simd_s16x32 hi;
 	};
-	#define _simd_s16x64_splitlo_(X) x.lo
+	#define _simd_s16x64_splitlo_(X) X.lo
 	#define _simd_s16x64_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s16x64_splithi_(X) x.hi
+	#define _simd_s16x64_splithi_(X) X.hi
 	#define _simd_s16x64_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s16x64_combine_(X,Y) _simd_s16x64({X,Y})
 	#define _simd_s16x64_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -714,9 +714,9 @@
 		_simd_u16x1 lo;
 		_simd_u16x1 hi;
 	};
-	#define _simd_u16x2_splitlo_(X) x.lo
+	#define _simd_u16x2_splitlo_(X) X.lo
 	#define _simd_u16x2_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u16x2_splithi_(X) x.hi
+	#define _simd_u16x2_splithi_(X) X.hi
 	#define _simd_u16x2_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u16x2_combine_(X,Y) _simd_u16x2({X,Y})
 	#define _simd_u16x2_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -726,9 +726,9 @@
 		_simd_u16x2 lo;
 		_simd_u16x2 hi;
 	};
-	#define _simd_u16x4_splitlo_(X) x.lo
+	#define _simd_u16x4_splitlo_(X) X.lo
 	#define _simd_u16x4_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u16x4_splithi_(X) x.hi
+	#define _simd_u16x4_splithi_(X) X.hi
 	#define _simd_u16x4_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u16x4_combine_(X,Y) _simd_u16x4({X,Y})
 	#define _simd_u16x4_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -738,9 +738,9 @@
 		_simd_u16x4 lo;
 		_simd_u16x4 hi;
 	};
-	#define _simd_u16x8_splitlo_(X) x.lo
+	#define _simd_u16x8_splitlo_(X) X.lo
 	#define _simd_u16x8_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u16x8_splithi_(X) x.hi
+	#define _simd_u16x8_splithi_(X) X.hi
 	#define _simd_u16x8_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u16x8_combine_(X,Y) _simd_u16x8({X,Y})
 	#define _simd_u16x8_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -750,9 +750,9 @@
 		_simd_u16x8 lo;
 		_simd_u16x8 hi;
 	};
-	#define _simd_u16x16_splitlo_(X) x.lo
+	#define _simd_u16x16_splitlo_(X) X.lo
 	#define _simd_u16x16_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u16x16_splithi_(X) x.hi
+	#define _simd_u16x16_splithi_(X) X.hi
 	#define _simd_u16x16_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u16x16_combine_(X,Y) _simd_u16x16({X,Y})
 	#define _simd_u16x16_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -762,9 +762,9 @@
 		_simd_u16x16 lo;
 		_simd_u16x16 hi;
 	};
-	#define _simd_u16x32_splitlo_(X) x.lo
+	#define _simd_u16x32_splitlo_(X) X.lo
 	#define _simd_u16x32_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u16x32_splithi_(X) x.hi
+	#define _simd_u16x32_splithi_(X) X.hi
 	#define _simd_u16x32_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u16x32_combine_(X,Y) _simd_u16x32({X,Y})
 	#define _simd_u16x32_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -774,9 +774,9 @@
 		_simd_u16x32 lo;
 		_simd_u16x32 hi;
 	};
-	#define _simd_u16x64_splitlo_(X) x.lo
+	#define _simd_u16x64_splitlo_(X) X.lo
 	#define _simd_u16x64_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u16x64_splithi_(X) x.hi
+	#define _simd_u16x64_splithi_(X) X.hi
 	#define _simd_u16x64_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u16x64_combine_(X,Y) _simd_u16x64({X,Y})
 	#define _simd_u16x64_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -786,9 +786,9 @@
 		_simd_s8x1 lo;
 		_simd_s8x1 hi;
 	};
-	#define _simd_s8x2_splitlo_(X) x.lo
+	#define _simd_s8x2_splitlo_(X) X.lo
 	#define _simd_s8x2_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s8x2_splithi_(X) x.hi
+	#define _simd_s8x2_splithi_(X) X.hi
 	#define _simd_s8x2_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s8x2_combine_(X,Y) _simd_s8x2({X,Y})
 	#define _simd_s8x2_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -798,9 +798,9 @@
 		_simd_s8x2 lo;
 		_simd_s8x2 hi;
 	};
-	#define _simd_s8x4_splitlo_(X) x.lo
+	#define _simd_s8x4_splitlo_(X) X.lo
 	#define _simd_s8x4_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s8x4_splithi_(X) x.hi
+	#define _simd_s8x4_splithi_(X) X.hi
 	#define _simd_s8x4_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s8x4_combine_(X,Y) _simd_s8x4({X,Y})
 	#define _simd_s8x4_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -810,9 +810,9 @@
 		_simd_s8x4 lo;
 		_simd_s8x4 hi;
 	};
-	#define _simd_s8x8_splitlo_(X) x.lo
+	#define _simd_s8x8_splitlo_(X) X.lo
 	#define _simd_s8x8_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s8x8_splithi_(X) x.hi
+	#define _simd_s8x8_splithi_(X) X.hi
 	#define _simd_s8x8_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s8x8_combine_(X,Y) _simd_s8x8({X,Y})
 	#define _simd_s8x8_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -822,9 +822,9 @@
 		_simd_s8x8 lo;
 		_simd_s8x8 hi;
 	};
-	#define _simd_s8x16_splitlo_(X) x.lo
+	#define _simd_s8x16_splitlo_(X) X.lo
 	#define _simd_s8x16_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s8x16_splithi_(X) x.hi
+	#define _simd_s8x16_splithi_(X) X.hi
 	#define _simd_s8x16_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s8x16_combine_(X,Y) _simd_s8x16({X,Y})
 	#define _simd_s8x16_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -834,9 +834,9 @@
 		_simd_s8x16 lo;
 		_simd_s8x16 hi;
 	};
-	#define _simd_s8x32_splitlo_(X) x.lo
+	#define _simd_s8x32_splitlo_(X) X.lo
 	#define _simd_s8x32_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s8x32_splithi_(X) x.hi
+	#define _simd_s8x32_splithi_(X) X.hi
 	#define _simd_s8x32_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s8x32_combine_(X,Y) _simd_s8x32({X,Y})
 	#define _simd_s8x32_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -846,9 +846,9 @@
 		_simd_s8x32 lo;
 		_simd_s8x32 hi;
 	};
-	#define _simd_s8x64_splitlo_(X) x.lo
+	#define _simd_s8x64_splitlo_(X) X.lo
 	#define _simd_s8x64_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_s8x64_splithi_(X) x.hi
+	#define _simd_s8x64_splithi_(X) X.hi
 	#define _simd_s8x64_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_s8x64_combine_(X,Y) _simd_s8x64({X,Y})
 	#define _simd_s8x64_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -858,9 +858,9 @@
 		_simd_u8x1 lo;
 		_simd_u8x1 hi;
 	};
-	#define _simd_u8x2_splitlo_(X) x.lo
+	#define _simd_u8x2_splitlo_(X) X.lo
 	#define _simd_u8x2_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u8x2_splithi_(X) x.hi
+	#define _simd_u8x2_splithi_(X) X.hi
 	#define _simd_u8x2_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u8x2_combine_(X,Y) _simd_u8x2({X,Y})
 	#define _simd_u8x2_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -870,9 +870,9 @@
 		_simd_u8x2 lo;
 		_simd_u8x2 hi;
 	};
-	#define _simd_u8x4_splitlo_(X) x.lo
+	#define _simd_u8x4_splitlo_(X) X.lo
 	#define _simd_u8x4_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u8x4_splithi_(X) x.hi
+	#define _simd_u8x4_splithi_(X) X.hi
 	#define _simd_u8x4_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u8x4_combine_(X,Y) _simd_u8x4({X,Y})
 	#define _simd_u8x4_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -882,9 +882,9 @@
 		_simd_u8x4 lo;
 		_simd_u8x4 hi;
 	};
-	#define _simd_u8x8_splitlo_(X) x.lo
+	#define _simd_u8x8_splitlo_(X) X.lo
 	#define _simd_u8x8_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u8x8_splithi_(X) x.hi
+	#define _simd_u8x8_splithi_(X) X.hi
 	#define _simd_u8x8_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u8x8_combine_(X,Y) _simd_u8x8({X,Y})
 	#define _simd_u8x8_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -894,9 +894,9 @@
 		_simd_u8x8 lo;
 		_simd_u8x8 hi;
 	};
-	#define _simd_u8x16_splitlo_(X) x.lo
+	#define _simd_u8x16_splitlo_(X) X.lo
 	#define _simd_u8x16_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u8x16_splithi_(X) x.hi
+	#define _simd_u8x16_splithi_(X) X.hi
 	#define _simd_u8x16_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u8x16_combine_(X,Y) _simd_u8x16({X,Y})
 	#define _simd_u8x16_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -906,9 +906,9 @@
 		_simd_u8x16 lo;
 		_simd_u8x16 hi;
 	};
-	#define _simd_u8x32_splitlo_(X) x.lo
+	#define _simd_u8x32_splitlo_(X) X.lo
 	#define _simd_u8x32_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u8x32_splithi_(X) x.hi
+	#define _simd_u8x32_splithi_(X) X.hi
 	#define _simd_u8x32_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u8x32_combine_(X,Y) _simd_u8x32({X,Y})
 	#define _simd_u8x32_combine_instruction_set(X) anvil::simd::IS_NONE
@@ -918,9 +918,9 @@
 		_simd_u8x32 lo;
 		_simd_u8x32 hi;
 	};
-	#define _simd_u8x64_splitlo_(X) x.lo
+	#define _simd_u8x64_splitlo_(X) X.lo
 	#define _simd_u8x64_splitlo_instruction_set(X) anvil::simd::IS_NONE
-	#define _simd_u8x64_splithi_(X) x.hi
+	#define _simd_u8x64_splithi_(X) X.hi
 	#define _simd_u8x64_splithi_instruction_set(X) anvil::simd::IS_NONE
 	#define _simd_u8x64_combine_(X,Y) _simd_u8x64({X,Y})
 	#define _simd_u8x64_combine_instruction_set(X) anvil::simd::IS_NONE
