@@ -18,7 +18,7 @@ static ANVIL_STRONG_INLINE _simd_f64x2 ANVIL_SIMD_CALL _simd_f64x2_add(const reg
 	#define _simd_f64x2_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x2_add_instruction_set>()
 #elif defined(_simd_f64x4_add_)
 	union SIMDUnion { _simd_f64x2 v1; _simd_f64x4 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f64x4_add_(x_.v2, y_.v2);
@@ -26,7 +26,7 @@ static ANVIL_STRONG_INLINE _simd_f64x2 ANVIL_SIMD_CALL _simd_f64x2_add(const reg
 	#define _simd_f64x2_add_enable() _simd_f64x4_add_enable()
 #elif defined(_simd_f64x8_add_)
 	union SIMDUnion { _simd_f64x2 v1; _simd_f64x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f64x8_add_(x_.v2, y_.v2);
@@ -34,7 +34,7 @@ static ANVIL_STRONG_INLINE _simd_f64x2 ANVIL_SIMD_CALL _simd_f64x2_add(const reg
 	#define _simd_f64x2_add_enable() _simd_f64x8_add_enable()
 #elif defined(_simd_f64x16_add_)
 	union SIMDUnion { _simd_f64x2 v1; _simd_f64x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f64x16_add_(x_.v2, y_.v2);
@@ -42,7 +42,7 @@ static ANVIL_STRONG_INLINE _simd_f64x2 ANVIL_SIMD_CALL _simd_f64x2_add(const reg
 	#define _simd_f64x2_add_enable() _simd_f64x16_add_enable()
 #elif defined(_simd_f64x32_add_)
 	union SIMDUnion { _simd_f64x2 v1; _simd_f64x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f64x32_add_(x_.v2, y_.v2);
@@ -50,7 +50,7 @@ static ANVIL_STRONG_INLINE _simd_f64x2 ANVIL_SIMD_CALL _simd_f64x2_add(const reg
 	#define _simd_f64x2_add_enable() _simd_f64x32_add_enable()
 #elif defined(_simd_f64x64_add_)
 	union SIMDUnion { _simd_f64x2 v1; _simd_f64x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f64x64_add_(x_.v2, y_.v2);
@@ -68,7 +68,7 @@ static ANVIL_STRONG_INLINE _simd_f64x4 ANVIL_SIMD_CALL _simd_f64x4_add(const reg
 	#define _simd_f64x4_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x4_add_instruction_set>()
 #elif defined(_simd_f64x8_add_)
 	union SIMDUnion { _simd_f64x4 v1; _simd_f64x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f64x8_add_(x_.v2, y_.v2);
@@ -76,7 +76,7 @@ static ANVIL_STRONG_INLINE _simd_f64x4 ANVIL_SIMD_CALL _simd_f64x4_add(const reg
 	#define _simd_f64x4_add_enable() _simd_f64x8_add_enable()
 #elif defined(_simd_f64x16_add_)
 	union SIMDUnion { _simd_f64x4 v1; _simd_f64x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f64x16_add_(x_.v2, y_.v2);
@@ -84,7 +84,7 @@ static ANVIL_STRONG_INLINE _simd_f64x4 ANVIL_SIMD_CALL _simd_f64x4_add(const reg
 	#define _simd_f64x4_add_enable() _simd_f64x16_add_enable()
 #elif defined(_simd_f64x32_add_)
 	union SIMDUnion { _simd_f64x4 v1; _simd_f64x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f64x32_add_(x_.v2, y_.v2);
@@ -92,7 +92,7 @@ static ANVIL_STRONG_INLINE _simd_f64x4 ANVIL_SIMD_CALL _simd_f64x4_add(const reg
 	#define _simd_f64x4_add_enable() _simd_f64x32_add_enable()
 #elif defined(_simd_f64x64_add_)
 	union SIMDUnion { _simd_f64x4 v1; _simd_f64x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f64x64_add_(x_.v2, y_.v2);
@@ -112,7 +112,7 @@ static ANVIL_STRONG_INLINE _simd_f64x8 ANVIL_SIMD_CALL _simd_f64x8_add(const reg
 	#define _simd_f64x8_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x8_add_instruction_set>()
 #elif defined(_simd_f64x16_add_)
 	union SIMDUnion { _simd_f64x8 v1; _simd_f64x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f64x16_add_(x_.v2, y_.v2);
@@ -120,7 +120,7 @@ static ANVIL_STRONG_INLINE _simd_f64x8 ANVIL_SIMD_CALL _simd_f64x8_add(const reg
 	#define _simd_f64x8_add_enable() _simd_f64x16_add_enable()
 #elif defined(_simd_f64x32_add_)
 	union SIMDUnion { _simd_f64x8 v1; _simd_f64x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f64x32_add_(x_.v2, y_.v2);
@@ -128,7 +128,7 @@ static ANVIL_STRONG_INLINE _simd_f64x8 ANVIL_SIMD_CALL _simd_f64x8_add(const reg
 	#define _simd_f64x8_add_enable() _simd_f64x32_add_enable()
 #elif defined(_simd_f64x64_add_)
 	union SIMDUnion { _simd_f64x8 v1; _simd_f64x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f64x64_add_(x_.v2, y_.v2);
@@ -148,7 +148,7 @@ static ANVIL_STRONG_INLINE _simd_f64x16 ANVIL_SIMD_CALL _simd_f64x16_add(const r
 	#define _simd_f64x16_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x16_add_instruction_set>()
 #elif defined(_simd_f64x32_add_)
 	union SIMDUnion { _simd_f64x16 v1; _simd_f64x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f64x32_add_(x_.v2, y_.v2);
@@ -156,7 +156,7 @@ static ANVIL_STRONG_INLINE _simd_f64x16 ANVIL_SIMD_CALL _simd_f64x16_add(const r
 	#define _simd_f64x16_add_enable() _simd_f64x32_add_enable()
 #elif defined(_simd_f64x64_add_)
 	union SIMDUnion { _simd_f64x16 v1; _simd_f64x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f64x64_add_(x_.v2, y_.v2);
@@ -176,7 +176,7 @@ static ANVIL_STRONG_INLINE _simd_f64x32 ANVIL_SIMD_CALL _simd_f64x32_add(const r
 	#define _simd_f64x32_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x32_add_instruction_set>()
 #elif defined(_simd_f64x64_add_)
 	union SIMDUnion { _simd_f64x32 v1; _simd_f64x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f64x64_add_(x_.v2, y_.v2);
@@ -208,7 +208,7 @@ static ANVIL_STRONG_INLINE _simd_f32x2 ANVIL_SIMD_CALL _simd_f32x2_add(const reg
 	#define _simd_f32x2_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x2_add_instruction_set>()
 #elif defined(_simd_f32x4_add_)
 	union SIMDUnion { _simd_f32x2 v1; _simd_f32x4 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f32x4_add_(x_.v2, y_.v2);
@@ -216,7 +216,7 @@ static ANVIL_STRONG_INLINE _simd_f32x2 ANVIL_SIMD_CALL _simd_f32x2_add(const reg
 	#define _simd_f32x2_add_enable() _simd_f32x4_add_enable()
 #elif defined(_simd_f32x8_add_)
 	union SIMDUnion { _simd_f32x2 v1; _simd_f32x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f32x8_add_(x_.v2, y_.v2);
@@ -224,7 +224,7 @@ static ANVIL_STRONG_INLINE _simd_f32x2 ANVIL_SIMD_CALL _simd_f32x2_add(const reg
 	#define _simd_f32x2_add_enable() _simd_f32x8_add_enable()
 #elif defined(_simd_f32x16_add_)
 	union SIMDUnion { _simd_f32x2 v1; _simd_f32x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f32x16_add_(x_.v2, y_.v2);
@@ -232,7 +232,7 @@ static ANVIL_STRONG_INLINE _simd_f32x2 ANVIL_SIMD_CALL _simd_f32x2_add(const reg
 	#define _simd_f32x2_add_enable() _simd_f32x16_add_enable()
 #elif defined(_simd_f32x32_add_)
 	union SIMDUnion { _simd_f32x2 v1; _simd_f32x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f32x32_add_(x_.v2, y_.v2);
@@ -240,7 +240,7 @@ static ANVIL_STRONG_INLINE _simd_f32x2 ANVIL_SIMD_CALL _simd_f32x2_add(const reg
 	#define _simd_f32x2_add_enable() _simd_f32x32_add_enable()
 #elif defined(_simd_f32x64_add_)
 	union SIMDUnion { _simd_f32x2 v1; _simd_f32x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f32x64_add_(x_.v2, y_.v2);
@@ -258,7 +258,7 @@ static ANVIL_STRONG_INLINE _simd_f32x4 ANVIL_SIMD_CALL _simd_f32x4_add(const reg
 	#define _simd_f32x4_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x4_add_instruction_set>()
 #elif defined(_simd_f32x8_add_)
 	union SIMDUnion { _simd_f32x4 v1; _simd_f32x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f32x8_add_(x_.v2, y_.v2);
@@ -266,7 +266,7 @@ static ANVIL_STRONG_INLINE _simd_f32x4 ANVIL_SIMD_CALL _simd_f32x4_add(const reg
 	#define _simd_f32x4_add_enable() _simd_f32x8_add_enable()
 #elif defined(_simd_f32x16_add_)
 	union SIMDUnion { _simd_f32x4 v1; _simd_f32x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f32x16_add_(x_.v2, y_.v2);
@@ -274,7 +274,7 @@ static ANVIL_STRONG_INLINE _simd_f32x4 ANVIL_SIMD_CALL _simd_f32x4_add(const reg
 	#define _simd_f32x4_add_enable() _simd_f32x16_add_enable()
 #elif defined(_simd_f32x32_add_)
 	union SIMDUnion { _simd_f32x4 v1; _simd_f32x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f32x32_add_(x_.v2, y_.v2);
@@ -282,7 +282,7 @@ static ANVIL_STRONG_INLINE _simd_f32x4 ANVIL_SIMD_CALL _simd_f32x4_add(const reg
 	#define _simd_f32x4_add_enable() _simd_f32x32_add_enable()
 #elif defined(_simd_f32x64_add_)
 	union SIMDUnion { _simd_f32x4 v1; _simd_f32x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f32x64_add_(x_.v2, y_.v2);
@@ -302,7 +302,7 @@ static ANVIL_STRONG_INLINE _simd_f32x8 ANVIL_SIMD_CALL _simd_f32x8_add(const reg
 	#define _simd_f32x8_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x8_add_instruction_set>()
 #elif defined(_simd_f32x16_add_)
 	union SIMDUnion { _simd_f32x8 v1; _simd_f32x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f32x16_add_(x_.v2, y_.v2);
@@ -310,7 +310,7 @@ static ANVIL_STRONG_INLINE _simd_f32x8 ANVIL_SIMD_CALL _simd_f32x8_add(const reg
 	#define _simd_f32x8_add_enable() _simd_f32x16_add_enable()
 #elif defined(_simd_f32x32_add_)
 	union SIMDUnion { _simd_f32x8 v1; _simd_f32x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f32x32_add_(x_.v2, y_.v2);
@@ -318,7 +318,7 @@ static ANVIL_STRONG_INLINE _simd_f32x8 ANVIL_SIMD_CALL _simd_f32x8_add(const reg
 	#define _simd_f32x8_add_enable() _simd_f32x32_add_enable()
 #elif defined(_simd_f32x64_add_)
 	union SIMDUnion { _simd_f32x8 v1; _simd_f32x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f32x64_add_(x_.v2, y_.v2);
@@ -338,7 +338,7 @@ static ANVIL_STRONG_INLINE _simd_f32x16 ANVIL_SIMD_CALL _simd_f32x16_add(const r
 	#define _simd_f32x16_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x16_add_instruction_set>()
 #elif defined(_simd_f32x32_add_)
 	union SIMDUnion { _simd_f32x16 v1; _simd_f32x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f32x32_add_(x_.v2, y_.v2);
@@ -346,7 +346,7 @@ static ANVIL_STRONG_INLINE _simd_f32x16 ANVIL_SIMD_CALL _simd_f32x16_add(const r
 	#define _simd_f32x16_add_enable() _simd_f32x32_add_enable()
 #elif defined(_simd_f32x64_add_)
 	union SIMDUnion { _simd_f32x16 v1; _simd_f32x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f32x64_add_(x_.v2, y_.v2);
@@ -366,7 +366,7 @@ static ANVIL_STRONG_INLINE _simd_f32x32 ANVIL_SIMD_CALL _simd_f32x32_add(const r
 	#define _simd_f32x32_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x32_add_instruction_set>()
 #elif defined(_simd_f32x64_add_)
 	union SIMDUnion { _simd_f32x32 v1; _simd_f32x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_f32x64_add_(x_.v2, y_.v2);
@@ -398,7 +398,7 @@ static ANVIL_STRONG_INLINE _simd_s64x2 ANVIL_SIMD_CALL _simd_s64x2_add(const reg
 	#define _simd_s64x2_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x2_add_instruction_set>()
 #elif defined(_simd_s64x4_add_)
 	union SIMDUnion { _simd_s64x2 v1; _simd_s64x4 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s64x4_add_(x_.v2, y_.v2);
@@ -406,7 +406,7 @@ static ANVIL_STRONG_INLINE _simd_s64x2 ANVIL_SIMD_CALL _simd_s64x2_add(const reg
 	#define _simd_s64x2_add_enable() _simd_s64x4_add_enable()
 #elif defined(_simd_s64x8_add_)
 	union SIMDUnion { _simd_s64x2 v1; _simd_s64x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s64x8_add_(x_.v2, y_.v2);
@@ -414,7 +414,7 @@ static ANVIL_STRONG_INLINE _simd_s64x2 ANVIL_SIMD_CALL _simd_s64x2_add(const reg
 	#define _simd_s64x2_add_enable() _simd_s64x8_add_enable()
 #elif defined(_simd_s64x16_add_)
 	union SIMDUnion { _simd_s64x2 v1; _simd_s64x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s64x16_add_(x_.v2, y_.v2);
@@ -422,7 +422,7 @@ static ANVIL_STRONG_INLINE _simd_s64x2 ANVIL_SIMD_CALL _simd_s64x2_add(const reg
 	#define _simd_s64x2_add_enable() _simd_s64x16_add_enable()
 #elif defined(_simd_s64x32_add_)
 	union SIMDUnion { _simd_s64x2 v1; _simd_s64x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s64x32_add_(x_.v2, y_.v2);
@@ -430,7 +430,7 @@ static ANVIL_STRONG_INLINE _simd_s64x2 ANVIL_SIMD_CALL _simd_s64x2_add(const reg
 	#define _simd_s64x2_add_enable() _simd_s64x32_add_enable()
 #elif defined(_simd_s64x64_add_)
 	union SIMDUnion { _simd_s64x2 v1; _simd_s64x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s64x64_add_(x_.v2, y_.v2);
@@ -448,7 +448,7 @@ static ANVIL_STRONG_INLINE _simd_s64x4 ANVIL_SIMD_CALL _simd_s64x4_add(const reg
 	#define _simd_s64x4_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x4_add_instruction_set>()
 #elif defined(_simd_s64x8_add_)
 	union SIMDUnion { _simd_s64x4 v1; _simd_s64x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s64x8_add_(x_.v2, y_.v2);
@@ -456,7 +456,7 @@ static ANVIL_STRONG_INLINE _simd_s64x4 ANVIL_SIMD_CALL _simd_s64x4_add(const reg
 	#define _simd_s64x4_add_enable() _simd_s64x8_add_enable()
 #elif defined(_simd_s64x16_add_)
 	union SIMDUnion { _simd_s64x4 v1; _simd_s64x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s64x16_add_(x_.v2, y_.v2);
@@ -464,7 +464,7 @@ static ANVIL_STRONG_INLINE _simd_s64x4 ANVIL_SIMD_CALL _simd_s64x4_add(const reg
 	#define _simd_s64x4_add_enable() _simd_s64x16_add_enable()
 #elif defined(_simd_s64x32_add_)
 	union SIMDUnion { _simd_s64x4 v1; _simd_s64x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s64x32_add_(x_.v2, y_.v2);
@@ -472,7 +472,7 @@ static ANVIL_STRONG_INLINE _simd_s64x4 ANVIL_SIMD_CALL _simd_s64x4_add(const reg
 	#define _simd_s64x4_add_enable() _simd_s64x32_add_enable()
 #elif defined(_simd_s64x64_add_)
 	union SIMDUnion { _simd_s64x4 v1; _simd_s64x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s64x64_add_(x_.v2, y_.v2);
@@ -492,7 +492,7 @@ static ANVIL_STRONG_INLINE _simd_s64x8 ANVIL_SIMD_CALL _simd_s64x8_add(const reg
 	#define _simd_s64x8_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x8_add_instruction_set>()
 #elif defined(_simd_s64x16_add_)
 	union SIMDUnion { _simd_s64x8 v1; _simd_s64x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s64x16_add_(x_.v2, y_.v2);
@@ -500,7 +500,7 @@ static ANVIL_STRONG_INLINE _simd_s64x8 ANVIL_SIMD_CALL _simd_s64x8_add(const reg
 	#define _simd_s64x8_add_enable() _simd_s64x16_add_enable()
 #elif defined(_simd_s64x32_add_)
 	union SIMDUnion { _simd_s64x8 v1; _simd_s64x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s64x32_add_(x_.v2, y_.v2);
@@ -508,7 +508,7 @@ static ANVIL_STRONG_INLINE _simd_s64x8 ANVIL_SIMD_CALL _simd_s64x8_add(const reg
 	#define _simd_s64x8_add_enable() _simd_s64x32_add_enable()
 #elif defined(_simd_s64x64_add_)
 	union SIMDUnion { _simd_s64x8 v1; _simd_s64x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s64x64_add_(x_.v2, y_.v2);
@@ -528,7 +528,7 @@ static ANVIL_STRONG_INLINE _simd_s64x16 ANVIL_SIMD_CALL _simd_s64x16_add(const r
 	#define _simd_s64x16_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x16_add_instruction_set>()
 #elif defined(_simd_s64x32_add_)
 	union SIMDUnion { _simd_s64x16 v1; _simd_s64x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s64x32_add_(x_.v2, y_.v2);
@@ -536,7 +536,7 @@ static ANVIL_STRONG_INLINE _simd_s64x16 ANVIL_SIMD_CALL _simd_s64x16_add(const r
 	#define _simd_s64x16_add_enable() _simd_s64x32_add_enable()
 #elif defined(_simd_s64x64_add_)
 	union SIMDUnion { _simd_s64x16 v1; _simd_s64x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s64x64_add_(x_.v2, y_.v2);
@@ -556,7 +556,7 @@ static ANVIL_STRONG_INLINE _simd_s64x32 ANVIL_SIMD_CALL _simd_s64x32_add(const r
 	#define _simd_s64x32_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x32_add_instruction_set>()
 #elif defined(_simd_s64x64_add_)
 	union SIMDUnion { _simd_s64x32 v1; _simd_s64x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s64x64_add_(x_.v2, y_.v2);
@@ -588,7 +588,7 @@ static ANVIL_STRONG_INLINE _simd_u64x2 ANVIL_SIMD_CALL _simd_u64x2_add(const reg
 	#define _simd_u64x2_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x2_add_instruction_set>()
 #elif defined(_simd_u64x4_add_)
 	union SIMDUnion { _simd_u64x2 v1; _simd_u64x4 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u64x4_add_(x_.v2, y_.v2);
@@ -596,7 +596,7 @@ static ANVIL_STRONG_INLINE _simd_u64x2 ANVIL_SIMD_CALL _simd_u64x2_add(const reg
 	#define _simd_u64x2_add_enable() _simd_u64x4_add_enable()
 #elif defined(_simd_u64x8_add_)
 	union SIMDUnion { _simd_u64x2 v1; _simd_u64x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u64x8_add_(x_.v2, y_.v2);
@@ -604,7 +604,7 @@ static ANVIL_STRONG_INLINE _simd_u64x2 ANVIL_SIMD_CALL _simd_u64x2_add(const reg
 	#define _simd_u64x2_add_enable() _simd_u64x8_add_enable()
 #elif defined(_simd_u64x16_add_)
 	union SIMDUnion { _simd_u64x2 v1; _simd_u64x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u64x16_add_(x_.v2, y_.v2);
@@ -612,7 +612,7 @@ static ANVIL_STRONG_INLINE _simd_u64x2 ANVIL_SIMD_CALL _simd_u64x2_add(const reg
 	#define _simd_u64x2_add_enable() _simd_u64x16_add_enable()
 #elif defined(_simd_u64x32_add_)
 	union SIMDUnion { _simd_u64x2 v1; _simd_u64x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u64x32_add_(x_.v2, y_.v2);
@@ -620,7 +620,7 @@ static ANVIL_STRONG_INLINE _simd_u64x2 ANVIL_SIMD_CALL _simd_u64x2_add(const reg
 	#define _simd_u64x2_add_enable() _simd_u64x32_add_enable()
 #elif defined(_simd_u64x64_add_)
 	union SIMDUnion { _simd_u64x2 v1; _simd_u64x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u64x64_add_(x_.v2, y_.v2);
@@ -638,7 +638,7 @@ static ANVIL_STRONG_INLINE _simd_u64x4 ANVIL_SIMD_CALL _simd_u64x4_add(const reg
 	#define _simd_u64x4_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x4_add_instruction_set>()
 #elif defined(_simd_u64x8_add_)
 	union SIMDUnion { _simd_u64x4 v1; _simd_u64x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u64x8_add_(x_.v2, y_.v2);
@@ -646,7 +646,7 @@ static ANVIL_STRONG_INLINE _simd_u64x4 ANVIL_SIMD_CALL _simd_u64x4_add(const reg
 	#define _simd_u64x4_add_enable() _simd_u64x8_add_enable()
 #elif defined(_simd_u64x16_add_)
 	union SIMDUnion { _simd_u64x4 v1; _simd_u64x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u64x16_add_(x_.v2, y_.v2);
@@ -654,7 +654,7 @@ static ANVIL_STRONG_INLINE _simd_u64x4 ANVIL_SIMD_CALL _simd_u64x4_add(const reg
 	#define _simd_u64x4_add_enable() _simd_u64x16_add_enable()
 #elif defined(_simd_u64x32_add_)
 	union SIMDUnion { _simd_u64x4 v1; _simd_u64x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u64x32_add_(x_.v2, y_.v2);
@@ -662,7 +662,7 @@ static ANVIL_STRONG_INLINE _simd_u64x4 ANVIL_SIMD_CALL _simd_u64x4_add(const reg
 	#define _simd_u64x4_add_enable() _simd_u64x32_add_enable()
 #elif defined(_simd_u64x64_add_)
 	union SIMDUnion { _simd_u64x4 v1; _simd_u64x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u64x64_add_(x_.v2, y_.v2);
@@ -682,7 +682,7 @@ static ANVIL_STRONG_INLINE _simd_u64x8 ANVIL_SIMD_CALL _simd_u64x8_add(const reg
 	#define _simd_u64x8_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x8_add_instruction_set>()
 #elif defined(_simd_u64x16_add_)
 	union SIMDUnion { _simd_u64x8 v1; _simd_u64x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u64x16_add_(x_.v2, y_.v2);
@@ -690,7 +690,7 @@ static ANVIL_STRONG_INLINE _simd_u64x8 ANVIL_SIMD_CALL _simd_u64x8_add(const reg
 	#define _simd_u64x8_add_enable() _simd_u64x16_add_enable()
 #elif defined(_simd_u64x32_add_)
 	union SIMDUnion { _simd_u64x8 v1; _simd_u64x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u64x32_add_(x_.v2, y_.v2);
@@ -698,7 +698,7 @@ static ANVIL_STRONG_INLINE _simd_u64x8 ANVIL_SIMD_CALL _simd_u64x8_add(const reg
 	#define _simd_u64x8_add_enable() _simd_u64x32_add_enable()
 #elif defined(_simd_u64x64_add_)
 	union SIMDUnion { _simd_u64x8 v1; _simd_u64x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u64x64_add_(x_.v2, y_.v2);
@@ -718,7 +718,7 @@ static ANVIL_STRONG_INLINE _simd_u64x16 ANVIL_SIMD_CALL _simd_u64x16_add(const r
 	#define _simd_u64x16_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x16_add_instruction_set>()
 #elif defined(_simd_u64x32_add_)
 	union SIMDUnion { _simd_u64x16 v1; _simd_u64x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u64x32_add_(x_.v2, y_.v2);
@@ -726,7 +726,7 @@ static ANVIL_STRONG_INLINE _simd_u64x16 ANVIL_SIMD_CALL _simd_u64x16_add(const r
 	#define _simd_u64x16_add_enable() _simd_u64x32_add_enable()
 #elif defined(_simd_u64x64_add_)
 	union SIMDUnion { _simd_u64x16 v1; _simd_u64x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u64x64_add_(x_.v2, y_.v2);
@@ -746,7 +746,7 @@ static ANVIL_STRONG_INLINE _simd_u64x32 ANVIL_SIMD_CALL _simd_u64x32_add(const r
 	#define _simd_u64x32_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x32_add_instruction_set>()
 #elif defined(_simd_u64x64_add_)
 	union SIMDUnion { _simd_u64x32 v1; _simd_u64x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u64x64_add_(x_.v2, y_.v2);
@@ -778,7 +778,7 @@ static ANVIL_STRONG_INLINE _simd_s32x2 ANVIL_SIMD_CALL _simd_s32x2_add(const reg
 	#define _simd_s32x2_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x2_add_instruction_set>()
 #elif defined(_simd_s32x4_add_)
 	union SIMDUnion { _simd_s32x2 v1; _simd_s32x4 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s32x4_add_(x_.v2, y_.v2);
@@ -786,7 +786,7 @@ static ANVIL_STRONG_INLINE _simd_s32x2 ANVIL_SIMD_CALL _simd_s32x2_add(const reg
 	#define _simd_s32x2_add_enable() _simd_s32x4_add_enable()
 #elif defined(_simd_s32x8_add_)
 	union SIMDUnion { _simd_s32x2 v1; _simd_s32x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s32x8_add_(x_.v2, y_.v2);
@@ -794,7 +794,7 @@ static ANVIL_STRONG_INLINE _simd_s32x2 ANVIL_SIMD_CALL _simd_s32x2_add(const reg
 	#define _simd_s32x2_add_enable() _simd_s32x8_add_enable()
 #elif defined(_simd_s32x16_add_)
 	union SIMDUnion { _simd_s32x2 v1; _simd_s32x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s32x16_add_(x_.v2, y_.v2);
@@ -802,7 +802,7 @@ static ANVIL_STRONG_INLINE _simd_s32x2 ANVIL_SIMD_CALL _simd_s32x2_add(const reg
 	#define _simd_s32x2_add_enable() _simd_s32x16_add_enable()
 #elif defined(_simd_s32x32_add_)
 	union SIMDUnion { _simd_s32x2 v1; _simd_s32x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s32x32_add_(x_.v2, y_.v2);
@@ -810,7 +810,7 @@ static ANVIL_STRONG_INLINE _simd_s32x2 ANVIL_SIMD_CALL _simd_s32x2_add(const reg
 	#define _simd_s32x2_add_enable() _simd_s32x32_add_enable()
 #elif defined(_simd_s32x64_add_)
 	union SIMDUnion { _simd_s32x2 v1; _simd_s32x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s32x64_add_(x_.v2, y_.v2);
@@ -828,7 +828,7 @@ static ANVIL_STRONG_INLINE _simd_s32x4 ANVIL_SIMD_CALL _simd_s32x4_add(const reg
 	#define _simd_s32x4_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x4_add_instruction_set>()
 #elif defined(_simd_s32x8_add_)
 	union SIMDUnion { _simd_s32x4 v1; _simd_s32x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s32x8_add_(x_.v2, y_.v2);
@@ -836,7 +836,7 @@ static ANVIL_STRONG_INLINE _simd_s32x4 ANVIL_SIMD_CALL _simd_s32x4_add(const reg
 	#define _simd_s32x4_add_enable() _simd_s32x8_add_enable()
 #elif defined(_simd_s32x16_add_)
 	union SIMDUnion { _simd_s32x4 v1; _simd_s32x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s32x16_add_(x_.v2, y_.v2);
@@ -844,7 +844,7 @@ static ANVIL_STRONG_INLINE _simd_s32x4 ANVIL_SIMD_CALL _simd_s32x4_add(const reg
 	#define _simd_s32x4_add_enable() _simd_s32x16_add_enable()
 #elif defined(_simd_s32x32_add_)
 	union SIMDUnion { _simd_s32x4 v1; _simd_s32x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s32x32_add_(x_.v2, y_.v2);
@@ -852,7 +852,7 @@ static ANVIL_STRONG_INLINE _simd_s32x4 ANVIL_SIMD_CALL _simd_s32x4_add(const reg
 	#define _simd_s32x4_add_enable() _simd_s32x32_add_enable()
 #elif defined(_simd_s32x64_add_)
 	union SIMDUnion { _simd_s32x4 v1; _simd_s32x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s32x64_add_(x_.v2, y_.v2);
@@ -872,7 +872,7 @@ static ANVIL_STRONG_INLINE _simd_s32x8 ANVIL_SIMD_CALL _simd_s32x8_add(const reg
 	#define _simd_s32x8_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x8_add_instruction_set>()
 #elif defined(_simd_s32x16_add_)
 	union SIMDUnion { _simd_s32x8 v1; _simd_s32x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s32x16_add_(x_.v2, y_.v2);
@@ -880,7 +880,7 @@ static ANVIL_STRONG_INLINE _simd_s32x8 ANVIL_SIMD_CALL _simd_s32x8_add(const reg
 	#define _simd_s32x8_add_enable() _simd_s32x16_add_enable()
 #elif defined(_simd_s32x32_add_)
 	union SIMDUnion { _simd_s32x8 v1; _simd_s32x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s32x32_add_(x_.v2, y_.v2);
@@ -888,7 +888,7 @@ static ANVIL_STRONG_INLINE _simd_s32x8 ANVIL_SIMD_CALL _simd_s32x8_add(const reg
 	#define _simd_s32x8_add_enable() _simd_s32x32_add_enable()
 #elif defined(_simd_s32x64_add_)
 	union SIMDUnion { _simd_s32x8 v1; _simd_s32x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s32x64_add_(x_.v2, y_.v2);
@@ -908,7 +908,7 @@ static ANVIL_STRONG_INLINE _simd_s32x16 ANVIL_SIMD_CALL _simd_s32x16_add(const r
 	#define _simd_s32x16_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x16_add_instruction_set>()
 #elif defined(_simd_s32x32_add_)
 	union SIMDUnion { _simd_s32x16 v1; _simd_s32x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s32x32_add_(x_.v2, y_.v2);
@@ -916,7 +916,7 @@ static ANVIL_STRONG_INLINE _simd_s32x16 ANVIL_SIMD_CALL _simd_s32x16_add(const r
 	#define _simd_s32x16_add_enable() _simd_s32x32_add_enable()
 #elif defined(_simd_s32x64_add_)
 	union SIMDUnion { _simd_s32x16 v1; _simd_s32x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s32x64_add_(x_.v2, y_.v2);
@@ -936,7 +936,7 @@ static ANVIL_STRONG_INLINE _simd_s32x32 ANVIL_SIMD_CALL _simd_s32x32_add(const r
 	#define _simd_s32x32_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x32_add_instruction_set>()
 #elif defined(_simd_s32x64_add_)
 	union SIMDUnion { _simd_s32x32 v1; _simd_s32x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s32x64_add_(x_.v2, y_.v2);
@@ -968,7 +968,7 @@ static ANVIL_STRONG_INLINE _simd_u32x2 ANVIL_SIMD_CALL _simd_u32x2_add(const reg
 	#define _simd_u32x2_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x2_add_instruction_set>()
 #elif defined(_simd_u32x4_add_)
 	union SIMDUnion { _simd_u32x2 v1; _simd_u32x4 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u32x4_add_(x_.v2, y_.v2);
@@ -976,7 +976,7 @@ static ANVIL_STRONG_INLINE _simd_u32x2 ANVIL_SIMD_CALL _simd_u32x2_add(const reg
 	#define _simd_u32x2_add_enable() _simd_u32x4_add_enable()
 #elif defined(_simd_u32x8_add_)
 	union SIMDUnion { _simd_u32x2 v1; _simd_u32x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u32x8_add_(x_.v2, y_.v2);
@@ -984,7 +984,7 @@ static ANVIL_STRONG_INLINE _simd_u32x2 ANVIL_SIMD_CALL _simd_u32x2_add(const reg
 	#define _simd_u32x2_add_enable() _simd_u32x8_add_enable()
 #elif defined(_simd_u32x16_add_)
 	union SIMDUnion { _simd_u32x2 v1; _simd_u32x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u32x16_add_(x_.v2, y_.v2);
@@ -992,7 +992,7 @@ static ANVIL_STRONG_INLINE _simd_u32x2 ANVIL_SIMD_CALL _simd_u32x2_add(const reg
 	#define _simd_u32x2_add_enable() _simd_u32x16_add_enable()
 #elif defined(_simd_u32x32_add_)
 	union SIMDUnion { _simd_u32x2 v1; _simd_u32x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u32x32_add_(x_.v2, y_.v2);
@@ -1000,7 +1000,7 @@ static ANVIL_STRONG_INLINE _simd_u32x2 ANVIL_SIMD_CALL _simd_u32x2_add(const reg
 	#define _simd_u32x2_add_enable() _simd_u32x32_add_enable()
 #elif defined(_simd_u32x64_add_)
 	union SIMDUnion { _simd_u32x2 v1; _simd_u32x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u32x64_add_(x_.v2, y_.v2);
@@ -1018,7 +1018,7 @@ static ANVIL_STRONG_INLINE _simd_u32x4 ANVIL_SIMD_CALL _simd_u32x4_add(const reg
 	#define _simd_u32x4_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x4_add_instruction_set>()
 #elif defined(_simd_u32x8_add_)
 	union SIMDUnion { _simd_u32x4 v1; _simd_u32x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u32x8_add_(x_.v2, y_.v2);
@@ -1026,7 +1026,7 @@ static ANVIL_STRONG_INLINE _simd_u32x4 ANVIL_SIMD_CALL _simd_u32x4_add(const reg
 	#define _simd_u32x4_add_enable() _simd_u32x8_add_enable()
 #elif defined(_simd_u32x16_add_)
 	union SIMDUnion { _simd_u32x4 v1; _simd_u32x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u32x16_add_(x_.v2, y_.v2);
@@ -1034,7 +1034,7 @@ static ANVIL_STRONG_INLINE _simd_u32x4 ANVIL_SIMD_CALL _simd_u32x4_add(const reg
 	#define _simd_u32x4_add_enable() _simd_u32x16_add_enable()
 #elif defined(_simd_u32x32_add_)
 	union SIMDUnion { _simd_u32x4 v1; _simd_u32x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u32x32_add_(x_.v2, y_.v2);
@@ -1042,7 +1042,7 @@ static ANVIL_STRONG_INLINE _simd_u32x4 ANVIL_SIMD_CALL _simd_u32x4_add(const reg
 	#define _simd_u32x4_add_enable() _simd_u32x32_add_enable()
 #elif defined(_simd_u32x64_add_)
 	union SIMDUnion { _simd_u32x4 v1; _simd_u32x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u32x64_add_(x_.v2, y_.v2);
@@ -1062,7 +1062,7 @@ static ANVIL_STRONG_INLINE _simd_u32x8 ANVIL_SIMD_CALL _simd_u32x8_add(const reg
 	#define _simd_u32x8_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x8_add_instruction_set>()
 #elif defined(_simd_u32x16_add_)
 	union SIMDUnion { _simd_u32x8 v1; _simd_u32x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u32x16_add_(x_.v2, y_.v2);
@@ -1070,7 +1070,7 @@ static ANVIL_STRONG_INLINE _simd_u32x8 ANVIL_SIMD_CALL _simd_u32x8_add(const reg
 	#define _simd_u32x8_add_enable() _simd_u32x16_add_enable()
 #elif defined(_simd_u32x32_add_)
 	union SIMDUnion { _simd_u32x8 v1; _simd_u32x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u32x32_add_(x_.v2, y_.v2);
@@ -1078,7 +1078,7 @@ static ANVIL_STRONG_INLINE _simd_u32x8 ANVIL_SIMD_CALL _simd_u32x8_add(const reg
 	#define _simd_u32x8_add_enable() _simd_u32x32_add_enable()
 #elif defined(_simd_u32x64_add_)
 	union SIMDUnion { _simd_u32x8 v1; _simd_u32x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u32x64_add_(x_.v2, y_.v2);
@@ -1098,7 +1098,7 @@ static ANVIL_STRONG_INLINE _simd_u32x16 ANVIL_SIMD_CALL _simd_u32x16_add(const r
 	#define _simd_u32x16_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x16_add_instruction_set>()
 #elif defined(_simd_u32x32_add_)
 	union SIMDUnion { _simd_u32x16 v1; _simd_u32x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u32x32_add_(x_.v2, y_.v2);
@@ -1106,7 +1106,7 @@ static ANVIL_STRONG_INLINE _simd_u32x16 ANVIL_SIMD_CALL _simd_u32x16_add(const r
 	#define _simd_u32x16_add_enable() _simd_u32x32_add_enable()
 #elif defined(_simd_u32x64_add_)
 	union SIMDUnion { _simd_u32x16 v1; _simd_u32x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u32x64_add_(x_.v2, y_.v2);
@@ -1126,7 +1126,7 @@ static ANVIL_STRONG_INLINE _simd_u32x32 ANVIL_SIMD_CALL _simd_u32x32_add(const r
 	#define _simd_u32x32_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x32_add_instruction_set>()
 #elif defined(_simd_u32x64_add_)
 	union SIMDUnion { _simd_u32x32 v1; _simd_u32x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u32x64_add_(x_.v2, y_.v2);
@@ -1158,7 +1158,7 @@ static ANVIL_STRONG_INLINE _simd_s16x2 ANVIL_SIMD_CALL _simd_s16x2_add(const reg
 	#define _simd_s16x2_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x2_add_instruction_set>()
 #elif defined(_simd_s16x4_add_)
 	union SIMDUnion { _simd_s16x2 v1; _simd_s16x4 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s16x4_add_(x_.v2, y_.v2);
@@ -1166,7 +1166,7 @@ static ANVIL_STRONG_INLINE _simd_s16x2 ANVIL_SIMD_CALL _simd_s16x2_add(const reg
 	#define _simd_s16x2_add_enable() _simd_s16x4_add_enable()
 #elif defined(_simd_s16x8_add_)
 	union SIMDUnion { _simd_s16x2 v1; _simd_s16x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s16x8_add_(x_.v2, y_.v2);
@@ -1174,7 +1174,7 @@ static ANVIL_STRONG_INLINE _simd_s16x2 ANVIL_SIMD_CALL _simd_s16x2_add(const reg
 	#define _simd_s16x2_add_enable() _simd_s16x8_add_enable()
 #elif defined(_simd_s16x16_add_)
 	union SIMDUnion { _simd_s16x2 v1; _simd_s16x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s16x16_add_(x_.v2, y_.v2);
@@ -1182,7 +1182,7 @@ static ANVIL_STRONG_INLINE _simd_s16x2 ANVIL_SIMD_CALL _simd_s16x2_add(const reg
 	#define _simd_s16x2_add_enable() _simd_s16x16_add_enable()
 #elif defined(_simd_s16x32_add_)
 	union SIMDUnion { _simd_s16x2 v1; _simd_s16x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s16x32_add_(x_.v2, y_.v2);
@@ -1190,7 +1190,7 @@ static ANVIL_STRONG_INLINE _simd_s16x2 ANVIL_SIMD_CALL _simd_s16x2_add(const reg
 	#define _simd_s16x2_add_enable() _simd_s16x32_add_enable()
 #elif defined(_simd_s16x64_add_)
 	union SIMDUnion { _simd_s16x2 v1; _simd_s16x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s16x64_add_(x_.v2, y_.v2);
@@ -1208,7 +1208,7 @@ static ANVIL_STRONG_INLINE _simd_s16x4 ANVIL_SIMD_CALL _simd_s16x4_add(const reg
 	#define _simd_s16x4_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x4_add_instruction_set>()
 #elif defined(_simd_s16x8_add_)
 	union SIMDUnion { _simd_s16x4 v1; _simd_s16x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s16x8_add_(x_.v2, y_.v2);
@@ -1216,7 +1216,7 @@ static ANVIL_STRONG_INLINE _simd_s16x4 ANVIL_SIMD_CALL _simd_s16x4_add(const reg
 	#define _simd_s16x4_add_enable() _simd_s16x8_add_enable()
 #elif defined(_simd_s16x16_add_)
 	union SIMDUnion { _simd_s16x4 v1; _simd_s16x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s16x16_add_(x_.v2, y_.v2);
@@ -1224,7 +1224,7 @@ static ANVIL_STRONG_INLINE _simd_s16x4 ANVIL_SIMD_CALL _simd_s16x4_add(const reg
 	#define _simd_s16x4_add_enable() _simd_s16x16_add_enable()
 #elif defined(_simd_s16x32_add_)
 	union SIMDUnion { _simd_s16x4 v1; _simd_s16x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s16x32_add_(x_.v2, y_.v2);
@@ -1232,7 +1232,7 @@ static ANVIL_STRONG_INLINE _simd_s16x4 ANVIL_SIMD_CALL _simd_s16x4_add(const reg
 	#define _simd_s16x4_add_enable() _simd_s16x32_add_enable()
 #elif defined(_simd_s16x64_add_)
 	union SIMDUnion { _simd_s16x4 v1; _simd_s16x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s16x64_add_(x_.v2, y_.v2);
@@ -1252,7 +1252,7 @@ static ANVIL_STRONG_INLINE _simd_s16x8 ANVIL_SIMD_CALL _simd_s16x8_add(const reg
 	#define _simd_s16x8_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x8_add_instruction_set>()
 #elif defined(_simd_s16x16_add_)
 	union SIMDUnion { _simd_s16x8 v1; _simd_s16x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s16x16_add_(x_.v2, y_.v2);
@@ -1260,7 +1260,7 @@ static ANVIL_STRONG_INLINE _simd_s16x8 ANVIL_SIMD_CALL _simd_s16x8_add(const reg
 	#define _simd_s16x8_add_enable() _simd_s16x16_add_enable()
 #elif defined(_simd_s16x32_add_)
 	union SIMDUnion { _simd_s16x8 v1; _simd_s16x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s16x32_add_(x_.v2, y_.v2);
@@ -1268,7 +1268,7 @@ static ANVIL_STRONG_INLINE _simd_s16x8 ANVIL_SIMD_CALL _simd_s16x8_add(const reg
 	#define _simd_s16x8_add_enable() _simd_s16x32_add_enable()
 #elif defined(_simd_s16x64_add_)
 	union SIMDUnion { _simd_s16x8 v1; _simd_s16x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s16x64_add_(x_.v2, y_.v2);
@@ -1288,7 +1288,7 @@ static ANVIL_STRONG_INLINE _simd_s16x16 ANVIL_SIMD_CALL _simd_s16x16_add(const r
 	#define _simd_s16x16_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x16_add_instruction_set>()
 #elif defined(_simd_s16x32_add_)
 	union SIMDUnion { _simd_s16x16 v1; _simd_s16x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s16x32_add_(x_.v2, y_.v2);
@@ -1296,7 +1296,7 @@ static ANVIL_STRONG_INLINE _simd_s16x16 ANVIL_SIMD_CALL _simd_s16x16_add(const r
 	#define _simd_s16x16_add_enable() _simd_s16x32_add_enable()
 #elif defined(_simd_s16x64_add_)
 	union SIMDUnion { _simd_s16x16 v1; _simd_s16x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s16x64_add_(x_.v2, y_.v2);
@@ -1316,7 +1316,7 @@ static ANVIL_STRONG_INLINE _simd_s16x32 ANVIL_SIMD_CALL _simd_s16x32_add(const r
 	#define _simd_s16x32_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x32_add_instruction_set>()
 #elif defined(_simd_s16x64_add_)
 	union SIMDUnion { _simd_s16x32 v1; _simd_s16x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s16x64_add_(x_.v2, y_.v2);
@@ -1348,7 +1348,7 @@ static ANVIL_STRONG_INLINE _simd_u16x2 ANVIL_SIMD_CALL _simd_u16x2_add(const reg
 	#define _simd_u16x2_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x2_add_instruction_set>()
 #elif defined(_simd_u16x4_add_)
 	union SIMDUnion { _simd_u16x2 v1; _simd_u16x4 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u16x4_add_(x_.v2, y_.v2);
@@ -1356,7 +1356,7 @@ static ANVIL_STRONG_INLINE _simd_u16x2 ANVIL_SIMD_CALL _simd_u16x2_add(const reg
 	#define _simd_u16x2_add_enable() _simd_u16x4_add_enable()
 #elif defined(_simd_u16x8_add_)
 	union SIMDUnion { _simd_u16x2 v1; _simd_u16x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u16x8_add_(x_.v2, y_.v2);
@@ -1364,7 +1364,7 @@ static ANVIL_STRONG_INLINE _simd_u16x2 ANVIL_SIMD_CALL _simd_u16x2_add(const reg
 	#define _simd_u16x2_add_enable() _simd_u16x8_add_enable()
 #elif defined(_simd_u16x16_add_)
 	union SIMDUnion { _simd_u16x2 v1; _simd_u16x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u16x16_add_(x_.v2, y_.v2);
@@ -1372,7 +1372,7 @@ static ANVIL_STRONG_INLINE _simd_u16x2 ANVIL_SIMD_CALL _simd_u16x2_add(const reg
 	#define _simd_u16x2_add_enable() _simd_u16x16_add_enable()
 #elif defined(_simd_u16x32_add_)
 	union SIMDUnion { _simd_u16x2 v1; _simd_u16x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u16x32_add_(x_.v2, y_.v2);
@@ -1380,7 +1380,7 @@ static ANVIL_STRONG_INLINE _simd_u16x2 ANVIL_SIMD_CALL _simd_u16x2_add(const reg
 	#define _simd_u16x2_add_enable() _simd_u16x32_add_enable()
 #elif defined(_simd_u16x64_add_)
 	union SIMDUnion { _simd_u16x2 v1; _simd_u16x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u16x64_add_(x_.v2, y_.v2);
@@ -1398,7 +1398,7 @@ static ANVIL_STRONG_INLINE _simd_u16x4 ANVIL_SIMD_CALL _simd_u16x4_add(const reg
 	#define _simd_u16x4_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x4_add_instruction_set>()
 #elif defined(_simd_u16x8_add_)
 	union SIMDUnion { _simd_u16x4 v1; _simd_u16x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u16x8_add_(x_.v2, y_.v2);
@@ -1406,7 +1406,7 @@ static ANVIL_STRONG_INLINE _simd_u16x4 ANVIL_SIMD_CALL _simd_u16x4_add(const reg
 	#define _simd_u16x4_add_enable() _simd_u16x8_add_enable()
 #elif defined(_simd_u16x16_add_)
 	union SIMDUnion { _simd_u16x4 v1; _simd_u16x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u16x16_add_(x_.v2, y_.v2);
@@ -1414,7 +1414,7 @@ static ANVIL_STRONG_INLINE _simd_u16x4 ANVIL_SIMD_CALL _simd_u16x4_add(const reg
 	#define _simd_u16x4_add_enable() _simd_u16x16_add_enable()
 #elif defined(_simd_u16x32_add_)
 	union SIMDUnion { _simd_u16x4 v1; _simd_u16x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u16x32_add_(x_.v2, y_.v2);
@@ -1422,7 +1422,7 @@ static ANVIL_STRONG_INLINE _simd_u16x4 ANVIL_SIMD_CALL _simd_u16x4_add(const reg
 	#define _simd_u16x4_add_enable() _simd_u16x32_add_enable()
 #elif defined(_simd_u16x64_add_)
 	union SIMDUnion { _simd_u16x4 v1; _simd_u16x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u16x64_add_(x_.v2, y_.v2);
@@ -1442,7 +1442,7 @@ static ANVIL_STRONG_INLINE _simd_u16x8 ANVIL_SIMD_CALL _simd_u16x8_add(const reg
 	#define _simd_u16x8_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x8_add_instruction_set>()
 #elif defined(_simd_u16x16_add_)
 	union SIMDUnion { _simd_u16x8 v1; _simd_u16x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u16x16_add_(x_.v2, y_.v2);
@@ -1450,7 +1450,7 @@ static ANVIL_STRONG_INLINE _simd_u16x8 ANVIL_SIMD_CALL _simd_u16x8_add(const reg
 	#define _simd_u16x8_add_enable() _simd_u16x16_add_enable()
 #elif defined(_simd_u16x32_add_)
 	union SIMDUnion { _simd_u16x8 v1; _simd_u16x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u16x32_add_(x_.v2, y_.v2);
@@ -1458,7 +1458,7 @@ static ANVIL_STRONG_INLINE _simd_u16x8 ANVIL_SIMD_CALL _simd_u16x8_add(const reg
 	#define _simd_u16x8_add_enable() _simd_u16x32_add_enable()
 #elif defined(_simd_u16x64_add_)
 	union SIMDUnion { _simd_u16x8 v1; _simd_u16x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u16x64_add_(x_.v2, y_.v2);
@@ -1478,7 +1478,7 @@ static ANVIL_STRONG_INLINE _simd_u16x16 ANVIL_SIMD_CALL _simd_u16x16_add(const r
 	#define _simd_u16x16_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x16_add_instruction_set>()
 #elif defined(_simd_u16x32_add_)
 	union SIMDUnion { _simd_u16x16 v1; _simd_u16x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u16x32_add_(x_.v2, y_.v2);
@@ -1486,7 +1486,7 @@ static ANVIL_STRONG_INLINE _simd_u16x16 ANVIL_SIMD_CALL _simd_u16x16_add(const r
 	#define _simd_u16x16_add_enable() _simd_u16x32_add_enable()
 #elif defined(_simd_u16x64_add_)
 	union SIMDUnion { _simd_u16x16 v1; _simd_u16x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u16x64_add_(x_.v2, y_.v2);
@@ -1506,7 +1506,7 @@ static ANVIL_STRONG_INLINE _simd_u16x32 ANVIL_SIMD_CALL _simd_u16x32_add(const r
 	#define _simd_u16x32_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x32_add_instruction_set>()
 #elif defined(_simd_u16x64_add_)
 	union SIMDUnion { _simd_u16x32 v1; _simd_u16x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u16x64_add_(x_.v2, y_.v2);
@@ -1538,7 +1538,7 @@ static ANVIL_STRONG_INLINE _simd_s8x2 ANVIL_SIMD_CALL _simd_s8x2_add(const regis
 	#define _simd_s8x2_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x2_add_instruction_set>()
 #elif defined(_simd_s8x4_add_)
 	union SIMDUnion { _simd_s8x2 v1; _simd_s8x4 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s8x4_add_(x_.v2, y_.v2);
@@ -1546,7 +1546,7 @@ static ANVIL_STRONG_INLINE _simd_s8x2 ANVIL_SIMD_CALL _simd_s8x2_add(const regis
 	#define _simd_s8x2_add_enable() _simd_s8x4_add_enable()
 #elif defined(_simd_s8x8_add_)
 	union SIMDUnion { _simd_s8x2 v1; _simd_s8x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s8x8_add_(x_.v2, y_.v2);
@@ -1554,7 +1554,7 @@ static ANVIL_STRONG_INLINE _simd_s8x2 ANVIL_SIMD_CALL _simd_s8x2_add(const regis
 	#define _simd_s8x2_add_enable() _simd_s8x8_add_enable()
 #elif defined(_simd_s8x16_add_)
 	union SIMDUnion { _simd_s8x2 v1; _simd_s8x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s8x16_add_(x_.v2, y_.v2);
@@ -1562,7 +1562,7 @@ static ANVIL_STRONG_INLINE _simd_s8x2 ANVIL_SIMD_CALL _simd_s8x2_add(const regis
 	#define _simd_s8x2_add_enable() _simd_s8x16_add_enable()
 #elif defined(_simd_s8x32_add_)
 	union SIMDUnion { _simd_s8x2 v1; _simd_s8x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s8x32_add_(x_.v2, y_.v2);
@@ -1570,7 +1570,7 @@ static ANVIL_STRONG_INLINE _simd_s8x2 ANVIL_SIMD_CALL _simd_s8x2_add(const regis
 	#define _simd_s8x2_add_enable() _simd_s8x32_add_enable()
 #elif defined(_simd_s8x64_add_)
 	union SIMDUnion { _simd_s8x2 v1; _simd_s8x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s8x64_add_(x_.v2, y_.v2);
@@ -1588,7 +1588,7 @@ static ANVIL_STRONG_INLINE _simd_s8x4 ANVIL_SIMD_CALL _simd_s8x4_add(const regis
 	#define _simd_s8x4_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x4_add_instruction_set>()
 #elif defined(_simd_s8x8_add_)
 	union SIMDUnion { _simd_s8x4 v1; _simd_s8x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s8x8_add_(x_.v2, y_.v2);
@@ -1596,7 +1596,7 @@ static ANVIL_STRONG_INLINE _simd_s8x4 ANVIL_SIMD_CALL _simd_s8x4_add(const regis
 	#define _simd_s8x4_add_enable() _simd_s8x8_add_enable()
 #elif defined(_simd_s8x16_add_)
 	union SIMDUnion { _simd_s8x4 v1; _simd_s8x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s8x16_add_(x_.v2, y_.v2);
@@ -1604,7 +1604,7 @@ static ANVIL_STRONG_INLINE _simd_s8x4 ANVIL_SIMD_CALL _simd_s8x4_add(const regis
 	#define _simd_s8x4_add_enable() _simd_s8x16_add_enable()
 #elif defined(_simd_s8x32_add_)
 	union SIMDUnion { _simd_s8x4 v1; _simd_s8x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s8x32_add_(x_.v2, y_.v2);
@@ -1612,7 +1612,7 @@ static ANVIL_STRONG_INLINE _simd_s8x4 ANVIL_SIMD_CALL _simd_s8x4_add(const regis
 	#define _simd_s8x4_add_enable() _simd_s8x32_add_enable()
 #elif defined(_simd_s8x64_add_)
 	union SIMDUnion { _simd_s8x4 v1; _simd_s8x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s8x64_add_(x_.v2, y_.v2);
@@ -1632,7 +1632,7 @@ static ANVIL_STRONG_INLINE _simd_s8x8 ANVIL_SIMD_CALL _simd_s8x8_add(const regis
 	#define _simd_s8x8_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x8_add_instruction_set>()
 #elif defined(_simd_s8x16_add_)
 	union SIMDUnion { _simd_s8x8 v1; _simd_s8x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s8x16_add_(x_.v2, y_.v2);
@@ -1640,7 +1640,7 @@ static ANVIL_STRONG_INLINE _simd_s8x8 ANVIL_SIMD_CALL _simd_s8x8_add(const regis
 	#define _simd_s8x8_add_enable() _simd_s8x16_add_enable()
 #elif defined(_simd_s8x32_add_)
 	union SIMDUnion { _simd_s8x8 v1; _simd_s8x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s8x32_add_(x_.v2, y_.v2);
@@ -1648,7 +1648,7 @@ static ANVIL_STRONG_INLINE _simd_s8x8 ANVIL_SIMD_CALL _simd_s8x8_add(const regis
 	#define _simd_s8x8_add_enable() _simd_s8x32_add_enable()
 #elif defined(_simd_s8x64_add_)
 	union SIMDUnion { _simd_s8x8 v1; _simd_s8x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s8x64_add_(x_.v2, y_.v2);
@@ -1668,7 +1668,7 @@ static ANVIL_STRONG_INLINE _simd_s8x16 ANVIL_SIMD_CALL _simd_s8x16_add(const reg
 	#define _simd_s8x16_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x16_add_instruction_set>()
 #elif defined(_simd_s8x32_add_)
 	union SIMDUnion { _simd_s8x16 v1; _simd_s8x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s8x32_add_(x_.v2, y_.v2);
@@ -1676,7 +1676,7 @@ static ANVIL_STRONG_INLINE _simd_s8x16 ANVIL_SIMD_CALL _simd_s8x16_add(const reg
 	#define _simd_s8x16_add_enable() _simd_s8x32_add_enable()
 #elif defined(_simd_s8x64_add_)
 	union SIMDUnion { _simd_s8x16 v1; _simd_s8x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s8x64_add_(x_.v2, y_.v2);
@@ -1696,7 +1696,7 @@ static ANVIL_STRONG_INLINE _simd_s8x32 ANVIL_SIMD_CALL _simd_s8x32_add(const reg
 	#define _simd_s8x32_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x32_add_instruction_set>()
 #elif defined(_simd_s8x64_add_)
 	union SIMDUnion { _simd_s8x32 v1; _simd_s8x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_s8x64_add_(x_.v2, y_.v2);
@@ -1728,7 +1728,7 @@ static ANVIL_STRONG_INLINE _simd_u8x2 ANVIL_SIMD_CALL _simd_u8x2_add(const regis
 	#define _simd_u8x2_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x2_add_instruction_set>()
 #elif defined(_simd_u8x4_add_)
 	union SIMDUnion { _simd_u8x2 v1; _simd_u8x4 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u8x4_add_(x_.v2, y_.v2);
@@ -1736,7 +1736,7 @@ static ANVIL_STRONG_INLINE _simd_u8x2 ANVIL_SIMD_CALL _simd_u8x2_add(const regis
 	#define _simd_u8x2_add_enable() _simd_u8x4_add_enable()
 #elif defined(_simd_u8x8_add_)
 	union SIMDUnion { _simd_u8x2 v1; _simd_u8x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u8x8_add_(x_.v2, y_.v2);
@@ -1744,7 +1744,7 @@ static ANVIL_STRONG_INLINE _simd_u8x2 ANVIL_SIMD_CALL _simd_u8x2_add(const regis
 	#define _simd_u8x2_add_enable() _simd_u8x8_add_enable()
 #elif defined(_simd_u8x16_add_)
 	union SIMDUnion { _simd_u8x2 v1; _simd_u8x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u8x16_add_(x_.v2, y_.v2);
@@ -1752,7 +1752,7 @@ static ANVIL_STRONG_INLINE _simd_u8x2 ANVIL_SIMD_CALL _simd_u8x2_add(const regis
 	#define _simd_u8x2_add_enable() _simd_u8x16_add_enable()
 #elif defined(_simd_u8x32_add_)
 	union SIMDUnion { _simd_u8x2 v1; _simd_u8x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u8x32_add_(x_.v2, y_.v2);
@@ -1760,7 +1760,7 @@ static ANVIL_STRONG_INLINE _simd_u8x2 ANVIL_SIMD_CALL _simd_u8x2_add(const regis
 	#define _simd_u8x2_add_enable() _simd_u8x32_add_enable()
 #elif defined(_simd_u8x64_add_)
 	union SIMDUnion { _simd_u8x2 v1; _simd_u8x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u8x64_add_(x_.v2, y_.v2);
@@ -1778,7 +1778,7 @@ static ANVIL_STRONG_INLINE _simd_u8x4 ANVIL_SIMD_CALL _simd_u8x4_add(const regis
 	#define _simd_u8x4_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x4_add_instruction_set>()
 #elif defined(_simd_u8x8_add_)
 	union SIMDUnion { _simd_u8x4 v1; _simd_u8x8 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u8x8_add_(x_.v2, y_.v2);
@@ -1786,7 +1786,7 @@ static ANVIL_STRONG_INLINE _simd_u8x4 ANVIL_SIMD_CALL _simd_u8x4_add(const regis
 	#define _simd_u8x4_add_enable() _simd_u8x8_add_enable()
 #elif defined(_simd_u8x16_add_)
 	union SIMDUnion { _simd_u8x4 v1; _simd_u8x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u8x16_add_(x_.v2, y_.v2);
@@ -1794,7 +1794,7 @@ static ANVIL_STRONG_INLINE _simd_u8x4 ANVIL_SIMD_CALL _simd_u8x4_add(const regis
 	#define _simd_u8x4_add_enable() _simd_u8x16_add_enable()
 #elif defined(_simd_u8x32_add_)
 	union SIMDUnion { _simd_u8x4 v1; _simd_u8x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u8x32_add_(x_.v2, y_.v2);
@@ -1802,7 +1802,7 @@ static ANVIL_STRONG_INLINE _simd_u8x4 ANVIL_SIMD_CALL _simd_u8x4_add(const regis
 	#define _simd_u8x4_add_enable() _simd_u8x32_add_enable()
 #elif defined(_simd_u8x64_add_)
 	union SIMDUnion { _simd_u8x4 v1; _simd_u8x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u8x64_add_(x_.v2, y_.v2);
@@ -1822,7 +1822,7 @@ static ANVIL_STRONG_INLINE _simd_u8x8 ANVIL_SIMD_CALL _simd_u8x8_add(const regis
 	#define _simd_u8x8_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x8_add_instruction_set>()
 #elif defined(_simd_u8x16_add_)
 	union SIMDUnion { _simd_u8x8 v1; _simd_u8x16 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u8x16_add_(x_.v2, y_.v2);
@@ -1830,7 +1830,7 @@ static ANVIL_STRONG_INLINE _simd_u8x8 ANVIL_SIMD_CALL _simd_u8x8_add(const regis
 	#define _simd_u8x8_add_enable() _simd_u8x16_add_enable()
 #elif defined(_simd_u8x32_add_)
 	union SIMDUnion { _simd_u8x8 v1; _simd_u8x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u8x32_add_(x_.v2, y_.v2);
@@ -1838,7 +1838,7 @@ static ANVIL_STRONG_INLINE _simd_u8x8 ANVIL_SIMD_CALL _simd_u8x8_add(const regis
 	#define _simd_u8x8_add_enable() _simd_u8x32_add_enable()
 #elif defined(_simd_u8x64_add_)
 	union SIMDUnion { _simd_u8x8 v1; _simd_u8x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u8x64_add_(x_.v2, y_.v2);
@@ -1858,7 +1858,7 @@ static ANVIL_STRONG_INLINE _simd_u8x16 ANVIL_SIMD_CALL _simd_u8x16_add(const reg
 	#define _simd_u8x16_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x16_add_instruction_set>()
 #elif defined(_simd_u8x32_add_)
 	union SIMDUnion { _simd_u8x16 v1; _simd_u8x32 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u8x32_add_(x_.v2, y_.v2);
@@ -1866,7 +1866,7 @@ static ANVIL_STRONG_INLINE _simd_u8x16 ANVIL_SIMD_CALL _simd_u8x16_add(const reg
 	#define _simd_u8x16_add_enable() _simd_u8x32_add_enable()
 #elif defined(_simd_u8x64_add_)
 	union SIMDUnion { _simd_u8x16 v1; _simd_u8x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u8x64_add_(x_.v2, y_.v2);
@@ -1886,7 +1886,7 @@ static ANVIL_STRONG_INLINE _simd_u8x32 ANVIL_SIMD_CALL _simd_u8x32_add(const reg
 	#define _simd_u8x32_splitlo_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x32_add_instruction_set>()
 #elif defined(_simd_u8x64_add_)
 	union SIMDUnion { _simd_u8x32 v1; _simd_u8x64 v2; };
-	SIMDUnion x, y;
+	SIMDUnion x_, y_;
 	x_.v1 = x;
 	y_.v1 = y;
 	x_.v2 = _simd_u8x64_add_(x_.v2, y_.v2);
