@@ -359,6 +359,66 @@
 #define _simd_u8x32_fill_zero_() _mm256_setzero_si256()
 #define _simd_u8x32_fill_zero_instruction_set anvil::simd::IS_AVX
 
+#define _simd_f64x2_fill_scalar_(X) _mm_set1_pd(X)
+#define _simdf64x2_fill_scalar_instruction_set anvil::simd::IS_SSE_2
+
+#define _simd_f64x4_fill_scalar_(X) _mm256_set1_pd(X)
+#define _simd_f64x4_fill_scalar_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_fill_scalar_(X) _mm_set1_ps(X)
+#define _simd_f32x4_fill_scalar_instruction_set anvil::simd::IS_SSE
+
+#define _simd_f32x8_fill_scalar_(X) _mm256_set1_ps(X)
+#define _simd_f32x8_fill_scalar_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s64x2_fill_scalar_(X) _mm_set1_epi64x(X)
+#define _simd_s64x2_fill_scalar_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s64x4_fill_scalar_(X) _mm256_set1_epi64x(X)
+#define _simd_s64x4_fill_scalar_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_s32x4_fill_scalar_(X) _mm_set1_epi32(X)
+#define _simd_s32x4_fill_scalar_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s32x8_fill_scalar_(X) _mm256_set1_epi32(X)
+#define _simd_s32x8_fill_scalar_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_s16x8_fill_scalar_(X) _mm_set1_epi16(X)
+#define _simd_s16x8_fill_scalar_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s16x16_fill_scalar_(X) _mm256_set1_epi16(X)
+#define _simd_s16x16_fill_scalar_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_s8x16_fill_scalar_(X) _mm_set1_epi8(X)
+#define _simd_s8x16_fill_scalar_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s8x32_fill_scalar_(X) _mm256_set1_epi8(X)
+#define _simd_s8x32_fill_scalar_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_u64x2_fill_scalar_(X) _simd_s64x2_fill_scalar_(X)
+#define _simd_u64x2_fill_scalar_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_u64x4_fill_scalar_(X) _simd_s64x4_fill_scalar_(X)
+#define _simd_u64x4_fill_scalar_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_u32x4_fill_scalar_(X) _simd_s32x4_fill_scalar_(X)
+#define _simd_u32x4_fill_scalar_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_u32x8_fill_scalar_(X) _simd_s32x8_fill_scalar_(X)
+#define _simd_u32x8_fill_scalar_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_u16x8_fill_scalar_(X) _simd_s16x8_fill_scalar_(X)
+#define _simd_u16x8_fill_scalar_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_u16x16_fill_scalar_(X) _simd_s16x16_fill_scalar_(X)
+#define _simd_u16x16_fill_scalar_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_u8x16_fill_scalar_(X) _simd_s8x16_fill_scalar_(X)
+#define _simd_u8x16_fill_scalar_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_u8x32_fill_scalar_(X) _simd_s8x32_fill_scalar_(X)
+#define _simd_u8x32_fill_scalar_instruction_set anvil::simd::IS_AVX_2
+
 #endif
 
 // Types
@@ -1102,6 +1162,10 @@
 // Fill zero
 
 #include "anvil/maths/simd/fill_zero.hpp"
+
+// Fill scalar
+
+#include "anvil/maths/simd/fill_scalar.hpp"
 
 // Split
 
