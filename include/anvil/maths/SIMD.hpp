@@ -179,6 +179,102 @@
 #define _simd_f32x8_div_(X,Y) _mm256_div_ps(X,Y)
 #define _simd_f32x8_div_instruction_set anvil::simd::IS_AVX
 
+#define _simd_f64x2_min_(X,Y) _mm_min_pd(X,Y)
+#define _simdf64x2_min_instruction_set anvil::simd::IS_SSE_2
+
+#define _simd_f64x4_min_(X,Y) _mm256_min_pd(X,Y)
+#define _simd_f64x4_min_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_min_(X,Y) _mm_min_ps(X,Y)
+#define _simd_f32x4_min_instruction_set anvil::simd::IS_SSE
+
+#define _simd_f32x8_min_(X,Y) _mm256_min_ps(X,Y)
+#define _simd_f32x8_min_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s32x4_min_(X,Y) _mm_min_epi32(X,Y)
+#define _simd_s32x4_min_instruction_set anvil::simd::IS_SSE_4_1
+
+#define _simd_s32x8_min_(X,Y) _mm256_min_epi32(X,Y)
+#define _simd_s32x8_min_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_s16x8_min_(X,Y) _mm_min_epi16(X,Y)
+#define _simd_s16x8_min_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s16x16_min_(X,Y) _mm256_min_epi16(X,Y)
+#define _simd_s16x16_min_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_s8x16_min_(X,Y) _mm_min_epi8(X,Y)
+#define _simd_s8x16_min_instruction_set anvil::simd::IS_SSE_4_1
+
+#define _simd_s8x32_min_(X,Y) _mm256_min_epi8(X,Y)
+#define _simd_s8x32_min_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_u32x4_min_(X,Y) _mm_min_epu32(X,Y)
+#define _simd_u32x4_min_instruction_set anvil::simd::IS_SSE_4_1
+
+#define _simd_u32x8_min_(X,Y) _mm256_min_epu32(X,Y)
+#define _simd_u32x8_min_instruction_set anvil::simd::IS_SSE_4_1
+
+#define _simd_u16x8_min_(X,Y) _mm_min_epu16(X,Y)
+#define _simd_u16x8_min_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_u16x16_min_(X,Y) _mm256_min_epu16(X,Y)
+#define _simd_u16x16_min_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_u8x16_min_(X,Y) _mm_min_epu8(X,Y)
+#define _simd_u8x16_min_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_u8x32_min_(X,Y) _mm256_min_epu8(X,Y)
+#define _simd_u8x32_min_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_f64x2_max_(X,Y) _mm_max_pd(X,Y)
+#define _simdf64x2_max_instruction_set anvil::simd::IS_SSE_2
+
+#define _simd_f64x4_max_(X,Y) _mm256_max_pd(X,Y)
+#define _simd_f64x4_max_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_max_(X,Y) _mm_max_ps(X,Y)
+#define _simd_f32x4_max_instruction_set anvil::simd::IS_SSE
+
+#define _simd_f32x8_max_(X,Y) _mm256_max_ps(X,Y)
+#define _simd_f32x8_max_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s32x4_max_(X,Y) _mm_max_epi32(X,Y)
+#define _simd_s32x4_max_instruction_set anvil::simd::IS_SSE_4_1
+
+#define _simd_s32x8_max_(X,Y) _mm256_max_epi32(X,Y)
+#define _simd_s32x8_max_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_s16x8_max_(X,Y) _mm_max_epi16(X,Y)
+#define _simd_s16x8_max_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s16x16_max_(X,Y) _mm256_max_epi16(X,Y)
+#define _simd_s16x16_max_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_s8x16_max_(X,Y) _mm_max_epi8(X,Y)
+#define _simd_s8x16_max_instruction_set anvil::simd::IS_SSE_4_1
+
+#define _simd_s8x32_max_(X,Y) _mm256_max_epi8(X,Y)
+#define _simd_s8x32_max_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_u32x4_max_(X,Y) _mm_max_epu32(X,Y)
+#define _simd_u32x4_max_instruction_set anvil::simd::IS_SSE_4_1
+
+#define _simd_u32x8_max_(X,Y) _mm256_max_epu32(X,Y)
+#define _simd_u32x8_max_instruction_set anvil::simd::IS_SSE_4_1
+
+#define _simd_u16x8_max_(X,Y) _mm_max_epu16(X,Y)
+#define _simd_u16x8_max_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_u16x16_max_(X,Y) _mm256_max_epu16(X,Y)
+#define _simd_u16x16_max_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_u8x16_max_(X,Y) _mm_max_epu8(X,Y)
+#define _simd_u8x16_max_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_u8x32_max_(X,Y) _mm256_max_epu8(X,Y)
+#define _simd_u8x32_max_instruction_set anvil::simd::IS_AVX_2
+
 #define _simd_f64x2_fill_undefined_() _mm_undefined_pd()
 #define _simdf64x2_fill_undefined_instruction_set anvil::simd::IS_SSE_2
 
@@ -1141,6 +1237,14 @@ _simd_extract(u8)
 // Div
 
 #include "anvil/maths/simd/div.hpp"
+
+// Min
+
+#include "anvil/maths/simd/min.hpp"
+
+// Max
+
+#include "anvil/maths/simd/max.hpp"
 
 namespace anvil { namespace simd {
 
