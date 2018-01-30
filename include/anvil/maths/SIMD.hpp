@@ -194,427 +194,6 @@
 #endif
 
 // Types
-
-#ifndef _simd_f64x2
-	struct _simd_f64x2 {
-		double lo;
-		double hi;
-	};
-#endif
-
-#ifndef _simd_f64x4 
-	struct _simd_f64x4 {
-		_simd_f64x2 lo;
-		_simd_f64x2 hi;
-	};
-#endif
-
-#ifndef _simd_f64x8 
-	struct _simd_f64x8 {
-		_simd_f64x4 lo;
-		_simd_f64x4 hi;
-	};
-#endif
-
-#ifndef _simd_f64x16 
-	struct _simd_f64x16 {
-		_simd_f64x8 lo;
-		_simd_f64x8 hi;
-	};
-#endif
-
-#ifndef f64x32 
-	struct _simd_f64x32 {
-		_simd_f64x16 lo;
-		_simd_f64x16 hi;
-	};
-#endif
-
-#ifndef _simd_f64x64 
-	struct _simd_f64x64 {
-		_simd_f64x32 lo;
-		_simd_f64x32 hi;
-	};
-#endif
-
-#ifndef _simd_f32x2 
-	struct _simd_f32x2 {
-		float lo;
-		float hi;
-	};
-#endif
-
-#ifndef _simd_f32x4 
-	struct _simd_f32x4 {
-		_simd_f32x2 lo;
-		_simd_f32x2 hi;
-	};
-#endif
-
-#ifndef _simd_f32x8 
-	struct _simd_f32x8 {
-		_simd_f32x4 lo;
-		_simd_f32x4 hi;
-	};
-#endif
-
-#ifndef _simd_f32x16 
-	struct _simd_f32x16 {
-		_simd_f32x8 lo;
-		_simd_f32x8 hi;
-	};
-#endif
-
-#ifndef _simd_f32x32 
-	struct _simd_f32x32 {
-		_simd_f32x16 lo;
-		_simd_f32x16 hi;
-	};
-#endif
-
-#ifndef _simd_f32x64 
-	struct _simd_f32x64 {
-		_simd_f32x32 lo;
-		_simd_f32x32 hi;
-	};
-#endif
-
-#ifndef _simd_s64x2 
-	struct _simd_s64x2 {
-		int64_t lo;
-		int64_t hi;
-	};
-#endif
-
-#ifndef _simd_s64x4 
-	struct _simd_s64x4 {
-		_simd_s64x2 lo;
-		_simd_s64x2 hi;
-	};
-#endif
-
-#ifndef _simd_s64x8 
-	struct _simd_s64x8 {
-		_simd_s64x4 lo;
-		_simd_s64x4 hi;
-	};
-#endif
-
-#ifndef _simd_s64x16 
-	struct _simd_s64x16 {
-		_simd_s64x8 lo;
-		_simd_s64x8 hi;
-	};
-#endif
-
-#ifndef _simd_s64x32 
-	struct _simd_s64x32 {
-		_simd_s64x16 lo;
-		_simd_s64x16 hi;
-	};
-#endif
-
-#ifndef _simd_s64x64 
-	struct _simd_s64x64 {
-		_simd_s64x32 lo;
-		_simd_s64x32 hi;
-	};
-#endif
-
-#ifndef _simd_u64x2 
-	struct _simd_u64x2 {
-		uint64_t lo;
-		uint64_t hi;
-	};
-#endif
-
-#ifndef _simd_u64x4 
-	struct _simd_u64x4 {
-		_simd_u64x2 lo;
-		_simd_u64x2 hi;
-	};
-#endif
-
-#ifndef _simd_u64x8 
-	struct _simd_u64x8 {
-		_simd_u64x4 lo;
-		_simd_u64x4 hi;
-	};
-#endif
-
-#ifndef _simd_u64x16 
-	struct _simd_u64x16 {
-		_simd_u64x8 lo;
-		_simd_u64x8 hi;
-	};
-#endif
-
-#ifndef _simd_u64x32 
-	struct _simd_u64x32 {
-		_simd_u64x16 lo;
-		_simd_u64x16 hi;
-	};
-#endif
-
-#ifndef _simd_u64x64 
-	struct _simd_u64x64 {
-		_simd_u64x32 lo;
-		_simd_u64x32 hi;
-	};
-#endif
-
-#ifndef _simd_s32x2 
-	struct _simd_s32x2 {
-		int32_t lo;
-		int32_t hi;
-	};
-#endif
-
-#ifndef _simd_s32x4 
-	struct _simd_s32x4 {
-		_simd_s32x2 lo;
-		_simd_s32x2 hi;
-	};
-#endif
-
-#ifndef _simd_s32x8 
-	struct _simd_s32x8 {
-		_simd_s32x4 lo;
-		_simd_s32x4 hi;
-	};
-#endif
-
-#ifndef _simd_s32x16 
-	struct _simd_s32x16 {
-		_simd_s32x8 lo;
-		_simd_s32x8 hi;
-	};
-#endif
-
-#ifndef _simd_s32x32 
-	struct _simd_s32x32 {
-		_simd_s32x16 lo;
-		_simd_s32x16 hi;
-	};
-#endif
-
-#ifndef _simd_s32x64 
-	struct _simd_s32x64 {
-		_simd_s32x32 lo;
-		_simd_s32x32 hi;
-	};
-#endif
-
-#ifndef _simd_u32x2 
-	struct _simd_u32x2 {
-		uint32_t lo;
-		uint32_t hi;
-	};
-#endif
-
-#ifndef _simd_u32x4 
-	struct _simd_u32x4 {
-		_simd_u32x2 lo;
-		_simd_u32x2 hi;
-	};
-#endif
-
-#ifndef _simd_u32x8 
-	struct _simd_u32x8 {
-		_simd_u32x4 lo;
-		_simd_u32x4 hi;
-	};
-#endif
-
-#ifndef _simd_u32x16 
-	struct _simd_u32x16 {
-		_simd_u32x8 lo;
-		_simd_u32x8 hi;
-	};
-#endif
-
-#ifndef _simd_u32x32 
-	struct _simd_u32x32 {
-		_simd_u32x16 lo;
-		_simd_u32x16 hi;
-	};
-#endif
-
-#ifndef _simd_u32x64 
-	struct _simd_u32x64 {
-		_simd_u32x32 lo;
-		_simd_u32x32 hi;
-	};
-#endif
-
-#ifndef _simd_s16x2 
-	struct _simd_s16x2 {
-		uint16_t lo;
-		uint16_t hi;
-	};
-#endif
-
-#ifndef _simd_s16x4 
-	struct _simd_s16x4 {
-		_simd_s16x2 lo;
-		_simd_s16x2 hi;
-	};
-#endif
-
-#ifndef _simd_s16x8 
-	struct _simd_s16x8 {
-		_simd_s16x4 lo;
-		_simd_s16x4 hi;
-	};
-#endif
-
-#ifndef _simd_s16x16 
-	struct _simd_s16x16 {
-		_simd_s16x8 lo;
-		_simd_s16x8 hi;
-	};
-#endif
-
-#ifndef _simd_s16x32 
-	struct _simd_s16x32 {
-		_simd_s16x16 lo;
-		_simd_s16x16 hi;
-	};
-#endif
-
-#ifndef _simd_s16x64 
-	struct _simd_s16x64 {
-		_simd_s16x32 lo;
-		_simd_s16x32 hi;
-	};
-#endif
-
-#ifndef _simd_u16x2 
-	struct _simd_u16x2 {
-		uint16_t lo;
-		uint16_t hi;
-	};
-#endif
-
-#ifndef _simd_u16x4 
-	struct _simd_u16x4 {
-		_simd_u16x2 lo;
-		_simd_u16x2 hi;
-	};
-#endif
-
-#ifndef _simd_u16x8 
-	struct _simd_u16x8 {
-		_simd_u16x4 lo;
-		_simd_u16x4 hi;
-	};
-#endif
-
-#ifndef _simd_u16x16 
-	struct _simd_u16x16 {
-		_simd_u16x8 lo;
-		_simd_u16x8 hi;
-	};
-#endif
-
-#ifndef _simd_u16x32 
-	struct _simd_u16x32 {
-		_simd_u16x16 lo;
-		_simd_u16x16 hi;
-	};
-#endif
-
-#ifndef _simd_u16x64 
-	struct _simd_u16x64 {
-		_simd_u16x32 lo;
-		_simd_u16x32 hi;
-	};
-#endif
-
-#ifndef _simd_s8x2 
-	struct _simd_s8x2 {
-		int8_t lo;
-		int8_t hi;
-	};
-#endif
-
-#ifndef _simd_s8x4 
-	struct _simd_s8x4 {
-		_simd_s8x2 lo;
-		_simd_s8x2 hi;
-	};
-#endif
-
-#ifndef _simd_s8x8 
-	struct _simd_s8x8 {
-		_simd_s8x4 lo;
-		_simd_s8x4 hi;
-	};
-#endif
-
-#ifndef _simd_s8x16 
-	struct _simd_s8x16 {
-		_simd_s8x8 lo;
-		_simd_s8x8 hi;
-	};
-#endif
-
-#ifndef _simd_s8x32 
-	struct _simd_s8x32 {
-		_simd_s8x16 lo;
-		_simd_s8x16 hi;
-	};
-#endif
-
-#ifndef _simd_s8x64 
-	struct _simd_s8x64 {
-		_simd_s8x32 lo;
-		_simd_s8x32 hi;
-	};
-#endif
-
-#ifndef _simd_u8x2 
-	struct _simd_u8x2 {
-		uint8_t lo;
-		uint8_t hi;
-	};
-#endif
-
-#ifndef _simd_u8x4 
-	struct _simd_u8x4 {
-		_simd_u8x2 lo;
-		_simd_u8x2 hi;
-	};
-#endif
-
-#ifndef _simd_u8x8 
-	struct _simd_u8x8 {
-		_simd_u8x4 lo;
-		_simd_u8x4 hi;
-	};
-#endif
-
-#ifndef _simd_u8x16 
-	struct _simd_u8x16 {
-		_simd_u8x8 lo;
-		_simd_u8x8 hi;
-	};
-#endif
-
-#ifndef _simd_u8x32 
-	struct _simd_u8x32 {
-		_simd_u8x16 lo;
-		_simd_u8x16 hi;
-	};
-#endif
-
-#ifndef _simd_u8x64 
-	struct _simd_u8x64 {
-		_simd_u8x32 lo;
-		_simd_u8x32 hi;
-	};
-#endif
-
 #define _simd_f64x1 double
 #define _simd_f32x1 float
 #define _simd_s64x1 int64_t
@@ -625,6 +204,741 @@
 #define _simd_u16x1 uint16_t
 #define _simd_s8x1 int8_t
 #define _simd_u8x1 uint8_t
+
+//Copyright 2017 Adam G. Smith
+//
+//Licensed under the Apache License, Version 2.0 (the "License");
+//you may not use this file except in compliance with the License.
+//You may obtain a copy of the License at
+//
+//http ://www.apache.org/licenses/LICENSE-2.0
+//
+//Unless required by applicable law or agreed to in writing, software
+//distributed under the License is distributed on an "AS IS" BASIS,
+//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//See the License for the specific language governing permissions and
+//limitations under the License.
+
+#ifndef _simd_f64x2
+	struct _simd_f64x2 {
+		_simd_f64x1 lo;
+		_simd_f64x1 hi;
+	};
+	#define _simd_f64x2_splitlo_(X) x.lo
+	#define _simd_f64x2_splitlo_instruction_set(X) IS_NONE
+	#define _simd_f64x2_splithi_(X) x.hi
+	#define _simd_f64x2_splithi_instruction_set(X) IS_NONE
+	#define _simd_f64x2_combine_(X,Y) _simd_f64x2({X,Y})
+	#define _simd_f64x2_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_f64x4
+	struct _simd_f64x4 {
+		_simd_f64x2 lo;
+		_simd_f64x2 hi;
+	};
+	#define _simd_f64x4_splitlo_(X) x.lo
+	#define _simd_f64x4_splitlo_instruction_set(X) IS_NONE
+	#define _simd_f64x4_splithi_(X) x.hi
+	#define _simd_f64x4_splithi_instruction_set(X) IS_NONE
+	#define _simd_f64x4_combine_(X,Y) _simd_f64x4({X,Y})
+	#define _simd_f64x4_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_f64x8
+	struct _simd_f64x8 {
+		_simd_f64x4 lo;
+		_simd_f64x4 hi;
+	};
+	#define _simd_f64x8_splitlo_(X) x.lo
+	#define _simd_f64x8_splitlo_instruction_set(X) IS_NONE
+	#define _simd_f64x8_splithi_(X) x.hi
+	#define _simd_f64x8_splithi_instruction_set(X) IS_NONE
+	#define _simd_f64x8_combine_(X,Y) _simd_f64x8({X,Y})
+	#define _simd_f64x8_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_f64x16
+	struct _simd_f64x16 {
+		_simd_f64x8 lo;
+		_simd_f64x8 hi;
+	};
+	#define _simd_f64x16_splitlo_(X) x.lo
+	#define _simd_f64x16_splitlo_instruction_set(X) IS_NONE
+	#define _simd_f64x16_splithi_(X) x.hi
+	#define _simd_f64x16_splithi_instruction_set(X) IS_NONE
+	#define _simd_f64x16_combine_(X,Y) _simd_f64x16({X,Y})
+	#define _simd_f64x16_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_f64x32
+	struct _simd_f64x32 {
+		_simd_f64x16 lo;
+		_simd_f64x16 hi;
+	};
+	#define _simd_f64x32_splitlo_(X) x.lo
+	#define _simd_f64x32_splitlo_instruction_set(X) IS_NONE
+	#define _simd_f64x32_splithi_(X) x.hi
+	#define _simd_f64x32_splithi_instruction_set(X) IS_NONE
+	#define _simd_f64x32_combine_(X,Y) _simd_f64x32({X,Y})
+	#define _simd_f64x32_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_f64x64
+	struct _simd_f64x64 {
+		_simd_f64x32 lo;
+		_simd_f64x32 hi;
+	};
+	#define _simd_f64x64_splitlo_(X) x.lo
+	#define _simd_f64x64_splitlo_instruction_set(X) IS_NONE
+	#define _simd_f64x64_splithi_(X) x.hi
+	#define _simd_f64x64_splithi_instruction_set(X) IS_NONE
+	#define _simd_f64x64_combine_(X,Y) _simd_f64x64({X,Y})
+	#define _simd_f64x64_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_f32x2
+	struct _simd_f32x2 {
+		_simd_f32x1 lo;
+		_simd_f32x1 hi;
+	};
+	#define _simd_f32x2_splitlo_(X) x.lo
+	#define _simd_f32x2_splitlo_instruction_set(X) IS_NONE
+	#define _simd_f32x2_splithi_(X) x.hi
+	#define _simd_f32x2_splithi_instruction_set(X) IS_NONE
+	#define _simd_f32x2_combine_(X,Y) _simd_f32x2({X,Y})
+	#define _simd_f32x2_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_f32x4
+	struct _simd_f32x4 {
+		_simd_f32x2 lo;
+		_simd_f32x2 hi;
+	};
+	#define _simd_f32x4_splitlo_(X) x.lo
+	#define _simd_f32x4_splitlo_instruction_set(X) IS_NONE
+	#define _simd_f32x4_splithi_(X) x.hi
+	#define _simd_f32x4_splithi_instruction_set(X) IS_NONE
+	#define _simd_f32x4_combine_(X,Y) _simd_f32x4({X,Y})
+	#define _simd_f32x4_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_f32x8
+	struct _simd_f32x8 {
+		_simd_f32x4 lo;
+		_simd_f32x4 hi;
+	};
+	#define _simd_f32x8_splitlo_(X) x.lo
+	#define _simd_f32x8_splitlo_instruction_set(X) IS_NONE
+	#define _simd_f32x8_splithi_(X) x.hi
+	#define _simd_f32x8_splithi_instruction_set(X) IS_NONE
+	#define _simd_f32x8_combine_(X,Y) _simd_f32x8({X,Y})
+	#define _simd_f32x8_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_f32x16
+	struct _simd_f32x16 {
+		_simd_f32x8 lo;
+		_simd_f32x8 hi;
+	};
+	#define _simd_f32x16_splitlo_(X) x.lo
+	#define _simd_f32x16_splitlo_instruction_set(X) IS_NONE
+	#define _simd_f32x16_splithi_(X) x.hi
+	#define _simd_f32x16_splithi_instruction_set(X) IS_NONE
+	#define _simd_f32x16_combine_(X,Y) _simd_f32x16({X,Y})
+	#define _simd_f32x16_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_f32x32
+	struct _simd_f32x32 {
+		_simd_f32x16 lo;
+		_simd_f32x16 hi;
+	};
+	#define _simd_f32x32_splitlo_(X) x.lo
+	#define _simd_f32x32_splitlo_instruction_set(X) IS_NONE
+	#define _simd_f32x32_splithi_(X) x.hi
+	#define _simd_f32x32_splithi_instruction_set(X) IS_NONE
+	#define _simd_f32x32_combine_(X,Y) _simd_f32x32({X,Y})
+	#define _simd_f32x32_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_f32x64
+	struct _simd_f32x64 {
+		_simd_f32x32 lo;
+		_simd_f32x32 hi;
+	};
+	#define _simd_f32x64_splitlo_(X) x.lo
+	#define _simd_f32x64_splitlo_instruction_set(X) IS_NONE
+	#define _simd_f32x64_splithi_(X) x.hi
+	#define _simd_f32x64_splithi_instruction_set(X) IS_NONE
+	#define _simd_f32x64_combine_(X,Y) _simd_f32x64({X,Y})
+	#define _simd_f32x64_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s64x2
+	struct _simd_s64x2 {
+		_simd_s64x1 lo;
+		_simd_s64x1 hi;
+	};
+	#define _simd_s64x2_splitlo_(X) x.lo
+	#define _simd_s64x2_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s64x2_splithi_(X) x.hi
+	#define _simd_s64x2_splithi_instruction_set(X) IS_NONE
+	#define _simd_s64x2_combine_(X,Y) _simd_s64x2({X,Y})
+	#define _simd_s64x2_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s64x4
+	struct _simd_s64x4 {
+		_simd_s64x2 lo;
+		_simd_s64x2 hi;
+	};
+	#define _simd_s64x4_splitlo_(X) x.lo
+	#define _simd_s64x4_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s64x4_splithi_(X) x.hi
+	#define _simd_s64x4_splithi_instruction_set(X) IS_NONE
+	#define _simd_s64x4_combine_(X,Y) _simd_s64x4({X,Y})
+	#define _simd_s64x4_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s64x8
+	struct _simd_s64x8 {
+		_simd_s64x4 lo;
+		_simd_s64x4 hi;
+	};
+	#define _simd_s64x8_splitlo_(X) x.lo
+	#define _simd_s64x8_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s64x8_splithi_(X) x.hi
+	#define _simd_s64x8_splithi_instruction_set(X) IS_NONE
+	#define _simd_s64x8_combine_(X,Y) _simd_s64x8({X,Y})
+	#define _simd_s64x8_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s64x16
+	struct _simd_s64x16 {
+		_simd_s64x8 lo;
+		_simd_s64x8 hi;
+	};
+	#define _simd_s64x16_splitlo_(X) x.lo
+	#define _simd_s64x16_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s64x16_splithi_(X) x.hi
+	#define _simd_s64x16_splithi_instruction_set(X) IS_NONE
+	#define _simd_s64x16_combine_(X,Y) _simd_s64x16({X,Y})
+	#define _simd_s64x16_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s64x32
+	struct _simd_s64x32 {
+		_simd_s64x16 lo;
+		_simd_s64x16 hi;
+	};
+	#define _simd_s64x32_splitlo_(X) x.lo
+	#define _simd_s64x32_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s64x32_splithi_(X) x.hi
+	#define _simd_s64x32_splithi_instruction_set(X) IS_NONE
+	#define _simd_s64x32_combine_(X,Y) _simd_s64x32({X,Y})
+	#define _simd_s64x32_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s64x64
+	struct _simd_s64x64 {
+		_simd_s64x32 lo;
+		_simd_s64x32 hi;
+	};
+	#define _simd_s64x64_splitlo_(X) x.lo
+	#define _simd_s64x64_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s64x64_splithi_(X) x.hi
+	#define _simd_s64x64_splithi_instruction_set(X) IS_NONE
+	#define _simd_s64x64_combine_(X,Y) _simd_s64x64({X,Y})
+	#define _simd_s64x64_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u64x2
+	struct _simd_u64x2 {
+		_simd_u64x1 lo;
+		_simd_u64x1 hi;
+	};
+	#define _simd_u64x2_splitlo_(X) x.lo
+	#define _simd_u64x2_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u64x2_splithi_(X) x.hi
+	#define _simd_u64x2_splithi_instruction_set(X) IS_NONE
+	#define _simd_u64x2_combine_(X,Y) _simd_u64x2({X,Y})
+	#define _simd_u64x2_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u64x4
+	struct _simd_u64x4 {
+		_simd_u64x2 lo;
+		_simd_u64x2 hi;
+	};
+	#define _simd_u64x4_splitlo_(X) x.lo
+	#define _simd_u64x4_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u64x4_splithi_(X) x.hi
+	#define _simd_u64x4_splithi_instruction_set(X) IS_NONE
+	#define _simd_u64x4_combine_(X,Y) _simd_u64x4({X,Y})
+	#define _simd_u64x4_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u64x8
+	struct _simd_u64x8 {
+		_simd_u64x4 lo;
+		_simd_u64x4 hi;
+	};
+	#define _simd_u64x8_splitlo_(X) x.lo
+	#define _simd_u64x8_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u64x8_splithi_(X) x.hi
+	#define _simd_u64x8_splithi_instruction_set(X) IS_NONE
+	#define _simd_u64x8_combine_(X,Y) _simd_u64x8({X,Y})
+	#define _simd_u64x8_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u64x16
+	struct _simd_u64x16 {
+		_simd_u64x8 lo;
+		_simd_u64x8 hi;
+	};
+	#define _simd_u64x16_splitlo_(X) x.lo
+	#define _simd_u64x16_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u64x16_splithi_(X) x.hi
+	#define _simd_u64x16_splithi_instruction_set(X) IS_NONE
+	#define _simd_u64x16_combine_(X,Y) _simd_u64x16({X,Y})
+	#define _simd_u64x16_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u64x32
+	struct _simd_u64x32 {
+		_simd_u64x16 lo;
+		_simd_u64x16 hi;
+	};
+	#define _simd_u64x32_splitlo_(X) x.lo
+	#define _simd_u64x32_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u64x32_splithi_(X) x.hi
+	#define _simd_u64x32_splithi_instruction_set(X) IS_NONE
+	#define _simd_u64x32_combine_(X,Y) _simd_u64x32({X,Y})
+	#define _simd_u64x32_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u64x64
+	struct _simd_u64x64 {
+		_simd_u64x32 lo;
+		_simd_u64x32 hi;
+	};
+	#define _simd_u64x64_splitlo_(X) x.lo
+	#define _simd_u64x64_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u64x64_splithi_(X) x.hi
+	#define _simd_u64x64_splithi_instruction_set(X) IS_NONE
+	#define _simd_u64x64_combine_(X,Y) _simd_u64x64({X,Y})
+	#define _simd_u64x64_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s32x2
+	struct _simd_s32x2 {
+		_simd_s32x1 lo;
+		_simd_s32x1 hi;
+	};
+	#define _simd_s32x2_splitlo_(X) x.lo
+	#define _simd_s32x2_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s32x2_splithi_(X) x.hi
+	#define _simd_s32x2_splithi_instruction_set(X) IS_NONE
+	#define _simd_s32x2_combine_(X,Y) _simd_s32x2({X,Y})
+	#define _simd_s32x2_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s32x4
+	struct _simd_s32x4 {
+		_simd_s32x2 lo;
+		_simd_s32x2 hi;
+	};
+	#define _simd_s32x4_splitlo_(X) x.lo
+	#define _simd_s32x4_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s32x4_splithi_(X) x.hi
+	#define _simd_s32x4_splithi_instruction_set(X) IS_NONE
+	#define _simd_s32x4_combine_(X,Y) _simd_s32x4({X,Y})
+	#define _simd_s32x4_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s32x8
+	struct _simd_s32x8 {
+		_simd_s32x4 lo;
+		_simd_s32x4 hi;
+	};
+	#define _simd_s32x8_splitlo_(X) x.lo
+	#define _simd_s32x8_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s32x8_splithi_(X) x.hi
+	#define _simd_s32x8_splithi_instruction_set(X) IS_NONE
+	#define _simd_s32x8_combine_(X,Y) _simd_s32x8({X,Y})
+	#define _simd_s32x8_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s32x16
+	struct _simd_s32x16 {
+		_simd_s32x8 lo;
+		_simd_s32x8 hi;
+	};
+	#define _simd_s32x16_splitlo_(X) x.lo
+	#define _simd_s32x16_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s32x16_splithi_(X) x.hi
+	#define _simd_s32x16_splithi_instruction_set(X) IS_NONE
+	#define _simd_s32x16_combine_(X,Y) _simd_s32x16({X,Y})
+	#define _simd_s32x16_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s32x32
+	struct _simd_s32x32 {
+		_simd_s32x16 lo;
+		_simd_s32x16 hi;
+	};
+	#define _simd_s32x32_splitlo_(X) x.lo
+	#define _simd_s32x32_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s32x32_splithi_(X) x.hi
+	#define _simd_s32x32_splithi_instruction_set(X) IS_NONE
+	#define _simd_s32x32_combine_(X,Y) _simd_s32x32({X,Y})
+	#define _simd_s32x32_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s32x64
+	struct _simd_s32x64 {
+		_simd_s32x32 lo;
+		_simd_s32x32 hi;
+	};
+	#define _simd_s32x64_splitlo_(X) x.lo
+	#define _simd_s32x64_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s32x64_splithi_(X) x.hi
+	#define _simd_s32x64_splithi_instruction_set(X) IS_NONE
+	#define _simd_s32x64_combine_(X,Y) _simd_s32x64({X,Y})
+	#define _simd_s32x64_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u32x2
+	struct _simd_u32x2 {
+		_simd_u32x1 lo;
+		_simd_u32x1 hi;
+	};
+	#define _simd_u32x2_splitlo_(X) x.lo
+	#define _simd_u32x2_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u32x2_splithi_(X) x.hi
+	#define _simd_u32x2_splithi_instruction_set(X) IS_NONE
+	#define _simd_u32x2_combine_(X,Y) _simd_u32x2({X,Y})
+	#define _simd_u32x2_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u32x4
+	struct _simd_u32x4 {
+		_simd_u32x2 lo;
+		_simd_u32x2 hi;
+	};
+	#define _simd_u32x4_splitlo_(X) x.lo
+	#define _simd_u32x4_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u32x4_splithi_(X) x.hi
+	#define _simd_u32x4_splithi_instruction_set(X) IS_NONE
+	#define _simd_u32x4_combine_(X,Y) _simd_u32x4({X,Y})
+	#define _simd_u32x4_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u32x8
+	struct _simd_u32x8 {
+		_simd_u32x4 lo;
+		_simd_u32x4 hi;
+	};
+	#define _simd_u32x8_splitlo_(X) x.lo
+	#define _simd_u32x8_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u32x8_splithi_(X) x.hi
+	#define _simd_u32x8_splithi_instruction_set(X) IS_NONE
+	#define _simd_u32x8_combine_(X,Y) _simd_u32x8({X,Y})
+	#define _simd_u32x8_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u32x16
+	struct _simd_u32x16 {
+		_simd_u32x8 lo;
+		_simd_u32x8 hi;
+	};
+	#define _simd_u32x16_splitlo_(X) x.lo
+	#define _simd_u32x16_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u32x16_splithi_(X) x.hi
+	#define _simd_u32x16_splithi_instruction_set(X) IS_NONE
+	#define _simd_u32x16_combine_(X,Y) _simd_u32x16({X,Y})
+	#define _simd_u32x16_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u32x32
+	struct _simd_u32x32 {
+		_simd_u32x16 lo;
+		_simd_u32x16 hi;
+	};
+	#define _simd_u32x32_splitlo_(X) x.lo
+	#define _simd_u32x32_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u32x32_splithi_(X) x.hi
+	#define _simd_u32x32_splithi_instruction_set(X) IS_NONE
+	#define _simd_u32x32_combine_(X,Y) _simd_u32x32({X,Y})
+	#define _simd_u32x32_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u32x64
+	struct _simd_u32x64 {
+		_simd_u32x32 lo;
+		_simd_u32x32 hi;
+	};
+	#define _simd_u32x64_splitlo_(X) x.lo
+	#define _simd_u32x64_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u32x64_splithi_(X) x.hi
+	#define _simd_u32x64_splithi_instruction_set(X) IS_NONE
+	#define _simd_u32x64_combine_(X,Y) _simd_u32x64({X,Y})
+	#define _simd_u32x64_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s16x2
+	struct _simd_s16x2 {
+		_simd_s16x1 lo;
+		_simd_s16x1 hi;
+	};
+	#define _simd_s16x2_splitlo_(X) x.lo
+	#define _simd_s16x2_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s16x2_splithi_(X) x.hi
+	#define _simd_s16x2_splithi_instruction_set(X) IS_NONE
+	#define _simd_s16x2_combine_(X,Y) _simd_s16x2({X,Y})
+	#define _simd_s16x2_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s16x4
+	struct _simd_s16x4 {
+		_simd_s16x2 lo;
+		_simd_s16x2 hi;
+	};
+	#define _simd_s16x4_splitlo_(X) x.lo
+	#define _simd_s16x4_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s16x4_splithi_(X) x.hi
+	#define _simd_s16x4_splithi_instruction_set(X) IS_NONE
+	#define _simd_s16x4_combine_(X,Y) _simd_s16x4({X,Y})
+	#define _simd_s16x4_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s16x8
+	struct _simd_s16x8 {
+		_simd_s16x4 lo;
+		_simd_s16x4 hi;
+	};
+	#define _simd_s16x8_splitlo_(X) x.lo
+	#define _simd_s16x8_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s16x8_splithi_(X) x.hi
+	#define _simd_s16x8_splithi_instruction_set(X) IS_NONE
+	#define _simd_s16x8_combine_(X,Y) _simd_s16x8({X,Y})
+	#define _simd_s16x8_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s16x16
+	struct _simd_s16x16 {
+		_simd_s16x8 lo;
+		_simd_s16x8 hi;
+	};
+	#define _simd_s16x16_splitlo_(X) x.lo
+	#define _simd_s16x16_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s16x16_splithi_(X) x.hi
+	#define _simd_s16x16_splithi_instruction_set(X) IS_NONE
+	#define _simd_s16x16_combine_(X,Y) _simd_s16x16({X,Y})
+	#define _simd_s16x16_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s16x32
+	struct _simd_s16x32 {
+		_simd_s16x16 lo;
+		_simd_s16x16 hi;
+	};
+	#define _simd_s16x32_splitlo_(X) x.lo
+	#define _simd_s16x32_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s16x32_splithi_(X) x.hi
+	#define _simd_s16x32_splithi_instruction_set(X) IS_NONE
+	#define _simd_s16x32_combine_(X,Y) _simd_s16x32({X,Y})
+	#define _simd_s16x32_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s16x64
+	struct _simd_s16x64 {
+		_simd_s16x32 lo;
+		_simd_s16x32 hi;
+	};
+	#define _simd_s16x64_splitlo_(X) x.lo
+	#define _simd_s16x64_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s16x64_splithi_(X) x.hi
+	#define _simd_s16x64_splithi_instruction_set(X) IS_NONE
+	#define _simd_s16x64_combine_(X,Y) _simd_s16x64({X,Y})
+	#define _simd_s16x64_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u16x2
+	struct _simd_u16x2 {
+		_simd_u16x1 lo;
+		_simd_u16x1 hi;
+	};
+	#define _simd_u16x2_splitlo_(X) x.lo
+	#define _simd_u16x2_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u16x2_splithi_(X) x.hi
+	#define _simd_u16x2_splithi_instruction_set(X) IS_NONE
+	#define _simd_u16x2_combine_(X,Y) _simd_u16x2({X,Y})
+	#define _simd_u16x2_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u16x4
+	struct _simd_u16x4 {
+		_simd_u16x2 lo;
+		_simd_u16x2 hi;
+	};
+	#define _simd_u16x4_splitlo_(X) x.lo
+	#define _simd_u16x4_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u16x4_splithi_(X) x.hi
+	#define _simd_u16x4_splithi_instruction_set(X) IS_NONE
+	#define _simd_u16x4_combine_(X,Y) _simd_u16x4({X,Y})
+	#define _simd_u16x4_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u16x8
+	struct _simd_u16x8 {
+		_simd_u16x4 lo;
+		_simd_u16x4 hi;
+	};
+	#define _simd_u16x8_splitlo_(X) x.lo
+	#define _simd_u16x8_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u16x8_splithi_(X) x.hi
+	#define _simd_u16x8_splithi_instruction_set(X) IS_NONE
+	#define _simd_u16x8_combine_(X,Y) _simd_u16x8({X,Y})
+	#define _simd_u16x8_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u16x16
+	struct _simd_u16x16 {
+		_simd_u16x8 lo;
+		_simd_u16x8 hi;
+	};
+	#define _simd_u16x16_splitlo_(X) x.lo
+	#define _simd_u16x16_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u16x16_splithi_(X) x.hi
+	#define _simd_u16x16_splithi_instruction_set(X) IS_NONE
+	#define _simd_u16x16_combine_(X,Y) _simd_u16x16({X,Y})
+	#define _simd_u16x16_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u16x32
+	struct _simd_u16x32 {
+		_simd_u16x16 lo;
+		_simd_u16x16 hi;
+	};
+	#define _simd_u16x32_splitlo_(X) x.lo
+	#define _simd_u16x32_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u16x32_splithi_(X) x.hi
+	#define _simd_u16x32_splithi_instruction_set(X) IS_NONE
+	#define _simd_u16x32_combine_(X,Y) _simd_u16x32({X,Y})
+	#define _simd_u16x32_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u16x64
+	struct _simd_u16x64 {
+		_simd_u16x32 lo;
+		_simd_u16x32 hi;
+	};
+	#define _simd_u16x64_splitlo_(X) x.lo
+	#define _simd_u16x64_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u16x64_splithi_(X) x.hi
+	#define _simd_u16x64_splithi_instruction_set(X) IS_NONE
+	#define _simd_u16x64_combine_(X,Y) _simd_u16x64({X,Y})
+	#define _simd_u16x64_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s8x2
+	struct _simd_s8x2 {
+		_simd_s8x1 lo;
+		_simd_s8x1 hi;
+	};
+	#define _simd_s8x2_splitlo_(X) x.lo
+	#define _simd_s8x2_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s8x2_splithi_(X) x.hi
+	#define _simd_s8x2_splithi_instruction_set(X) IS_NONE
+	#define _simd_s8x2_combine_(X,Y) _simd_s8x2({X,Y})
+	#define _simd_s8x2_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s8x4
+	struct _simd_s8x4 {
+		_simd_s8x2 lo;
+		_simd_s8x2 hi;
+	};
+	#define _simd_s8x4_splitlo_(X) x.lo
+	#define _simd_s8x4_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s8x4_splithi_(X) x.hi
+	#define _simd_s8x4_splithi_instruction_set(X) IS_NONE
+	#define _simd_s8x4_combine_(X,Y) _simd_s8x4({X,Y})
+	#define _simd_s8x4_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s8x8
+	struct _simd_s8x8 {
+		_simd_s8x4 lo;
+		_simd_s8x4 hi;
+	};
+	#define _simd_s8x8_splitlo_(X) x.lo
+	#define _simd_s8x8_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s8x8_splithi_(X) x.hi
+	#define _simd_s8x8_splithi_instruction_set(X) IS_NONE
+	#define _simd_s8x8_combine_(X,Y) _simd_s8x8({X,Y})
+	#define _simd_s8x8_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s8x16
+	struct _simd_s8x16 {
+		_simd_s8x8 lo;
+		_simd_s8x8 hi;
+	};
+	#define _simd_s8x16_splitlo_(X) x.lo
+	#define _simd_s8x16_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s8x16_splithi_(X) x.hi
+	#define _simd_s8x16_splithi_instruction_set(X) IS_NONE
+	#define _simd_s8x16_combine_(X,Y) _simd_s8x16({X,Y})
+	#define _simd_s8x16_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s8x32
+	struct _simd_s8x32 {
+		_simd_s8x16 lo;
+		_simd_s8x16 hi;
+	};
+	#define _simd_s8x32_splitlo_(X) x.lo
+	#define _simd_s8x32_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s8x32_splithi_(X) x.hi
+	#define _simd_s8x32_splithi_instruction_set(X) IS_NONE
+	#define _simd_s8x32_combine_(X,Y) _simd_s8x32({X,Y})
+	#define _simd_s8x32_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_s8x64
+	struct _simd_s8x64 {
+		_simd_s8x32 lo;
+		_simd_s8x32 hi;
+	};
+	#define _simd_s8x64_splitlo_(X) x.lo
+	#define _simd_s8x64_splitlo_instruction_set(X) IS_NONE
+	#define _simd_s8x64_splithi_(X) x.hi
+	#define _simd_s8x64_splithi_instruction_set(X) IS_NONE
+	#define _simd_s8x64_combine_(X,Y) _simd_s8x64({X,Y})
+	#define _simd_s8x64_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u8x2
+	struct _simd_u8x2 {
+		_simd_u8x1 lo;
+		_simd_u8x1 hi;
+	};
+	#define _simd_u8x2_splitlo_(X) x.lo
+	#define _simd_u8x2_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u8x2_splithi_(X) x.hi
+	#define _simd_u8x2_splithi_instruction_set(X) IS_NONE
+	#define _simd_u8x2_combine_(X,Y) _simd_u8x2({X,Y})
+	#define _simd_u8x2_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u8x4
+	struct _simd_u8x4 {
+		_simd_u8x2 lo;
+		_simd_u8x2 hi;
+	};
+	#define _simd_u8x4_splitlo_(X) x.lo
+	#define _simd_u8x4_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u8x4_splithi_(X) x.hi
+	#define _simd_u8x4_splithi_instruction_set(X) IS_NONE
+	#define _simd_u8x4_combine_(X,Y) _simd_u8x4({X,Y})
+	#define _simd_u8x4_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u8x8
+	struct _simd_u8x8 {
+		_simd_u8x4 lo;
+		_simd_u8x4 hi;
+	};
+	#define _simd_u8x8_splitlo_(X) x.lo
+	#define _simd_u8x8_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u8x8_splithi_(X) x.hi
+	#define _simd_u8x8_splithi_instruction_set(X) IS_NONE
+	#define _simd_u8x8_combine_(X,Y) _simd_u8x8({X,Y})
+	#define _simd_u8x8_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u8x16
+	struct _simd_u8x16 {
+		_simd_u8x8 lo;
+		_simd_u8x8 hi;
+	};
+	#define _simd_u8x16_splitlo_(X) x.lo
+	#define _simd_u8x16_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u8x16_splithi_(X) x.hi
+	#define _simd_u8x16_splithi_instruction_set(X) IS_NONE
+	#define _simd_u8x16_combine_(X,Y) _simd_u8x16({X,Y})
+	#define _simd_u8x16_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u8x32
+	struct _simd_u8x32 {
+		_simd_u8x16 lo;
+		_simd_u8x16 hi;
+	};
+	#define _simd_u8x32_splitlo_(X) x.lo
+	#define _simd_u8x32_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u8x32_splithi_(X) x.hi
+	#define _simd_u8x32_splithi_instruction_set(X) IS_NONE
+	#define _simd_u8x32_combine_(X,Y) _simd_u8x32({X,Y})
+	#define _simd_u8x32_combine_instruction_set(X) IS_NONE
+#endif
+#ifndef _simd_u8x64
+	struct _simd_u8x64 {
+		_simd_u8x32 lo;
+		_simd_u8x32 hi;
+	};
+	#define _simd_u8x64_splitlo_(X) x.lo
+	#define _simd_u8x64_splitlo_instruction_set(X) IS_NONE
+	#define _simd_u8x64_splithi_(X) x.hi
+	#define _simd_u8x64_splithi_instruction_set(X) IS_NONE
+	#define _simd_u8x64_combine_(X,Y) _simd_u8x64({X,Y})
+	#define _simd_u8x64_combine_instruction_set(X) IS_NONE
+#endif
 
 // Fill undefined
 
@@ -890,6 +1204,11 @@ namespace anvil { namespace simd {
 	template<InstructionSet IS>
 	static ANVIL_STRONG_INLINE bool IsInstructionSetSupported() {
 		return IsInstructionSetSupported(IS);
+	}
+
+	template<>
+	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_NONE>() {
+		return true;
 	}
 
 #if ANVIL_ARCHITECTURE == ANVIL_X86
