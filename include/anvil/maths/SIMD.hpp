@@ -687,7 +687,7 @@ _simd_add(u8)
 #undef _simd_add_
 #undef _simd_add2_
 
-//#include "anvil/maths/simd/add.hpp"
+#include "anvil/maths/simd/add.hpp"
 
 namespace anvil { namespace simd {
 
