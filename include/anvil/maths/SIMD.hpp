@@ -1056,46 +1056,19 @@ _simd_extract(u8)
 
 // Add
 
-#define _simd_add2_(A)\
-	static ANVIL_STRONG_INLINE _simd_ ## A ANVIL_SIMD_CALL _simd_ ## A ## _add_safe(_simd_ ## A x, _simd_ ## A y) {\
-		_simd_ ## A tmp;\
-		tmp = _simd_ ## A ## _insert_safe(tmp, 0, _simd_ ## A ## _extract_safe(x, 0) + _simd_ ## A ## _extract_safe(y, 0));\
-		tmp = _simd_ ## A ## _insert_safe(tmp, 1, _simd_ ## A ## _extract_safe(x, 1) + _simd_ ## A ## _extract_safe(y, 1));\
-		return tmp;\
-	}
-
-#define _simd_add_(A,B)\
-	static ANVIL_STRONG_INLINE _simd_ ## A ANVIL_SIMD_CALL _simd_ ## A ## _add_safe(_simd_ ## A x, _simd_ ## A y) {\
-		return _simd_ ## A ## _combine_safe(\
-			_simd_ ## B ## _add_safe(_simd_ ## A ## _splitlo_safe(x), _simd_ ## A ## _splitlo_safe(y)),\
-			_simd_ ## B ## _add_safe(_simd_ ## A ## _splithi_safe(x), _simd_ ## A ## _splithi_safe(y))\
-		);\
-	}
-
-#define _simd_add(T)\
-	_simd_add2_(T ## x2)\
-	_simd_add_(T ## x4, T ## x2)\
-	_simd_add_(T ## x8, T ## x4)\
-	_simd_add_(T ## x16, T ## x8)\
-	_simd_add_(T ## x32, T ## x16)\
-	_simd_add_(T ## x64, T ## x32)
-
-_simd_add(f64)
-_simd_add(f32)
-_simd_add(s64)
-_simd_add(u64)
-_simd_add(s32)
-_simd_add(u32)
-_simd_add(s16)
-_simd_add(u16)
-_simd_add(s8)
-_simd_add(u8)
-
-#undef _simd_add
-#undef _simd_add_
-#undef _simd_add2_
-
 #include "anvil/maths/simd/add.hpp"
+
+// Sub
+
+#include "anvil/maths/simd/sub.hpp"
+
+// Mul
+
+#include "anvil/maths/simd/mul.hpp"
+
+// Div
+
+#include "anvil/maths/simd/div.hpp"
 
 namespace anvil { namespace simd {
 
