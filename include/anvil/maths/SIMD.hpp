@@ -1644,6 +1644,9 @@ _simd_extract(u8)
 #include "anvil/maths/simd/cmple.hpp"
 #include "anvil/maths/simd/cmpge.hpp"
 
+// Misc
+#include "anvil/maths/simd/sum.hpp"
+
 namespace anvil { namespace simd {
 
 	// Instruction set definitions
