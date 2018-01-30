@@ -620,6 +620,132 @@
 #define _simd_s8x32_cmpgt_(X,Y) _mm256_cmpgt_epi8(X,Y)
 #define _simd_s8x32_cmpgt_instruction_set anvil::simd::IS_AVX_2
 
+#define _simd_f64x2_and_(X,Y) _mm_and_pd(X,Y)
+#define _simdf64x2_and_instruction_set anvil::simd::IS_SSE_2
+
+#define _simd_f64x4_and_(X,Y) _mm256_and_pd(X,Y)
+#define _simd_f64x4_and_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_and_(X,Y) _mm_and_ps(X,Y)
+#define _simd_f32x4_and_instruction_set anvil::simd::IS_SSE
+
+#define _simd_f32x8_and_(X,Y) _mm256_and_ps(X,Y)
+#define _simd_f32x8_and_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s32x4_and_(X,Y) _mm_and_si128(X,Y)
+#define _simd_s32x4_and_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s32x8_and_(X,Y) _mm256_and_si256(X,Y)
+#define _simd_s32x8_and_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s16x8_and_(X,Y) _mm_and_si128(X,Y)
+#define _simd_s16x8_and_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s16x16_and_(X,Y) _mm256_and_si256(X,Y)
+#define _simd_s16x16_and_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s8x16_and_(X,Y) _mm_and_si128(X,Y)
+#define _simd_s8x16_and_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s8x32_and_(X,Y) _mm256_and_si256(X,Y)
+#define _simd_s8x32_and_instruction_set anvil::simd::IS_AVX
+
+#define _simd_u16x8_and_(X,Y) _mm_and_si128(X,Y)
+#define _simd_u16x8_and_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_u16x16_and_(X,Y) _mm256_and_si256(X,Y)
+#define _simd_u16x16_and_instruction_set anvil::simd::IS_AVX
+
+#define _simd_u8x16_and_(X,Y) _mm_and_si128(X,Y)
+#define _simd_u8x16_and_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_u8x32_and_(X,Y) _mm256_and_si256(X,Y)
+#define _simd_u8x32_and_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f64x2_or_(X,Y) _mm_or_pd(X,Y)
+#define _simdf64x2_or_instruction_set anvil::simd::IS_SSE_2
+
+#define _simd_f64x4_or_(X,Y) _mm256_or_pd(X,Y)
+#define _simd_f64x4_or_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_or_(X,Y) _mm_or_ps(X,Y)
+#define _simd_f32x4_or_instruction_set anvil::simd::IS_SSE
+
+#define _simd_f32x8_or_(X,Y) _mm256_or_ps(X,Y)
+#define _simd_f32x8_or_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s32x4_or_(X,Y) _mm_or_si128(X,Y)
+#define _simd_s32x4_or_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s32x8_or_(X,Y) _mm256_or_si256(X,Y)
+#define _simd_s32x8_or_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s16x8_or_(X,Y) _mm_or_si128(X,Y)
+#define _simd_s16x8_or_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s16x16_or_(X,Y) _mm256_or_si256(X,Y)
+#define _simd_s16x16_or_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s8x16_or_(X,Y) _mm_or_si128(X,Y)
+#define _simd_s8x16_or_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s8x32_or_(X,Y) _mm256_or_si256(X,Y)
+#define _simd_s8x32_or_instruction_set anvil::simd::IS_AVX
+
+#define _simd_u16x8_or_(X,Y) _mm_or_si128(X,Y)
+#define _simd_u16x8_or_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_u16x16_or_(X,Y) _mm256_or_si256(X,Y)
+#define _simd_u16x16_or_instruction_set anvil::simd::IS_AVX
+
+#define _simd_u8x16_or_(X,Y) _mm_or_si128(X,Y)
+#define _simd_u8x16_or_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_u8x32_or_(X,Y) _mm256_or_si256(X,Y)
+#define _simd_u8x32_or_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f64x2_xor_(X,Y) _mm_xor_pd(X,Y)
+#define _simdf64x2_xor_instruction_set anvil::simd::IS_SSE_2
+
+#define _simd_f64x4_xor_(X,Y) _mm256_xor_pd(X,Y)
+#define _simd_f64x4_xor_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_xor_(X,Y) _mm_xor_ps(X,Y)
+#define _simd_f32x4_xor_instruction_set anvil::simd::IS_SSE
+
+#define _simd_f32x8_xor_(X,Y) _mm256_xor_ps(X,Y)
+#define _simd_f32x8_xor_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s32x4_xor_(X,Y) _mm_xor_si128(X,Y)
+#define _simd_s32x4_xor_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s32x8_xor_(X,Y) _mm256_xor_si256(X,Y)
+#define _simd_s32x8_xor_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s16x8_xor_(X,Y) _mm_xor_si128(X,Y)
+#define _simd_s16x8_xor_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s16x16_xor_(X,Y) _mm256_xor_si256(X,Y)
+#define _simd_s16x16_xor_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s8x16_xor_(X,Y) _mm_xor_si128(X,Y)
+#define _simd_s8x16_xor_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s8x32_xor_(X,Y) _mm256_xor_si256(X,Y)
+#define _simd_s8x32_xor_instruction_set anvil::simd::IS_AVX
+
+#define _simd_u16x8_xor_(X,Y) _mm_xor_si128(X,Y)
+#define _simd_u16x8_xor_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_u16x16_xor_(X,Y) _mm256_xor_si256(X,Y)
+#define _simd_u16x16_xor_instruction_set anvil::simd::IS_AVX
+
+#define _simd_u8x16_xor_(X,Y) _mm_xor_si128(X,Y)
+#define _simd_u8x16_xor_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_u8x32_xor_(X,Y) _mm256_xor_si256(X,Y)
+#define _simd_u8x32_xor_instruction_set anvil::simd::IS_AVX
+
 #endif
 
 // Types
@@ -1491,28 +1617,22 @@ _simd_extract(u8)
 
 #include "anvil/maths/simd/extract.hpp"
 
-// Add
+// Numeric Operators
 
 #include "anvil/maths/simd/add.hpp"
-
-// Sub
-
 #include "anvil/maths/simd/sub.hpp"
-
-// Mul
-
 #include "anvil/maths/simd/mul.hpp"
-
-// Div
-
 #include "anvil/maths/simd/div.hpp"
 
-// Min
+// Bitwise Operators
+
+#include "anvil/maths/simd/and.hpp"
+#include "anvil/maths/simd/or.hpp"
+#include "anvil/maths/simd/xor.hpp"
+
+// Min/Max
 
 #include "anvil/maths/simd/min.hpp"
-
-// Max
-
 #include "anvil/maths/simd/max.hpp"
 
 // Comparisons
