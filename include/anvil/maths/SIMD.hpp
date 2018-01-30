@@ -479,6 +479,147 @@
 #define _simd_u8x32_set_(a0, b0, c0, d0, e0, f0, g0, h0, i0, j0, k0, l0, m0, n0, o0, p0, q0, r0, s0, t0, u0, v0, w0, x0, y0, z0, a1, b1, c1, d1, e1, f1) _simd_s8x32_set_(a0, b0, c0, d0, e0, f0, g0, h0, i0, j0, k0, l0, m0, n0, o0, p0, q0, r0, s0, t0, u0, v0, w0, x0, y0, z0, a1, b1, c1, d1, e1, f1)
 #define _simd_u8x32_set_instruction_set _simd_s8x32_set_instruction_set
 
+#define _simd_f64x2_cmpeq_(X,Y) _mm_cmpeq_pd(X,Y)
+#define _simdf64x2_cmpeq_instruction_set anvil::simd::IS_SSE_2
+
+#define _simd_f64x4_cmpeq_(X,Y) _mm256_cmpeq_pd(X,Y)
+#define _simd_f64x4_cmpeq_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_cmpeq_(X,Y) _mm_cmpeq_ps(X,Y)
+#define _simd_f32x4_cmpeq_instruction_set anvil::simd::IS_SSE
+
+#define _simd_f32x8_cmpeq_(X,Y) _mm256_cmpeq_ps(X,Y)
+#define _simd_f32x8_cmpeq_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s32x4_cmpeq_(X,Y) _mm_cmpeq_epi32(X,Y)
+#define _simd_s32x4_cmpeq_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s32x8_cmpeq_(X,Y) _mm256_cmpeq_epi32(X,Y)
+#define _simd_s32x8_cmpeq_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_s16x8_cmpeq_(X,Y) _mm_cmpeq_epi16(X,Y)
+#define _simd_s16x8_cmpeq_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s16x16_cmpeq_(X,Y) _mm256_cmpeq_epi16(X,Y)
+#define _simd_s16x16_cmpeq_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_s8x16_cmpeq_(X,Y) _mm_cmpeq_epi8(X,Y)
+#define _simd_s8x16_cmpeq_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s8x32_cmpeq_(X,Y) _mm256_cmpeq_epi8(X,Y)
+#define _simd_s8x32_cmpeq_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_u32x4_cmpeq_(X,Y) _simd_s32x4_cmpeq_(X,Y)
+#define _simd_u32x4_cmpeq_instruction_set _simd_s32x4_cmpeq_instruction_set
+
+#define _simd_u32x8_cmpeq_(X,Y) _simd_s32x8_cmpeq_(X,Y)
+#define _simd_u32x8_cmpeq_instruction_set _simd_s32x8_cmpeq_instruction_set
+
+#define _simd_u16x8_cmpeq_(X,Y) _simd_s16x8_cmpeq_(X,Y)
+#define _simd_u16x8_cmpeq_instruction_set _simd_s16x8_cmpeq_instruction_set
+
+#define _simd_u16x16_cmpeq_(X,Y) _simd_s16x16_cmpeq_(X,Y)
+#define _simd_u16x16_cmpeq_instruction_set _simd_s16x16_cmpeq_instruction_set
+
+#define _simd_u8x16_cmpeq_(X,Y) _simd_s8x16_cmpeq_(X,Y)
+#define _simd_u8x16_cmpeq_instruction_set _simd_s8x16_cmpeq_instruction_set
+
+#define _simd_u8x32_cmpeq_(X,Y) _simd_s8x32_cmpeq_(X,Y)
+#define _simd_u8x32_cmpeq_instruction_set _simd_s8x32_cmpeq_instruction_set
+
+#define _simd_f64x2_cmpne_(X,Y) _mm_cmpneq_pd(X,Y)
+#define _simdf64x2_cmpne_instruction_set anvil::simd::IS_SSE_2
+
+#define _simd_f64x4_cmpne_(X,Y) _mm256_cmpneq_pd(X,Y)
+#define _simd_f64x4_cmpne_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_cmpne_(X,Y) _mm_cmpneq_ps(X,Y)
+#define _simd_f32x4_cmpne_instruction_set anvil::simd::IS_SSE
+
+#define _simd_f32x8_cmpne_(X,Y) _mm256_cmpneq_ps(X,Y)
+#define _simd_f32x8_cmpne_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f64x2_cmple_(X,Y) _mm_cmple_pd(X,Y)
+#define _simdf64x2_cmple_instruction_set anvil::simd::IS_SSE_2
+
+#define _simd_f64x4_cmple_(X,Y) _mm256_cmple_pd(X,Y)
+#define _simd_f64x4_cmple_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_cmple_(X,Y) _mm_cmple_ps(X,Y)
+#define _simd_f32x4_cmple_instruction_set anvil::simd::IS_SSE
+
+#define _simd_f32x8_cmple_(X,Y) _mm256_cmple_ps(X,Y)
+#define _simd_f32x8_cmple_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f64x2_cmpge_(X,Y) _mm_cmpge_pd(X,Y)
+#define _simdf64x2_cmpge_instruction_set anvil::simd::IS_SSE_2
+
+#define _simd_f64x4_cmpge_(X,Y) _mm256_cmpge_pd(X,Y)
+#define _simd_f64x4_cmpge_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_cmpge_(X,Y) _mm_cmpge_ps(X,Y)
+#define _simd_f32x4_cmpge_instruction_set anvil::simd::IS_SSE
+
+#define _simd_f32x8_cmpge_(X,Y) _mm256_cmpge_ps(X,Y)
+#define _simd_f32x8_cmpge_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f64x2_cmplt_(X,Y) _mm_cmplt_pd(X,Y)
+#define _simdf64x2_cmplt_instruction_set anvil::simd::IS_SSE_2
+
+#define _simd_f64x4_cmplt_(X,Y) _mm256_cmplt_pd(X,Y)
+#define _simd_f64x4_cmplt_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_cmplt_(X,Y) _mm_cmplt_ps(X,Y)
+#define _simd_f32x4_cmplt_instruction_set anvil::simd::IS_SSE
+
+#define _simd_f32x8_cmplt_(X,Y) _mm256_cmplt_ps(X,Y)
+#define _simd_f32x8_cmplt_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s32x4_cmplt_(X,Y) _mm_cmplt_epi32(X,Y)
+#define _simd_s32x4_cmplt_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s32x8_cmplt_(X,Y) _mm256_cmplt_epi32(X,Y)
+#define _simd_s32x8_cmplt_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_s16x8_cmplt_(X,Y) _mm_cmplt_epi16(X,Y)
+#define _simd_s16x8_cmplt_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s8x16_cmplt_(X,Y) _mm_cmplt_epi8(X,Y)
+#define _simd_s8x16_cmplt_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_f64x2_cmpgt_(X,Y) _mm_cmpgt_pd(X,Y)
+#define _simdf64x2_cmpgt_instruction_set anvil::simd::IS_SSE_2
+
+#define _simd_f64x4_cmpgt_(X,Y) _mm256_cmpgt_pd(X,Y)
+#define _simd_f64x4_cmpgt_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_cmpgt_(X,Y) _mm_cmpgt_ps(X,Y)
+#define _simd_f32x4_cmpgt_instruction_set anvil::simd::IS_SSE
+
+#define _simd_f32x8_cmpgt_(X,Y) _mm256_cmpgt_ps(X,Y)
+#define _simd_f32x8_cmpgt_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s32x4_cmpgt_(X,Y) _mm_cmpgt_epi32(X,Y)
+#define _simd_s32x4_cmpgt_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s32x8_cmpgt_(X,Y) _mm256_cmpgt_epi32(X,Y)
+#define _simd_s32x8_cmpgt_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_s32x8_cmpgt_(X,Y) _mm256_cmpgt_epi32(X,Y)
+#define _simd_s32x8_cmpgt_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_s16x8_cmpgt_(X,Y) _mm_cmpgt_epi16(X,Y)
+#define _simd_s16x8_cmpgt_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s16x16_cmpgt_(X,Y) _mm256_cmpgt_epi16(X,Y)
+#define _simd_s16x16_cmpgt_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_s8x16_cmpgt_(X,Y) _mm_cmpgt_epi8(X,Y)
+#define _simd_s8x16_cmpgt_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s8x32_cmpgt_(X,Y) _mm256_cmpgt_epi8(X,Y)
+#define _simd_s8x32_cmpgt_instruction_set anvil::simd::IS_AVX_2
+
 #endif
 
 // Types
@@ -1373,6 +1514,15 @@ _simd_extract(u8)
 // Max
 
 #include "anvil/maths/simd/max.hpp"
+
+// Comparisons
+
+#include "anvil/maths/simd/cmpeq.hpp"
+#include "anvil/maths/simd/cmpne.hpp"
+#include "anvil/maths/simd/cmplt.hpp"
+#include "anvil/maths/simd/cmpgt.hpp"
+#include "anvil/maths/simd/cmple.hpp"
+#include "anvil/maths/simd/cmpge.hpp"
 
 namespace anvil { namespace simd {
 
