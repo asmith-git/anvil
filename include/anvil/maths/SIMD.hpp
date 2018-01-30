@@ -80,17 +80,32 @@
 #define _simd_s32x4_add_(X,Y) _mm_add_epi32(X,Y)
 #define _simd_s32x4_add_instruction_set anvil::simd::IS_SSE2
 
+#define _simd_s32x8_add_(X,Y) _mm256_add_epi32(X,Y)
+#define _simd_s32x8_add_instruction_set anvil::simd::IS_AVX_2
+
 #define _simd_s16x8_add_(X,Y) _mm_add_epi16(X,Y)
 #define _simd_s16x8_add_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s16x16_add_(X,Y) _mm256_add_epi16(X,Y)
+#define _simd_s16x16_add_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s8x16_add_(X,Y) _mm_add_epi8(X,Y)
 #define _simd_s8x16_add_instruction_set anvil::simd::IS_SSE2
 
+#define _simd_s8x32_add_(X,Y) _mm256_add_epi8(X,Y)
+#define _simd_s8x32_add_instruction_set anvil::simd::IS_AVX_2
+
 #define _simd_u16x8_add_(X,Y) _mm_adds_epu16(X,Y)
 #define _simd_u16x8_add_instruction_set anvil::simd::IS_SSE2
 
+#define _simd_u16x16_add_(X,Y) _mm256_adds_epu16(X,Y)
+#define _simd_u16x16_add_instruction_set anvil::simd::IS_AVX_2
+
 #define _simd_u8x16_add_(X,Y) _mm_adds_epu8(X,Y)
 #define _simd_u8x16_add_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_u8x32_add_(X,Y) _mm256_adds_epu8(X,Y)
+#define _simd_u8x32_add_instruction_set anvil::simd::IS_AVX_2
 
 #endif
 
