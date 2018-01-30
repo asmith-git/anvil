@@ -65,17 +65,32 @@
 #define _simd_u8x16 __m128i
 #define _simd_u8x32 __m256i
 
-#define _simd_add_f64x2(X,Y) _mm_add_pd_(X,Y)
-#define _simd_add_f64x2_enable() anvil::simd::IsInstructionSetSupported<anvil::simd::IS_SSE_2>()
+#define _simd_add_f64x2(X,Y) _mm_add_pd(X,Y)
+#define _simd_add_f64x2_add_instruction_set() anvil::simd::IS_SSE_2
 
-#define _simd_add_f64x4(X,Y) _mm256_add_pd_(X,Y)
-#define _simd_add_f64x4_enable() anvil::simd::IsInstructionSetSupported<anvil::simd::IS_AVX>()
+#define _simd_add_f64x4(X,Y) _mm256_add_pd(X,Y)
+#define _simd_add_f64x4_add_instruction_set() anvil::simd::IS_AVX
 
-#define _simd_add_f32x4(X,Y) _mm_add_ps_(X,Y)
-#define _simd_add_f32x4_enable() anvil::simd::IsInstructionSetSupported<anvil::simd::IS_SSE>()
+#define _simd_add_f32x4(X,Y) _mm_add_ps(X,Y)
+#define _simd_add_f32x4_add_instruction_set() anvil::simd::IS_SSE
 
-#define _simd_add_f32x8(X,Y) _mm256_add_ps_(X,Y)
-#define _simd_add_f32x8_enable() anvil::simd::IsInstructionSetSupported<anvil::simd::IS_AVX>()
+#define _simd_add_f32x8(X,Y) _mm256_add_ps(X,Y)
+#define _simd_add_f32x8_add_instruction_set() anvil::simd::IS_AVX
+
+#define _simd_add_s32x4(X,Y) _mm_add_epi32(X,Y)
+#define _simd_add_s32x4_add_instruction_set() anvil::simd::IS_SSE2
+
+#define _simd_add_s16x8(X,Y) _mm_add_epi16(X,Y)
+#define _simd_add_s16x8_add_instruction_set() anvil::simd::IS_SSE2
+
+#define _simd_add_s8x16(X,Y) _mm_add_epi8(X,Y)
+#define _simd_add_s8x16_add_instruction_set() anvil::simd::IS_SSE2
+
+#define _simd_add_u16x8(X,Y) _mm_adds_epu16(X,Y)
+#define _simd_add_u16x8_add_instruction_set() anvil::simd::IS_SSE2
+
+#define _simd_add_u8x16(X,Y) _mm_adds_epu8(X,Y)
+#define _simd_add_u8x16_add_instruction_set() anvil::simd::IS_SSE2
 
 #endif
 
@@ -519,25 +534,30 @@
 	static ANVIL_STRONG_INLINE _simd_ ## B  ANVIL_SIMD_CALL _simd_ ## A ## _splithi_safe(const register _simd_ ## A x)  { return reinterpret_cast<const _simd_ ## B*>(&x)[1]; }
 
 #define _simd_split(T)\
+	_simd_split_(T ## x2, T ## x1)\
 	_simd_split_(T ## x4, T ## x2)\
 	_simd_split_(T ## x8, T ## x4)\
 	_simd_split_(T ## x16, T ## x8)\
 	_simd_split_(T ## x32, T ## x16)\
 	_simd_split_(T ## x64, T ## x32)
 
-	_simd_split(f64)
-	_simd_split(f32)
-	_simd_split(s64)
-	_simd_split(u64)
-	_simd_split(s32)
-	_simd_split(u32)
-	_simd_split(s16)
+
+_simd_split(f64)
+_simd_split(f32)
+_simd_split(s64)
+_simd_split(u64)
+_simd_split(s32)
+_simd_split(u32)
+_simd_split(s16)
 _simd_split(u16)
 _simd_split(s8)
 _simd_split(u8)
 
 #undef _simd_split
 #undef _simd_split_
+
+#include "anvil/maths/simd/splitlo.hpp"
+#include "anvil/maths/simd/splithi.hpp"
 
 // Combine
 
@@ -659,6 +679,8 @@ _simd_add(u8)
 #undef _simd_add
 #undef _simd_add_
 #undef _simd_add2_
+
+//#include "anvil/maths/simd/add.hpp"
 
 namespace anvil { namespace simd {
 
