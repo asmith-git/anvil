@@ -107,6 +107,48 @@
 #define _simd_u8x32_add_(X,Y) _mm256_adds_epu8(X,Y)
 #define _simd_u8x32_add_instruction_set anvil::simd::IS_AVX_2
 
+#define _simd_f64x2_fill_undefined_() _mm_undefined_pd()
+#define _simdf64x2_fill_undefined_instruction_set anvil::simd::IS_SSE_2
+
+#define _simd_f64x4_fill_undefined_() _mm256_undefined_pd()
+#define _simd_f64x4_fill_undefined_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_fill_undefined_() _mm_undefined_ps()
+#define _simd_f32x4_fill_undefined_instruction_set anvil::simd::IS_SSE
+
+#define _simd_f32x8_fill_undefined_() _mm256_undefined_ps()
+#define _simd_f32x8_fill_undefined_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s32x4_fill_undefined_() _mm_undefined_si128()
+#define _simd_s32x4_fill_undefined_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s32x8_fill_undefined_() _mm256_undefined_si256()
+#define _simd_s32x8_fill_undefined_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_s16x8_fill_undefined_() _mm_undefined_si128()
+#define _simd_s16x8_fill_undefined_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s16x16_fill_undefined_() _mm256_undefined_si256()
+#define _simd_s16x16_fill_undefined_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_s8x16_fill_undefined_() _mm_undefined_si128()
+#define _simd_s8x16_fill_undefined_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s8x32_fill_undefined_() _mm256_undefined_si256()
+#define _simd_s8x32_fill_undefined_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_u16x8_fill_undefined_() _mm_undefined_si128()
+#define _simd_u16x8_fill_undefined_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_u16x16_fill_undefined_() _mm256_undefined_si256()
+#define _simd_u16x16_fill_undefined_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_u8x16_fill_undefined_() _mm_undefined_si128()
+#define _simd_u8x16_fill_undefined_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_u8x32_fill_undefined_() _mm256_undefined_si256()
+#define _simd_u8x32_fill_undefined_instruction_set anvil::simd::IS_AVX_2
+
 #endif
 
 // Types
@@ -541,6 +583,10 @@
 #define _simd_u16x1 uint16_t
 #define _simd_s8x1 int8_t
 #define _simd_u8x1 uint8_t
+
+// Fill undefined
+
+#include "anvil/maths/simd/fill_undefined.hpp"
 
 // Split
 
