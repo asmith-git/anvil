@@ -565,6 +565,7 @@ _simd_split(u8)
 	static ANVIL_STRONG_INLINE _simd_ ## A  ANVIL_SIMD_CALL _simd_ ## A ## _combine_safe(const register _simd_ ## B x, const register _simd_ ## B y)  { _simd_ ## A tmp;  reinterpret_cast<_simd_ ## B *>(&tmp)[0] = x;  reinterpret_cast<_simd_ ## B *>(&tmp)[1] = x;  return tmp; }
 
 #define _simd_combine(T)\
+	_simd_combine_(T ## x2, T ## x1)\
 	_simd_combine_(T ## x4, T ## x2)\
 	_simd_combine_(T ## x8, T ## x4)\
 	_simd_combine_(T ## x16, T ## x8)\
@@ -584,6 +585,8 @@ _simd_combine(u8)
 
 #undef _simd_combine
 #undef _simd_combine_
+
+#include "anvil/maths/simd/combine.hpp"
 
 // Insert
 
@@ -611,6 +614,8 @@ _simd_insert(u8)
 
 #undef _simd_insert
 #undef _simd_insert_
+
+#include "anvil/maths/simd/insert.hpp"
 
 // Get
 
