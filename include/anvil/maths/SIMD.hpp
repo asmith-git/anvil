@@ -396,28 +396,88 @@
 #define _simd_s8x32_fill_scalar_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_u64x2_fill_scalar_(X) _simd_s64x2_fill_scalar_(X)
-#define _simd_u64x2_fill_scalar_instruction_set anvil::simd::IS_SSE2
+#define _simd_u64x2_fill_scalar_instruction_set _simd_s64x2_fill_scalar_instruction_set
 
 #define _simd_u64x4_fill_scalar_(X) _simd_s64x4_fill_scalar_(X)
-#define _simd_u64x4_fill_scalar_instruction_set anvil::simd::IS_AVX_2
+#define _simd_u64x4_fill_scalar_instruction_set _simd_s64x4_fill_scalar_instruction_set
 
 #define _simd_u32x4_fill_scalar_(X) _simd_s32x4_fill_scalar_(X)
-#define _simd_u32x4_fill_scalar_instruction_set anvil::simd::IS_SSE2
+#define _simd_u32x4_fill_scalar_instruction_set _simd_s32x4_fill_scalar_instruction_set
 
 #define _simd_u32x8_fill_scalar_(X) _simd_s32x8_fill_scalar_(X)
-#define _simd_u32x8_fill_scalar_instruction_set anvil::simd::IS_AVX_2
+#define _simd_u32x8_fill_scalar_instruction_set _simd_s32x8_fill_scalar_instruction_set
 
 #define _simd_u16x8_fill_scalar_(X) _simd_s16x8_fill_scalar_(X)
-#define _simd_u16x8_fill_scalar_instruction_set anvil::simd::IS_SSE2
+#define _simd_u16x8_fill_scalar_instruction_set _simd_s16x8_fill_scalar_instruction_set
 
 #define _simd_u16x16_fill_scalar_(X) _simd_s16x16_fill_scalar_(X)
-#define _simd_u16x16_fill_scalar_instruction_set anvil::simd::IS_AVX_2
+#define _simd_u16x16_fill_scalar_instruction_set _simd_s16x16_fill_scalar_instruction_set
 
 #define _simd_u8x16_fill_scalar_(X) _simd_s8x16_fill_scalar_(X)
-#define _simd_u8x16_fill_scalar_instruction_set anvil::simd::IS_SSE2
+#define _simd_u8x16_fill_scalar_instruction_set _simd_s8x16_fill_scalar_instruction_set
 
 #define _simd_u8x32_fill_scalar_(X) _simd_s8x32_fill_scalar_(X)
-#define _simd_u8x32_fill_scalar_instruction_set anvil::simd::IS_AVX_2
+#define _simd_u8x32_fill_scalar_instruction_set _simd_s8x32_fill_scalar_instruction_set
+
+#define _simd_f64x2_set_(X,Y) _mm_set_pd(X,Y)
+#define _simdf64x2_set_instruction_set anvil::simd::IS_SSE_2
+
+#define _simd_f64x4_set_(X,Y,Z,W) _mm256_set_pd(X,Y,Z,W)
+#define _simd_f64x4_set_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_set_(X,Y,Z,W) _mm_set_ps(X,Y,Z,W)
+#define _simd_f32x4_set_instruction_set anvil::simd::IS_SSE
+
+#define _simd_f32x8_set_(X,Y,Z,W,A,B,C,D) _mm256_set_ps(X,Y,Z,W,A,B,C,D)
+#define _simd_f32x8_set_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s64x2_set_(X,Y) _mm_set_epi64x(X,Y)
+#define _simd_s64x2_set_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s64x4_set_(X,Y,Z,W) _mm256_set_epi64x(X,Y,Z,W)
+#define _simd_s64x4_set_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_s32x4_set_(X,Y,Z,W) _mm_set_epi32(X,Y,Z,W)
+#define _simd_s32x4_set_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s32x8_set_(X,Y,Z,W,A,B,C,D) _mm256_set_epi32(X,Y,Z,W,A,B,C,D)
+#define _simd_s32x8_set_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_s16x8_set_(X,Y,Z,W,A,B,C,D) _mm_set1_epi16(X,Y,Z,W,A,B,C,D)
+#define _simd_s16x8_set_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s16x16_set_(X,Y,Z,W,A,B,C,D,E,F,G,H,I,J,K,L) _mm256_set1_epi16(X,Y,Z,W,A,B,C,D,E,F,G,H,I,J,K,L)
+#define _simd_s16x16_set_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_s8x16_set_(X,Y,Z,W,A,B,C,D,E,F,G,H,I,J,K,L) _mm_set1_epi8(X,Y,Z,W,A,B,C,D,E,F,G,H,I,J,K,L)
+#define _simd_s8x16_set_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s8x32_set_(a0, b0, c0, d0, e0, f0, g0, h0, i0, j0, k0, l0, m0, n0, o0, p0, q0, r0, s0, t0, u0, v0, w0, x0, y0, z0, a1, b1, c1, d1, e1, f1) _mm256_set1_epi8(a0, b0, c0, d0, e0, f0, g0, h0, i0, j0, k0, l0, m0, n0, o0, p0, q0, r0, s0, t0, u0, v0, w0, x0, y0, z0, a1, b1, c1, d1, e1, f1)
+#define _simd_s8x32_set_instruction_set anvil::simd::IS_AVX_2
+
+#define _simd_u64x2_set_(X,Y) _simd_s64x2_set_(X,Y)
+#define _simd_u64x2_set_instruction_set _simd_s64x2_set_instruction_set
+
+#define _simd_u64x4_set_(X,Y,Z,W) _simd_s64x4_set_(X,Y,Z,W)
+#define _simd_u64x4_set_instruction_set _simd_s64x4_set_instruction_set
+
+#define _simd_u32x4_set_(X,Y,Z,W) _simd_s32x4_set_(X,Y,Z,W)
+#define _simd_u32x4_set_instruction_set _simd_s32x4_set_instruction_set
+
+#define _simd_u32x8_set_(X,Y,Z,W,A,B,C,D) _simd_s32x8_set_(X,Y,Z,W,A,B,C,D)
+#define _simd_u32x8_set_instruction_set _simd_s32x8_set_instruction_set
+
+#define _simd_u16x8_set_(X,Y,Z,W,A,B,C,D) _simd_s16x8_set_(X,Y,Z,W,A,B,C,D)
+#define _simd_u16x8_set_instruction_set _simd_s16x8_set_instruction_set
+
+#define _simd_u16x16_set_(X,Y,Z,W,A,B,C,D,E,F,G,H,I,J,K,L) _simd_s16x16_set_(X,Y,Z,W,A,B,C,D,E,F,G,H,I,J,K,L)
+#define _simd_u16x16_set_instruction_set _simd_s16x16_set_instruction_set
+
+#define _simd_u8x16_set_(X,Y,Z,W,A,B,C,D,E,F,G,H,I,J,K,L) _simd_s8x16_set_(X,Y,Z,W,A,B,C,D,E,F,G,H,I,J,K,L)
+#define _simd_u8x16_set_instruction_set _simd_s8x16_set_instruction_set
+
+#define _simd_u8x32_set_(a0, b0, c0, d0, e0, f0, g0, h0, i0, j0, k0, l0, m0, n0, o0, p0, q0, r0, s0, t0, u0, v0, w0, x0, y0, z0, a1, b1, c1, d1, e1, f1) _simd_s8x32_set_(a0, b0, c0, d0, e0, f0, g0, h0, i0, j0, k0, l0, m0, n0, o0, p0, q0, r0, s0, t0, u0, v0, w0, x0, y0, z0, a1, b1, c1, d1, e1, f1)
+#define _simd_u8x32_set_instruction_set _simd_s8x32_set_instruction_set
 
 #endif
 
@@ -1166,6 +1226,10 @@
 // Fill scalar
 
 #include "anvil/maths/simd/fill_scalar.hpp"
+
+// Set
+
+#include "anvil/maths/simd/set.hpp"
 
 // Split
 
