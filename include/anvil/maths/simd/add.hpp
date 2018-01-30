@@ -12,6 +12,10 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
+#define _simd_f64x1_add_(X,Y) (x + y)
+#define _simd_f64x1_add_instruction_set() anvil::simd::IS_NONE
+#define _simd_f64x1_add_enabled() true
+
 #ifdef _simd_f64x2_add_
 	#define _simd_f64x2_add(X,Y) _simd_f64x2_add_(x, y);
 	#define _simd_f64x2_add_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x2_add_instruction_set>()
@@ -66,8 +70,11 @@
 	}
 	#define _simd_f64x2_add_enable() _simd_f64x64_add_enable()
 #else
-	#define _simd_f64x2_add(X,Y) _simd_f64x2_add_safe(x, y);
-	#define _simd_f64x2_add_enable() true
+	#define _simd_f64x2_add_(X,Y)_simd_f64x2_combine(\
+		_simd_f64x1_add(_simd_f64x2_splitlo(x), _simd_f64x2_splitlo(y)),\
+		_simd_f64x1_add(_simd_f64x2_splithi(x), _simd_f64x2_splithi(y)));
+	#define _simd_f64x2_add(X,Y) _simd_f64x2_add_(x, y);
+	#define _simd_f64x2_add_enable() (_simd_f64x1_add_enable() && _simd_f64x2_combine_enable() && _simd_f64x2_splitlo_enable()  && _simd_f64x2_splithi_enable())
 #endif
 
 #ifdef _simd_f64x4_add_
@@ -225,6 +232,10 @@
 	#define _simd_f64x64_add_enable() (_simd_f64x32_add_enable() && _simd_f64x64_combine_enable() && _simd_f64x64_splitlo_enable()  && _simd_f64x64_splithi_enable())
 #endif
 
+#define _simd_f32x1_add_(X,Y) (x + y)
+#define _simd_f32x1_add_instruction_set() anvil::simd::IS_NONE
+#define _simd_f32x1_add_enabled() true
+
 #ifdef _simd_f32x2_add_
 	#define _simd_f32x2_add(X,Y) _simd_f32x2_add_(x, y);
 	#define _simd_f32x2_add_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x2_add_instruction_set>()
@@ -279,8 +290,11 @@
 	}
 	#define _simd_f32x2_add_enable() _simd_f32x64_add_enable()
 #else
-	#define _simd_f32x2_add(X,Y) _simd_f32x2_add_safe(x, y);
-	#define _simd_f32x2_add_enable() true
+	#define _simd_f32x2_add_(X,Y)_simd_f32x2_combine(\
+		_simd_f32x1_add(_simd_f32x2_splitlo(x), _simd_f32x2_splitlo(y)),\
+		_simd_f32x1_add(_simd_f32x2_splithi(x), _simd_f32x2_splithi(y)));
+	#define _simd_f32x2_add(X,Y) _simd_f32x2_add_(x, y);
+	#define _simd_f32x2_add_enable() (_simd_f32x1_add_enable() && _simd_f32x2_combine_enable() && _simd_f32x2_splitlo_enable()  && _simd_f32x2_splithi_enable())
 #endif
 
 #ifdef _simd_f32x4_add_
@@ -438,6 +452,10 @@
 	#define _simd_f32x64_add_enable() (_simd_f32x32_add_enable() && _simd_f32x64_combine_enable() && _simd_f32x64_splitlo_enable()  && _simd_f32x64_splithi_enable())
 #endif
 
+#define _simd_s64x1_add_(X,Y) (x + y)
+#define _simd_s64x1_add_instruction_set() anvil::simd::IS_NONE
+#define _simd_s64x1_add_enabled() true
+
 #ifdef _simd_s64x2_add_
 	#define _simd_s64x2_add(X,Y) _simd_s64x2_add_(x, y);
 	#define _simd_s64x2_add_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x2_add_instruction_set>()
@@ -492,8 +510,11 @@
 	}
 	#define _simd_s64x2_add_enable() _simd_s64x64_add_enable()
 #else
-	#define _simd_s64x2_add(X,Y) _simd_s64x2_add_safe(x, y);
-	#define _simd_s64x2_add_enable() true
+	#define _simd_s64x2_add_(X,Y)_simd_s64x2_combine(\
+		_simd_s64x1_add(_simd_s64x2_splitlo(x), _simd_s64x2_splitlo(y)),\
+		_simd_s64x1_add(_simd_s64x2_splithi(x), _simd_s64x2_splithi(y)));
+	#define _simd_s64x2_add(X,Y) _simd_s64x2_add_(x, y);
+	#define _simd_s64x2_add_enable() (_simd_s64x1_add_enable() && _simd_s64x2_combine_enable() && _simd_s64x2_splitlo_enable()  && _simd_s64x2_splithi_enable())
 #endif
 
 #ifdef _simd_s64x4_add_
@@ -651,6 +672,10 @@
 	#define _simd_s64x64_add_enable() (_simd_s64x32_add_enable() && _simd_s64x64_combine_enable() && _simd_s64x64_splitlo_enable()  && _simd_s64x64_splithi_enable())
 #endif
 
+#define _simd_u64x1_add_(X,Y) (x + y)
+#define _simd_u64x1_add_instruction_set() anvil::simd::IS_NONE
+#define _simd_u64x1_add_enabled() true
+
 #ifdef _simd_u64x2_add_
 	#define _simd_u64x2_add(X,Y) _simd_u64x2_add_(x, y);
 	#define _simd_u64x2_add_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x2_add_instruction_set>()
@@ -705,8 +730,11 @@
 	}
 	#define _simd_u64x2_add_enable() _simd_u64x64_add_enable()
 #else
-	#define _simd_u64x2_add(X,Y) _simd_u64x2_add_safe(x, y);
-	#define _simd_u64x2_add_enable() true
+	#define _simd_u64x2_add_(X,Y)_simd_u64x2_combine(\
+		_simd_u64x1_add(_simd_u64x2_splitlo(x), _simd_u64x2_splitlo(y)),\
+		_simd_u64x1_add(_simd_u64x2_splithi(x), _simd_u64x2_splithi(y)));
+	#define _simd_u64x2_add(X,Y) _simd_u64x2_add_(x, y);
+	#define _simd_u64x2_add_enable() (_simd_u64x1_add_enable() && _simd_u64x2_combine_enable() && _simd_u64x2_splitlo_enable()  && _simd_u64x2_splithi_enable())
 #endif
 
 #ifdef _simd_u64x4_add_
@@ -864,6 +892,10 @@
 	#define _simd_u64x64_add_enable() (_simd_u64x32_add_enable() && _simd_u64x64_combine_enable() && _simd_u64x64_splitlo_enable()  && _simd_u64x64_splithi_enable())
 #endif
 
+#define _simd_s32x1_add_(X,Y) (x + y)
+#define _simd_s32x1_add_instruction_set() anvil::simd::IS_NONE
+#define _simd_s32x1_add_enabled() true
+
 #ifdef _simd_s32x2_add_
 	#define _simd_s32x2_add(X,Y) _simd_s32x2_add_(x, y);
 	#define _simd_s32x2_add_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x2_add_instruction_set>()
@@ -918,8 +950,11 @@
 	}
 	#define _simd_s32x2_add_enable() _simd_s32x64_add_enable()
 #else
-	#define _simd_s32x2_add(X,Y) _simd_s32x2_add_safe(x, y);
-	#define _simd_s32x2_add_enable() true
+	#define _simd_s32x2_add_(X,Y)_simd_s32x2_combine(\
+		_simd_s32x1_add(_simd_s32x2_splitlo(x), _simd_s32x2_splitlo(y)),\
+		_simd_s32x1_add(_simd_s32x2_splithi(x), _simd_s32x2_splithi(y)));
+	#define _simd_s32x2_add(X,Y) _simd_s32x2_add_(x, y);
+	#define _simd_s32x2_add_enable() (_simd_s32x1_add_enable() && _simd_s32x2_combine_enable() && _simd_s32x2_splitlo_enable()  && _simd_s32x2_splithi_enable())
 #endif
 
 #ifdef _simd_s32x4_add_
@@ -1077,6 +1112,10 @@
 	#define _simd_s32x64_add_enable() (_simd_s32x32_add_enable() && _simd_s32x64_combine_enable() && _simd_s32x64_splitlo_enable()  && _simd_s32x64_splithi_enable())
 #endif
 
+#define _simd_u32x1_add_(X,Y) (x + y)
+#define _simd_u32x1_add_instruction_set() anvil::simd::IS_NONE
+#define _simd_u32x1_add_enabled() true
+
 #ifdef _simd_u32x2_add_
 	#define _simd_u32x2_add(X,Y) _simd_u32x2_add_(x, y);
 	#define _simd_u32x2_add_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x2_add_instruction_set>()
@@ -1131,8 +1170,11 @@
 	}
 	#define _simd_u32x2_add_enable() _simd_u32x64_add_enable()
 #else
-	#define _simd_u32x2_add(X,Y) _simd_u32x2_add_safe(x, y);
-	#define _simd_u32x2_add_enable() true
+	#define _simd_u32x2_add_(X,Y)_simd_u32x2_combine(\
+		_simd_u32x1_add(_simd_u32x2_splitlo(x), _simd_u32x2_splitlo(y)),\
+		_simd_u32x1_add(_simd_u32x2_splithi(x), _simd_u32x2_splithi(y)));
+	#define _simd_u32x2_add(X,Y) _simd_u32x2_add_(x, y);
+	#define _simd_u32x2_add_enable() (_simd_u32x1_add_enable() && _simd_u32x2_combine_enable() && _simd_u32x2_splitlo_enable()  && _simd_u32x2_splithi_enable())
 #endif
 
 #ifdef _simd_u32x4_add_
@@ -1290,6 +1332,10 @@
 	#define _simd_u32x64_add_enable() (_simd_u32x32_add_enable() && _simd_u32x64_combine_enable() && _simd_u32x64_splitlo_enable()  && _simd_u32x64_splithi_enable())
 #endif
 
+#define _simd_s16x1_add_(X,Y) (x + y)
+#define _simd_s16x1_add_instruction_set() anvil::simd::IS_NONE
+#define _simd_s16x1_add_enabled() true
+
 #ifdef _simd_s16x2_add_
 	#define _simd_s16x2_add(X,Y) _simd_s16x2_add_(x, y);
 	#define _simd_s16x2_add_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x2_add_instruction_set>()
@@ -1344,8 +1390,11 @@
 	}
 	#define _simd_s16x2_add_enable() _simd_s16x64_add_enable()
 #else
-	#define _simd_s16x2_add(X,Y) _simd_s16x2_add_safe(x, y);
-	#define _simd_s16x2_add_enable() true
+	#define _simd_s16x2_add_(X,Y)_simd_s16x2_combine(\
+		_simd_s16x1_add(_simd_s16x2_splitlo(x), _simd_s16x2_splitlo(y)),\
+		_simd_s16x1_add(_simd_s16x2_splithi(x), _simd_s16x2_splithi(y)));
+	#define _simd_s16x2_add(X,Y) _simd_s16x2_add_(x, y);
+	#define _simd_s16x2_add_enable() (_simd_s16x1_add_enable() && _simd_s16x2_combine_enable() && _simd_s16x2_splitlo_enable()  && _simd_s16x2_splithi_enable())
 #endif
 
 #ifdef _simd_s16x4_add_
@@ -1503,6 +1552,10 @@
 	#define _simd_s16x64_add_enable() (_simd_s16x32_add_enable() && _simd_s16x64_combine_enable() && _simd_s16x64_splitlo_enable()  && _simd_s16x64_splithi_enable())
 #endif
 
+#define _simd_u16x1_add_(X,Y) (x + y)
+#define _simd_u16x1_add_instruction_set() anvil::simd::IS_NONE
+#define _simd_u16x1_add_enabled() true
+
 #ifdef _simd_u16x2_add_
 	#define _simd_u16x2_add(X,Y) _simd_u16x2_add_(x, y);
 	#define _simd_u16x2_add_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x2_add_instruction_set>()
@@ -1557,8 +1610,11 @@
 	}
 	#define _simd_u16x2_add_enable() _simd_u16x64_add_enable()
 #else
-	#define _simd_u16x2_add(X,Y) _simd_u16x2_add_safe(x, y);
-	#define _simd_u16x2_add_enable() true
+	#define _simd_u16x2_add_(X,Y)_simd_u16x2_combine(\
+		_simd_u16x1_add(_simd_u16x2_splitlo(x), _simd_u16x2_splitlo(y)),\
+		_simd_u16x1_add(_simd_u16x2_splithi(x), _simd_u16x2_splithi(y)));
+	#define _simd_u16x2_add(X,Y) _simd_u16x2_add_(x, y);
+	#define _simd_u16x2_add_enable() (_simd_u16x1_add_enable() && _simd_u16x2_combine_enable() && _simd_u16x2_splitlo_enable()  && _simd_u16x2_splithi_enable())
 #endif
 
 #ifdef _simd_u16x4_add_
@@ -1716,6 +1772,10 @@
 	#define _simd_u16x64_add_enable() (_simd_u16x32_add_enable() && _simd_u16x64_combine_enable() && _simd_u16x64_splitlo_enable()  && _simd_u16x64_splithi_enable())
 #endif
 
+#define _simd_s8x1_add_(X,Y) (x + y)
+#define _simd_s8x1_add_instruction_set() anvil::simd::IS_NONE
+#define _simd_s8x1_add_enabled() true
+
 #ifdef _simd_s8x2_add_
 	#define _simd_s8x2_add(X,Y) _simd_s8x2_add_(x, y);
 	#define _simd_s8x2_add_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x2_add_instruction_set>()
@@ -1770,8 +1830,11 @@
 	}
 	#define _simd_s8x2_add_enable() _simd_s8x64_add_enable()
 #else
-	#define _simd_s8x2_add(X,Y) _simd_s8x2_add_safe(x, y);
-	#define _simd_s8x2_add_enable() true
+	#define _simd_s8x2_add_(X,Y)_simd_s8x2_combine(\
+		_simd_s8x1_add(_simd_s8x2_splitlo(x), _simd_s8x2_splitlo(y)),\
+		_simd_s8x1_add(_simd_s8x2_splithi(x), _simd_s8x2_splithi(y)));
+	#define _simd_s8x2_add(X,Y) _simd_s8x2_add_(x, y);
+	#define _simd_s8x2_add_enable() (_simd_s8x1_add_enable() && _simd_s8x2_combine_enable() && _simd_s8x2_splitlo_enable()  && _simd_s8x2_splithi_enable())
 #endif
 
 #ifdef _simd_s8x4_add_
@@ -1929,6 +1992,10 @@
 	#define _simd_s8x64_add_enable() (_simd_s8x32_add_enable() && _simd_s8x64_combine_enable() && _simd_s8x64_splitlo_enable()  && _simd_s8x64_splithi_enable())
 #endif
 
+#define _simd_u8x1_add_(X,Y) (x + y)
+#define _simd_u8x1_add_instruction_set() anvil::simd::IS_NONE
+#define _simd_u8x1_add_enabled() true
+
 #ifdef _simd_u8x2_add_
 	#define _simd_u8x2_add(X,Y) _simd_u8x2_add_(x, y);
 	#define _simd_u8x2_add_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x2_add_instruction_set>()
@@ -1983,8 +2050,11 @@
 	}
 	#define _simd_u8x2_add_enable() _simd_u8x64_add_enable()
 #else
-	#define _simd_u8x2_add(X,Y) _simd_u8x2_add_safe(x, y);
-	#define _simd_u8x2_add_enable() true
+	#define _simd_u8x2_add_(X,Y)_simd_u8x2_combine(\
+		_simd_u8x1_add(_simd_u8x2_splitlo(x), _simd_u8x2_splitlo(y)),\
+		_simd_u8x1_add(_simd_u8x2_splithi(x), _simd_u8x2_splithi(y)));
+	#define _simd_u8x2_add(X,Y) _simd_u8x2_add_(x, y);
+	#define _simd_u8x2_add_enable() (_simd_u8x1_add_enable() && _simd_u8x2_combine_enable() && _simd_u8x2_splitlo_enable()  && _simd_u8x2_splithi_enable())
 #endif
 
 #ifdef _simd_u8x4_add_
