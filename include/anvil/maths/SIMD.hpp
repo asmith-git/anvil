@@ -123,31 +123,73 @@
 #define _simd_s32x4_fill_undefined_instruction_set anvil::simd::IS_SSE2
 
 #define _simd_s32x8_fill_undefined_() _mm256_undefined_si256()
-#define _simd_s32x8_fill_undefined_instruction_set anvil::simd::IS_AVX_2
+#define _simd_s32x8_fill_undefined_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s16x8_fill_undefined_() _mm_undefined_si128()
 #define _simd_s16x8_fill_undefined_instruction_set anvil::simd::IS_SSE2
 
 #define _simd_s16x16_fill_undefined_() _mm256_undefined_si256()
-#define _simd_s16x16_fill_undefined_instruction_set anvil::simd::IS_AVX_2
+#define _simd_s16x16_fill_undefined_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s8x16_fill_undefined_() _mm_undefined_si128()
 #define _simd_s8x16_fill_undefined_instruction_set anvil::simd::IS_SSE2
 
 #define _simd_s8x32_fill_undefined_() _mm256_undefined_si256()
-#define _simd_s8x32_fill_undefined_instruction_set anvil::simd::IS_AVX_2
+#define _simd_s8x32_fill_undefined_instruction_set anvil::simd::IS_AVX
 
 #define _simd_u16x8_fill_undefined_() _mm_undefined_si128()
 #define _simd_u16x8_fill_undefined_instruction_set anvil::simd::IS_SSE2
 
 #define _simd_u16x16_fill_undefined_() _mm256_undefined_si256()
-#define _simd_u16x16_fill_undefined_instruction_set anvil::simd::IS_AVX_2
+#define _simd_u16x16_fill_undefined_instruction_set anvil::simd::IS_AVX
 
 #define _simd_u8x16_fill_undefined_() _mm_undefined_si128()
 #define _simd_u8x16_fill_undefined_instruction_set anvil::simd::IS_SSE2
 
 #define _simd_u8x32_fill_undefined_() _mm256_undefined_si256()
-#define _simd_u8x32_fill_undefined_instruction_set anvil::simd::IS_AVX_2
+#define _simd_u8x32_fill_undefined_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f64x2_fill_zero_() _mm_setzero_pd()
+#define _simdf64x2_fill_zero_instruction_set anvil::simd::IS_SSE_2
+
+#define _simd_f64x4_fill_zero_() _mm256_setzero_pd()
+#define _simd_f64x4_fill_zero_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_fill_zero_() _mm_setzero_ps()
+#define _simd_f32x4_fill_zero_instruction_set anvil::simd::IS_SSE
+
+#define _simd_f32x8_fill_zero_() _mm256_setzero_ps()
+#define _simd_f32x8_fill_zero_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s32x4_fill_zero_() _mm_setzero_si128()
+#define _simd_s32x4_fill_zero_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s32x8_fill_zero_() _mm256_setzero_si256()
+#define _simd_s32x8_fill_zero_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s16x8_fill_zero_() _mm_setzero_si128()
+#define _simd_s16x8_fill_zero_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s16x16_fill_zero_() _mm256_setzero_si256()
+#define _simd_s16x16_fill_zero_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s8x16_fill_zero_() _mm_setzero_si128()
+#define _simd_s8x16_fill_zero_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_s8x32_fill_zero_() _mm256_setzero_si256()
+#define _simd_s8x32_fill_zero_instruction_set anvil::simd::IS_AVX
+
+#define _simd_u16x8_fill_zero_() _mm_setzero_si128()
+#define _simd_u16x8_fill_zero_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_u16x16_fill_zero_() _mm256_setzero_si256()
+#define _simd_u16x16_fill_zero_instruction_set anvil::simd::IS_AVX
+
+#define _simd_u8x16_fill_zero_() _mm_setzero_si128()
+#define _simd_u8x16_fill_zero_instruction_set anvil::simd::IS_SSE2
+
+#define _simd_u8x32_fill_zero_() _mm256_setzero_si256()
+#define _simd_u8x32_fill_zero_instruction_set anvil::simd::IS_AVX
 
 #endif
 
@@ -587,6 +629,10 @@
 // Fill undefined
 
 #include "anvil/maths/simd/fill_undefined.hpp"
+
+// Fill zero
+
+#include "anvil/maths/simd/fill_zero.hpp"
 
 // Split
 
