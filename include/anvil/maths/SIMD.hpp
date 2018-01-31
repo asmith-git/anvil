@@ -1708,6 +1708,11 @@ _simd_extract(u8)
 #include "anvil/maths/simd/abs.hpp"
 #include "anvil/maths/simd/sqrt.hpp"
 
+// Ceil, Floor, Round
+#include "anvil/maths/simd/ceil.hpp"
+#include "anvil/maths/simd/floor.hpp"
+#include "anvil/maths/simd/round.hpp"
+
 // Misc
 #include "anvil/maths/simd/sum.hpp"
 
