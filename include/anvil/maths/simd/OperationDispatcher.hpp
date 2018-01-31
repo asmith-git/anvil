@@ -2295,6 +2295,208 @@ struct OperationDispatcher<_simd_f64x1, 0, OP_ATAN2> {
 };
 
 template<size_t S>
+struct OperationDispatcher<_simd_f64x1, S, OP_POW> {
+	typedef _simd_f64x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_f64x64_pow_
+		} else if (S >= 64 && _simd_f64x64_pow_enable()) {
+			typedef _simd_f64x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x64_pow_(_simd_f64x64_load_(x),_simd_f64x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_f64x32_pow_
+		} else if (S >= 32 && _simd_f64x32_pow_enable()) {
+			typedef _simd_f64x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x32_pow_(_simd_f64x32_load_(x),_simd_f64x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_f64x16_pow_
+		} else if (S >= 16 && _simd_f64x16_pow_enable()) {
+			typedef _simd_f64x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x16_pow_(_simd_f64x16_load_(x),_simd_f64x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_f64x8_pow_
+		} else if (S >= 8 && _simd_f64x8_pow_enable()) {
+			typedef _simd_f64x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x8_pow_(_simd_f64x8_load_(x),_simd_f64x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_f64x4_pow_
+		} else if (S >= 4 && _simd_f64x4_pow_enable()) {
+			typedef _simd_f64x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x4_pow_(_simd_f64x4_load_(x),_simd_f64x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_f64x2_pow_
+		} else if (S >= 2 && _simd_f64x2_pow_enable()) {
+			typedef _simd_f64x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x2_pow_(_simd_f64x2_load_(x),_simd_f64x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_pow_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_f64x1, 1, OP_POW> {
+	typedef _simd_f64x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_f64x1_pow_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_f64x1, 0, OP_POW> {
+	typedef _simd_f64x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_f64x1, S, OP_HYPOT> {
+	typedef _simd_f64x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_f64x64_hypot_
+		} else if (S >= 64 && _simd_f64x64_hypot_enable()) {
+			typedef _simd_f64x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x64_hypot_(_simd_f64x64_load_(x),_simd_f64x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_f64x32_hypot_
+		} else if (S >= 32 && _simd_f64x32_hypot_enable()) {
+			typedef _simd_f64x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x32_hypot_(_simd_f64x32_load_(x),_simd_f64x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_f64x16_hypot_
+		} else if (S >= 16 && _simd_f64x16_hypot_enable()) {
+			typedef _simd_f64x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x16_hypot_(_simd_f64x16_load_(x),_simd_f64x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_f64x8_hypot_
+		} else if (S >= 8 && _simd_f64x8_hypot_enable()) {
+			typedef _simd_f64x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x8_hypot_(_simd_f64x8_load_(x),_simd_f64x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_f64x4_hypot_
+		} else if (S >= 4 && _simd_f64x4_hypot_enable()) {
+			typedef _simd_f64x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x4_hypot_(_simd_f64x4_load_(x),_simd_f64x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_f64x2_hypot_
+		} else if (S >= 2 && _simd_f64x2_hypot_enable()) {
+			typedef _simd_f64x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x2_hypot_(_simd_f64x2_load_(x),_simd_f64x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_hypot_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_f64x1, 1, OP_HYPOT> {
+	typedef _simd_f64x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_f64x1_hypot_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_f64x1, 0, OP_HYPOT> {
+	typedef _simd_f64x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_NOT> {
 	typedef _simd_f64x1 scalar_t;
 
@@ -6470,6 +6672,208 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_ATAN2> {
 
 template<>
 struct OperationDispatcher<_simd_f32x1, 0, OP_ATAN2> {
+	typedef _simd_f32x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_f32x1, S, OP_POW> {
+	typedef _simd_f32x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_f32x64_pow_
+		} else if (S >= 64 && _simd_f32x64_pow_enable()) {
+			typedef _simd_f32x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x64_pow_(_simd_f32x64_load_(x),_simd_f32x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_f32x32_pow_
+		} else if (S >= 32 && _simd_f32x32_pow_enable()) {
+			typedef _simd_f32x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x32_pow_(_simd_f32x32_load_(x),_simd_f32x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_f32x16_pow_
+		} else if (S >= 16 && _simd_f32x16_pow_enable()) {
+			typedef _simd_f32x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x16_pow_(_simd_f32x16_load_(x),_simd_f32x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_f32x8_pow_
+		} else if (S >= 8 && _simd_f32x8_pow_enable()) {
+			typedef _simd_f32x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x8_pow_(_simd_f32x8_load_(x),_simd_f32x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_f32x4_pow_
+		} else if (S >= 4 && _simd_f32x4_pow_enable()) {
+			typedef _simd_f32x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x4_pow_(_simd_f32x4_load_(x),_simd_f32x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_f32x2_pow_
+		} else if (S >= 2 && _simd_f32x2_pow_enable()) {
+			typedef _simd_f32x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x2_pow_(_simd_f32x2_load_(x),_simd_f32x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_pow_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_f32x1, 1, OP_POW> {
+	typedef _simd_f32x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_f32x1_pow_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_f32x1, 0, OP_POW> {
+	typedef _simd_f32x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_f32x1, S, OP_HYPOT> {
+	typedef _simd_f32x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_f32x64_hypot_
+		} else if (S >= 64 && _simd_f32x64_hypot_enable()) {
+			typedef _simd_f32x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x64_hypot_(_simd_f32x64_load_(x),_simd_f32x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_f32x32_hypot_
+		} else if (S >= 32 && _simd_f32x32_hypot_enable()) {
+			typedef _simd_f32x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x32_hypot_(_simd_f32x32_load_(x),_simd_f32x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_f32x16_hypot_
+		} else if (S >= 16 && _simd_f32x16_hypot_enable()) {
+			typedef _simd_f32x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x16_hypot_(_simd_f32x16_load_(x),_simd_f32x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_f32x8_hypot_
+		} else if (S >= 8 && _simd_f32x8_hypot_enable()) {
+			typedef _simd_f32x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x8_hypot_(_simd_f32x8_load_(x),_simd_f32x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_f32x4_hypot_
+		} else if (S >= 4 && _simd_f32x4_hypot_enable()) {
+			typedef _simd_f32x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x4_hypot_(_simd_f32x4_load_(x),_simd_f32x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_f32x2_hypot_
+		} else if (S >= 2 && _simd_f32x2_hypot_enable()) {
+			typedef _simd_f32x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x2_hypot_(_simd_f32x2_load_(x),_simd_f32x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_hypot_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_f32x1, 1, OP_HYPOT> {
+	typedef _simd_f32x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_f32x1_hypot_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_f32x1, 0, OP_HYPOT> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
@@ -10659,6 +11063,208 @@ struct OperationDispatcher<_simd_s64x1, 0, OP_ATAN2> {
 };
 
 template<size_t S>
+struct OperationDispatcher<_simd_s64x1, S, OP_POW> {
+	typedef _simd_s64x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_s64x64_pow_
+		} else if (S >= 64 && _simd_s64x64_pow_enable()) {
+			typedef _simd_s64x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x64_pow_(_simd_s64x64_load_(x),_simd_s64x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s64x32_pow_
+		} else if (S >= 32 && _simd_s64x32_pow_enable()) {
+			typedef _simd_s64x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x32_pow_(_simd_s64x32_load_(x),_simd_s64x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s64x16_pow_
+		} else if (S >= 16 && _simd_s64x16_pow_enable()) {
+			typedef _simd_s64x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x16_pow_(_simd_s64x16_load_(x),_simd_s64x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s64x8_pow_
+		} else if (S >= 8 && _simd_s64x8_pow_enable()) {
+			typedef _simd_s64x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x8_pow_(_simd_s64x8_load_(x),_simd_s64x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s64x4_pow_
+		} else if (S >= 4 && _simd_s64x4_pow_enable()) {
+			typedef _simd_s64x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x4_pow_(_simd_s64x4_load_(x),_simd_s64x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s64x2_pow_
+		} else if (S >= 2 && _simd_s64x2_pow_enable()) {
+			typedef _simd_s64x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x2_pow_(_simd_s64x2_load_(x),_simd_s64x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_pow_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_s64x1, 1, OP_POW> {
+	typedef _simd_s64x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_s64x1_pow_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_s64x1, 0, OP_POW> {
+	typedef _simd_s64x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_s64x1, S, OP_HYPOT> {
+	typedef _simd_s64x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_s64x64_hypot_
+		} else if (S >= 64 && _simd_s64x64_hypot_enable()) {
+			typedef _simd_s64x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x64_hypot_(_simd_s64x64_load_(x),_simd_s64x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s64x32_hypot_
+		} else if (S >= 32 && _simd_s64x32_hypot_enable()) {
+			typedef _simd_s64x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x32_hypot_(_simd_s64x32_load_(x),_simd_s64x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s64x16_hypot_
+		} else if (S >= 16 && _simd_s64x16_hypot_enable()) {
+			typedef _simd_s64x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x16_hypot_(_simd_s64x16_load_(x),_simd_s64x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s64x8_hypot_
+		} else if (S >= 8 && _simd_s64x8_hypot_enable()) {
+			typedef _simd_s64x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x8_hypot_(_simd_s64x8_load_(x),_simd_s64x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s64x4_hypot_
+		} else if (S >= 4 && _simd_s64x4_hypot_enable()) {
+			typedef _simd_s64x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x4_hypot_(_simd_s64x4_load_(x),_simd_s64x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s64x2_hypot_
+		} else if (S >= 2 && _simd_s64x2_hypot_enable()) {
+			typedef _simd_s64x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x2_hypot_(_simd_s64x2_load_(x),_simd_s64x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_hypot_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_s64x1, 1, OP_HYPOT> {
+	typedef _simd_s64x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_s64x1_hypot_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_s64x1, 0, OP_HYPOT> {
+	typedef _simd_s64x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_NOT> {
 	typedef _simd_s64x1 scalar_t;
 
@@ -14834,6 +15440,208 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_ATAN2> {
 
 template<>
 struct OperationDispatcher<_simd_u64x1, 0, OP_ATAN2> {
+	typedef _simd_u64x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_u64x1, S, OP_POW> {
+	typedef _simd_u64x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_u64x64_pow_
+		} else if (S >= 64 && _simd_u64x64_pow_enable()) {
+			typedef _simd_u64x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x64_pow_(_simd_u64x64_load_(x),_simd_u64x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u64x32_pow_
+		} else if (S >= 32 && _simd_u64x32_pow_enable()) {
+			typedef _simd_u64x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x32_pow_(_simd_u64x32_load_(x),_simd_u64x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u64x16_pow_
+		} else if (S >= 16 && _simd_u64x16_pow_enable()) {
+			typedef _simd_u64x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x16_pow_(_simd_u64x16_load_(x),_simd_u64x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u64x8_pow_
+		} else if (S >= 8 && _simd_u64x8_pow_enable()) {
+			typedef _simd_u64x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x8_pow_(_simd_u64x8_load_(x),_simd_u64x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u64x4_pow_
+		} else if (S >= 4 && _simd_u64x4_pow_enable()) {
+			typedef _simd_u64x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x4_pow_(_simd_u64x4_load_(x),_simd_u64x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u64x2_pow_
+		} else if (S >= 2 && _simd_u64x2_pow_enable()) {
+			typedef _simd_u64x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x2_pow_(_simd_u64x2_load_(x),_simd_u64x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_pow_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_u64x1, 1, OP_POW> {
+	typedef _simd_u64x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_u64x1_pow_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_u64x1, 0, OP_POW> {
+	typedef _simd_u64x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_u64x1, S, OP_HYPOT> {
+	typedef _simd_u64x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_u64x64_hypot_
+		} else if (S >= 64 && _simd_u64x64_hypot_enable()) {
+			typedef _simd_u64x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x64_hypot_(_simd_u64x64_load_(x),_simd_u64x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u64x32_hypot_
+		} else if (S >= 32 && _simd_u64x32_hypot_enable()) {
+			typedef _simd_u64x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x32_hypot_(_simd_u64x32_load_(x),_simd_u64x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u64x16_hypot_
+		} else if (S >= 16 && _simd_u64x16_hypot_enable()) {
+			typedef _simd_u64x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x16_hypot_(_simd_u64x16_load_(x),_simd_u64x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u64x8_hypot_
+		} else if (S >= 8 && _simd_u64x8_hypot_enable()) {
+			typedef _simd_u64x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x8_hypot_(_simd_u64x8_load_(x),_simd_u64x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u64x4_hypot_
+		} else if (S >= 4 && _simd_u64x4_hypot_enable()) {
+			typedef _simd_u64x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x4_hypot_(_simd_u64x4_load_(x),_simd_u64x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u64x2_hypot_
+		} else if (S >= 2 && _simd_u64x2_hypot_enable()) {
+			typedef _simd_u64x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x2_hypot_(_simd_u64x2_load_(x),_simd_u64x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_hypot_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_u64x1, 1, OP_HYPOT> {
+	typedef _simd_u64x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_u64x1_hypot_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_u64x1, 0, OP_HYPOT> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
@@ -19023,6 +19831,208 @@ struct OperationDispatcher<_simd_s32x1, 0, OP_ATAN2> {
 };
 
 template<size_t S>
+struct OperationDispatcher<_simd_s32x1, S, OP_POW> {
+	typedef _simd_s32x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_s32x64_pow_
+		} else if (S >= 64 && _simd_s32x64_pow_enable()) {
+			typedef _simd_s32x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x64_pow_(_simd_s32x64_load_(x),_simd_s32x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s32x32_pow_
+		} else if (S >= 32 && _simd_s32x32_pow_enable()) {
+			typedef _simd_s32x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x32_pow_(_simd_s32x32_load_(x),_simd_s32x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s32x16_pow_
+		} else if (S >= 16 && _simd_s32x16_pow_enable()) {
+			typedef _simd_s32x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x16_pow_(_simd_s32x16_load_(x),_simd_s32x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s32x8_pow_
+		} else if (S >= 8 && _simd_s32x8_pow_enable()) {
+			typedef _simd_s32x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x8_pow_(_simd_s32x8_load_(x),_simd_s32x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s32x4_pow_
+		} else if (S >= 4 && _simd_s32x4_pow_enable()) {
+			typedef _simd_s32x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x4_pow_(_simd_s32x4_load_(x),_simd_s32x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s32x2_pow_
+		} else if (S >= 2 && _simd_s32x2_pow_enable()) {
+			typedef _simd_s32x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x2_pow_(_simd_s32x2_load_(x),_simd_s32x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_pow_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_s32x1, 1, OP_POW> {
+	typedef _simd_s32x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_s32x1_pow_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_s32x1, 0, OP_POW> {
+	typedef _simd_s32x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_s32x1, S, OP_HYPOT> {
+	typedef _simd_s32x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_s32x64_hypot_
+		} else if (S >= 64 && _simd_s32x64_hypot_enable()) {
+			typedef _simd_s32x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x64_hypot_(_simd_s32x64_load_(x),_simd_s32x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s32x32_hypot_
+		} else if (S >= 32 && _simd_s32x32_hypot_enable()) {
+			typedef _simd_s32x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x32_hypot_(_simd_s32x32_load_(x),_simd_s32x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s32x16_hypot_
+		} else if (S >= 16 && _simd_s32x16_hypot_enable()) {
+			typedef _simd_s32x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x16_hypot_(_simd_s32x16_load_(x),_simd_s32x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s32x8_hypot_
+		} else if (S >= 8 && _simd_s32x8_hypot_enable()) {
+			typedef _simd_s32x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x8_hypot_(_simd_s32x8_load_(x),_simd_s32x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s32x4_hypot_
+		} else if (S >= 4 && _simd_s32x4_hypot_enable()) {
+			typedef _simd_s32x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x4_hypot_(_simd_s32x4_load_(x),_simd_s32x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s32x2_hypot_
+		} else if (S >= 2 && _simd_s32x2_hypot_enable()) {
+			typedef _simd_s32x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x2_hypot_(_simd_s32x2_load_(x),_simd_s32x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_hypot_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_s32x1, 1, OP_HYPOT> {
+	typedef _simd_s32x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_s32x1_hypot_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_s32x1, 0, OP_HYPOT> {
+	typedef _simd_s32x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_NOT> {
 	typedef _simd_s32x1 scalar_t;
 
@@ -23198,6 +24208,208 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_ATAN2> {
 
 template<>
 struct OperationDispatcher<_simd_u32x1, 0, OP_ATAN2> {
+	typedef _simd_u32x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_u32x1, S, OP_POW> {
+	typedef _simd_u32x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_u32x64_pow_
+		} else if (S >= 64 && _simd_u32x64_pow_enable()) {
+			typedef _simd_u32x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x64_pow_(_simd_u32x64_load_(x),_simd_u32x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u32x32_pow_
+		} else if (S >= 32 && _simd_u32x32_pow_enable()) {
+			typedef _simd_u32x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x32_pow_(_simd_u32x32_load_(x),_simd_u32x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u32x16_pow_
+		} else if (S >= 16 && _simd_u32x16_pow_enable()) {
+			typedef _simd_u32x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x16_pow_(_simd_u32x16_load_(x),_simd_u32x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u32x8_pow_
+		} else if (S >= 8 && _simd_u32x8_pow_enable()) {
+			typedef _simd_u32x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x8_pow_(_simd_u32x8_load_(x),_simd_u32x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u32x4_pow_
+		} else if (S >= 4 && _simd_u32x4_pow_enable()) {
+			typedef _simd_u32x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x4_pow_(_simd_u32x4_load_(x),_simd_u32x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u32x2_pow_
+		} else if (S >= 2 && _simd_u32x2_pow_enable()) {
+			typedef _simd_u32x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x2_pow_(_simd_u32x2_load_(x),_simd_u32x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_pow_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_u32x1, 1, OP_POW> {
+	typedef _simd_u32x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_u32x1_pow_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_u32x1, 0, OP_POW> {
+	typedef _simd_u32x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_u32x1, S, OP_HYPOT> {
+	typedef _simd_u32x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_u32x64_hypot_
+		} else if (S >= 64 && _simd_u32x64_hypot_enable()) {
+			typedef _simd_u32x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x64_hypot_(_simd_u32x64_load_(x),_simd_u32x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u32x32_hypot_
+		} else if (S >= 32 && _simd_u32x32_hypot_enable()) {
+			typedef _simd_u32x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x32_hypot_(_simd_u32x32_load_(x),_simd_u32x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u32x16_hypot_
+		} else if (S >= 16 && _simd_u32x16_hypot_enable()) {
+			typedef _simd_u32x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x16_hypot_(_simd_u32x16_load_(x),_simd_u32x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u32x8_hypot_
+		} else if (S >= 8 && _simd_u32x8_hypot_enable()) {
+			typedef _simd_u32x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x8_hypot_(_simd_u32x8_load_(x),_simd_u32x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u32x4_hypot_
+		} else if (S >= 4 && _simd_u32x4_hypot_enable()) {
+			typedef _simd_u32x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x4_hypot_(_simd_u32x4_load_(x),_simd_u32x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u32x2_hypot_
+		} else if (S >= 2 && _simd_u32x2_hypot_enable()) {
+			typedef _simd_u32x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x2_hypot_(_simd_u32x2_load_(x),_simd_u32x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_hypot_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_u32x1, 1, OP_HYPOT> {
+	typedef _simd_u32x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_u32x1_hypot_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_u32x1, 0, OP_HYPOT> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
@@ -27387,6 +28599,208 @@ struct OperationDispatcher<_simd_s16x1, 0, OP_ATAN2> {
 };
 
 template<size_t S>
+struct OperationDispatcher<_simd_s16x1, S, OP_POW> {
+	typedef _simd_s16x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_s16x64_pow_
+		} else if (S >= 64 && _simd_s16x64_pow_enable()) {
+			typedef _simd_s16x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x64_pow_(_simd_s16x64_load_(x),_simd_s16x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s16x32_pow_
+		} else if (S >= 32 && _simd_s16x32_pow_enable()) {
+			typedef _simd_s16x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x32_pow_(_simd_s16x32_load_(x),_simd_s16x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s16x16_pow_
+		} else if (S >= 16 && _simd_s16x16_pow_enable()) {
+			typedef _simd_s16x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x16_pow_(_simd_s16x16_load_(x),_simd_s16x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s16x8_pow_
+		} else if (S >= 8 && _simd_s16x8_pow_enable()) {
+			typedef _simd_s16x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x8_pow_(_simd_s16x8_load_(x),_simd_s16x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s16x4_pow_
+		} else if (S >= 4 && _simd_s16x4_pow_enable()) {
+			typedef _simd_s16x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x4_pow_(_simd_s16x4_load_(x),_simd_s16x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s16x2_pow_
+		} else if (S >= 2 && _simd_s16x2_pow_enable()) {
+			typedef _simd_s16x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x2_pow_(_simd_s16x2_load_(x),_simd_s16x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_pow_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_s16x1, 1, OP_POW> {
+	typedef _simd_s16x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_s16x1_pow_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_s16x1, 0, OP_POW> {
+	typedef _simd_s16x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_s16x1, S, OP_HYPOT> {
+	typedef _simd_s16x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_s16x64_hypot_
+		} else if (S >= 64 && _simd_s16x64_hypot_enable()) {
+			typedef _simd_s16x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x64_hypot_(_simd_s16x64_load_(x),_simd_s16x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s16x32_hypot_
+		} else if (S >= 32 && _simd_s16x32_hypot_enable()) {
+			typedef _simd_s16x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x32_hypot_(_simd_s16x32_load_(x),_simd_s16x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s16x16_hypot_
+		} else if (S >= 16 && _simd_s16x16_hypot_enable()) {
+			typedef _simd_s16x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x16_hypot_(_simd_s16x16_load_(x),_simd_s16x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s16x8_hypot_
+		} else if (S >= 8 && _simd_s16x8_hypot_enable()) {
+			typedef _simd_s16x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x8_hypot_(_simd_s16x8_load_(x),_simd_s16x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s16x4_hypot_
+		} else if (S >= 4 && _simd_s16x4_hypot_enable()) {
+			typedef _simd_s16x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x4_hypot_(_simd_s16x4_load_(x),_simd_s16x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s16x2_hypot_
+		} else if (S >= 2 && _simd_s16x2_hypot_enable()) {
+			typedef _simd_s16x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x2_hypot_(_simd_s16x2_load_(x),_simd_s16x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_hypot_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_s16x1, 1, OP_HYPOT> {
+	typedef _simd_s16x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_s16x1_hypot_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_s16x1, 0, OP_HYPOT> {
+	typedef _simd_s16x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_NOT> {
 	typedef _simd_s16x1 scalar_t;
 
@@ -31562,6 +32976,208 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_ATAN2> {
 
 template<>
 struct OperationDispatcher<_simd_u16x1, 0, OP_ATAN2> {
+	typedef _simd_u16x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_u16x1, S, OP_POW> {
+	typedef _simd_u16x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_u16x64_pow_
+		} else if (S >= 64 && _simd_u16x64_pow_enable()) {
+			typedef _simd_u16x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x64_pow_(_simd_u16x64_load_(x),_simd_u16x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u16x32_pow_
+		} else if (S >= 32 && _simd_u16x32_pow_enable()) {
+			typedef _simd_u16x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x32_pow_(_simd_u16x32_load_(x),_simd_u16x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u16x16_pow_
+		} else if (S >= 16 && _simd_u16x16_pow_enable()) {
+			typedef _simd_u16x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x16_pow_(_simd_u16x16_load_(x),_simd_u16x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u16x8_pow_
+		} else if (S >= 8 && _simd_u16x8_pow_enable()) {
+			typedef _simd_u16x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x8_pow_(_simd_u16x8_load_(x),_simd_u16x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u16x4_pow_
+		} else if (S >= 4 && _simd_u16x4_pow_enable()) {
+			typedef _simd_u16x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x4_pow_(_simd_u16x4_load_(x),_simd_u16x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u16x2_pow_
+		} else if (S >= 2 && _simd_u16x2_pow_enable()) {
+			typedef _simd_u16x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x2_pow_(_simd_u16x2_load_(x),_simd_u16x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_pow_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_u16x1, 1, OP_POW> {
+	typedef _simd_u16x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_u16x1_pow_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_u16x1, 0, OP_POW> {
+	typedef _simd_u16x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_u16x1, S, OP_HYPOT> {
+	typedef _simd_u16x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_u16x64_hypot_
+		} else if (S >= 64 && _simd_u16x64_hypot_enable()) {
+			typedef _simd_u16x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x64_hypot_(_simd_u16x64_load_(x),_simd_u16x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u16x32_hypot_
+		} else if (S >= 32 && _simd_u16x32_hypot_enable()) {
+			typedef _simd_u16x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x32_hypot_(_simd_u16x32_load_(x),_simd_u16x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u16x16_hypot_
+		} else if (S >= 16 && _simd_u16x16_hypot_enable()) {
+			typedef _simd_u16x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x16_hypot_(_simd_u16x16_load_(x),_simd_u16x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u16x8_hypot_
+		} else if (S >= 8 && _simd_u16x8_hypot_enable()) {
+			typedef _simd_u16x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x8_hypot_(_simd_u16x8_load_(x),_simd_u16x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u16x4_hypot_
+		} else if (S >= 4 && _simd_u16x4_hypot_enable()) {
+			typedef _simd_u16x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x4_hypot_(_simd_u16x4_load_(x),_simd_u16x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u16x2_hypot_
+		} else if (S >= 2 && _simd_u16x2_hypot_enable()) {
+			typedef _simd_u16x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x2_hypot_(_simd_u16x2_load_(x),_simd_u16x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_hypot_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_u16x1, 1, OP_HYPOT> {
+	typedef _simd_u16x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_u16x1_hypot_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_u16x1, 0, OP_HYPOT> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
@@ -35751,6 +37367,208 @@ struct OperationDispatcher<_simd_s8x1, 0, OP_ATAN2> {
 };
 
 template<size_t S>
+struct OperationDispatcher<_simd_s8x1, S, OP_POW> {
+	typedef _simd_s8x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_s8x64_pow_
+		} else if (S >= 64 && _simd_s8x64_pow_enable()) {
+			typedef _simd_s8x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x64_pow_(_simd_s8x64_load_(x),_simd_s8x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s8x32_pow_
+		} else if (S >= 32 && _simd_s8x32_pow_enable()) {
+			typedef _simd_s8x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x32_pow_(_simd_s8x32_load_(x),_simd_s8x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s8x16_pow_
+		} else if (S >= 16 && _simd_s8x16_pow_enable()) {
+			typedef _simd_s8x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x16_pow_(_simd_s8x16_load_(x),_simd_s8x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s8x8_pow_
+		} else if (S >= 8 && _simd_s8x8_pow_enable()) {
+			typedef _simd_s8x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x8_pow_(_simd_s8x8_load_(x),_simd_s8x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s8x4_pow_
+		} else if (S >= 4 && _simd_s8x4_pow_enable()) {
+			typedef _simd_s8x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x4_pow_(_simd_s8x4_load_(x),_simd_s8x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_s8x2_pow_
+		} else if (S >= 2 && _simd_s8x2_pow_enable()) {
+			typedef _simd_s8x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x2_pow_(_simd_s8x2_load_(x),_simd_s8x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_pow_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_s8x1, 1, OP_POW> {
+	typedef _simd_s8x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_s8x1_pow_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_s8x1, 0, OP_POW> {
+	typedef _simd_s8x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_s8x1, S, OP_HYPOT> {
+	typedef _simd_s8x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_s8x64_hypot_
+		} else if (S >= 64 && _simd_s8x64_hypot_enable()) {
+			typedef _simd_s8x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x64_hypot_(_simd_s8x64_load_(x),_simd_s8x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s8x32_hypot_
+		} else if (S >= 32 && _simd_s8x32_hypot_enable()) {
+			typedef _simd_s8x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x32_hypot_(_simd_s8x32_load_(x),_simd_s8x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s8x16_hypot_
+		} else if (S >= 16 && _simd_s8x16_hypot_enable()) {
+			typedef _simd_s8x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x16_hypot_(_simd_s8x16_load_(x),_simd_s8x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s8x8_hypot_
+		} else if (S >= 8 && _simd_s8x8_hypot_enable()) {
+			typedef _simd_s8x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x8_hypot_(_simd_s8x8_load_(x),_simd_s8x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s8x4_hypot_
+		} else if (S >= 4 && _simd_s8x4_hypot_enable()) {
+			typedef _simd_s8x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x4_hypot_(_simd_s8x4_load_(x),_simd_s8x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_s8x2_hypot_
+		} else if (S >= 2 && _simd_s8x2_hypot_enable()) {
+			typedef _simd_s8x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x2_hypot_(_simd_s8x2_load_(x),_simd_s8x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_hypot_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_s8x1, 1, OP_HYPOT> {
+	typedef _simd_s8x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_s8x1_hypot_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_s8x1, 0, OP_HYPOT> {
+	typedef _simd_s8x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_NOT> {
 	typedef _simd_s8x1 scalar_t;
 
@@ -39926,6 +41744,208 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_ATAN2> {
 
 template<>
 struct OperationDispatcher<_simd_u8x1, 0, OP_ATAN2> {
+	typedef _simd_u8x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_u8x1, S, OP_POW> {
+	typedef _simd_u8x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_u8x64_pow_
+		} else if (S >= 64 && _simd_u8x64_pow_enable()) {
+			typedef _simd_u8x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x64_pow_(_simd_u8x64_load_(x),_simd_u8x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u8x32_pow_
+		} else if (S >= 32 && _simd_u8x32_pow_enable()) {
+			typedef _simd_u8x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x32_pow_(_simd_u8x32_load_(x),_simd_u8x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u8x16_pow_
+		} else if (S >= 16 && _simd_u8x16_pow_enable()) {
+			typedef _simd_u8x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x16_pow_(_simd_u8x16_load_(x),_simd_u8x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u8x8_pow_
+		} else if (S >= 8 && _simd_u8x8_pow_enable()) {
+			typedef _simd_u8x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x8_pow_(_simd_u8x8_load_(x),_simd_u8x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u8x4_pow_
+		} else if (S >= 4 && _simd_u8x4_pow_enable()) {
+			typedef _simd_u8x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x4_pow_(_simd_u8x4_load_(x),_simd_u8x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+#ifdef _simd_u8x2_pow_
+		} else if (S >= 2 && _simd_u8x2_pow_enable()) {
+			typedef _simd_u8x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x2_pow_(_simd_u8x2_load_(x),_simd_u8x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_POW>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_pow_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_u8x1, 1, OP_POW> {
+	typedef _simd_u8x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_u8x1_pow_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_u8x1, 0, OP_POW> {
+	typedef _simd_u8x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_u8x1, S, OP_HYPOT> {
+	typedef _simd_u8x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		if (false) {
+#ifdef _simd_u8x64_hypot_
+		} else if (S >= 64 && _simd_u8x64_hypot_enable()) {
+			typedef _simd_u8x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x64_hypot_(_simd_u8x64_load_(x),_simd_u8x64_load_(y));
+				x += 64;
+				y += 64;
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u8x32_hypot_
+		} else if (S >= 32 && _simd_u8x32_hypot_enable()) {
+			typedef _simd_u8x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x32_hypot_(_simd_u8x32_load_(x),_simd_u8x32_load_(y));
+				x += 32;
+				y += 32;
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u8x16_hypot_
+		} else if (S >= 16 && _simd_u8x16_hypot_enable()) {
+			typedef _simd_u8x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x16_hypot_(_simd_u8x16_load_(x),_simd_u8x16_load_(y));
+				x += 16;
+				y += 16;
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u8x8_hypot_
+		} else if (S >= 8 && _simd_u8x8_hypot_enable()) {
+			typedef _simd_u8x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x8_hypot_(_simd_u8x8_load_(x),_simd_u8x8_load_(y));
+				x += 8;
+				y += 8;
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u8x4_hypot_
+		} else if (S >= 4 && _simd_u8x4_hypot_enable()) {
+			typedef _simd_u8x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x4_hypot_(_simd_u8x4_load_(x),_simd_u8x4_load_(y));
+				x += 4;
+				y += 4;
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+#ifdef _simd_u8x2_hypot_
+		} else if (S >= 2 && _simd_u8x2_hypot_enable()) {
+			typedef _simd_u8x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x2_hypot_(_simd_u8x2_load_(x),_simd_u8x2_load_(y));
+				x += 2;
+				y += 2;
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_HYPOT>::execute(x,y,o);
+#endif
+		} else {
+			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_hypot_safe(x[i],y[i]);
+		}
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_u8x1, 1, OP_HYPOT> {
+	typedef _simd_u8x1 scalar_t;
+
+	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
+		*o = _simd_u8x1_hypot_safe(*x,*y);
+	}
+};
+
+template<>
+struct OperationDispatcher<_simd_u8x1, 0, OP_HYPOT> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {

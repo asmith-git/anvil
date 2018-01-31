@@ -1772,13 +1772,15 @@ _simd_extract(u8)
 #include "anvil/maths/simd/sinh.hpp"
 #include "anvil/maths/simd/tanh.hpp"
 #include "anvil/maths/simd/atan2.hpp"
+#include "anvil/maths/simd/hypot.hpp"
 
 // Log
 #include "anvil/maths/simd/log.hpp"
 #include "anvil/maths/simd/log2.hpp"
 #include "anvil/maths/simd/log10.hpp"
 
-// Sqrt
+// Pow, Sqrt
+#include "anvil/maths/simd/pow.hpp"
 #include "anvil/maths/simd/sqrt.hpp"
 #include "anvil/maths/simd/cbrt.hpp"
 
@@ -2049,7 +2051,9 @@ namespace anvil { namespace simd {
 		OP_CMPLE, 
 		OP_CMPGE, 
 		OP_ATAN2, 
-		OP_REFLECT ,
+		OP_REFLECT,
+		OP_POW,
+		OP_HYPOT,
 		// 1 parameter
 		OP_NOT, 
 		OP_ABS, 
