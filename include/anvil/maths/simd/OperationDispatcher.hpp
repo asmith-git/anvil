@@ -93,6 +93,78 @@ struct OperationDispatcher<_simd_f64x1, S, OP_FILLU> {
 };
 
 template<size_t S>
+struct OperationDispatcher<_simd_f64x1, S, OP_FILLS> {
+	typedef _simd_f64x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t val, scalar_t* o) {
+		if (false) {
+#ifdef _simd_f64x64_fill_scalar_
+		} else if (S >= 64 && _simd_f64x64_fill_scalar_enable()) {
+			typedef _simd_f64x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x64_fill_scalar_(val);
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_f64x32_fill_scalar_
+		} else if (S >= 32 && _simd_f64x32_fill_scalar_enable()) {
+			typedef _simd_f64x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x32_fill_scalar_(val);
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_f64x16_fill_scalar_
+		} else if (S >= 16 && _simd_f64x16_fill_scalar_enable()) {
+			typedef _simd_f64x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x16_fill_scalar_(val);
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_f64x8_fill_scalar_
+		} else if (S >= 8 && _simd_f64x8_fill_scalar_enable()) {
+			typedef _simd_f64x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x8_fill_scalar_(val);
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_f64x4_fill_scalar_
+		} else if (S >= 4 && _simd_f64x4_fill_scalar_enable()) {
+			typedef _simd_f64x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x4_fill_scalar_(val);
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_f64x2_fill_scalar_
+		} else if (S >= 2 && _simd_f64x2_fill_scalar_enable()) {
+			typedef _simd_f64x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x2_fill_scalar_(val);
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
+	}
+};
+
+template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_FMA> {
 	typedef _simd_f64x1 scalar_t;
 
@@ -3499,6 +3571,78 @@ struct OperationDispatcher<_simd_f32x1, S, OP_FILLU> {
 	typedef _simd_f32x1 scalar_t;
 
 	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_f32x1, S, OP_FILLS> {
+	typedef _simd_f32x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t val, scalar_t* o) {
+		if (false) {
+#ifdef _simd_f32x64_fill_scalar_
+		} else if (S >= 64 && _simd_f32x64_fill_scalar_enable()) {
+			typedef _simd_f32x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x64_fill_scalar_(val);
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_f32x32_fill_scalar_
+		} else if (S >= 32 && _simd_f32x32_fill_scalar_enable()) {
+			typedef _simd_f32x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x32_fill_scalar_(val);
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_f32x16_fill_scalar_
+		} else if (S >= 16 && _simd_f32x16_fill_scalar_enable()) {
+			typedef _simd_f32x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x16_fill_scalar_(val);
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_f32x8_fill_scalar_
+		} else if (S >= 8 && _simd_f32x8_fill_scalar_enable()) {
+			typedef _simd_f32x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x8_fill_scalar_(val);
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_f32x4_fill_scalar_
+		} else if (S >= 4 && _simd_f32x4_fill_scalar_enable()) {
+			typedef _simd_f32x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x4_fill_scalar_(val);
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_f32x2_fill_scalar_
+		} else if (S >= 2 && _simd_f32x2_fill_scalar_enable()) {
+			typedef _simd_f32x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x2_fill_scalar_(val);
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
 	}
 };
 
@@ -6913,6 +7057,78 @@ struct OperationDispatcher<_simd_s64x1, S, OP_FILLU> {
 };
 
 template<size_t S>
+struct OperationDispatcher<_simd_s64x1, S, OP_FILLS> {
+	typedef _simd_s64x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t val, scalar_t* o) {
+		if (false) {
+#ifdef _simd_s64x64_fill_scalar_
+		} else if (S >= 64 && _simd_s64x64_fill_scalar_enable()) {
+			typedef _simd_s64x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x64_fill_scalar_(val);
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s64x32_fill_scalar_
+		} else if (S >= 32 && _simd_s64x32_fill_scalar_enable()) {
+			typedef _simd_s64x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x32_fill_scalar_(val);
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s64x16_fill_scalar_
+		} else if (S >= 16 && _simd_s64x16_fill_scalar_enable()) {
+			typedef _simd_s64x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x16_fill_scalar_(val);
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s64x8_fill_scalar_
+		} else if (S >= 8 && _simd_s64x8_fill_scalar_enable()) {
+			typedef _simd_s64x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x8_fill_scalar_(val);
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s64x4_fill_scalar_
+		} else if (S >= 4 && _simd_s64x4_fill_scalar_enable()) {
+			typedef _simd_s64x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x4_fill_scalar_(val);
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s64x2_fill_scalar_
+		} else if (S >= 2 && _simd_s64x2_fill_scalar_enable()) {
+			typedef _simd_s64x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x2_fill_scalar_(val);
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
+	}
+};
+
+template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_FMA> {
 	typedef _simd_s64x1 scalar_t;
 
@@ -10319,6 +10535,78 @@ struct OperationDispatcher<_simd_u64x1, S, OP_FILLU> {
 	typedef _simd_u64x1 scalar_t;
 
 	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_u64x1, S, OP_FILLS> {
+	typedef _simd_u64x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t val, scalar_t* o) {
+		if (false) {
+#ifdef _simd_u64x64_fill_scalar_
+		} else if (S >= 64 && _simd_u64x64_fill_scalar_enable()) {
+			typedef _simd_u64x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x64_fill_scalar_(val);
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u64x32_fill_scalar_
+		} else if (S >= 32 && _simd_u64x32_fill_scalar_enable()) {
+			typedef _simd_u64x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x32_fill_scalar_(val);
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u64x16_fill_scalar_
+		} else if (S >= 16 && _simd_u64x16_fill_scalar_enable()) {
+			typedef _simd_u64x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x16_fill_scalar_(val);
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u64x8_fill_scalar_
+		} else if (S >= 8 && _simd_u64x8_fill_scalar_enable()) {
+			typedef _simd_u64x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x8_fill_scalar_(val);
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u64x4_fill_scalar_
+		} else if (S >= 4 && _simd_u64x4_fill_scalar_enable()) {
+			typedef _simd_u64x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x4_fill_scalar_(val);
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u64x2_fill_scalar_
+		} else if (S >= 2 && _simd_u64x2_fill_scalar_enable()) {
+			typedef _simd_u64x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x2_fill_scalar_(val);
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
 	}
 };
 
@@ -13733,6 +14021,78 @@ struct OperationDispatcher<_simd_s32x1, S, OP_FILLU> {
 };
 
 template<size_t S>
+struct OperationDispatcher<_simd_s32x1, S, OP_FILLS> {
+	typedef _simd_s32x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t val, scalar_t* o) {
+		if (false) {
+#ifdef _simd_s32x64_fill_scalar_
+		} else if (S >= 64 && _simd_s32x64_fill_scalar_enable()) {
+			typedef _simd_s32x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x64_fill_scalar_(val);
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s32x32_fill_scalar_
+		} else if (S >= 32 && _simd_s32x32_fill_scalar_enable()) {
+			typedef _simd_s32x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x32_fill_scalar_(val);
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s32x16_fill_scalar_
+		} else if (S >= 16 && _simd_s32x16_fill_scalar_enable()) {
+			typedef _simd_s32x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x16_fill_scalar_(val);
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s32x8_fill_scalar_
+		} else if (S >= 8 && _simd_s32x8_fill_scalar_enable()) {
+			typedef _simd_s32x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x8_fill_scalar_(val);
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s32x4_fill_scalar_
+		} else if (S >= 4 && _simd_s32x4_fill_scalar_enable()) {
+			typedef _simd_s32x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x4_fill_scalar_(val);
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s32x2_fill_scalar_
+		} else if (S >= 2 && _simd_s32x2_fill_scalar_enable()) {
+			typedef _simd_s32x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x2_fill_scalar_(val);
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
+	}
+};
+
+template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_FMA> {
 	typedef _simd_s32x1 scalar_t;
 
@@ -17139,6 +17499,78 @@ struct OperationDispatcher<_simd_u32x1, S, OP_FILLU> {
 	typedef _simd_u32x1 scalar_t;
 
 	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_u32x1, S, OP_FILLS> {
+	typedef _simd_u32x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t val, scalar_t* o) {
+		if (false) {
+#ifdef _simd_u32x64_fill_scalar_
+		} else if (S >= 64 && _simd_u32x64_fill_scalar_enable()) {
+			typedef _simd_u32x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x64_fill_scalar_(val);
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u32x32_fill_scalar_
+		} else if (S >= 32 && _simd_u32x32_fill_scalar_enable()) {
+			typedef _simd_u32x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x32_fill_scalar_(val);
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u32x16_fill_scalar_
+		} else if (S >= 16 && _simd_u32x16_fill_scalar_enable()) {
+			typedef _simd_u32x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x16_fill_scalar_(val);
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u32x8_fill_scalar_
+		} else if (S >= 8 && _simd_u32x8_fill_scalar_enable()) {
+			typedef _simd_u32x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x8_fill_scalar_(val);
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u32x4_fill_scalar_
+		} else if (S >= 4 && _simd_u32x4_fill_scalar_enable()) {
+			typedef _simd_u32x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x4_fill_scalar_(val);
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u32x2_fill_scalar_
+		} else if (S >= 2 && _simd_u32x2_fill_scalar_enable()) {
+			typedef _simd_u32x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x2_fill_scalar_(val);
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
 	}
 };
 
@@ -20553,6 +20985,78 @@ struct OperationDispatcher<_simd_s16x1, S, OP_FILLU> {
 };
 
 template<size_t S>
+struct OperationDispatcher<_simd_s16x1, S, OP_FILLS> {
+	typedef _simd_s16x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t val, scalar_t* o) {
+		if (false) {
+#ifdef _simd_s16x64_fill_scalar_
+		} else if (S >= 64 && _simd_s16x64_fill_scalar_enable()) {
+			typedef _simd_s16x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x64_fill_scalar_(val);
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s16x32_fill_scalar_
+		} else if (S >= 32 && _simd_s16x32_fill_scalar_enable()) {
+			typedef _simd_s16x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x32_fill_scalar_(val);
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s16x16_fill_scalar_
+		} else if (S >= 16 && _simd_s16x16_fill_scalar_enable()) {
+			typedef _simd_s16x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x16_fill_scalar_(val);
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s16x8_fill_scalar_
+		} else if (S >= 8 && _simd_s16x8_fill_scalar_enable()) {
+			typedef _simd_s16x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x8_fill_scalar_(val);
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s16x4_fill_scalar_
+		} else if (S >= 4 && _simd_s16x4_fill_scalar_enable()) {
+			typedef _simd_s16x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x4_fill_scalar_(val);
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s16x2_fill_scalar_
+		} else if (S >= 2 && _simd_s16x2_fill_scalar_enable()) {
+			typedef _simd_s16x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x2_fill_scalar_(val);
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
+	}
+};
+
+template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_FMA> {
 	typedef _simd_s16x1 scalar_t;
 
@@ -23959,6 +24463,78 @@ struct OperationDispatcher<_simd_u16x1, S, OP_FILLU> {
 	typedef _simd_u16x1 scalar_t;
 
 	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_u16x1, S, OP_FILLS> {
+	typedef _simd_u16x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t val, scalar_t* o) {
+		if (false) {
+#ifdef _simd_u16x64_fill_scalar_
+		} else if (S >= 64 && _simd_u16x64_fill_scalar_enable()) {
+			typedef _simd_u16x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x64_fill_scalar_(val);
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u16x32_fill_scalar_
+		} else if (S >= 32 && _simd_u16x32_fill_scalar_enable()) {
+			typedef _simd_u16x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x32_fill_scalar_(val);
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u16x16_fill_scalar_
+		} else if (S >= 16 && _simd_u16x16_fill_scalar_enable()) {
+			typedef _simd_u16x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x16_fill_scalar_(val);
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u16x8_fill_scalar_
+		} else if (S >= 8 && _simd_u16x8_fill_scalar_enable()) {
+			typedef _simd_u16x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x8_fill_scalar_(val);
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u16x4_fill_scalar_
+		} else if (S >= 4 && _simd_u16x4_fill_scalar_enable()) {
+			typedef _simd_u16x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x4_fill_scalar_(val);
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u16x2_fill_scalar_
+		} else if (S >= 2 && _simd_u16x2_fill_scalar_enable()) {
+			typedef _simd_u16x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x2_fill_scalar_(val);
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
 	}
 };
 
@@ -27373,6 +27949,78 @@ struct OperationDispatcher<_simd_s8x1, S, OP_FILLU> {
 };
 
 template<size_t S>
+struct OperationDispatcher<_simd_s8x1, S, OP_FILLS> {
+	typedef _simd_s8x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t val, scalar_t* o) {
+		if (false) {
+#ifdef _simd_s8x64_fill_scalar_
+		} else if (S >= 64 && _simd_s8x64_fill_scalar_enable()) {
+			typedef _simd_s8x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x64_fill_scalar_(val);
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s8x32_fill_scalar_
+		} else if (S >= 32 && _simd_s8x32_fill_scalar_enable()) {
+			typedef _simd_s8x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x32_fill_scalar_(val);
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s8x16_fill_scalar_
+		} else if (S >= 16 && _simd_s8x16_fill_scalar_enable()) {
+			typedef _simd_s8x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x16_fill_scalar_(val);
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s8x8_fill_scalar_
+		} else if (S >= 8 && _simd_s8x8_fill_scalar_enable()) {
+			typedef _simd_s8x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x8_fill_scalar_(val);
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s8x4_fill_scalar_
+		} else if (S >= 4 && _simd_s8x4_fill_scalar_enable()) {
+			typedef _simd_s8x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x4_fill_scalar_(val);
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_s8x2_fill_scalar_
+		} else if (S >= 2 && _simd_s8x2_fill_scalar_enable()) {
+			typedef _simd_s8x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x2_fill_scalar_(val);
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
+	}
+};
+
+template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_FMA> {
 	typedef _simd_s8x1 scalar_t;
 
@@ -30779,6 +31427,78 @@ struct OperationDispatcher<_simd_u8x1, S, OP_FILLU> {
 	typedef _simd_u8x1 scalar_t;
 
 	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_u8x1, S, OP_FILLS> {
+	typedef _simd_u8x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t val, scalar_t* o) {
+		if (false) {
+#ifdef _simd_u8x64_fill_scalar_
+		} else if (S >= 64 && _simd_u8x64_fill_scalar_enable()) {
+			typedef _simd_u8x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x64_fill_scalar_(val);
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u8x32_fill_scalar_
+		} else if (S >= 32 && _simd_u8x32_fill_scalar_enable()) {
+			typedef _simd_u8x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x32_fill_scalar_(val);
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u8x16_fill_scalar_
+		} else if (S >= 16 && _simd_u8x16_fill_scalar_enable()) {
+			typedef _simd_u8x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x16_fill_scalar_(val);
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u8x8_fill_scalar_
+		} else if (S >= 8 && _simd_u8x8_fill_scalar_enable()) {
+			typedef _simd_u8x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x8_fill_scalar_(val);
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u8x4_fill_scalar_
+		} else if (S >= 4 && _simd_u8x4_fill_scalar_enable()) {
+			typedef _simd_u8x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x4_fill_scalar_(val);
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+#ifdef _simd_u8x2_fill_scalar_
+		} else if (S >= 2 && _simd_u8x2_fill_scalar_enable()) {
+			typedef _simd_u8x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x2_fill_scalar_(val);
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILLS>::execute(val, o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
 	}
 };
 
