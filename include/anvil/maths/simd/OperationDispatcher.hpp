@@ -96,7 +96,7 @@ template<>
 struct OperationDispatcher<_simd_f64x1, 1,OP_SUM> {
 	typedef _simd_f64x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return *o;
 	}
 };
@@ -105,7 +105,7 @@ template<>
 struct OperationDispatcher<_simd_f64x1, 0,OP_SUM> {
 	typedef _simd_f64x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return static_cast<scalar_t>(0);
 	}
 };
@@ -3676,7 +3676,7 @@ template<>
 struct OperationDispatcher<_simd_f32x1, 1,OP_SUM> {
 	typedef _simd_f32x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return *o;
 	}
 };
@@ -3685,7 +3685,7 @@ template<>
 struct OperationDispatcher<_simd_f32x1, 0,OP_SUM> {
 	typedef _simd_f32x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return static_cast<scalar_t>(0);
 	}
 };
@@ -7256,7 +7256,7 @@ template<>
 struct OperationDispatcher<_simd_s64x1, 1,OP_SUM> {
 	typedef _simd_s64x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return *o;
 	}
 };
@@ -7265,7 +7265,7 @@ template<>
 struct OperationDispatcher<_simd_s64x1, 0,OP_SUM> {
 	typedef _simd_s64x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return static_cast<scalar_t>(0);
 	}
 };
@@ -10836,7 +10836,7 @@ template<>
 struct OperationDispatcher<_simd_u64x1, 1,OP_SUM> {
 	typedef _simd_u64x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return *o;
 	}
 };
@@ -10845,7 +10845,7 @@ template<>
 struct OperationDispatcher<_simd_u64x1, 0,OP_SUM> {
 	typedef _simd_u64x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return static_cast<scalar_t>(0);
 	}
 };
@@ -14416,7 +14416,7 @@ template<>
 struct OperationDispatcher<_simd_s32x1, 1,OP_SUM> {
 	typedef _simd_s32x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return *o;
 	}
 };
@@ -14425,7 +14425,7 @@ template<>
 struct OperationDispatcher<_simd_s32x1, 0,OP_SUM> {
 	typedef _simd_s32x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return static_cast<scalar_t>(0);
 	}
 };
@@ -17996,7 +17996,7 @@ template<>
 struct OperationDispatcher<_simd_u32x1, 1,OP_SUM> {
 	typedef _simd_u32x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return *o;
 	}
 };
@@ -18005,7 +18005,7 @@ template<>
 struct OperationDispatcher<_simd_u32x1, 0,OP_SUM> {
 	typedef _simd_u32x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return static_cast<scalar_t>(0);
 	}
 };
@@ -21576,7 +21576,7 @@ template<>
 struct OperationDispatcher<_simd_s16x1, 1,OP_SUM> {
 	typedef _simd_s16x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return *o;
 	}
 };
@@ -21585,7 +21585,7 @@ template<>
 struct OperationDispatcher<_simd_s16x1, 0,OP_SUM> {
 	typedef _simd_s16x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return static_cast<scalar_t>(0);
 	}
 };
@@ -25156,7 +25156,7 @@ template<>
 struct OperationDispatcher<_simd_u16x1, 1,OP_SUM> {
 	typedef _simd_u16x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return *o;
 	}
 };
@@ -25165,7 +25165,7 @@ template<>
 struct OperationDispatcher<_simd_u16x1, 0,OP_SUM> {
 	typedef _simd_u16x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return static_cast<scalar_t>(0);
 	}
 };
@@ -28736,7 +28736,7 @@ template<>
 struct OperationDispatcher<_simd_s8x1, 1,OP_SUM> {
 	typedef _simd_s8x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return *o;
 	}
 };
@@ -28745,7 +28745,7 @@ template<>
 struct OperationDispatcher<_simd_s8x1, 0,OP_SUM> {
 	typedef _simd_s8x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return static_cast<scalar_t>(0);
 	}
 };
@@ -32316,7 +32316,7 @@ template<>
 struct OperationDispatcher<_simd_u8x1, 1,OP_SUM> {
 	typedef _simd_u8x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return *o;
 	}
 };
@@ -32325,7 +32325,7 @@ template<>
 struct OperationDispatcher<_simd_u8x1, 0,OP_SUM> {
 	typedef _simd_u8x1 scalar_t;
 
-	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static ANVIL_STRONG_INLINE scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		return static_cast<scalar_t>(0);
 	}
 };

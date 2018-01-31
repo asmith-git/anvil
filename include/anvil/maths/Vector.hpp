@@ -245,7 +245,7 @@ namespace anvil {
 		}
 
 		ANVIL_STRONG_INLINE type ANVIL_SIMD_CALL sum() const throw() {
-			return 0;// simd::OperationDispatcher<type, size, simd::OP_SUM>::execute(elements);
+			return simd::OperationDispatcher<type, size, simd::OP_SUM>::execute(elements);
 		}
 
 		ANVIL_STRONG_INLINE type ANVIL_SIMD_CALL avg() const throw() {
