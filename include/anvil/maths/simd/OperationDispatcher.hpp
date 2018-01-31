@@ -16,7 +16,7 @@ template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S,OP_SUM> {
 	typedef _simd_f64x1 scalar_t;
 
-	static scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		if (false) {
 #ifdef _simd_f64x64_add_
 		} else if (S >= 64 && _simd_f64x64_add_enable()) {
@@ -3596,7 +3596,7 @@ template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S,OP_SUM> {
 	typedef _simd_f32x1 scalar_t;
 
-	static scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		if (false) {
 #ifdef _simd_f32x64_add_
 		} else if (S >= 64 && _simd_f32x64_add_enable()) {
@@ -7176,7 +7176,7 @@ template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S,OP_SUM> {
 	typedef _simd_s64x1 scalar_t;
 
-	static scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		if (false) {
 #ifdef _simd_s64x64_add_
 		} else if (S >= 64 && _simd_s64x64_add_enable()) {
@@ -10756,7 +10756,7 @@ template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S,OP_SUM> {
 	typedef _simd_u64x1 scalar_t;
 
-	static scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		if (false) {
 #ifdef _simd_u64x64_add_
 		} else if (S >= 64 && _simd_u64x64_add_enable()) {
@@ -14336,7 +14336,7 @@ template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S,OP_SUM> {
 	typedef _simd_s32x1 scalar_t;
 
-	static scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		if (false) {
 #ifdef _simd_s32x64_add_
 		} else if (S >= 64 && _simd_s32x64_add_enable()) {
@@ -17916,7 +17916,7 @@ template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S,OP_SUM> {
 	typedef _simd_u32x1 scalar_t;
 
-	static scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		if (false) {
 #ifdef _simd_u32x64_add_
 		} else if (S >= 64 && _simd_u32x64_add_enable()) {
@@ -21496,7 +21496,7 @@ template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S,OP_SUM> {
 	typedef _simd_s16x1 scalar_t;
 
-	static scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		if (false) {
 #ifdef _simd_s16x64_add_
 		} else if (S >= 64 && _simd_s16x64_add_enable()) {
@@ -25076,7 +25076,7 @@ template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S,OP_SUM> {
 	typedef _simd_u16x1 scalar_t;
 
-	static scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		if (false) {
 #ifdef _simd_u16x64_add_
 		} else if (S >= 64 && _simd_u16x64_add_enable()) {
@@ -28656,7 +28656,7 @@ template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S,OP_SUM> {
 	typedef _simd_s8x1 scalar_t;
 
-	static scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		if (false) {
 #ifdef _simd_s8x64_add_
 		} else if (S >= 64 && _simd_s8x64_add_enable()) {
@@ -32236,7 +32236,7 @@ template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S,OP_SUM> {
 	typedef _simd_u8x1 scalar_t;
 
-	static scalar_t ANVIL_SIMD_CALL execute(scalar_t* o) {
+	static scalar_t ANVIL_SIMD_CALL execute(const scalar_t* o) {
 		if (false) {
 #ifdef _simd_u8x64_add_
 		} else if (S >= 64 && _simd_u8x64_add_enable()) {

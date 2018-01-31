@@ -104,11 +104,11 @@ namespace anvil {
 		type elements[size];
 
 		ANVIL_CALL Vector() {
-			//simd::OperationDispatcher<type, size, simd::OP_FILL>::execute(elements);
+			simd::OperationDispatcher<type, size, simd::OP_FILL0>::execute(elements);
 		}
 
 		Vector(const T x) {
-			//simd::OperationDispatcher<type, size, simd::OP_FILL>::execute(x, elements);
+			simd::OperationDispatcher<type, size, simd::OP_FILLS>::execute(x, elements);
 		}
 
 		Vector(const T x, const T y) {
@@ -245,7 +245,7 @@ namespace anvil {
 		}
 
 		ANVIL_STRONG_INLINE type ANVIL_SIMD_CALL sum() const throw() {
-			return static_cast<type>(sumf());
+			return 0;// simd::OperationDispatcher<type, size, simd::OP_SUM>::execute(elements);
 		}
 
 		ANVIL_STRONG_INLINE type ANVIL_SIMD_CALL avg() const throw() {
