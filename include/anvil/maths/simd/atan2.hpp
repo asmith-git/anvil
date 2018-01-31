@@ -553,7 +553,7 @@
 #endif
 
 #ifndef _simd_s64x1_atan2_safe
-	#define _simd_s64x1_atan2_safe(X,Y) static_cast<int64_t>(std::atan2(static_cast<double>(X,Y)))
+	#define _simd_s64x1_atan2_safe(X,Y) static_cast<int64_t>(std::atan2(static_cast<double>(X),static_cast<double>(Y)))
 	#define _simd_s64x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s64x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_atan2_enabled() true
@@ -623,7 +623,7 @@
 #endif
 
 #ifndef _simd_s64x1_atan2_safe
-	#define _simd_s64x1_atan2_safe(X,Y) static_cast<int64_t>(std::atan2(static_cast<double>(X,Y)))
+	#define _simd_s64x1_atan2_safe(X,Y) static_cast<int64_t>(std::atan2(static_cast<double>(X),static_cast<double>(Y)))
 	#define _simd_s64x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s64x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_atan2_enabled() true
@@ -683,7 +683,7 @@
 #endif
 
 #ifndef _simd_s64x1_atan2_safe
-	#define _simd_s64x1_atan2_safe(X,Y) static_cast<int64_t>(std::atan2(static_cast<double>(X,Y)))
+	#define _simd_s64x1_atan2_safe(X,Y) static_cast<int64_t>(std::atan2(static_cast<double>(X),static_cast<double>(Y)))
 	#define _simd_s64x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s64x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_atan2_enabled() true
@@ -733,7 +733,7 @@
 #endif
 
 #ifndef _simd_s64x1_atan2_safe
-	#define _simd_s64x1_atan2_safe(X,Y) static_cast<int64_t>(std::atan2(static_cast<double>(X,Y)))
+	#define _simd_s64x1_atan2_safe(X,Y) static_cast<int64_t>(std::atan2(static_cast<double>(X),static_cast<double>(Y)))
 	#define _simd_s64x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s64x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_atan2_enabled() true
@@ -773,7 +773,7 @@
 #endif
 
 #ifndef _simd_s64x1_atan2_safe
-	#define _simd_s64x1_atan2_safe(X,Y) static_cast<int64_t>(std::atan2(static_cast<double>(X,Y)))
+	#define _simd_s64x1_atan2_safe(X,Y) static_cast<int64_t>(std::atan2(static_cast<double>(X),static_cast<double>(Y)))
 	#define _simd_s64x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s64x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_atan2_enabled() true
@@ -803,7 +803,7 @@
 #endif
 
 #ifndef _simd_s64x1_atan2_safe
-	#define _simd_s64x1_atan2_safe(X,Y) static_cast<int64_t>(std::atan2(static_cast<double>(X,Y)))
+	#define _simd_s64x1_atan2_safe(X,Y) static_cast<int64_t>(std::atan2(static_cast<double>(X),static_cast<double>(Y)))
 	#define _simd_s64x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s64x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_atan2_enabled() true
@@ -823,7 +823,7 @@
 #endif
 
 #ifndef _simd_u64x1_atan2_safe
-	#define _simd_u64x1_atan2_safe(X,Y) static_cast<uint64_t>(std::atan2(static_cast<double>(X,Y)))
+	#define _simd_u64x1_atan2_safe(X,Y) static_cast<uint64_t>(std::atan2(static_cast<double>(X),static_cast<double>(Y)))
 	#define _simd_u64x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u64x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_atan2_enabled() true
@@ -893,7 +893,7 @@
 #endif
 
 #ifndef _simd_u64x1_atan2_safe
-	#define _simd_u64x1_atan2_safe(X,Y) static_cast<uint64_t>(std::atan2(static_cast<double>(X,Y)))
+	#define _simd_u64x1_atan2_safe(X,Y) static_cast<uint64_t>(std::atan2(static_cast<double>(X),static_cast<double>(Y)))
 	#define _simd_u64x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u64x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_atan2_enabled() true
@@ -953,7 +953,7 @@
 #endif
 
 #ifndef _simd_u64x1_atan2_safe
-	#define _simd_u64x1_atan2_safe(X,Y) static_cast<uint64_t>(std::atan2(static_cast<double>(X,Y)))
+	#define _simd_u64x1_atan2_safe(X,Y) static_cast<uint64_t>(std::atan2(static_cast<double>(X),static_cast<double>(Y)))
 	#define _simd_u64x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u64x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_atan2_enabled() true
@@ -1003,7 +1003,7 @@
 #endif
 
 #ifndef _simd_u64x1_atan2_safe
-	#define _simd_u64x1_atan2_safe(X,Y) static_cast<uint64_t>(std::atan2(static_cast<double>(X,Y)))
+	#define _simd_u64x1_atan2_safe(X,Y) static_cast<uint64_t>(std::atan2(static_cast<double>(X),static_cast<double>(Y)))
 	#define _simd_u64x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u64x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_atan2_enabled() true
@@ -1043,7 +1043,7 @@
 #endif
 
 #ifndef _simd_u64x1_atan2_safe
-	#define _simd_u64x1_atan2_safe(X,Y) static_cast<uint64_t>(std::atan2(static_cast<double>(X,Y)))
+	#define _simd_u64x1_atan2_safe(X,Y) static_cast<uint64_t>(std::atan2(static_cast<double>(X),static_cast<double>(Y)))
 	#define _simd_u64x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u64x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_atan2_enabled() true
@@ -1073,7 +1073,7 @@
 #endif
 
 #ifndef _simd_u64x1_atan2_safe
-	#define _simd_u64x1_atan2_safe(X,Y) static_cast<uint64_t>(std::atan2(static_cast<double>(X,Y)))
+	#define _simd_u64x1_atan2_safe(X,Y) static_cast<uint64_t>(std::atan2(static_cast<double>(X),static_cast<double>(Y)))
 	#define _simd_u64x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u64x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_atan2_enabled() true
@@ -1093,7 +1093,7 @@
 #endif
 
 #ifndef _simd_s32x1_atan2_safe
-	#define _simd_s32x1_atan2_safe(X,Y) static_cast<int32_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_s32x1_atan2_safe(X,Y) static_cast<int32_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s32x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s32x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_atan2_enabled() true
@@ -1163,7 +1163,7 @@
 #endif
 
 #ifndef _simd_s32x1_atan2_safe
-	#define _simd_s32x1_atan2_safe(X,Y) static_cast<int32_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_s32x1_atan2_safe(X,Y) static_cast<int32_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s32x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s32x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_atan2_enabled() true
@@ -1223,7 +1223,7 @@
 #endif
 
 #ifndef _simd_s32x1_atan2_safe
-	#define _simd_s32x1_atan2_safe(X,Y) static_cast<int32_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_s32x1_atan2_safe(X,Y) static_cast<int32_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s32x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s32x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_atan2_enabled() true
@@ -1273,7 +1273,7 @@
 #endif
 
 #ifndef _simd_s32x1_atan2_safe
-	#define _simd_s32x1_atan2_safe(X,Y) static_cast<int32_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_s32x1_atan2_safe(X,Y) static_cast<int32_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s32x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s32x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_atan2_enabled() true
@@ -1313,7 +1313,7 @@
 #endif
 
 #ifndef _simd_s32x1_atan2_safe
-	#define _simd_s32x1_atan2_safe(X,Y) static_cast<int32_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_s32x1_atan2_safe(X,Y) static_cast<int32_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s32x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s32x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_atan2_enabled() true
@@ -1343,7 +1343,7 @@
 #endif
 
 #ifndef _simd_s32x1_atan2_safe
-	#define _simd_s32x1_atan2_safe(X,Y) static_cast<int32_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_s32x1_atan2_safe(X,Y) static_cast<int32_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s32x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s32x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_atan2_enabled() true
@@ -1363,7 +1363,7 @@
 #endif
 
 #ifndef _simd_u32x1_atan2_safe
-	#define _simd_u32x1_atan2_safe(X,Y) static_cast<uint32_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_u32x1_atan2_safe(X,Y) static_cast<uint32_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_u32x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u32x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_atan2_enabled() true
@@ -1433,7 +1433,7 @@
 #endif
 
 #ifndef _simd_u32x1_atan2_safe
-	#define _simd_u32x1_atan2_safe(X,Y) static_cast<uint32_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_u32x1_atan2_safe(X,Y) static_cast<uint32_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_u32x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u32x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_atan2_enabled() true
@@ -1493,7 +1493,7 @@
 #endif
 
 #ifndef _simd_u32x1_atan2_safe
-	#define _simd_u32x1_atan2_safe(X,Y) static_cast<uint32_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_u32x1_atan2_safe(X,Y) static_cast<uint32_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_u32x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u32x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_atan2_enabled() true
@@ -1543,7 +1543,7 @@
 #endif
 
 #ifndef _simd_u32x1_atan2_safe
-	#define _simd_u32x1_atan2_safe(X,Y) static_cast<uint32_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_u32x1_atan2_safe(X,Y) static_cast<uint32_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_u32x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u32x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_atan2_enabled() true
@@ -1583,7 +1583,7 @@
 #endif
 
 #ifndef _simd_u32x1_atan2_safe
-	#define _simd_u32x1_atan2_safe(X,Y) static_cast<uint32_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_u32x1_atan2_safe(X,Y) static_cast<uint32_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_u32x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u32x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_atan2_enabled() true
@@ -1613,7 +1613,7 @@
 #endif
 
 #ifndef _simd_u32x1_atan2_safe
-	#define _simd_u32x1_atan2_safe(X,Y) static_cast<uint32_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_u32x1_atan2_safe(X,Y) static_cast<uint32_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_u32x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u32x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_atan2_enabled() true
@@ -1633,7 +1633,7 @@
 #endif
 
 #ifndef _simd_s16x1_atan2_safe
-	#define _simd_s16x1_atan2_safe(X,Y) static_cast<int16_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_s16x1_atan2_safe(X,Y) static_cast<int16_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s16x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s16x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_atan2_enabled() true
@@ -1703,7 +1703,7 @@
 #endif
 
 #ifndef _simd_s16x1_atan2_safe
-	#define _simd_s16x1_atan2_safe(X,Y) static_cast<int16_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_s16x1_atan2_safe(X,Y) static_cast<int16_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s16x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s16x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_atan2_enabled() true
@@ -1763,7 +1763,7 @@
 #endif
 
 #ifndef _simd_s16x1_atan2_safe
-	#define _simd_s16x1_atan2_safe(X,Y) static_cast<int16_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_s16x1_atan2_safe(X,Y) static_cast<int16_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s16x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s16x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_atan2_enabled() true
@@ -1813,7 +1813,7 @@
 #endif
 
 #ifndef _simd_s16x1_atan2_safe
-	#define _simd_s16x1_atan2_safe(X,Y) static_cast<int16_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_s16x1_atan2_safe(X,Y) static_cast<int16_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s16x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s16x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_atan2_enabled() true
@@ -1853,7 +1853,7 @@
 #endif
 
 #ifndef _simd_s16x1_atan2_safe
-	#define _simd_s16x1_atan2_safe(X,Y) static_cast<int16_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_s16x1_atan2_safe(X,Y) static_cast<int16_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s16x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s16x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_atan2_enabled() true
@@ -1883,7 +1883,7 @@
 #endif
 
 #ifndef _simd_s16x1_atan2_safe
-	#define _simd_s16x1_atan2_safe(X,Y) static_cast<int16_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_s16x1_atan2_safe(X,Y) static_cast<int16_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s16x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s16x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_atan2_enabled() true
@@ -1903,7 +1903,7 @@
 #endif
 
 #ifndef _simd_u16x1_atan2_safe
-	#define _simd_u16x1_atan2_safe(X,Y) static_cast<uint16_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_u16x1_atan2_safe(X,Y) static_cast<uint16_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_u16x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u16x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_atan2_enabled() true
@@ -1973,7 +1973,7 @@
 #endif
 
 #ifndef _simd_u16x1_atan2_safe
-	#define _simd_u16x1_atan2_safe(X,Y) static_cast<uint16_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_u16x1_atan2_safe(X,Y) static_cast<uint16_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_u16x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u16x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_atan2_enabled() true
@@ -2033,7 +2033,7 @@
 #endif
 
 #ifndef _simd_u16x1_atan2_safe
-	#define _simd_u16x1_atan2_safe(X,Y) static_cast<uint16_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_u16x1_atan2_safe(X,Y) static_cast<uint16_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_u16x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u16x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_atan2_enabled() true
@@ -2083,7 +2083,7 @@
 #endif
 
 #ifndef _simd_u16x1_atan2_safe
-	#define _simd_u16x1_atan2_safe(X,Y) static_cast<uint16_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_u16x1_atan2_safe(X,Y) static_cast<uint16_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_u16x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u16x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_atan2_enabled() true
@@ -2123,7 +2123,7 @@
 #endif
 
 #ifndef _simd_u16x1_atan2_safe
-	#define _simd_u16x1_atan2_safe(X,Y) static_cast<uint16_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_u16x1_atan2_safe(X,Y) static_cast<uint16_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_u16x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u16x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_atan2_enabled() true
@@ -2153,7 +2153,7 @@
 #endif
 
 #ifndef _simd_u16x1_atan2_safe
-	#define _simd_u16x1_atan2_safe(X,Y) static_cast<uint16_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_u16x1_atan2_safe(X,Y) static_cast<uint16_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_u16x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u16x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_atan2_enabled() true
@@ -2173,7 +2173,7 @@
 #endif
 
 #ifndef _simd_s8x1_atan2_safe
-	#define _simd_s8x1_atan2_safe(X,Y) static_cast<int8_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_s8x1_atan2_safe(X,Y) static_cast<int8_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s8x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s8x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_atan2_enabled() true
@@ -2243,7 +2243,7 @@
 #endif
 
 #ifndef _simd_s8x1_atan2_safe
-	#define _simd_s8x1_atan2_safe(X,Y) static_cast<int8_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_s8x1_atan2_safe(X,Y) static_cast<int8_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s8x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s8x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_atan2_enabled() true
@@ -2303,7 +2303,7 @@
 #endif
 
 #ifndef _simd_s8x1_atan2_safe
-	#define _simd_s8x1_atan2_safe(X,Y) static_cast<int8_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_s8x1_atan2_safe(X,Y) static_cast<int8_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s8x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s8x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_atan2_enabled() true
@@ -2353,7 +2353,7 @@
 #endif
 
 #ifndef _simd_s8x1_atan2_safe
-	#define _simd_s8x1_atan2_safe(X,Y) static_cast<int8_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_s8x1_atan2_safe(X,Y) static_cast<int8_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s8x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s8x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_atan2_enabled() true
@@ -2393,7 +2393,7 @@
 #endif
 
 #ifndef _simd_s8x1_atan2_safe
-	#define _simd_s8x1_atan2_safe(X,Y) static_cast<int8_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_s8x1_atan2_safe(X,Y) static_cast<int8_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s8x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s8x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_atan2_enabled() true
@@ -2423,7 +2423,7 @@
 #endif
 
 #ifndef _simd_s8x1_atan2_safe
-	#define _simd_s8x1_atan2_safe(X,Y) static_cast<int8_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_s8x1_atan2_safe(X,Y) static_cast<int8_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s8x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_s8x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_atan2_enabled() true
@@ -2443,7 +2443,7 @@
 #endif
 
 #ifndef _simd_u8x1_atan2_safe
-	#define _simd_u8x1_atan2_safe(X,Y) static_cast<uint8_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_u8x1_atan2_safe(X,Y) static_cast<uint8_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_u8x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u8x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_atan2_enabled() true
@@ -2513,7 +2513,7 @@
 #endif
 
 #ifndef _simd_u8x1_atan2_safe
-	#define _simd_u8x1_atan2_safe(X,Y) static_cast<uint8_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_u8x1_atan2_safe(X,Y) static_cast<uint8_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_u8x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u8x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_atan2_enabled() true
@@ -2573,7 +2573,7 @@
 #endif
 
 #ifndef _simd_u8x1_atan2_safe
-	#define _simd_u8x1_atan2_safe(X,Y) static_cast<uint8_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_u8x1_atan2_safe(X,Y) static_cast<uint8_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_u8x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u8x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_atan2_enabled() true
@@ -2623,7 +2623,7 @@
 #endif
 
 #ifndef _simd_u8x1_atan2_safe
-	#define _simd_u8x1_atan2_safe(X,Y) static_cast<uint8_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_u8x1_atan2_safe(X,Y) static_cast<uint8_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_u8x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u8x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_atan2_enabled() true
@@ -2663,7 +2663,7 @@
 #endif
 
 #ifndef _simd_u8x1_atan2_safe
-	#define _simd_u8x1_atan2_safe(X,Y) static_cast<uint8_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_u8x1_atan2_safe(X,Y) static_cast<uint8_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_u8x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u8x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_atan2_enabled() true
@@ -2693,7 +2693,7 @@
 #endif
 
 #ifndef _simd_u8x1_atan2_safe
-	#define _simd_u8x1_atan2_safe(X,Y) static_cast<uint8_t>(std::atan2(static_cast<float>(X,Y)))
+	#define _simd_u8x1_atan2_safe(X,Y) static_cast<uint8_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_u8x1_atan2_(X,Y) x1_atan2_safe(X,Y)
 	#define _simd_u8x1_atan2_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_atan2_enabled() true

@@ -13,7 +13,7 @@
 //limitations under the License.
 
 #ifndef _simd_f64x1_or_safe
-	#define _simd_f64x1_or_safe(X,Y) (X | Y)
+	#define _simd_f64x1_or_safe(X,Y) X
 	#define _simd_f64x1_or_(X,Y) x1_or_safe(X,Y)
 	#define _simd_f64x1_or_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_or_enabled() true
@@ -83,7 +83,7 @@
 #endif
 
 #ifndef _simd_f64x1_or_safe
-	#define _simd_f64x1_or_safe(X,Y) (X | Y)
+	#define _simd_f64x1_or_safe(X,Y) X
 	#define _simd_f64x1_or_(X,Y) x1_or_safe(X,Y)
 	#define _simd_f64x1_or_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_or_enabled() true
@@ -143,7 +143,7 @@
 #endif
 
 #ifndef _simd_f64x1_or_safe
-	#define _simd_f64x1_or_safe(X,Y) (X | Y)
+	#define _simd_f64x1_or_safe(X,Y) X
 	#define _simd_f64x1_or_(X,Y) x1_or_safe(X,Y)
 	#define _simd_f64x1_or_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_or_enabled() true
@@ -193,7 +193,7 @@
 #endif
 
 #ifndef _simd_f64x1_or_safe
-	#define _simd_f64x1_or_safe(X,Y) (X | Y)
+	#define _simd_f64x1_or_safe(X,Y) X
 	#define _simd_f64x1_or_(X,Y) x1_or_safe(X,Y)
 	#define _simd_f64x1_or_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_or_enabled() true
@@ -233,7 +233,7 @@
 #endif
 
 #ifndef _simd_f64x1_or_safe
-	#define _simd_f64x1_or_safe(X,Y) (X | Y)
+	#define _simd_f64x1_or_safe(X,Y) X
 	#define _simd_f64x1_or_(X,Y) x1_or_safe(X,Y)
 	#define _simd_f64x1_or_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_or_enabled() true
@@ -263,7 +263,7 @@
 #endif
 
 #ifndef _simd_f64x1_or_safe
-	#define _simd_f64x1_or_safe(X,Y) (X | Y)
+	#define _simd_f64x1_or_safe(X,Y) X
 	#define _simd_f64x1_or_(X,Y) x1_or_safe(X,Y)
 	#define _simd_f64x1_or_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_or_enabled() true
@@ -283,7 +283,7 @@
 #endif
 
 #ifndef _simd_f32x1_or_safe
-	#define _simd_f32x1_or_safe(X,Y) (X | Y)
+	#define _simd_f32x1_or_safe(X,Y) X
 	#define _simd_f32x1_or_(X,Y) x1_or_safe(X,Y)
 	#define _simd_f32x1_or_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_or_enabled() true
@@ -353,7 +353,7 @@
 #endif
 
 #ifndef _simd_f32x1_or_safe
-	#define _simd_f32x1_or_safe(X,Y) (X | Y)
+	#define _simd_f32x1_or_safe(X,Y) X
 	#define _simd_f32x1_or_(X,Y) x1_or_safe(X,Y)
 	#define _simd_f32x1_or_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_or_enabled() true
@@ -413,7 +413,7 @@
 #endif
 
 #ifndef _simd_f32x1_or_safe
-	#define _simd_f32x1_or_safe(X,Y) (X | Y)
+	#define _simd_f32x1_or_safe(X,Y) X
 	#define _simd_f32x1_or_(X,Y) x1_or_safe(X,Y)
 	#define _simd_f32x1_or_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_or_enabled() true
@@ -463,7 +463,7 @@
 #endif
 
 #ifndef _simd_f32x1_or_safe
-	#define _simd_f32x1_or_safe(X,Y) (X | Y)
+	#define _simd_f32x1_or_safe(X,Y) X
 	#define _simd_f32x1_or_(X,Y) x1_or_safe(X,Y)
 	#define _simd_f32x1_or_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_or_enabled() true
@@ -503,7 +503,7 @@
 #endif
 
 #ifndef _simd_f32x1_or_safe
-	#define _simd_f32x1_or_safe(X,Y) (X | Y)
+	#define _simd_f32x1_or_safe(X,Y) X
 	#define _simd_f32x1_or_(X,Y) x1_or_safe(X,Y)
 	#define _simd_f32x1_or_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_or_enabled() true
@@ -533,7 +533,7 @@
 #endif
 
 #ifndef _simd_f32x1_or_safe
-	#define _simd_f32x1_or_safe(X,Y) (X | Y)
+	#define _simd_f32x1_or_safe(X,Y) X
 	#define _simd_f32x1_or_(X,Y) x1_or_safe(X,Y)
 	#define _simd_f32x1_or_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_or_enabled() true

@@ -357,7 +357,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_FMA> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_f64x1_fma_safe(*x,*y,*z);
+		*o = _simd_f64x1_fma_safe(*x,*y,*z);
 	}
 };
 
@@ -464,7 +464,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_FMS> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_f64x1_fms_safe(*x,*y,*z);
+		*o = _simd_f64x1_fms_safe(*x,*y,*z);
 	}
 };
 
@@ -565,7 +565,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_ADD> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f64x1_add_safe(*x,*y);
+		*o = _simd_f64x1_add_safe(*x,*y);
 	}
 };
 
@@ -666,7 +666,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_SUB> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f64x1_sub_safe(*x,*y);
+		*o = _simd_f64x1_sub_safe(*x,*y);
 	}
 };
 
@@ -767,7 +767,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_MUL> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f64x1_mul_safe(*x,*y);
+		*o = _simd_f64x1_mul_safe(*x,*y);
 	}
 };
 
@@ -868,7 +868,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_DIV> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f64x1_div_safe(*x,*y);
+		*o = _simd_f64x1_div_safe(*x,*y);
 	}
 };
 
@@ -969,7 +969,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_MIN> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f64x1_min_safe(*x,*y);
+		*o = _simd_f64x1_min_safe(*x,*y);
 	}
 };
 
@@ -1070,7 +1070,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_MAX> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f64x1_max_safe(*x,*y);
+		*o = _simd_f64x1_max_safe(*x,*y);
 	}
 };
 
@@ -1171,7 +1171,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_CMPEQ> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f64x1_cmpeq_safe(*x,*y);
+		*o = _simd_f64x1_cmpeq_safe(*x,*y);
 	}
 };
 
@@ -1272,7 +1272,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_CMPNE> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f64x1_cmpne_safe(*x,*y);
+		*o = _simd_f64x1_cmpne_safe(*x,*y);
 	}
 };
 
@@ -1373,7 +1373,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_CMPLT> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f64x1_cmplt_safe(*x,*y);
+		*o = _simd_f64x1_cmplt_safe(*x,*y);
 	}
 };
 
@@ -1474,7 +1474,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_CMPGT> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f64x1_cmpgt_safe(*x,*y);
+		*o = _simd_f64x1_cmpgt_safe(*x,*y);
 	}
 };
 
@@ -1575,7 +1575,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_CMPLE> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f64x1_cmple_safe(*x,*y);
+		*o = _simd_f64x1_cmple_safe(*x,*y);
 	}
 };
 
@@ -1676,7 +1676,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_CMPGE> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f64x1_cmpge_safe(*x,*y);
+		*o = _simd_f64x1_cmpge_safe(*x,*y);
 	}
 };
 
@@ -1777,7 +1777,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_AND> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f64x1_and_safe(*x,*y);
+		*o = _simd_f64x1_and_safe(*x,*y);
 	}
 };
 
@@ -1878,7 +1878,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_OR> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f64x1_or_safe(*x,*y);
+		*o = _simd_f64x1_or_safe(*x,*y);
 	}
 };
 
@@ -1979,7 +1979,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_XOR> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f64x1_xor_safe(*x,*y);
+		*o = _simd_f64x1_xor_safe(*x,*y);
 	}
 };
 
@@ -2080,7 +2080,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_LSHIFT> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f64x1_lshift_safe(*x,*y);
+		*o = _simd_f64x1_lshift_safe(*x,*y);
 	}
 };
 
@@ -2181,7 +2181,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_RSHIFT> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f64x1_rshift_safe(*x,*y);
+		*o = _simd_f64x1_rshift_safe(*x,*y);
 	}
 };
 
@@ -2282,7 +2282,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_ATAN2> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f64x1_atan2_safe(*x,*y);
+		*o = _simd_f64x1_atan2_safe(*x,*y);
 	}
 };
 
@@ -2291,101 +2291,6 @@ struct OperationDispatcher<_simd_f64x1, 0, OP_ATAN2> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-	}
-};
-
-template<size_t S>
-struct OperationDispatcher<_simd_f64x1, S, OP_REFLECT> {
-	typedef _simd_f64x1 scalar_t;
-
-	static void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		if (false) {
-#ifdef _simd_f64x64_reflect_
-		} else if (S >= 64 && _simd_f64x64_reflect_enable()) {
-			typedef _simd_f64x64 simd_t;
-			enum {loop = S / 64, remainder = S % 64 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_f64x64_reflect_(_simd_f64x64_load_(x));
-				x += 64;
-				o += 64;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_f64x32_reflect_
-		} else if (S >= 32 && _simd_f64x32_reflect_enable()) {
-			typedef _simd_f64x32 simd_t;
-			enum {loop = S / 32, remainder = S % 32 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_f64x32_reflect_(_simd_f64x32_load_(x));
-				x += 32;
-				o += 32;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_f64x16_reflect_
-		} else if (S >= 16 && _simd_f64x16_reflect_enable()) {
-			typedef _simd_f64x16 simd_t;
-			enum {loop = S / 16, remainder = S % 16 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_f64x16_reflect_(_simd_f64x16_load_(x));
-				x += 16;
-				o += 16;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_f64x8_reflect_
-		} else if (S >= 8 && _simd_f64x8_reflect_enable()) {
-			typedef _simd_f64x8 simd_t;
-			enum {loop = S / 8, remainder = S % 8 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_f64x8_reflect_(_simd_f64x8_load_(x));
-				x += 8;
-				o += 8;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_f64x4_reflect_
-		} else if (S >= 4 && _simd_f64x4_reflect_enable()) {
-			typedef _simd_f64x4 simd_t;
-			enum {loop = S / 4, remainder = S % 4 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_f64x4_reflect_(_simd_f64x4_load_(x));
-				x += 4;
-				o += 4;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_f64x2_reflect_
-		} else if (S >= 2 && _simd_f64x2_reflect_enable()) {
-			typedef _simd_f64x2 simd_t;
-			enum {loop = S / 2, remainder = S % 2 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_f64x2_reflect_(_simd_f64x2_load_(x));
-				x += 2;
-				o += 2;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_reflect_safe(x[i]);
-		}
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_f64x1, 1, OP_REFLECT> {
-	typedef _simd_f64x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_reflect_safe(*x);
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_f64x1, 0, OP_REFLECT> {
-	typedef _simd_f64x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
 	}
 };
 
@@ -2472,7 +2377,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_NOT> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_not_safe(*x);
+		*o = _simd_f64x1_not_safe(*x);
 	}
 };
 
@@ -2567,7 +2472,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_ABS> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_abs_safe(*x);
+		*o = _simd_f64x1_abs_safe(*x);
 	}
 };
 
@@ -2662,7 +2567,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_EXP> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_exp_safe(*x);
+		*o = _simd_f64x1_exp_safe(*x);
 	}
 };
 
@@ -2757,7 +2662,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_LOG> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_log_safe(*x);
+		*o = _simd_f64x1_log_safe(*x);
 	}
 };
 
@@ -2852,7 +2757,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_LOG2> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_log2_safe(*x);
+		*o = _simd_f64x1_log2_safe(*x);
 	}
 };
 
@@ -2947,7 +2852,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_LOG10> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_log10_safe(*x);
+		*o = _simd_f64x1_log10_safe(*x);
 	}
 };
 
@@ -3042,7 +2947,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_CEIL> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_ceil_safe(*x);
+		*o = _simd_f64x1_ceil_safe(*x);
 	}
 };
 
@@ -3137,7 +3042,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_FLOOR> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_floor_safe(*x);
+		*o = _simd_f64x1_floor_safe(*x);
 	}
 };
 
@@ -3232,7 +3137,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_ROUND> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_round_safe(*x);
+		*o = _simd_f64x1_round_safe(*x);
 	}
 };
 
@@ -3327,7 +3232,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_SIN> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_sin_safe(*x);
+		*o = _simd_f64x1_sin_safe(*x);
 	}
 };
 
@@ -3422,7 +3327,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_COS> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_cos_safe(*x);
+		*o = _simd_f64x1_cos_safe(*x);
 	}
 };
 
@@ -3517,7 +3422,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_TAN> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_tan_safe(*x);
+		*o = _simd_f64x1_tan_safe(*x);
 	}
 };
 
@@ -3612,7 +3517,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_ASIN> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_asin_safe(*x);
+		*o = _simd_f64x1_asin_safe(*x);
 	}
 };
 
@@ -3707,7 +3612,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_ACOS> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_acos_safe(*x);
+		*o = _simd_f64x1_acos_safe(*x);
 	}
 };
 
@@ -3802,7 +3707,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_ATAN> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_atan_safe(*x);
+		*o = _simd_f64x1_atan_safe(*x);
 	}
 };
 
@@ -3897,7 +3802,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_SINH> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_sinh_safe(*x);
+		*o = _simd_f64x1_sinh_safe(*x);
 	}
 };
 
@@ -3992,7 +3897,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_COSH> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_cosh_safe(*x);
+		*o = _simd_f64x1_cosh_safe(*x);
 	}
 };
 
@@ -4087,7 +3992,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_TANH> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_tanh_safe(*x);
+		*o = _simd_f64x1_tanh_safe(*x);
 	}
 };
 
@@ -4182,7 +4087,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_SQRT> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_sqrt_safe(*x);
+		*o = _simd_f64x1_sqrt_safe(*x);
 	}
 };
 
@@ -4277,7 +4182,7 @@ struct OperationDispatcher<_simd_f64x1, 1, OP_CBRT> {
 	typedef _simd_f64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f64x1_cbrt_safe(*x);
+		*o = _simd_f64x1_cbrt_safe(*x);
 	}
 };
 
@@ -4634,7 +4539,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_FMA> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_f32x1_fma_safe(*x,*y,*z);
+		*o = _simd_f32x1_fma_safe(*x,*y,*z);
 	}
 };
 
@@ -4741,7 +4646,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_FMS> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_f32x1_fms_safe(*x,*y,*z);
+		*o = _simd_f32x1_fms_safe(*x,*y,*z);
 	}
 };
 
@@ -4842,7 +4747,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_ADD> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f32x1_add_safe(*x,*y);
+		*o = _simd_f32x1_add_safe(*x,*y);
 	}
 };
 
@@ -4943,7 +4848,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_SUB> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f32x1_sub_safe(*x,*y);
+		*o = _simd_f32x1_sub_safe(*x,*y);
 	}
 };
 
@@ -5044,7 +4949,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_MUL> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f32x1_mul_safe(*x,*y);
+		*o = _simd_f32x1_mul_safe(*x,*y);
 	}
 };
 
@@ -5145,7 +5050,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_DIV> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f32x1_div_safe(*x,*y);
+		*o = _simd_f32x1_div_safe(*x,*y);
 	}
 };
 
@@ -5246,7 +5151,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_MIN> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f32x1_min_safe(*x,*y);
+		*o = _simd_f32x1_min_safe(*x,*y);
 	}
 };
 
@@ -5347,7 +5252,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_MAX> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f32x1_max_safe(*x,*y);
+		*o = _simd_f32x1_max_safe(*x,*y);
 	}
 };
 
@@ -5448,7 +5353,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_CMPEQ> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f32x1_cmpeq_safe(*x,*y);
+		*o = _simd_f32x1_cmpeq_safe(*x,*y);
 	}
 };
 
@@ -5549,7 +5454,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_CMPNE> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f32x1_cmpne_safe(*x,*y);
+		*o = _simd_f32x1_cmpne_safe(*x,*y);
 	}
 };
 
@@ -5650,7 +5555,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_CMPLT> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f32x1_cmplt_safe(*x,*y);
+		*o = _simd_f32x1_cmplt_safe(*x,*y);
 	}
 };
 
@@ -5751,7 +5656,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_CMPGT> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f32x1_cmpgt_safe(*x,*y);
+		*o = _simd_f32x1_cmpgt_safe(*x,*y);
 	}
 };
 
@@ -5852,7 +5757,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_CMPLE> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f32x1_cmple_safe(*x,*y);
+		*o = _simd_f32x1_cmple_safe(*x,*y);
 	}
 };
 
@@ -5953,7 +5858,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_CMPGE> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f32x1_cmpge_safe(*x,*y);
+		*o = _simd_f32x1_cmpge_safe(*x,*y);
 	}
 };
 
@@ -6054,7 +5959,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_AND> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f32x1_and_safe(*x,*y);
+		*o = _simd_f32x1_and_safe(*x,*y);
 	}
 };
 
@@ -6155,7 +6060,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_OR> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f32x1_or_safe(*x,*y);
+		*o = _simd_f32x1_or_safe(*x,*y);
 	}
 };
 
@@ -6256,7 +6161,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_XOR> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f32x1_xor_safe(*x,*y);
+		*o = _simd_f32x1_xor_safe(*x,*y);
 	}
 };
 
@@ -6357,7 +6262,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_LSHIFT> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f32x1_lshift_safe(*x,*y);
+		*o = _simd_f32x1_lshift_safe(*x,*y);
 	}
 };
 
@@ -6458,7 +6363,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_RSHIFT> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f32x1_rshift_safe(*x,*y);
+		*o = _simd_f32x1_rshift_safe(*x,*y);
 	}
 };
 
@@ -6559,7 +6464,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_ATAN2> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_f32x1_atan2_safe(*x,*y);
+		*o = _simd_f32x1_atan2_safe(*x,*y);
 	}
 };
 
@@ -6568,101 +6473,6 @@ struct OperationDispatcher<_simd_f32x1, 0, OP_ATAN2> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-	}
-};
-
-template<size_t S>
-struct OperationDispatcher<_simd_f32x1, S, OP_REFLECT> {
-	typedef _simd_f32x1 scalar_t;
-
-	static void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		if (false) {
-#ifdef _simd_f32x64_reflect_
-		} else if (S >= 64 && _simd_f32x64_reflect_enable()) {
-			typedef _simd_f32x64 simd_t;
-			enum {loop = S / 64, remainder = S % 64 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_f32x64_reflect_(_simd_f32x64_load_(x));
-				x += 64;
-				o += 64;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_f32x32_reflect_
-		} else if (S >= 32 && _simd_f32x32_reflect_enable()) {
-			typedef _simd_f32x32 simd_t;
-			enum {loop = S / 32, remainder = S % 32 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_f32x32_reflect_(_simd_f32x32_load_(x));
-				x += 32;
-				o += 32;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_f32x16_reflect_
-		} else if (S >= 16 && _simd_f32x16_reflect_enable()) {
-			typedef _simd_f32x16 simd_t;
-			enum {loop = S / 16, remainder = S % 16 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_f32x16_reflect_(_simd_f32x16_load_(x));
-				x += 16;
-				o += 16;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_f32x8_reflect_
-		} else if (S >= 8 && _simd_f32x8_reflect_enable()) {
-			typedef _simd_f32x8 simd_t;
-			enum {loop = S / 8, remainder = S % 8 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_f32x8_reflect_(_simd_f32x8_load_(x));
-				x += 8;
-				o += 8;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_f32x4_reflect_
-		} else if (S >= 4 && _simd_f32x4_reflect_enable()) {
-			typedef _simd_f32x4 simd_t;
-			enum {loop = S / 4, remainder = S % 4 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_f32x4_reflect_(_simd_f32x4_load_(x));
-				x += 4;
-				o += 4;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_f32x2_reflect_
-		} else if (S >= 2 && _simd_f32x2_reflect_enable()) {
-			typedef _simd_f32x2 simd_t;
-			enum {loop = S / 2, remainder = S % 2 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_f32x2_reflect_(_simd_f32x2_load_(x));
-				x += 2;
-				o += 2;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_reflect_safe(x[i]);
-		}
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_f32x1, 1, OP_REFLECT> {
-	typedef _simd_f32x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_reflect_safe(*x);
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_f32x1, 0, OP_REFLECT> {
-	typedef _simd_f32x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
 	}
 };
 
@@ -6749,7 +6559,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_NOT> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_not_safe(*x);
+		*o = _simd_f32x1_not_safe(*x);
 	}
 };
 
@@ -6844,7 +6654,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_ABS> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_abs_safe(*x);
+		*o = _simd_f32x1_abs_safe(*x);
 	}
 };
 
@@ -6939,7 +6749,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_EXP> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_exp_safe(*x);
+		*o = _simd_f32x1_exp_safe(*x);
 	}
 };
 
@@ -7034,7 +6844,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_LOG> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_log_safe(*x);
+		*o = _simd_f32x1_log_safe(*x);
 	}
 };
 
@@ -7129,7 +6939,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_LOG2> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_log2_safe(*x);
+		*o = _simd_f32x1_log2_safe(*x);
 	}
 };
 
@@ -7224,7 +7034,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_LOG10> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_log10_safe(*x);
+		*o = _simd_f32x1_log10_safe(*x);
 	}
 };
 
@@ -7319,7 +7129,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_CEIL> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_ceil_safe(*x);
+		*o = _simd_f32x1_ceil_safe(*x);
 	}
 };
 
@@ -7414,7 +7224,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_FLOOR> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_floor_safe(*x);
+		*o = _simd_f32x1_floor_safe(*x);
 	}
 };
 
@@ -7509,7 +7319,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_ROUND> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_round_safe(*x);
+		*o = _simd_f32x1_round_safe(*x);
 	}
 };
 
@@ -7604,7 +7414,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_SIN> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_sin_safe(*x);
+		*o = _simd_f32x1_sin_safe(*x);
 	}
 };
 
@@ -7699,7 +7509,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_COS> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_cos_safe(*x);
+		*o = _simd_f32x1_cos_safe(*x);
 	}
 };
 
@@ -7794,7 +7604,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_TAN> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_tan_safe(*x);
+		*o = _simd_f32x1_tan_safe(*x);
 	}
 };
 
@@ -7889,7 +7699,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_ASIN> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_asin_safe(*x);
+		*o = _simd_f32x1_asin_safe(*x);
 	}
 };
 
@@ -7984,7 +7794,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_ACOS> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_acos_safe(*x);
+		*o = _simd_f32x1_acos_safe(*x);
 	}
 };
 
@@ -8079,7 +7889,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_ATAN> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_atan_safe(*x);
+		*o = _simd_f32x1_atan_safe(*x);
 	}
 };
 
@@ -8174,7 +7984,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_SINH> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_sinh_safe(*x);
+		*o = _simd_f32x1_sinh_safe(*x);
 	}
 };
 
@@ -8269,7 +8079,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_COSH> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_cosh_safe(*x);
+		*o = _simd_f32x1_cosh_safe(*x);
 	}
 };
 
@@ -8364,7 +8174,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_TANH> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_tanh_safe(*x);
+		*o = _simd_f32x1_tanh_safe(*x);
 	}
 };
 
@@ -8459,7 +8269,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_SQRT> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_sqrt_safe(*x);
+		*o = _simd_f32x1_sqrt_safe(*x);
 	}
 };
 
@@ -8554,7 +8364,7 @@ struct OperationDispatcher<_simd_f32x1, 1, OP_CBRT> {
 	typedef _simd_f32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_f32x1_cbrt_safe(*x);
+		*o = _simd_f32x1_cbrt_safe(*x);
 	}
 };
 
@@ -8911,7 +8721,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_FMA> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_s64x1_fma_safe(*x,*y,*z);
+		*o = _simd_s64x1_fma_safe(*x,*y,*z);
 	}
 };
 
@@ -9018,7 +8828,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_FMS> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_s64x1_fms_safe(*x,*y,*z);
+		*o = _simd_s64x1_fms_safe(*x,*y,*z);
 	}
 };
 
@@ -9119,7 +8929,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_ADD> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s64x1_add_safe(*x,*y);
+		*o = _simd_s64x1_add_safe(*x,*y);
 	}
 };
 
@@ -9220,7 +9030,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_SUB> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s64x1_sub_safe(*x,*y);
+		*o = _simd_s64x1_sub_safe(*x,*y);
 	}
 };
 
@@ -9321,7 +9131,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_MUL> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s64x1_mul_safe(*x,*y);
+		*o = _simd_s64x1_mul_safe(*x,*y);
 	}
 };
 
@@ -9422,7 +9232,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_DIV> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s64x1_div_safe(*x,*y);
+		*o = _simd_s64x1_div_safe(*x,*y);
 	}
 };
 
@@ -9523,7 +9333,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_MIN> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s64x1_min_safe(*x,*y);
+		*o = _simd_s64x1_min_safe(*x,*y);
 	}
 };
 
@@ -9624,7 +9434,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_MAX> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s64x1_max_safe(*x,*y);
+		*o = _simd_s64x1_max_safe(*x,*y);
 	}
 };
 
@@ -9725,7 +9535,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_CMPEQ> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s64x1_cmpeq_safe(*x,*y);
+		*o = _simd_s64x1_cmpeq_safe(*x,*y);
 	}
 };
 
@@ -9826,7 +9636,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_CMPNE> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s64x1_cmpne_safe(*x,*y);
+		*o = _simd_s64x1_cmpne_safe(*x,*y);
 	}
 };
 
@@ -9927,7 +9737,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_CMPLT> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s64x1_cmplt_safe(*x,*y);
+		*o = _simd_s64x1_cmplt_safe(*x,*y);
 	}
 };
 
@@ -10028,7 +9838,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_CMPGT> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s64x1_cmpgt_safe(*x,*y);
+		*o = _simd_s64x1_cmpgt_safe(*x,*y);
 	}
 };
 
@@ -10129,7 +9939,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_CMPLE> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s64x1_cmple_safe(*x,*y);
+		*o = _simd_s64x1_cmple_safe(*x,*y);
 	}
 };
 
@@ -10230,7 +10040,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_CMPGE> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s64x1_cmpge_safe(*x,*y);
+		*o = _simd_s64x1_cmpge_safe(*x,*y);
 	}
 };
 
@@ -10331,7 +10141,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_AND> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s64x1_and_safe(*x,*y);
+		*o = _simd_s64x1_and_safe(*x,*y);
 	}
 };
 
@@ -10432,7 +10242,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_OR> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s64x1_or_safe(*x,*y);
+		*o = _simd_s64x1_or_safe(*x,*y);
 	}
 };
 
@@ -10533,7 +10343,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_XOR> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s64x1_xor_safe(*x,*y);
+		*o = _simd_s64x1_xor_safe(*x,*y);
 	}
 };
 
@@ -10634,7 +10444,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_LSHIFT> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s64x1_lshift_safe(*x,*y);
+		*o = _simd_s64x1_lshift_safe(*x,*y);
 	}
 };
 
@@ -10735,7 +10545,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_RSHIFT> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s64x1_rshift_safe(*x,*y);
+		*o = _simd_s64x1_rshift_safe(*x,*y);
 	}
 };
 
@@ -10836,7 +10646,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_ATAN2> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s64x1_atan2_safe(*x,*y);
+		*o = _simd_s64x1_atan2_safe(*x,*y);
 	}
 };
 
@@ -10845,101 +10655,6 @@ struct OperationDispatcher<_simd_s64x1, 0, OP_ATAN2> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-	}
-};
-
-template<size_t S>
-struct OperationDispatcher<_simd_s64x1, S, OP_REFLECT> {
-	typedef _simd_s64x1 scalar_t;
-
-	static void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		if (false) {
-#ifdef _simd_s64x64_reflect_
-		} else if (S >= 64 && _simd_s64x64_reflect_enable()) {
-			typedef _simd_s64x64 simd_t;
-			enum {loop = S / 64, remainder = S % 64 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s64x64_reflect_(_simd_s64x64_load_(x));
-				x += 64;
-				o += 64;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s64x32_reflect_
-		} else if (S >= 32 && _simd_s64x32_reflect_enable()) {
-			typedef _simd_s64x32 simd_t;
-			enum {loop = S / 32, remainder = S % 32 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s64x32_reflect_(_simd_s64x32_load_(x));
-				x += 32;
-				o += 32;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s64x16_reflect_
-		} else if (S >= 16 && _simd_s64x16_reflect_enable()) {
-			typedef _simd_s64x16 simd_t;
-			enum {loop = S / 16, remainder = S % 16 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s64x16_reflect_(_simd_s64x16_load_(x));
-				x += 16;
-				o += 16;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s64x8_reflect_
-		} else if (S >= 8 && _simd_s64x8_reflect_enable()) {
-			typedef _simd_s64x8 simd_t;
-			enum {loop = S / 8, remainder = S % 8 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s64x8_reflect_(_simd_s64x8_load_(x));
-				x += 8;
-				o += 8;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s64x4_reflect_
-		} else if (S >= 4 && _simd_s64x4_reflect_enable()) {
-			typedef _simd_s64x4 simd_t;
-			enum {loop = S / 4, remainder = S % 4 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s64x4_reflect_(_simd_s64x4_load_(x));
-				x += 4;
-				o += 4;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s64x2_reflect_
-		} else if (S >= 2 && _simd_s64x2_reflect_enable()) {
-			typedef _simd_s64x2 simd_t;
-			enum {loop = S / 2, remainder = S % 2 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s64x2_reflect_(_simd_s64x2_load_(x));
-				x += 2;
-				o += 2;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_reflect_safe(x[i]);
-		}
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_s64x1, 1, OP_REFLECT> {
-	typedef _simd_s64x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_reflect_safe(*x);
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_s64x1, 0, OP_REFLECT> {
-	typedef _simd_s64x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
 	}
 };
 
@@ -11026,7 +10741,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_NOT> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_not_safe(*x);
+		*o = _simd_s64x1_not_safe(*x);
 	}
 };
 
@@ -11121,7 +10836,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_ABS> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_abs_safe(*x);
+		*o = _simd_s64x1_abs_safe(*x);
 	}
 };
 
@@ -11216,7 +10931,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_EXP> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_exp_safe(*x);
+		*o = _simd_s64x1_exp_safe(*x);
 	}
 };
 
@@ -11311,7 +11026,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_LOG> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_log_safe(*x);
+		*o = _simd_s64x1_log_safe(*x);
 	}
 };
 
@@ -11406,7 +11121,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_LOG2> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_log2_safe(*x);
+		*o = _simd_s64x1_log2_safe(*x);
 	}
 };
 
@@ -11501,7 +11216,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_LOG10> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_log10_safe(*x);
+		*o = _simd_s64x1_log10_safe(*x);
 	}
 };
 
@@ -11596,7 +11311,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_CEIL> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_ceil_safe(*x);
+		*o = _simd_s64x1_ceil_safe(*x);
 	}
 };
 
@@ -11691,7 +11406,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_FLOOR> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_floor_safe(*x);
+		*o = _simd_s64x1_floor_safe(*x);
 	}
 };
 
@@ -11786,7 +11501,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_ROUND> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_round_safe(*x);
+		*o = _simd_s64x1_round_safe(*x);
 	}
 };
 
@@ -11881,7 +11596,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_SIN> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_sin_safe(*x);
+		*o = _simd_s64x1_sin_safe(*x);
 	}
 };
 
@@ -11976,7 +11691,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_COS> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_cos_safe(*x);
+		*o = _simd_s64x1_cos_safe(*x);
 	}
 };
 
@@ -12071,7 +11786,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_TAN> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_tan_safe(*x);
+		*o = _simd_s64x1_tan_safe(*x);
 	}
 };
 
@@ -12166,7 +11881,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_ASIN> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_asin_safe(*x);
+		*o = _simd_s64x1_asin_safe(*x);
 	}
 };
 
@@ -12261,7 +11976,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_ACOS> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_acos_safe(*x);
+		*o = _simd_s64x1_acos_safe(*x);
 	}
 };
 
@@ -12356,7 +12071,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_ATAN> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_atan_safe(*x);
+		*o = _simd_s64x1_atan_safe(*x);
 	}
 };
 
@@ -12451,7 +12166,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_SINH> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_sinh_safe(*x);
+		*o = _simd_s64x1_sinh_safe(*x);
 	}
 };
 
@@ -12546,7 +12261,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_COSH> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_cosh_safe(*x);
+		*o = _simd_s64x1_cosh_safe(*x);
 	}
 };
 
@@ -12641,7 +12356,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_TANH> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_tanh_safe(*x);
+		*o = _simd_s64x1_tanh_safe(*x);
 	}
 };
 
@@ -12736,7 +12451,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_SQRT> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_sqrt_safe(*x);
+		*o = _simd_s64x1_sqrt_safe(*x);
 	}
 };
 
@@ -12831,7 +12546,7 @@ struct OperationDispatcher<_simd_s64x1, 1, OP_CBRT> {
 	typedef _simd_s64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s64x1_cbrt_safe(*x);
+		*o = _simd_s64x1_cbrt_safe(*x);
 	}
 };
 
@@ -13188,7 +12903,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_FMA> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_u64x1_fma_safe(*x,*y,*z);
+		*o = _simd_u64x1_fma_safe(*x,*y,*z);
 	}
 };
 
@@ -13295,7 +13010,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_FMS> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_u64x1_fms_safe(*x,*y,*z);
+		*o = _simd_u64x1_fms_safe(*x,*y,*z);
 	}
 };
 
@@ -13396,7 +13111,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_ADD> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u64x1_add_safe(*x,*y);
+		*o = _simd_u64x1_add_safe(*x,*y);
 	}
 };
 
@@ -13497,7 +13212,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_SUB> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u64x1_sub_safe(*x,*y);
+		*o = _simd_u64x1_sub_safe(*x,*y);
 	}
 };
 
@@ -13598,7 +13313,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_MUL> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u64x1_mul_safe(*x,*y);
+		*o = _simd_u64x1_mul_safe(*x,*y);
 	}
 };
 
@@ -13699,7 +13414,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_DIV> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u64x1_div_safe(*x,*y);
+		*o = _simd_u64x1_div_safe(*x,*y);
 	}
 };
 
@@ -13800,7 +13515,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_MIN> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u64x1_min_safe(*x,*y);
+		*o = _simd_u64x1_min_safe(*x,*y);
 	}
 };
 
@@ -13901,7 +13616,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_MAX> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u64x1_max_safe(*x,*y);
+		*o = _simd_u64x1_max_safe(*x,*y);
 	}
 };
 
@@ -14002,7 +13717,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_CMPEQ> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u64x1_cmpeq_safe(*x,*y);
+		*o = _simd_u64x1_cmpeq_safe(*x,*y);
 	}
 };
 
@@ -14103,7 +13818,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_CMPNE> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u64x1_cmpne_safe(*x,*y);
+		*o = _simd_u64x1_cmpne_safe(*x,*y);
 	}
 };
 
@@ -14204,7 +13919,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_CMPLT> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u64x1_cmplt_safe(*x,*y);
+		*o = _simd_u64x1_cmplt_safe(*x,*y);
 	}
 };
 
@@ -14305,7 +14020,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_CMPGT> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u64x1_cmpgt_safe(*x,*y);
+		*o = _simd_u64x1_cmpgt_safe(*x,*y);
 	}
 };
 
@@ -14406,7 +14121,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_CMPLE> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u64x1_cmple_safe(*x,*y);
+		*o = _simd_u64x1_cmple_safe(*x,*y);
 	}
 };
 
@@ -14507,7 +14222,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_CMPGE> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u64x1_cmpge_safe(*x,*y);
+		*o = _simd_u64x1_cmpge_safe(*x,*y);
 	}
 };
 
@@ -14608,7 +14323,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_AND> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u64x1_and_safe(*x,*y);
+		*o = _simd_u64x1_and_safe(*x,*y);
 	}
 };
 
@@ -14709,7 +14424,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_OR> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u64x1_or_safe(*x,*y);
+		*o = _simd_u64x1_or_safe(*x,*y);
 	}
 };
 
@@ -14810,7 +14525,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_XOR> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u64x1_xor_safe(*x,*y);
+		*o = _simd_u64x1_xor_safe(*x,*y);
 	}
 };
 
@@ -14911,7 +14626,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_LSHIFT> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u64x1_lshift_safe(*x,*y);
+		*o = _simd_u64x1_lshift_safe(*x,*y);
 	}
 };
 
@@ -15012,7 +14727,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_RSHIFT> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u64x1_rshift_safe(*x,*y);
+		*o = _simd_u64x1_rshift_safe(*x,*y);
 	}
 };
 
@@ -15113,7 +14828,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_ATAN2> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u64x1_atan2_safe(*x,*y);
+		*o = _simd_u64x1_atan2_safe(*x,*y);
 	}
 };
 
@@ -15122,101 +14837,6 @@ struct OperationDispatcher<_simd_u64x1, 0, OP_ATAN2> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-	}
-};
-
-template<size_t S>
-struct OperationDispatcher<_simd_u64x1, S, OP_REFLECT> {
-	typedef _simd_u64x1 scalar_t;
-
-	static void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		if (false) {
-#ifdef _simd_u64x64_reflect_
-		} else if (S >= 64 && _simd_u64x64_reflect_enable()) {
-			typedef _simd_u64x64 simd_t;
-			enum {loop = S / 64, remainder = S % 64 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u64x64_reflect_(_simd_u64x64_load_(x));
-				x += 64;
-				o += 64;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u64x32_reflect_
-		} else if (S >= 32 && _simd_u64x32_reflect_enable()) {
-			typedef _simd_u64x32 simd_t;
-			enum {loop = S / 32, remainder = S % 32 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u64x32_reflect_(_simd_u64x32_load_(x));
-				x += 32;
-				o += 32;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u64x16_reflect_
-		} else if (S >= 16 && _simd_u64x16_reflect_enable()) {
-			typedef _simd_u64x16 simd_t;
-			enum {loop = S / 16, remainder = S % 16 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u64x16_reflect_(_simd_u64x16_load_(x));
-				x += 16;
-				o += 16;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u64x8_reflect_
-		} else if (S >= 8 && _simd_u64x8_reflect_enable()) {
-			typedef _simd_u64x8 simd_t;
-			enum {loop = S / 8, remainder = S % 8 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u64x8_reflect_(_simd_u64x8_load_(x));
-				x += 8;
-				o += 8;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u64x4_reflect_
-		} else if (S >= 4 && _simd_u64x4_reflect_enable()) {
-			typedef _simd_u64x4 simd_t;
-			enum {loop = S / 4, remainder = S % 4 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u64x4_reflect_(_simd_u64x4_load_(x));
-				x += 4;
-				o += 4;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u64x2_reflect_
-		} else if (S >= 2 && _simd_u64x2_reflect_enable()) {
-			typedef _simd_u64x2 simd_t;
-			enum {loop = S / 2, remainder = S % 2 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u64x2_reflect_(_simd_u64x2_load_(x));
-				x += 2;
-				o += 2;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_reflect_safe(x[i]);
-		}
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_u64x1, 1, OP_REFLECT> {
-	typedef _simd_u64x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_reflect_safe(*x);
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_u64x1, 0, OP_REFLECT> {
-	typedef _simd_u64x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
 	}
 };
 
@@ -15303,7 +14923,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_NOT> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_not_safe(*x);
+		*o = _simd_u64x1_not_safe(*x);
 	}
 };
 
@@ -15398,7 +15018,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_ABS> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_abs_safe(*x);
+		*o = _simd_u64x1_abs_safe(*x);
 	}
 };
 
@@ -15493,7 +15113,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_EXP> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_exp_safe(*x);
+		*o = _simd_u64x1_exp_safe(*x);
 	}
 };
 
@@ -15588,7 +15208,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_LOG> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_log_safe(*x);
+		*o = _simd_u64x1_log_safe(*x);
 	}
 };
 
@@ -15683,7 +15303,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_LOG2> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_log2_safe(*x);
+		*o = _simd_u64x1_log2_safe(*x);
 	}
 };
 
@@ -15778,7 +15398,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_LOG10> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_log10_safe(*x);
+		*o = _simd_u64x1_log10_safe(*x);
 	}
 };
 
@@ -15873,7 +15493,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_CEIL> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_ceil_safe(*x);
+		*o = _simd_u64x1_ceil_safe(*x);
 	}
 };
 
@@ -15968,7 +15588,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_FLOOR> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_floor_safe(*x);
+		*o = _simd_u64x1_floor_safe(*x);
 	}
 };
 
@@ -16063,7 +15683,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_ROUND> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_round_safe(*x);
+		*o = _simd_u64x1_round_safe(*x);
 	}
 };
 
@@ -16158,7 +15778,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_SIN> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_sin_safe(*x);
+		*o = _simd_u64x1_sin_safe(*x);
 	}
 };
 
@@ -16253,7 +15873,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_COS> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_cos_safe(*x);
+		*o = _simd_u64x1_cos_safe(*x);
 	}
 };
 
@@ -16348,7 +15968,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_TAN> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_tan_safe(*x);
+		*o = _simd_u64x1_tan_safe(*x);
 	}
 };
 
@@ -16443,7 +16063,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_ASIN> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_asin_safe(*x);
+		*o = _simd_u64x1_asin_safe(*x);
 	}
 };
 
@@ -16538,7 +16158,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_ACOS> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_acos_safe(*x);
+		*o = _simd_u64x1_acos_safe(*x);
 	}
 };
 
@@ -16633,7 +16253,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_ATAN> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_atan_safe(*x);
+		*o = _simd_u64x1_atan_safe(*x);
 	}
 };
 
@@ -16728,7 +16348,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_SINH> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_sinh_safe(*x);
+		*o = _simd_u64x1_sinh_safe(*x);
 	}
 };
 
@@ -16823,7 +16443,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_COSH> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_cosh_safe(*x);
+		*o = _simd_u64x1_cosh_safe(*x);
 	}
 };
 
@@ -16918,7 +16538,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_TANH> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_tanh_safe(*x);
+		*o = _simd_u64x1_tanh_safe(*x);
 	}
 };
 
@@ -17013,7 +16633,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_SQRT> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_sqrt_safe(*x);
+		*o = _simd_u64x1_sqrt_safe(*x);
 	}
 };
 
@@ -17108,7 +16728,7 @@ struct OperationDispatcher<_simd_u64x1, 1, OP_CBRT> {
 	typedef _simd_u64x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u64x1_cbrt_safe(*x);
+		*o = _simd_u64x1_cbrt_safe(*x);
 	}
 };
 
@@ -17465,7 +17085,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_FMA> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_s32x1_fma_safe(*x,*y,*z);
+		*o = _simd_s32x1_fma_safe(*x,*y,*z);
 	}
 };
 
@@ -17572,7 +17192,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_FMS> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_s32x1_fms_safe(*x,*y,*z);
+		*o = _simd_s32x1_fms_safe(*x,*y,*z);
 	}
 };
 
@@ -17673,7 +17293,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_ADD> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s32x1_add_safe(*x,*y);
+		*o = _simd_s32x1_add_safe(*x,*y);
 	}
 };
 
@@ -17774,7 +17394,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_SUB> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s32x1_sub_safe(*x,*y);
+		*o = _simd_s32x1_sub_safe(*x,*y);
 	}
 };
 
@@ -17875,7 +17495,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_MUL> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s32x1_mul_safe(*x,*y);
+		*o = _simd_s32x1_mul_safe(*x,*y);
 	}
 };
 
@@ -17976,7 +17596,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_DIV> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s32x1_div_safe(*x,*y);
+		*o = _simd_s32x1_div_safe(*x,*y);
 	}
 };
 
@@ -18077,7 +17697,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_MIN> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s32x1_min_safe(*x,*y);
+		*o = _simd_s32x1_min_safe(*x,*y);
 	}
 };
 
@@ -18178,7 +17798,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_MAX> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s32x1_max_safe(*x,*y);
+		*o = _simd_s32x1_max_safe(*x,*y);
 	}
 };
 
@@ -18279,7 +17899,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_CMPEQ> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s32x1_cmpeq_safe(*x,*y);
+		*o = _simd_s32x1_cmpeq_safe(*x,*y);
 	}
 };
 
@@ -18380,7 +18000,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_CMPNE> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s32x1_cmpne_safe(*x,*y);
+		*o = _simd_s32x1_cmpne_safe(*x,*y);
 	}
 };
 
@@ -18481,7 +18101,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_CMPLT> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s32x1_cmplt_safe(*x,*y);
+		*o = _simd_s32x1_cmplt_safe(*x,*y);
 	}
 };
 
@@ -18582,7 +18202,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_CMPGT> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s32x1_cmpgt_safe(*x,*y);
+		*o = _simd_s32x1_cmpgt_safe(*x,*y);
 	}
 };
 
@@ -18683,7 +18303,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_CMPLE> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s32x1_cmple_safe(*x,*y);
+		*o = _simd_s32x1_cmple_safe(*x,*y);
 	}
 };
 
@@ -18784,7 +18404,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_CMPGE> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s32x1_cmpge_safe(*x,*y);
+		*o = _simd_s32x1_cmpge_safe(*x,*y);
 	}
 };
 
@@ -18885,7 +18505,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_AND> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s32x1_and_safe(*x,*y);
+		*o = _simd_s32x1_and_safe(*x,*y);
 	}
 };
 
@@ -18986,7 +18606,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_OR> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s32x1_or_safe(*x,*y);
+		*o = _simd_s32x1_or_safe(*x,*y);
 	}
 };
 
@@ -19087,7 +18707,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_XOR> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s32x1_xor_safe(*x,*y);
+		*o = _simd_s32x1_xor_safe(*x,*y);
 	}
 };
 
@@ -19188,7 +18808,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_LSHIFT> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s32x1_lshift_safe(*x,*y);
+		*o = _simd_s32x1_lshift_safe(*x,*y);
 	}
 };
 
@@ -19289,7 +18909,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_RSHIFT> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s32x1_rshift_safe(*x,*y);
+		*o = _simd_s32x1_rshift_safe(*x,*y);
 	}
 };
 
@@ -19390,7 +19010,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_ATAN2> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s32x1_atan2_safe(*x,*y);
+		*o = _simd_s32x1_atan2_safe(*x,*y);
 	}
 };
 
@@ -19399,101 +19019,6 @@ struct OperationDispatcher<_simd_s32x1, 0, OP_ATAN2> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-	}
-};
-
-template<size_t S>
-struct OperationDispatcher<_simd_s32x1, S, OP_REFLECT> {
-	typedef _simd_s32x1 scalar_t;
-
-	static void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		if (false) {
-#ifdef _simd_s32x64_reflect_
-		} else if (S >= 64 && _simd_s32x64_reflect_enable()) {
-			typedef _simd_s32x64 simd_t;
-			enum {loop = S / 64, remainder = S % 64 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s32x64_reflect_(_simd_s32x64_load_(x));
-				x += 64;
-				o += 64;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s32x32_reflect_
-		} else if (S >= 32 && _simd_s32x32_reflect_enable()) {
-			typedef _simd_s32x32 simd_t;
-			enum {loop = S / 32, remainder = S % 32 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s32x32_reflect_(_simd_s32x32_load_(x));
-				x += 32;
-				o += 32;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s32x16_reflect_
-		} else if (S >= 16 && _simd_s32x16_reflect_enable()) {
-			typedef _simd_s32x16 simd_t;
-			enum {loop = S / 16, remainder = S % 16 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s32x16_reflect_(_simd_s32x16_load_(x));
-				x += 16;
-				o += 16;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s32x8_reflect_
-		} else if (S >= 8 && _simd_s32x8_reflect_enable()) {
-			typedef _simd_s32x8 simd_t;
-			enum {loop = S / 8, remainder = S % 8 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s32x8_reflect_(_simd_s32x8_load_(x));
-				x += 8;
-				o += 8;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s32x4_reflect_
-		} else if (S >= 4 && _simd_s32x4_reflect_enable()) {
-			typedef _simd_s32x4 simd_t;
-			enum {loop = S / 4, remainder = S % 4 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s32x4_reflect_(_simd_s32x4_load_(x));
-				x += 4;
-				o += 4;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s32x2_reflect_
-		} else if (S >= 2 && _simd_s32x2_reflect_enable()) {
-			typedef _simd_s32x2 simd_t;
-			enum {loop = S / 2, remainder = S % 2 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s32x2_reflect_(_simd_s32x2_load_(x));
-				x += 2;
-				o += 2;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_reflect_safe(x[i]);
-		}
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_s32x1, 1, OP_REFLECT> {
-	typedef _simd_s32x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_reflect_safe(*x);
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_s32x1, 0, OP_REFLECT> {
-	typedef _simd_s32x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
 	}
 };
 
@@ -19580,7 +19105,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_NOT> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_not_safe(*x);
+		*o = _simd_s32x1_not_safe(*x);
 	}
 };
 
@@ -19675,7 +19200,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_ABS> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_abs_safe(*x);
+		*o = _simd_s32x1_abs_safe(*x);
 	}
 };
 
@@ -19770,7 +19295,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_EXP> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_exp_safe(*x);
+		*o = _simd_s32x1_exp_safe(*x);
 	}
 };
 
@@ -19865,7 +19390,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_LOG> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_log_safe(*x);
+		*o = _simd_s32x1_log_safe(*x);
 	}
 };
 
@@ -19960,7 +19485,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_LOG2> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_log2_safe(*x);
+		*o = _simd_s32x1_log2_safe(*x);
 	}
 };
 
@@ -20055,7 +19580,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_LOG10> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_log10_safe(*x);
+		*o = _simd_s32x1_log10_safe(*x);
 	}
 };
 
@@ -20150,7 +19675,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_CEIL> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_ceil_safe(*x);
+		*o = _simd_s32x1_ceil_safe(*x);
 	}
 };
 
@@ -20245,7 +19770,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_FLOOR> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_floor_safe(*x);
+		*o = _simd_s32x1_floor_safe(*x);
 	}
 };
 
@@ -20340,7 +19865,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_ROUND> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_round_safe(*x);
+		*o = _simd_s32x1_round_safe(*x);
 	}
 };
 
@@ -20435,7 +19960,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_SIN> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_sin_safe(*x);
+		*o = _simd_s32x1_sin_safe(*x);
 	}
 };
 
@@ -20530,7 +20055,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_COS> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_cos_safe(*x);
+		*o = _simd_s32x1_cos_safe(*x);
 	}
 };
 
@@ -20625,7 +20150,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_TAN> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_tan_safe(*x);
+		*o = _simd_s32x1_tan_safe(*x);
 	}
 };
 
@@ -20720,7 +20245,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_ASIN> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_asin_safe(*x);
+		*o = _simd_s32x1_asin_safe(*x);
 	}
 };
 
@@ -20815,7 +20340,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_ACOS> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_acos_safe(*x);
+		*o = _simd_s32x1_acos_safe(*x);
 	}
 };
 
@@ -20910,7 +20435,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_ATAN> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_atan_safe(*x);
+		*o = _simd_s32x1_atan_safe(*x);
 	}
 };
 
@@ -21005,7 +20530,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_SINH> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_sinh_safe(*x);
+		*o = _simd_s32x1_sinh_safe(*x);
 	}
 };
 
@@ -21100,7 +20625,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_COSH> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_cosh_safe(*x);
+		*o = _simd_s32x1_cosh_safe(*x);
 	}
 };
 
@@ -21195,7 +20720,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_TANH> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_tanh_safe(*x);
+		*o = _simd_s32x1_tanh_safe(*x);
 	}
 };
 
@@ -21290,7 +20815,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_SQRT> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_sqrt_safe(*x);
+		*o = _simd_s32x1_sqrt_safe(*x);
 	}
 };
 
@@ -21385,7 +20910,7 @@ struct OperationDispatcher<_simd_s32x1, 1, OP_CBRT> {
 	typedef _simd_s32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s32x1_cbrt_safe(*x);
+		*o = _simd_s32x1_cbrt_safe(*x);
 	}
 };
 
@@ -21742,7 +21267,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_FMA> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_u32x1_fma_safe(*x,*y,*z);
+		*o = _simd_u32x1_fma_safe(*x,*y,*z);
 	}
 };
 
@@ -21849,7 +21374,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_FMS> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_u32x1_fms_safe(*x,*y,*z);
+		*o = _simd_u32x1_fms_safe(*x,*y,*z);
 	}
 };
 
@@ -21950,7 +21475,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_ADD> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u32x1_add_safe(*x,*y);
+		*o = _simd_u32x1_add_safe(*x,*y);
 	}
 };
 
@@ -22051,7 +21576,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_SUB> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u32x1_sub_safe(*x,*y);
+		*o = _simd_u32x1_sub_safe(*x,*y);
 	}
 };
 
@@ -22152,7 +21677,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_MUL> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u32x1_mul_safe(*x,*y);
+		*o = _simd_u32x1_mul_safe(*x,*y);
 	}
 };
 
@@ -22253,7 +21778,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_DIV> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u32x1_div_safe(*x,*y);
+		*o = _simd_u32x1_div_safe(*x,*y);
 	}
 };
 
@@ -22354,7 +21879,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_MIN> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u32x1_min_safe(*x,*y);
+		*o = _simd_u32x1_min_safe(*x,*y);
 	}
 };
 
@@ -22455,7 +21980,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_MAX> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u32x1_max_safe(*x,*y);
+		*o = _simd_u32x1_max_safe(*x,*y);
 	}
 };
 
@@ -22556,7 +22081,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_CMPEQ> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u32x1_cmpeq_safe(*x,*y);
+		*o = _simd_u32x1_cmpeq_safe(*x,*y);
 	}
 };
 
@@ -22657,7 +22182,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_CMPNE> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u32x1_cmpne_safe(*x,*y);
+		*o = _simd_u32x1_cmpne_safe(*x,*y);
 	}
 };
 
@@ -22758,7 +22283,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_CMPLT> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u32x1_cmplt_safe(*x,*y);
+		*o = _simd_u32x1_cmplt_safe(*x,*y);
 	}
 };
 
@@ -22859,7 +22384,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_CMPGT> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u32x1_cmpgt_safe(*x,*y);
+		*o = _simd_u32x1_cmpgt_safe(*x,*y);
 	}
 };
 
@@ -22960,7 +22485,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_CMPLE> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u32x1_cmple_safe(*x,*y);
+		*o = _simd_u32x1_cmple_safe(*x,*y);
 	}
 };
 
@@ -23061,7 +22586,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_CMPGE> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u32x1_cmpge_safe(*x,*y);
+		*o = _simd_u32x1_cmpge_safe(*x,*y);
 	}
 };
 
@@ -23162,7 +22687,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_AND> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u32x1_and_safe(*x,*y);
+		*o = _simd_u32x1_and_safe(*x,*y);
 	}
 };
 
@@ -23263,7 +22788,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_OR> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u32x1_or_safe(*x,*y);
+		*o = _simd_u32x1_or_safe(*x,*y);
 	}
 };
 
@@ -23364,7 +22889,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_XOR> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u32x1_xor_safe(*x,*y);
+		*o = _simd_u32x1_xor_safe(*x,*y);
 	}
 };
 
@@ -23465,7 +22990,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_LSHIFT> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u32x1_lshift_safe(*x,*y);
+		*o = _simd_u32x1_lshift_safe(*x,*y);
 	}
 };
 
@@ -23566,7 +23091,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_RSHIFT> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u32x1_rshift_safe(*x,*y);
+		*o = _simd_u32x1_rshift_safe(*x,*y);
 	}
 };
 
@@ -23667,7 +23192,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_ATAN2> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u32x1_atan2_safe(*x,*y);
+		*o = _simd_u32x1_atan2_safe(*x,*y);
 	}
 };
 
@@ -23676,101 +23201,6 @@ struct OperationDispatcher<_simd_u32x1, 0, OP_ATAN2> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-	}
-};
-
-template<size_t S>
-struct OperationDispatcher<_simd_u32x1, S, OP_REFLECT> {
-	typedef _simd_u32x1 scalar_t;
-
-	static void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		if (false) {
-#ifdef _simd_u32x64_reflect_
-		} else if (S >= 64 && _simd_u32x64_reflect_enable()) {
-			typedef _simd_u32x64 simd_t;
-			enum {loop = S / 64, remainder = S % 64 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u32x64_reflect_(_simd_u32x64_load_(x));
-				x += 64;
-				o += 64;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u32x32_reflect_
-		} else if (S >= 32 && _simd_u32x32_reflect_enable()) {
-			typedef _simd_u32x32 simd_t;
-			enum {loop = S / 32, remainder = S % 32 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u32x32_reflect_(_simd_u32x32_load_(x));
-				x += 32;
-				o += 32;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u32x16_reflect_
-		} else if (S >= 16 && _simd_u32x16_reflect_enable()) {
-			typedef _simd_u32x16 simd_t;
-			enum {loop = S / 16, remainder = S % 16 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u32x16_reflect_(_simd_u32x16_load_(x));
-				x += 16;
-				o += 16;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u32x8_reflect_
-		} else if (S >= 8 && _simd_u32x8_reflect_enable()) {
-			typedef _simd_u32x8 simd_t;
-			enum {loop = S / 8, remainder = S % 8 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u32x8_reflect_(_simd_u32x8_load_(x));
-				x += 8;
-				o += 8;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u32x4_reflect_
-		} else if (S >= 4 && _simd_u32x4_reflect_enable()) {
-			typedef _simd_u32x4 simd_t;
-			enum {loop = S / 4, remainder = S % 4 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u32x4_reflect_(_simd_u32x4_load_(x));
-				x += 4;
-				o += 4;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u32x2_reflect_
-		} else if (S >= 2 && _simd_u32x2_reflect_enable()) {
-			typedef _simd_u32x2 simd_t;
-			enum {loop = S / 2, remainder = S % 2 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u32x2_reflect_(_simd_u32x2_load_(x));
-				x += 2;
-				o += 2;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_reflect_safe(x[i]);
-		}
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_u32x1, 1, OP_REFLECT> {
-	typedef _simd_u32x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_reflect_safe(*x);
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_u32x1, 0, OP_REFLECT> {
-	typedef _simd_u32x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
 	}
 };
 
@@ -23857,7 +23287,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_NOT> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_not_safe(*x);
+		*o = _simd_u32x1_not_safe(*x);
 	}
 };
 
@@ -23952,7 +23382,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_ABS> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_abs_safe(*x);
+		*o = _simd_u32x1_abs_safe(*x);
 	}
 };
 
@@ -24047,7 +23477,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_EXP> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_exp_safe(*x);
+		*o = _simd_u32x1_exp_safe(*x);
 	}
 };
 
@@ -24142,7 +23572,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_LOG> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_log_safe(*x);
+		*o = _simd_u32x1_log_safe(*x);
 	}
 };
 
@@ -24237,7 +23667,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_LOG2> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_log2_safe(*x);
+		*o = _simd_u32x1_log2_safe(*x);
 	}
 };
 
@@ -24332,7 +23762,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_LOG10> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_log10_safe(*x);
+		*o = _simd_u32x1_log10_safe(*x);
 	}
 };
 
@@ -24427,7 +23857,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_CEIL> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_ceil_safe(*x);
+		*o = _simd_u32x1_ceil_safe(*x);
 	}
 };
 
@@ -24522,7 +23952,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_FLOOR> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_floor_safe(*x);
+		*o = _simd_u32x1_floor_safe(*x);
 	}
 };
 
@@ -24617,7 +24047,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_ROUND> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_round_safe(*x);
+		*o = _simd_u32x1_round_safe(*x);
 	}
 };
 
@@ -24712,7 +24142,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_SIN> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_sin_safe(*x);
+		*o = _simd_u32x1_sin_safe(*x);
 	}
 };
 
@@ -24807,7 +24237,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_COS> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_cos_safe(*x);
+		*o = _simd_u32x1_cos_safe(*x);
 	}
 };
 
@@ -24902,7 +24332,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_TAN> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_tan_safe(*x);
+		*o = _simd_u32x1_tan_safe(*x);
 	}
 };
 
@@ -24997,7 +24427,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_ASIN> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_asin_safe(*x);
+		*o = _simd_u32x1_asin_safe(*x);
 	}
 };
 
@@ -25092,7 +24522,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_ACOS> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_acos_safe(*x);
+		*o = _simd_u32x1_acos_safe(*x);
 	}
 };
 
@@ -25187,7 +24617,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_ATAN> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_atan_safe(*x);
+		*o = _simd_u32x1_atan_safe(*x);
 	}
 };
 
@@ -25282,7 +24712,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_SINH> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_sinh_safe(*x);
+		*o = _simd_u32x1_sinh_safe(*x);
 	}
 };
 
@@ -25377,7 +24807,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_COSH> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_cosh_safe(*x);
+		*o = _simd_u32x1_cosh_safe(*x);
 	}
 };
 
@@ -25472,7 +24902,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_TANH> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_tanh_safe(*x);
+		*o = _simd_u32x1_tanh_safe(*x);
 	}
 };
 
@@ -25567,7 +24997,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_SQRT> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_sqrt_safe(*x);
+		*o = _simd_u32x1_sqrt_safe(*x);
 	}
 };
 
@@ -25662,7 +25092,7 @@ struct OperationDispatcher<_simd_u32x1, 1, OP_CBRT> {
 	typedef _simd_u32x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u32x1_cbrt_safe(*x);
+		*o = _simd_u32x1_cbrt_safe(*x);
 	}
 };
 
@@ -26019,7 +25449,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_FMA> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_s16x1_fma_safe(*x,*y,*z);
+		*o = _simd_s16x1_fma_safe(*x,*y,*z);
 	}
 };
 
@@ -26126,7 +25556,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_FMS> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_s16x1_fms_safe(*x,*y,*z);
+		*o = _simd_s16x1_fms_safe(*x,*y,*z);
 	}
 };
 
@@ -26227,7 +25657,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_ADD> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s16x1_add_safe(*x,*y);
+		*o = _simd_s16x1_add_safe(*x,*y);
 	}
 };
 
@@ -26328,7 +25758,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_SUB> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s16x1_sub_safe(*x,*y);
+		*o = _simd_s16x1_sub_safe(*x,*y);
 	}
 };
 
@@ -26429,7 +25859,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_MUL> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s16x1_mul_safe(*x,*y);
+		*o = _simd_s16x1_mul_safe(*x,*y);
 	}
 };
 
@@ -26530,7 +25960,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_DIV> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s16x1_div_safe(*x,*y);
+		*o = _simd_s16x1_div_safe(*x,*y);
 	}
 };
 
@@ -26631,7 +26061,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_MIN> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s16x1_min_safe(*x,*y);
+		*o = _simd_s16x1_min_safe(*x,*y);
 	}
 };
 
@@ -26732,7 +26162,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_MAX> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s16x1_max_safe(*x,*y);
+		*o = _simd_s16x1_max_safe(*x,*y);
 	}
 };
 
@@ -26833,7 +26263,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_CMPEQ> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s16x1_cmpeq_safe(*x,*y);
+		*o = _simd_s16x1_cmpeq_safe(*x,*y);
 	}
 };
 
@@ -26934,7 +26364,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_CMPNE> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s16x1_cmpne_safe(*x,*y);
+		*o = _simd_s16x1_cmpne_safe(*x,*y);
 	}
 };
 
@@ -27035,7 +26465,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_CMPLT> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s16x1_cmplt_safe(*x,*y);
+		*o = _simd_s16x1_cmplt_safe(*x,*y);
 	}
 };
 
@@ -27136,7 +26566,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_CMPGT> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s16x1_cmpgt_safe(*x,*y);
+		*o = _simd_s16x1_cmpgt_safe(*x,*y);
 	}
 };
 
@@ -27237,7 +26667,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_CMPLE> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s16x1_cmple_safe(*x,*y);
+		*o = _simd_s16x1_cmple_safe(*x,*y);
 	}
 };
 
@@ -27338,7 +26768,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_CMPGE> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s16x1_cmpge_safe(*x,*y);
+		*o = _simd_s16x1_cmpge_safe(*x,*y);
 	}
 };
 
@@ -27439,7 +26869,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_AND> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s16x1_and_safe(*x,*y);
+		*o = _simd_s16x1_and_safe(*x,*y);
 	}
 };
 
@@ -27540,7 +26970,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_OR> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s16x1_or_safe(*x,*y);
+		*o = _simd_s16x1_or_safe(*x,*y);
 	}
 };
 
@@ -27641,7 +27071,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_XOR> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s16x1_xor_safe(*x,*y);
+		*o = _simd_s16x1_xor_safe(*x,*y);
 	}
 };
 
@@ -27742,7 +27172,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_LSHIFT> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s16x1_lshift_safe(*x,*y);
+		*o = _simd_s16x1_lshift_safe(*x,*y);
 	}
 };
 
@@ -27843,7 +27273,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_RSHIFT> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s16x1_rshift_safe(*x,*y);
+		*o = _simd_s16x1_rshift_safe(*x,*y);
 	}
 };
 
@@ -27944,7 +27374,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_ATAN2> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s16x1_atan2_safe(*x,*y);
+		*o = _simd_s16x1_atan2_safe(*x,*y);
 	}
 };
 
@@ -27953,101 +27383,6 @@ struct OperationDispatcher<_simd_s16x1, 0, OP_ATAN2> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-	}
-};
-
-template<size_t S>
-struct OperationDispatcher<_simd_s16x1, S, OP_REFLECT> {
-	typedef _simd_s16x1 scalar_t;
-
-	static void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		if (false) {
-#ifdef _simd_s16x64_reflect_
-		} else if (S >= 64 && _simd_s16x64_reflect_enable()) {
-			typedef _simd_s16x64 simd_t;
-			enum {loop = S / 64, remainder = S % 64 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s16x64_reflect_(_simd_s16x64_load_(x));
-				x += 64;
-				o += 64;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s16x32_reflect_
-		} else if (S >= 32 && _simd_s16x32_reflect_enable()) {
-			typedef _simd_s16x32 simd_t;
-			enum {loop = S / 32, remainder = S % 32 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s16x32_reflect_(_simd_s16x32_load_(x));
-				x += 32;
-				o += 32;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s16x16_reflect_
-		} else if (S >= 16 && _simd_s16x16_reflect_enable()) {
-			typedef _simd_s16x16 simd_t;
-			enum {loop = S / 16, remainder = S % 16 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s16x16_reflect_(_simd_s16x16_load_(x));
-				x += 16;
-				o += 16;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s16x8_reflect_
-		} else if (S >= 8 && _simd_s16x8_reflect_enable()) {
-			typedef _simd_s16x8 simd_t;
-			enum {loop = S / 8, remainder = S % 8 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s16x8_reflect_(_simd_s16x8_load_(x));
-				x += 8;
-				o += 8;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s16x4_reflect_
-		} else if (S >= 4 && _simd_s16x4_reflect_enable()) {
-			typedef _simd_s16x4 simd_t;
-			enum {loop = S / 4, remainder = S % 4 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s16x4_reflect_(_simd_s16x4_load_(x));
-				x += 4;
-				o += 4;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s16x2_reflect_
-		} else if (S >= 2 && _simd_s16x2_reflect_enable()) {
-			typedef _simd_s16x2 simd_t;
-			enum {loop = S / 2, remainder = S % 2 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s16x2_reflect_(_simd_s16x2_load_(x));
-				x += 2;
-				o += 2;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_reflect_safe(x[i]);
-		}
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_s16x1, 1, OP_REFLECT> {
-	typedef _simd_s16x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_reflect_safe(*x);
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_s16x1, 0, OP_REFLECT> {
-	typedef _simd_s16x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
 	}
 };
 
@@ -28134,7 +27469,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_NOT> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_not_safe(*x);
+		*o = _simd_s16x1_not_safe(*x);
 	}
 };
 
@@ -28229,7 +27564,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_ABS> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_abs_safe(*x);
+		*o = _simd_s16x1_abs_safe(*x);
 	}
 };
 
@@ -28324,7 +27659,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_EXP> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_exp_safe(*x);
+		*o = _simd_s16x1_exp_safe(*x);
 	}
 };
 
@@ -28419,7 +27754,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_LOG> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_log_safe(*x);
+		*o = _simd_s16x1_log_safe(*x);
 	}
 };
 
@@ -28514,7 +27849,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_LOG2> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_log2_safe(*x);
+		*o = _simd_s16x1_log2_safe(*x);
 	}
 };
 
@@ -28609,7 +27944,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_LOG10> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_log10_safe(*x);
+		*o = _simd_s16x1_log10_safe(*x);
 	}
 };
 
@@ -28704,7 +28039,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_CEIL> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_ceil_safe(*x);
+		*o = _simd_s16x1_ceil_safe(*x);
 	}
 };
 
@@ -28799,7 +28134,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_FLOOR> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_floor_safe(*x);
+		*o = _simd_s16x1_floor_safe(*x);
 	}
 };
 
@@ -28894,7 +28229,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_ROUND> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_round_safe(*x);
+		*o = _simd_s16x1_round_safe(*x);
 	}
 };
 
@@ -28989,7 +28324,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_SIN> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_sin_safe(*x);
+		*o = _simd_s16x1_sin_safe(*x);
 	}
 };
 
@@ -29084,7 +28419,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_COS> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_cos_safe(*x);
+		*o = _simd_s16x1_cos_safe(*x);
 	}
 };
 
@@ -29179,7 +28514,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_TAN> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_tan_safe(*x);
+		*o = _simd_s16x1_tan_safe(*x);
 	}
 };
 
@@ -29274,7 +28609,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_ASIN> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_asin_safe(*x);
+		*o = _simd_s16x1_asin_safe(*x);
 	}
 };
 
@@ -29369,7 +28704,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_ACOS> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_acos_safe(*x);
+		*o = _simd_s16x1_acos_safe(*x);
 	}
 };
 
@@ -29464,7 +28799,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_ATAN> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_atan_safe(*x);
+		*o = _simd_s16x1_atan_safe(*x);
 	}
 };
 
@@ -29559,7 +28894,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_SINH> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_sinh_safe(*x);
+		*o = _simd_s16x1_sinh_safe(*x);
 	}
 };
 
@@ -29654,7 +28989,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_COSH> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_cosh_safe(*x);
+		*o = _simd_s16x1_cosh_safe(*x);
 	}
 };
 
@@ -29749,7 +29084,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_TANH> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_tanh_safe(*x);
+		*o = _simd_s16x1_tanh_safe(*x);
 	}
 };
 
@@ -29844,7 +29179,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_SQRT> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_sqrt_safe(*x);
+		*o = _simd_s16x1_sqrt_safe(*x);
 	}
 };
 
@@ -29939,7 +29274,7 @@ struct OperationDispatcher<_simd_s16x1, 1, OP_CBRT> {
 	typedef _simd_s16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s16x1_cbrt_safe(*x);
+		*o = _simd_s16x1_cbrt_safe(*x);
 	}
 };
 
@@ -30296,7 +29631,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_FMA> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_u16x1_fma_safe(*x,*y,*z);
+		*o = _simd_u16x1_fma_safe(*x,*y,*z);
 	}
 };
 
@@ -30403,7 +29738,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_FMS> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_u16x1_fms_safe(*x,*y,*z);
+		*o = _simd_u16x1_fms_safe(*x,*y,*z);
 	}
 };
 
@@ -30504,7 +29839,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_ADD> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u16x1_add_safe(*x,*y);
+		*o = _simd_u16x1_add_safe(*x,*y);
 	}
 };
 
@@ -30605,7 +29940,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_SUB> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u16x1_sub_safe(*x,*y);
+		*o = _simd_u16x1_sub_safe(*x,*y);
 	}
 };
 
@@ -30706,7 +30041,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_MUL> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u16x1_mul_safe(*x,*y);
+		*o = _simd_u16x1_mul_safe(*x,*y);
 	}
 };
 
@@ -30807,7 +30142,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_DIV> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u16x1_div_safe(*x,*y);
+		*o = _simd_u16x1_div_safe(*x,*y);
 	}
 };
 
@@ -30908,7 +30243,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_MIN> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u16x1_min_safe(*x,*y);
+		*o = _simd_u16x1_min_safe(*x,*y);
 	}
 };
 
@@ -31009,7 +30344,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_MAX> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u16x1_max_safe(*x,*y);
+		*o = _simd_u16x1_max_safe(*x,*y);
 	}
 };
 
@@ -31110,7 +30445,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_CMPEQ> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u16x1_cmpeq_safe(*x,*y);
+		*o = _simd_u16x1_cmpeq_safe(*x,*y);
 	}
 };
 
@@ -31211,7 +30546,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_CMPNE> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u16x1_cmpne_safe(*x,*y);
+		*o = _simd_u16x1_cmpne_safe(*x,*y);
 	}
 };
 
@@ -31312,7 +30647,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_CMPLT> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u16x1_cmplt_safe(*x,*y);
+		*o = _simd_u16x1_cmplt_safe(*x,*y);
 	}
 };
 
@@ -31413,7 +30748,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_CMPGT> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u16x1_cmpgt_safe(*x,*y);
+		*o = _simd_u16x1_cmpgt_safe(*x,*y);
 	}
 };
 
@@ -31514,7 +30849,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_CMPLE> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u16x1_cmple_safe(*x,*y);
+		*o = _simd_u16x1_cmple_safe(*x,*y);
 	}
 };
 
@@ -31615,7 +30950,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_CMPGE> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u16x1_cmpge_safe(*x,*y);
+		*o = _simd_u16x1_cmpge_safe(*x,*y);
 	}
 };
 
@@ -31716,7 +31051,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_AND> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u16x1_and_safe(*x,*y);
+		*o = _simd_u16x1_and_safe(*x,*y);
 	}
 };
 
@@ -31817,7 +31152,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_OR> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u16x1_or_safe(*x,*y);
+		*o = _simd_u16x1_or_safe(*x,*y);
 	}
 };
 
@@ -31918,7 +31253,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_XOR> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u16x1_xor_safe(*x,*y);
+		*o = _simd_u16x1_xor_safe(*x,*y);
 	}
 };
 
@@ -32019,7 +31354,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_LSHIFT> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u16x1_lshift_safe(*x,*y);
+		*o = _simd_u16x1_lshift_safe(*x,*y);
 	}
 };
 
@@ -32120,7 +31455,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_RSHIFT> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u16x1_rshift_safe(*x,*y);
+		*o = _simd_u16x1_rshift_safe(*x,*y);
 	}
 };
 
@@ -32221,7 +31556,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_ATAN2> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u16x1_atan2_safe(*x,*y);
+		*o = _simd_u16x1_atan2_safe(*x,*y);
 	}
 };
 
@@ -32230,101 +31565,6 @@ struct OperationDispatcher<_simd_u16x1, 0, OP_ATAN2> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-	}
-};
-
-template<size_t S>
-struct OperationDispatcher<_simd_u16x1, S, OP_REFLECT> {
-	typedef _simd_u16x1 scalar_t;
-
-	static void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		if (false) {
-#ifdef _simd_u16x64_reflect_
-		} else if (S >= 64 && _simd_u16x64_reflect_enable()) {
-			typedef _simd_u16x64 simd_t;
-			enum {loop = S / 64, remainder = S % 64 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u16x64_reflect_(_simd_u16x64_load_(x));
-				x += 64;
-				o += 64;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u16x32_reflect_
-		} else if (S >= 32 && _simd_u16x32_reflect_enable()) {
-			typedef _simd_u16x32 simd_t;
-			enum {loop = S / 32, remainder = S % 32 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u16x32_reflect_(_simd_u16x32_load_(x));
-				x += 32;
-				o += 32;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u16x16_reflect_
-		} else if (S >= 16 && _simd_u16x16_reflect_enable()) {
-			typedef _simd_u16x16 simd_t;
-			enum {loop = S / 16, remainder = S % 16 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u16x16_reflect_(_simd_u16x16_load_(x));
-				x += 16;
-				o += 16;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u16x8_reflect_
-		} else if (S >= 8 && _simd_u16x8_reflect_enable()) {
-			typedef _simd_u16x8 simd_t;
-			enum {loop = S / 8, remainder = S % 8 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u16x8_reflect_(_simd_u16x8_load_(x));
-				x += 8;
-				o += 8;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u16x4_reflect_
-		} else if (S >= 4 && _simd_u16x4_reflect_enable()) {
-			typedef _simd_u16x4 simd_t;
-			enum {loop = S / 4, remainder = S % 4 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u16x4_reflect_(_simd_u16x4_load_(x));
-				x += 4;
-				o += 4;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u16x2_reflect_
-		} else if (S >= 2 && _simd_u16x2_reflect_enable()) {
-			typedef _simd_u16x2 simd_t;
-			enum {loop = S / 2, remainder = S % 2 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u16x2_reflect_(_simd_u16x2_load_(x));
-				x += 2;
-				o += 2;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_reflect_safe(x[i]);
-		}
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_u16x1, 1, OP_REFLECT> {
-	typedef _simd_u16x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_reflect_safe(*x);
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_u16x1, 0, OP_REFLECT> {
-	typedef _simd_u16x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
 	}
 };
 
@@ -32411,7 +31651,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_NOT> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_not_safe(*x);
+		*o = _simd_u16x1_not_safe(*x);
 	}
 };
 
@@ -32506,7 +31746,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_ABS> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_abs_safe(*x);
+		*o = _simd_u16x1_abs_safe(*x);
 	}
 };
 
@@ -32601,7 +31841,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_EXP> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_exp_safe(*x);
+		*o = _simd_u16x1_exp_safe(*x);
 	}
 };
 
@@ -32696,7 +31936,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_LOG> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_log_safe(*x);
+		*o = _simd_u16x1_log_safe(*x);
 	}
 };
 
@@ -32791,7 +32031,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_LOG2> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_log2_safe(*x);
+		*o = _simd_u16x1_log2_safe(*x);
 	}
 };
 
@@ -32886,7 +32126,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_LOG10> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_log10_safe(*x);
+		*o = _simd_u16x1_log10_safe(*x);
 	}
 };
 
@@ -32981,7 +32221,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_CEIL> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_ceil_safe(*x);
+		*o = _simd_u16x1_ceil_safe(*x);
 	}
 };
 
@@ -33076,7 +32316,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_FLOOR> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_floor_safe(*x);
+		*o = _simd_u16x1_floor_safe(*x);
 	}
 };
 
@@ -33171,7 +32411,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_ROUND> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_round_safe(*x);
+		*o = _simd_u16x1_round_safe(*x);
 	}
 };
 
@@ -33266,7 +32506,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_SIN> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_sin_safe(*x);
+		*o = _simd_u16x1_sin_safe(*x);
 	}
 };
 
@@ -33361,7 +32601,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_COS> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_cos_safe(*x);
+		*o = _simd_u16x1_cos_safe(*x);
 	}
 };
 
@@ -33456,7 +32696,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_TAN> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_tan_safe(*x);
+		*o = _simd_u16x1_tan_safe(*x);
 	}
 };
 
@@ -33551,7 +32791,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_ASIN> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_asin_safe(*x);
+		*o = _simd_u16x1_asin_safe(*x);
 	}
 };
 
@@ -33646,7 +32886,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_ACOS> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_acos_safe(*x);
+		*o = _simd_u16x1_acos_safe(*x);
 	}
 };
 
@@ -33741,7 +32981,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_ATAN> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_atan_safe(*x);
+		*o = _simd_u16x1_atan_safe(*x);
 	}
 };
 
@@ -33836,7 +33076,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_SINH> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_sinh_safe(*x);
+		*o = _simd_u16x1_sinh_safe(*x);
 	}
 };
 
@@ -33931,7 +33171,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_COSH> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_cosh_safe(*x);
+		*o = _simd_u16x1_cosh_safe(*x);
 	}
 };
 
@@ -34026,7 +33266,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_TANH> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_tanh_safe(*x);
+		*o = _simd_u16x1_tanh_safe(*x);
 	}
 };
 
@@ -34121,7 +33361,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_SQRT> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_sqrt_safe(*x);
+		*o = _simd_u16x1_sqrt_safe(*x);
 	}
 };
 
@@ -34216,7 +33456,7 @@ struct OperationDispatcher<_simd_u16x1, 1, OP_CBRT> {
 	typedef _simd_u16x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u16x1_cbrt_safe(*x);
+		*o = _simd_u16x1_cbrt_safe(*x);
 	}
 };
 
@@ -34573,7 +33813,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_FMA> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_s8x1_fma_safe(*x,*y,*z);
+		*o = _simd_s8x1_fma_safe(*x,*y,*z);
 	}
 };
 
@@ -34680,7 +33920,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_FMS> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_s8x1_fms_safe(*x,*y,*z);
+		*o = _simd_s8x1_fms_safe(*x,*y,*z);
 	}
 };
 
@@ -34781,7 +34021,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_ADD> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s8x1_add_safe(*x,*y);
+		*o = _simd_s8x1_add_safe(*x,*y);
 	}
 };
 
@@ -34882,7 +34122,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_SUB> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s8x1_sub_safe(*x,*y);
+		*o = _simd_s8x1_sub_safe(*x,*y);
 	}
 };
 
@@ -34983,7 +34223,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_MUL> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s8x1_mul_safe(*x,*y);
+		*o = _simd_s8x1_mul_safe(*x,*y);
 	}
 };
 
@@ -35084,7 +34324,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_DIV> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s8x1_div_safe(*x,*y);
+		*o = _simd_s8x1_div_safe(*x,*y);
 	}
 };
 
@@ -35185,7 +34425,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_MIN> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s8x1_min_safe(*x,*y);
+		*o = _simd_s8x1_min_safe(*x,*y);
 	}
 };
 
@@ -35286,7 +34526,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_MAX> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s8x1_max_safe(*x,*y);
+		*o = _simd_s8x1_max_safe(*x,*y);
 	}
 };
 
@@ -35387,7 +34627,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_CMPEQ> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s8x1_cmpeq_safe(*x,*y);
+		*o = _simd_s8x1_cmpeq_safe(*x,*y);
 	}
 };
 
@@ -35488,7 +34728,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_CMPNE> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s8x1_cmpne_safe(*x,*y);
+		*o = _simd_s8x1_cmpne_safe(*x,*y);
 	}
 };
 
@@ -35589,7 +34829,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_CMPLT> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s8x1_cmplt_safe(*x,*y);
+		*o = _simd_s8x1_cmplt_safe(*x,*y);
 	}
 };
 
@@ -35690,7 +34930,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_CMPGT> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s8x1_cmpgt_safe(*x,*y);
+		*o = _simd_s8x1_cmpgt_safe(*x,*y);
 	}
 };
 
@@ -35791,7 +35031,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_CMPLE> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s8x1_cmple_safe(*x,*y);
+		*o = _simd_s8x1_cmple_safe(*x,*y);
 	}
 };
 
@@ -35892,7 +35132,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_CMPGE> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s8x1_cmpge_safe(*x,*y);
+		*o = _simd_s8x1_cmpge_safe(*x,*y);
 	}
 };
 
@@ -35993,7 +35233,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_AND> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s8x1_and_safe(*x,*y);
+		*o = _simd_s8x1_and_safe(*x,*y);
 	}
 };
 
@@ -36094,7 +35334,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_OR> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s8x1_or_safe(*x,*y);
+		*o = _simd_s8x1_or_safe(*x,*y);
 	}
 };
 
@@ -36195,7 +35435,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_XOR> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s8x1_xor_safe(*x,*y);
+		*o = _simd_s8x1_xor_safe(*x,*y);
 	}
 };
 
@@ -36296,7 +35536,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_LSHIFT> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s8x1_lshift_safe(*x,*y);
+		*o = _simd_s8x1_lshift_safe(*x,*y);
 	}
 };
 
@@ -36397,7 +35637,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_RSHIFT> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s8x1_rshift_safe(*x,*y);
+		*o = _simd_s8x1_rshift_safe(*x,*y);
 	}
 };
 
@@ -36498,7 +35738,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_ATAN2> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_s8x1_atan2_safe(*x,*y);
+		*o = _simd_s8x1_atan2_safe(*x,*y);
 	}
 };
 
@@ -36507,101 +35747,6 @@ struct OperationDispatcher<_simd_s8x1, 0, OP_ATAN2> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-	}
-};
-
-template<size_t S>
-struct OperationDispatcher<_simd_s8x1, S, OP_REFLECT> {
-	typedef _simd_s8x1 scalar_t;
-
-	static void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		if (false) {
-#ifdef _simd_s8x64_reflect_
-		} else if (S >= 64 && _simd_s8x64_reflect_enable()) {
-			typedef _simd_s8x64 simd_t;
-			enum {loop = S / 64, remainder = S % 64 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s8x64_reflect_(_simd_s8x64_load_(x));
-				x += 64;
-				o += 64;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s8x32_reflect_
-		} else if (S >= 32 && _simd_s8x32_reflect_enable()) {
-			typedef _simd_s8x32 simd_t;
-			enum {loop = S / 32, remainder = S % 32 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s8x32_reflect_(_simd_s8x32_load_(x));
-				x += 32;
-				o += 32;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s8x16_reflect_
-		} else if (S >= 16 && _simd_s8x16_reflect_enable()) {
-			typedef _simd_s8x16 simd_t;
-			enum {loop = S / 16, remainder = S % 16 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s8x16_reflect_(_simd_s8x16_load_(x));
-				x += 16;
-				o += 16;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s8x8_reflect_
-		} else if (S >= 8 && _simd_s8x8_reflect_enable()) {
-			typedef _simd_s8x8 simd_t;
-			enum {loop = S / 8, remainder = S % 8 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s8x8_reflect_(_simd_s8x8_load_(x));
-				x += 8;
-				o += 8;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s8x4_reflect_
-		} else if (S >= 4 && _simd_s8x4_reflect_enable()) {
-			typedef _simd_s8x4 simd_t;
-			enum {loop = S / 4, remainder = S % 4 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s8x4_reflect_(_simd_s8x4_load_(x));
-				x += 4;
-				o += 4;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_s8x2_reflect_
-		} else if (S >= 2 && _simd_s8x2_reflect_enable()) {
-			typedef _simd_s8x2 simd_t;
-			enum {loop = S / 2, remainder = S % 2 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_s8x2_reflect_(_simd_s8x2_load_(x));
-				x += 2;
-				o += 2;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_reflect_safe(x[i]);
-		}
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_s8x1, 1, OP_REFLECT> {
-	typedef _simd_s8x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_reflect_safe(*x);
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_s8x1, 0, OP_REFLECT> {
-	typedef _simd_s8x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
 	}
 };
 
@@ -36688,7 +35833,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_NOT> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_not_safe(*x);
+		*o = _simd_s8x1_not_safe(*x);
 	}
 };
 
@@ -36783,7 +35928,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_ABS> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_abs_safe(*x);
+		*o = _simd_s8x1_abs_safe(*x);
 	}
 };
 
@@ -36878,7 +36023,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_EXP> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_exp_safe(*x);
+		*o = _simd_s8x1_exp_safe(*x);
 	}
 };
 
@@ -36973,7 +36118,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_LOG> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_log_safe(*x);
+		*o = _simd_s8x1_log_safe(*x);
 	}
 };
 
@@ -37068,7 +36213,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_LOG2> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_log2_safe(*x);
+		*o = _simd_s8x1_log2_safe(*x);
 	}
 };
 
@@ -37163,7 +36308,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_LOG10> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_log10_safe(*x);
+		*o = _simd_s8x1_log10_safe(*x);
 	}
 };
 
@@ -37258,7 +36403,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_CEIL> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_ceil_safe(*x);
+		*o = _simd_s8x1_ceil_safe(*x);
 	}
 };
 
@@ -37353,7 +36498,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_FLOOR> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_floor_safe(*x);
+		*o = _simd_s8x1_floor_safe(*x);
 	}
 };
 
@@ -37448,7 +36593,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_ROUND> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_round_safe(*x);
+		*o = _simd_s8x1_round_safe(*x);
 	}
 };
 
@@ -37543,7 +36688,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_SIN> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_sin_safe(*x);
+		*o = _simd_s8x1_sin_safe(*x);
 	}
 };
 
@@ -37638,7 +36783,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_COS> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_cos_safe(*x);
+		*o = _simd_s8x1_cos_safe(*x);
 	}
 };
 
@@ -37733,7 +36878,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_TAN> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_tan_safe(*x);
+		*o = _simd_s8x1_tan_safe(*x);
 	}
 };
 
@@ -37828,7 +36973,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_ASIN> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_asin_safe(*x);
+		*o = _simd_s8x1_asin_safe(*x);
 	}
 };
 
@@ -37923,7 +37068,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_ACOS> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_acos_safe(*x);
+		*o = _simd_s8x1_acos_safe(*x);
 	}
 };
 
@@ -38018,7 +37163,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_ATAN> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_atan_safe(*x);
+		*o = _simd_s8x1_atan_safe(*x);
 	}
 };
 
@@ -38113,7 +37258,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_SINH> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_sinh_safe(*x);
+		*o = _simd_s8x1_sinh_safe(*x);
 	}
 };
 
@@ -38208,7 +37353,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_COSH> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_cosh_safe(*x);
+		*o = _simd_s8x1_cosh_safe(*x);
 	}
 };
 
@@ -38303,7 +37448,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_TANH> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_tanh_safe(*x);
+		*o = _simd_s8x1_tanh_safe(*x);
 	}
 };
 
@@ -38398,7 +37543,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_SQRT> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_sqrt_safe(*x);
+		*o = _simd_s8x1_sqrt_safe(*x);
 	}
 };
 
@@ -38493,7 +37638,7 @@ struct OperationDispatcher<_simd_s8x1, 1, OP_CBRT> {
 	typedef _simd_s8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_s8x1_cbrt_safe(*x);
+		*o = _simd_s8x1_cbrt_safe(*x);
 	}
 };
 
@@ -38850,7 +37995,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_FMA> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_u8x1_fma_safe(*x,*y,*z);
+		*o = _simd_u8x1_fma_safe(*x,*y,*z);
 	}
 };
 
@@ -38957,7 +38102,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_FMS> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, const scalar_t* z, scalar_t* o) {
-		//*o = _simd_u8x1_fms_safe(*x,*y,*z);
+		*o = _simd_u8x1_fms_safe(*x,*y,*z);
 	}
 };
 
@@ -39058,7 +38203,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_ADD> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u8x1_add_safe(*x,*y);
+		*o = _simd_u8x1_add_safe(*x,*y);
 	}
 };
 
@@ -39159,7 +38304,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_SUB> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u8x1_sub_safe(*x,*y);
+		*o = _simd_u8x1_sub_safe(*x,*y);
 	}
 };
 
@@ -39260,7 +38405,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_MUL> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u8x1_mul_safe(*x,*y);
+		*o = _simd_u8x1_mul_safe(*x,*y);
 	}
 };
 
@@ -39361,7 +38506,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_DIV> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u8x1_div_safe(*x,*y);
+		*o = _simd_u8x1_div_safe(*x,*y);
 	}
 };
 
@@ -39462,7 +38607,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_MIN> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u8x1_min_safe(*x,*y);
+		*o = _simd_u8x1_min_safe(*x,*y);
 	}
 };
 
@@ -39563,7 +38708,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_MAX> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u8x1_max_safe(*x,*y);
+		*o = _simd_u8x1_max_safe(*x,*y);
 	}
 };
 
@@ -39664,7 +38809,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_CMPEQ> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u8x1_cmpeq_safe(*x,*y);
+		*o = _simd_u8x1_cmpeq_safe(*x,*y);
 	}
 };
 
@@ -39765,7 +38910,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_CMPNE> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u8x1_cmpne_safe(*x,*y);
+		*o = _simd_u8x1_cmpne_safe(*x,*y);
 	}
 };
 
@@ -39866,7 +39011,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_CMPLT> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u8x1_cmplt_safe(*x,*y);
+		*o = _simd_u8x1_cmplt_safe(*x,*y);
 	}
 };
 
@@ -39967,7 +39112,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_CMPGT> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u8x1_cmpgt_safe(*x,*y);
+		*o = _simd_u8x1_cmpgt_safe(*x,*y);
 	}
 };
 
@@ -40068,7 +39213,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_CMPLE> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u8x1_cmple_safe(*x,*y);
+		*o = _simd_u8x1_cmple_safe(*x,*y);
 	}
 };
 
@@ -40169,7 +39314,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_CMPGE> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u8x1_cmpge_safe(*x,*y);
+		*o = _simd_u8x1_cmpge_safe(*x,*y);
 	}
 };
 
@@ -40270,7 +39415,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_AND> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u8x1_and_safe(*x,*y);
+		*o = _simd_u8x1_and_safe(*x,*y);
 	}
 };
 
@@ -40371,7 +39516,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_OR> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u8x1_or_safe(*x,*y);
+		*o = _simd_u8x1_or_safe(*x,*y);
 	}
 };
 
@@ -40472,7 +39617,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_XOR> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u8x1_xor_safe(*x,*y);
+		*o = _simd_u8x1_xor_safe(*x,*y);
 	}
 };
 
@@ -40573,7 +39718,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_LSHIFT> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u8x1_lshift_safe(*x,*y);
+		*o = _simd_u8x1_lshift_safe(*x,*y);
 	}
 };
 
@@ -40674,7 +39819,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_RSHIFT> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u8x1_rshift_safe(*x,*y);
+		*o = _simd_u8x1_rshift_safe(*x,*y);
 	}
 };
 
@@ -40775,7 +39920,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_ATAN2> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-		//*o = _simd_u8x1_atan2_safe(*x,*y);
+		*o = _simd_u8x1_atan2_safe(*x,*y);
 	}
 };
 
@@ -40784,101 +39929,6 @@ struct OperationDispatcher<_simd_u8x1, 0, OP_ATAN2> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, const scalar_t* y, scalar_t* o) {
-	}
-};
-
-template<size_t S>
-struct OperationDispatcher<_simd_u8x1, S, OP_REFLECT> {
-	typedef _simd_u8x1 scalar_t;
-
-	static void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		if (false) {
-#ifdef _simd_u8x64_reflect_
-		} else if (S >= 64 && _simd_u8x64_reflect_enable()) {
-			typedef _simd_u8x64 simd_t;
-			enum {loop = S / 64, remainder = S % 64 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u8x64_reflect_(_simd_u8x64_load_(x));
-				x += 64;
-				o += 64;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u8x32_reflect_
-		} else if (S >= 32 && _simd_u8x32_reflect_enable()) {
-			typedef _simd_u8x32 simd_t;
-			enum {loop = S / 32, remainder = S % 32 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u8x32_reflect_(_simd_u8x32_load_(x));
-				x += 32;
-				o += 32;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u8x16_reflect_
-		} else if (S >= 16 && _simd_u8x16_reflect_enable()) {
-			typedef _simd_u8x16 simd_t;
-			enum {loop = S / 16, remainder = S % 16 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u8x16_reflect_(_simd_u8x16_load_(x));
-				x += 16;
-				o += 16;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u8x8_reflect_
-		} else if (S >= 8 && _simd_u8x8_reflect_enable()) {
-			typedef _simd_u8x8 simd_t;
-			enum {loop = S / 8, remainder = S % 8 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u8x8_reflect_(_simd_u8x8_load_(x));
-				x += 8;
-				o += 8;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u8x4_reflect_
-		} else if (S >= 4 && _simd_u8x4_reflect_enable()) {
-			typedef _simd_u8x4 simd_t;
-			enum {loop = S / 4, remainder = S % 4 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u8x4_reflect_(_simd_u8x4_load_(x));
-				x += 4;
-				o += 4;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-#ifdef _simd_u8x2_reflect_
-		} else if (S >= 2 && _simd_u8x2_reflect_enable()) {
-			typedef _simd_u8x2 simd_t;
-			enum {loop = S / 2, remainder = S % 2 };
-			for (size_t i = 0; i < loop; ++i) {
-				*reinterpret_cast<simd_t*>(o) = _simd_u8x2_reflect_(_simd_u8x2_load_(x));
-				x += 2;
-				o += 2;
-			}
-			OperationDispatcher<scalar_t, remainder, OP_REFLECT>::execute(x,o);
-#endif
-		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_reflect_safe(x[i]);
-		}
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_u8x1, 1, OP_REFLECT> {
-	typedef _simd_u8x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_reflect_safe(*x);
-	}
-};
-
-template<>
-struct OperationDispatcher<_simd_u8x1, 0, OP_REFLECT> {
-	typedef _simd_u8x1 scalar_t;
-
-	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
 	}
 };
 
@@ -40965,7 +40015,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_NOT> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_not_safe(*x);
+		*o = _simd_u8x1_not_safe(*x);
 	}
 };
 
@@ -41060,7 +40110,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_ABS> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_abs_safe(*x);
+		*o = _simd_u8x1_abs_safe(*x);
 	}
 };
 
@@ -41155,7 +40205,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_EXP> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_exp_safe(*x);
+		*o = _simd_u8x1_exp_safe(*x);
 	}
 };
 
@@ -41250,7 +40300,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_LOG> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_log_safe(*x);
+		*o = _simd_u8x1_log_safe(*x);
 	}
 };
 
@@ -41345,7 +40395,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_LOG2> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_log2_safe(*x);
+		*o = _simd_u8x1_log2_safe(*x);
 	}
 };
 
@@ -41440,7 +40490,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_LOG10> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_log10_safe(*x);
+		*o = _simd_u8x1_log10_safe(*x);
 	}
 };
 
@@ -41535,7 +40585,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_CEIL> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_ceil_safe(*x);
+		*o = _simd_u8x1_ceil_safe(*x);
 	}
 };
 
@@ -41630,7 +40680,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_FLOOR> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_floor_safe(*x);
+		*o = _simd_u8x1_floor_safe(*x);
 	}
 };
 
@@ -41725,7 +40775,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_ROUND> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_round_safe(*x);
+		*o = _simd_u8x1_round_safe(*x);
 	}
 };
 
@@ -41820,7 +40870,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_SIN> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_sin_safe(*x);
+		*o = _simd_u8x1_sin_safe(*x);
 	}
 };
 
@@ -41915,7 +40965,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_COS> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_cos_safe(*x);
+		*o = _simd_u8x1_cos_safe(*x);
 	}
 };
 
@@ -42010,7 +41060,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_TAN> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_tan_safe(*x);
+		*o = _simd_u8x1_tan_safe(*x);
 	}
 };
 
@@ -42105,7 +41155,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_ASIN> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_asin_safe(*x);
+		*o = _simd_u8x1_asin_safe(*x);
 	}
 };
 
@@ -42200,7 +41250,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_ACOS> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_acos_safe(*x);
+		*o = _simd_u8x1_acos_safe(*x);
 	}
 };
 
@@ -42295,7 +41345,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_ATAN> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_atan_safe(*x);
+		*o = _simd_u8x1_atan_safe(*x);
 	}
 };
 
@@ -42390,7 +41440,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_SINH> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_sinh_safe(*x);
+		*o = _simd_u8x1_sinh_safe(*x);
 	}
 };
 
@@ -42485,7 +41535,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_COSH> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_cosh_safe(*x);
+		*o = _simd_u8x1_cosh_safe(*x);
 	}
 };
 
@@ -42580,7 +41630,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_TANH> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_tanh_safe(*x);
+		*o = _simd_u8x1_tanh_safe(*x);
 	}
 };
 
@@ -42675,7 +41725,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_SQRT> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_sqrt_safe(*x);
+		*o = _simd_u8x1_sqrt_safe(*x);
 	}
 };
 
@@ -42770,7 +41820,7 @@ struct OperationDispatcher<_simd_u8x1, 1, OP_CBRT> {
 	typedef _simd_u8x1 scalar_t;
 
 	static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL execute(const scalar_t* x, scalar_t* o) {
-		//*o = _simd_u8x1_cbrt_safe(*x);
+		*o = _simd_u8x1_cbrt_safe(*x);
 	}
 };
 

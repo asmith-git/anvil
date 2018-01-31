@@ -13,7 +13,7 @@
 //limitations under the License.
 
 #ifndef _simd_f64x1_cmpne_safe
-	#define _simd_f64x1_cmpne_safe(X,Y) static_cast<f64x1>(X != Y)
+	#define _simd_f64x1_cmpne_safe(X,Y) static_cast<_simd_f64x1>(X != Y)
 	#define _simd_f64x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_f64x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cmpne_enabled() true
@@ -83,7 +83,7 @@
 #endif
 
 #ifndef _simd_f64x1_cmpne_safe
-	#define _simd_f64x1_cmpne_safe(X,Y) static_cast<f64x1>(X != Y)
+	#define _simd_f64x1_cmpne_safe(X,Y) static_cast<_simd_f64x1>(X != Y)
 	#define _simd_f64x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_f64x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cmpne_enabled() true
@@ -143,7 +143,7 @@
 #endif
 
 #ifndef _simd_f64x1_cmpne_safe
-	#define _simd_f64x1_cmpne_safe(X,Y) static_cast<f64x1>(X != Y)
+	#define _simd_f64x1_cmpne_safe(X,Y) static_cast<_simd_f64x1>(X != Y)
 	#define _simd_f64x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_f64x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cmpne_enabled() true
@@ -193,7 +193,7 @@
 #endif
 
 #ifndef _simd_f64x1_cmpne_safe
-	#define _simd_f64x1_cmpne_safe(X,Y) static_cast<f64x1>(X != Y)
+	#define _simd_f64x1_cmpne_safe(X,Y) static_cast<_simd_f64x1>(X != Y)
 	#define _simd_f64x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_f64x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cmpne_enabled() true
@@ -233,7 +233,7 @@
 #endif
 
 #ifndef _simd_f64x1_cmpne_safe
-	#define _simd_f64x1_cmpne_safe(X,Y) static_cast<f64x1>(X != Y)
+	#define _simd_f64x1_cmpne_safe(X,Y) static_cast<_simd_f64x1>(X != Y)
 	#define _simd_f64x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_f64x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cmpne_enabled() true
@@ -263,7 +263,7 @@
 #endif
 
 #ifndef _simd_f64x1_cmpne_safe
-	#define _simd_f64x1_cmpne_safe(X,Y) static_cast<f64x1>(X != Y)
+	#define _simd_f64x1_cmpne_safe(X,Y) static_cast<_simd_f64x1>(X != Y)
 	#define _simd_f64x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_f64x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cmpne_enabled() true
@@ -283,7 +283,7 @@
 #endif
 
 #ifndef _simd_f32x1_cmpne_safe
-	#define _simd_f32x1_cmpne_safe(X,Y) static_cast<f32x1>(X != Y)
+	#define _simd_f32x1_cmpne_safe(X,Y) static_cast<_simd_f32x1>(X != Y)
 	#define _simd_f32x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_f32x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cmpne_enabled() true
@@ -353,7 +353,7 @@
 #endif
 
 #ifndef _simd_f32x1_cmpne_safe
-	#define _simd_f32x1_cmpne_safe(X,Y) static_cast<f32x1>(X != Y)
+	#define _simd_f32x1_cmpne_safe(X,Y) static_cast<_simd_f32x1>(X != Y)
 	#define _simd_f32x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_f32x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cmpne_enabled() true
@@ -413,7 +413,7 @@
 #endif
 
 #ifndef _simd_f32x1_cmpne_safe
-	#define _simd_f32x1_cmpne_safe(X,Y) static_cast<f32x1>(X != Y)
+	#define _simd_f32x1_cmpne_safe(X,Y) static_cast<_simd_f32x1>(X != Y)
 	#define _simd_f32x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_f32x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cmpne_enabled() true
@@ -463,7 +463,7 @@
 #endif
 
 #ifndef _simd_f32x1_cmpne_safe
-	#define _simd_f32x1_cmpne_safe(X,Y) static_cast<f32x1>(X != Y)
+	#define _simd_f32x1_cmpne_safe(X,Y) static_cast<_simd_f32x1>(X != Y)
 	#define _simd_f32x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_f32x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cmpne_enabled() true
@@ -503,7 +503,7 @@
 #endif
 
 #ifndef _simd_f32x1_cmpne_safe
-	#define _simd_f32x1_cmpne_safe(X,Y) static_cast<f32x1>(X != Y)
+	#define _simd_f32x1_cmpne_safe(X,Y) static_cast<_simd_f32x1>(X != Y)
 	#define _simd_f32x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_f32x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cmpne_enabled() true
@@ -533,7 +533,7 @@
 #endif
 
 #ifndef _simd_f32x1_cmpne_safe
-	#define _simd_f32x1_cmpne_safe(X,Y) static_cast<f32x1>(X != Y)
+	#define _simd_f32x1_cmpne_safe(X,Y) static_cast<_simd_f32x1>(X != Y)
 	#define _simd_f32x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_f32x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cmpne_enabled() true
@@ -553,7 +553,7 @@
 #endif
 
 #ifndef _simd_s64x1_cmpne_safe
-	#define _simd_s64x1_cmpne_safe(X,Y) static_cast<s64x1>(X != Y)
+	#define _simd_s64x1_cmpne_safe(X,Y) static_cast<_simd_s64x1>(X != Y)
 	#define _simd_s64x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s64x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cmpne_enabled() true
@@ -623,7 +623,7 @@
 #endif
 
 #ifndef _simd_s64x1_cmpne_safe
-	#define _simd_s64x1_cmpne_safe(X,Y) static_cast<s64x1>(X != Y)
+	#define _simd_s64x1_cmpne_safe(X,Y) static_cast<_simd_s64x1>(X != Y)
 	#define _simd_s64x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s64x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cmpne_enabled() true
@@ -683,7 +683,7 @@
 #endif
 
 #ifndef _simd_s64x1_cmpne_safe
-	#define _simd_s64x1_cmpne_safe(X,Y) static_cast<s64x1>(X != Y)
+	#define _simd_s64x1_cmpne_safe(X,Y) static_cast<_simd_s64x1>(X != Y)
 	#define _simd_s64x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s64x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cmpne_enabled() true
@@ -733,7 +733,7 @@
 #endif
 
 #ifndef _simd_s64x1_cmpne_safe
-	#define _simd_s64x1_cmpne_safe(X,Y) static_cast<s64x1>(X != Y)
+	#define _simd_s64x1_cmpne_safe(X,Y) static_cast<_simd_s64x1>(X != Y)
 	#define _simd_s64x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s64x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cmpne_enabled() true
@@ -773,7 +773,7 @@
 #endif
 
 #ifndef _simd_s64x1_cmpne_safe
-	#define _simd_s64x1_cmpne_safe(X,Y) static_cast<s64x1>(X != Y)
+	#define _simd_s64x1_cmpne_safe(X,Y) static_cast<_simd_s64x1>(X != Y)
 	#define _simd_s64x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s64x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cmpne_enabled() true
@@ -803,7 +803,7 @@
 #endif
 
 #ifndef _simd_s64x1_cmpne_safe
-	#define _simd_s64x1_cmpne_safe(X,Y) static_cast<s64x1>(X != Y)
+	#define _simd_s64x1_cmpne_safe(X,Y) static_cast<_simd_s64x1>(X != Y)
 	#define _simd_s64x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s64x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cmpne_enabled() true
@@ -823,7 +823,7 @@
 #endif
 
 #ifndef _simd_u64x1_cmpne_safe
-	#define _simd_u64x1_cmpne_safe(X,Y) static_cast<u64x1>(X != Y)
+	#define _simd_u64x1_cmpne_safe(X,Y) static_cast<_simd_u64x1>(X != Y)
 	#define _simd_u64x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u64x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cmpne_enabled() true
@@ -893,7 +893,7 @@
 #endif
 
 #ifndef _simd_u64x1_cmpne_safe
-	#define _simd_u64x1_cmpne_safe(X,Y) static_cast<u64x1>(X != Y)
+	#define _simd_u64x1_cmpne_safe(X,Y) static_cast<_simd_u64x1>(X != Y)
 	#define _simd_u64x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u64x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cmpne_enabled() true
@@ -953,7 +953,7 @@
 #endif
 
 #ifndef _simd_u64x1_cmpne_safe
-	#define _simd_u64x1_cmpne_safe(X,Y) static_cast<u64x1>(X != Y)
+	#define _simd_u64x1_cmpne_safe(X,Y) static_cast<_simd_u64x1>(X != Y)
 	#define _simd_u64x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u64x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cmpne_enabled() true
@@ -1003,7 +1003,7 @@
 #endif
 
 #ifndef _simd_u64x1_cmpne_safe
-	#define _simd_u64x1_cmpne_safe(X,Y) static_cast<u64x1>(X != Y)
+	#define _simd_u64x1_cmpne_safe(X,Y) static_cast<_simd_u64x1>(X != Y)
 	#define _simd_u64x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u64x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cmpne_enabled() true
@@ -1043,7 +1043,7 @@
 #endif
 
 #ifndef _simd_u64x1_cmpne_safe
-	#define _simd_u64x1_cmpne_safe(X,Y) static_cast<u64x1>(X != Y)
+	#define _simd_u64x1_cmpne_safe(X,Y) static_cast<_simd_u64x1>(X != Y)
 	#define _simd_u64x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u64x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cmpne_enabled() true
@@ -1073,7 +1073,7 @@
 #endif
 
 #ifndef _simd_u64x1_cmpne_safe
-	#define _simd_u64x1_cmpne_safe(X,Y) static_cast<u64x1>(X != Y)
+	#define _simd_u64x1_cmpne_safe(X,Y) static_cast<_simd_u64x1>(X != Y)
 	#define _simd_u64x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u64x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cmpne_enabled() true
@@ -1093,7 +1093,7 @@
 #endif
 
 #ifndef _simd_s32x1_cmpne_safe
-	#define _simd_s32x1_cmpne_safe(X,Y) static_cast<s32x1>(X != Y)
+	#define _simd_s32x1_cmpne_safe(X,Y) static_cast<_simd_s32x1>(X != Y)
 	#define _simd_s32x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s32x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cmpne_enabled() true
@@ -1163,7 +1163,7 @@
 #endif
 
 #ifndef _simd_s32x1_cmpne_safe
-	#define _simd_s32x1_cmpne_safe(X,Y) static_cast<s32x1>(X != Y)
+	#define _simd_s32x1_cmpne_safe(X,Y) static_cast<_simd_s32x1>(X != Y)
 	#define _simd_s32x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s32x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cmpne_enabled() true
@@ -1223,7 +1223,7 @@
 #endif
 
 #ifndef _simd_s32x1_cmpne_safe
-	#define _simd_s32x1_cmpne_safe(X,Y) static_cast<s32x1>(X != Y)
+	#define _simd_s32x1_cmpne_safe(X,Y) static_cast<_simd_s32x1>(X != Y)
 	#define _simd_s32x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s32x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cmpne_enabled() true
@@ -1273,7 +1273,7 @@
 #endif
 
 #ifndef _simd_s32x1_cmpne_safe
-	#define _simd_s32x1_cmpne_safe(X,Y) static_cast<s32x1>(X != Y)
+	#define _simd_s32x1_cmpne_safe(X,Y) static_cast<_simd_s32x1>(X != Y)
 	#define _simd_s32x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s32x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cmpne_enabled() true
@@ -1313,7 +1313,7 @@
 #endif
 
 #ifndef _simd_s32x1_cmpne_safe
-	#define _simd_s32x1_cmpne_safe(X,Y) static_cast<s32x1>(X != Y)
+	#define _simd_s32x1_cmpne_safe(X,Y) static_cast<_simd_s32x1>(X != Y)
 	#define _simd_s32x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s32x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cmpne_enabled() true
@@ -1343,7 +1343,7 @@
 #endif
 
 #ifndef _simd_s32x1_cmpne_safe
-	#define _simd_s32x1_cmpne_safe(X,Y) static_cast<s32x1>(X != Y)
+	#define _simd_s32x1_cmpne_safe(X,Y) static_cast<_simd_s32x1>(X != Y)
 	#define _simd_s32x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s32x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cmpne_enabled() true
@@ -1363,7 +1363,7 @@
 #endif
 
 #ifndef _simd_u32x1_cmpne_safe
-	#define _simd_u32x1_cmpne_safe(X,Y) static_cast<u32x1>(X != Y)
+	#define _simd_u32x1_cmpne_safe(X,Y) static_cast<_simd_u32x1>(X != Y)
 	#define _simd_u32x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u32x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cmpne_enabled() true
@@ -1433,7 +1433,7 @@
 #endif
 
 #ifndef _simd_u32x1_cmpne_safe
-	#define _simd_u32x1_cmpne_safe(X,Y) static_cast<u32x1>(X != Y)
+	#define _simd_u32x1_cmpne_safe(X,Y) static_cast<_simd_u32x1>(X != Y)
 	#define _simd_u32x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u32x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cmpne_enabled() true
@@ -1493,7 +1493,7 @@
 #endif
 
 #ifndef _simd_u32x1_cmpne_safe
-	#define _simd_u32x1_cmpne_safe(X,Y) static_cast<u32x1>(X != Y)
+	#define _simd_u32x1_cmpne_safe(X,Y) static_cast<_simd_u32x1>(X != Y)
 	#define _simd_u32x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u32x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cmpne_enabled() true
@@ -1543,7 +1543,7 @@
 #endif
 
 #ifndef _simd_u32x1_cmpne_safe
-	#define _simd_u32x1_cmpne_safe(X,Y) static_cast<u32x1>(X != Y)
+	#define _simd_u32x1_cmpne_safe(X,Y) static_cast<_simd_u32x1>(X != Y)
 	#define _simd_u32x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u32x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cmpne_enabled() true
@@ -1583,7 +1583,7 @@
 #endif
 
 #ifndef _simd_u32x1_cmpne_safe
-	#define _simd_u32x1_cmpne_safe(X,Y) static_cast<u32x1>(X != Y)
+	#define _simd_u32x1_cmpne_safe(X,Y) static_cast<_simd_u32x1>(X != Y)
 	#define _simd_u32x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u32x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cmpne_enabled() true
@@ -1613,7 +1613,7 @@
 #endif
 
 #ifndef _simd_u32x1_cmpne_safe
-	#define _simd_u32x1_cmpne_safe(X,Y) static_cast<u32x1>(X != Y)
+	#define _simd_u32x1_cmpne_safe(X,Y) static_cast<_simd_u32x1>(X != Y)
 	#define _simd_u32x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u32x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cmpne_enabled() true
@@ -1633,7 +1633,7 @@
 #endif
 
 #ifndef _simd_s16x1_cmpne_safe
-	#define _simd_s16x1_cmpne_safe(X,Y) static_cast<s16x1>(X != Y)
+	#define _simd_s16x1_cmpne_safe(X,Y) static_cast<_simd_s16x1>(X != Y)
 	#define _simd_s16x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s16x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cmpne_enabled() true
@@ -1703,7 +1703,7 @@
 #endif
 
 #ifndef _simd_s16x1_cmpne_safe
-	#define _simd_s16x1_cmpne_safe(X,Y) static_cast<s16x1>(X != Y)
+	#define _simd_s16x1_cmpne_safe(X,Y) static_cast<_simd_s16x1>(X != Y)
 	#define _simd_s16x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s16x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cmpne_enabled() true
@@ -1763,7 +1763,7 @@
 #endif
 
 #ifndef _simd_s16x1_cmpne_safe
-	#define _simd_s16x1_cmpne_safe(X,Y) static_cast<s16x1>(X != Y)
+	#define _simd_s16x1_cmpne_safe(X,Y) static_cast<_simd_s16x1>(X != Y)
 	#define _simd_s16x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s16x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cmpne_enabled() true
@@ -1813,7 +1813,7 @@
 #endif
 
 #ifndef _simd_s16x1_cmpne_safe
-	#define _simd_s16x1_cmpne_safe(X,Y) static_cast<s16x1>(X != Y)
+	#define _simd_s16x1_cmpne_safe(X,Y) static_cast<_simd_s16x1>(X != Y)
 	#define _simd_s16x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s16x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cmpne_enabled() true
@@ -1853,7 +1853,7 @@
 #endif
 
 #ifndef _simd_s16x1_cmpne_safe
-	#define _simd_s16x1_cmpne_safe(X,Y) static_cast<s16x1>(X != Y)
+	#define _simd_s16x1_cmpne_safe(X,Y) static_cast<_simd_s16x1>(X != Y)
 	#define _simd_s16x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s16x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cmpne_enabled() true
@@ -1883,7 +1883,7 @@
 #endif
 
 #ifndef _simd_s16x1_cmpne_safe
-	#define _simd_s16x1_cmpne_safe(X,Y) static_cast<s16x1>(X != Y)
+	#define _simd_s16x1_cmpne_safe(X,Y) static_cast<_simd_s16x1>(X != Y)
 	#define _simd_s16x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s16x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cmpne_enabled() true
@@ -1903,7 +1903,7 @@
 #endif
 
 #ifndef _simd_u16x1_cmpne_safe
-	#define _simd_u16x1_cmpne_safe(X,Y) static_cast<u16x1>(X != Y)
+	#define _simd_u16x1_cmpne_safe(X,Y) static_cast<_simd_u16x1>(X != Y)
 	#define _simd_u16x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u16x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cmpne_enabled() true
@@ -1973,7 +1973,7 @@
 #endif
 
 #ifndef _simd_u16x1_cmpne_safe
-	#define _simd_u16x1_cmpne_safe(X,Y) static_cast<u16x1>(X != Y)
+	#define _simd_u16x1_cmpne_safe(X,Y) static_cast<_simd_u16x1>(X != Y)
 	#define _simd_u16x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u16x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cmpne_enabled() true
@@ -2033,7 +2033,7 @@
 #endif
 
 #ifndef _simd_u16x1_cmpne_safe
-	#define _simd_u16x1_cmpne_safe(X,Y) static_cast<u16x1>(X != Y)
+	#define _simd_u16x1_cmpne_safe(X,Y) static_cast<_simd_u16x1>(X != Y)
 	#define _simd_u16x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u16x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cmpne_enabled() true
@@ -2083,7 +2083,7 @@
 #endif
 
 #ifndef _simd_u16x1_cmpne_safe
-	#define _simd_u16x1_cmpne_safe(X,Y) static_cast<u16x1>(X != Y)
+	#define _simd_u16x1_cmpne_safe(X,Y) static_cast<_simd_u16x1>(X != Y)
 	#define _simd_u16x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u16x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cmpne_enabled() true
@@ -2123,7 +2123,7 @@
 #endif
 
 #ifndef _simd_u16x1_cmpne_safe
-	#define _simd_u16x1_cmpne_safe(X,Y) static_cast<u16x1>(X != Y)
+	#define _simd_u16x1_cmpne_safe(X,Y) static_cast<_simd_u16x1>(X != Y)
 	#define _simd_u16x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u16x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cmpne_enabled() true
@@ -2153,7 +2153,7 @@
 #endif
 
 #ifndef _simd_u16x1_cmpne_safe
-	#define _simd_u16x1_cmpne_safe(X,Y) static_cast<u16x1>(X != Y)
+	#define _simd_u16x1_cmpne_safe(X,Y) static_cast<_simd_u16x1>(X != Y)
 	#define _simd_u16x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u16x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cmpne_enabled() true
@@ -2173,7 +2173,7 @@
 #endif
 
 #ifndef _simd_s8x1_cmpne_safe
-	#define _simd_s8x1_cmpne_safe(X,Y) static_cast<s8x1>(X != Y)
+	#define _simd_s8x1_cmpne_safe(X,Y) static_cast<_simd_s8x1>(X != Y)
 	#define _simd_s8x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s8x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cmpne_enabled() true
@@ -2243,7 +2243,7 @@
 #endif
 
 #ifndef _simd_s8x1_cmpne_safe
-	#define _simd_s8x1_cmpne_safe(X,Y) static_cast<s8x1>(X != Y)
+	#define _simd_s8x1_cmpne_safe(X,Y) static_cast<_simd_s8x1>(X != Y)
 	#define _simd_s8x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s8x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cmpne_enabled() true
@@ -2303,7 +2303,7 @@
 #endif
 
 #ifndef _simd_s8x1_cmpne_safe
-	#define _simd_s8x1_cmpne_safe(X,Y) static_cast<s8x1>(X != Y)
+	#define _simd_s8x1_cmpne_safe(X,Y) static_cast<_simd_s8x1>(X != Y)
 	#define _simd_s8x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s8x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cmpne_enabled() true
@@ -2353,7 +2353,7 @@
 #endif
 
 #ifndef _simd_s8x1_cmpne_safe
-	#define _simd_s8x1_cmpne_safe(X,Y) static_cast<s8x1>(X != Y)
+	#define _simd_s8x1_cmpne_safe(X,Y) static_cast<_simd_s8x1>(X != Y)
 	#define _simd_s8x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s8x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cmpne_enabled() true
@@ -2393,7 +2393,7 @@
 #endif
 
 #ifndef _simd_s8x1_cmpne_safe
-	#define _simd_s8x1_cmpne_safe(X,Y) static_cast<s8x1>(X != Y)
+	#define _simd_s8x1_cmpne_safe(X,Y) static_cast<_simd_s8x1>(X != Y)
 	#define _simd_s8x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s8x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cmpne_enabled() true
@@ -2423,7 +2423,7 @@
 #endif
 
 #ifndef _simd_s8x1_cmpne_safe
-	#define _simd_s8x1_cmpne_safe(X,Y) static_cast<s8x1>(X != Y)
+	#define _simd_s8x1_cmpne_safe(X,Y) static_cast<_simd_s8x1>(X != Y)
 	#define _simd_s8x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_s8x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cmpne_enabled() true
@@ -2443,7 +2443,7 @@
 #endif
 
 #ifndef _simd_u8x1_cmpne_safe
-	#define _simd_u8x1_cmpne_safe(X,Y) static_cast<u8x1>(X != Y)
+	#define _simd_u8x1_cmpne_safe(X,Y) static_cast<_simd_u8x1>(X != Y)
 	#define _simd_u8x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u8x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cmpne_enabled() true
@@ -2513,7 +2513,7 @@
 #endif
 
 #ifndef _simd_u8x1_cmpne_safe
-	#define _simd_u8x1_cmpne_safe(X,Y) static_cast<u8x1>(X != Y)
+	#define _simd_u8x1_cmpne_safe(X,Y) static_cast<_simd_u8x1>(X != Y)
 	#define _simd_u8x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u8x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cmpne_enabled() true
@@ -2573,7 +2573,7 @@
 #endif
 
 #ifndef _simd_u8x1_cmpne_safe
-	#define _simd_u8x1_cmpne_safe(X,Y) static_cast<u8x1>(X != Y)
+	#define _simd_u8x1_cmpne_safe(X,Y) static_cast<_simd_u8x1>(X != Y)
 	#define _simd_u8x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u8x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cmpne_enabled() true
@@ -2623,7 +2623,7 @@
 #endif
 
 #ifndef _simd_u8x1_cmpne_safe
-	#define _simd_u8x1_cmpne_safe(X,Y) static_cast<u8x1>(X != Y)
+	#define _simd_u8x1_cmpne_safe(X,Y) static_cast<_simd_u8x1>(X != Y)
 	#define _simd_u8x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u8x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cmpne_enabled() true
@@ -2663,7 +2663,7 @@
 #endif
 
 #ifndef _simd_u8x1_cmpne_safe
-	#define _simd_u8x1_cmpne_safe(X,Y) static_cast<u8x1>(X != Y)
+	#define _simd_u8x1_cmpne_safe(X,Y) static_cast<_simd_u8x1>(X != Y)
 	#define _simd_u8x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u8x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cmpne_enabled() true
@@ -2693,7 +2693,7 @@
 #endif
 
 #ifndef _simd_u8x1_cmpne_safe
-	#define _simd_u8x1_cmpne_safe(X,Y) static_cast<u8x1>(X != Y)
+	#define _simd_u8x1_cmpne_safe(X,Y) static_cast<_simd_u8x1>(X != Y)
 	#define _simd_u8x1_cmpne_(X,Y) x1_cmpne_safe(X,Y)
 	#define _simd_u8x1_cmpne_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cmpne_enabled() true
