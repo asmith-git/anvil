@@ -1771,25 +1771,58 @@ namespace anvil { namespace simd {
 	enum InstructionSet : int16_t {
 		IS_NONE,
 #ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
-		IS_MMX        = 1 << 0,
-		IS_SSE        = 1 << 1,
-		IS_SSE_2      = 1 << 2,
-		IS_SSE_3      = 1 << 3,
-		IS_SSSE_3     = 1 << 4,
-		IS_SSE_4_1    = 1 << 5,
-		IS_SSE_4_2    = 1 << 6,
-		IS_AVX        = 1 << 7,
-		IS_FMA        = 1 << 8,
-		IS_AVX_2      = 1 << 9,
-		IS_KNC        = 1 << 10,
-		IS_AVX_512_F  = 1 << 11,
-		IS_AVX_512_PF = 1 << 12,
-		IS_AVX_512_ER = 1 << 13,
-		IS_AVX_512_CD = 1 << 14,
+#define ANVIL_SIMD_MMX        (1 << 0)
+#define ANVIL_SIMD_SSE        (1 << 1)
+#define ANVIL_SIMD_SSE_2      (1 << 2)
+#define ANVIL_SIMD_SSE_3      (1 << 3)
+#define ANVIL_SIMD_SSSE_3     (1 << 4)
+#define ANVIL_SIMD_SSE_4_1    (1 << 5)
+#define ANVIL_SIMD_SSE_4_2    (1 << 6)
+#define ANVIL_SIMD_AVX        (1 << 7)
+#define ANVIL_SIMD_FMA        (1 << 8)
+#define ANVIL_SIMD_AVX_2      (1 << 9)
+#define ANVIL_SIMD_KNC        (1 << 10)
+#define ANVIL_SIMD_AVX_512_F  (1 << 11)
+#define ANVIL_SIMD_AVX_512_PF (1 << 12)
+#define ANVIL_SIMD_AVX_512_ER (1 << 13)
+#define ANVIL_SIMD_AVX_512_CD (1 << 14)
+
+		IS_MMX        = ANVIL_SIMD_MMX,
+		IS_SSE        = ANVIL_SIMD_SSE,      
+		IS_SSE_2      = ANVIL_SIMD_SSE_2,    
+		IS_SSE_3      = ANVIL_SIMD_SSE_3,   
+		IS_SSSE_3     = ANVIL_SIMD_SSSE_3,   
+		IS_SSE_4_1    = ANVIL_SIMD_SSE_4_1,   
+		IS_SSE_4_2    = ANVIL_SIMD_SSE_4_2,   
+		IS_AVX        = ANVIL_SIMD_AVX,       
+		IS_FMA        = ANVIL_SIMD_FMA,      
+		IS_AVX_2      = ANVIL_SIMD_AVX_2,     
+		IS_KNC        = ANVIL_SIMD_KNC,       
+		IS_AVX_512_F  = ANVIL_SIMD_AVX_512_F, 
+		IS_AVX_512_PF = ANVIL_SIMD_AVX_512_PF,
+		IS_AVX_512_ER = ANVIL_SIMD_AVX_512_ER,
+		IS_AVX_512_CD = ANVIL_SIMD_AVX_512_CD,
 
 		IS_AVX_512    = IS_AVX_512_F | IS_AVX_512_PF | IS_AVX_512_ER | IS_AVX_512_CD
 #endif
 	};
+
+#if ANVIL_ARCHITECTURE == ANVIL_X86
+	#ifndef ANVIL_ASSUME_SIMD_SUPPORT
+		#define ANVIL_ASSUME_SIMD_SUPPORT ANVIL_SIMD__MMX
+	#elif ANVIL_ASSUME_SIMD_SUPPORT < ANVIL_SIMD_MMX
+		#undef ANVIL_ASSUME_SIMD_SUPPORT
+		#define ANVIL_ASSUME_SIMD_SUPPORT ANVIL_SIMD_MMX
+	#endif
+#elif ANVIL_ARCHITECTURE == ANVIL_X64
+	#ifndef ANVIL_ASSUME_SIMD_SUPPORT
+		#define ANVIL_ASSUME_SIMD_SUPPORT ANVIL_SIMD_SSE_2
+	#elif ANVIL_ASSUME_SIMD_SUPPORT < ANVIL_SIMD_SSE_2
+		#undef ANVIL_ASSUME_SIMD_SUPPORT
+		#define ANVIL_ASSUME_SIMD_SUPPORT ANVIL_SIMD_SSE_2
+	#endif
+#endif
+
 	namespace detail {
 	static int16_t ANVIL_SIMD_CALL CheckInstructionSetSupport() {
 		int16_t flags = 0;
@@ -1865,29 +1898,98 @@ namespace anvil { namespace simd {
 		return true;
 	}
 
-#if ANVIL_ARCHITECTURE == ANVIL_X86
+//#ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
+	#if ANVIL_ASSUME_SIMD_SUPPORT >= ANVIL_SIMD_MMX
 	template<>
 	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_MMX>() {
 		return true;
 	}
-#endif
-
-#if ANVIL_ARCHITECTURE == ANVIL_X64
-	template<>
-	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_MMX>() {
-		return false;
-	}
-
+	#endif
+	#if ANVIL_ASSUME_SIMD_SUPPORT >= ANVIL_SIMD_SSE
 	template<>
 	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_SSE>() {
 		return true;
 	}
-
+	#endif
+	#if ANVIL_ASSUME_SIMD_SUPPORT >= ANVIL_SIMD_SSE_2
 	template<>
 	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_SSE_2>() {
 		return true;
 	}
-#endif
+	#endif
+	#if ANVIL_ASSUME_SIMD_SUPPORT >= ANVIL_SIMD_SSE_3
+	template<>
+	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_SSE_3>() {
+		return true;
+	}
+	#endif
+	#if ANVIL_ASSUME_SIMD_SUPPORT >= ANVIL_SIMD_SSSE_3
+	template<>
+	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_SSSE_3>() {
+		return true;
+	}
+	#endif
+	#if ANVIL_ASSUME_SIMD_SUPPORT >= ANVIL_SIMD_SSE_4_1
+	template<>
+	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_SSE_4_1>() {
+		return true;
+	}
+	#endif
+	#if ANVIL_ASSUME_SIMD_SUPPORT >= ANVIL_SIMD_SSE_4_2
+	template<>
+	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_SSE_4_2>() {
+		return true;
+	}
+	#endif
+	#if ANVIL_ASSUME_SIMD_SUPPORT >= ANVIL_SIMD_AVX
+	template<>
+	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_AVX>() {
+		return true;
+	}
+	#endif
+	#if ANVIL_ASSUME_SIMD_SUPPORT >= ANVIL_SIMD_FMA
+	template<>
+	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_FMA>() {
+		return true;
+	}
+	#endif
+	#if ANVIL_ASSUME_SIMD_SUPPORT >= ANVIL_SIMD_AVX_2
+	template<>
+	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_AVX_2>() {
+		return true;
+	}
+	#endif
+//	#if ANVIL_ASSUME_SIMD_SUPPORT >= ANVIL_SIMD_KNC
+//	template<>
+//	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_KNC>() {
+//		return true;
+//	}
+//	#endif
+	#if ANVIL_ASSUME_SIMD_SUPPORT >= ANVIL_SIMD_AVX_512_F
+	template<>
+	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_AVX_512_F>() {
+		return true;
+	}
+	#endif
+	#if ANVIL_ASSUME_SIMD_SUPPORT >= ANVIL_SIMD_AVX_512_PF
+	template<>
+	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_AVX_512_PF>() {
+		return true;
+	}
+	#endif
+	#if ANVIL_ASSUME_SIMD_SUPPORT >= ANVIL_SIMD_AVX_512_ER
+	template<>
+	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_AVX_512_ER>() {
+		return true;
+	}
+	#endif
+	#if ANVIL_ASSUME_SIMD_SUPPORT >= ANVIL_SIMD_AVX_512_CD
+	template<>
+	ANVIL_CONSTEXPR_FN static ANVIL_STRONG_INLINE bool IsInstructionSetSupported<IS_AVX_512_CD>() {
+		return true;
+	}
+	#endif
+//#endif
 
 	// Operation definitions
 
