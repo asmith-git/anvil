@@ -812,28 +812,28 @@
 #define _simd_f32x8_sqrt_(X) _mm256_sqrt_pd(X)
 #define _simd_f32x8_sqrt_instruction_set anvil::simd::IS_AVX 
 
-#define _simd_f64x2_fma_(X) _mm_fmadd_pd(X)
+#define _simd_f64x2_fma_(X,Y,Z) _mm_fmadd_pd(X,Y,Z)
 #define _simd_f64x2_fma_instruction_set anvil::simd::IS_FMA
 
-#define _simd_f64x4_fma_(X) _mm256_fmadd_pd(X)
+#define _simd_f64x4_fma_(X,Y,Z) _mm256_fmadd_pd(X,Y,Z)
 #define _simd_f64x4_fma_instruction_set anvil::simd::IS_FMA
 
-#define _simd_f32x4_fma_(X) _mm_fmadd_ps(X)
+#define _simd_f32x4_fma_(X,Y,Z) _mm_fmadd_ps(X,Y,Z)
 #define _simd_f32x4_fma_instruction_set anvil::simd::IS_FMA
 
-#define _simd_f32x8_fma_(X) _mm256_fmadd_ps(X)
+#define _simd_f32x8_fma_(X,Y,Z) _mm256_fmadd_ps(X,Y,Z)
 #define _simd_f32x8_fma_instruction_set anvil::simd::IS_FMA
 
-#define _simd_f64x2_fms_(X) _mm_fmsub_pd(X)
+#define _simd_f64x2_fms_(X,Y,Z) _mm_fmsub_pd(X,Y,Z)
 #define _simd_f64x2_fms_instruction_set anvil::simd::IS_FMA
 
-#define _simd_f64x4_fms_(X) _mm256_fmsub_pd(X)
+#define _simd_f64x4_fms_(X,Y,Z) _mm256_fmsub_pd(X),Y,Z
 #define _simd_f64x4_fms_instruction_set anvil::simd::IS_FMA
 
-#define _simd_f32x4_fms_(X) _mm_fmsub_ps(X)
+#define _simd_f32x4_fms_(X,Y,Z) _mm_fmsub_ps(X,Y,Z)
 #define _simd_f32x4_fms_instruction_set anvil::simd::IS_FMA
 
-#define _simd_f32x8_fms_(X) _mm256_fmsub_ps(X)
+#define _simd_f32x8_fms_(X,Y,Z) _mm256_fmsub_ps(X,Y,Z)
 #define _simd_f32x8_fms_instruction_set anvil::simd::IS_FMA
 
 #endif
@@ -1712,6 +1712,10 @@ _simd_extract(u8)
 #include "anvil/maths/simd/ceil.hpp"
 #include "anvil/maths/simd/floor.hpp"
 #include "anvil/maths/simd/round.hpp"
+
+// Fma, Fms
+#include "anvil/maths/simd/fma.hpp"
+#include "anvil/maths/simd/fms.hpp"
 
 // Misc
 #include "anvil/maths/simd/sum.hpp"
