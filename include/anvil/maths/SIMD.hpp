@@ -1704,8 +1704,9 @@ _simd_extract(u8)
 #include "anvil/maths/simd/cmple.hpp"
 #include "anvil/maths/simd/cmpge.hpp"
 
-// Abs
+// Abs, Sqrt
 #include "anvil/maths/simd/abs.hpp"
+#include "anvil/maths/simd/sqrt.hpp"
 
 // Misc
 #include "anvil/maths/simd/sum.hpp"
