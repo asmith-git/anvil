@@ -65,6 +65,48 @@
 #define _simd_u8x16 __m128i
 #define _simd_u8x32 __m256i
 
+#define _simd_f64x2_load_(X) _mm_load_pd(X)
+#define _simdf64x2_load_instruction_set anvil::simd::IS_SSE
+
+#define _simd_f64x4_load_(X) _mm256_load_pd(X)
+#define _simd_f64x4_load_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_load_(X) _mm_load_ps(X)
+#define _simd_f32x4_load_instruction_set anvil::simd::IS_SSE
+
+#define _simd_f32x8_load_(X) _mm256_load_ps(X)
+#define _simd_f32x8_load_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s32x4_load_(X) _mm_load_si1282(reinterpret_cast<const __m128i*>(X))
+#define _simd_s32x4_load_instruction_set anvil::simd::IS_SSE
+
+#define _simd_s32x8_load_(X) _mm256_load_si256(reinterpret_cast<const __m256i*>(X))
+#define _simd_s32x8_load_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s16x8_load_(X) _mm_load_si128(reinterpret_cast<const __m128i*>(X))
+#define _simd_s16x8_load_instruction_set anvil::simd::IS_SSE
+
+#define _simd_s16x16_load_(X) _mm256_load_si256(reinterpret_cast<const __m256i*>(X))
+#define _simd_s16x16_load_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s8x16_load_(X) _mm_load_si128(reinterpret_cast<const __m128i*>(X))
+#define _simd_s8x16_load_instruction_set anvil::simd::IS_SSE
+
+#define _simd_s8x32_load_(X) _mm256_load_si256(reinterpret_cast<const __m256i*>(X))
+#define _simd_s8x32_load_instruction_set anvil::simd::IS_AVX
+
+#define _simd_u16x8_load_(X) _mm_load_si128(reinterpret_cast<const __m128i*>(X))
+#define _simd_u16x8_load_instruction_set anvil::simd::IS_SSE
+
+#define _simd_u16x16_load_(X) _mm256_load_esi256(reinterpret_cast<const __m256i*>(X))
+#define _simd_u16x16_load_instruction_set anvil::simd::IS_AVX
+
+#define _simd_u8x16_load_(X) _mm_load_si128(reinterpret_cast<const __m128i*>(X))
+#define _simd_u8x16_load_instruction_set anvil::simd::IS_SSE
+
+#define _simd_u8x32_load_(X) _mm256_load_si256(reinterpret_cast<const __m256i*>(X))
+#define _simd_u8x32_load_instruction_set anvil::simd::IS_AVX
+
 #define _simd_f64x2_add_(X,Y) _mm_add_pd(X,Y)
 #define _simdf64x2_add_instruction_set anvil::simd::IS_SSE_2
 
@@ -1719,6 +1761,8 @@ _simd_extract(u8)
 
 // Misc
 #include "anvil/maths/simd/sum.hpp"
+#include "anvil/maths/simd/mod.hpp"
+#include "anvil/maths/simd/dim.hpp"
 
 namespace anvil { namespace simd {
 
