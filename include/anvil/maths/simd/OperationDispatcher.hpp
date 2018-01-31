@@ -13,6 +13,86 @@
 //limitations under the License.
 
 template<size_t S>
+struct OperationDispatcher<_simd_f64x1, S, OP_FILL0> {
+	typedef _simd_f64x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+		if (false) {
+#ifdef _simd_f64x64_fill_zero_
+		} else if (S >= 64 && _simd_f64x64_fill_zero_enable()) {
+			typedef _simd_f64x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x64_fill_zero_();
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_f64x32_fill_zero_
+		} else if (S >= 32 && _simd_f64x32_fill_zero_enable()) {
+			typedef _simd_f64x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x32_fill_zero_();
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_f64x16_fill_zero_
+		} else if (S >= 16 && _simd_f64x16_fill_zero_enable()) {
+			typedef _simd_f64x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x16_fill_zero_();
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_f64x8_fill_zero_
+		} else if (S >= 8 && _simd_f64x8_fill_zero_enable()) {
+			typedef _simd_f64x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x8_fill_zero_();
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_f64x4_fill_zero_
+		} else if (S >= 4 && _simd_f64x4_fill_zero_enable()) {
+			typedef _simd_f64x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x4_fill_zero_();
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_f64x2_fill_zero_
+		} else if (S >= 2 && _simd_f64x2_fill_zero_enable()) {
+			typedef _simd_f64x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f64x2_fill_zero_();
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_f64x1, S, OP_FILLU> {
+	typedef _simd_f64x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+	}
+};
+
+template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_FMA> {
 	typedef _simd_f64x1 scalar_t;
 
@@ -101,6 +181,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_FMA> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_FMS> {
 	typedef _simd_f64x1 scalar_t;
@@ -190,6 +271,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_FMS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_ADD> {
 	typedef _simd_f64x1 scalar_t;
@@ -273,6 +355,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_ADD> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_SUB> {
 	typedef _simd_f64x1 scalar_t;
@@ -356,6 +439,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_SUB> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_MUL> {
 	typedef _simd_f64x1 scalar_t;
@@ -439,6 +523,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_MUL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_DIV> {
 	typedef _simd_f64x1 scalar_t;
@@ -522,6 +607,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_DIV> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_MIN> {
 	typedef _simd_f64x1 scalar_t;
@@ -605,6 +691,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_MIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_MAX> {
 	typedef _simd_f64x1 scalar_t;
@@ -688,6 +775,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_MAX> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_CMPEQ> {
 	typedef _simd_f64x1 scalar_t;
@@ -771,6 +859,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_CMPEQ> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_CMPNE> {
 	typedef _simd_f64x1 scalar_t;
@@ -854,6 +943,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_CMPNE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_CMPLT> {
 	typedef _simd_f64x1 scalar_t;
@@ -937,6 +1027,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_CMPLT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_CMPGT> {
 	typedef _simd_f64x1 scalar_t;
@@ -1020,6 +1111,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_CMPGT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_CMPLE> {
 	typedef _simd_f64x1 scalar_t;
@@ -1103,6 +1195,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_CMPLE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_CMPGE> {
 	typedef _simd_f64x1 scalar_t;
@@ -1186,6 +1279,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_CMPGE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_AND> {
 	typedef _simd_f64x1 scalar_t;
@@ -1269,6 +1363,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_AND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_OR> {
 	typedef _simd_f64x1 scalar_t;
@@ -1352,6 +1447,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_OR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_XOR> {
 	typedef _simd_f64x1 scalar_t;
@@ -1435,6 +1531,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_XOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_LSHIFT> {
 	typedef _simd_f64x1 scalar_t;
@@ -1518,6 +1615,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_LSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_RSHIFT> {
 	typedef _simd_f64x1 scalar_t;
@@ -1601,6 +1699,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_RSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_ATAN2> {
 	typedef _simd_f64x1 scalar_t;
@@ -1684,6 +1783,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_ATAN2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_REFLECT> {
 	typedef _simd_f64x1 scalar_t;
@@ -1761,6 +1861,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_REFLECT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_NOT> {
 	typedef _simd_f64x1 scalar_t;
@@ -1838,6 +1939,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_NOT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_ABS> {
 	typedef _simd_f64x1 scalar_t;
@@ -1915,6 +2017,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_ABS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_EXP> {
 	typedef _simd_f64x1 scalar_t;
@@ -1992,6 +2095,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_EXP> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_LOG> {
 	typedef _simd_f64x1 scalar_t;
@@ -2069,6 +2173,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_LOG> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_LOG2> {
 	typedef _simd_f64x1 scalar_t;
@@ -2146,6 +2251,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_LOG2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_LOG10> {
 	typedef _simd_f64x1 scalar_t;
@@ -2223,6 +2329,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_LOG10> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_CEIL> {
 	typedef _simd_f64x1 scalar_t;
@@ -2300,6 +2407,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_CEIL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_FLOOR> {
 	typedef _simd_f64x1 scalar_t;
@@ -2377,6 +2485,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_FLOOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_ROUND> {
 	typedef _simd_f64x1 scalar_t;
@@ -2454,6 +2563,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_ROUND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_SIN> {
 	typedef _simd_f64x1 scalar_t;
@@ -2531,6 +2641,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_SIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_COS> {
 	typedef _simd_f64x1 scalar_t;
@@ -2608,6 +2719,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_COS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_TAN> {
 	typedef _simd_f64x1 scalar_t;
@@ -2685,6 +2797,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_TAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_ASIN> {
 	typedef _simd_f64x1 scalar_t;
@@ -2762,6 +2875,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_ASIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_ACOS> {
 	typedef _simd_f64x1 scalar_t;
@@ -2839,6 +2953,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_ACOS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_ATAN> {
 	typedef _simd_f64x1 scalar_t;
@@ -2916,6 +3031,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_ATAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_SINH> {
 	typedef _simd_f64x1 scalar_t;
@@ -2993,6 +3109,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_SINH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_COSH> {
 	typedef _simd_f64x1 scalar_t;
@@ -3070,6 +3187,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_COSH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_TANH> {
 	typedef _simd_f64x1 scalar_t;
@@ -3147,6 +3265,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_TANH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_SQRT> {
 	typedef _simd_f64x1 scalar_t;
@@ -3224,6 +3343,7 @@ struct OperationDispatcher<_simd_f64x1, S, OP_SQRT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S, OP_CBRT> {
 	typedef _simd_f64x1 scalar_t;
@@ -3301,6 +3421,87 @@ struct OperationDispatcher<_simd_f64x1, S, OP_CBRT> {
 		}
 	}
 };
+
+template<size_t S>
+struct OperationDispatcher<_simd_f32x1, S, OP_FILL0> {
+	typedef _simd_f32x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+		if (false) {
+#ifdef _simd_f32x64_fill_zero_
+		} else if (S >= 64 && _simd_f32x64_fill_zero_enable()) {
+			typedef _simd_f32x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x64_fill_zero_();
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_f32x32_fill_zero_
+		} else if (S >= 32 && _simd_f32x32_fill_zero_enable()) {
+			typedef _simd_f32x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x32_fill_zero_();
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_f32x16_fill_zero_
+		} else if (S >= 16 && _simd_f32x16_fill_zero_enable()) {
+			typedef _simd_f32x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x16_fill_zero_();
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_f32x8_fill_zero_
+		} else if (S >= 8 && _simd_f32x8_fill_zero_enable()) {
+			typedef _simd_f32x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x8_fill_zero_();
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_f32x4_fill_zero_
+		} else if (S >= 4 && _simd_f32x4_fill_zero_enable()) {
+			typedef _simd_f32x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x4_fill_zero_();
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_f32x2_fill_zero_
+		} else if (S >= 2 && _simd_f32x2_fill_zero_enable()) {
+			typedef _simd_f32x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_f32x2_fill_zero_();
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_f32x1, S, OP_FILLU> {
+	typedef _simd_f32x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+	}
+};
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_FMA> {
 	typedef _simd_f32x1 scalar_t;
@@ -3390,6 +3591,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_FMA> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_FMS> {
 	typedef _simd_f32x1 scalar_t;
@@ -3479,6 +3681,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_FMS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_ADD> {
 	typedef _simd_f32x1 scalar_t;
@@ -3562,6 +3765,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_ADD> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_SUB> {
 	typedef _simd_f32x1 scalar_t;
@@ -3645,6 +3849,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_SUB> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_MUL> {
 	typedef _simd_f32x1 scalar_t;
@@ -3728,6 +3933,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_MUL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_DIV> {
 	typedef _simd_f32x1 scalar_t;
@@ -3811,6 +4017,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_DIV> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_MIN> {
 	typedef _simd_f32x1 scalar_t;
@@ -3894,6 +4101,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_MIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_MAX> {
 	typedef _simd_f32x1 scalar_t;
@@ -3977,6 +4185,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_MAX> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_CMPEQ> {
 	typedef _simd_f32x1 scalar_t;
@@ -4060,6 +4269,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_CMPEQ> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_CMPNE> {
 	typedef _simd_f32x1 scalar_t;
@@ -4143,6 +4353,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_CMPNE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_CMPLT> {
 	typedef _simd_f32x1 scalar_t;
@@ -4226,6 +4437,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_CMPLT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_CMPGT> {
 	typedef _simd_f32x1 scalar_t;
@@ -4309,6 +4521,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_CMPGT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_CMPLE> {
 	typedef _simd_f32x1 scalar_t;
@@ -4392,6 +4605,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_CMPLE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_CMPGE> {
 	typedef _simd_f32x1 scalar_t;
@@ -4475,6 +4689,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_CMPGE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_AND> {
 	typedef _simd_f32x1 scalar_t;
@@ -4558,6 +4773,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_AND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_OR> {
 	typedef _simd_f32x1 scalar_t;
@@ -4641,6 +4857,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_OR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_XOR> {
 	typedef _simd_f32x1 scalar_t;
@@ -4724,6 +4941,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_XOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_LSHIFT> {
 	typedef _simd_f32x1 scalar_t;
@@ -4807,6 +5025,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_LSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_RSHIFT> {
 	typedef _simd_f32x1 scalar_t;
@@ -4890,6 +5109,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_RSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_ATAN2> {
 	typedef _simd_f32x1 scalar_t;
@@ -4973,6 +5193,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_ATAN2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_REFLECT> {
 	typedef _simd_f32x1 scalar_t;
@@ -5050,6 +5271,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_REFLECT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_NOT> {
 	typedef _simd_f32x1 scalar_t;
@@ -5127,6 +5349,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_NOT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_ABS> {
 	typedef _simd_f32x1 scalar_t;
@@ -5204,6 +5427,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_ABS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_EXP> {
 	typedef _simd_f32x1 scalar_t;
@@ -5281,6 +5505,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_EXP> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_LOG> {
 	typedef _simd_f32x1 scalar_t;
@@ -5358,6 +5583,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_LOG> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_LOG2> {
 	typedef _simd_f32x1 scalar_t;
@@ -5435,6 +5661,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_LOG2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_LOG10> {
 	typedef _simd_f32x1 scalar_t;
@@ -5512,6 +5739,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_LOG10> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_CEIL> {
 	typedef _simd_f32x1 scalar_t;
@@ -5589,6 +5817,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_CEIL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_FLOOR> {
 	typedef _simd_f32x1 scalar_t;
@@ -5666,6 +5895,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_FLOOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_ROUND> {
 	typedef _simd_f32x1 scalar_t;
@@ -5743,6 +5973,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_ROUND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_SIN> {
 	typedef _simd_f32x1 scalar_t;
@@ -5820,6 +6051,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_SIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_COS> {
 	typedef _simd_f32x1 scalar_t;
@@ -5897,6 +6129,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_COS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_TAN> {
 	typedef _simd_f32x1 scalar_t;
@@ -5974,6 +6207,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_TAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_ASIN> {
 	typedef _simd_f32x1 scalar_t;
@@ -6051,6 +6285,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_ASIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_ACOS> {
 	typedef _simd_f32x1 scalar_t;
@@ -6128,6 +6363,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_ACOS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_ATAN> {
 	typedef _simd_f32x1 scalar_t;
@@ -6205,6 +6441,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_ATAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_SINH> {
 	typedef _simd_f32x1 scalar_t;
@@ -6282,6 +6519,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_SINH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_COSH> {
 	typedef _simd_f32x1 scalar_t;
@@ -6359,6 +6597,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_COSH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_TANH> {
 	typedef _simd_f32x1 scalar_t;
@@ -6436,6 +6675,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_TANH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_SQRT> {
 	typedef _simd_f32x1 scalar_t;
@@ -6513,6 +6753,7 @@ struct OperationDispatcher<_simd_f32x1, S, OP_SQRT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S, OP_CBRT> {
 	typedef _simd_f32x1 scalar_t;
@@ -6590,6 +6831,87 @@ struct OperationDispatcher<_simd_f32x1, S, OP_CBRT> {
 		}
 	}
 };
+
+template<size_t S>
+struct OperationDispatcher<_simd_s64x1, S, OP_FILL0> {
+	typedef _simd_s64x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+		if (false) {
+#ifdef _simd_s64x64_fill_zero_
+		} else if (S >= 64 && _simd_s64x64_fill_zero_enable()) {
+			typedef _simd_s64x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x64_fill_zero_();
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s64x32_fill_zero_
+		} else if (S >= 32 && _simd_s64x32_fill_zero_enable()) {
+			typedef _simd_s64x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x32_fill_zero_();
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s64x16_fill_zero_
+		} else if (S >= 16 && _simd_s64x16_fill_zero_enable()) {
+			typedef _simd_s64x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x16_fill_zero_();
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s64x8_fill_zero_
+		} else if (S >= 8 && _simd_s64x8_fill_zero_enable()) {
+			typedef _simd_s64x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x8_fill_zero_();
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s64x4_fill_zero_
+		} else if (S >= 4 && _simd_s64x4_fill_zero_enable()) {
+			typedef _simd_s64x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x4_fill_zero_();
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s64x2_fill_zero_
+		} else if (S >= 2 && _simd_s64x2_fill_zero_enable()) {
+			typedef _simd_s64x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s64x2_fill_zero_();
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_s64x1, S, OP_FILLU> {
+	typedef _simd_s64x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+	}
+};
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_FMA> {
 	typedef _simd_s64x1 scalar_t;
@@ -6679,6 +7001,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_FMA> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_FMS> {
 	typedef _simd_s64x1 scalar_t;
@@ -6768,6 +7091,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_FMS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_ADD> {
 	typedef _simd_s64x1 scalar_t;
@@ -6851,6 +7175,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_ADD> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_SUB> {
 	typedef _simd_s64x1 scalar_t;
@@ -6934,6 +7259,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_SUB> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_MUL> {
 	typedef _simd_s64x1 scalar_t;
@@ -7017,6 +7343,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_MUL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_DIV> {
 	typedef _simd_s64x1 scalar_t;
@@ -7100,6 +7427,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_DIV> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_MIN> {
 	typedef _simd_s64x1 scalar_t;
@@ -7183,6 +7511,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_MIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_MAX> {
 	typedef _simd_s64x1 scalar_t;
@@ -7266,6 +7595,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_MAX> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_CMPEQ> {
 	typedef _simd_s64x1 scalar_t;
@@ -7349,6 +7679,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_CMPEQ> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_CMPNE> {
 	typedef _simd_s64x1 scalar_t;
@@ -7432,6 +7763,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_CMPNE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_CMPLT> {
 	typedef _simd_s64x1 scalar_t;
@@ -7515,6 +7847,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_CMPLT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_CMPGT> {
 	typedef _simd_s64x1 scalar_t;
@@ -7598,6 +7931,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_CMPGT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_CMPLE> {
 	typedef _simd_s64x1 scalar_t;
@@ -7681,6 +8015,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_CMPLE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_CMPGE> {
 	typedef _simd_s64x1 scalar_t;
@@ -7764,6 +8099,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_CMPGE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_AND> {
 	typedef _simd_s64x1 scalar_t;
@@ -7847,6 +8183,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_AND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_OR> {
 	typedef _simd_s64x1 scalar_t;
@@ -7930,6 +8267,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_OR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_XOR> {
 	typedef _simd_s64x1 scalar_t;
@@ -8013,6 +8351,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_XOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_LSHIFT> {
 	typedef _simd_s64x1 scalar_t;
@@ -8096,6 +8435,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_LSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_RSHIFT> {
 	typedef _simd_s64x1 scalar_t;
@@ -8179,6 +8519,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_RSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_ATAN2> {
 	typedef _simd_s64x1 scalar_t;
@@ -8262,6 +8603,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_ATAN2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_REFLECT> {
 	typedef _simd_s64x1 scalar_t;
@@ -8339,6 +8681,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_REFLECT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_NOT> {
 	typedef _simd_s64x1 scalar_t;
@@ -8416,6 +8759,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_NOT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_ABS> {
 	typedef _simd_s64x1 scalar_t;
@@ -8493,6 +8837,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_ABS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_EXP> {
 	typedef _simd_s64x1 scalar_t;
@@ -8570,6 +8915,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_EXP> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_LOG> {
 	typedef _simd_s64x1 scalar_t;
@@ -8647,6 +8993,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_LOG> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_LOG2> {
 	typedef _simd_s64x1 scalar_t;
@@ -8724,6 +9071,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_LOG2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_LOG10> {
 	typedef _simd_s64x1 scalar_t;
@@ -8801,6 +9149,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_LOG10> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_CEIL> {
 	typedef _simd_s64x1 scalar_t;
@@ -8878,6 +9227,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_CEIL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_FLOOR> {
 	typedef _simd_s64x1 scalar_t;
@@ -8955,6 +9305,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_FLOOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_ROUND> {
 	typedef _simd_s64x1 scalar_t;
@@ -9032,6 +9383,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_ROUND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_SIN> {
 	typedef _simd_s64x1 scalar_t;
@@ -9109,6 +9461,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_SIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_COS> {
 	typedef _simd_s64x1 scalar_t;
@@ -9186,6 +9539,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_COS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_TAN> {
 	typedef _simd_s64x1 scalar_t;
@@ -9263,6 +9617,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_TAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_ASIN> {
 	typedef _simd_s64x1 scalar_t;
@@ -9340,6 +9695,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_ASIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_ACOS> {
 	typedef _simd_s64x1 scalar_t;
@@ -9417,6 +9773,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_ACOS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_ATAN> {
 	typedef _simd_s64x1 scalar_t;
@@ -9494,6 +9851,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_ATAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_SINH> {
 	typedef _simd_s64x1 scalar_t;
@@ -9571,6 +9929,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_SINH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_COSH> {
 	typedef _simd_s64x1 scalar_t;
@@ -9648,6 +10007,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_COSH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_TANH> {
 	typedef _simd_s64x1 scalar_t;
@@ -9725,6 +10085,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_TANH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_SQRT> {
 	typedef _simd_s64x1 scalar_t;
@@ -9802,6 +10163,7 @@ struct OperationDispatcher<_simd_s64x1, S, OP_SQRT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S, OP_CBRT> {
 	typedef _simd_s64x1 scalar_t;
@@ -9879,6 +10241,87 @@ struct OperationDispatcher<_simd_s64x1, S, OP_CBRT> {
 		}
 	}
 };
+
+template<size_t S>
+struct OperationDispatcher<_simd_u64x1, S, OP_FILL0> {
+	typedef _simd_u64x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+		if (false) {
+#ifdef _simd_u64x64_fill_zero_
+		} else if (S >= 64 && _simd_u64x64_fill_zero_enable()) {
+			typedef _simd_u64x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x64_fill_zero_();
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u64x32_fill_zero_
+		} else if (S >= 32 && _simd_u64x32_fill_zero_enable()) {
+			typedef _simd_u64x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x32_fill_zero_();
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u64x16_fill_zero_
+		} else if (S >= 16 && _simd_u64x16_fill_zero_enable()) {
+			typedef _simd_u64x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x16_fill_zero_();
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u64x8_fill_zero_
+		} else if (S >= 8 && _simd_u64x8_fill_zero_enable()) {
+			typedef _simd_u64x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x8_fill_zero_();
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u64x4_fill_zero_
+		} else if (S >= 4 && _simd_u64x4_fill_zero_enable()) {
+			typedef _simd_u64x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x4_fill_zero_();
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u64x2_fill_zero_
+		} else if (S >= 2 && _simd_u64x2_fill_zero_enable()) {
+			typedef _simd_u64x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u64x2_fill_zero_();
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_u64x1, S, OP_FILLU> {
+	typedef _simd_u64x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+	}
+};
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_FMA> {
 	typedef _simd_u64x1 scalar_t;
@@ -9968,6 +10411,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_FMA> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_FMS> {
 	typedef _simd_u64x1 scalar_t;
@@ -10057,6 +10501,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_FMS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_ADD> {
 	typedef _simd_u64x1 scalar_t;
@@ -10140,6 +10585,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_ADD> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_SUB> {
 	typedef _simd_u64x1 scalar_t;
@@ -10223,6 +10669,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_SUB> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_MUL> {
 	typedef _simd_u64x1 scalar_t;
@@ -10306,6 +10753,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_MUL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_DIV> {
 	typedef _simd_u64x1 scalar_t;
@@ -10389,6 +10837,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_DIV> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_MIN> {
 	typedef _simd_u64x1 scalar_t;
@@ -10472,6 +10921,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_MIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_MAX> {
 	typedef _simd_u64x1 scalar_t;
@@ -10555,6 +11005,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_MAX> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_CMPEQ> {
 	typedef _simd_u64x1 scalar_t;
@@ -10638,6 +11089,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_CMPEQ> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_CMPNE> {
 	typedef _simd_u64x1 scalar_t;
@@ -10721,6 +11173,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_CMPNE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_CMPLT> {
 	typedef _simd_u64x1 scalar_t;
@@ -10804,6 +11257,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_CMPLT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_CMPGT> {
 	typedef _simd_u64x1 scalar_t;
@@ -10887,6 +11341,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_CMPGT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_CMPLE> {
 	typedef _simd_u64x1 scalar_t;
@@ -10970,6 +11425,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_CMPLE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_CMPGE> {
 	typedef _simd_u64x1 scalar_t;
@@ -11053,6 +11509,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_CMPGE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_AND> {
 	typedef _simd_u64x1 scalar_t;
@@ -11136,6 +11593,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_AND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_OR> {
 	typedef _simd_u64x1 scalar_t;
@@ -11219,6 +11677,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_OR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_XOR> {
 	typedef _simd_u64x1 scalar_t;
@@ -11302,6 +11761,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_XOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_LSHIFT> {
 	typedef _simd_u64x1 scalar_t;
@@ -11385,6 +11845,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_LSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_RSHIFT> {
 	typedef _simd_u64x1 scalar_t;
@@ -11468,6 +11929,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_RSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_ATAN2> {
 	typedef _simd_u64x1 scalar_t;
@@ -11551,6 +12013,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_ATAN2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_REFLECT> {
 	typedef _simd_u64x1 scalar_t;
@@ -11628,6 +12091,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_REFLECT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_NOT> {
 	typedef _simd_u64x1 scalar_t;
@@ -11705,6 +12169,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_NOT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_ABS> {
 	typedef _simd_u64x1 scalar_t;
@@ -11782,6 +12247,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_ABS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_EXP> {
 	typedef _simd_u64x1 scalar_t;
@@ -11859,6 +12325,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_EXP> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_LOG> {
 	typedef _simd_u64x1 scalar_t;
@@ -11936,6 +12403,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_LOG> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_LOG2> {
 	typedef _simd_u64x1 scalar_t;
@@ -12013,6 +12481,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_LOG2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_LOG10> {
 	typedef _simd_u64x1 scalar_t;
@@ -12090,6 +12559,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_LOG10> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_CEIL> {
 	typedef _simd_u64x1 scalar_t;
@@ -12167,6 +12637,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_CEIL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_FLOOR> {
 	typedef _simd_u64x1 scalar_t;
@@ -12244,6 +12715,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_FLOOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_ROUND> {
 	typedef _simd_u64x1 scalar_t;
@@ -12321,6 +12793,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_ROUND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_SIN> {
 	typedef _simd_u64x1 scalar_t;
@@ -12398,6 +12871,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_SIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_COS> {
 	typedef _simd_u64x1 scalar_t;
@@ -12475,6 +12949,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_COS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_TAN> {
 	typedef _simd_u64x1 scalar_t;
@@ -12552,6 +13027,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_TAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_ASIN> {
 	typedef _simd_u64x1 scalar_t;
@@ -12629,6 +13105,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_ASIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_ACOS> {
 	typedef _simd_u64x1 scalar_t;
@@ -12706,6 +13183,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_ACOS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_ATAN> {
 	typedef _simd_u64x1 scalar_t;
@@ -12783,6 +13261,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_ATAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_SINH> {
 	typedef _simd_u64x1 scalar_t;
@@ -12860,6 +13339,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_SINH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_COSH> {
 	typedef _simd_u64x1 scalar_t;
@@ -12937,6 +13417,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_COSH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_TANH> {
 	typedef _simd_u64x1 scalar_t;
@@ -13014,6 +13495,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_TANH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_SQRT> {
 	typedef _simd_u64x1 scalar_t;
@@ -13091,6 +13573,7 @@ struct OperationDispatcher<_simd_u64x1, S, OP_SQRT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S, OP_CBRT> {
 	typedef _simd_u64x1 scalar_t;
@@ -13168,6 +13651,87 @@ struct OperationDispatcher<_simd_u64x1, S, OP_CBRT> {
 		}
 	}
 };
+
+template<size_t S>
+struct OperationDispatcher<_simd_s32x1, S, OP_FILL0> {
+	typedef _simd_s32x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+		if (false) {
+#ifdef _simd_s32x64_fill_zero_
+		} else if (S >= 64 && _simd_s32x64_fill_zero_enable()) {
+			typedef _simd_s32x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x64_fill_zero_();
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s32x32_fill_zero_
+		} else if (S >= 32 && _simd_s32x32_fill_zero_enable()) {
+			typedef _simd_s32x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x32_fill_zero_();
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s32x16_fill_zero_
+		} else if (S >= 16 && _simd_s32x16_fill_zero_enable()) {
+			typedef _simd_s32x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x16_fill_zero_();
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s32x8_fill_zero_
+		} else if (S >= 8 && _simd_s32x8_fill_zero_enable()) {
+			typedef _simd_s32x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x8_fill_zero_();
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s32x4_fill_zero_
+		} else if (S >= 4 && _simd_s32x4_fill_zero_enable()) {
+			typedef _simd_s32x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x4_fill_zero_();
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s32x2_fill_zero_
+		} else if (S >= 2 && _simd_s32x2_fill_zero_enable()) {
+			typedef _simd_s32x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s32x2_fill_zero_();
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_s32x1, S, OP_FILLU> {
+	typedef _simd_s32x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+	}
+};
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_FMA> {
 	typedef _simd_s32x1 scalar_t;
@@ -13257,6 +13821,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_FMA> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_FMS> {
 	typedef _simd_s32x1 scalar_t;
@@ -13346,6 +13911,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_FMS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_ADD> {
 	typedef _simd_s32x1 scalar_t;
@@ -13429,6 +13995,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_ADD> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_SUB> {
 	typedef _simd_s32x1 scalar_t;
@@ -13512,6 +14079,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_SUB> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_MUL> {
 	typedef _simd_s32x1 scalar_t;
@@ -13595,6 +14163,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_MUL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_DIV> {
 	typedef _simd_s32x1 scalar_t;
@@ -13678,6 +14247,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_DIV> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_MIN> {
 	typedef _simd_s32x1 scalar_t;
@@ -13761,6 +14331,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_MIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_MAX> {
 	typedef _simd_s32x1 scalar_t;
@@ -13844,6 +14415,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_MAX> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_CMPEQ> {
 	typedef _simd_s32x1 scalar_t;
@@ -13927,6 +14499,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_CMPEQ> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_CMPNE> {
 	typedef _simd_s32x1 scalar_t;
@@ -14010,6 +14583,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_CMPNE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_CMPLT> {
 	typedef _simd_s32x1 scalar_t;
@@ -14093,6 +14667,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_CMPLT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_CMPGT> {
 	typedef _simd_s32x1 scalar_t;
@@ -14176,6 +14751,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_CMPGT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_CMPLE> {
 	typedef _simd_s32x1 scalar_t;
@@ -14259,6 +14835,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_CMPLE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_CMPGE> {
 	typedef _simd_s32x1 scalar_t;
@@ -14342,6 +14919,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_CMPGE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_AND> {
 	typedef _simd_s32x1 scalar_t;
@@ -14425,6 +15003,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_AND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_OR> {
 	typedef _simd_s32x1 scalar_t;
@@ -14508,6 +15087,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_OR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_XOR> {
 	typedef _simd_s32x1 scalar_t;
@@ -14591,6 +15171,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_XOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_LSHIFT> {
 	typedef _simd_s32x1 scalar_t;
@@ -14674,6 +15255,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_LSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_RSHIFT> {
 	typedef _simd_s32x1 scalar_t;
@@ -14757,6 +15339,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_RSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_ATAN2> {
 	typedef _simd_s32x1 scalar_t;
@@ -14840,6 +15423,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_ATAN2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_REFLECT> {
 	typedef _simd_s32x1 scalar_t;
@@ -14917,6 +15501,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_REFLECT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_NOT> {
 	typedef _simd_s32x1 scalar_t;
@@ -14994,6 +15579,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_NOT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_ABS> {
 	typedef _simd_s32x1 scalar_t;
@@ -15071,6 +15657,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_ABS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_EXP> {
 	typedef _simd_s32x1 scalar_t;
@@ -15148,6 +15735,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_EXP> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_LOG> {
 	typedef _simd_s32x1 scalar_t;
@@ -15225,6 +15813,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_LOG> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_LOG2> {
 	typedef _simd_s32x1 scalar_t;
@@ -15302,6 +15891,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_LOG2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_LOG10> {
 	typedef _simd_s32x1 scalar_t;
@@ -15379,6 +15969,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_LOG10> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_CEIL> {
 	typedef _simd_s32x1 scalar_t;
@@ -15456,6 +16047,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_CEIL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_FLOOR> {
 	typedef _simd_s32x1 scalar_t;
@@ -15533,6 +16125,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_FLOOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_ROUND> {
 	typedef _simd_s32x1 scalar_t;
@@ -15610,6 +16203,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_ROUND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_SIN> {
 	typedef _simd_s32x1 scalar_t;
@@ -15687,6 +16281,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_SIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_COS> {
 	typedef _simd_s32x1 scalar_t;
@@ -15764,6 +16359,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_COS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_TAN> {
 	typedef _simd_s32x1 scalar_t;
@@ -15841,6 +16437,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_TAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_ASIN> {
 	typedef _simd_s32x1 scalar_t;
@@ -15918,6 +16515,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_ASIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_ACOS> {
 	typedef _simd_s32x1 scalar_t;
@@ -15995,6 +16593,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_ACOS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_ATAN> {
 	typedef _simd_s32x1 scalar_t;
@@ -16072,6 +16671,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_ATAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_SINH> {
 	typedef _simd_s32x1 scalar_t;
@@ -16149,6 +16749,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_SINH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_COSH> {
 	typedef _simd_s32x1 scalar_t;
@@ -16226,6 +16827,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_COSH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_TANH> {
 	typedef _simd_s32x1 scalar_t;
@@ -16303,6 +16905,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_TANH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_SQRT> {
 	typedef _simd_s32x1 scalar_t;
@@ -16380,6 +16983,7 @@ struct OperationDispatcher<_simd_s32x1, S, OP_SQRT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S, OP_CBRT> {
 	typedef _simd_s32x1 scalar_t;
@@ -16457,6 +17061,87 @@ struct OperationDispatcher<_simd_s32x1, S, OP_CBRT> {
 		}
 	}
 };
+
+template<size_t S>
+struct OperationDispatcher<_simd_u32x1, S, OP_FILL0> {
+	typedef _simd_u32x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+		if (false) {
+#ifdef _simd_u32x64_fill_zero_
+		} else if (S >= 64 && _simd_u32x64_fill_zero_enable()) {
+			typedef _simd_u32x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x64_fill_zero_();
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u32x32_fill_zero_
+		} else if (S >= 32 && _simd_u32x32_fill_zero_enable()) {
+			typedef _simd_u32x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x32_fill_zero_();
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u32x16_fill_zero_
+		} else if (S >= 16 && _simd_u32x16_fill_zero_enable()) {
+			typedef _simd_u32x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x16_fill_zero_();
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u32x8_fill_zero_
+		} else if (S >= 8 && _simd_u32x8_fill_zero_enable()) {
+			typedef _simd_u32x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x8_fill_zero_();
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u32x4_fill_zero_
+		} else if (S >= 4 && _simd_u32x4_fill_zero_enable()) {
+			typedef _simd_u32x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x4_fill_zero_();
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u32x2_fill_zero_
+		} else if (S >= 2 && _simd_u32x2_fill_zero_enable()) {
+			typedef _simd_u32x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u32x2_fill_zero_();
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_u32x1, S, OP_FILLU> {
+	typedef _simd_u32x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+	}
+};
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_FMA> {
 	typedef _simd_u32x1 scalar_t;
@@ -16546,6 +17231,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_FMA> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_FMS> {
 	typedef _simd_u32x1 scalar_t;
@@ -16635,6 +17321,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_FMS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_ADD> {
 	typedef _simd_u32x1 scalar_t;
@@ -16718,6 +17405,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_ADD> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_SUB> {
 	typedef _simd_u32x1 scalar_t;
@@ -16801,6 +17489,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_SUB> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_MUL> {
 	typedef _simd_u32x1 scalar_t;
@@ -16884,6 +17573,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_MUL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_DIV> {
 	typedef _simd_u32x1 scalar_t;
@@ -16967,6 +17657,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_DIV> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_MIN> {
 	typedef _simd_u32x1 scalar_t;
@@ -17050,6 +17741,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_MIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_MAX> {
 	typedef _simd_u32x1 scalar_t;
@@ -17133,6 +17825,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_MAX> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_CMPEQ> {
 	typedef _simd_u32x1 scalar_t;
@@ -17216,6 +17909,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_CMPEQ> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_CMPNE> {
 	typedef _simd_u32x1 scalar_t;
@@ -17299,6 +17993,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_CMPNE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_CMPLT> {
 	typedef _simd_u32x1 scalar_t;
@@ -17382,6 +18077,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_CMPLT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_CMPGT> {
 	typedef _simd_u32x1 scalar_t;
@@ -17465,6 +18161,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_CMPGT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_CMPLE> {
 	typedef _simd_u32x1 scalar_t;
@@ -17548,6 +18245,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_CMPLE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_CMPGE> {
 	typedef _simd_u32x1 scalar_t;
@@ -17631,6 +18329,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_CMPGE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_AND> {
 	typedef _simd_u32x1 scalar_t;
@@ -17714,6 +18413,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_AND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_OR> {
 	typedef _simd_u32x1 scalar_t;
@@ -17797,6 +18497,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_OR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_XOR> {
 	typedef _simd_u32x1 scalar_t;
@@ -17880,6 +18581,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_XOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_LSHIFT> {
 	typedef _simd_u32x1 scalar_t;
@@ -17963,6 +18665,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_LSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_RSHIFT> {
 	typedef _simd_u32x1 scalar_t;
@@ -18046,6 +18749,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_RSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_ATAN2> {
 	typedef _simd_u32x1 scalar_t;
@@ -18129,6 +18833,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_ATAN2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_REFLECT> {
 	typedef _simd_u32x1 scalar_t;
@@ -18206,6 +18911,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_REFLECT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_NOT> {
 	typedef _simd_u32x1 scalar_t;
@@ -18283,6 +18989,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_NOT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_ABS> {
 	typedef _simd_u32x1 scalar_t;
@@ -18360,6 +19067,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_ABS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_EXP> {
 	typedef _simd_u32x1 scalar_t;
@@ -18437,6 +19145,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_EXP> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_LOG> {
 	typedef _simd_u32x1 scalar_t;
@@ -18514,6 +19223,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_LOG> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_LOG2> {
 	typedef _simd_u32x1 scalar_t;
@@ -18591,6 +19301,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_LOG2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_LOG10> {
 	typedef _simd_u32x1 scalar_t;
@@ -18668,6 +19379,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_LOG10> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_CEIL> {
 	typedef _simd_u32x1 scalar_t;
@@ -18745,6 +19457,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_CEIL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_FLOOR> {
 	typedef _simd_u32x1 scalar_t;
@@ -18822,6 +19535,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_FLOOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_ROUND> {
 	typedef _simd_u32x1 scalar_t;
@@ -18899,6 +19613,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_ROUND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_SIN> {
 	typedef _simd_u32x1 scalar_t;
@@ -18976,6 +19691,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_SIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_COS> {
 	typedef _simd_u32x1 scalar_t;
@@ -19053,6 +19769,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_COS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_TAN> {
 	typedef _simd_u32x1 scalar_t;
@@ -19130,6 +19847,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_TAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_ASIN> {
 	typedef _simd_u32x1 scalar_t;
@@ -19207,6 +19925,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_ASIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_ACOS> {
 	typedef _simd_u32x1 scalar_t;
@@ -19284,6 +20003,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_ACOS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_ATAN> {
 	typedef _simd_u32x1 scalar_t;
@@ -19361,6 +20081,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_ATAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_SINH> {
 	typedef _simd_u32x1 scalar_t;
@@ -19438,6 +20159,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_SINH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_COSH> {
 	typedef _simd_u32x1 scalar_t;
@@ -19515,6 +20237,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_COSH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_TANH> {
 	typedef _simd_u32x1 scalar_t;
@@ -19592,6 +20315,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_TANH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_SQRT> {
 	typedef _simd_u32x1 scalar_t;
@@ -19669,6 +20393,7 @@ struct OperationDispatcher<_simd_u32x1, S, OP_SQRT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S, OP_CBRT> {
 	typedef _simd_u32x1 scalar_t;
@@ -19746,6 +20471,87 @@ struct OperationDispatcher<_simd_u32x1, S, OP_CBRT> {
 		}
 	}
 };
+
+template<size_t S>
+struct OperationDispatcher<_simd_s16x1, S, OP_FILL0> {
+	typedef _simd_s16x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+		if (false) {
+#ifdef _simd_s16x64_fill_zero_
+		} else if (S >= 64 && _simd_s16x64_fill_zero_enable()) {
+			typedef _simd_s16x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x64_fill_zero_();
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s16x32_fill_zero_
+		} else if (S >= 32 && _simd_s16x32_fill_zero_enable()) {
+			typedef _simd_s16x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x32_fill_zero_();
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s16x16_fill_zero_
+		} else if (S >= 16 && _simd_s16x16_fill_zero_enable()) {
+			typedef _simd_s16x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x16_fill_zero_();
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s16x8_fill_zero_
+		} else if (S >= 8 && _simd_s16x8_fill_zero_enable()) {
+			typedef _simd_s16x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x8_fill_zero_();
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s16x4_fill_zero_
+		} else if (S >= 4 && _simd_s16x4_fill_zero_enable()) {
+			typedef _simd_s16x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x4_fill_zero_();
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s16x2_fill_zero_
+		} else if (S >= 2 && _simd_s16x2_fill_zero_enable()) {
+			typedef _simd_s16x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s16x2_fill_zero_();
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_s16x1, S, OP_FILLU> {
+	typedef _simd_s16x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+	}
+};
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_FMA> {
 	typedef _simd_s16x1 scalar_t;
@@ -19835,6 +20641,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_FMA> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_FMS> {
 	typedef _simd_s16x1 scalar_t;
@@ -19924,6 +20731,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_FMS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_ADD> {
 	typedef _simd_s16x1 scalar_t;
@@ -20007,6 +20815,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_ADD> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_SUB> {
 	typedef _simd_s16x1 scalar_t;
@@ -20090,6 +20899,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_SUB> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_MUL> {
 	typedef _simd_s16x1 scalar_t;
@@ -20173,6 +20983,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_MUL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_DIV> {
 	typedef _simd_s16x1 scalar_t;
@@ -20256,6 +21067,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_DIV> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_MIN> {
 	typedef _simd_s16x1 scalar_t;
@@ -20339,6 +21151,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_MIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_MAX> {
 	typedef _simd_s16x1 scalar_t;
@@ -20422,6 +21235,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_MAX> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_CMPEQ> {
 	typedef _simd_s16x1 scalar_t;
@@ -20505,6 +21319,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_CMPEQ> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_CMPNE> {
 	typedef _simd_s16x1 scalar_t;
@@ -20588,6 +21403,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_CMPNE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_CMPLT> {
 	typedef _simd_s16x1 scalar_t;
@@ -20671,6 +21487,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_CMPLT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_CMPGT> {
 	typedef _simd_s16x1 scalar_t;
@@ -20754,6 +21571,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_CMPGT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_CMPLE> {
 	typedef _simd_s16x1 scalar_t;
@@ -20837,6 +21655,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_CMPLE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_CMPGE> {
 	typedef _simd_s16x1 scalar_t;
@@ -20920,6 +21739,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_CMPGE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_AND> {
 	typedef _simd_s16x1 scalar_t;
@@ -21003,6 +21823,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_AND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_OR> {
 	typedef _simd_s16x1 scalar_t;
@@ -21086,6 +21907,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_OR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_XOR> {
 	typedef _simd_s16x1 scalar_t;
@@ -21169,6 +21991,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_XOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_LSHIFT> {
 	typedef _simd_s16x1 scalar_t;
@@ -21252,6 +22075,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_LSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_RSHIFT> {
 	typedef _simd_s16x1 scalar_t;
@@ -21335,6 +22159,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_RSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_ATAN2> {
 	typedef _simd_s16x1 scalar_t;
@@ -21418,6 +22243,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_ATAN2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_REFLECT> {
 	typedef _simd_s16x1 scalar_t;
@@ -21495,6 +22321,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_REFLECT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_NOT> {
 	typedef _simd_s16x1 scalar_t;
@@ -21572,6 +22399,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_NOT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_ABS> {
 	typedef _simd_s16x1 scalar_t;
@@ -21649,6 +22477,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_ABS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_EXP> {
 	typedef _simd_s16x1 scalar_t;
@@ -21726,6 +22555,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_EXP> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_LOG> {
 	typedef _simd_s16x1 scalar_t;
@@ -21803,6 +22633,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_LOG> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_LOG2> {
 	typedef _simd_s16x1 scalar_t;
@@ -21880,6 +22711,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_LOG2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_LOG10> {
 	typedef _simd_s16x1 scalar_t;
@@ -21957,6 +22789,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_LOG10> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_CEIL> {
 	typedef _simd_s16x1 scalar_t;
@@ -22034,6 +22867,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_CEIL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_FLOOR> {
 	typedef _simd_s16x1 scalar_t;
@@ -22111,6 +22945,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_FLOOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_ROUND> {
 	typedef _simd_s16x1 scalar_t;
@@ -22188,6 +23023,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_ROUND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_SIN> {
 	typedef _simd_s16x1 scalar_t;
@@ -22265,6 +23101,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_SIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_COS> {
 	typedef _simd_s16x1 scalar_t;
@@ -22342,6 +23179,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_COS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_TAN> {
 	typedef _simd_s16x1 scalar_t;
@@ -22419,6 +23257,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_TAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_ASIN> {
 	typedef _simd_s16x1 scalar_t;
@@ -22496,6 +23335,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_ASIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_ACOS> {
 	typedef _simd_s16x1 scalar_t;
@@ -22573,6 +23413,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_ACOS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_ATAN> {
 	typedef _simd_s16x1 scalar_t;
@@ -22650,6 +23491,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_ATAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_SINH> {
 	typedef _simd_s16x1 scalar_t;
@@ -22727,6 +23569,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_SINH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_COSH> {
 	typedef _simd_s16x1 scalar_t;
@@ -22804,6 +23647,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_COSH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_TANH> {
 	typedef _simd_s16x1 scalar_t;
@@ -22881,6 +23725,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_TANH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_SQRT> {
 	typedef _simd_s16x1 scalar_t;
@@ -22958,6 +23803,7 @@ struct OperationDispatcher<_simd_s16x1, S, OP_SQRT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S, OP_CBRT> {
 	typedef _simd_s16x1 scalar_t;
@@ -23035,6 +23881,87 @@ struct OperationDispatcher<_simd_s16x1, S, OP_CBRT> {
 		}
 	}
 };
+
+template<size_t S>
+struct OperationDispatcher<_simd_u16x1, S, OP_FILL0> {
+	typedef _simd_u16x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+		if (false) {
+#ifdef _simd_u16x64_fill_zero_
+		} else if (S >= 64 && _simd_u16x64_fill_zero_enable()) {
+			typedef _simd_u16x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x64_fill_zero_();
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u16x32_fill_zero_
+		} else if (S >= 32 && _simd_u16x32_fill_zero_enable()) {
+			typedef _simd_u16x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x32_fill_zero_();
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u16x16_fill_zero_
+		} else if (S >= 16 && _simd_u16x16_fill_zero_enable()) {
+			typedef _simd_u16x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x16_fill_zero_();
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u16x8_fill_zero_
+		} else if (S >= 8 && _simd_u16x8_fill_zero_enable()) {
+			typedef _simd_u16x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x8_fill_zero_();
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u16x4_fill_zero_
+		} else if (S >= 4 && _simd_u16x4_fill_zero_enable()) {
+			typedef _simd_u16x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x4_fill_zero_();
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u16x2_fill_zero_
+		} else if (S >= 2 && _simd_u16x2_fill_zero_enable()) {
+			typedef _simd_u16x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u16x2_fill_zero_();
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_u16x1, S, OP_FILLU> {
+	typedef _simd_u16x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+	}
+};
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_FMA> {
 	typedef _simd_u16x1 scalar_t;
@@ -23124,6 +24051,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_FMA> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_FMS> {
 	typedef _simd_u16x1 scalar_t;
@@ -23213,6 +24141,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_FMS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_ADD> {
 	typedef _simd_u16x1 scalar_t;
@@ -23296,6 +24225,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_ADD> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_SUB> {
 	typedef _simd_u16x1 scalar_t;
@@ -23379,6 +24309,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_SUB> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_MUL> {
 	typedef _simd_u16x1 scalar_t;
@@ -23462,6 +24393,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_MUL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_DIV> {
 	typedef _simd_u16x1 scalar_t;
@@ -23545,6 +24477,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_DIV> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_MIN> {
 	typedef _simd_u16x1 scalar_t;
@@ -23628,6 +24561,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_MIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_MAX> {
 	typedef _simd_u16x1 scalar_t;
@@ -23711,6 +24645,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_MAX> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_CMPEQ> {
 	typedef _simd_u16x1 scalar_t;
@@ -23794,6 +24729,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_CMPEQ> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_CMPNE> {
 	typedef _simd_u16x1 scalar_t;
@@ -23877,6 +24813,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_CMPNE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_CMPLT> {
 	typedef _simd_u16x1 scalar_t;
@@ -23960,6 +24897,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_CMPLT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_CMPGT> {
 	typedef _simd_u16x1 scalar_t;
@@ -24043,6 +24981,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_CMPGT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_CMPLE> {
 	typedef _simd_u16x1 scalar_t;
@@ -24126,6 +25065,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_CMPLE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_CMPGE> {
 	typedef _simd_u16x1 scalar_t;
@@ -24209,6 +25149,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_CMPGE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_AND> {
 	typedef _simd_u16x1 scalar_t;
@@ -24292,6 +25233,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_AND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_OR> {
 	typedef _simd_u16x1 scalar_t;
@@ -24375,6 +25317,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_OR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_XOR> {
 	typedef _simd_u16x1 scalar_t;
@@ -24458,6 +25401,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_XOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_LSHIFT> {
 	typedef _simd_u16x1 scalar_t;
@@ -24541,6 +25485,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_LSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_RSHIFT> {
 	typedef _simd_u16x1 scalar_t;
@@ -24624,6 +25569,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_RSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_ATAN2> {
 	typedef _simd_u16x1 scalar_t;
@@ -24707,6 +25653,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_ATAN2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_REFLECT> {
 	typedef _simd_u16x1 scalar_t;
@@ -24784,6 +25731,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_REFLECT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_NOT> {
 	typedef _simd_u16x1 scalar_t;
@@ -24861,6 +25809,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_NOT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_ABS> {
 	typedef _simd_u16x1 scalar_t;
@@ -24938,6 +25887,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_ABS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_EXP> {
 	typedef _simd_u16x1 scalar_t;
@@ -25015,6 +25965,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_EXP> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_LOG> {
 	typedef _simd_u16x1 scalar_t;
@@ -25092,6 +26043,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_LOG> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_LOG2> {
 	typedef _simd_u16x1 scalar_t;
@@ -25169,6 +26121,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_LOG2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_LOG10> {
 	typedef _simd_u16x1 scalar_t;
@@ -25246,6 +26199,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_LOG10> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_CEIL> {
 	typedef _simd_u16x1 scalar_t;
@@ -25323,6 +26277,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_CEIL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_FLOOR> {
 	typedef _simd_u16x1 scalar_t;
@@ -25400,6 +26355,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_FLOOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_ROUND> {
 	typedef _simd_u16x1 scalar_t;
@@ -25477,6 +26433,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_ROUND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_SIN> {
 	typedef _simd_u16x1 scalar_t;
@@ -25554,6 +26511,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_SIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_COS> {
 	typedef _simd_u16x1 scalar_t;
@@ -25631,6 +26589,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_COS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_TAN> {
 	typedef _simd_u16x1 scalar_t;
@@ -25708,6 +26667,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_TAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_ASIN> {
 	typedef _simd_u16x1 scalar_t;
@@ -25785,6 +26745,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_ASIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_ACOS> {
 	typedef _simd_u16x1 scalar_t;
@@ -25862,6 +26823,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_ACOS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_ATAN> {
 	typedef _simd_u16x1 scalar_t;
@@ -25939,6 +26901,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_ATAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_SINH> {
 	typedef _simd_u16x1 scalar_t;
@@ -26016,6 +26979,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_SINH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_COSH> {
 	typedef _simd_u16x1 scalar_t;
@@ -26093,6 +27057,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_COSH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_TANH> {
 	typedef _simd_u16x1 scalar_t;
@@ -26170,6 +27135,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_TANH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_SQRT> {
 	typedef _simd_u16x1 scalar_t;
@@ -26247,6 +27213,7 @@ struct OperationDispatcher<_simd_u16x1, S, OP_SQRT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S, OP_CBRT> {
 	typedef _simd_u16x1 scalar_t;
@@ -26324,6 +27291,87 @@ struct OperationDispatcher<_simd_u16x1, S, OP_CBRT> {
 		}
 	}
 };
+
+template<size_t S>
+struct OperationDispatcher<_simd_s8x1, S, OP_FILL0> {
+	typedef _simd_s8x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+		if (false) {
+#ifdef _simd_s8x64_fill_zero_
+		} else if (S >= 64 && _simd_s8x64_fill_zero_enable()) {
+			typedef _simd_s8x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x64_fill_zero_();
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s8x32_fill_zero_
+		} else if (S >= 32 && _simd_s8x32_fill_zero_enable()) {
+			typedef _simd_s8x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x32_fill_zero_();
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s8x16_fill_zero_
+		} else if (S >= 16 && _simd_s8x16_fill_zero_enable()) {
+			typedef _simd_s8x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x16_fill_zero_();
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s8x8_fill_zero_
+		} else if (S >= 8 && _simd_s8x8_fill_zero_enable()) {
+			typedef _simd_s8x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x8_fill_zero_();
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s8x4_fill_zero_
+		} else if (S >= 4 && _simd_s8x4_fill_zero_enable()) {
+			typedef _simd_s8x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x4_fill_zero_();
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_s8x2_fill_zero_
+		} else if (S >= 2 && _simd_s8x2_fill_zero_enable()) {
+			typedef _simd_s8x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_s8x2_fill_zero_();
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_s8x1, S, OP_FILLU> {
+	typedef _simd_s8x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+	}
+};
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_FMA> {
 	typedef _simd_s8x1 scalar_t;
@@ -26413,6 +27461,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_FMA> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_FMS> {
 	typedef _simd_s8x1 scalar_t;
@@ -26502,6 +27551,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_FMS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_ADD> {
 	typedef _simd_s8x1 scalar_t;
@@ -26585,6 +27635,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_ADD> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_SUB> {
 	typedef _simd_s8x1 scalar_t;
@@ -26668,6 +27719,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_SUB> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_MUL> {
 	typedef _simd_s8x1 scalar_t;
@@ -26751,6 +27803,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_MUL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_DIV> {
 	typedef _simd_s8x1 scalar_t;
@@ -26834,6 +27887,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_DIV> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_MIN> {
 	typedef _simd_s8x1 scalar_t;
@@ -26917,6 +27971,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_MIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_MAX> {
 	typedef _simd_s8x1 scalar_t;
@@ -27000,6 +28055,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_MAX> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_CMPEQ> {
 	typedef _simd_s8x1 scalar_t;
@@ -27083,6 +28139,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_CMPEQ> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_CMPNE> {
 	typedef _simd_s8x1 scalar_t;
@@ -27166,6 +28223,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_CMPNE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_CMPLT> {
 	typedef _simd_s8x1 scalar_t;
@@ -27249,6 +28307,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_CMPLT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_CMPGT> {
 	typedef _simd_s8x1 scalar_t;
@@ -27332,6 +28391,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_CMPGT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_CMPLE> {
 	typedef _simd_s8x1 scalar_t;
@@ -27415,6 +28475,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_CMPLE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_CMPGE> {
 	typedef _simd_s8x1 scalar_t;
@@ -27498,6 +28559,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_CMPGE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_AND> {
 	typedef _simd_s8x1 scalar_t;
@@ -27581,6 +28643,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_AND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_OR> {
 	typedef _simd_s8x1 scalar_t;
@@ -27664,6 +28727,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_OR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_XOR> {
 	typedef _simd_s8x1 scalar_t;
@@ -27747,6 +28811,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_XOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_LSHIFT> {
 	typedef _simd_s8x1 scalar_t;
@@ -27830,6 +28895,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_LSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_RSHIFT> {
 	typedef _simd_s8x1 scalar_t;
@@ -27913,6 +28979,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_RSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_ATAN2> {
 	typedef _simd_s8x1 scalar_t;
@@ -27996,6 +29063,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_ATAN2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_REFLECT> {
 	typedef _simd_s8x1 scalar_t;
@@ -28073,6 +29141,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_REFLECT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_NOT> {
 	typedef _simd_s8x1 scalar_t;
@@ -28150,6 +29219,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_NOT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_ABS> {
 	typedef _simd_s8x1 scalar_t;
@@ -28227,6 +29297,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_ABS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_EXP> {
 	typedef _simd_s8x1 scalar_t;
@@ -28304,6 +29375,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_EXP> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_LOG> {
 	typedef _simd_s8x1 scalar_t;
@@ -28381,6 +29453,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_LOG> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_LOG2> {
 	typedef _simd_s8x1 scalar_t;
@@ -28458,6 +29531,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_LOG2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_LOG10> {
 	typedef _simd_s8x1 scalar_t;
@@ -28535,6 +29609,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_LOG10> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_CEIL> {
 	typedef _simd_s8x1 scalar_t;
@@ -28612,6 +29687,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_CEIL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_FLOOR> {
 	typedef _simd_s8x1 scalar_t;
@@ -28689,6 +29765,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_FLOOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_ROUND> {
 	typedef _simd_s8x1 scalar_t;
@@ -28766,6 +29843,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_ROUND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_SIN> {
 	typedef _simd_s8x1 scalar_t;
@@ -28843,6 +29921,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_SIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_COS> {
 	typedef _simd_s8x1 scalar_t;
@@ -28920,6 +29999,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_COS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_TAN> {
 	typedef _simd_s8x1 scalar_t;
@@ -28997,6 +30077,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_TAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_ASIN> {
 	typedef _simd_s8x1 scalar_t;
@@ -29074,6 +30155,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_ASIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_ACOS> {
 	typedef _simd_s8x1 scalar_t;
@@ -29151,6 +30233,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_ACOS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_ATAN> {
 	typedef _simd_s8x1 scalar_t;
@@ -29228,6 +30311,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_ATAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_SINH> {
 	typedef _simd_s8x1 scalar_t;
@@ -29305,6 +30389,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_SINH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_COSH> {
 	typedef _simd_s8x1 scalar_t;
@@ -29382,6 +30467,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_COSH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_TANH> {
 	typedef _simd_s8x1 scalar_t;
@@ -29459,6 +30545,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_TANH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_SQRT> {
 	typedef _simd_s8x1 scalar_t;
@@ -29536,6 +30623,7 @@ struct OperationDispatcher<_simd_s8x1, S, OP_SQRT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S, OP_CBRT> {
 	typedef _simd_s8x1 scalar_t;
@@ -29613,6 +30701,87 @@ struct OperationDispatcher<_simd_s8x1, S, OP_CBRT> {
 		}
 	}
 };
+
+template<size_t S>
+struct OperationDispatcher<_simd_u8x1, S, OP_FILL0> {
+	typedef _simd_u8x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+		if (false) {
+#ifdef _simd_u8x64_fill_zero_
+		} else if (S >= 64 && _simd_u8x64_fill_zero_enable()) {
+			typedef _simd_u8x64 simd_t;
+			enum {loop = S / 64, remainder = S % 64 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x64_fill_zero_();
+				o += 64;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u8x32_fill_zero_
+		} else if (S >= 32 && _simd_u8x32_fill_zero_enable()) {
+			typedef _simd_u8x32 simd_t;
+			enum {loop = S / 32, remainder = S % 32 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x32_fill_zero_();
+				o += 32;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u8x16_fill_zero_
+		} else if (S >= 16 && _simd_u8x16_fill_zero_enable()) {
+			typedef _simd_u8x16 simd_t;
+			enum {loop = S / 16, remainder = S % 16 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x16_fill_zero_();
+				o += 16;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u8x8_fill_zero_
+		} else if (S >= 8 && _simd_u8x8_fill_zero_enable()) {
+			typedef _simd_u8x8 simd_t;
+			enum {loop = S / 8, remainder = S % 8 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x8_fill_zero_();
+				o += 8;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u8x4_fill_zero_
+		} else if (S >= 4 && _simd_u8x4_fill_zero_enable()) {
+			typedef _simd_u8x4 simd_t;
+			enum {loop = S / 4, remainder = S % 4 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x4_fill_zero_();
+				o += 4;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+#ifdef _simd_u8x2_fill_zero_
+		} else if (S >= 2 && _simd_u8x2_fill_zero_enable()) {
+			typedef _simd_u8x2 simd_t;
+			enum {loop = S / 2, remainder = S % 2 };
+			for (size_t i = 0; i < loop; ++i) {
+				*reinterpret_cast<simd_t*>(o) = _simd_u8x2_fill_zero_();
+				o += 2;
+			}
+			OperationDispatcher<scalar_t, remainder, OP_FILL0>::execute(o);
+#endif
+		} else {
+			memset(o, 0, sizeof(scalar_t) * S);
+		}
+	}
+};
+
+template<size_t S>
+struct OperationDispatcher<_simd_u8x1, S, OP_FILLU> {
+	typedef _simd_u8x1 scalar_t;
+
+	static void ANVIL_SIMD_CALL execute(scalar_t* o) {
+	}
+};
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_FMA> {
 	typedef _simd_u8x1 scalar_t;
@@ -29702,6 +30871,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_FMA> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_FMS> {
 	typedef _simd_u8x1 scalar_t;
@@ -29791,6 +30961,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_FMS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_ADD> {
 	typedef _simd_u8x1 scalar_t;
@@ -29874,6 +31045,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_ADD> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_SUB> {
 	typedef _simd_u8x1 scalar_t;
@@ -29957,6 +31129,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_SUB> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_MUL> {
 	typedef _simd_u8x1 scalar_t;
@@ -30040,6 +31213,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_MUL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_DIV> {
 	typedef _simd_u8x1 scalar_t;
@@ -30123,6 +31297,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_DIV> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_MIN> {
 	typedef _simd_u8x1 scalar_t;
@@ -30206,6 +31381,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_MIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_MAX> {
 	typedef _simd_u8x1 scalar_t;
@@ -30289,6 +31465,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_MAX> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_CMPEQ> {
 	typedef _simd_u8x1 scalar_t;
@@ -30372,6 +31549,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_CMPEQ> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_CMPNE> {
 	typedef _simd_u8x1 scalar_t;
@@ -30455,6 +31633,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_CMPNE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_CMPLT> {
 	typedef _simd_u8x1 scalar_t;
@@ -30538,6 +31717,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_CMPLT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_CMPGT> {
 	typedef _simd_u8x1 scalar_t;
@@ -30621,6 +31801,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_CMPGT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_CMPLE> {
 	typedef _simd_u8x1 scalar_t;
@@ -30704,6 +31885,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_CMPLE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_CMPGE> {
 	typedef _simd_u8x1 scalar_t;
@@ -30787,6 +31969,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_CMPGE> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_AND> {
 	typedef _simd_u8x1 scalar_t;
@@ -30870,6 +32053,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_AND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_OR> {
 	typedef _simd_u8x1 scalar_t;
@@ -30953,6 +32137,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_OR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_XOR> {
 	typedef _simd_u8x1 scalar_t;
@@ -31036,6 +32221,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_XOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_LSHIFT> {
 	typedef _simd_u8x1 scalar_t;
@@ -31119,6 +32305,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_LSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_RSHIFT> {
 	typedef _simd_u8x1 scalar_t;
@@ -31202,6 +32389,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_RSHIFT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_ATAN2> {
 	typedef _simd_u8x1 scalar_t;
@@ -31285,6 +32473,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_ATAN2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_REFLECT> {
 	typedef _simd_u8x1 scalar_t;
@@ -31362,6 +32551,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_REFLECT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_NOT> {
 	typedef _simd_u8x1 scalar_t;
@@ -31439,6 +32629,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_NOT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_ABS> {
 	typedef _simd_u8x1 scalar_t;
@@ -31516,6 +32707,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_ABS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_EXP> {
 	typedef _simd_u8x1 scalar_t;
@@ -31593,6 +32785,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_EXP> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_LOG> {
 	typedef _simd_u8x1 scalar_t;
@@ -31670,6 +32863,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_LOG> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_LOG2> {
 	typedef _simd_u8x1 scalar_t;
@@ -31747,6 +32941,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_LOG2> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_LOG10> {
 	typedef _simd_u8x1 scalar_t;
@@ -31824,6 +33019,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_LOG10> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_CEIL> {
 	typedef _simd_u8x1 scalar_t;
@@ -31901,6 +33097,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_CEIL> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_FLOOR> {
 	typedef _simd_u8x1 scalar_t;
@@ -31978,6 +33175,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_FLOOR> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_ROUND> {
 	typedef _simd_u8x1 scalar_t;
@@ -32055,6 +33253,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_ROUND> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_SIN> {
 	typedef _simd_u8x1 scalar_t;
@@ -32132,6 +33331,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_SIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_COS> {
 	typedef _simd_u8x1 scalar_t;
@@ -32209,6 +33409,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_COS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_TAN> {
 	typedef _simd_u8x1 scalar_t;
@@ -32286,6 +33487,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_TAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_ASIN> {
 	typedef _simd_u8x1 scalar_t;
@@ -32363,6 +33565,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_ASIN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_ACOS> {
 	typedef _simd_u8x1 scalar_t;
@@ -32440,6 +33643,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_ACOS> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_ATAN> {
 	typedef _simd_u8x1 scalar_t;
@@ -32517,6 +33721,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_ATAN> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_SINH> {
 	typedef _simd_u8x1 scalar_t;
@@ -32594,6 +33799,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_SINH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_COSH> {
 	typedef _simd_u8x1 scalar_t;
@@ -32671,6 +33877,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_COSH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_TANH> {
 	typedef _simd_u8x1 scalar_t;
@@ -32748,6 +33955,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_TANH> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_SQRT> {
 	typedef _simd_u8x1 scalar_t;
@@ -32825,6 +34033,7 @@ struct OperationDispatcher<_simd_u8x1, S, OP_SQRT> {
 		}
 	}
 };
+
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S, OP_CBRT> {
 	typedef _simd_u8x1 scalar_t;
@@ -32902,3 +34111,4 @@ struct OperationDispatcher<_simd_u8x1, S, OP_CBRT> {
 		}
 	}
 };
+
