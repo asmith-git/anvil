@@ -1731,6 +1731,8 @@ _simd_extract(u8)
 #include "anvil/maths/simd/and.hpp"
 #include "anvil/maths/simd/or.hpp"
 #include "anvil/maths/simd/xor.hpp"
+#include "anvil/maths/simd/lshift.hpp"
+#include "anvil/maths/simd/rshift.hpp"
 
 // Min/Max
 
