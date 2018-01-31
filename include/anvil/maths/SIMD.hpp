@@ -746,6 +746,96 @@
 #define _simd_u8x32_xor_(X,Y) _mm256_xor_si256(X,Y)
 #define _simd_u8x32_xor_instruction_set anvil::simd::IS_AVX
 
+#define _simd_s32x4_abs_(X) _mm_abs_epi32(X)
+#define _simd_s32x4_abs_instruction_set anvil::simd::IS_SSSE_3
+
+#define _simd_s32x8_abs_(X) _mm256_abs_epi32(X)
+#define _simd_s32x8_abs_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s16x8_abs_(X) _mm_abs_epi16(X)
+#define _simd_s16x8_abs_instruction_set anvil::simd::IS_SSSE_3
+
+#define _simd_s16x16_abs_(X) _mm256_abs_epi16(X)
+#define _simd_s16x16_abs_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s8x16_abs_(X) _mm_abs_epi8(X)
+#define _simd_s8x16_abs_instruction_set anvil::simd::IS_SSSE_3
+
+#define _simd_s8x32_abs_(X) _mm256_abs_epi32(X)
+#define _simd_s8x32_abs_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f64x2_ceil_(X) _mm_ceil_pd(X)
+#define _simd_f64x2_ceil_instruction_set anvil::simd::IS_SSE_4_1
+
+#define _simd_f64x4_ceil_(X) _mm256_ceil_pd(X)
+#define _simd_f64x4_ceil_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_ceil_(X) _mm_ceil_ps(X)
+#define _simd_f32x4_ceil_instruction_set anvil::simd::IS_SSE_4_1
+
+#define _simd_f32x8_ceil_(X) _mm256_ceil_ps(X)
+#define _simd_f32x8_ceil_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f64x2_floor_(X) _mm_floor_pd(X)
+#define _simd_f64x2_floor_instruction_set anvil::simd::IS_SSE_4_1
+
+#define _simd_f64x4_floor_(X) _mm256_floor_pd(X)
+#define _simd_f64x4_floor_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_floor_(X) _mm_floor_ps(X)
+#define _simd_f32x4_floor_instruction_set anvil::simd::IS_SSE_4_1
+
+#define _simd_f32x8_floor_(X) _mm256_floor_ps(X)
+#define _simd_f32x8_floor_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f64x2_round_(X) _mm_round_pd(X, _MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC)
+#define _simd_f64x2_round_instruction_set anvil::simd::IS_SSE_4_1
+
+#define _simd_f64x4_round_(X) _mm256_round_pd(X, _MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC)
+#define _simd_f64x4_round_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_round_(X) _mm_round_ps(X, _MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC)
+#define _simd_f32x4_round_instruction_set anvil::simd::IS_SSE_4_1
+
+#define _simd_f32x8_round_(X) _mm256_round_ps(X, _MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC)
+#define _simd_f32x8_round_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f64x2_sqrt_(X) _mm_sqrt_pd(X)
+#define _simd_f64x2_sqrt_instruction_set anvil::simd::IS_SSE_2 
+
+#define _simd_f64x4_sqrt_(X) _mm256_sqrt_pd(X)
+#define _simd_f64x4_sqrt_instruction_set anvil::simd::IS_AVX 
+
+#define _simd_f32x4_sqrt_(X) _mm_sqrt_ps(X)
+#define _simd_f32x4_sqrt_instruction_set anvil::simd::IS_SSE 
+
+#define _simd_f32x8_sqrt_(X) _mm256_sqrt_pd(X)
+#define _simd_f32x8_sqrt_instruction_set anvil::simd::IS_AVX 
+
+#define _simd_f64x2_fma_(X) _mm_fmadd_pd(X)
+#define _simd_f64x2_fma_instruction_set anvil::simd::IS_FMA
+
+#define _simd_f64x4_fma_(X) _mm256_fmadd_pd(X)
+#define _simd_f64x4_fma_instruction_set anvil::simd::IS_FMA
+
+#define _simd_f32x4_fma_(X) _mm_fmadd_ps(X)
+#define _simd_f32x4_fma_instruction_set anvil::simd::IS_FMA
+
+#define _simd_f32x8_fma_(X) _mm256_fmadd_ps(X)
+#define _simd_f32x8_fma_instruction_set anvil::simd::IS_FMA
+
+#define _simd_f64x2_fms_(X) _mm_fmsub_pd(X)
+#define _simd_f64x2_fms_instruction_set anvil::simd::IS_FMA
+
+#define _simd_f64x4_fms_(X) _mm256_fmsub_pd(X)
+#define _simd_f64x4_fms_instruction_set anvil::simd::IS_FMA
+
+#define _simd_f32x4_fms_(X) _mm_fmsub_ps(X)
+#define _simd_f32x4_fms_instruction_set anvil::simd::IS_FMA
+
+#define _simd_f32x8_fms_(X) _mm256_fmsub_ps(X)
+#define _simd_f32x8_fms_instruction_set anvil::simd::IS_FMA
+
 #endif
 
 // Types
@@ -1613,6 +1703,9 @@ _simd_extract(u8)
 #include "anvil/maths/simd/cmpgt.hpp"
 #include "anvil/maths/simd/cmple.hpp"
 #include "anvil/maths/simd/cmpge.hpp"
+
+// Abs
+#include "anvil/maths/simd/abs.hpp"
 
 // Misc
 #include "anvil/maths/simd/sum.hpp"
