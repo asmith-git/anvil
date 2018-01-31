@@ -12,10 +12,12 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#define _simd_f64x1_abs_safe(X) std::fabs(X)
-#define _simd_f64x1_abs_(X) x1_abs_safe(X)
-#define _simd_f64x1_abs_instruction_set() anvil::simd::IS_NONE
-#define _simd_f64x1_abs_enabled() true
+#ifndef _simd_f64x1_abs_safe
+	#define _simd_f64x1_abs_safe(X) std::fabs(X)
+	#define _simd_f64x1_abs_(X) x1_abs_safe(X)
+	#define _simd_f64x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_f64x1_abs_enabled() true
+#endif
 
 #define _simd_f64x2_abs_safe(X)_simd_f64x2_combine_safe(\
 	_simd_f64x1_abs_safe(_simd_f64x2_splitlo_safe(X)),\
@@ -64,11 +66,17 @@
 	}
 	#define _simd_f64x2_abs_enable() _simd_f64x64_abs_enable()
 #else
-	#define _simd_f64x2_abs_(X) _simd_f64x2_combine(\
+	#define _simd_f64x2_abs(X) _simd_f64x2_combine(\
 		_simd_f64x1_abs(_simd_f64x2_splitlo(X)),\
 		_simd_f64x1_abs(_simd_f64x2_splithi(X)))
-	#define _simd_f64x2_abs(X) _simd_f64x2_abs_(X)
 	#define _simd_f64x2_abs_enable() (_simd_f64x1_abs_enable() && _simd_f64x2_combine_enable() && _simd_f64x2_splitlo_enable()  && _simd_f64x2_splithi_enable())
+#endif
+
+#ifndef _simd_f64x1_abs_safe
+	#define _simd_f64x1_abs_safe(X) std::fabs(X)
+	#define _simd_f64x1_abs_(X) x1_abs_safe(X)
+	#define _simd_f64x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_f64x1_abs_enabled() true
 #endif
 
 #define _simd_f64x4_abs_safe(X)_simd_f64x4_combine_safe(\
@@ -110,11 +118,17 @@
 	}
 	#define _simd_f64x4_abs_enable() _simd_f64x64_abs_enable()
 #else
-	#define _simd_f64x4_abs_(X) _simd_f64x4_combine(\
+	#define _simd_f64x4_abs(X) _simd_f64x4_combine(\
 		_simd_f64x2_abs(_simd_f64x4_splitlo(X)),\
 		_simd_f64x2_abs(_simd_f64x4_splithi(X)))
-	#define _simd_f64x4_abs(X) _simd_f64x4_abs_(X)
 	#define _simd_f64x4_abs_enable() (_simd_f64x2_abs_enable() && _simd_f64x4_combine_enable() && _simd_f64x4_splitlo_enable()  && _simd_f64x4_splithi_enable())
+#endif
+
+#ifndef _simd_f64x1_abs_safe
+	#define _simd_f64x1_abs_safe(X) std::fabs(X)
+	#define _simd_f64x1_abs_(X) x1_abs_safe(X)
+	#define _simd_f64x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_f64x1_abs_enabled() true
 #endif
 
 #define _simd_f64x8_abs_safe(X)_simd_f64x8_combine_safe(\
@@ -148,11 +162,17 @@
 	}
 	#define _simd_f64x8_abs_enable() _simd_f64x64_abs_enable()
 #else
-	#define _simd_f64x8_abs_(X) _simd_f64x8_combine(\
+	#define _simd_f64x8_abs(X) _simd_f64x8_combine(\
 		_simd_f64x4_abs(_simd_f64x8_splitlo(X)),\
 		_simd_f64x4_abs(_simd_f64x8_splithi(X)))
-	#define _simd_f64x8_abs(X) _simd_f64x8_abs_(X)
 	#define _simd_f64x8_abs_enable() (_simd_f64x4_abs_enable() && _simd_f64x8_combine_enable() && _simd_f64x8_splitlo_enable()  && _simd_f64x8_splithi_enable())
+#endif
+
+#ifndef _simd_f64x1_abs_safe
+	#define _simd_f64x1_abs_safe(X) std::fabs(X)
+	#define _simd_f64x1_abs_(X) x1_abs_safe(X)
+	#define _simd_f64x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_f64x1_abs_enabled() true
 #endif
 
 #define _simd_f64x16_abs_safe(X)_simd_f64x16_combine_safe(\
@@ -178,11 +198,17 @@
 	}
 	#define _simd_f64x16_abs_enable() _simd_f64x64_abs_enable()
 #else
-	#define _simd_f64x16_abs_(X) _simd_f64x16_combine(\
+	#define _simd_f64x16_abs(X) _simd_f64x16_combine(\
 		_simd_f64x8_abs(_simd_f64x16_splitlo(X)),\
 		_simd_f64x8_abs(_simd_f64x16_splithi(X)))
-	#define _simd_f64x16_abs(X) _simd_f64x16_abs_(X)
 	#define _simd_f64x16_abs_enable() (_simd_f64x8_abs_enable() && _simd_f64x16_combine_enable() && _simd_f64x16_splitlo_enable()  && _simd_f64x16_splithi_enable())
+#endif
+
+#ifndef _simd_f64x1_abs_safe
+	#define _simd_f64x1_abs_safe(X) std::fabs(X)
+	#define _simd_f64x1_abs_(X) x1_abs_safe(X)
+	#define _simd_f64x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_f64x1_abs_enabled() true
 #endif
 
 #define _simd_f64x32_abs_safe(X)_simd_f64x32_combine_safe(\
@@ -200,11 +226,17 @@
 	}
 	#define _simd_f64x32_abs_enable() _simd_f64x64_abs_enable()
 #else
-	#define _simd_f64x32_abs_(X) _simd_f64x32_combine(\
+	#define _simd_f64x32_abs(X) _simd_f64x32_combine(\
 		_simd_f64x16_abs(_simd_f64x32_splitlo(X)),\
 		_simd_f64x16_abs(_simd_f64x32_splithi(X)))
-	#define _simd_f64x32_abs(X) _simd_f64x32_abs_(X)
 	#define _simd_f64x32_abs_enable() (_simd_f64x16_abs_enable() && _simd_f64x32_combine_enable() && _simd_f64x32_splitlo_enable()  && _simd_f64x32_splithi_enable())
+#endif
+
+#ifndef _simd_f64x1_abs_safe
+	#define _simd_f64x1_abs_safe(X) std::fabs(X)
+	#define _simd_f64x1_abs_(X) x1_abs_safe(X)
+	#define _simd_f64x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_f64x1_abs_enabled() true
 #endif
 
 #define _simd_f64x64_abs_safe(X)_simd_f64x64_combine_safe(\
@@ -214,17 +246,18 @@
 	#define _simd_f64x64_abs(X) _simd_f64x64_abs_(X)
 	#define _simd_f64x64_abs_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x64_abs_instruction_set>()
 #else
-	#define _simd_f64x64_abs_(X) _simd_f64x64_combine(\
+	#define _simd_f64x64_abs(X) _simd_f64x64_combine(\
 		_simd_f64x32_abs(_simd_f64x64_splitlo(X)),\
 		_simd_f64x32_abs(_simd_f64x64_splithi(X)))
-	#define _simd_f64x64_abs(X) _simd_f64x64_abs_(X)
 	#define _simd_f64x64_abs_enable() (_simd_f64x32_abs_enable() && _simd_f64x64_combine_enable() && _simd_f64x64_splitlo_enable()  && _simd_f64x64_splithi_enable())
 #endif
 
-#define _simd_f32x1_abs_safe(X) std::fabs(X)
-#define _simd_f32x1_abs_(X) x1_abs_safe(X)
-#define _simd_f32x1_abs_instruction_set() anvil::simd::IS_NONE
-#define _simd_f32x1_abs_enabled() true
+#ifndef _simd_f32x1_abs_safe
+	#define _simd_f32x1_abs_safe(X) std::fabs(X)
+	#define _simd_f32x1_abs_(X) x1_abs_safe(X)
+	#define _simd_f32x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_f32x1_abs_enabled() true
+#endif
 
 #define _simd_f32x2_abs_safe(X)_simd_f32x2_combine_safe(\
 	_simd_f32x1_abs_safe(_simd_f32x2_splitlo_safe(X)),\
@@ -273,11 +306,17 @@
 	}
 	#define _simd_f32x2_abs_enable() _simd_f32x64_abs_enable()
 #else
-	#define _simd_f32x2_abs_(X) _simd_f32x2_combine(\
+	#define _simd_f32x2_abs(X) _simd_f32x2_combine(\
 		_simd_f32x1_abs(_simd_f32x2_splitlo(X)),\
 		_simd_f32x1_abs(_simd_f32x2_splithi(X)))
-	#define _simd_f32x2_abs(X) _simd_f32x2_abs_(X)
 	#define _simd_f32x2_abs_enable() (_simd_f32x1_abs_enable() && _simd_f32x2_combine_enable() && _simd_f32x2_splitlo_enable()  && _simd_f32x2_splithi_enable())
+#endif
+
+#ifndef _simd_f32x1_abs_safe
+	#define _simd_f32x1_abs_safe(X) std::fabs(X)
+	#define _simd_f32x1_abs_(X) x1_abs_safe(X)
+	#define _simd_f32x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_f32x1_abs_enabled() true
 #endif
 
 #define _simd_f32x4_abs_safe(X)_simd_f32x4_combine_safe(\
@@ -319,11 +358,17 @@
 	}
 	#define _simd_f32x4_abs_enable() _simd_f32x64_abs_enable()
 #else
-	#define _simd_f32x4_abs_(X) _simd_f32x4_combine(\
+	#define _simd_f32x4_abs(X) _simd_f32x4_combine(\
 		_simd_f32x2_abs(_simd_f32x4_splitlo(X)),\
 		_simd_f32x2_abs(_simd_f32x4_splithi(X)))
-	#define _simd_f32x4_abs(X) _simd_f32x4_abs_(X)
 	#define _simd_f32x4_abs_enable() (_simd_f32x2_abs_enable() && _simd_f32x4_combine_enable() && _simd_f32x4_splitlo_enable()  && _simd_f32x4_splithi_enable())
+#endif
+
+#ifndef _simd_f32x1_abs_safe
+	#define _simd_f32x1_abs_safe(X) std::fabs(X)
+	#define _simd_f32x1_abs_(X) x1_abs_safe(X)
+	#define _simd_f32x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_f32x1_abs_enabled() true
 #endif
 
 #define _simd_f32x8_abs_safe(X)_simd_f32x8_combine_safe(\
@@ -357,11 +402,17 @@
 	}
 	#define _simd_f32x8_abs_enable() _simd_f32x64_abs_enable()
 #else
-	#define _simd_f32x8_abs_(X) _simd_f32x8_combine(\
+	#define _simd_f32x8_abs(X) _simd_f32x8_combine(\
 		_simd_f32x4_abs(_simd_f32x8_splitlo(X)),\
 		_simd_f32x4_abs(_simd_f32x8_splithi(X)))
-	#define _simd_f32x8_abs(X) _simd_f32x8_abs_(X)
 	#define _simd_f32x8_abs_enable() (_simd_f32x4_abs_enable() && _simd_f32x8_combine_enable() && _simd_f32x8_splitlo_enable()  && _simd_f32x8_splithi_enable())
+#endif
+
+#ifndef _simd_f32x1_abs_safe
+	#define _simd_f32x1_abs_safe(X) std::fabs(X)
+	#define _simd_f32x1_abs_(X) x1_abs_safe(X)
+	#define _simd_f32x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_f32x1_abs_enabled() true
 #endif
 
 #define _simd_f32x16_abs_safe(X)_simd_f32x16_combine_safe(\
@@ -387,11 +438,17 @@
 	}
 	#define _simd_f32x16_abs_enable() _simd_f32x64_abs_enable()
 #else
-	#define _simd_f32x16_abs_(X) _simd_f32x16_combine(\
+	#define _simd_f32x16_abs(X) _simd_f32x16_combine(\
 		_simd_f32x8_abs(_simd_f32x16_splitlo(X)),\
 		_simd_f32x8_abs(_simd_f32x16_splithi(X)))
-	#define _simd_f32x16_abs(X) _simd_f32x16_abs_(X)
 	#define _simd_f32x16_abs_enable() (_simd_f32x8_abs_enable() && _simd_f32x16_combine_enable() && _simd_f32x16_splitlo_enable()  && _simd_f32x16_splithi_enable())
+#endif
+
+#ifndef _simd_f32x1_abs_safe
+	#define _simd_f32x1_abs_safe(X) std::fabs(X)
+	#define _simd_f32x1_abs_(X) x1_abs_safe(X)
+	#define _simd_f32x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_f32x1_abs_enabled() true
 #endif
 
 #define _simd_f32x32_abs_safe(X)_simd_f32x32_combine_safe(\
@@ -409,11 +466,17 @@
 	}
 	#define _simd_f32x32_abs_enable() _simd_f32x64_abs_enable()
 #else
-	#define _simd_f32x32_abs_(X) _simd_f32x32_combine(\
+	#define _simd_f32x32_abs(X) _simd_f32x32_combine(\
 		_simd_f32x16_abs(_simd_f32x32_splitlo(X)),\
 		_simd_f32x16_abs(_simd_f32x32_splithi(X)))
-	#define _simd_f32x32_abs(X) _simd_f32x32_abs_(X)
 	#define _simd_f32x32_abs_enable() (_simd_f32x16_abs_enable() && _simd_f32x32_combine_enable() && _simd_f32x32_splitlo_enable()  && _simd_f32x32_splithi_enable())
+#endif
+
+#ifndef _simd_f32x1_abs_safe
+	#define _simd_f32x1_abs_safe(X) std::fabs(X)
+	#define _simd_f32x1_abs_(X) x1_abs_safe(X)
+	#define _simd_f32x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_f32x1_abs_enabled() true
 #endif
 
 #define _simd_f32x64_abs_safe(X)_simd_f32x64_combine_safe(\
@@ -423,17 +486,18 @@
 	#define _simd_f32x64_abs(X) _simd_f32x64_abs_(X)
 	#define _simd_f32x64_abs_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x64_abs_instruction_set>()
 #else
-	#define _simd_f32x64_abs_(X) _simd_f32x64_combine(\
+	#define _simd_f32x64_abs(X) _simd_f32x64_combine(\
 		_simd_f32x32_abs(_simd_f32x64_splitlo(X)),\
 		_simd_f32x32_abs(_simd_f32x64_splithi(X)))
-	#define _simd_f32x64_abs(X) _simd_f32x64_abs_(X)
 	#define _simd_f32x64_abs_enable() (_simd_f32x32_abs_enable() && _simd_f32x64_combine_enable() && _simd_f32x64_splitlo_enable()  && _simd_f32x64_splithi_enable())
 #endif
 
-#define _simd_s64x1_abs_safe(X) std::abs(X)
-#define _simd_s64x1_abs_(X) x1_abs_safe(X)
-#define _simd_s64x1_abs_instruction_set() anvil::simd::IS_NONE
-#define _simd_s64x1_abs_enabled() true
+#ifndef _simd_s64x1_abs_safe
+	#define _simd_s64x1_abs_safe(X) std::abs(X)
+	#define _simd_s64x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s64x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s64x1_abs_enabled() true
+#endif
 
 #define _simd_s64x2_abs_safe(X)_simd_s64x2_combine_safe(\
 	_simd_s64x1_abs_safe(_simd_s64x2_splitlo_safe(X)),\
@@ -482,11 +546,17 @@
 	}
 	#define _simd_s64x2_abs_enable() _simd_s64x64_abs_enable()
 #else
-	#define _simd_s64x2_abs_(X) _simd_s64x2_combine(\
+	#define _simd_s64x2_abs(X) _simd_s64x2_combine(\
 		_simd_s64x1_abs(_simd_s64x2_splitlo(X)),\
 		_simd_s64x1_abs(_simd_s64x2_splithi(X)))
-	#define _simd_s64x2_abs(X) _simd_s64x2_abs_(X)
 	#define _simd_s64x2_abs_enable() (_simd_s64x1_abs_enable() && _simd_s64x2_combine_enable() && _simd_s64x2_splitlo_enable()  && _simd_s64x2_splithi_enable())
+#endif
+
+#ifndef _simd_s64x1_abs_safe
+	#define _simd_s64x1_abs_safe(X) std::abs(X)
+	#define _simd_s64x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s64x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s64x1_abs_enabled() true
 #endif
 
 #define _simd_s64x4_abs_safe(X)_simd_s64x4_combine_safe(\
@@ -528,11 +598,17 @@
 	}
 	#define _simd_s64x4_abs_enable() _simd_s64x64_abs_enable()
 #else
-	#define _simd_s64x4_abs_(X) _simd_s64x4_combine(\
+	#define _simd_s64x4_abs(X) _simd_s64x4_combine(\
 		_simd_s64x2_abs(_simd_s64x4_splitlo(X)),\
 		_simd_s64x2_abs(_simd_s64x4_splithi(X)))
-	#define _simd_s64x4_abs(X) _simd_s64x4_abs_(X)
 	#define _simd_s64x4_abs_enable() (_simd_s64x2_abs_enable() && _simd_s64x4_combine_enable() && _simd_s64x4_splitlo_enable()  && _simd_s64x4_splithi_enable())
+#endif
+
+#ifndef _simd_s64x1_abs_safe
+	#define _simd_s64x1_abs_safe(X) std::abs(X)
+	#define _simd_s64x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s64x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s64x1_abs_enabled() true
 #endif
 
 #define _simd_s64x8_abs_safe(X)_simd_s64x8_combine_safe(\
@@ -566,11 +642,17 @@
 	}
 	#define _simd_s64x8_abs_enable() _simd_s64x64_abs_enable()
 #else
-	#define _simd_s64x8_abs_(X) _simd_s64x8_combine(\
+	#define _simd_s64x8_abs(X) _simd_s64x8_combine(\
 		_simd_s64x4_abs(_simd_s64x8_splitlo(X)),\
 		_simd_s64x4_abs(_simd_s64x8_splithi(X)))
-	#define _simd_s64x8_abs(X) _simd_s64x8_abs_(X)
 	#define _simd_s64x8_abs_enable() (_simd_s64x4_abs_enable() && _simd_s64x8_combine_enable() && _simd_s64x8_splitlo_enable()  && _simd_s64x8_splithi_enable())
+#endif
+
+#ifndef _simd_s64x1_abs_safe
+	#define _simd_s64x1_abs_safe(X) std::abs(X)
+	#define _simd_s64x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s64x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s64x1_abs_enabled() true
 #endif
 
 #define _simd_s64x16_abs_safe(X)_simd_s64x16_combine_safe(\
@@ -596,11 +678,17 @@
 	}
 	#define _simd_s64x16_abs_enable() _simd_s64x64_abs_enable()
 #else
-	#define _simd_s64x16_abs_(X) _simd_s64x16_combine(\
+	#define _simd_s64x16_abs(X) _simd_s64x16_combine(\
 		_simd_s64x8_abs(_simd_s64x16_splitlo(X)),\
 		_simd_s64x8_abs(_simd_s64x16_splithi(X)))
-	#define _simd_s64x16_abs(X) _simd_s64x16_abs_(X)
 	#define _simd_s64x16_abs_enable() (_simd_s64x8_abs_enable() && _simd_s64x16_combine_enable() && _simd_s64x16_splitlo_enable()  && _simd_s64x16_splithi_enable())
+#endif
+
+#ifndef _simd_s64x1_abs_safe
+	#define _simd_s64x1_abs_safe(X) std::abs(X)
+	#define _simd_s64x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s64x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s64x1_abs_enabled() true
 #endif
 
 #define _simd_s64x32_abs_safe(X)_simd_s64x32_combine_safe(\
@@ -618,11 +706,17 @@
 	}
 	#define _simd_s64x32_abs_enable() _simd_s64x64_abs_enable()
 #else
-	#define _simd_s64x32_abs_(X) _simd_s64x32_combine(\
+	#define _simd_s64x32_abs(X) _simd_s64x32_combine(\
 		_simd_s64x16_abs(_simd_s64x32_splitlo(X)),\
 		_simd_s64x16_abs(_simd_s64x32_splithi(X)))
-	#define _simd_s64x32_abs(X) _simd_s64x32_abs_(X)
 	#define _simd_s64x32_abs_enable() (_simd_s64x16_abs_enable() && _simd_s64x32_combine_enable() && _simd_s64x32_splitlo_enable()  && _simd_s64x32_splithi_enable())
+#endif
+
+#ifndef _simd_s64x1_abs_safe
+	#define _simd_s64x1_abs_safe(X) std::abs(X)
+	#define _simd_s64x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s64x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s64x1_abs_enabled() true
 #endif
 
 #define _simd_s64x64_abs_safe(X)_simd_s64x64_combine_safe(\
@@ -632,17 +726,18 @@
 	#define _simd_s64x64_abs(X) _simd_s64x64_abs_(X)
 	#define _simd_s64x64_abs_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x64_abs_instruction_set>()
 #else
-	#define _simd_s64x64_abs_(X) _simd_s64x64_combine(\
+	#define _simd_s64x64_abs(X) _simd_s64x64_combine(\
 		_simd_s64x32_abs(_simd_s64x64_splitlo(X)),\
 		_simd_s64x32_abs(_simd_s64x64_splithi(X)))
-	#define _simd_s64x64_abs(X) _simd_s64x64_abs_(X)
 	#define _simd_s64x64_abs_enable() (_simd_s64x32_abs_enable() && _simd_s64x64_combine_enable() && _simd_s64x64_splitlo_enable()  && _simd_s64x64_splithi_enable())
 #endif
 
-#define _simd_u64x1_abs_safe(X) X
-#define _simd_u64x1_abs_(X) x1_abs_safe(X)
-#define _simd_u64x1_abs_instruction_set() anvil::simd::IS_NONE
-#define _simd_u64x1_abs_enabled() true
+#ifndef _simd_u64x1_abs_safe
+	#define _simd_u64x1_abs_safe(X) X
+	#define _simd_u64x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u64x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u64x1_abs_enabled() true
+#endif
 
 #define _simd_u64x2_abs_safe(X)_simd_u64x2_combine_safe(\
 	_simd_u64x1_abs_safe(_simd_u64x2_splitlo_safe(X)),\
@@ -691,11 +786,17 @@
 	}
 	#define _simd_u64x2_abs_enable() _simd_u64x64_abs_enable()
 #else
-	#define _simd_u64x2_abs_(X) _simd_u64x2_combine(\
+	#define _simd_u64x2_abs(X) _simd_u64x2_combine(\
 		_simd_u64x1_abs(_simd_u64x2_splitlo(X)),\
 		_simd_u64x1_abs(_simd_u64x2_splithi(X)))
-	#define _simd_u64x2_abs(X) _simd_u64x2_abs_(X)
 	#define _simd_u64x2_abs_enable() (_simd_u64x1_abs_enable() && _simd_u64x2_combine_enable() && _simd_u64x2_splitlo_enable()  && _simd_u64x2_splithi_enable())
+#endif
+
+#ifndef _simd_u64x1_abs_safe
+	#define _simd_u64x1_abs_safe(X) X
+	#define _simd_u64x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u64x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u64x1_abs_enabled() true
 #endif
 
 #define _simd_u64x4_abs_safe(X)_simd_u64x4_combine_safe(\
@@ -737,11 +838,17 @@
 	}
 	#define _simd_u64x4_abs_enable() _simd_u64x64_abs_enable()
 #else
-	#define _simd_u64x4_abs_(X) _simd_u64x4_combine(\
+	#define _simd_u64x4_abs(X) _simd_u64x4_combine(\
 		_simd_u64x2_abs(_simd_u64x4_splitlo(X)),\
 		_simd_u64x2_abs(_simd_u64x4_splithi(X)))
-	#define _simd_u64x4_abs(X) _simd_u64x4_abs_(X)
 	#define _simd_u64x4_abs_enable() (_simd_u64x2_abs_enable() && _simd_u64x4_combine_enable() && _simd_u64x4_splitlo_enable()  && _simd_u64x4_splithi_enable())
+#endif
+
+#ifndef _simd_u64x1_abs_safe
+	#define _simd_u64x1_abs_safe(X) X
+	#define _simd_u64x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u64x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u64x1_abs_enabled() true
 #endif
 
 #define _simd_u64x8_abs_safe(X)_simd_u64x8_combine_safe(\
@@ -775,11 +882,17 @@
 	}
 	#define _simd_u64x8_abs_enable() _simd_u64x64_abs_enable()
 #else
-	#define _simd_u64x8_abs_(X) _simd_u64x8_combine(\
+	#define _simd_u64x8_abs(X) _simd_u64x8_combine(\
 		_simd_u64x4_abs(_simd_u64x8_splitlo(X)),\
 		_simd_u64x4_abs(_simd_u64x8_splithi(X)))
-	#define _simd_u64x8_abs(X) _simd_u64x8_abs_(X)
 	#define _simd_u64x8_abs_enable() (_simd_u64x4_abs_enable() && _simd_u64x8_combine_enable() && _simd_u64x8_splitlo_enable()  && _simd_u64x8_splithi_enable())
+#endif
+
+#ifndef _simd_u64x1_abs_safe
+	#define _simd_u64x1_abs_safe(X) X
+	#define _simd_u64x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u64x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u64x1_abs_enabled() true
 #endif
 
 #define _simd_u64x16_abs_safe(X)_simd_u64x16_combine_safe(\
@@ -805,11 +918,17 @@
 	}
 	#define _simd_u64x16_abs_enable() _simd_u64x64_abs_enable()
 #else
-	#define _simd_u64x16_abs_(X) _simd_u64x16_combine(\
+	#define _simd_u64x16_abs(X) _simd_u64x16_combine(\
 		_simd_u64x8_abs(_simd_u64x16_splitlo(X)),\
 		_simd_u64x8_abs(_simd_u64x16_splithi(X)))
-	#define _simd_u64x16_abs(X) _simd_u64x16_abs_(X)
 	#define _simd_u64x16_abs_enable() (_simd_u64x8_abs_enable() && _simd_u64x16_combine_enable() && _simd_u64x16_splitlo_enable()  && _simd_u64x16_splithi_enable())
+#endif
+
+#ifndef _simd_u64x1_abs_safe
+	#define _simd_u64x1_abs_safe(X) X
+	#define _simd_u64x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u64x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u64x1_abs_enabled() true
 #endif
 
 #define _simd_u64x32_abs_safe(X)_simd_u64x32_combine_safe(\
@@ -827,11 +946,17 @@
 	}
 	#define _simd_u64x32_abs_enable() _simd_u64x64_abs_enable()
 #else
-	#define _simd_u64x32_abs_(X) _simd_u64x32_combine(\
+	#define _simd_u64x32_abs(X) _simd_u64x32_combine(\
 		_simd_u64x16_abs(_simd_u64x32_splitlo(X)),\
 		_simd_u64x16_abs(_simd_u64x32_splithi(X)))
-	#define _simd_u64x32_abs(X) _simd_u64x32_abs_(X)
 	#define _simd_u64x32_abs_enable() (_simd_u64x16_abs_enable() && _simd_u64x32_combine_enable() && _simd_u64x32_splitlo_enable()  && _simd_u64x32_splithi_enable())
+#endif
+
+#ifndef _simd_u64x1_abs_safe
+	#define _simd_u64x1_abs_safe(X) X
+	#define _simd_u64x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u64x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u64x1_abs_enabled() true
 #endif
 
 #define _simd_u64x64_abs_safe(X)_simd_u64x64_combine_safe(\
@@ -841,17 +966,18 @@
 	#define _simd_u64x64_abs(X) _simd_u64x64_abs_(X)
 	#define _simd_u64x64_abs_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x64_abs_instruction_set>()
 #else
-	#define _simd_u64x64_abs_(X) _simd_u64x64_combine(\
+	#define _simd_u64x64_abs(X) _simd_u64x64_combine(\
 		_simd_u64x32_abs(_simd_u64x64_splitlo(X)),\
 		_simd_u64x32_abs(_simd_u64x64_splithi(X)))
-	#define _simd_u64x64_abs(X) _simd_u64x64_abs_(X)
 	#define _simd_u64x64_abs_enable() (_simd_u64x32_abs_enable() && _simd_u64x64_combine_enable() && _simd_u64x64_splitlo_enable()  && _simd_u64x64_splithi_enable())
 #endif
 
-#define _simd_s32x1_abs_safe(X) std::abs(X)
-#define _simd_s32x1_abs_(X) x1_abs_safe(X)
-#define _simd_s32x1_abs_instruction_set() anvil::simd::IS_NONE
-#define _simd_s32x1_abs_enabled() true
+#ifndef _simd_s32x1_abs_safe
+	#define _simd_s32x1_abs_safe(X) std::abs(X)
+	#define _simd_s32x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s32x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s32x1_abs_enabled() true
+#endif
 
 #define _simd_s32x2_abs_safe(X)_simd_s32x2_combine_safe(\
 	_simd_s32x1_abs_safe(_simd_s32x2_splitlo_safe(X)),\
@@ -900,11 +1026,17 @@
 	}
 	#define _simd_s32x2_abs_enable() _simd_s32x64_abs_enable()
 #else
-	#define _simd_s32x2_abs_(X) _simd_s32x2_combine(\
+	#define _simd_s32x2_abs(X) _simd_s32x2_combine(\
 		_simd_s32x1_abs(_simd_s32x2_splitlo(X)),\
 		_simd_s32x1_abs(_simd_s32x2_splithi(X)))
-	#define _simd_s32x2_abs(X) _simd_s32x2_abs_(X)
 	#define _simd_s32x2_abs_enable() (_simd_s32x1_abs_enable() && _simd_s32x2_combine_enable() && _simd_s32x2_splitlo_enable()  && _simd_s32x2_splithi_enable())
+#endif
+
+#ifndef _simd_s32x1_abs_safe
+	#define _simd_s32x1_abs_safe(X) std::abs(X)
+	#define _simd_s32x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s32x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s32x1_abs_enabled() true
 #endif
 
 #define _simd_s32x4_abs_safe(X)_simd_s32x4_combine_safe(\
@@ -946,11 +1078,17 @@
 	}
 	#define _simd_s32x4_abs_enable() _simd_s32x64_abs_enable()
 #else
-	#define _simd_s32x4_abs_(X) _simd_s32x4_combine(\
+	#define _simd_s32x4_abs(X) _simd_s32x4_combine(\
 		_simd_s32x2_abs(_simd_s32x4_splitlo(X)),\
 		_simd_s32x2_abs(_simd_s32x4_splithi(X)))
-	#define _simd_s32x4_abs(X) _simd_s32x4_abs_(X)
 	#define _simd_s32x4_abs_enable() (_simd_s32x2_abs_enable() && _simd_s32x4_combine_enable() && _simd_s32x4_splitlo_enable()  && _simd_s32x4_splithi_enable())
+#endif
+
+#ifndef _simd_s32x1_abs_safe
+	#define _simd_s32x1_abs_safe(X) std::abs(X)
+	#define _simd_s32x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s32x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s32x1_abs_enabled() true
 #endif
 
 #define _simd_s32x8_abs_safe(X)_simd_s32x8_combine_safe(\
@@ -984,11 +1122,17 @@
 	}
 	#define _simd_s32x8_abs_enable() _simd_s32x64_abs_enable()
 #else
-	#define _simd_s32x8_abs_(X) _simd_s32x8_combine(\
+	#define _simd_s32x8_abs(X) _simd_s32x8_combine(\
 		_simd_s32x4_abs(_simd_s32x8_splitlo(X)),\
 		_simd_s32x4_abs(_simd_s32x8_splithi(X)))
-	#define _simd_s32x8_abs(X) _simd_s32x8_abs_(X)
 	#define _simd_s32x8_abs_enable() (_simd_s32x4_abs_enable() && _simd_s32x8_combine_enable() && _simd_s32x8_splitlo_enable()  && _simd_s32x8_splithi_enable())
+#endif
+
+#ifndef _simd_s32x1_abs_safe
+	#define _simd_s32x1_abs_safe(X) std::abs(X)
+	#define _simd_s32x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s32x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s32x1_abs_enabled() true
 #endif
 
 #define _simd_s32x16_abs_safe(X)_simd_s32x16_combine_safe(\
@@ -1014,11 +1158,17 @@
 	}
 	#define _simd_s32x16_abs_enable() _simd_s32x64_abs_enable()
 #else
-	#define _simd_s32x16_abs_(X) _simd_s32x16_combine(\
+	#define _simd_s32x16_abs(X) _simd_s32x16_combine(\
 		_simd_s32x8_abs(_simd_s32x16_splitlo(X)),\
 		_simd_s32x8_abs(_simd_s32x16_splithi(X)))
-	#define _simd_s32x16_abs(X) _simd_s32x16_abs_(X)
 	#define _simd_s32x16_abs_enable() (_simd_s32x8_abs_enable() && _simd_s32x16_combine_enable() && _simd_s32x16_splitlo_enable()  && _simd_s32x16_splithi_enable())
+#endif
+
+#ifndef _simd_s32x1_abs_safe
+	#define _simd_s32x1_abs_safe(X) std::abs(X)
+	#define _simd_s32x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s32x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s32x1_abs_enabled() true
 #endif
 
 #define _simd_s32x32_abs_safe(X)_simd_s32x32_combine_safe(\
@@ -1036,11 +1186,17 @@
 	}
 	#define _simd_s32x32_abs_enable() _simd_s32x64_abs_enable()
 #else
-	#define _simd_s32x32_abs_(X) _simd_s32x32_combine(\
+	#define _simd_s32x32_abs(X) _simd_s32x32_combine(\
 		_simd_s32x16_abs(_simd_s32x32_splitlo(X)),\
 		_simd_s32x16_abs(_simd_s32x32_splithi(X)))
-	#define _simd_s32x32_abs(X) _simd_s32x32_abs_(X)
 	#define _simd_s32x32_abs_enable() (_simd_s32x16_abs_enable() && _simd_s32x32_combine_enable() && _simd_s32x32_splitlo_enable()  && _simd_s32x32_splithi_enable())
+#endif
+
+#ifndef _simd_s32x1_abs_safe
+	#define _simd_s32x1_abs_safe(X) std::abs(X)
+	#define _simd_s32x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s32x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s32x1_abs_enabled() true
 #endif
 
 #define _simd_s32x64_abs_safe(X)_simd_s32x64_combine_safe(\
@@ -1050,17 +1206,18 @@
 	#define _simd_s32x64_abs(X) _simd_s32x64_abs_(X)
 	#define _simd_s32x64_abs_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x64_abs_instruction_set>()
 #else
-	#define _simd_s32x64_abs_(X) _simd_s32x64_combine(\
+	#define _simd_s32x64_abs(X) _simd_s32x64_combine(\
 		_simd_s32x32_abs(_simd_s32x64_splitlo(X)),\
 		_simd_s32x32_abs(_simd_s32x64_splithi(X)))
-	#define _simd_s32x64_abs(X) _simd_s32x64_abs_(X)
 	#define _simd_s32x64_abs_enable() (_simd_s32x32_abs_enable() && _simd_s32x64_combine_enable() && _simd_s32x64_splitlo_enable()  && _simd_s32x64_splithi_enable())
 #endif
 
-#define _simd_u32x1_abs_safe(X) X
-#define _simd_u32x1_abs_(X) x1_abs_safe(X)
-#define _simd_u32x1_abs_instruction_set() anvil::simd::IS_NONE
-#define _simd_u32x1_abs_enabled() true
+#ifndef _simd_u32x1_abs_safe
+	#define _simd_u32x1_abs_safe(X) X
+	#define _simd_u32x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u32x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u32x1_abs_enabled() true
+#endif
 
 #define _simd_u32x2_abs_safe(X)_simd_u32x2_combine_safe(\
 	_simd_u32x1_abs_safe(_simd_u32x2_splitlo_safe(X)),\
@@ -1109,11 +1266,17 @@
 	}
 	#define _simd_u32x2_abs_enable() _simd_u32x64_abs_enable()
 #else
-	#define _simd_u32x2_abs_(X) _simd_u32x2_combine(\
+	#define _simd_u32x2_abs(X) _simd_u32x2_combine(\
 		_simd_u32x1_abs(_simd_u32x2_splitlo(X)),\
 		_simd_u32x1_abs(_simd_u32x2_splithi(X)))
-	#define _simd_u32x2_abs(X) _simd_u32x2_abs_(X)
 	#define _simd_u32x2_abs_enable() (_simd_u32x1_abs_enable() && _simd_u32x2_combine_enable() && _simd_u32x2_splitlo_enable()  && _simd_u32x2_splithi_enable())
+#endif
+
+#ifndef _simd_u32x1_abs_safe
+	#define _simd_u32x1_abs_safe(X) X
+	#define _simd_u32x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u32x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u32x1_abs_enabled() true
 #endif
 
 #define _simd_u32x4_abs_safe(X)_simd_u32x4_combine_safe(\
@@ -1155,11 +1318,17 @@
 	}
 	#define _simd_u32x4_abs_enable() _simd_u32x64_abs_enable()
 #else
-	#define _simd_u32x4_abs_(X) _simd_u32x4_combine(\
+	#define _simd_u32x4_abs(X) _simd_u32x4_combine(\
 		_simd_u32x2_abs(_simd_u32x4_splitlo(X)),\
 		_simd_u32x2_abs(_simd_u32x4_splithi(X)))
-	#define _simd_u32x4_abs(X) _simd_u32x4_abs_(X)
 	#define _simd_u32x4_abs_enable() (_simd_u32x2_abs_enable() && _simd_u32x4_combine_enable() && _simd_u32x4_splitlo_enable()  && _simd_u32x4_splithi_enable())
+#endif
+
+#ifndef _simd_u32x1_abs_safe
+	#define _simd_u32x1_abs_safe(X) X
+	#define _simd_u32x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u32x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u32x1_abs_enabled() true
 #endif
 
 #define _simd_u32x8_abs_safe(X)_simd_u32x8_combine_safe(\
@@ -1193,11 +1362,17 @@
 	}
 	#define _simd_u32x8_abs_enable() _simd_u32x64_abs_enable()
 #else
-	#define _simd_u32x8_abs_(X) _simd_u32x8_combine(\
+	#define _simd_u32x8_abs(X) _simd_u32x8_combine(\
 		_simd_u32x4_abs(_simd_u32x8_splitlo(X)),\
 		_simd_u32x4_abs(_simd_u32x8_splithi(X)))
-	#define _simd_u32x8_abs(X) _simd_u32x8_abs_(X)
 	#define _simd_u32x8_abs_enable() (_simd_u32x4_abs_enable() && _simd_u32x8_combine_enable() && _simd_u32x8_splitlo_enable()  && _simd_u32x8_splithi_enable())
+#endif
+
+#ifndef _simd_u32x1_abs_safe
+	#define _simd_u32x1_abs_safe(X) X
+	#define _simd_u32x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u32x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u32x1_abs_enabled() true
 #endif
 
 #define _simd_u32x16_abs_safe(X)_simd_u32x16_combine_safe(\
@@ -1223,11 +1398,17 @@
 	}
 	#define _simd_u32x16_abs_enable() _simd_u32x64_abs_enable()
 #else
-	#define _simd_u32x16_abs_(X) _simd_u32x16_combine(\
+	#define _simd_u32x16_abs(X) _simd_u32x16_combine(\
 		_simd_u32x8_abs(_simd_u32x16_splitlo(X)),\
 		_simd_u32x8_abs(_simd_u32x16_splithi(X)))
-	#define _simd_u32x16_abs(X) _simd_u32x16_abs_(X)
 	#define _simd_u32x16_abs_enable() (_simd_u32x8_abs_enable() && _simd_u32x16_combine_enable() && _simd_u32x16_splitlo_enable()  && _simd_u32x16_splithi_enable())
+#endif
+
+#ifndef _simd_u32x1_abs_safe
+	#define _simd_u32x1_abs_safe(X) X
+	#define _simd_u32x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u32x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u32x1_abs_enabled() true
 #endif
 
 #define _simd_u32x32_abs_safe(X)_simd_u32x32_combine_safe(\
@@ -1245,11 +1426,17 @@
 	}
 	#define _simd_u32x32_abs_enable() _simd_u32x64_abs_enable()
 #else
-	#define _simd_u32x32_abs_(X) _simd_u32x32_combine(\
+	#define _simd_u32x32_abs(X) _simd_u32x32_combine(\
 		_simd_u32x16_abs(_simd_u32x32_splitlo(X)),\
 		_simd_u32x16_abs(_simd_u32x32_splithi(X)))
-	#define _simd_u32x32_abs(X) _simd_u32x32_abs_(X)
 	#define _simd_u32x32_abs_enable() (_simd_u32x16_abs_enable() && _simd_u32x32_combine_enable() && _simd_u32x32_splitlo_enable()  && _simd_u32x32_splithi_enable())
+#endif
+
+#ifndef _simd_u32x1_abs_safe
+	#define _simd_u32x1_abs_safe(X) X
+	#define _simd_u32x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u32x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u32x1_abs_enabled() true
 #endif
 
 #define _simd_u32x64_abs_safe(X)_simd_u32x64_combine_safe(\
@@ -1259,17 +1446,18 @@
 	#define _simd_u32x64_abs(X) _simd_u32x64_abs_(X)
 	#define _simd_u32x64_abs_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x64_abs_instruction_set>()
 #else
-	#define _simd_u32x64_abs_(X) _simd_u32x64_combine(\
+	#define _simd_u32x64_abs(X) _simd_u32x64_combine(\
 		_simd_u32x32_abs(_simd_u32x64_splitlo(X)),\
 		_simd_u32x32_abs(_simd_u32x64_splithi(X)))
-	#define _simd_u32x64_abs(X) _simd_u32x64_abs_(X)
 	#define _simd_u32x64_abs_enable() (_simd_u32x32_abs_enable() && _simd_u32x64_combine_enable() && _simd_u32x64_splitlo_enable()  && _simd_u32x64_splithi_enable())
 #endif
 
-#define _simd_s16x1_abs_safe(X) std::abs(X)
-#define _simd_s16x1_abs_(X) x1_abs_safe(X)
-#define _simd_s16x1_abs_instruction_set() anvil::simd::IS_NONE
-#define _simd_s16x1_abs_enabled() true
+#ifndef _simd_s16x1_abs_safe
+	#define _simd_s16x1_abs_safe(X) std::abs(X)
+	#define _simd_s16x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s16x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s16x1_abs_enabled() true
+#endif
 
 #define _simd_s16x2_abs_safe(X)_simd_s16x2_combine_safe(\
 	_simd_s16x1_abs_safe(_simd_s16x2_splitlo_safe(X)),\
@@ -1318,11 +1506,17 @@
 	}
 	#define _simd_s16x2_abs_enable() _simd_s16x64_abs_enable()
 #else
-	#define _simd_s16x2_abs_(X) _simd_s16x2_combine(\
+	#define _simd_s16x2_abs(X) _simd_s16x2_combine(\
 		_simd_s16x1_abs(_simd_s16x2_splitlo(X)),\
 		_simd_s16x1_abs(_simd_s16x2_splithi(X)))
-	#define _simd_s16x2_abs(X) _simd_s16x2_abs_(X)
 	#define _simd_s16x2_abs_enable() (_simd_s16x1_abs_enable() && _simd_s16x2_combine_enable() && _simd_s16x2_splitlo_enable()  && _simd_s16x2_splithi_enable())
+#endif
+
+#ifndef _simd_s16x1_abs_safe
+	#define _simd_s16x1_abs_safe(X) std::abs(X)
+	#define _simd_s16x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s16x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s16x1_abs_enabled() true
 #endif
 
 #define _simd_s16x4_abs_safe(X)_simd_s16x4_combine_safe(\
@@ -1364,11 +1558,17 @@
 	}
 	#define _simd_s16x4_abs_enable() _simd_s16x64_abs_enable()
 #else
-	#define _simd_s16x4_abs_(X) _simd_s16x4_combine(\
+	#define _simd_s16x4_abs(X) _simd_s16x4_combine(\
 		_simd_s16x2_abs(_simd_s16x4_splitlo(X)),\
 		_simd_s16x2_abs(_simd_s16x4_splithi(X)))
-	#define _simd_s16x4_abs(X) _simd_s16x4_abs_(X)
 	#define _simd_s16x4_abs_enable() (_simd_s16x2_abs_enable() && _simd_s16x4_combine_enable() && _simd_s16x4_splitlo_enable()  && _simd_s16x4_splithi_enable())
+#endif
+
+#ifndef _simd_s16x1_abs_safe
+	#define _simd_s16x1_abs_safe(X) std::abs(X)
+	#define _simd_s16x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s16x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s16x1_abs_enabled() true
 #endif
 
 #define _simd_s16x8_abs_safe(X)_simd_s16x8_combine_safe(\
@@ -1402,11 +1602,17 @@
 	}
 	#define _simd_s16x8_abs_enable() _simd_s16x64_abs_enable()
 #else
-	#define _simd_s16x8_abs_(X) _simd_s16x8_combine(\
+	#define _simd_s16x8_abs(X) _simd_s16x8_combine(\
 		_simd_s16x4_abs(_simd_s16x8_splitlo(X)),\
 		_simd_s16x4_abs(_simd_s16x8_splithi(X)))
-	#define _simd_s16x8_abs(X) _simd_s16x8_abs_(X)
 	#define _simd_s16x8_abs_enable() (_simd_s16x4_abs_enable() && _simd_s16x8_combine_enable() && _simd_s16x8_splitlo_enable()  && _simd_s16x8_splithi_enable())
+#endif
+
+#ifndef _simd_s16x1_abs_safe
+	#define _simd_s16x1_abs_safe(X) std::abs(X)
+	#define _simd_s16x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s16x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s16x1_abs_enabled() true
 #endif
 
 #define _simd_s16x16_abs_safe(X)_simd_s16x16_combine_safe(\
@@ -1432,11 +1638,17 @@
 	}
 	#define _simd_s16x16_abs_enable() _simd_s16x64_abs_enable()
 #else
-	#define _simd_s16x16_abs_(X) _simd_s16x16_combine(\
+	#define _simd_s16x16_abs(X) _simd_s16x16_combine(\
 		_simd_s16x8_abs(_simd_s16x16_splitlo(X)),\
 		_simd_s16x8_abs(_simd_s16x16_splithi(X)))
-	#define _simd_s16x16_abs(X) _simd_s16x16_abs_(X)
 	#define _simd_s16x16_abs_enable() (_simd_s16x8_abs_enable() && _simd_s16x16_combine_enable() && _simd_s16x16_splitlo_enable()  && _simd_s16x16_splithi_enable())
+#endif
+
+#ifndef _simd_s16x1_abs_safe
+	#define _simd_s16x1_abs_safe(X) std::abs(X)
+	#define _simd_s16x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s16x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s16x1_abs_enabled() true
 #endif
 
 #define _simd_s16x32_abs_safe(X)_simd_s16x32_combine_safe(\
@@ -1454,11 +1666,17 @@
 	}
 	#define _simd_s16x32_abs_enable() _simd_s16x64_abs_enable()
 #else
-	#define _simd_s16x32_abs_(X) _simd_s16x32_combine(\
+	#define _simd_s16x32_abs(X) _simd_s16x32_combine(\
 		_simd_s16x16_abs(_simd_s16x32_splitlo(X)),\
 		_simd_s16x16_abs(_simd_s16x32_splithi(X)))
-	#define _simd_s16x32_abs(X) _simd_s16x32_abs_(X)
 	#define _simd_s16x32_abs_enable() (_simd_s16x16_abs_enable() && _simd_s16x32_combine_enable() && _simd_s16x32_splitlo_enable()  && _simd_s16x32_splithi_enable())
+#endif
+
+#ifndef _simd_s16x1_abs_safe
+	#define _simd_s16x1_abs_safe(X) std::abs(X)
+	#define _simd_s16x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s16x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s16x1_abs_enabled() true
 #endif
 
 #define _simd_s16x64_abs_safe(X)_simd_s16x64_combine_safe(\
@@ -1468,17 +1686,18 @@
 	#define _simd_s16x64_abs(X) _simd_s16x64_abs_(X)
 	#define _simd_s16x64_abs_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x64_abs_instruction_set>()
 #else
-	#define _simd_s16x64_abs_(X) _simd_s16x64_combine(\
+	#define _simd_s16x64_abs(X) _simd_s16x64_combine(\
 		_simd_s16x32_abs(_simd_s16x64_splitlo(X)),\
 		_simd_s16x32_abs(_simd_s16x64_splithi(X)))
-	#define _simd_s16x64_abs(X) _simd_s16x64_abs_(X)
 	#define _simd_s16x64_abs_enable() (_simd_s16x32_abs_enable() && _simd_s16x64_combine_enable() && _simd_s16x64_splitlo_enable()  && _simd_s16x64_splithi_enable())
 #endif
 
-#define _simd_u16x1_abs_safe(X) X
-#define _simd_u16x1_abs_(X) x1_abs_safe(X)
-#define _simd_u16x1_abs_instruction_set() anvil::simd::IS_NONE
-#define _simd_u16x1_abs_enabled() true
+#ifndef _simd_u16x1_abs_safe
+	#define _simd_u16x1_abs_safe(X) X
+	#define _simd_u16x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u16x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u16x1_abs_enabled() true
+#endif
 
 #define _simd_u16x2_abs_safe(X)_simd_u16x2_combine_safe(\
 	_simd_u16x1_abs_safe(_simd_u16x2_splitlo_safe(X)),\
@@ -1527,11 +1746,17 @@
 	}
 	#define _simd_u16x2_abs_enable() _simd_u16x64_abs_enable()
 #else
-	#define _simd_u16x2_abs_(X) _simd_u16x2_combine(\
+	#define _simd_u16x2_abs(X) _simd_u16x2_combine(\
 		_simd_u16x1_abs(_simd_u16x2_splitlo(X)),\
 		_simd_u16x1_abs(_simd_u16x2_splithi(X)))
-	#define _simd_u16x2_abs(X) _simd_u16x2_abs_(X)
 	#define _simd_u16x2_abs_enable() (_simd_u16x1_abs_enable() && _simd_u16x2_combine_enable() && _simd_u16x2_splitlo_enable()  && _simd_u16x2_splithi_enable())
+#endif
+
+#ifndef _simd_u16x1_abs_safe
+	#define _simd_u16x1_abs_safe(X) X
+	#define _simd_u16x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u16x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u16x1_abs_enabled() true
 #endif
 
 #define _simd_u16x4_abs_safe(X)_simd_u16x4_combine_safe(\
@@ -1573,11 +1798,17 @@
 	}
 	#define _simd_u16x4_abs_enable() _simd_u16x64_abs_enable()
 #else
-	#define _simd_u16x4_abs_(X) _simd_u16x4_combine(\
+	#define _simd_u16x4_abs(X) _simd_u16x4_combine(\
 		_simd_u16x2_abs(_simd_u16x4_splitlo(X)),\
 		_simd_u16x2_abs(_simd_u16x4_splithi(X)))
-	#define _simd_u16x4_abs(X) _simd_u16x4_abs_(X)
 	#define _simd_u16x4_abs_enable() (_simd_u16x2_abs_enable() && _simd_u16x4_combine_enable() && _simd_u16x4_splitlo_enable()  && _simd_u16x4_splithi_enable())
+#endif
+
+#ifndef _simd_u16x1_abs_safe
+	#define _simd_u16x1_abs_safe(X) X
+	#define _simd_u16x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u16x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u16x1_abs_enabled() true
 #endif
 
 #define _simd_u16x8_abs_safe(X)_simd_u16x8_combine_safe(\
@@ -1611,11 +1842,17 @@
 	}
 	#define _simd_u16x8_abs_enable() _simd_u16x64_abs_enable()
 #else
-	#define _simd_u16x8_abs_(X) _simd_u16x8_combine(\
+	#define _simd_u16x8_abs(X) _simd_u16x8_combine(\
 		_simd_u16x4_abs(_simd_u16x8_splitlo(X)),\
 		_simd_u16x4_abs(_simd_u16x8_splithi(X)))
-	#define _simd_u16x8_abs(X) _simd_u16x8_abs_(X)
 	#define _simd_u16x8_abs_enable() (_simd_u16x4_abs_enable() && _simd_u16x8_combine_enable() && _simd_u16x8_splitlo_enable()  && _simd_u16x8_splithi_enable())
+#endif
+
+#ifndef _simd_u16x1_abs_safe
+	#define _simd_u16x1_abs_safe(X) X
+	#define _simd_u16x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u16x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u16x1_abs_enabled() true
 #endif
 
 #define _simd_u16x16_abs_safe(X)_simd_u16x16_combine_safe(\
@@ -1641,11 +1878,17 @@
 	}
 	#define _simd_u16x16_abs_enable() _simd_u16x64_abs_enable()
 #else
-	#define _simd_u16x16_abs_(X) _simd_u16x16_combine(\
+	#define _simd_u16x16_abs(X) _simd_u16x16_combine(\
 		_simd_u16x8_abs(_simd_u16x16_splitlo(X)),\
 		_simd_u16x8_abs(_simd_u16x16_splithi(X)))
-	#define _simd_u16x16_abs(X) _simd_u16x16_abs_(X)
 	#define _simd_u16x16_abs_enable() (_simd_u16x8_abs_enable() && _simd_u16x16_combine_enable() && _simd_u16x16_splitlo_enable()  && _simd_u16x16_splithi_enable())
+#endif
+
+#ifndef _simd_u16x1_abs_safe
+	#define _simd_u16x1_abs_safe(X) X
+	#define _simd_u16x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u16x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u16x1_abs_enabled() true
 #endif
 
 #define _simd_u16x32_abs_safe(X)_simd_u16x32_combine_safe(\
@@ -1663,11 +1906,17 @@
 	}
 	#define _simd_u16x32_abs_enable() _simd_u16x64_abs_enable()
 #else
-	#define _simd_u16x32_abs_(X) _simd_u16x32_combine(\
+	#define _simd_u16x32_abs(X) _simd_u16x32_combine(\
 		_simd_u16x16_abs(_simd_u16x32_splitlo(X)),\
 		_simd_u16x16_abs(_simd_u16x32_splithi(X)))
-	#define _simd_u16x32_abs(X) _simd_u16x32_abs_(X)
 	#define _simd_u16x32_abs_enable() (_simd_u16x16_abs_enable() && _simd_u16x32_combine_enable() && _simd_u16x32_splitlo_enable()  && _simd_u16x32_splithi_enable())
+#endif
+
+#ifndef _simd_u16x1_abs_safe
+	#define _simd_u16x1_abs_safe(X) X
+	#define _simd_u16x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u16x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u16x1_abs_enabled() true
 #endif
 
 #define _simd_u16x64_abs_safe(X)_simd_u16x64_combine_safe(\
@@ -1677,17 +1926,18 @@
 	#define _simd_u16x64_abs(X) _simd_u16x64_abs_(X)
 	#define _simd_u16x64_abs_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x64_abs_instruction_set>()
 #else
-	#define _simd_u16x64_abs_(X) _simd_u16x64_combine(\
+	#define _simd_u16x64_abs(X) _simd_u16x64_combine(\
 		_simd_u16x32_abs(_simd_u16x64_splitlo(X)),\
 		_simd_u16x32_abs(_simd_u16x64_splithi(X)))
-	#define _simd_u16x64_abs(X) _simd_u16x64_abs_(X)
 	#define _simd_u16x64_abs_enable() (_simd_u16x32_abs_enable() && _simd_u16x64_combine_enable() && _simd_u16x64_splitlo_enable()  && _simd_u16x64_splithi_enable())
 #endif
 
-#define _simd_s8x1_abs_safe(X) std::abs(X)
-#define _simd_s8x1_abs_(X) x1_abs_safe(X)
-#define _simd_s8x1_abs_instruction_set() anvil::simd::IS_NONE
-#define _simd_s8x1_abs_enabled() true
+#ifndef _simd_s8x1_abs_safe
+	#define _simd_s8x1_abs_safe(X) std::abs(X)
+	#define _simd_s8x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s8x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s8x1_abs_enabled() true
+#endif
 
 #define _simd_s8x2_abs_safe(X)_simd_s8x2_combine_safe(\
 	_simd_s8x1_abs_safe(_simd_s8x2_splitlo_safe(X)),\
@@ -1736,11 +1986,17 @@
 	}
 	#define _simd_s8x2_abs_enable() _simd_s8x64_abs_enable()
 #else
-	#define _simd_s8x2_abs_(X) _simd_s8x2_combine(\
+	#define _simd_s8x2_abs(X) _simd_s8x2_combine(\
 		_simd_s8x1_abs(_simd_s8x2_splitlo(X)),\
 		_simd_s8x1_abs(_simd_s8x2_splithi(X)))
-	#define _simd_s8x2_abs(X) _simd_s8x2_abs_(X)
 	#define _simd_s8x2_abs_enable() (_simd_s8x1_abs_enable() && _simd_s8x2_combine_enable() && _simd_s8x2_splitlo_enable()  && _simd_s8x2_splithi_enable())
+#endif
+
+#ifndef _simd_s8x1_abs_safe
+	#define _simd_s8x1_abs_safe(X) std::abs(X)
+	#define _simd_s8x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s8x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s8x1_abs_enabled() true
 #endif
 
 #define _simd_s8x4_abs_safe(X)_simd_s8x4_combine_safe(\
@@ -1782,11 +2038,17 @@
 	}
 	#define _simd_s8x4_abs_enable() _simd_s8x64_abs_enable()
 #else
-	#define _simd_s8x4_abs_(X) _simd_s8x4_combine(\
+	#define _simd_s8x4_abs(X) _simd_s8x4_combine(\
 		_simd_s8x2_abs(_simd_s8x4_splitlo(X)),\
 		_simd_s8x2_abs(_simd_s8x4_splithi(X)))
-	#define _simd_s8x4_abs(X) _simd_s8x4_abs_(X)
 	#define _simd_s8x4_abs_enable() (_simd_s8x2_abs_enable() && _simd_s8x4_combine_enable() && _simd_s8x4_splitlo_enable()  && _simd_s8x4_splithi_enable())
+#endif
+
+#ifndef _simd_s8x1_abs_safe
+	#define _simd_s8x1_abs_safe(X) std::abs(X)
+	#define _simd_s8x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s8x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s8x1_abs_enabled() true
 #endif
 
 #define _simd_s8x8_abs_safe(X)_simd_s8x8_combine_safe(\
@@ -1820,11 +2082,17 @@
 	}
 	#define _simd_s8x8_abs_enable() _simd_s8x64_abs_enable()
 #else
-	#define _simd_s8x8_abs_(X) _simd_s8x8_combine(\
+	#define _simd_s8x8_abs(X) _simd_s8x8_combine(\
 		_simd_s8x4_abs(_simd_s8x8_splitlo(X)),\
 		_simd_s8x4_abs(_simd_s8x8_splithi(X)))
-	#define _simd_s8x8_abs(X) _simd_s8x8_abs_(X)
 	#define _simd_s8x8_abs_enable() (_simd_s8x4_abs_enable() && _simd_s8x8_combine_enable() && _simd_s8x8_splitlo_enable()  && _simd_s8x8_splithi_enable())
+#endif
+
+#ifndef _simd_s8x1_abs_safe
+	#define _simd_s8x1_abs_safe(X) std::abs(X)
+	#define _simd_s8x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s8x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s8x1_abs_enabled() true
 #endif
 
 #define _simd_s8x16_abs_safe(X)_simd_s8x16_combine_safe(\
@@ -1850,11 +2118,17 @@
 	}
 	#define _simd_s8x16_abs_enable() _simd_s8x64_abs_enable()
 #else
-	#define _simd_s8x16_abs_(X) _simd_s8x16_combine(\
+	#define _simd_s8x16_abs(X) _simd_s8x16_combine(\
 		_simd_s8x8_abs(_simd_s8x16_splitlo(X)),\
 		_simd_s8x8_abs(_simd_s8x16_splithi(X)))
-	#define _simd_s8x16_abs(X) _simd_s8x16_abs_(X)
 	#define _simd_s8x16_abs_enable() (_simd_s8x8_abs_enable() && _simd_s8x16_combine_enable() && _simd_s8x16_splitlo_enable()  && _simd_s8x16_splithi_enable())
+#endif
+
+#ifndef _simd_s8x1_abs_safe
+	#define _simd_s8x1_abs_safe(X) std::abs(X)
+	#define _simd_s8x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s8x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s8x1_abs_enabled() true
 #endif
 
 #define _simd_s8x32_abs_safe(X)_simd_s8x32_combine_safe(\
@@ -1872,11 +2146,17 @@
 	}
 	#define _simd_s8x32_abs_enable() _simd_s8x64_abs_enable()
 #else
-	#define _simd_s8x32_abs_(X) _simd_s8x32_combine(\
+	#define _simd_s8x32_abs(X) _simd_s8x32_combine(\
 		_simd_s8x16_abs(_simd_s8x32_splitlo(X)),\
 		_simd_s8x16_abs(_simd_s8x32_splithi(X)))
-	#define _simd_s8x32_abs(X) _simd_s8x32_abs_(X)
 	#define _simd_s8x32_abs_enable() (_simd_s8x16_abs_enable() && _simd_s8x32_combine_enable() && _simd_s8x32_splitlo_enable()  && _simd_s8x32_splithi_enable())
+#endif
+
+#ifndef _simd_s8x1_abs_safe
+	#define _simd_s8x1_abs_safe(X) std::abs(X)
+	#define _simd_s8x1_abs_(X) x1_abs_safe(X)
+	#define _simd_s8x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_s8x1_abs_enabled() true
 #endif
 
 #define _simd_s8x64_abs_safe(X)_simd_s8x64_combine_safe(\
@@ -1886,17 +2166,18 @@
 	#define _simd_s8x64_abs(X) _simd_s8x64_abs_(X)
 	#define _simd_s8x64_abs_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x64_abs_instruction_set>()
 #else
-	#define _simd_s8x64_abs_(X) _simd_s8x64_combine(\
+	#define _simd_s8x64_abs(X) _simd_s8x64_combine(\
 		_simd_s8x32_abs(_simd_s8x64_splitlo(X)),\
 		_simd_s8x32_abs(_simd_s8x64_splithi(X)))
-	#define _simd_s8x64_abs(X) _simd_s8x64_abs_(X)
 	#define _simd_s8x64_abs_enable() (_simd_s8x32_abs_enable() && _simd_s8x64_combine_enable() && _simd_s8x64_splitlo_enable()  && _simd_s8x64_splithi_enable())
 #endif
 
-#define _simd_u8x1_abs_safe(X) X
-#define _simd_u8x1_abs_(X) x1_abs_safe(X)
-#define _simd_u8x1_abs_instruction_set() anvil::simd::IS_NONE
-#define _simd_u8x1_abs_enabled() true
+#ifndef _simd_u8x1_abs_safe
+	#define _simd_u8x1_abs_safe(X) X
+	#define _simd_u8x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u8x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u8x1_abs_enabled() true
+#endif
 
 #define _simd_u8x2_abs_safe(X)_simd_u8x2_combine_safe(\
 	_simd_u8x1_abs_safe(_simd_u8x2_splitlo_safe(X)),\
@@ -1945,11 +2226,17 @@
 	}
 	#define _simd_u8x2_abs_enable() _simd_u8x64_abs_enable()
 #else
-	#define _simd_u8x2_abs_(X) _simd_u8x2_combine(\
+	#define _simd_u8x2_abs(X) _simd_u8x2_combine(\
 		_simd_u8x1_abs(_simd_u8x2_splitlo(X)),\
 		_simd_u8x1_abs(_simd_u8x2_splithi(X)))
-	#define _simd_u8x2_abs(X) _simd_u8x2_abs_(X)
 	#define _simd_u8x2_abs_enable() (_simd_u8x1_abs_enable() && _simd_u8x2_combine_enable() && _simd_u8x2_splitlo_enable()  && _simd_u8x2_splithi_enable())
+#endif
+
+#ifndef _simd_u8x1_abs_safe
+	#define _simd_u8x1_abs_safe(X) X
+	#define _simd_u8x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u8x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u8x1_abs_enabled() true
 #endif
 
 #define _simd_u8x4_abs_safe(X)_simd_u8x4_combine_safe(\
@@ -1991,11 +2278,17 @@
 	}
 	#define _simd_u8x4_abs_enable() _simd_u8x64_abs_enable()
 #else
-	#define _simd_u8x4_abs_(X) _simd_u8x4_combine(\
+	#define _simd_u8x4_abs(X) _simd_u8x4_combine(\
 		_simd_u8x2_abs(_simd_u8x4_splitlo(X)),\
 		_simd_u8x2_abs(_simd_u8x4_splithi(X)))
-	#define _simd_u8x4_abs(X) _simd_u8x4_abs_(X)
 	#define _simd_u8x4_abs_enable() (_simd_u8x2_abs_enable() && _simd_u8x4_combine_enable() && _simd_u8x4_splitlo_enable()  && _simd_u8x4_splithi_enable())
+#endif
+
+#ifndef _simd_u8x1_abs_safe
+	#define _simd_u8x1_abs_safe(X) X
+	#define _simd_u8x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u8x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u8x1_abs_enabled() true
 #endif
 
 #define _simd_u8x8_abs_safe(X)_simd_u8x8_combine_safe(\
@@ -2029,11 +2322,17 @@
 	}
 	#define _simd_u8x8_abs_enable() _simd_u8x64_abs_enable()
 #else
-	#define _simd_u8x8_abs_(X) _simd_u8x8_combine(\
+	#define _simd_u8x8_abs(X) _simd_u8x8_combine(\
 		_simd_u8x4_abs(_simd_u8x8_splitlo(X)),\
 		_simd_u8x4_abs(_simd_u8x8_splithi(X)))
-	#define _simd_u8x8_abs(X) _simd_u8x8_abs_(X)
 	#define _simd_u8x8_abs_enable() (_simd_u8x4_abs_enable() && _simd_u8x8_combine_enable() && _simd_u8x8_splitlo_enable()  && _simd_u8x8_splithi_enable())
+#endif
+
+#ifndef _simd_u8x1_abs_safe
+	#define _simd_u8x1_abs_safe(X) X
+	#define _simd_u8x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u8x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u8x1_abs_enabled() true
 #endif
 
 #define _simd_u8x16_abs_safe(X)_simd_u8x16_combine_safe(\
@@ -2059,11 +2358,17 @@
 	}
 	#define _simd_u8x16_abs_enable() _simd_u8x64_abs_enable()
 #else
-	#define _simd_u8x16_abs_(X) _simd_u8x16_combine(\
+	#define _simd_u8x16_abs(X) _simd_u8x16_combine(\
 		_simd_u8x8_abs(_simd_u8x16_splitlo(X)),\
 		_simd_u8x8_abs(_simd_u8x16_splithi(X)))
-	#define _simd_u8x16_abs(X) _simd_u8x16_abs_(X)
 	#define _simd_u8x16_abs_enable() (_simd_u8x8_abs_enable() && _simd_u8x16_combine_enable() && _simd_u8x16_splitlo_enable()  && _simd_u8x16_splithi_enable())
+#endif
+
+#ifndef _simd_u8x1_abs_safe
+	#define _simd_u8x1_abs_safe(X) X
+	#define _simd_u8x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u8x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u8x1_abs_enabled() true
 #endif
 
 #define _simd_u8x32_abs_safe(X)_simd_u8x32_combine_safe(\
@@ -2081,11 +2386,17 @@
 	}
 	#define _simd_u8x32_abs_enable() _simd_u8x64_abs_enable()
 #else
-	#define _simd_u8x32_abs_(X) _simd_u8x32_combine(\
+	#define _simd_u8x32_abs(X) _simd_u8x32_combine(\
 		_simd_u8x16_abs(_simd_u8x32_splitlo(X)),\
 		_simd_u8x16_abs(_simd_u8x32_splithi(X)))
-	#define _simd_u8x32_abs(X) _simd_u8x32_abs_(X)
 	#define _simd_u8x32_abs_enable() (_simd_u8x16_abs_enable() && _simd_u8x32_combine_enable() && _simd_u8x32_splitlo_enable()  && _simd_u8x32_splithi_enable())
+#endif
+
+#ifndef _simd_u8x1_abs_safe
+	#define _simd_u8x1_abs_safe(X) X
+	#define _simd_u8x1_abs_(X) x1_abs_safe(X)
+	#define _simd_u8x1_abs_instruction_set() anvil::simd::IS_NONE
+	#define _simd_u8x1_abs_enabled() true
 #endif
 
 #define _simd_u8x64_abs_safe(X)_simd_u8x64_combine_safe(\
@@ -2095,10 +2406,9 @@
 	#define _simd_u8x64_abs(X) _simd_u8x64_abs_(X)
 	#define _simd_u8x64_abs_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x64_abs_instruction_set>()
 #else
-	#define _simd_u8x64_abs_(X) _simd_u8x64_combine(\
+	#define _simd_u8x64_abs(X) _simd_u8x64_combine(\
 		_simd_u8x32_abs(_simd_u8x64_splitlo(X)),\
 		_simd_u8x32_abs(_simd_u8x64_splithi(X)))
-	#define _simd_u8x64_abs(X) _simd_u8x64_abs_(X)
 	#define _simd_u8x64_abs_enable() (_simd_u8x32_abs_enable() && _simd_u8x64_combine_enable() && _simd_u8x64_splitlo_enable()  && _simd_u8x64_splithi_enable())
 #endif
 

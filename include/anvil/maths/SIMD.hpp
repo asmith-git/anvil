@@ -1733,6 +1733,7 @@ _simd_extract(u8)
 #include "anvil/maths/simd/xor.hpp"
 #include "anvil/maths/simd/lshift.hpp"
 #include "anvil/maths/simd/rshift.hpp"
+#include "anvil/maths/simd/not.hpp"
 
 // Min/Max
 
@@ -1748,9 +1749,8 @@ _simd_extract(u8)
 #include "anvil/maths/simd/cmple.hpp"
 #include "anvil/maths/simd/cmpge.hpp"
 
-// Abs, Sqrt
+// Abs
 #include "anvil/maths/simd/abs.hpp"
-#include "anvil/maths/simd/sqrt.hpp"
 
 // Ceil, Floor, Round
 #include "anvil/maths/simd/ceil.hpp"
@@ -1761,10 +1761,32 @@ _simd_extract(u8)
 #include "anvil/maths/simd/fma.hpp"
 #include "anvil/maths/simd/fms.hpp"
 
+// Trigonometric
+#include "anvil/maths/simd/cos.hpp"
+#include "anvil/maths/simd/sin.hpp"
+#include "anvil/maths/simd/tan.hpp"
+#include "anvil/maths/simd/acos.hpp"
+#include "anvil/maths/simd/asin.hpp"
+#include "anvil/maths/simd/atan.hpp"
+#include "anvil/maths/simd/cosh.hpp"
+#include "anvil/maths/simd/sinh.hpp"
+#include "anvil/maths/simd/tanh.hpp"
+#include "anvil/maths/simd/atan2.hpp"
+
+// Log
+#include "anvil/maths/simd/log.hpp"
+#include "anvil/maths/simd/log2.hpp"
+#include "anvil/maths/simd/log10.hpp"
+
+// Sqrt
+#include "anvil/maths/simd/sqrt.hpp"
+#include "anvil/maths/simd/cbrt.hpp"
+
 // Misc
 #include "anvil/maths/simd/sum.hpp"
 #include "anvil/maths/simd/mod.hpp"
 #include "anvil/maths/simd/dim.hpp"
+#include "anvil/maths/simd/exp.hpp"
 
 namespace anvil { namespace simd {
 
