@@ -66,7 +66,7 @@
 #define _simd_u8x32 __m256i
 
 #define _simd_f64x2_load_(X) _mm_load_pd(X)
-#define _simdf64x2_load_instruction_set anvil::simd::IS_SSE
+#define _simd_f64x2_load_instruction_set anvil::simd::IS_SSE
 
 #define _simd_f64x4_load_(X) _mm256_load_pd(X)
 #define _simd_f64x4_load_instruction_set anvil::simd::IS_AVX
@@ -77,7 +77,13 @@
 #define _simd_f32x8_load_(X) _mm256_load_ps(X)
 #define _simd_f32x8_load_instruction_set anvil::simd::IS_AVX
 
-#define _simd_s32x4_load_(X) _mm_load_si1282(reinterpret_cast<const __m128i*>(X))
+#define _simd_s64x2_load_(X) _mm_load_si128(reinterpret_cast<const __m128i*>(X))
+#define _simd_s64x2_load_instruction_set anvil::simd::IS_SSE
+
+#define _simd_s64x4_load_(X) _mm256_load_si256(reinterpret_cast<const __m256i*>(X))
+#define _simd_s64x4_load_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s32x4_load_(X) _mm_load_si128(reinterpret_cast<const __m128i*>(X))
 #define _simd_s32x4_load_instruction_set anvil::simd::IS_SSE
 
 #define _simd_s32x8_load_(X) _mm256_load_si256(reinterpret_cast<const __m256i*>(X))
@@ -95,10 +101,22 @@
 #define _simd_s8x32_load_(X) _mm256_load_si256(reinterpret_cast<const __m256i*>(X))
 #define _simd_s8x32_load_instruction_set anvil::simd::IS_AVX
 
+#define _simd_u64x2_load_(X) _mm_load_si128(reinterpret_cast<const __m128i*>(X))
+#define _simd_u64x2_load_instruction_set anvil::simd::IS_SSE
+
+#define _simd_u64x4_load_(X) _mm256_load_si256(reinterpret_cast<const __m256i*>(X))
+#define _simd_u64x4_load_instruction_set anvil::simd::IS_AVX
+
+#define _simd_u32x4_load_(X) _mm_load_si128(reinterpret_cast<const __m128i*>(X))
+#define _simd_u32x4_load_instruction_set anvil::simd::IS_SSE
+
+#define _simd_u32x8_load_(X) _mm256_load_si256(reinterpret_cast<const __m256i*>(X))
+#define _simd_u32x8_load_instruction_set anvil::simd::IS_AVX
+
 #define _simd_u16x8_load_(X) _mm_load_si128(reinterpret_cast<const __m128i*>(X))
 #define _simd_u16x8_load_instruction_set anvil::simd::IS_SSE
 
-#define _simd_u16x16_load_(X) _mm256_load_esi256(reinterpret_cast<const __m256i*>(X))
+#define _simd_u16x16_load_(X) _mm256_load_si256(reinterpret_cast<const __m256i*>(X))
 #define _simd_u16x16_load_instruction_set anvil::simd::IS_AVX
 
 #define _simd_u8x16_load_(X) _mm_load_si128(reinterpret_cast<const __m128i*>(X))
@@ -108,7 +126,7 @@
 #define _simd_u8x32_load_instruction_set anvil::simd::IS_AVX
 
 #define _simd_f64x2_add_(X,Y) _mm_add_pd(X,Y)
-#define _simdf64x2_add_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_add_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_f64x4_add_(X,Y) _mm256_add_pd(X,Y)
 #define _simd_f64x4_add_instruction_set anvil::simd::IS_AVX
@@ -150,7 +168,7 @@
 #define _simd_u8x32_add_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_f64x2_sub_(X,Y) _mm_sub_pd(X,Y)
-#define _simdf64x2_sub_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_sub_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_f64x4_sub_(X,Y) _mm256_sub_pd(X,Y)
 #define _simd_f64x4_sub_instruction_set anvil::simd::IS_AVX
@@ -192,7 +210,7 @@
 #define _simd_u8x32_sub_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_f64x2_mul_(X,Y) _mm_mul_pd(X,Y)
-#define _simdf64x2_mul_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_mul_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_f64x4_mul_(X,Y) _mm256_mul_pd(X,Y)
 #define _simd_f64x4_mul_instruction_set anvil::simd::IS_AVX
@@ -210,7 +228,7 @@
 #define _simd_s16x16_mul_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_f64x2_div_(X,Y) _mm_div_pd(X,Y)
-#define _simdf64x2_div_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_div_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_f64x4_div_(X,Y) _mm256_div_pd(X,Y)
 #define _simd_f64x4_div_instruction_set anvil::simd::IS_AVX
@@ -222,7 +240,7 @@
 #define _simd_f32x8_div_instruction_set anvil::simd::IS_AVX
 
 #define _simd_f64x2_min_(X,Y) _mm_min_pd(X,Y)
-#define _simdf64x2_min_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_min_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_f64x4_min_(X,Y) _mm256_min_pd(X,Y)
 #define _simd_f64x4_min_instruction_set anvil::simd::IS_AVX
@@ -270,7 +288,7 @@
 #define _simd_u8x32_min_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_f64x2_max_(X,Y) _mm_max_pd(X,Y)
-#define _simdf64x2_max_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_max_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_f64x4_max_(X,Y) _mm256_max_pd(X,Y)
 #define _simd_f64x4_max_instruction_set anvil::simd::IS_AVX
@@ -318,7 +336,7 @@
 #define _simd_u8x32_max_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_f64x2_fill_undefined_() _mm_undefined_pd()
-#define _simdf64x2_fill_undefined_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_fill_undefined_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_f64x4_fill_undefined_() _mm256_undefined_pd()
 #define _simd_f64x4_fill_undefined_instruction_set anvil::simd::IS_AVX
@@ -360,7 +378,7 @@
 #define _simd_u8x32_fill_undefined_instruction_set anvil::simd::IS_AVX
 
 #define _simd_f64x2_fill_zero_() _mm_setzero_pd()
-#define _simdf64x2_fill_zero_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_fill_zero_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_f64x4_fill_zero_() _mm256_setzero_pd()
 #define _simd_f64x4_fill_zero_instruction_set anvil::simd::IS_AVX
@@ -402,7 +420,7 @@
 #define _simd_u8x32_fill_zero_instruction_set anvil::simd::IS_AVX
 
 #define _simd_f64x2_fill_scalar_(X) _mm_set1_pd(X)
-#define _simdf64x2_fill_scalar_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_fill_scalar_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_f64x4_fill_scalar_(X) _mm256_set1_pd(X)
 #define _simd_f64x4_fill_scalar_instruction_set anvil::simd::IS_AVX
@@ -462,7 +480,7 @@
 #define _simd_u8x32_fill_scalar_instruction_set _simd_s8x32_fill_scalar_instruction_set
 
 #define _simd_f64x2_set_(X,Y) _mm_set_pd(X,Y)
-#define _simdf64x2_set_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_set_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_f64x4_set_(X,Y,Z,W) _mm256_set_pd(X,Y,Z,W)
 #define _simd_f64x4_set_instruction_set anvil::simd::IS_AVX
@@ -522,106 +540,106 @@
 #define _simd_u8x32_set_instruction_set _simd_s8x32_set_instruction_set
 
 #define _simd_f64x2_cmpeq_(X,Y) _mm_cmpeq_pd(X,Y)
-#define _simdf64x2_cmpeq_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_cmpeq_instruction_set anvil::simd::IS_SSE_2
 
-#define _simd_f64x4_cmpeq_(X,Y) _mm256_cmpeq_pd(X,Y)
-#define _simd_f64x4_cmpeq_instruction_set anvil::simd::IS_AVX
+//#define _simd_f64x4_cmpeq_(X,Y) _mm256_cmpeq_pd(X,Y)
+//#define _simd_f64x4_cmpeq_instruction_set anvil::simd::IS_AVX
 
 #define _simd_f32x4_cmpeq_(X,Y) _mm_cmpeq_ps(X,Y)
 #define _simd_f32x4_cmpeq_instruction_set anvil::simd::IS_SSE
 
-#define _simd_f32x8_cmpeq_(X,Y) _mm256_cmpeq_ps(X,Y)
-#define _simd_f32x8_cmpeq_instruction_set anvil::simd::IS_AVX
+//#define _simd_f32x8_cmpeq_(X,Y) _mm256_cmpeq_ps(X,Y)
+//#define _simd_f32x8_cmpeq_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s32x4_cmpeq_(X,Y) _mm_cmpeq_epi32(X,Y)
 #define _simd_s32x4_cmpeq_instruction_set anvil::simd::IS_SSE_2
 
-#define _simd_s32x8_cmpeq_(X,Y) _mm256_cmpeq_epi32(X,Y)
-#define _simd_s32x8_cmpeq_instruction_set anvil::simd::IS_AVX_2
+//#define _simd_s32x8_cmpeq_(X,Y) _mm256_cmpeq_epi32(X,Y)
+//#define _simd_s32x8_cmpeq_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s16x8_cmpeq_(X,Y) _mm_cmpeq_epi16(X,Y)
 #define _simd_s16x8_cmpeq_instruction_set anvil::simd::IS_SSE_2
 
-#define _simd_s16x16_cmpeq_(X,Y) _mm256_cmpeq_epi16(X,Y)
-#define _simd_s16x16_cmpeq_instruction_set anvil::simd::IS_AVX_2
+//#define _simd_s16x16_cmpeq_(X,Y) _mm256_cmpeq_epi16(X,Y)
+//#define _simd_s16x16_cmpeq_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s8x16_cmpeq_(X,Y) _mm_cmpeq_epi8(X,Y)
 #define _simd_s8x16_cmpeq_instruction_set anvil::simd::IS_SSE_2
 
-#define _simd_s8x32_cmpeq_(X,Y) _mm256_cmpeq_epi8(X,Y)
-#define _simd_s8x32_cmpeq_instruction_set anvil::simd::IS_AVX_2
+//#define _simd_s8x32_cmpeq_(X,Y) _mm256_cmpeq_epi8(X,Y)
+//#define _simd_s8x32_cmpeq_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_u32x4_cmpeq_(X,Y) _simd_s32x4_cmpeq_(X,Y)
 #define _simd_u32x4_cmpeq_instruction_set _simd_s32x4_cmpeq_instruction_set
 
-#define _simd_u32x8_cmpeq_(X,Y) _simd_s32x8_cmpeq_(X,Y)
-#define _simd_u32x8_cmpeq_instruction_set _simd_s32x8_cmpeq_instruction_set
+//#define _simd_u32x8_cmpeq_(X,Y) _simd_s32x8_cmpeq_(X,Y)
+//#define _simd_u32x8_cmpeq_instruction_set _simd_s32x8_cmpeq_instruction_set
 
 #define _simd_u16x8_cmpeq_(X,Y) _simd_s16x8_cmpeq_(X,Y)
 #define _simd_u16x8_cmpeq_instruction_set _simd_s16x8_cmpeq_instruction_set
 
-#define _simd_u16x16_cmpeq_(X,Y) _simd_s16x16_cmpeq_(X,Y)
-#define _simd_u16x16_cmpeq_instruction_set _simd_s16x16_cmpeq_instruction_set
+//#define _simd_u16x16_cmpeq_(X,Y) _simd_s16x16_cmpeq_(X,Y)
+//#define _simd_u16x16_cmpeq_instruction_set _simd_s16x16_cmpeq_instruction_set
 
 #define _simd_u8x16_cmpeq_(X,Y) _simd_s8x16_cmpeq_(X,Y)
 #define _simd_u8x16_cmpeq_instruction_set _simd_s8x16_cmpeq_instruction_set
 
-#define _simd_u8x32_cmpeq_(X,Y) _simd_s8x32_cmpeq_(X,Y)
-#define _simd_u8x32_cmpeq_instruction_set _simd_s8x32_cmpeq_instruction_set
+//#define _simd_u8x32_cmpeq_(X,Y) _simd_s8x32_cmpeq_(X,Y)
+//#define _simd_u8x32_cmpeq_instruction_set _simd_s8x32_cmpeq_instruction_set
 
 #define _simd_f64x2_cmpne_(X,Y) _mm_cmpneq_pd(X,Y)
-#define _simdf64x2_cmpne_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_cmpne_instruction_set anvil::simd::IS_SSE_2
 
-#define _simd_f64x4_cmpne_(X,Y) _mm256_cmpneq_pd(X,Y)
-#define _simd_f64x4_cmpne_instruction_set anvil::simd::IS_AVX
+//#define _simd_f64x4_cmpne_(X,Y) _mm256_cmpneq_pd(X,Y)
+//#define _simd_f64x4_cmpne_instruction_set anvil::simd::IS_AVX
 
 #define _simd_f32x4_cmpne_(X,Y) _mm_cmpneq_ps(X,Y)
 #define _simd_f32x4_cmpne_instruction_set anvil::simd::IS_SSE
 
-#define _simd_f32x8_cmpne_(X,Y) _mm256_cmpneq_ps(X,Y)
-#define _simd_f32x8_cmpne_instruction_set anvil::simd::IS_AVX
+//#define _simd_f32x8_cmpne_(X,Y) _mm256_cmpneq_ps(X,Y)
+//#define _simd_f32x8_cmpne_instruction_set anvil::simd::IS_AVX
 
 #define _simd_f64x2_cmple_(X,Y) _mm_cmple_pd(X,Y)
-#define _simdf64x2_cmple_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_cmple_instruction_set anvil::simd::IS_SSE_2
 
-#define _simd_f64x4_cmple_(X,Y) _mm256_cmple_pd(X,Y)
-#define _simd_f64x4_cmple_instruction_set anvil::simd::IS_AVX
+//#define _simd_f64x4_cmple_(X,Y) _mm256_cmple_pd(X,Y)
+//#define _simd_f64x4_cmple_instruction_set anvil::simd::IS_AVX
 
 #define _simd_f32x4_cmple_(X,Y) _mm_cmple_ps(X,Y)
 #define _simd_f32x4_cmple_instruction_set anvil::simd::IS_SSE
 
-#define _simd_f32x8_cmple_(X,Y) _mm256_cmple_ps(X,Y)
-#define _simd_f32x8_cmple_instruction_set anvil::simd::IS_AVX
+//#define _simd_f32x8_cmple_(X,Y) _mm256_cmple_ps(X,Y)
+//#define _simd_f32x8_cmple_instruction_set anvil::simd::IS_AVX
 
 #define _simd_f64x2_cmpge_(X,Y) _mm_cmpge_pd(X,Y)
-#define _simdf64x2_cmpge_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_cmpge_instruction_set anvil::simd::IS_SSE_2
 
-#define _simd_f64x4_cmpge_(X,Y) _mm256_cmpge_pd(X,Y)
-#define _simd_f64x4_cmpge_instruction_set anvil::simd::IS_AVX
+//#define _simd_f64x4_cmpge_(X,Y) _mm256_cmpge_pd(X,Y)
+//#define _simd_f64x4_cmpge_instruction_set anvil::simd::IS_AVX
 
 #define _simd_f32x4_cmpge_(X,Y) _mm_cmpge_ps(X,Y)
 #define _simd_f32x4_cmpge_instruction_set anvil::simd::IS_SSE
 
-#define _simd_f32x8_cmpge_(X,Y) _mm256_cmpge_ps(X,Y)
-#define _simd_f32x8_cmpge_instruction_set anvil::simd::IS_AVX
+//#define _simd_f32x8_cmpge_(X,Y) _mm256_cmpge_ps(X,Y)
+//#define _simd_f32x8_cmpge_instruction_set anvil::simd::IS_AVX
 
 #define _simd_f64x2_cmplt_(X,Y) _mm_cmplt_pd(X,Y)
-#define _simdf64x2_cmplt_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_cmplt_instruction_set anvil::simd::IS_SSE_2
 
-#define _simd_f64x4_cmplt_(X,Y) _mm256_cmplt_pd(X,Y)
-#define _simd_f64x4_cmplt_instruction_set anvil::simd::IS_AVX
+//#define _simd_f64x4_cmplt_(X,Y) _mm256_cmplt_pd(X,Y)
+//#define _simd_f64x4_cmplt_instruction_set anvil::simd::IS_AVX
 
 #define _simd_f32x4_cmplt_(X,Y) _mm_cmplt_ps(X,Y)
 #define _simd_f32x4_cmplt_instruction_set anvil::simd::IS_SSE
 
-#define _simd_f32x8_cmplt_(X,Y) _mm256_cmplt_ps(X,Y)
-#define _simd_f32x8_cmplt_instruction_set anvil::simd::IS_AVX
+//#define _simd_f32x8_cmplt_(X,Y) _mm256_cmplt_ps(X,Y)
+//#define _simd_f32x8_cmplt_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s32x4_cmplt_(X,Y) _mm_cmplt_epi32(X,Y)
 #define _simd_s32x4_cmplt_instruction_set anvil::simd::IS_SSE_2
 
-#define _simd_s32x8_cmplt_(X,Y) _mm256_cmplt_epi32(X,Y)
-#define _simd_s32x8_cmplt_instruction_set anvil::simd::IS_AVX_2
+//#define _simd_s32x8_cmplt_(X,Y) _mm256_cmplt_epi32(X,Y)
+//#define _simd_s32x8_cmplt_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s16x8_cmplt_(X,Y) _mm_cmplt_epi16(X,Y)
 #define _simd_s16x8_cmplt_instruction_set anvil::simd::IS_SSE_2
@@ -630,22 +648,22 @@
 #define _simd_s8x16_cmplt_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_f64x2_cmpgt_(X,Y) _mm_cmpgt_pd(X,Y)
-#define _simdf64x2_cmpgt_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_cmpgt_instruction_set anvil::simd::IS_SSE_2
 
-#define _simd_f64x4_cmpgt_(X,Y) _mm256_cmpgt_pd(X,Y)
-#define _simd_f64x4_cmpgt_instruction_set anvil::simd::IS_AVX
+//#define _simd_f64x4_cmpgt_(X,Y) _mm256_cmpgt_pd(X,Y)
+//#define _simd_f64x4_cmpgt_instruction_set anvil::simd::IS_AVX
 
 #define _simd_f32x4_cmpgt_(X,Y) _mm_cmpgt_ps(X,Y)
 #define _simd_f32x4_cmpgt_instruction_set anvil::simd::IS_SSE
 
-#define _simd_f32x8_cmpgt_(X,Y) _mm256_cmpgt_ps(X,Y)
-#define _simd_f32x8_cmpgt_instruction_set anvil::simd::IS_AVX
+//#define _simd_f32x8_cmpgt_(X,Y) _mm256_cmpgt_ps(X,Y)
+//#define _simd_f32x8_cmpgt_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s32x4_cmpgt_(X,Y) _mm_cmpgt_epi32(X,Y)
 #define _simd_s32x4_cmpgt_instruction_set anvil::simd::IS_SSE_2
 
-#define _simd_s32x8_cmpgt_(X,Y) _mm256_cmpgt_epi32(X,Y)
-#define _simd_s32x8_cmpgt_instruction_set anvil::simd::IS_AVX_2
+//#define _simd_s32x8_cmpgt_(X,Y) _mm256_cmpgt_epi32(X,Y)
+//#define _simd_s32x8_cmpgt_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s32x8_cmpgt_(X,Y) _mm256_cmpgt_epi32(X,Y)
 #define _simd_s32x8_cmpgt_instruction_set anvil::simd::IS_AVX_2
@@ -653,17 +671,17 @@
 #define _simd_s16x8_cmpgt_(X,Y) _mm_cmpgt_epi16(X,Y)
 #define _simd_s16x8_cmpgt_instruction_set anvil::simd::IS_SSE_2
 
-#define _simd_s16x16_cmpgt_(X,Y) _mm256_cmpgt_epi16(X,Y)
-#define _simd_s16x16_cmpgt_instruction_set anvil::simd::IS_AVX_2
+//#define _simd_s16x16_cmpgt_(X,Y) _mm256_cmpgt_epi16(X,Y)
+//#define _simd_s16x16_cmpgt_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_s8x16_cmpgt_(X,Y) _mm_cmpgt_epi8(X,Y)
 #define _simd_s8x16_cmpgt_instruction_set anvil::simd::IS_SSE_2
 
-#define _simd_s8x32_cmpgt_(X,Y) _mm256_cmpgt_epi8(X,Y)
-#define _simd_s8x32_cmpgt_instruction_set anvil::simd::IS_AVX_2
+//#define _simd_s8x32_cmpgt_(X,Y) _mm256_cmpgt_epi8(X,Y)
+//#define _simd_s8x32_cmpgt_instruction_set anvil::simd::IS_AVX_2
 
 #define _simd_f64x2_and_(X,Y) _mm_and_pd(X,Y)
-#define _simdf64x2_and_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_and_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_f64x4_and_(X,Y) _mm256_and_pd(X,Y)
 #define _simd_f64x4_and_instruction_set anvil::simd::IS_AVX
@@ -705,7 +723,7 @@
 #define _simd_u8x32_and_instruction_set anvil::simd::IS_AVX
 
 #define _simd_f64x2_or_(X,Y) _mm_or_pd(X,Y)
-#define _simdf64x2_or_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_or_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_f64x4_or_(X,Y) _mm256_or_pd(X,Y)
 #define _simd_f64x4_or_instruction_set anvil::simd::IS_AVX
@@ -747,7 +765,7 @@
 #define _simd_u8x32_or_instruction_set anvil::simd::IS_AVX
 
 #define _simd_f64x2_xor_(X,Y) _mm_xor_pd(X,Y)
-#define _simdf64x2_xor_instruction_set anvil::simd::IS_SSE_2
+#define _simd_f64x2_xor_instruction_set anvil::simd::IS_SSE_2
 
 #define _simd_f64x4_xor_(X,Y) _mm256_xor_pd(X,Y)
 #define _simd_f64x4_xor_instruction_set anvil::simd::IS_AVX
@@ -851,7 +869,7 @@
 #define _simd_f32x4_sqrt_(X) _mm_sqrt_ps(X)
 #define _simd_f32x4_sqrt_instruction_set anvil::simd::IS_SSE 
 
-#define _simd_f32x8_sqrt_(X) _mm256_sqrt_pd(X)
+#define _simd_f32x8_sqrt_(X) _mm256_sqrt_ps(X)
 #define _simd_f32x8_sqrt_instruction_set anvil::simd::IS_AVX 
 
 #define _simd_f64x2_fma_(X,Y,Z) _mm_fmadd_pd(X,Y,Z)
@@ -869,7 +887,7 @@
 #define _simd_f64x2_fms_(X,Y,Z) _mm_fmsub_pd(X,Y,Z)
 #define _simd_f64x2_fms_instruction_set anvil::simd::IS_FMA
 
-#define _simd_f64x4_fms_(X,Y,Z) _mm256_fmsub_pd(X),Y,Z
+#define _simd_f64x4_fms_(X,Y,Z) _mm256_fmsub_pd(X,Y,Z)
 #define _simd_f64x4_fms_instruction_set anvil::simd::IS_FMA
 
 #define _simd_f32x4_fms_(X,Y,Z) _mm_fmsub_ps(X,Y,Z)
@@ -2201,8 +2219,12 @@ namespace anvil { namespace simd {
 	};
 
 	// Data Helpers
+
 	template<class T, size_t S, Operation O>
 	struct OperationDispatcher;
+
+	template<class T, Operation O>
+	struct DynamicOperationDispatcher;
 
 #include "anvil/maths/simd/OperationDispatcher.hpp"
 }}
