@@ -12,6 +12,9 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
+
+// -- f64 --
+
 #ifndef _simd_f64x1_atan2_safe
 	#define _simd_f64x1_atan2_safe(X,Y) std::atan2(X,Y)
 	#define _simd_f64x1_atan2_(X,Y) x1_atan2_safe(X,Y)
@@ -281,6 +284,8 @@
 		_simd_f64x32_atan2(_simd_f64x64_splithi(X), _simd_f64x64_splithi(Y)))
 	#define _simd_f64x64_atan2_enable() (_simd_f64x32_atan2_enable() && _simd_f64x64_combine_enable() && _simd_f64x64_splitlo_enable()  && _simd_f64x64_splithi_enable())
 #endif
+
+// -- f32 --
 
 #ifndef _simd_f32x1_atan2_safe
 	#define _simd_f32x1_atan2_safe(X,Y) std::atan2(X,Y)
@@ -552,6 +557,8 @@
 	#define _simd_f32x64_atan2_enable() (_simd_f32x32_atan2_enable() && _simd_f32x64_combine_enable() && _simd_f32x64_splitlo_enable()  && _simd_f32x64_splithi_enable())
 #endif
 
+// -- s64 --
+
 #ifndef _simd_s64x1_atan2_safe
 	#define _simd_s64x1_atan2_safe(X,Y) static_cast<int64_t>(std::atan2(static_cast<double>(X),static_cast<double>(Y)))
 	#define _simd_s64x1_atan2_(X,Y) x1_atan2_safe(X,Y)
@@ -821,6 +828,8 @@
 		_simd_s64x32_atan2(_simd_s64x64_splithi(X), _simd_s64x64_splithi(Y)))
 	#define _simd_s64x64_atan2_enable() (_simd_s64x32_atan2_enable() && _simd_s64x64_combine_enable() && _simd_s64x64_splitlo_enable()  && _simd_s64x64_splithi_enable())
 #endif
+
+// -- u64 --
 
 #ifndef _simd_u64x1_atan2_safe
 	#define _simd_u64x1_atan2_safe(X,Y) static_cast<uint64_t>(std::atan2(static_cast<double>(X),static_cast<double>(Y)))
@@ -1092,6 +1101,8 @@
 	#define _simd_u64x64_atan2_enable() (_simd_u64x32_atan2_enable() && _simd_u64x64_combine_enable() && _simd_u64x64_splitlo_enable()  && _simd_u64x64_splithi_enable())
 #endif
 
+// -- s32 --
+
 #ifndef _simd_s32x1_atan2_safe
 	#define _simd_s32x1_atan2_safe(X,Y) static_cast<int32_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s32x1_atan2_(X,Y) x1_atan2_safe(X,Y)
@@ -1361,6 +1372,8 @@
 		_simd_s32x32_atan2(_simd_s32x64_splithi(X), _simd_s32x64_splithi(Y)))
 	#define _simd_s32x64_atan2_enable() (_simd_s32x32_atan2_enable() && _simd_s32x64_combine_enable() && _simd_s32x64_splitlo_enable()  && _simd_s32x64_splithi_enable())
 #endif
+
+// -- u32 --
 
 #ifndef _simd_u32x1_atan2_safe
 	#define _simd_u32x1_atan2_safe(X,Y) static_cast<uint32_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
@@ -1632,6 +1645,8 @@
 	#define _simd_u32x64_atan2_enable() (_simd_u32x32_atan2_enable() && _simd_u32x64_combine_enable() && _simd_u32x64_splitlo_enable()  && _simd_u32x64_splithi_enable())
 #endif
 
+// -- s16 --
+
 #ifndef _simd_s16x1_atan2_safe
 	#define _simd_s16x1_atan2_safe(X,Y) static_cast<int16_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s16x1_atan2_(X,Y) x1_atan2_safe(X,Y)
@@ -1901,6 +1916,8 @@
 		_simd_s16x32_atan2(_simd_s16x64_splithi(X), _simd_s16x64_splithi(Y)))
 	#define _simd_s16x64_atan2_enable() (_simd_s16x32_atan2_enable() && _simd_s16x64_combine_enable() && _simd_s16x64_splitlo_enable()  && _simd_s16x64_splithi_enable())
 #endif
+
+// -- u16 --
 
 #ifndef _simd_u16x1_atan2_safe
 	#define _simd_u16x1_atan2_safe(X,Y) static_cast<uint16_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
@@ -2172,6 +2189,8 @@
 	#define _simd_u16x64_atan2_enable() (_simd_u16x32_atan2_enable() && _simd_u16x64_combine_enable() && _simd_u16x64_splitlo_enable()  && _simd_u16x64_splithi_enable())
 #endif
 
+// -- s8 --
+
 #ifndef _simd_s8x1_atan2_safe
 	#define _simd_s8x1_atan2_safe(X,Y) static_cast<int8_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))
 	#define _simd_s8x1_atan2_(X,Y) x1_atan2_safe(X,Y)
@@ -2441,6 +2460,8 @@
 		_simd_s8x32_atan2(_simd_s8x64_splithi(X), _simd_s8x64_splithi(Y)))
 	#define _simd_s8x64_atan2_enable() (_simd_s8x32_atan2_enable() && _simd_s8x64_combine_enable() && _simd_s8x64_splitlo_enable()  && _simd_s8x64_splithi_enable())
 #endif
+
+// -- u8 --
 
 #ifndef _simd_u8x1_atan2_safe
 	#define _simd_u8x1_atan2_safe(X,Y) static_cast<uint8_t>(std::atan2(static_cast<float>(X),static_cast<float>(Y)))

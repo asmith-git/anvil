@@ -12,6 +12,9 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
+
+// -- f64 --
+
 #ifndef _simd_f64x1_rshift_safe
 	#define _simd_f64x1_rshift_safe(X,Y) X
 	#define _simd_f64x1_rshift_(X,Y) x1_rshift_safe(X,Y)
@@ -281,6 +284,8 @@
 		_simd_f64x32_rshift(_simd_f64x64_splithi(X), _simd_f64x64_splithi(Y)))
 	#define _simd_f64x64_rshift_enable() (_simd_f64x32_rshift_enable() && _simd_f64x64_combine_enable() && _simd_f64x64_splitlo_enable()  && _simd_f64x64_splithi_enable())
 #endif
+
+// -- f32 --
 
 #ifndef _simd_f32x1_rshift_safe
 	#define _simd_f32x1_rshift_safe(X,Y) X
@@ -552,6 +557,8 @@
 	#define _simd_f32x64_rshift_enable() (_simd_f32x32_rshift_enable() && _simd_f32x64_combine_enable() && _simd_f32x64_splitlo_enable()  && _simd_f32x64_splithi_enable())
 #endif
 
+// -- s64 --
+
 #ifndef _simd_s64x1_rshift_safe
 	#define _simd_s64x1_rshift_safe(X,Y) (X << Y)
 	#define _simd_s64x1_rshift_(X,Y) x1_rshift_safe(X,Y)
@@ -821,6 +828,8 @@
 		_simd_s64x32_rshift(_simd_s64x64_splithi(X), _simd_s64x64_splithi(Y)))
 	#define _simd_s64x64_rshift_enable() (_simd_s64x32_rshift_enable() && _simd_s64x64_combine_enable() && _simd_s64x64_splitlo_enable()  && _simd_s64x64_splithi_enable())
 #endif
+
+// -- u64 --
 
 #ifndef _simd_u64x1_rshift_safe
 	#define _simd_u64x1_rshift_safe(X,Y) (X << Y)
@@ -1092,6 +1101,8 @@
 	#define _simd_u64x64_rshift_enable() (_simd_u64x32_rshift_enable() && _simd_u64x64_combine_enable() && _simd_u64x64_splitlo_enable()  && _simd_u64x64_splithi_enable())
 #endif
 
+// -- s32 --
+
 #ifndef _simd_s32x1_rshift_safe
 	#define _simd_s32x1_rshift_safe(X,Y) (X << Y)
 	#define _simd_s32x1_rshift_(X,Y) x1_rshift_safe(X,Y)
@@ -1361,6 +1372,8 @@
 		_simd_s32x32_rshift(_simd_s32x64_splithi(X), _simd_s32x64_splithi(Y)))
 	#define _simd_s32x64_rshift_enable() (_simd_s32x32_rshift_enable() && _simd_s32x64_combine_enable() && _simd_s32x64_splitlo_enable()  && _simd_s32x64_splithi_enable())
 #endif
+
+// -- u32 --
 
 #ifndef _simd_u32x1_rshift_safe
 	#define _simd_u32x1_rshift_safe(X,Y) (X << Y)
@@ -1632,6 +1645,8 @@
 	#define _simd_u32x64_rshift_enable() (_simd_u32x32_rshift_enable() && _simd_u32x64_combine_enable() && _simd_u32x64_splitlo_enable()  && _simd_u32x64_splithi_enable())
 #endif
 
+// -- s16 --
+
 #ifndef _simd_s16x1_rshift_safe
 	#define _simd_s16x1_rshift_safe(X,Y) (X << Y)
 	#define _simd_s16x1_rshift_(X,Y) x1_rshift_safe(X,Y)
@@ -1901,6 +1916,8 @@
 		_simd_s16x32_rshift(_simd_s16x64_splithi(X), _simd_s16x64_splithi(Y)))
 	#define _simd_s16x64_rshift_enable() (_simd_s16x32_rshift_enable() && _simd_s16x64_combine_enable() && _simd_s16x64_splitlo_enable()  && _simd_s16x64_splithi_enable())
 #endif
+
+// -- u16 --
 
 #ifndef _simd_u16x1_rshift_safe
 	#define _simd_u16x1_rshift_safe(X,Y) (X << Y)
@@ -2172,6 +2189,8 @@
 	#define _simd_u16x64_rshift_enable() (_simd_u16x32_rshift_enable() && _simd_u16x64_combine_enable() && _simd_u16x64_splitlo_enable()  && _simd_u16x64_splithi_enable())
 #endif
 
+// -- s8 --
+
 #ifndef _simd_s8x1_rshift_safe
 	#define _simd_s8x1_rshift_safe(X,Y) (X << Y)
 	#define _simd_s8x1_rshift_(X,Y) x1_rshift_safe(X,Y)
@@ -2441,6 +2460,8 @@
 		_simd_s8x32_rshift(_simd_s8x64_splithi(X), _simd_s8x64_splithi(Y)))
 	#define _simd_s8x64_rshift_enable() (_simd_s8x32_rshift_enable() && _simd_s8x64_combine_enable() && _simd_s8x64_splitlo_enable()  && _simd_s8x64_splithi_enable())
 #endif
+
+// -- u8 --
 
 #ifndef _simd_u8x1_rshift_safe
 	#define _simd_u8x1_rshift_safe(X,Y) (X << Y)

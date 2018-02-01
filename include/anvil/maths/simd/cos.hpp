@@ -12,6 +12,9 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
+
+// -- f64 --
+
 #ifndef _simd_f64x1_cos_safe
 	#define _simd_f64x1_cos_safe(X) std::cos(X)
 	#define _simd_f64x1_cos_(X) x1_cos_safe(X)
@@ -251,6 +254,8 @@
 		_simd_f64x32_cos(_simd_f64x64_splithi(X)))
 	#define _simd_f64x64_cos_enable() (_simd_f64x32_cos_enable() && _simd_f64x64_combine_enable() && _simd_f64x64_splitlo_enable()  && _simd_f64x64_splithi_enable())
 #endif
+
+// -- f32 --
 
 #ifndef _simd_f32x1_cos_safe
 	#define _simd_f32x1_cos_safe(X) std::cos(X)
@@ -492,6 +497,8 @@
 	#define _simd_f32x64_cos_enable() (_simd_f32x32_cos_enable() && _simd_f32x64_combine_enable() && _simd_f32x64_splitlo_enable()  && _simd_f32x64_splithi_enable())
 #endif
 
+// -- s64 --
+
 #ifndef _simd_s64x1_cos_safe
 	#define _simd_s64x1_cos_safe(X) static_cast<int64_t>(std::cos(static_cast<double>(X)))
 	#define _simd_s64x1_cos_(X) x1_cos_safe(X)
@@ -731,6 +738,8 @@
 		_simd_s64x32_cos(_simd_s64x64_splithi(X)))
 	#define _simd_s64x64_cos_enable() (_simd_s64x32_cos_enable() && _simd_s64x64_combine_enable() && _simd_s64x64_splitlo_enable()  && _simd_s64x64_splithi_enable())
 #endif
+
+// -- u64 --
 
 #ifndef _simd_u64x1_cos_safe
 	#define _simd_u64x1_cos_safe(X) static_cast<uint64_t>(std::cos(static_cast<double>(X)))
@@ -972,6 +981,8 @@
 	#define _simd_u64x64_cos_enable() (_simd_u64x32_cos_enable() && _simd_u64x64_combine_enable() && _simd_u64x64_splitlo_enable()  && _simd_u64x64_splithi_enable())
 #endif
 
+// -- s32 --
+
 #ifndef _simd_s32x1_cos_safe
 	#define _simd_s32x1_cos_safe(X) static_cast<int32_t>(std::cos(static_cast<float>(X)))
 	#define _simd_s32x1_cos_(X) x1_cos_safe(X)
@@ -1211,6 +1222,8 @@
 		_simd_s32x32_cos(_simd_s32x64_splithi(X)))
 	#define _simd_s32x64_cos_enable() (_simd_s32x32_cos_enable() && _simd_s32x64_combine_enable() && _simd_s32x64_splitlo_enable()  && _simd_s32x64_splithi_enable())
 #endif
+
+// -- u32 --
 
 #ifndef _simd_u32x1_cos_safe
 	#define _simd_u32x1_cos_safe(X) static_cast<uint32_t>(std::cos(static_cast<float>(X)))
@@ -1452,6 +1465,8 @@
 	#define _simd_u32x64_cos_enable() (_simd_u32x32_cos_enable() && _simd_u32x64_combine_enable() && _simd_u32x64_splitlo_enable()  && _simd_u32x64_splithi_enable())
 #endif
 
+// -- s16 --
+
 #ifndef _simd_s16x1_cos_safe
 	#define _simd_s16x1_cos_safe(X) static_cast<int16_t>(std::cos(static_cast<float>(X)))
 	#define _simd_s16x1_cos_(X) x1_cos_safe(X)
@@ -1691,6 +1706,8 @@
 		_simd_s16x32_cos(_simd_s16x64_splithi(X)))
 	#define _simd_s16x64_cos_enable() (_simd_s16x32_cos_enable() && _simd_s16x64_combine_enable() && _simd_s16x64_splitlo_enable()  && _simd_s16x64_splithi_enable())
 #endif
+
+// -- u16 --
 
 #ifndef _simd_u16x1_cos_safe
 	#define _simd_u16x1_cos_safe(X) static_cast<uint16_t>(std::cos(static_cast<float>(X)))
@@ -1932,6 +1949,8 @@
 	#define _simd_u16x64_cos_enable() (_simd_u16x32_cos_enable() && _simd_u16x64_combine_enable() && _simd_u16x64_splitlo_enable()  && _simd_u16x64_splithi_enable())
 #endif
 
+// -- s8 --
+
 #ifndef _simd_s8x1_cos_safe
 	#define _simd_s8x1_cos_safe(X) static_cast<int8_t>(std::cos(static_cast<float>(X)))
 	#define _simd_s8x1_cos_(X) x1_cos_safe(X)
@@ -2171,6 +2190,8 @@
 		_simd_s8x32_cos(_simd_s8x64_splithi(X)))
 	#define _simd_s8x64_cos_enable() (_simd_s8x32_cos_enable() && _simd_s8x64_combine_enable() && _simd_s8x64_splitlo_enable()  && _simd_s8x64_splithi_enable())
 #endif
+
+// -- u8 --
 
 #ifndef _simd_u8x1_cos_safe
 	#define _simd_u8x1_cos_safe(X) static_cast<uint8_t>(std::cos(static_cast<float>(X)))

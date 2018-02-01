@@ -12,6 +12,9 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
+
+// -- f64 --
+
 template<size_t S>
 struct OperationDispatcher<_simd_f64x1, S,OP_SUM> {
 	typedef _simd_f64x1 scalar_t;
@@ -8067,6 +8070,8 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_CBRT> {
 		}
 	}
 };
+
+// -- f32 --
 
 template<size_t S>
 struct OperationDispatcher<_simd_f32x1, S,OP_SUM> {
@@ -16124,6 +16129,8 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_CBRT> {
 	}
 };
 
+// -- s64 --
+
 template<size_t S>
 struct OperationDispatcher<_simd_s64x1, S,OP_SUM> {
 	typedef _simd_s64x1 scalar_t;
@@ -24179,6 +24186,8 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_CBRT> {
 		}
 	}
 };
+
+// -- u64 --
 
 template<size_t S>
 struct OperationDispatcher<_simd_u64x1, S,OP_SUM> {
@@ -32236,6 +32245,8 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_CBRT> {
 	}
 };
 
+// -- s32 --
+
 template<size_t S>
 struct OperationDispatcher<_simd_s32x1, S,OP_SUM> {
 	typedef _simd_s32x1 scalar_t;
@@ -40291,6 +40302,8 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_CBRT> {
 		}
 	}
 };
+
+// -- u32 --
 
 template<size_t S>
 struct OperationDispatcher<_simd_u32x1, S,OP_SUM> {
@@ -48348,6 +48361,8 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_CBRT> {
 	}
 };
 
+// -- s16 --
+
 template<size_t S>
 struct OperationDispatcher<_simd_s16x1, S,OP_SUM> {
 	typedef _simd_s16x1 scalar_t;
@@ -56403,6 +56418,8 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_CBRT> {
 		}
 	}
 };
+
+// -- u16 --
 
 template<size_t S>
 struct OperationDispatcher<_simd_u16x1, S,OP_SUM> {
@@ -64460,6 +64477,8 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_CBRT> {
 	}
 };
 
+// -- s8 --
+
 template<size_t S>
 struct OperationDispatcher<_simd_s8x1, S,OP_SUM> {
 	typedef _simd_s8x1 scalar_t;
@@ -72515,6 +72534,8 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_CBRT> {
 		}
 	}
 };
+
+// -- u8 --
 
 template<size_t S>
 struct OperationDispatcher<_simd_u8x1, S,OP_SUM> {
