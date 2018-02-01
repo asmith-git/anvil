@@ -91,9 +91,7 @@
 #endif
 
 
-#ifdef _simd_f64x2_fma_scalar_
-	#define _simd_f64x2_fma_scalar_(X,Y,Z) _simd_f64x2_fma_scalar_(X,Y,Y)
-#elif defined(_simd_f64x2_fma_)
+#if defined(_simd_f64x2_fma_) && ! defined(_simd_f64x2_fma_scalar_)
 	#define _simd_f64x2_fma_scalar_(X,Y,Z) _simd_f64x2_fma_(X,_simd_f64x2_fill_scalar_(Y),_simd_f64x2_fill_scalar_(Z))
 	#define _simd_f64x2_fma_scalar_instruction_set _simd_f64x2_fma_instruction_set
 #endif
@@ -170,9 +168,7 @@
 #endif
 
 
-#ifdef _simd_f64x4_fma_scalar_
-	#define _simd_f64x4_fma_scalar_(X,Y,Z) _simd_f64x4_fma_scalar_(X,Y,Y)
-#elif defined(_simd_f64x4_fma_)
+#if defined(_simd_f64x4_fma_) && ! defined(_simd_f64x4_fma_scalar_)
 	#define _simd_f64x4_fma_scalar_(X,Y,Z) _simd_f64x4_fma_(X,_simd_f64x4_fill_scalar_(Y),_simd_f64x4_fill_scalar_(Z))
 	#define _simd_f64x4_fma_scalar_instruction_set _simd_f64x4_fma_instruction_set
 #endif
@@ -238,9 +234,7 @@
 #endif
 
 
-#ifdef _simd_f64x8_fma_scalar_
-	#define _simd_f64x8_fma_scalar_(X,Y,Z) _simd_f64x8_fma_scalar_(X,Y,Y)
-#elif defined(_simd_f64x8_fma_)
+#if defined(_simd_f64x8_fma_) && ! defined(_simd_f64x8_fma_scalar_)
 	#define _simd_f64x8_fma_scalar_(X,Y,Z) _simd_f64x8_fma_(X,_simd_f64x8_fill_scalar_(Y),_simd_f64x8_fill_scalar_(Z))
 	#define _simd_f64x8_fma_scalar_instruction_set _simd_f64x8_fma_instruction_set
 #endif
@@ -295,9 +289,7 @@
 #endif
 
 
-#ifdef _simd_f64x16_fma_scalar_
-	#define _simd_f64x16_fma_scalar_(X,Y,Z) _simd_f64x16_fma_scalar_(X,Y,Y)
-#elif defined(_simd_f64x16_fma_)
+#if defined(_simd_f64x16_fma_) && ! defined(_simd_f64x16_fma_scalar_)
 	#define _simd_f64x16_fma_scalar_(X,Y,Z) _simd_f64x16_fma_(X,_simd_f64x16_fill_scalar_(Y),_simd_f64x16_fill_scalar_(Z))
 	#define _simd_f64x16_fma_scalar_instruction_set _simd_f64x16_fma_instruction_set
 #endif
@@ -341,9 +333,7 @@
 #endif
 
 
-#ifdef _simd_f64x32_fma_scalar_
-	#define _simd_f64x32_fma_scalar_(X,Y,Z) _simd_f64x32_fma_scalar_(X,Y,Y)
-#elif defined(_simd_f64x32_fma_)
+#if defined(_simd_f64x32_fma_) && ! defined(_simd_f64x32_fma_scalar_)
 	#define _simd_f64x32_fma_scalar_(X,Y,Z) _simd_f64x32_fma_(X,_simd_f64x32_fill_scalar_(Y),_simd_f64x32_fill_scalar_(Z))
 	#define _simd_f64x32_fma_scalar_instruction_set _simd_f64x32_fma_instruction_set
 #endif
@@ -376,9 +366,7 @@
 #endif
 
 
-#ifdef _simd_f64x64_fma_scalar_
-	#define _simd_f64x64_fma_scalar_(X,Y,Z) _simd_f64x64_fma_scalar_(X,Y,Y)
-#elif defined(_simd_f64x64_fma_)
+#if defined(_simd_f64x64_fma_) && ! defined(_simd_f64x64_fma_scalar_)
 	#define _simd_f64x64_fma_scalar_(X,Y,Z) _simd_f64x64_fma_(X,_simd_f64x64_fill_scalar_(Y),_simd_f64x64_fill_scalar_(Z))
 	#define _simd_f64x64_fma_scalar_instruction_set _simd_f64x64_fma_instruction_set
 #endif
@@ -468,9 +456,7 @@
 #endif
 
 
-#ifdef _simd_f32x2_fma_scalar_
-	#define _simd_f32x2_fma_scalar_(X,Y,Z) _simd_f32x2_fma_scalar_(X,Y,Y)
-#elif defined(_simd_f32x2_fma_)
+#if defined(_simd_f32x2_fma_) && ! defined(_simd_f32x2_fma_scalar_)
 	#define _simd_f32x2_fma_scalar_(X,Y,Z) _simd_f32x2_fma_(X,_simd_f32x2_fill_scalar_(Y),_simd_f32x2_fill_scalar_(Z))
 	#define _simd_f32x2_fma_scalar_instruction_set _simd_f32x2_fma_instruction_set
 #endif
@@ -547,9 +533,7 @@
 #endif
 
 
-#ifdef _simd_f32x4_fma_scalar_
-	#define _simd_f32x4_fma_scalar_(X,Y,Z) _simd_f32x4_fma_scalar_(X,Y,Y)
-#elif defined(_simd_f32x4_fma_)
+#if defined(_simd_f32x4_fma_) && ! defined(_simd_f32x4_fma_scalar_)
 	#define _simd_f32x4_fma_scalar_(X,Y,Z) _simd_f32x4_fma_(X,_simd_f32x4_fill_scalar_(Y),_simd_f32x4_fill_scalar_(Z))
 	#define _simd_f32x4_fma_scalar_instruction_set _simd_f32x4_fma_instruction_set
 #endif
@@ -615,9 +599,7 @@
 #endif
 
 
-#ifdef _simd_f32x8_fma_scalar_
-	#define _simd_f32x8_fma_scalar_(X,Y,Z) _simd_f32x8_fma_scalar_(X,Y,Y)
-#elif defined(_simd_f32x8_fma_)
+#if defined(_simd_f32x8_fma_) && ! defined(_simd_f32x8_fma_scalar_)
 	#define _simd_f32x8_fma_scalar_(X,Y,Z) _simd_f32x8_fma_(X,_simd_f32x8_fill_scalar_(Y),_simd_f32x8_fill_scalar_(Z))
 	#define _simd_f32x8_fma_scalar_instruction_set _simd_f32x8_fma_instruction_set
 #endif
@@ -672,9 +654,7 @@
 #endif
 
 
-#ifdef _simd_f32x16_fma_scalar_
-	#define _simd_f32x16_fma_scalar_(X,Y,Z) _simd_f32x16_fma_scalar_(X,Y,Y)
-#elif defined(_simd_f32x16_fma_)
+#if defined(_simd_f32x16_fma_) && ! defined(_simd_f32x16_fma_scalar_)
 	#define _simd_f32x16_fma_scalar_(X,Y,Z) _simd_f32x16_fma_(X,_simd_f32x16_fill_scalar_(Y),_simd_f32x16_fill_scalar_(Z))
 	#define _simd_f32x16_fma_scalar_instruction_set _simd_f32x16_fma_instruction_set
 #endif
@@ -718,9 +698,7 @@
 #endif
 
 
-#ifdef _simd_f32x32_fma_scalar_
-	#define _simd_f32x32_fma_scalar_(X,Y,Z) _simd_f32x32_fma_scalar_(X,Y,Y)
-#elif defined(_simd_f32x32_fma_)
+#if defined(_simd_f32x32_fma_) && ! defined(_simd_f32x32_fma_scalar_)
 	#define _simd_f32x32_fma_scalar_(X,Y,Z) _simd_f32x32_fma_(X,_simd_f32x32_fill_scalar_(Y),_simd_f32x32_fill_scalar_(Z))
 	#define _simd_f32x32_fma_scalar_instruction_set _simd_f32x32_fma_instruction_set
 #endif
@@ -753,9 +731,7 @@
 #endif
 
 
-#ifdef _simd_f32x64_fma_scalar_
-	#define _simd_f32x64_fma_scalar_(X,Y,Z) _simd_f32x64_fma_scalar_(X,Y,Y)
-#elif defined(_simd_f32x64_fma_)
+#if defined(_simd_f32x64_fma_) && ! defined(_simd_f32x64_fma_scalar_)
 	#define _simd_f32x64_fma_scalar_(X,Y,Z) _simd_f32x64_fma_(X,_simd_f32x64_fill_scalar_(Y),_simd_f32x64_fill_scalar_(Z))
 	#define _simd_f32x64_fma_scalar_instruction_set _simd_f32x64_fma_instruction_set
 #endif
@@ -845,9 +821,7 @@
 #endif
 
 
-#ifdef _simd_s64x2_fma_scalar_
-	#define _simd_s64x2_fma_scalar_(X,Y,Z) _simd_s64x2_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s64x2_fma_)
+#if defined(_simd_s64x2_fma_) && ! defined(_simd_s64x2_fma_scalar_)
 	#define _simd_s64x2_fma_scalar_(X,Y,Z) _simd_s64x2_fma_(X,_simd_s64x2_fill_scalar_(Y),_simd_s64x2_fill_scalar_(Z))
 	#define _simd_s64x2_fma_scalar_instruction_set _simd_s64x2_fma_instruction_set
 #endif
@@ -924,9 +898,7 @@
 #endif
 
 
-#ifdef _simd_s64x4_fma_scalar_
-	#define _simd_s64x4_fma_scalar_(X,Y,Z) _simd_s64x4_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s64x4_fma_)
+#if defined(_simd_s64x4_fma_) && ! defined(_simd_s64x4_fma_scalar_)
 	#define _simd_s64x4_fma_scalar_(X,Y,Z) _simd_s64x4_fma_(X,_simd_s64x4_fill_scalar_(Y),_simd_s64x4_fill_scalar_(Z))
 	#define _simd_s64x4_fma_scalar_instruction_set _simd_s64x4_fma_instruction_set
 #endif
@@ -992,9 +964,7 @@
 #endif
 
 
-#ifdef _simd_s64x8_fma_scalar_
-	#define _simd_s64x8_fma_scalar_(X,Y,Z) _simd_s64x8_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s64x8_fma_)
+#if defined(_simd_s64x8_fma_) && ! defined(_simd_s64x8_fma_scalar_)
 	#define _simd_s64x8_fma_scalar_(X,Y,Z) _simd_s64x8_fma_(X,_simd_s64x8_fill_scalar_(Y),_simd_s64x8_fill_scalar_(Z))
 	#define _simd_s64x8_fma_scalar_instruction_set _simd_s64x8_fma_instruction_set
 #endif
@@ -1049,9 +1019,7 @@
 #endif
 
 
-#ifdef _simd_s64x16_fma_scalar_
-	#define _simd_s64x16_fma_scalar_(X,Y,Z) _simd_s64x16_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s64x16_fma_)
+#if defined(_simd_s64x16_fma_) && ! defined(_simd_s64x16_fma_scalar_)
 	#define _simd_s64x16_fma_scalar_(X,Y,Z) _simd_s64x16_fma_(X,_simd_s64x16_fill_scalar_(Y),_simd_s64x16_fill_scalar_(Z))
 	#define _simd_s64x16_fma_scalar_instruction_set _simd_s64x16_fma_instruction_set
 #endif
@@ -1095,9 +1063,7 @@
 #endif
 
 
-#ifdef _simd_s64x32_fma_scalar_
-	#define _simd_s64x32_fma_scalar_(X,Y,Z) _simd_s64x32_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s64x32_fma_)
+#if defined(_simd_s64x32_fma_) && ! defined(_simd_s64x32_fma_scalar_)
 	#define _simd_s64x32_fma_scalar_(X,Y,Z) _simd_s64x32_fma_(X,_simd_s64x32_fill_scalar_(Y),_simd_s64x32_fill_scalar_(Z))
 	#define _simd_s64x32_fma_scalar_instruction_set _simd_s64x32_fma_instruction_set
 #endif
@@ -1130,9 +1096,7 @@
 #endif
 
 
-#ifdef _simd_s64x64_fma_scalar_
-	#define _simd_s64x64_fma_scalar_(X,Y,Z) _simd_s64x64_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s64x64_fma_)
+#if defined(_simd_s64x64_fma_) && ! defined(_simd_s64x64_fma_scalar_)
 	#define _simd_s64x64_fma_scalar_(X,Y,Z) _simd_s64x64_fma_(X,_simd_s64x64_fill_scalar_(Y),_simd_s64x64_fill_scalar_(Z))
 	#define _simd_s64x64_fma_scalar_instruction_set _simd_s64x64_fma_instruction_set
 #endif
@@ -1222,9 +1186,7 @@
 #endif
 
 
-#ifdef _simd_u64x2_fma_scalar_
-	#define _simd_u64x2_fma_scalar_(X,Y,Z) _simd_u64x2_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u64x2_fma_)
+#if defined(_simd_u64x2_fma_) && ! defined(_simd_u64x2_fma_scalar_)
 	#define _simd_u64x2_fma_scalar_(X,Y,Z) _simd_u64x2_fma_(X,_simd_u64x2_fill_scalar_(Y),_simd_u64x2_fill_scalar_(Z))
 	#define _simd_u64x2_fma_scalar_instruction_set _simd_u64x2_fma_instruction_set
 #endif
@@ -1301,9 +1263,7 @@
 #endif
 
 
-#ifdef _simd_u64x4_fma_scalar_
-	#define _simd_u64x4_fma_scalar_(X,Y,Z) _simd_u64x4_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u64x4_fma_)
+#if defined(_simd_u64x4_fma_) && ! defined(_simd_u64x4_fma_scalar_)
 	#define _simd_u64x4_fma_scalar_(X,Y,Z) _simd_u64x4_fma_(X,_simd_u64x4_fill_scalar_(Y),_simd_u64x4_fill_scalar_(Z))
 	#define _simd_u64x4_fma_scalar_instruction_set _simd_u64x4_fma_instruction_set
 #endif
@@ -1369,9 +1329,7 @@
 #endif
 
 
-#ifdef _simd_u64x8_fma_scalar_
-	#define _simd_u64x8_fma_scalar_(X,Y,Z) _simd_u64x8_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u64x8_fma_)
+#if defined(_simd_u64x8_fma_) && ! defined(_simd_u64x8_fma_scalar_)
 	#define _simd_u64x8_fma_scalar_(X,Y,Z) _simd_u64x8_fma_(X,_simd_u64x8_fill_scalar_(Y),_simd_u64x8_fill_scalar_(Z))
 	#define _simd_u64x8_fma_scalar_instruction_set _simd_u64x8_fma_instruction_set
 #endif
@@ -1426,9 +1384,7 @@
 #endif
 
 
-#ifdef _simd_u64x16_fma_scalar_
-	#define _simd_u64x16_fma_scalar_(X,Y,Z) _simd_u64x16_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u64x16_fma_)
+#if defined(_simd_u64x16_fma_) && ! defined(_simd_u64x16_fma_scalar_)
 	#define _simd_u64x16_fma_scalar_(X,Y,Z) _simd_u64x16_fma_(X,_simd_u64x16_fill_scalar_(Y),_simd_u64x16_fill_scalar_(Z))
 	#define _simd_u64x16_fma_scalar_instruction_set _simd_u64x16_fma_instruction_set
 #endif
@@ -1472,9 +1428,7 @@
 #endif
 
 
-#ifdef _simd_u64x32_fma_scalar_
-	#define _simd_u64x32_fma_scalar_(X,Y,Z) _simd_u64x32_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u64x32_fma_)
+#if defined(_simd_u64x32_fma_) && ! defined(_simd_u64x32_fma_scalar_)
 	#define _simd_u64x32_fma_scalar_(X,Y,Z) _simd_u64x32_fma_(X,_simd_u64x32_fill_scalar_(Y),_simd_u64x32_fill_scalar_(Z))
 	#define _simd_u64x32_fma_scalar_instruction_set _simd_u64x32_fma_instruction_set
 #endif
@@ -1507,9 +1461,7 @@
 #endif
 
 
-#ifdef _simd_u64x64_fma_scalar_
-	#define _simd_u64x64_fma_scalar_(X,Y,Z) _simd_u64x64_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u64x64_fma_)
+#if defined(_simd_u64x64_fma_) && ! defined(_simd_u64x64_fma_scalar_)
 	#define _simd_u64x64_fma_scalar_(X,Y,Z) _simd_u64x64_fma_(X,_simd_u64x64_fill_scalar_(Y),_simd_u64x64_fill_scalar_(Z))
 	#define _simd_u64x64_fma_scalar_instruction_set _simd_u64x64_fma_instruction_set
 #endif
@@ -1599,9 +1551,7 @@
 #endif
 
 
-#ifdef _simd_s32x2_fma_scalar_
-	#define _simd_s32x2_fma_scalar_(X,Y,Z) _simd_s32x2_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s32x2_fma_)
+#if defined(_simd_s32x2_fma_) && ! defined(_simd_s32x2_fma_scalar_)
 	#define _simd_s32x2_fma_scalar_(X,Y,Z) _simd_s32x2_fma_(X,_simd_s32x2_fill_scalar_(Y),_simd_s32x2_fill_scalar_(Z))
 	#define _simd_s32x2_fma_scalar_instruction_set _simd_s32x2_fma_instruction_set
 #endif
@@ -1678,9 +1628,7 @@
 #endif
 
 
-#ifdef _simd_s32x4_fma_scalar_
-	#define _simd_s32x4_fma_scalar_(X,Y,Z) _simd_s32x4_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s32x4_fma_)
+#if defined(_simd_s32x4_fma_) && ! defined(_simd_s32x4_fma_scalar_)
 	#define _simd_s32x4_fma_scalar_(X,Y,Z) _simd_s32x4_fma_(X,_simd_s32x4_fill_scalar_(Y),_simd_s32x4_fill_scalar_(Z))
 	#define _simd_s32x4_fma_scalar_instruction_set _simd_s32x4_fma_instruction_set
 #endif
@@ -1746,9 +1694,7 @@
 #endif
 
 
-#ifdef _simd_s32x8_fma_scalar_
-	#define _simd_s32x8_fma_scalar_(X,Y,Z) _simd_s32x8_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s32x8_fma_)
+#if defined(_simd_s32x8_fma_) && ! defined(_simd_s32x8_fma_scalar_)
 	#define _simd_s32x8_fma_scalar_(X,Y,Z) _simd_s32x8_fma_(X,_simd_s32x8_fill_scalar_(Y),_simd_s32x8_fill_scalar_(Z))
 	#define _simd_s32x8_fma_scalar_instruction_set _simd_s32x8_fma_instruction_set
 #endif
@@ -1803,9 +1749,7 @@
 #endif
 
 
-#ifdef _simd_s32x16_fma_scalar_
-	#define _simd_s32x16_fma_scalar_(X,Y,Z) _simd_s32x16_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s32x16_fma_)
+#if defined(_simd_s32x16_fma_) && ! defined(_simd_s32x16_fma_scalar_)
 	#define _simd_s32x16_fma_scalar_(X,Y,Z) _simd_s32x16_fma_(X,_simd_s32x16_fill_scalar_(Y),_simd_s32x16_fill_scalar_(Z))
 	#define _simd_s32x16_fma_scalar_instruction_set _simd_s32x16_fma_instruction_set
 #endif
@@ -1849,9 +1793,7 @@
 #endif
 
 
-#ifdef _simd_s32x32_fma_scalar_
-	#define _simd_s32x32_fma_scalar_(X,Y,Z) _simd_s32x32_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s32x32_fma_)
+#if defined(_simd_s32x32_fma_) && ! defined(_simd_s32x32_fma_scalar_)
 	#define _simd_s32x32_fma_scalar_(X,Y,Z) _simd_s32x32_fma_(X,_simd_s32x32_fill_scalar_(Y),_simd_s32x32_fill_scalar_(Z))
 	#define _simd_s32x32_fma_scalar_instruction_set _simd_s32x32_fma_instruction_set
 #endif
@@ -1884,9 +1826,7 @@
 #endif
 
 
-#ifdef _simd_s32x64_fma_scalar_
-	#define _simd_s32x64_fma_scalar_(X,Y,Z) _simd_s32x64_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s32x64_fma_)
+#if defined(_simd_s32x64_fma_) && ! defined(_simd_s32x64_fma_scalar_)
 	#define _simd_s32x64_fma_scalar_(X,Y,Z) _simd_s32x64_fma_(X,_simd_s32x64_fill_scalar_(Y),_simd_s32x64_fill_scalar_(Z))
 	#define _simd_s32x64_fma_scalar_instruction_set _simd_s32x64_fma_instruction_set
 #endif
@@ -1976,9 +1916,7 @@
 #endif
 
 
-#ifdef _simd_u32x2_fma_scalar_
-	#define _simd_u32x2_fma_scalar_(X,Y,Z) _simd_u32x2_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u32x2_fma_)
+#if defined(_simd_u32x2_fma_) && ! defined(_simd_u32x2_fma_scalar_)
 	#define _simd_u32x2_fma_scalar_(X,Y,Z) _simd_u32x2_fma_(X,_simd_u32x2_fill_scalar_(Y),_simd_u32x2_fill_scalar_(Z))
 	#define _simd_u32x2_fma_scalar_instruction_set _simd_u32x2_fma_instruction_set
 #endif
@@ -2055,9 +1993,7 @@
 #endif
 
 
-#ifdef _simd_u32x4_fma_scalar_
-	#define _simd_u32x4_fma_scalar_(X,Y,Z) _simd_u32x4_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u32x4_fma_)
+#if defined(_simd_u32x4_fma_) && ! defined(_simd_u32x4_fma_scalar_)
 	#define _simd_u32x4_fma_scalar_(X,Y,Z) _simd_u32x4_fma_(X,_simd_u32x4_fill_scalar_(Y),_simd_u32x4_fill_scalar_(Z))
 	#define _simd_u32x4_fma_scalar_instruction_set _simd_u32x4_fma_instruction_set
 #endif
@@ -2123,9 +2059,7 @@
 #endif
 
 
-#ifdef _simd_u32x8_fma_scalar_
-	#define _simd_u32x8_fma_scalar_(X,Y,Z) _simd_u32x8_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u32x8_fma_)
+#if defined(_simd_u32x8_fma_) && ! defined(_simd_u32x8_fma_scalar_)
 	#define _simd_u32x8_fma_scalar_(X,Y,Z) _simd_u32x8_fma_(X,_simd_u32x8_fill_scalar_(Y),_simd_u32x8_fill_scalar_(Z))
 	#define _simd_u32x8_fma_scalar_instruction_set _simd_u32x8_fma_instruction_set
 #endif
@@ -2180,9 +2114,7 @@
 #endif
 
 
-#ifdef _simd_u32x16_fma_scalar_
-	#define _simd_u32x16_fma_scalar_(X,Y,Z) _simd_u32x16_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u32x16_fma_)
+#if defined(_simd_u32x16_fma_) && ! defined(_simd_u32x16_fma_scalar_)
 	#define _simd_u32x16_fma_scalar_(X,Y,Z) _simd_u32x16_fma_(X,_simd_u32x16_fill_scalar_(Y),_simd_u32x16_fill_scalar_(Z))
 	#define _simd_u32x16_fma_scalar_instruction_set _simd_u32x16_fma_instruction_set
 #endif
@@ -2226,9 +2158,7 @@
 #endif
 
 
-#ifdef _simd_u32x32_fma_scalar_
-	#define _simd_u32x32_fma_scalar_(X,Y,Z) _simd_u32x32_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u32x32_fma_)
+#if defined(_simd_u32x32_fma_) && ! defined(_simd_u32x32_fma_scalar_)
 	#define _simd_u32x32_fma_scalar_(X,Y,Z) _simd_u32x32_fma_(X,_simd_u32x32_fill_scalar_(Y),_simd_u32x32_fill_scalar_(Z))
 	#define _simd_u32x32_fma_scalar_instruction_set _simd_u32x32_fma_instruction_set
 #endif
@@ -2261,9 +2191,7 @@
 #endif
 
 
-#ifdef _simd_u32x64_fma_scalar_
-	#define _simd_u32x64_fma_scalar_(X,Y,Z) _simd_u32x64_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u32x64_fma_)
+#if defined(_simd_u32x64_fma_) && ! defined(_simd_u32x64_fma_scalar_)
 	#define _simd_u32x64_fma_scalar_(X,Y,Z) _simd_u32x64_fma_(X,_simd_u32x64_fill_scalar_(Y),_simd_u32x64_fill_scalar_(Z))
 	#define _simd_u32x64_fma_scalar_instruction_set _simd_u32x64_fma_instruction_set
 #endif
@@ -2353,9 +2281,7 @@
 #endif
 
 
-#ifdef _simd_s16x2_fma_scalar_
-	#define _simd_s16x2_fma_scalar_(X,Y,Z) _simd_s16x2_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s16x2_fma_)
+#if defined(_simd_s16x2_fma_) && ! defined(_simd_s16x2_fma_scalar_)
 	#define _simd_s16x2_fma_scalar_(X,Y,Z) _simd_s16x2_fma_(X,_simd_s16x2_fill_scalar_(Y),_simd_s16x2_fill_scalar_(Z))
 	#define _simd_s16x2_fma_scalar_instruction_set _simd_s16x2_fma_instruction_set
 #endif
@@ -2432,9 +2358,7 @@
 #endif
 
 
-#ifdef _simd_s16x4_fma_scalar_
-	#define _simd_s16x4_fma_scalar_(X,Y,Z) _simd_s16x4_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s16x4_fma_)
+#if defined(_simd_s16x4_fma_) && ! defined(_simd_s16x4_fma_scalar_)
 	#define _simd_s16x4_fma_scalar_(X,Y,Z) _simd_s16x4_fma_(X,_simd_s16x4_fill_scalar_(Y),_simd_s16x4_fill_scalar_(Z))
 	#define _simd_s16x4_fma_scalar_instruction_set _simd_s16x4_fma_instruction_set
 #endif
@@ -2500,9 +2424,7 @@
 #endif
 
 
-#ifdef _simd_s16x8_fma_scalar_
-	#define _simd_s16x8_fma_scalar_(X,Y,Z) _simd_s16x8_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s16x8_fma_)
+#if defined(_simd_s16x8_fma_) && ! defined(_simd_s16x8_fma_scalar_)
 	#define _simd_s16x8_fma_scalar_(X,Y,Z) _simd_s16x8_fma_(X,_simd_s16x8_fill_scalar_(Y),_simd_s16x8_fill_scalar_(Z))
 	#define _simd_s16x8_fma_scalar_instruction_set _simd_s16x8_fma_instruction_set
 #endif
@@ -2557,9 +2479,7 @@
 #endif
 
 
-#ifdef _simd_s16x16_fma_scalar_
-	#define _simd_s16x16_fma_scalar_(X,Y,Z) _simd_s16x16_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s16x16_fma_)
+#if defined(_simd_s16x16_fma_) && ! defined(_simd_s16x16_fma_scalar_)
 	#define _simd_s16x16_fma_scalar_(X,Y,Z) _simd_s16x16_fma_(X,_simd_s16x16_fill_scalar_(Y),_simd_s16x16_fill_scalar_(Z))
 	#define _simd_s16x16_fma_scalar_instruction_set _simd_s16x16_fma_instruction_set
 #endif
@@ -2603,9 +2523,7 @@
 #endif
 
 
-#ifdef _simd_s16x32_fma_scalar_
-	#define _simd_s16x32_fma_scalar_(X,Y,Z) _simd_s16x32_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s16x32_fma_)
+#if defined(_simd_s16x32_fma_) && ! defined(_simd_s16x32_fma_scalar_)
 	#define _simd_s16x32_fma_scalar_(X,Y,Z) _simd_s16x32_fma_(X,_simd_s16x32_fill_scalar_(Y),_simd_s16x32_fill_scalar_(Z))
 	#define _simd_s16x32_fma_scalar_instruction_set _simd_s16x32_fma_instruction_set
 #endif
@@ -2638,9 +2556,7 @@
 #endif
 
 
-#ifdef _simd_s16x64_fma_scalar_
-	#define _simd_s16x64_fma_scalar_(X,Y,Z) _simd_s16x64_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s16x64_fma_)
+#if defined(_simd_s16x64_fma_) && ! defined(_simd_s16x64_fma_scalar_)
 	#define _simd_s16x64_fma_scalar_(X,Y,Z) _simd_s16x64_fma_(X,_simd_s16x64_fill_scalar_(Y),_simd_s16x64_fill_scalar_(Z))
 	#define _simd_s16x64_fma_scalar_instruction_set _simd_s16x64_fma_instruction_set
 #endif
@@ -2730,9 +2646,7 @@
 #endif
 
 
-#ifdef _simd_u16x2_fma_scalar_
-	#define _simd_u16x2_fma_scalar_(X,Y,Z) _simd_u16x2_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u16x2_fma_)
+#if defined(_simd_u16x2_fma_) && ! defined(_simd_u16x2_fma_scalar_)
 	#define _simd_u16x2_fma_scalar_(X,Y,Z) _simd_u16x2_fma_(X,_simd_u16x2_fill_scalar_(Y),_simd_u16x2_fill_scalar_(Z))
 	#define _simd_u16x2_fma_scalar_instruction_set _simd_u16x2_fma_instruction_set
 #endif
@@ -2809,9 +2723,7 @@
 #endif
 
 
-#ifdef _simd_u16x4_fma_scalar_
-	#define _simd_u16x4_fma_scalar_(X,Y,Z) _simd_u16x4_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u16x4_fma_)
+#if defined(_simd_u16x4_fma_) && ! defined(_simd_u16x4_fma_scalar_)
 	#define _simd_u16x4_fma_scalar_(X,Y,Z) _simd_u16x4_fma_(X,_simd_u16x4_fill_scalar_(Y),_simd_u16x4_fill_scalar_(Z))
 	#define _simd_u16x4_fma_scalar_instruction_set _simd_u16x4_fma_instruction_set
 #endif
@@ -2877,9 +2789,7 @@
 #endif
 
 
-#ifdef _simd_u16x8_fma_scalar_
-	#define _simd_u16x8_fma_scalar_(X,Y,Z) _simd_u16x8_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u16x8_fma_)
+#if defined(_simd_u16x8_fma_) && ! defined(_simd_u16x8_fma_scalar_)
 	#define _simd_u16x8_fma_scalar_(X,Y,Z) _simd_u16x8_fma_(X,_simd_u16x8_fill_scalar_(Y),_simd_u16x8_fill_scalar_(Z))
 	#define _simd_u16x8_fma_scalar_instruction_set _simd_u16x8_fma_instruction_set
 #endif
@@ -2934,9 +2844,7 @@
 #endif
 
 
-#ifdef _simd_u16x16_fma_scalar_
-	#define _simd_u16x16_fma_scalar_(X,Y,Z) _simd_u16x16_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u16x16_fma_)
+#if defined(_simd_u16x16_fma_) && ! defined(_simd_u16x16_fma_scalar_)
 	#define _simd_u16x16_fma_scalar_(X,Y,Z) _simd_u16x16_fma_(X,_simd_u16x16_fill_scalar_(Y),_simd_u16x16_fill_scalar_(Z))
 	#define _simd_u16x16_fma_scalar_instruction_set _simd_u16x16_fma_instruction_set
 #endif
@@ -2980,9 +2888,7 @@
 #endif
 
 
-#ifdef _simd_u16x32_fma_scalar_
-	#define _simd_u16x32_fma_scalar_(X,Y,Z) _simd_u16x32_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u16x32_fma_)
+#if defined(_simd_u16x32_fma_) && ! defined(_simd_u16x32_fma_scalar_)
 	#define _simd_u16x32_fma_scalar_(X,Y,Z) _simd_u16x32_fma_(X,_simd_u16x32_fill_scalar_(Y),_simd_u16x32_fill_scalar_(Z))
 	#define _simd_u16x32_fma_scalar_instruction_set _simd_u16x32_fma_instruction_set
 #endif
@@ -3015,9 +2921,7 @@
 #endif
 
 
-#ifdef _simd_u16x64_fma_scalar_
-	#define _simd_u16x64_fma_scalar_(X,Y,Z) _simd_u16x64_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u16x64_fma_)
+#if defined(_simd_u16x64_fma_) && ! defined(_simd_u16x64_fma_scalar_)
 	#define _simd_u16x64_fma_scalar_(X,Y,Z) _simd_u16x64_fma_(X,_simd_u16x64_fill_scalar_(Y),_simd_u16x64_fill_scalar_(Z))
 	#define _simd_u16x64_fma_scalar_instruction_set _simd_u16x64_fma_instruction_set
 #endif
@@ -3107,9 +3011,7 @@
 #endif
 
 
-#ifdef _simd_s8x2_fma_scalar_
-	#define _simd_s8x2_fma_scalar_(X,Y,Z) _simd_s8x2_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s8x2_fma_)
+#if defined(_simd_s8x2_fma_) && ! defined(_simd_s8x2_fma_scalar_)
 	#define _simd_s8x2_fma_scalar_(X,Y,Z) _simd_s8x2_fma_(X,_simd_s8x2_fill_scalar_(Y),_simd_s8x2_fill_scalar_(Z))
 	#define _simd_s8x2_fma_scalar_instruction_set _simd_s8x2_fma_instruction_set
 #endif
@@ -3186,9 +3088,7 @@
 #endif
 
 
-#ifdef _simd_s8x4_fma_scalar_
-	#define _simd_s8x4_fma_scalar_(X,Y,Z) _simd_s8x4_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s8x4_fma_)
+#if defined(_simd_s8x4_fma_) && ! defined(_simd_s8x4_fma_scalar_)
 	#define _simd_s8x4_fma_scalar_(X,Y,Z) _simd_s8x4_fma_(X,_simd_s8x4_fill_scalar_(Y),_simd_s8x4_fill_scalar_(Z))
 	#define _simd_s8x4_fma_scalar_instruction_set _simd_s8x4_fma_instruction_set
 #endif
@@ -3254,9 +3154,7 @@
 #endif
 
 
-#ifdef _simd_s8x8_fma_scalar_
-	#define _simd_s8x8_fma_scalar_(X,Y,Z) _simd_s8x8_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s8x8_fma_)
+#if defined(_simd_s8x8_fma_) && ! defined(_simd_s8x8_fma_scalar_)
 	#define _simd_s8x8_fma_scalar_(X,Y,Z) _simd_s8x8_fma_(X,_simd_s8x8_fill_scalar_(Y),_simd_s8x8_fill_scalar_(Z))
 	#define _simd_s8x8_fma_scalar_instruction_set _simd_s8x8_fma_instruction_set
 #endif
@@ -3311,9 +3209,7 @@
 #endif
 
 
-#ifdef _simd_s8x16_fma_scalar_
-	#define _simd_s8x16_fma_scalar_(X,Y,Z) _simd_s8x16_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s8x16_fma_)
+#if defined(_simd_s8x16_fma_) && ! defined(_simd_s8x16_fma_scalar_)
 	#define _simd_s8x16_fma_scalar_(X,Y,Z) _simd_s8x16_fma_(X,_simd_s8x16_fill_scalar_(Y),_simd_s8x16_fill_scalar_(Z))
 	#define _simd_s8x16_fma_scalar_instruction_set _simd_s8x16_fma_instruction_set
 #endif
@@ -3357,9 +3253,7 @@
 #endif
 
 
-#ifdef _simd_s8x32_fma_scalar_
-	#define _simd_s8x32_fma_scalar_(X,Y,Z) _simd_s8x32_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s8x32_fma_)
+#if defined(_simd_s8x32_fma_) && ! defined(_simd_s8x32_fma_scalar_)
 	#define _simd_s8x32_fma_scalar_(X,Y,Z) _simd_s8x32_fma_(X,_simd_s8x32_fill_scalar_(Y),_simd_s8x32_fill_scalar_(Z))
 	#define _simd_s8x32_fma_scalar_instruction_set _simd_s8x32_fma_instruction_set
 #endif
@@ -3392,9 +3286,7 @@
 #endif
 
 
-#ifdef _simd_s8x64_fma_scalar_
-	#define _simd_s8x64_fma_scalar_(X,Y,Z) _simd_s8x64_fma_scalar_(X,Y,Y)
-#elif defined(_simd_s8x64_fma_)
+#if defined(_simd_s8x64_fma_) && ! defined(_simd_s8x64_fma_scalar_)
 	#define _simd_s8x64_fma_scalar_(X,Y,Z) _simd_s8x64_fma_(X,_simd_s8x64_fill_scalar_(Y),_simd_s8x64_fill_scalar_(Z))
 	#define _simd_s8x64_fma_scalar_instruction_set _simd_s8x64_fma_instruction_set
 #endif
@@ -3484,9 +3376,7 @@
 #endif
 
 
-#ifdef _simd_u8x2_fma_scalar_
-	#define _simd_u8x2_fma_scalar_(X,Y,Z) _simd_u8x2_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u8x2_fma_)
+#if defined(_simd_u8x2_fma_) && ! defined(_simd_u8x2_fma_scalar_)
 	#define _simd_u8x2_fma_scalar_(X,Y,Z) _simd_u8x2_fma_(X,_simd_u8x2_fill_scalar_(Y),_simd_u8x2_fill_scalar_(Z))
 	#define _simd_u8x2_fma_scalar_instruction_set _simd_u8x2_fma_instruction_set
 #endif
@@ -3563,9 +3453,7 @@
 #endif
 
 
-#ifdef _simd_u8x4_fma_scalar_
-	#define _simd_u8x4_fma_scalar_(X,Y,Z) _simd_u8x4_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u8x4_fma_)
+#if defined(_simd_u8x4_fma_) && ! defined(_simd_u8x4_fma_scalar_)
 	#define _simd_u8x4_fma_scalar_(X,Y,Z) _simd_u8x4_fma_(X,_simd_u8x4_fill_scalar_(Y),_simd_u8x4_fill_scalar_(Z))
 	#define _simd_u8x4_fma_scalar_instruction_set _simd_u8x4_fma_instruction_set
 #endif
@@ -3631,9 +3519,7 @@
 #endif
 
 
-#ifdef _simd_u8x8_fma_scalar_
-	#define _simd_u8x8_fma_scalar_(X,Y,Z) _simd_u8x8_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u8x8_fma_)
+#if defined(_simd_u8x8_fma_) && ! defined(_simd_u8x8_fma_scalar_)
 	#define _simd_u8x8_fma_scalar_(X,Y,Z) _simd_u8x8_fma_(X,_simd_u8x8_fill_scalar_(Y),_simd_u8x8_fill_scalar_(Z))
 	#define _simd_u8x8_fma_scalar_instruction_set _simd_u8x8_fma_instruction_set
 #endif
@@ -3688,9 +3574,7 @@
 #endif
 
 
-#ifdef _simd_u8x16_fma_scalar_
-	#define _simd_u8x16_fma_scalar_(X,Y,Z) _simd_u8x16_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u8x16_fma_)
+#if defined(_simd_u8x16_fma_) && ! defined(_simd_u8x16_fma_scalar_)
 	#define _simd_u8x16_fma_scalar_(X,Y,Z) _simd_u8x16_fma_(X,_simd_u8x16_fill_scalar_(Y),_simd_u8x16_fill_scalar_(Z))
 	#define _simd_u8x16_fma_scalar_instruction_set _simd_u8x16_fma_instruction_set
 #endif
@@ -3734,9 +3618,7 @@
 #endif
 
 
-#ifdef _simd_u8x32_fma_scalar_
-	#define _simd_u8x32_fma_scalar_(X,Y,Z) _simd_u8x32_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u8x32_fma_)
+#if defined(_simd_u8x32_fma_) && ! defined(_simd_u8x32_fma_scalar_)
 	#define _simd_u8x32_fma_scalar_(X,Y,Z) _simd_u8x32_fma_(X,_simd_u8x32_fill_scalar_(Y),_simd_u8x32_fill_scalar_(Z))
 	#define _simd_u8x32_fma_scalar_instruction_set _simd_u8x32_fma_instruction_set
 #endif
@@ -3769,9 +3651,7 @@
 #endif
 
 
-#ifdef _simd_u8x64_fma_scalar_
-	#define _simd_u8x64_fma_scalar_(X,Y,Z) _simd_u8x64_fma_scalar_(X,Y,Y)
-#elif defined(_simd_u8x64_fma_)
+#if defined(_simd_u8x64_fma_) && ! defined(_simd_u8x64_fma_scalar_)
 	#define _simd_u8x64_fma_scalar_(X,Y,Z) _simd_u8x64_fma_(X,_simd_u8x64_fill_scalar_(Y),_simd_u8x64_fill_scalar_(Z))
 	#define _simd_u8x64_fma_scalar_instruction_set _simd_u8x64_fma_instruction_set
 #endif
