@@ -463,7 +463,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_FMA> {
 			DynamicOperationDispatcher<scalar_t, OP_FMA>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_fma_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_fma_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -666,7 +666,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_FMS> {
 			DynamicOperationDispatcher<scalar_t, OP_FMS>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_fms_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_fms_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -857,7 +857,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_ADD> {
 			DynamicOperationDispatcher<scalar_t, OP_ADD>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_add_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_add_safe(x[i],y[i]);
 		}
 	}
 };
@@ -1048,7 +1048,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_SUB> {
 			DynamicOperationDispatcher<scalar_t, OP_SUB>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_sub_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_sub_safe(x[i],y[i]);
 		}
 	}
 };
@@ -1239,7 +1239,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_MUL> {
 			DynamicOperationDispatcher<scalar_t, OP_MUL>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_mul_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_mul_safe(x[i],y[i]);
 		}
 	}
 };
@@ -1430,7 +1430,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_DIV> {
 			DynamicOperationDispatcher<scalar_t, OP_DIV>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_div_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_div_safe(x[i],y[i]);
 		}
 	}
 };
@@ -1621,7 +1621,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_MIN> {
 			DynamicOperationDispatcher<scalar_t, OP_MIN>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_min_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_min_safe(x[i],y[i]);
 		}
 	}
 };
@@ -1812,7 +1812,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_MAX> {
 			DynamicOperationDispatcher<scalar_t, OP_MAX>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_max_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_max_safe(x[i],y[i]);
 		}
 	}
 };
@@ -2003,7 +2003,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_CMPEQ> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPEQ>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_cmpeq_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_cmpeq_safe(x[i],y[i]);
 		}
 	}
 };
@@ -2194,7 +2194,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_CMPNE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPNE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_cmpne_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_cmpne_safe(x[i],y[i]);
 		}
 	}
 };
@@ -2385,7 +2385,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_CMPLT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_cmplt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_cmplt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -2576,7 +2576,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_CMPGT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_cmpgt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_cmpgt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -2767,7 +2767,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_CMPLE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_cmple_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_cmple_safe(x[i],y[i]);
 		}
 	}
 };
@@ -2958,7 +2958,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_CMPGE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_cmpge_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_cmpge_safe(x[i],y[i]);
 		}
 	}
 };
@@ -3149,7 +3149,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_AND> {
 			DynamicOperationDispatcher<scalar_t, OP_AND>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_and_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_and_safe(x[i],y[i]);
 		}
 	}
 };
@@ -3340,7 +3340,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_OR> {
 			DynamicOperationDispatcher<scalar_t, OP_OR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_or_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_or_safe(x[i],y[i]);
 		}
 	}
 };
@@ -3531,7 +3531,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_XOR> {
 			DynamicOperationDispatcher<scalar_t, OP_XOR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_xor_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_xor_safe(x[i],y[i]);
 		}
 	}
 };
@@ -3722,7 +3722,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_LSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_LSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_lshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_lshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -3913,7 +3913,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_RSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_RSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_rshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_rshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -4104,7 +4104,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_ATAN2> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN2>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_atan2_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_atan2_safe(x[i],y[i]);
 		}
 	}
 };
@@ -4295,7 +4295,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_POW> {
 			DynamicOperationDispatcher<scalar_t, OP_POW>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_pow_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_pow_safe(x[i],y[i]);
 		}
 	}
 };
@@ -4486,7 +4486,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_HYPOT> {
 			DynamicOperationDispatcher<scalar_t, OP_HYPOT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_hypot_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_hypot_safe(x[i],y[i]);
 		}
 	}
 };
@@ -4665,7 +4665,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_NOT> {
 			DynamicOperationDispatcher<scalar_t, OP_NOT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_not_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_not_safe(x[i]);
 		}
 	}
 };
@@ -4844,7 +4844,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_ABS> {
 			DynamicOperationDispatcher<scalar_t, OP_ABS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_abs_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_abs_safe(x[i]);
 		}
 	}
 };
@@ -5023,7 +5023,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_EXP> {
 			DynamicOperationDispatcher<scalar_t, OP_EXP>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_exp_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_exp_safe(x[i]);
 		}
 	}
 };
@@ -5202,7 +5202,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_LOG> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_log_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_log_safe(x[i]);
 		}
 	}
 };
@@ -5381,7 +5381,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_LOG2> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG2>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_log2_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_log2_safe(x[i]);
 		}
 	}
 };
@@ -5560,7 +5560,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_LOG10> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG10>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_log10_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_log10_safe(x[i]);
 		}
 	}
 };
@@ -5739,7 +5739,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_CEIL> {
 			DynamicOperationDispatcher<scalar_t, OP_CEIL>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_ceil_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_ceil_safe(x[i]);
 		}
 	}
 };
@@ -5918,7 +5918,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_FLOOR> {
 			DynamicOperationDispatcher<scalar_t, OP_FLOOR>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_floor_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_floor_safe(x[i]);
 		}
 	}
 };
@@ -6097,7 +6097,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_ROUND> {
 			DynamicOperationDispatcher<scalar_t, OP_ROUND>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_round_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_round_safe(x[i]);
 		}
 	}
 };
@@ -6276,7 +6276,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_SIN> {
 			DynamicOperationDispatcher<scalar_t, OP_SIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_sin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_sin_safe(x[i]);
 		}
 	}
 };
@@ -6455,7 +6455,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_COS> {
 			DynamicOperationDispatcher<scalar_t, OP_COS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_cos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_cos_safe(x[i]);
 		}
 	}
 };
@@ -6634,7 +6634,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_TAN> {
 			DynamicOperationDispatcher<scalar_t, OP_TAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_tan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_tan_safe(x[i]);
 		}
 	}
 };
@@ -6813,7 +6813,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_ASIN> {
 			DynamicOperationDispatcher<scalar_t, OP_ASIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_asin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_asin_safe(x[i]);
 		}
 	}
 };
@@ -6992,7 +6992,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_ACOS> {
 			DynamicOperationDispatcher<scalar_t, OP_ACOS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_acos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_acos_safe(x[i]);
 		}
 	}
 };
@@ -7171,7 +7171,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_ATAN> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_atan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_atan_safe(x[i]);
 		}
 	}
 };
@@ -7350,7 +7350,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_SINH> {
 			DynamicOperationDispatcher<scalar_t, OP_SINH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_sinh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_sinh_safe(x[i]);
 		}
 	}
 };
@@ -7529,7 +7529,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_COSH> {
 			DynamicOperationDispatcher<scalar_t, OP_COSH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_cosh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_cosh_safe(x[i]);
 		}
 	}
 };
@@ -7708,7 +7708,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_TANH> {
 			DynamicOperationDispatcher<scalar_t, OP_TANH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_tanh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_tanh_safe(x[i]);
 		}
 	}
 };
@@ -7887,7 +7887,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_SQRT> {
 			DynamicOperationDispatcher<scalar_t, OP_SQRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_sqrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_sqrt_safe(x[i]);
 		}
 	}
 };
@@ -8066,7 +8066,7 @@ struct DynamicOperationDispatcher<_simd_f64x1, OP_CBRT> {
 			DynamicOperationDispatcher<scalar_t, OP_CBRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f64x1_cbrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f64x1_cbrt_safe(x[i]);
 		}
 	}
 };
@@ -8521,7 +8521,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_FMA> {
 			DynamicOperationDispatcher<scalar_t, OP_FMA>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_fma_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_fma_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -8724,7 +8724,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_FMS> {
 			DynamicOperationDispatcher<scalar_t, OP_FMS>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_fms_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_fms_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -8915,7 +8915,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_ADD> {
 			DynamicOperationDispatcher<scalar_t, OP_ADD>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_add_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_add_safe(x[i],y[i]);
 		}
 	}
 };
@@ -9106,7 +9106,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_SUB> {
 			DynamicOperationDispatcher<scalar_t, OP_SUB>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_sub_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_sub_safe(x[i],y[i]);
 		}
 	}
 };
@@ -9297,7 +9297,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_MUL> {
 			DynamicOperationDispatcher<scalar_t, OP_MUL>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_mul_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_mul_safe(x[i],y[i]);
 		}
 	}
 };
@@ -9488,7 +9488,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_DIV> {
 			DynamicOperationDispatcher<scalar_t, OP_DIV>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_div_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_div_safe(x[i],y[i]);
 		}
 	}
 };
@@ -9679,7 +9679,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_MIN> {
 			DynamicOperationDispatcher<scalar_t, OP_MIN>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_min_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_min_safe(x[i],y[i]);
 		}
 	}
 };
@@ -9870,7 +9870,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_MAX> {
 			DynamicOperationDispatcher<scalar_t, OP_MAX>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_max_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_max_safe(x[i],y[i]);
 		}
 	}
 };
@@ -10061,7 +10061,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_CMPEQ> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPEQ>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_cmpeq_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_cmpeq_safe(x[i],y[i]);
 		}
 	}
 };
@@ -10252,7 +10252,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_CMPNE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPNE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_cmpne_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_cmpne_safe(x[i],y[i]);
 		}
 	}
 };
@@ -10443,7 +10443,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_CMPLT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_cmplt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_cmplt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -10634,7 +10634,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_CMPGT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_cmpgt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_cmpgt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -10825,7 +10825,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_CMPLE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_cmple_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_cmple_safe(x[i],y[i]);
 		}
 	}
 };
@@ -11016,7 +11016,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_CMPGE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_cmpge_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_cmpge_safe(x[i],y[i]);
 		}
 	}
 };
@@ -11207,7 +11207,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_AND> {
 			DynamicOperationDispatcher<scalar_t, OP_AND>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_and_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_and_safe(x[i],y[i]);
 		}
 	}
 };
@@ -11398,7 +11398,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_OR> {
 			DynamicOperationDispatcher<scalar_t, OP_OR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_or_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_or_safe(x[i],y[i]);
 		}
 	}
 };
@@ -11589,7 +11589,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_XOR> {
 			DynamicOperationDispatcher<scalar_t, OP_XOR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_xor_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_xor_safe(x[i],y[i]);
 		}
 	}
 };
@@ -11780,7 +11780,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_LSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_LSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_lshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_lshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -11971,7 +11971,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_RSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_RSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_rshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_rshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -12162,7 +12162,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_ATAN2> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN2>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_atan2_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_atan2_safe(x[i],y[i]);
 		}
 	}
 };
@@ -12353,7 +12353,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_POW> {
 			DynamicOperationDispatcher<scalar_t, OP_POW>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_pow_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_pow_safe(x[i],y[i]);
 		}
 	}
 };
@@ -12544,7 +12544,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_HYPOT> {
 			DynamicOperationDispatcher<scalar_t, OP_HYPOT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_hypot_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_hypot_safe(x[i],y[i]);
 		}
 	}
 };
@@ -12723,7 +12723,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_NOT> {
 			DynamicOperationDispatcher<scalar_t, OP_NOT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_not_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_not_safe(x[i]);
 		}
 	}
 };
@@ -12902,7 +12902,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_ABS> {
 			DynamicOperationDispatcher<scalar_t, OP_ABS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_abs_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_abs_safe(x[i]);
 		}
 	}
 };
@@ -13081,7 +13081,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_EXP> {
 			DynamicOperationDispatcher<scalar_t, OP_EXP>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_exp_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_exp_safe(x[i]);
 		}
 	}
 };
@@ -13260,7 +13260,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_LOG> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_log_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_log_safe(x[i]);
 		}
 	}
 };
@@ -13439,7 +13439,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_LOG2> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG2>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_log2_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_log2_safe(x[i]);
 		}
 	}
 };
@@ -13618,7 +13618,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_LOG10> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG10>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_log10_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_log10_safe(x[i]);
 		}
 	}
 };
@@ -13797,7 +13797,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_CEIL> {
 			DynamicOperationDispatcher<scalar_t, OP_CEIL>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_ceil_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_ceil_safe(x[i]);
 		}
 	}
 };
@@ -13976,7 +13976,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_FLOOR> {
 			DynamicOperationDispatcher<scalar_t, OP_FLOOR>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_floor_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_floor_safe(x[i]);
 		}
 	}
 };
@@ -14155,7 +14155,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_ROUND> {
 			DynamicOperationDispatcher<scalar_t, OP_ROUND>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_round_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_round_safe(x[i]);
 		}
 	}
 };
@@ -14334,7 +14334,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_SIN> {
 			DynamicOperationDispatcher<scalar_t, OP_SIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_sin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_sin_safe(x[i]);
 		}
 	}
 };
@@ -14513,7 +14513,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_COS> {
 			DynamicOperationDispatcher<scalar_t, OP_COS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_cos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_cos_safe(x[i]);
 		}
 	}
 };
@@ -14692,7 +14692,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_TAN> {
 			DynamicOperationDispatcher<scalar_t, OP_TAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_tan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_tan_safe(x[i]);
 		}
 	}
 };
@@ -14871,7 +14871,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_ASIN> {
 			DynamicOperationDispatcher<scalar_t, OP_ASIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_asin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_asin_safe(x[i]);
 		}
 	}
 };
@@ -15050,7 +15050,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_ACOS> {
 			DynamicOperationDispatcher<scalar_t, OP_ACOS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_acos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_acos_safe(x[i]);
 		}
 	}
 };
@@ -15229,7 +15229,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_ATAN> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_atan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_atan_safe(x[i]);
 		}
 	}
 };
@@ -15408,7 +15408,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_SINH> {
 			DynamicOperationDispatcher<scalar_t, OP_SINH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_sinh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_sinh_safe(x[i]);
 		}
 	}
 };
@@ -15587,7 +15587,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_COSH> {
 			DynamicOperationDispatcher<scalar_t, OP_COSH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_cosh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_cosh_safe(x[i]);
 		}
 	}
 };
@@ -15766,7 +15766,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_TANH> {
 			DynamicOperationDispatcher<scalar_t, OP_TANH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_tanh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_tanh_safe(x[i]);
 		}
 	}
 };
@@ -15945,7 +15945,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_SQRT> {
 			DynamicOperationDispatcher<scalar_t, OP_SQRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_sqrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_sqrt_safe(x[i]);
 		}
 	}
 };
@@ -16124,7 +16124,7 @@ struct DynamicOperationDispatcher<_simd_f32x1, OP_CBRT> {
 			DynamicOperationDispatcher<scalar_t, OP_CBRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_f32x1_cbrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_f32x1_cbrt_safe(x[i]);
 		}
 	}
 };
@@ -16579,7 +16579,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_FMA> {
 			DynamicOperationDispatcher<scalar_t, OP_FMA>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_fma_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_fma_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -16782,7 +16782,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_FMS> {
 			DynamicOperationDispatcher<scalar_t, OP_FMS>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_fms_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_fms_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -16973,7 +16973,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_ADD> {
 			DynamicOperationDispatcher<scalar_t, OP_ADD>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_add_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_add_safe(x[i],y[i]);
 		}
 	}
 };
@@ -17164,7 +17164,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_SUB> {
 			DynamicOperationDispatcher<scalar_t, OP_SUB>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_sub_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_sub_safe(x[i],y[i]);
 		}
 	}
 };
@@ -17355,7 +17355,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_MUL> {
 			DynamicOperationDispatcher<scalar_t, OP_MUL>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_mul_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_mul_safe(x[i],y[i]);
 		}
 	}
 };
@@ -17546,7 +17546,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_DIV> {
 			DynamicOperationDispatcher<scalar_t, OP_DIV>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_div_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_div_safe(x[i],y[i]);
 		}
 	}
 };
@@ -17737,7 +17737,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_MIN> {
 			DynamicOperationDispatcher<scalar_t, OP_MIN>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_min_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_min_safe(x[i],y[i]);
 		}
 	}
 };
@@ -17928,7 +17928,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_MAX> {
 			DynamicOperationDispatcher<scalar_t, OP_MAX>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_max_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_max_safe(x[i],y[i]);
 		}
 	}
 };
@@ -18119,7 +18119,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_CMPEQ> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPEQ>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_cmpeq_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_cmpeq_safe(x[i],y[i]);
 		}
 	}
 };
@@ -18310,7 +18310,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_CMPNE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPNE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_cmpne_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_cmpne_safe(x[i],y[i]);
 		}
 	}
 };
@@ -18501,7 +18501,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_CMPLT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_cmplt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_cmplt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -18692,7 +18692,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_CMPGT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_cmpgt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_cmpgt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -18883,7 +18883,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_CMPLE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_cmple_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_cmple_safe(x[i],y[i]);
 		}
 	}
 };
@@ -19074,7 +19074,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_CMPGE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_cmpge_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_cmpge_safe(x[i],y[i]);
 		}
 	}
 };
@@ -19265,7 +19265,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_AND> {
 			DynamicOperationDispatcher<scalar_t, OP_AND>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_and_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_and_safe(x[i],y[i]);
 		}
 	}
 };
@@ -19456,7 +19456,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_OR> {
 			DynamicOperationDispatcher<scalar_t, OP_OR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_or_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_or_safe(x[i],y[i]);
 		}
 	}
 };
@@ -19647,7 +19647,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_XOR> {
 			DynamicOperationDispatcher<scalar_t, OP_XOR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_xor_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_xor_safe(x[i],y[i]);
 		}
 	}
 };
@@ -19838,7 +19838,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_LSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_LSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_lshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_lshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -20029,7 +20029,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_RSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_RSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_rshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_rshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -20220,7 +20220,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_ATAN2> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN2>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_atan2_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_atan2_safe(x[i],y[i]);
 		}
 	}
 };
@@ -20411,7 +20411,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_POW> {
 			DynamicOperationDispatcher<scalar_t, OP_POW>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_pow_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_pow_safe(x[i],y[i]);
 		}
 	}
 };
@@ -20602,7 +20602,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_HYPOT> {
 			DynamicOperationDispatcher<scalar_t, OP_HYPOT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_hypot_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_hypot_safe(x[i],y[i]);
 		}
 	}
 };
@@ -20781,7 +20781,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_NOT> {
 			DynamicOperationDispatcher<scalar_t, OP_NOT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_not_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_not_safe(x[i]);
 		}
 	}
 };
@@ -20960,7 +20960,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_ABS> {
 			DynamicOperationDispatcher<scalar_t, OP_ABS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_abs_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_abs_safe(x[i]);
 		}
 	}
 };
@@ -21139,7 +21139,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_EXP> {
 			DynamicOperationDispatcher<scalar_t, OP_EXP>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_exp_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_exp_safe(x[i]);
 		}
 	}
 };
@@ -21318,7 +21318,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_LOG> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_log_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_log_safe(x[i]);
 		}
 	}
 };
@@ -21497,7 +21497,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_LOG2> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG2>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_log2_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_log2_safe(x[i]);
 		}
 	}
 };
@@ -21676,7 +21676,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_LOG10> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG10>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_log10_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_log10_safe(x[i]);
 		}
 	}
 };
@@ -21855,7 +21855,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_CEIL> {
 			DynamicOperationDispatcher<scalar_t, OP_CEIL>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_ceil_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_ceil_safe(x[i]);
 		}
 	}
 };
@@ -22034,7 +22034,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_FLOOR> {
 			DynamicOperationDispatcher<scalar_t, OP_FLOOR>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_floor_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_floor_safe(x[i]);
 		}
 	}
 };
@@ -22213,7 +22213,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_ROUND> {
 			DynamicOperationDispatcher<scalar_t, OP_ROUND>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_round_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_round_safe(x[i]);
 		}
 	}
 };
@@ -22392,7 +22392,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_SIN> {
 			DynamicOperationDispatcher<scalar_t, OP_SIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_sin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_sin_safe(x[i]);
 		}
 	}
 };
@@ -22571,7 +22571,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_COS> {
 			DynamicOperationDispatcher<scalar_t, OP_COS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_cos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_cos_safe(x[i]);
 		}
 	}
 };
@@ -22750,7 +22750,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_TAN> {
 			DynamicOperationDispatcher<scalar_t, OP_TAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_tan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_tan_safe(x[i]);
 		}
 	}
 };
@@ -22929,7 +22929,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_ASIN> {
 			DynamicOperationDispatcher<scalar_t, OP_ASIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_asin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_asin_safe(x[i]);
 		}
 	}
 };
@@ -23108,7 +23108,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_ACOS> {
 			DynamicOperationDispatcher<scalar_t, OP_ACOS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_acos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_acos_safe(x[i]);
 		}
 	}
 };
@@ -23287,7 +23287,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_ATAN> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_atan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_atan_safe(x[i]);
 		}
 	}
 };
@@ -23466,7 +23466,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_SINH> {
 			DynamicOperationDispatcher<scalar_t, OP_SINH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_sinh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_sinh_safe(x[i]);
 		}
 	}
 };
@@ -23645,7 +23645,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_COSH> {
 			DynamicOperationDispatcher<scalar_t, OP_COSH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_cosh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_cosh_safe(x[i]);
 		}
 	}
 };
@@ -23824,7 +23824,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_TANH> {
 			DynamicOperationDispatcher<scalar_t, OP_TANH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_tanh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_tanh_safe(x[i]);
 		}
 	}
 };
@@ -24003,7 +24003,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_SQRT> {
 			DynamicOperationDispatcher<scalar_t, OP_SQRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_sqrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_sqrt_safe(x[i]);
 		}
 	}
 };
@@ -24182,7 +24182,7 @@ struct DynamicOperationDispatcher<_simd_s64x1, OP_CBRT> {
 			DynamicOperationDispatcher<scalar_t, OP_CBRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s64x1_cbrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s64x1_cbrt_safe(x[i]);
 		}
 	}
 };
@@ -24637,7 +24637,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_FMA> {
 			DynamicOperationDispatcher<scalar_t, OP_FMA>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_fma_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_fma_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -24840,7 +24840,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_FMS> {
 			DynamicOperationDispatcher<scalar_t, OP_FMS>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_fms_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_fms_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -25031,7 +25031,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_ADD> {
 			DynamicOperationDispatcher<scalar_t, OP_ADD>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_add_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_add_safe(x[i],y[i]);
 		}
 	}
 };
@@ -25222,7 +25222,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_SUB> {
 			DynamicOperationDispatcher<scalar_t, OP_SUB>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_sub_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_sub_safe(x[i],y[i]);
 		}
 	}
 };
@@ -25413,7 +25413,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_MUL> {
 			DynamicOperationDispatcher<scalar_t, OP_MUL>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_mul_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_mul_safe(x[i],y[i]);
 		}
 	}
 };
@@ -25604,7 +25604,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_DIV> {
 			DynamicOperationDispatcher<scalar_t, OP_DIV>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_div_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_div_safe(x[i],y[i]);
 		}
 	}
 };
@@ -25795,7 +25795,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_MIN> {
 			DynamicOperationDispatcher<scalar_t, OP_MIN>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_min_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_min_safe(x[i],y[i]);
 		}
 	}
 };
@@ -25986,7 +25986,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_MAX> {
 			DynamicOperationDispatcher<scalar_t, OP_MAX>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_max_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_max_safe(x[i],y[i]);
 		}
 	}
 };
@@ -26177,7 +26177,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_CMPEQ> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPEQ>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_cmpeq_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_cmpeq_safe(x[i],y[i]);
 		}
 	}
 };
@@ -26368,7 +26368,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_CMPNE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPNE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_cmpne_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_cmpne_safe(x[i],y[i]);
 		}
 	}
 };
@@ -26559,7 +26559,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_CMPLT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_cmplt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_cmplt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -26750,7 +26750,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_CMPGT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_cmpgt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_cmpgt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -26941,7 +26941,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_CMPLE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_cmple_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_cmple_safe(x[i],y[i]);
 		}
 	}
 };
@@ -27132,7 +27132,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_CMPGE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_cmpge_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_cmpge_safe(x[i],y[i]);
 		}
 	}
 };
@@ -27323,7 +27323,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_AND> {
 			DynamicOperationDispatcher<scalar_t, OP_AND>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_and_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_and_safe(x[i],y[i]);
 		}
 	}
 };
@@ -27514,7 +27514,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_OR> {
 			DynamicOperationDispatcher<scalar_t, OP_OR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_or_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_or_safe(x[i],y[i]);
 		}
 	}
 };
@@ -27705,7 +27705,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_XOR> {
 			DynamicOperationDispatcher<scalar_t, OP_XOR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_xor_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_xor_safe(x[i],y[i]);
 		}
 	}
 };
@@ -27896,7 +27896,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_LSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_LSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_lshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_lshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -28087,7 +28087,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_RSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_RSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_rshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_rshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -28278,7 +28278,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_ATAN2> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN2>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_atan2_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_atan2_safe(x[i],y[i]);
 		}
 	}
 };
@@ -28469,7 +28469,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_POW> {
 			DynamicOperationDispatcher<scalar_t, OP_POW>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_pow_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_pow_safe(x[i],y[i]);
 		}
 	}
 };
@@ -28660,7 +28660,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_HYPOT> {
 			DynamicOperationDispatcher<scalar_t, OP_HYPOT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_hypot_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_hypot_safe(x[i],y[i]);
 		}
 	}
 };
@@ -28839,7 +28839,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_NOT> {
 			DynamicOperationDispatcher<scalar_t, OP_NOT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_not_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_not_safe(x[i]);
 		}
 	}
 };
@@ -29018,7 +29018,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_ABS> {
 			DynamicOperationDispatcher<scalar_t, OP_ABS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_abs_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_abs_safe(x[i]);
 		}
 	}
 };
@@ -29197,7 +29197,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_EXP> {
 			DynamicOperationDispatcher<scalar_t, OP_EXP>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_exp_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_exp_safe(x[i]);
 		}
 	}
 };
@@ -29376,7 +29376,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_LOG> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_log_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_log_safe(x[i]);
 		}
 	}
 };
@@ -29555,7 +29555,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_LOG2> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG2>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_log2_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_log2_safe(x[i]);
 		}
 	}
 };
@@ -29734,7 +29734,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_LOG10> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG10>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_log10_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_log10_safe(x[i]);
 		}
 	}
 };
@@ -29913,7 +29913,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_CEIL> {
 			DynamicOperationDispatcher<scalar_t, OP_CEIL>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_ceil_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_ceil_safe(x[i]);
 		}
 	}
 };
@@ -30092,7 +30092,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_FLOOR> {
 			DynamicOperationDispatcher<scalar_t, OP_FLOOR>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_floor_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_floor_safe(x[i]);
 		}
 	}
 };
@@ -30271,7 +30271,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_ROUND> {
 			DynamicOperationDispatcher<scalar_t, OP_ROUND>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_round_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_round_safe(x[i]);
 		}
 	}
 };
@@ -30450,7 +30450,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_SIN> {
 			DynamicOperationDispatcher<scalar_t, OP_SIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_sin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_sin_safe(x[i]);
 		}
 	}
 };
@@ -30629,7 +30629,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_COS> {
 			DynamicOperationDispatcher<scalar_t, OP_COS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_cos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_cos_safe(x[i]);
 		}
 	}
 };
@@ -30808,7 +30808,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_TAN> {
 			DynamicOperationDispatcher<scalar_t, OP_TAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_tan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_tan_safe(x[i]);
 		}
 	}
 };
@@ -30987,7 +30987,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_ASIN> {
 			DynamicOperationDispatcher<scalar_t, OP_ASIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_asin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_asin_safe(x[i]);
 		}
 	}
 };
@@ -31166,7 +31166,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_ACOS> {
 			DynamicOperationDispatcher<scalar_t, OP_ACOS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_acos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_acos_safe(x[i]);
 		}
 	}
 };
@@ -31345,7 +31345,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_ATAN> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_atan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_atan_safe(x[i]);
 		}
 	}
 };
@@ -31524,7 +31524,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_SINH> {
 			DynamicOperationDispatcher<scalar_t, OP_SINH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_sinh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_sinh_safe(x[i]);
 		}
 	}
 };
@@ -31703,7 +31703,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_COSH> {
 			DynamicOperationDispatcher<scalar_t, OP_COSH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_cosh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_cosh_safe(x[i]);
 		}
 	}
 };
@@ -31882,7 +31882,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_TANH> {
 			DynamicOperationDispatcher<scalar_t, OP_TANH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_tanh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_tanh_safe(x[i]);
 		}
 	}
 };
@@ -32061,7 +32061,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_SQRT> {
 			DynamicOperationDispatcher<scalar_t, OP_SQRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_sqrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_sqrt_safe(x[i]);
 		}
 	}
 };
@@ -32240,7 +32240,7 @@ struct DynamicOperationDispatcher<_simd_u64x1, OP_CBRT> {
 			DynamicOperationDispatcher<scalar_t, OP_CBRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u64x1_cbrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u64x1_cbrt_safe(x[i]);
 		}
 	}
 };
@@ -32695,7 +32695,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_FMA> {
 			DynamicOperationDispatcher<scalar_t, OP_FMA>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_fma_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_fma_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -32898,7 +32898,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_FMS> {
 			DynamicOperationDispatcher<scalar_t, OP_FMS>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_fms_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_fms_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -33089,7 +33089,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_ADD> {
 			DynamicOperationDispatcher<scalar_t, OP_ADD>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_add_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_add_safe(x[i],y[i]);
 		}
 	}
 };
@@ -33280,7 +33280,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_SUB> {
 			DynamicOperationDispatcher<scalar_t, OP_SUB>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_sub_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_sub_safe(x[i],y[i]);
 		}
 	}
 };
@@ -33471,7 +33471,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_MUL> {
 			DynamicOperationDispatcher<scalar_t, OP_MUL>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_mul_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_mul_safe(x[i],y[i]);
 		}
 	}
 };
@@ -33662,7 +33662,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_DIV> {
 			DynamicOperationDispatcher<scalar_t, OP_DIV>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_div_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_div_safe(x[i],y[i]);
 		}
 	}
 };
@@ -33853,7 +33853,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_MIN> {
 			DynamicOperationDispatcher<scalar_t, OP_MIN>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_min_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_min_safe(x[i],y[i]);
 		}
 	}
 };
@@ -34044,7 +34044,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_MAX> {
 			DynamicOperationDispatcher<scalar_t, OP_MAX>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_max_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_max_safe(x[i],y[i]);
 		}
 	}
 };
@@ -34235,7 +34235,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_CMPEQ> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPEQ>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_cmpeq_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_cmpeq_safe(x[i],y[i]);
 		}
 	}
 };
@@ -34426,7 +34426,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_CMPNE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPNE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_cmpne_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_cmpne_safe(x[i],y[i]);
 		}
 	}
 };
@@ -34617,7 +34617,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_CMPLT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_cmplt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_cmplt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -34808,7 +34808,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_CMPGT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_cmpgt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_cmpgt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -34999,7 +34999,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_CMPLE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_cmple_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_cmple_safe(x[i],y[i]);
 		}
 	}
 };
@@ -35190,7 +35190,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_CMPGE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_cmpge_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_cmpge_safe(x[i],y[i]);
 		}
 	}
 };
@@ -35381,7 +35381,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_AND> {
 			DynamicOperationDispatcher<scalar_t, OP_AND>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_and_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_and_safe(x[i],y[i]);
 		}
 	}
 };
@@ -35572,7 +35572,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_OR> {
 			DynamicOperationDispatcher<scalar_t, OP_OR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_or_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_or_safe(x[i],y[i]);
 		}
 	}
 };
@@ -35763,7 +35763,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_XOR> {
 			DynamicOperationDispatcher<scalar_t, OP_XOR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_xor_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_xor_safe(x[i],y[i]);
 		}
 	}
 };
@@ -35954,7 +35954,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_LSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_LSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_lshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_lshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -36145,7 +36145,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_RSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_RSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_rshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_rshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -36336,7 +36336,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_ATAN2> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN2>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_atan2_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_atan2_safe(x[i],y[i]);
 		}
 	}
 };
@@ -36527,7 +36527,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_POW> {
 			DynamicOperationDispatcher<scalar_t, OP_POW>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_pow_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_pow_safe(x[i],y[i]);
 		}
 	}
 };
@@ -36718,7 +36718,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_HYPOT> {
 			DynamicOperationDispatcher<scalar_t, OP_HYPOT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_hypot_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_hypot_safe(x[i],y[i]);
 		}
 	}
 };
@@ -36897,7 +36897,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_NOT> {
 			DynamicOperationDispatcher<scalar_t, OP_NOT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_not_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_not_safe(x[i]);
 		}
 	}
 };
@@ -37076,7 +37076,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_ABS> {
 			DynamicOperationDispatcher<scalar_t, OP_ABS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_abs_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_abs_safe(x[i]);
 		}
 	}
 };
@@ -37255,7 +37255,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_EXP> {
 			DynamicOperationDispatcher<scalar_t, OP_EXP>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_exp_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_exp_safe(x[i]);
 		}
 	}
 };
@@ -37434,7 +37434,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_LOG> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_log_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_log_safe(x[i]);
 		}
 	}
 };
@@ -37613,7 +37613,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_LOG2> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG2>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_log2_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_log2_safe(x[i]);
 		}
 	}
 };
@@ -37792,7 +37792,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_LOG10> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG10>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_log10_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_log10_safe(x[i]);
 		}
 	}
 };
@@ -37971,7 +37971,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_CEIL> {
 			DynamicOperationDispatcher<scalar_t, OP_CEIL>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_ceil_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_ceil_safe(x[i]);
 		}
 	}
 };
@@ -38150,7 +38150,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_FLOOR> {
 			DynamicOperationDispatcher<scalar_t, OP_FLOOR>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_floor_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_floor_safe(x[i]);
 		}
 	}
 };
@@ -38329,7 +38329,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_ROUND> {
 			DynamicOperationDispatcher<scalar_t, OP_ROUND>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_round_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_round_safe(x[i]);
 		}
 	}
 };
@@ -38508,7 +38508,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_SIN> {
 			DynamicOperationDispatcher<scalar_t, OP_SIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_sin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_sin_safe(x[i]);
 		}
 	}
 };
@@ -38687,7 +38687,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_COS> {
 			DynamicOperationDispatcher<scalar_t, OP_COS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_cos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_cos_safe(x[i]);
 		}
 	}
 };
@@ -38866,7 +38866,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_TAN> {
 			DynamicOperationDispatcher<scalar_t, OP_TAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_tan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_tan_safe(x[i]);
 		}
 	}
 };
@@ -39045,7 +39045,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_ASIN> {
 			DynamicOperationDispatcher<scalar_t, OP_ASIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_asin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_asin_safe(x[i]);
 		}
 	}
 };
@@ -39224,7 +39224,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_ACOS> {
 			DynamicOperationDispatcher<scalar_t, OP_ACOS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_acos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_acos_safe(x[i]);
 		}
 	}
 };
@@ -39403,7 +39403,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_ATAN> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_atan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_atan_safe(x[i]);
 		}
 	}
 };
@@ -39582,7 +39582,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_SINH> {
 			DynamicOperationDispatcher<scalar_t, OP_SINH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_sinh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_sinh_safe(x[i]);
 		}
 	}
 };
@@ -39761,7 +39761,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_COSH> {
 			DynamicOperationDispatcher<scalar_t, OP_COSH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_cosh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_cosh_safe(x[i]);
 		}
 	}
 };
@@ -39940,7 +39940,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_TANH> {
 			DynamicOperationDispatcher<scalar_t, OP_TANH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_tanh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_tanh_safe(x[i]);
 		}
 	}
 };
@@ -40119,7 +40119,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_SQRT> {
 			DynamicOperationDispatcher<scalar_t, OP_SQRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_sqrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_sqrt_safe(x[i]);
 		}
 	}
 };
@@ -40298,7 +40298,7 @@ struct DynamicOperationDispatcher<_simd_s32x1, OP_CBRT> {
 			DynamicOperationDispatcher<scalar_t, OP_CBRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s32x1_cbrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s32x1_cbrt_safe(x[i]);
 		}
 	}
 };
@@ -40753,7 +40753,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_FMA> {
 			DynamicOperationDispatcher<scalar_t, OP_FMA>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_fma_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_fma_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -40956,7 +40956,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_FMS> {
 			DynamicOperationDispatcher<scalar_t, OP_FMS>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_fms_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_fms_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -41147,7 +41147,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_ADD> {
 			DynamicOperationDispatcher<scalar_t, OP_ADD>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_add_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_add_safe(x[i],y[i]);
 		}
 	}
 };
@@ -41338,7 +41338,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_SUB> {
 			DynamicOperationDispatcher<scalar_t, OP_SUB>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_sub_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_sub_safe(x[i],y[i]);
 		}
 	}
 };
@@ -41529,7 +41529,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_MUL> {
 			DynamicOperationDispatcher<scalar_t, OP_MUL>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_mul_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_mul_safe(x[i],y[i]);
 		}
 	}
 };
@@ -41720,7 +41720,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_DIV> {
 			DynamicOperationDispatcher<scalar_t, OP_DIV>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_div_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_div_safe(x[i],y[i]);
 		}
 	}
 };
@@ -41911,7 +41911,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_MIN> {
 			DynamicOperationDispatcher<scalar_t, OP_MIN>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_min_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_min_safe(x[i],y[i]);
 		}
 	}
 };
@@ -42102,7 +42102,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_MAX> {
 			DynamicOperationDispatcher<scalar_t, OP_MAX>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_max_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_max_safe(x[i],y[i]);
 		}
 	}
 };
@@ -42293,7 +42293,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_CMPEQ> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPEQ>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_cmpeq_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_cmpeq_safe(x[i],y[i]);
 		}
 	}
 };
@@ -42484,7 +42484,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_CMPNE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPNE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_cmpne_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_cmpne_safe(x[i],y[i]);
 		}
 	}
 };
@@ -42675,7 +42675,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_CMPLT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_cmplt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_cmplt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -42866,7 +42866,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_CMPGT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_cmpgt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_cmpgt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -43057,7 +43057,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_CMPLE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_cmple_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_cmple_safe(x[i],y[i]);
 		}
 	}
 };
@@ -43248,7 +43248,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_CMPGE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_cmpge_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_cmpge_safe(x[i],y[i]);
 		}
 	}
 };
@@ -43439,7 +43439,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_AND> {
 			DynamicOperationDispatcher<scalar_t, OP_AND>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_and_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_and_safe(x[i],y[i]);
 		}
 	}
 };
@@ -43630,7 +43630,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_OR> {
 			DynamicOperationDispatcher<scalar_t, OP_OR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_or_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_or_safe(x[i],y[i]);
 		}
 	}
 };
@@ -43821,7 +43821,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_XOR> {
 			DynamicOperationDispatcher<scalar_t, OP_XOR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_xor_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_xor_safe(x[i],y[i]);
 		}
 	}
 };
@@ -44012,7 +44012,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_LSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_LSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_lshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_lshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -44203,7 +44203,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_RSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_RSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_rshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_rshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -44394,7 +44394,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_ATAN2> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN2>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_atan2_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_atan2_safe(x[i],y[i]);
 		}
 	}
 };
@@ -44585,7 +44585,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_POW> {
 			DynamicOperationDispatcher<scalar_t, OP_POW>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_pow_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_pow_safe(x[i],y[i]);
 		}
 	}
 };
@@ -44776,7 +44776,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_HYPOT> {
 			DynamicOperationDispatcher<scalar_t, OP_HYPOT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_hypot_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_hypot_safe(x[i],y[i]);
 		}
 	}
 };
@@ -44955,7 +44955,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_NOT> {
 			DynamicOperationDispatcher<scalar_t, OP_NOT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_not_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_not_safe(x[i]);
 		}
 	}
 };
@@ -45134,7 +45134,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_ABS> {
 			DynamicOperationDispatcher<scalar_t, OP_ABS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_abs_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_abs_safe(x[i]);
 		}
 	}
 };
@@ -45313,7 +45313,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_EXP> {
 			DynamicOperationDispatcher<scalar_t, OP_EXP>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_exp_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_exp_safe(x[i]);
 		}
 	}
 };
@@ -45492,7 +45492,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_LOG> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_log_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_log_safe(x[i]);
 		}
 	}
 };
@@ -45671,7 +45671,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_LOG2> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG2>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_log2_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_log2_safe(x[i]);
 		}
 	}
 };
@@ -45850,7 +45850,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_LOG10> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG10>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_log10_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_log10_safe(x[i]);
 		}
 	}
 };
@@ -46029,7 +46029,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_CEIL> {
 			DynamicOperationDispatcher<scalar_t, OP_CEIL>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_ceil_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_ceil_safe(x[i]);
 		}
 	}
 };
@@ -46208,7 +46208,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_FLOOR> {
 			DynamicOperationDispatcher<scalar_t, OP_FLOOR>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_floor_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_floor_safe(x[i]);
 		}
 	}
 };
@@ -46387,7 +46387,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_ROUND> {
 			DynamicOperationDispatcher<scalar_t, OP_ROUND>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_round_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_round_safe(x[i]);
 		}
 	}
 };
@@ -46566,7 +46566,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_SIN> {
 			DynamicOperationDispatcher<scalar_t, OP_SIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_sin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_sin_safe(x[i]);
 		}
 	}
 };
@@ -46745,7 +46745,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_COS> {
 			DynamicOperationDispatcher<scalar_t, OP_COS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_cos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_cos_safe(x[i]);
 		}
 	}
 };
@@ -46924,7 +46924,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_TAN> {
 			DynamicOperationDispatcher<scalar_t, OP_TAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_tan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_tan_safe(x[i]);
 		}
 	}
 };
@@ -47103,7 +47103,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_ASIN> {
 			DynamicOperationDispatcher<scalar_t, OP_ASIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_asin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_asin_safe(x[i]);
 		}
 	}
 };
@@ -47282,7 +47282,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_ACOS> {
 			DynamicOperationDispatcher<scalar_t, OP_ACOS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_acos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_acos_safe(x[i]);
 		}
 	}
 };
@@ -47461,7 +47461,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_ATAN> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_atan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_atan_safe(x[i]);
 		}
 	}
 };
@@ -47640,7 +47640,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_SINH> {
 			DynamicOperationDispatcher<scalar_t, OP_SINH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_sinh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_sinh_safe(x[i]);
 		}
 	}
 };
@@ -47819,7 +47819,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_COSH> {
 			DynamicOperationDispatcher<scalar_t, OP_COSH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_cosh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_cosh_safe(x[i]);
 		}
 	}
 };
@@ -47998,7 +47998,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_TANH> {
 			DynamicOperationDispatcher<scalar_t, OP_TANH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_tanh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_tanh_safe(x[i]);
 		}
 	}
 };
@@ -48177,7 +48177,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_SQRT> {
 			DynamicOperationDispatcher<scalar_t, OP_SQRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_sqrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_sqrt_safe(x[i]);
 		}
 	}
 };
@@ -48356,7 +48356,7 @@ struct DynamicOperationDispatcher<_simd_u32x1, OP_CBRT> {
 			DynamicOperationDispatcher<scalar_t, OP_CBRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u32x1_cbrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u32x1_cbrt_safe(x[i]);
 		}
 	}
 };
@@ -48811,7 +48811,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_FMA> {
 			DynamicOperationDispatcher<scalar_t, OP_FMA>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_fma_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_fma_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -49014,7 +49014,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_FMS> {
 			DynamicOperationDispatcher<scalar_t, OP_FMS>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_fms_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_fms_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -49205,7 +49205,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_ADD> {
 			DynamicOperationDispatcher<scalar_t, OP_ADD>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_add_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_add_safe(x[i],y[i]);
 		}
 	}
 };
@@ -49396,7 +49396,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_SUB> {
 			DynamicOperationDispatcher<scalar_t, OP_SUB>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_sub_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_sub_safe(x[i],y[i]);
 		}
 	}
 };
@@ -49587,7 +49587,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_MUL> {
 			DynamicOperationDispatcher<scalar_t, OP_MUL>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_mul_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_mul_safe(x[i],y[i]);
 		}
 	}
 };
@@ -49778,7 +49778,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_DIV> {
 			DynamicOperationDispatcher<scalar_t, OP_DIV>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_div_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_div_safe(x[i],y[i]);
 		}
 	}
 };
@@ -49969,7 +49969,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_MIN> {
 			DynamicOperationDispatcher<scalar_t, OP_MIN>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_min_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_min_safe(x[i],y[i]);
 		}
 	}
 };
@@ -50160,7 +50160,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_MAX> {
 			DynamicOperationDispatcher<scalar_t, OP_MAX>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_max_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_max_safe(x[i],y[i]);
 		}
 	}
 };
@@ -50351,7 +50351,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_CMPEQ> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPEQ>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_cmpeq_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_cmpeq_safe(x[i],y[i]);
 		}
 	}
 };
@@ -50542,7 +50542,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_CMPNE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPNE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_cmpne_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_cmpne_safe(x[i],y[i]);
 		}
 	}
 };
@@ -50733,7 +50733,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_CMPLT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_cmplt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_cmplt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -50924,7 +50924,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_CMPGT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_cmpgt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_cmpgt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -51115,7 +51115,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_CMPLE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_cmple_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_cmple_safe(x[i],y[i]);
 		}
 	}
 };
@@ -51306,7 +51306,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_CMPGE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_cmpge_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_cmpge_safe(x[i],y[i]);
 		}
 	}
 };
@@ -51497,7 +51497,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_AND> {
 			DynamicOperationDispatcher<scalar_t, OP_AND>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_and_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_and_safe(x[i],y[i]);
 		}
 	}
 };
@@ -51688,7 +51688,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_OR> {
 			DynamicOperationDispatcher<scalar_t, OP_OR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_or_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_or_safe(x[i],y[i]);
 		}
 	}
 };
@@ -51879,7 +51879,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_XOR> {
 			DynamicOperationDispatcher<scalar_t, OP_XOR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_xor_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_xor_safe(x[i],y[i]);
 		}
 	}
 };
@@ -52070,7 +52070,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_LSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_LSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_lshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_lshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -52261,7 +52261,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_RSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_RSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_rshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_rshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -52452,7 +52452,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_ATAN2> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN2>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_atan2_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_atan2_safe(x[i],y[i]);
 		}
 	}
 };
@@ -52643,7 +52643,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_POW> {
 			DynamicOperationDispatcher<scalar_t, OP_POW>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_pow_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_pow_safe(x[i],y[i]);
 		}
 	}
 };
@@ -52834,7 +52834,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_HYPOT> {
 			DynamicOperationDispatcher<scalar_t, OP_HYPOT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_hypot_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_hypot_safe(x[i],y[i]);
 		}
 	}
 };
@@ -53013,7 +53013,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_NOT> {
 			DynamicOperationDispatcher<scalar_t, OP_NOT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_not_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_not_safe(x[i]);
 		}
 	}
 };
@@ -53192,7 +53192,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_ABS> {
 			DynamicOperationDispatcher<scalar_t, OP_ABS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_abs_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_abs_safe(x[i]);
 		}
 	}
 };
@@ -53371,7 +53371,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_EXP> {
 			DynamicOperationDispatcher<scalar_t, OP_EXP>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_exp_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_exp_safe(x[i]);
 		}
 	}
 };
@@ -53550,7 +53550,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_LOG> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_log_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_log_safe(x[i]);
 		}
 	}
 };
@@ -53729,7 +53729,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_LOG2> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG2>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_log2_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_log2_safe(x[i]);
 		}
 	}
 };
@@ -53908,7 +53908,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_LOG10> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG10>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_log10_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_log10_safe(x[i]);
 		}
 	}
 };
@@ -54087,7 +54087,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_CEIL> {
 			DynamicOperationDispatcher<scalar_t, OP_CEIL>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_ceil_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_ceil_safe(x[i]);
 		}
 	}
 };
@@ -54266,7 +54266,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_FLOOR> {
 			DynamicOperationDispatcher<scalar_t, OP_FLOOR>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_floor_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_floor_safe(x[i]);
 		}
 	}
 };
@@ -54445,7 +54445,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_ROUND> {
 			DynamicOperationDispatcher<scalar_t, OP_ROUND>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_round_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_round_safe(x[i]);
 		}
 	}
 };
@@ -54624,7 +54624,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_SIN> {
 			DynamicOperationDispatcher<scalar_t, OP_SIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_sin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_sin_safe(x[i]);
 		}
 	}
 };
@@ -54803,7 +54803,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_COS> {
 			DynamicOperationDispatcher<scalar_t, OP_COS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_cos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_cos_safe(x[i]);
 		}
 	}
 };
@@ -54982,7 +54982,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_TAN> {
 			DynamicOperationDispatcher<scalar_t, OP_TAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_tan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_tan_safe(x[i]);
 		}
 	}
 };
@@ -55161,7 +55161,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_ASIN> {
 			DynamicOperationDispatcher<scalar_t, OP_ASIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_asin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_asin_safe(x[i]);
 		}
 	}
 };
@@ -55340,7 +55340,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_ACOS> {
 			DynamicOperationDispatcher<scalar_t, OP_ACOS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_acos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_acos_safe(x[i]);
 		}
 	}
 };
@@ -55519,7 +55519,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_ATAN> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_atan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_atan_safe(x[i]);
 		}
 	}
 };
@@ -55698,7 +55698,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_SINH> {
 			DynamicOperationDispatcher<scalar_t, OP_SINH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_sinh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_sinh_safe(x[i]);
 		}
 	}
 };
@@ -55877,7 +55877,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_COSH> {
 			DynamicOperationDispatcher<scalar_t, OP_COSH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_cosh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_cosh_safe(x[i]);
 		}
 	}
 };
@@ -56056,7 +56056,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_TANH> {
 			DynamicOperationDispatcher<scalar_t, OP_TANH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_tanh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_tanh_safe(x[i]);
 		}
 	}
 };
@@ -56235,7 +56235,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_SQRT> {
 			DynamicOperationDispatcher<scalar_t, OP_SQRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_sqrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_sqrt_safe(x[i]);
 		}
 	}
 };
@@ -56414,7 +56414,7 @@ struct DynamicOperationDispatcher<_simd_s16x1, OP_CBRT> {
 			DynamicOperationDispatcher<scalar_t, OP_CBRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s16x1_cbrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s16x1_cbrt_safe(x[i]);
 		}
 	}
 };
@@ -56869,7 +56869,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_FMA> {
 			DynamicOperationDispatcher<scalar_t, OP_FMA>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_fma_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_fma_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -57072,7 +57072,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_FMS> {
 			DynamicOperationDispatcher<scalar_t, OP_FMS>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_fms_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_fms_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -57263,7 +57263,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_ADD> {
 			DynamicOperationDispatcher<scalar_t, OP_ADD>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_add_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_add_safe(x[i],y[i]);
 		}
 	}
 };
@@ -57454,7 +57454,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_SUB> {
 			DynamicOperationDispatcher<scalar_t, OP_SUB>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_sub_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_sub_safe(x[i],y[i]);
 		}
 	}
 };
@@ -57645,7 +57645,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_MUL> {
 			DynamicOperationDispatcher<scalar_t, OP_MUL>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_mul_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_mul_safe(x[i],y[i]);
 		}
 	}
 };
@@ -57836,7 +57836,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_DIV> {
 			DynamicOperationDispatcher<scalar_t, OP_DIV>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_div_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_div_safe(x[i],y[i]);
 		}
 	}
 };
@@ -58027,7 +58027,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_MIN> {
 			DynamicOperationDispatcher<scalar_t, OP_MIN>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_min_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_min_safe(x[i],y[i]);
 		}
 	}
 };
@@ -58218,7 +58218,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_MAX> {
 			DynamicOperationDispatcher<scalar_t, OP_MAX>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_max_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_max_safe(x[i],y[i]);
 		}
 	}
 };
@@ -58409,7 +58409,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_CMPEQ> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPEQ>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_cmpeq_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_cmpeq_safe(x[i],y[i]);
 		}
 	}
 };
@@ -58600,7 +58600,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_CMPNE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPNE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_cmpne_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_cmpne_safe(x[i],y[i]);
 		}
 	}
 };
@@ -58791,7 +58791,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_CMPLT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_cmplt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_cmplt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -58982,7 +58982,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_CMPGT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_cmpgt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_cmpgt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -59173,7 +59173,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_CMPLE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_cmple_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_cmple_safe(x[i],y[i]);
 		}
 	}
 };
@@ -59364,7 +59364,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_CMPGE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_cmpge_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_cmpge_safe(x[i],y[i]);
 		}
 	}
 };
@@ -59555,7 +59555,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_AND> {
 			DynamicOperationDispatcher<scalar_t, OP_AND>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_and_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_and_safe(x[i],y[i]);
 		}
 	}
 };
@@ -59746,7 +59746,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_OR> {
 			DynamicOperationDispatcher<scalar_t, OP_OR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_or_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_or_safe(x[i],y[i]);
 		}
 	}
 };
@@ -59937,7 +59937,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_XOR> {
 			DynamicOperationDispatcher<scalar_t, OP_XOR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_xor_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_xor_safe(x[i],y[i]);
 		}
 	}
 };
@@ -60128,7 +60128,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_LSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_LSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_lshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_lshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -60319,7 +60319,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_RSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_RSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_rshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_rshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -60510,7 +60510,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_ATAN2> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN2>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_atan2_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_atan2_safe(x[i],y[i]);
 		}
 	}
 };
@@ -60701,7 +60701,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_POW> {
 			DynamicOperationDispatcher<scalar_t, OP_POW>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_pow_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_pow_safe(x[i],y[i]);
 		}
 	}
 };
@@ -60892,7 +60892,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_HYPOT> {
 			DynamicOperationDispatcher<scalar_t, OP_HYPOT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_hypot_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_hypot_safe(x[i],y[i]);
 		}
 	}
 };
@@ -61071,7 +61071,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_NOT> {
 			DynamicOperationDispatcher<scalar_t, OP_NOT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_not_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_not_safe(x[i]);
 		}
 	}
 };
@@ -61250,7 +61250,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_ABS> {
 			DynamicOperationDispatcher<scalar_t, OP_ABS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_abs_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_abs_safe(x[i]);
 		}
 	}
 };
@@ -61429,7 +61429,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_EXP> {
 			DynamicOperationDispatcher<scalar_t, OP_EXP>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_exp_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_exp_safe(x[i]);
 		}
 	}
 };
@@ -61608,7 +61608,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_LOG> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_log_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_log_safe(x[i]);
 		}
 	}
 };
@@ -61787,7 +61787,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_LOG2> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG2>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_log2_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_log2_safe(x[i]);
 		}
 	}
 };
@@ -61966,7 +61966,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_LOG10> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG10>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_log10_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_log10_safe(x[i]);
 		}
 	}
 };
@@ -62145,7 +62145,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_CEIL> {
 			DynamicOperationDispatcher<scalar_t, OP_CEIL>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_ceil_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_ceil_safe(x[i]);
 		}
 	}
 };
@@ -62324,7 +62324,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_FLOOR> {
 			DynamicOperationDispatcher<scalar_t, OP_FLOOR>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_floor_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_floor_safe(x[i]);
 		}
 	}
 };
@@ -62503,7 +62503,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_ROUND> {
 			DynamicOperationDispatcher<scalar_t, OP_ROUND>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_round_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_round_safe(x[i]);
 		}
 	}
 };
@@ -62682,7 +62682,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_SIN> {
 			DynamicOperationDispatcher<scalar_t, OP_SIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_sin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_sin_safe(x[i]);
 		}
 	}
 };
@@ -62861,7 +62861,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_COS> {
 			DynamicOperationDispatcher<scalar_t, OP_COS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_cos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_cos_safe(x[i]);
 		}
 	}
 };
@@ -63040,7 +63040,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_TAN> {
 			DynamicOperationDispatcher<scalar_t, OP_TAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_tan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_tan_safe(x[i]);
 		}
 	}
 };
@@ -63219,7 +63219,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_ASIN> {
 			DynamicOperationDispatcher<scalar_t, OP_ASIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_asin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_asin_safe(x[i]);
 		}
 	}
 };
@@ -63398,7 +63398,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_ACOS> {
 			DynamicOperationDispatcher<scalar_t, OP_ACOS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_acos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_acos_safe(x[i]);
 		}
 	}
 };
@@ -63577,7 +63577,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_ATAN> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_atan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_atan_safe(x[i]);
 		}
 	}
 };
@@ -63756,7 +63756,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_SINH> {
 			DynamicOperationDispatcher<scalar_t, OP_SINH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_sinh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_sinh_safe(x[i]);
 		}
 	}
 };
@@ -63935,7 +63935,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_COSH> {
 			DynamicOperationDispatcher<scalar_t, OP_COSH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_cosh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_cosh_safe(x[i]);
 		}
 	}
 };
@@ -64114,7 +64114,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_TANH> {
 			DynamicOperationDispatcher<scalar_t, OP_TANH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_tanh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_tanh_safe(x[i]);
 		}
 	}
 };
@@ -64293,7 +64293,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_SQRT> {
 			DynamicOperationDispatcher<scalar_t, OP_SQRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_sqrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_sqrt_safe(x[i]);
 		}
 	}
 };
@@ -64472,7 +64472,7 @@ struct DynamicOperationDispatcher<_simd_u16x1, OP_CBRT> {
 			DynamicOperationDispatcher<scalar_t, OP_CBRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u16x1_cbrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u16x1_cbrt_safe(x[i]);
 		}
 	}
 };
@@ -64927,7 +64927,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_FMA> {
 			DynamicOperationDispatcher<scalar_t, OP_FMA>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_fma_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_fma_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -65130,7 +65130,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_FMS> {
 			DynamicOperationDispatcher<scalar_t, OP_FMS>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_fms_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_fms_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -65321,7 +65321,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_ADD> {
 			DynamicOperationDispatcher<scalar_t, OP_ADD>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_add_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_add_safe(x[i],y[i]);
 		}
 	}
 };
@@ -65512,7 +65512,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_SUB> {
 			DynamicOperationDispatcher<scalar_t, OP_SUB>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_sub_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_sub_safe(x[i],y[i]);
 		}
 	}
 };
@@ -65703,7 +65703,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_MUL> {
 			DynamicOperationDispatcher<scalar_t, OP_MUL>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_mul_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_mul_safe(x[i],y[i]);
 		}
 	}
 };
@@ -65894,7 +65894,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_DIV> {
 			DynamicOperationDispatcher<scalar_t, OP_DIV>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_div_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_div_safe(x[i],y[i]);
 		}
 	}
 };
@@ -66085,7 +66085,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_MIN> {
 			DynamicOperationDispatcher<scalar_t, OP_MIN>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_min_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_min_safe(x[i],y[i]);
 		}
 	}
 };
@@ -66276,7 +66276,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_MAX> {
 			DynamicOperationDispatcher<scalar_t, OP_MAX>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_max_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_max_safe(x[i],y[i]);
 		}
 	}
 };
@@ -66467,7 +66467,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_CMPEQ> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPEQ>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_cmpeq_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_cmpeq_safe(x[i],y[i]);
 		}
 	}
 };
@@ -66658,7 +66658,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_CMPNE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPNE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_cmpne_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_cmpne_safe(x[i],y[i]);
 		}
 	}
 };
@@ -66849,7 +66849,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_CMPLT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_cmplt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_cmplt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -67040,7 +67040,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_CMPGT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_cmpgt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_cmpgt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -67231,7 +67231,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_CMPLE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_cmple_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_cmple_safe(x[i],y[i]);
 		}
 	}
 };
@@ -67422,7 +67422,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_CMPGE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_cmpge_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_cmpge_safe(x[i],y[i]);
 		}
 	}
 };
@@ -67613,7 +67613,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_AND> {
 			DynamicOperationDispatcher<scalar_t, OP_AND>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_and_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_and_safe(x[i],y[i]);
 		}
 	}
 };
@@ -67804,7 +67804,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_OR> {
 			DynamicOperationDispatcher<scalar_t, OP_OR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_or_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_or_safe(x[i],y[i]);
 		}
 	}
 };
@@ -67995,7 +67995,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_XOR> {
 			DynamicOperationDispatcher<scalar_t, OP_XOR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_xor_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_xor_safe(x[i],y[i]);
 		}
 	}
 };
@@ -68186,7 +68186,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_LSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_LSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_lshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_lshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -68377,7 +68377,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_RSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_RSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_rshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_rshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -68568,7 +68568,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_ATAN2> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN2>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_atan2_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_atan2_safe(x[i],y[i]);
 		}
 	}
 };
@@ -68759,7 +68759,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_POW> {
 			DynamicOperationDispatcher<scalar_t, OP_POW>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_pow_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_pow_safe(x[i],y[i]);
 		}
 	}
 };
@@ -68950,7 +68950,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_HYPOT> {
 			DynamicOperationDispatcher<scalar_t, OP_HYPOT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_hypot_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_hypot_safe(x[i],y[i]);
 		}
 	}
 };
@@ -69129,7 +69129,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_NOT> {
 			DynamicOperationDispatcher<scalar_t, OP_NOT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_not_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_not_safe(x[i]);
 		}
 	}
 };
@@ -69308,7 +69308,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_ABS> {
 			DynamicOperationDispatcher<scalar_t, OP_ABS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_abs_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_abs_safe(x[i]);
 		}
 	}
 };
@@ -69487,7 +69487,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_EXP> {
 			DynamicOperationDispatcher<scalar_t, OP_EXP>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_exp_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_exp_safe(x[i]);
 		}
 	}
 };
@@ -69666,7 +69666,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_LOG> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_log_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_log_safe(x[i]);
 		}
 	}
 };
@@ -69845,7 +69845,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_LOG2> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG2>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_log2_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_log2_safe(x[i]);
 		}
 	}
 };
@@ -70024,7 +70024,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_LOG10> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG10>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_log10_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_log10_safe(x[i]);
 		}
 	}
 };
@@ -70203,7 +70203,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_CEIL> {
 			DynamicOperationDispatcher<scalar_t, OP_CEIL>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_ceil_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_ceil_safe(x[i]);
 		}
 	}
 };
@@ -70382,7 +70382,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_FLOOR> {
 			DynamicOperationDispatcher<scalar_t, OP_FLOOR>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_floor_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_floor_safe(x[i]);
 		}
 	}
 };
@@ -70561,7 +70561,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_ROUND> {
 			DynamicOperationDispatcher<scalar_t, OP_ROUND>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_round_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_round_safe(x[i]);
 		}
 	}
 };
@@ -70740,7 +70740,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_SIN> {
 			DynamicOperationDispatcher<scalar_t, OP_SIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_sin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_sin_safe(x[i]);
 		}
 	}
 };
@@ -70919,7 +70919,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_COS> {
 			DynamicOperationDispatcher<scalar_t, OP_COS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_cos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_cos_safe(x[i]);
 		}
 	}
 };
@@ -71098,7 +71098,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_TAN> {
 			DynamicOperationDispatcher<scalar_t, OP_TAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_tan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_tan_safe(x[i]);
 		}
 	}
 };
@@ -71277,7 +71277,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_ASIN> {
 			DynamicOperationDispatcher<scalar_t, OP_ASIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_asin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_asin_safe(x[i]);
 		}
 	}
 };
@@ -71456,7 +71456,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_ACOS> {
 			DynamicOperationDispatcher<scalar_t, OP_ACOS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_acos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_acos_safe(x[i]);
 		}
 	}
 };
@@ -71635,7 +71635,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_ATAN> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_atan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_atan_safe(x[i]);
 		}
 	}
 };
@@ -71814,7 +71814,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_SINH> {
 			DynamicOperationDispatcher<scalar_t, OP_SINH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_sinh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_sinh_safe(x[i]);
 		}
 	}
 };
@@ -71993,7 +71993,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_COSH> {
 			DynamicOperationDispatcher<scalar_t, OP_COSH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_cosh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_cosh_safe(x[i]);
 		}
 	}
 };
@@ -72172,7 +72172,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_TANH> {
 			DynamicOperationDispatcher<scalar_t, OP_TANH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_tanh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_tanh_safe(x[i]);
 		}
 	}
 };
@@ -72351,7 +72351,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_SQRT> {
 			DynamicOperationDispatcher<scalar_t, OP_SQRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_sqrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_sqrt_safe(x[i]);
 		}
 	}
 };
@@ -72530,7 +72530,7 @@ struct DynamicOperationDispatcher<_simd_s8x1, OP_CBRT> {
 			DynamicOperationDispatcher<scalar_t, OP_CBRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_s8x1_cbrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_s8x1_cbrt_safe(x[i]);
 		}
 	}
 };
@@ -72985,7 +72985,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_FMA> {
 			DynamicOperationDispatcher<scalar_t, OP_FMA>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_fma_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_fma_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -73188,7 +73188,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_FMS> {
 			DynamicOperationDispatcher<scalar_t, OP_FMS>::execute(x,y,z,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_fms_safe(x[i],y[i],z[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_fms_safe(x[i],y[i],z[i]);
 		}
 	}
 };
@@ -73379,7 +73379,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_ADD> {
 			DynamicOperationDispatcher<scalar_t, OP_ADD>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_add_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_add_safe(x[i],y[i]);
 		}
 	}
 };
@@ -73570,7 +73570,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_SUB> {
 			DynamicOperationDispatcher<scalar_t, OP_SUB>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_sub_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_sub_safe(x[i],y[i]);
 		}
 	}
 };
@@ -73761,7 +73761,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_MUL> {
 			DynamicOperationDispatcher<scalar_t, OP_MUL>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_mul_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_mul_safe(x[i],y[i]);
 		}
 	}
 };
@@ -73952,7 +73952,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_DIV> {
 			DynamicOperationDispatcher<scalar_t, OP_DIV>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_div_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_div_safe(x[i],y[i]);
 		}
 	}
 };
@@ -74143,7 +74143,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_MIN> {
 			DynamicOperationDispatcher<scalar_t, OP_MIN>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_min_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_min_safe(x[i],y[i]);
 		}
 	}
 };
@@ -74334,7 +74334,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_MAX> {
 			DynamicOperationDispatcher<scalar_t, OP_MAX>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_max_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_max_safe(x[i],y[i]);
 		}
 	}
 };
@@ -74525,7 +74525,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_CMPEQ> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPEQ>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_cmpeq_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_cmpeq_safe(x[i],y[i]);
 		}
 	}
 };
@@ -74716,7 +74716,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_CMPNE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPNE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_cmpne_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_cmpne_safe(x[i],y[i]);
 		}
 	}
 };
@@ -74907,7 +74907,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_CMPLT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_cmplt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_cmplt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -75098,7 +75098,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_CMPGT> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_cmpgt_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_cmpgt_safe(x[i],y[i]);
 		}
 	}
 };
@@ -75289,7 +75289,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_CMPLE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPLE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_cmple_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_cmple_safe(x[i],y[i]);
 		}
 	}
 };
@@ -75480,7 +75480,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_CMPGE> {
 			DynamicOperationDispatcher<scalar_t, OP_CMPGE>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_cmpge_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_cmpge_safe(x[i],y[i]);
 		}
 	}
 };
@@ -75671,7 +75671,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_AND> {
 			DynamicOperationDispatcher<scalar_t, OP_AND>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_and_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_and_safe(x[i],y[i]);
 		}
 	}
 };
@@ -75862,7 +75862,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_OR> {
 			DynamicOperationDispatcher<scalar_t, OP_OR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_or_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_or_safe(x[i],y[i]);
 		}
 	}
 };
@@ -76053,7 +76053,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_XOR> {
 			DynamicOperationDispatcher<scalar_t, OP_XOR>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_xor_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_xor_safe(x[i],y[i]);
 		}
 	}
 };
@@ -76244,7 +76244,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_LSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_LSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_lshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_lshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -76435,7 +76435,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_RSHIFT> {
 			DynamicOperationDispatcher<scalar_t, OP_RSHIFT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_rshift_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_rshift_safe(x[i],y[i]);
 		}
 	}
 };
@@ -76626,7 +76626,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_ATAN2> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN2>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_atan2_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_atan2_safe(x[i],y[i]);
 		}
 	}
 };
@@ -76817,7 +76817,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_POW> {
 			DynamicOperationDispatcher<scalar_t, OP_POW>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_pow_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_pow_safe(x[i],y[i]);
 		}
 	}
 };
@@ -77008,7 +77008,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_HYPOT> {
 			DynamicOperationDispatcher<scalar_t, OP_HYPOT>::execute(x,y,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_hypot_safe(x[i],y[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_hypot_safe(x[i],y[i]);
 		}
 	}
 };
@@ -77187,7 +77187,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_NOT> {
 			DynamicOperationDispatcher<scalar_t, OP_NOT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_not_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_not_safe(x[i]);
 		}
 	}
 };
@@ -77366,7 +77366,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_ABS> {
 			DynamicOperationDispatcher<scalar_t, OP_ABS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_abs_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_abs_safe(x[i]);
 		}
 	}
 };
@@ -77545,7 +77545,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_EXP> {
 			DynamicOperationDispatcher<scalar_t, OP_EXP>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_exp_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_exp_safe(x[i]);
 		}
 	}
 };
@@ -77724,7 +77724,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_LOG> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_log_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_log_safe(x[i]);
 		}
 	}
 };
@@ -77903,7 +77903,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_LOG2> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG2>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_log2_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_log2_safe(x[i]);
 		}
 	}
 };
@@ -78082,7 +78082,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_LOG10> {
 			DynamicOperationDispatcher<scalar_t, OP_LOG10>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_log10_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_log10_safe(x[i]);
 		}
 	}
 };
@@ -78261,7 +78261,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_CEIL> {
 			DynamicOperationDispatcher<scalar_t, OP_CEIL>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_ceil_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_ceil_safe(x[i]);
 		}
 	}
 };
@@ -78440,7 +78440,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_FLOOR> {
 			DynamicOperationDispatcher<scalar_t, OP_FLOOR>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_floor_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_floor_safe(x[i]);
 		}
 	}
 };
@@ -78619,7 +78619,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_ROUND> {
 			DynamicOperationDispatcher<scalar_t, OP_ROUND>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_round_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_round_safe(x[i]);
 		}
 	}
 };
@@ -78798,7 +78798,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_SIN> {
 			DynamicOperationDispatcher<scalar_t, OP_SIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_sin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_sin_safe(x[i]);
 		}
 	}
 };
@@ -78977,7 +78977,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_COS> {
 			DynamicOperationDispatcher<scalar_t, OP_COS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_cos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_cos_safe(x[i]);
 		}
 	}
 };
@@ -79156,7 +79156,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_TAN> {
 			DynamicOperationDispatcher<scalar_t, OP_TAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_tan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_tan_safe(x[i]);
 		}
 	}
 };
@@ -79335,7 +79335,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_ASIN> {
 			DynamicOperationDispatcher<scalar_t, OP_ASIN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_asin_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_asin_safe(x[i]);
 		}
 	}
 };
@@ -79514,7 +79514,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_ACOS> {
 			DynamicOperationDispatcher<scalar_t, OP_ACOS>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_acos_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_acos_safe(x[i]);
 		}
 	}
 };
@@ -79693,7 +79693,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_ATAN> {
 			DynamicOperationDispatcher<scalar_t, OP_ATAN>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_atan_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_atan_safe(x[i]);
 		}
 	}
 };
@@ -79872,7 +79872,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_SINH> {
 			DynamicOperationDispatcher<scalar_t, OP_SINH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_sinh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_sinh_safe(x[i]);
 		}
 	}
 };
@@ -80051,7 +80051,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_COSH> {
 			DynamicOperationDispatcher<scalar_t, OP_COSH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_cosh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_cosh_safe(x[i]);
 		}
 	}
 };
@@ -80230,7 +80230,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_TANH> {
 			DynamicOperationDispatcher<scalar_t, OP_TANH>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_tanh_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_tanh_safe(x[i]);
 		}
 	}
 };
@@ -80409,7 +80409,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_SQRT> {
 			DynamicOperationDispatcher<scalar_t, OP_SQRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_sqrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_sqrt_safe(x[i]);
 		}
 	}
 };
@@ -80588,7 +80588,7 @@ struct DynamicOperationDispatcher<_simd_u8x1, OP_CBRT> {
 			DynamicOperationDispatcher<scalar_t, OP_CBRT>::execute(x,o, remainder);
 #endif
 		} else {
-			for(int i = 0; i < S; ++i) o[i] = _simd_u8x1_cbrt_safe(x[i]);
+			for(size_t i = 0; i < S; ++i) o[i] = _simd_u8x1_cbrt_safe(x[i]);
 		}
 	}
 };

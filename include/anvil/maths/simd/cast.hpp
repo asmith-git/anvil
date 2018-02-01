@@ -17,7 +17,7 @@
 
 #ifndef _simd_f64x1_cast_f32_safe
 	#define _simd_f64x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_f64x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_f64x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_f32_enabled() true
 #endif
@@ -77,7 +77,7 @@
 
 #ifndef _simd_f64x1_cast_s64_safe
 	#define _simd_f64x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_f64x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_f64x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s64_enabled() true
 #endif
@@ -137,7 +137,7 @@
 
 #ifndef _simd_f64x1_cast_u64_safe
 	#define _simd_f64x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_f64x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_f64x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u64_enabled() true
 #endif
@@ -197,7 +197,7 @@
 
 #ifndef _simd_f64x1_cast_s32_safe
 	#define _simd_f64x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_f64x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_f64x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s32_enabled() true
 #endif
@@ -257,7 +257,7 @@
 
 #ifndef _simd_f64x1_cast_u32_safe
 	#define _simd_f64x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_f64x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_f64x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u32_enabled() true
 #endif
@@ -317,7 +317,7 @@
 
 #ifndef _simd_f64x1_cast_s16_safe
 	#define _simd_f64x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_f64x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_f64x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s16_enabled() true
 #endif
@@ -377,7 +377,7 @@
 
 #ifndef _simd_f64x1_cast_u16_safe
 	#define _simd_f64x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_f64x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_f64x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u16_enabled() true
 #endif
@@ -437,7 +437,7 @@
 
 #ifndef _simd_f64x1_cast_s8_safe
 	#define _simd_f64x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_f64x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_f64x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s8_enabled() true
 #endif
@@ -497,7 +497,7 @@
 
 #ifndef _simd_f64x1_cast_u8_safe
 	#define _simd_f64x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_f64x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_f64x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u8_enabled() true
 #endif
@@ -557,7 +557,7 @@
 
 #ifndef _simd_f64x1_cast_f32_safe
 	#define _simd_f64x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_f64x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_f64x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_f32_enabled() true
 #endif
@@ -609,7 +609,7 @@
 
 #ifndef _simd_f64x1_cast_s64_safe
 	#define _simd_f64x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_f64x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_f64x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s64_enabled() true
 #endif
@@ -661,7 +661,7 @@
 
 #ifndef _simd_f64x1_cast_u64_safe
 	#define _simd_f64x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_f64x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_f64x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u64_enabled() true
 #endif
@@ -713,7 +713,7 @@
 
 #ifndef _simd_f64x1_cast_s32_safe
 	#define _simd_f64x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_f64x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_f64x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s32_enabled() true
 #endif
@@ -765,7 +765,7 @@
 
 #ifndef _simd_f64x1_cast_u32_safe
 	#define _simd_f64x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_f64x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_f64x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u32_enabled() true
 #endif
@@ -817,7 +817,7 @@
 
 #ifndef _simd_f64x1_cast_s16_safe
 	#define _simd_f64x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_f64x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_f64x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s16_enabled() true
 #endif
@@ -869,7 +869,7 @@
 
 #ifndef _simd_f64x1_cast_u16_safe
 	#define _simd_f64x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_f64x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_f64x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u16_enabled() true
 #endif
@@ -921,7 +921,7 @@
 
 #ifndef _simd_f64x1_cast_s8_safe
 	#define _simd_f64x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_f64x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_f64x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s8_enabled() true
 #endif
@@ -973,7 +973,7 @@
 
 #ifndef _simd_f64x1_cast_u8_safe
 	#define _simd_f64x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_f64x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_f64x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u8_enabled() true
 #endif
@@ -1025,7 +1025,7 @@
 
 #ifndef _simd_f64x1_cast_f32_safe
 	#define _simd_f64x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_f64x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_f64x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_f32_enabled() true
 #endif
@@ -1069,7 +1069,7 @@
 
 #ifndef _simd_f64x1_cast_s64_safe
 	#define _simd_f64x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_f64x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_f64x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s64_enabled() true
 #endif
@@ -1113,7 +1113,7 @@
 
 #ifndef _simd_f64x1_cast_u64_safe
 	#define _simd_f64x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_f64x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_f64x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u64_enabled() true
 #endif
@@ -1157,7 +1157,7 @@
 
 #ifndef _simd_f64x1_cast_s32_safe
 	#define _simd_f64x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_f64x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_f64x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s32_enabled() true
 #endif
@@ -1201,7 +1201,7 @@
 
 #ifndef _simd_f64x1_cast_u32_safe
 	#define _simd_f64x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_f64x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_f64x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u32_enabled() true
 #endif
@@ -1245,7 +1245,7 @@
 
 #ifndef _simd_f64x1_cast_s16_safe
 	#define _simd_f64x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_f64x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_f64x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s16_enabled() true
 #endif
@@ -1289,7 +1289,7 @@
 
 #ifndef _simd_f64x1_cast_u16_safe
 	#define _simd_f64x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_f64x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_f64x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u16_enabled() true
 #endif
@@ -1333,7 +1333,7 @@
 
 #ifndef _simd_f64x1_cast_s8_safe
 	#define _simd_f64x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_f64x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_f64x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s8_enabled() true
 #endif
@@ -1377,7 +1377,7 @@
 
 #ifndef _simd_f64x1_cast_u8_safe
 	#define _simd_f64x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_f64x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_f64x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u8_enabled() true
 #endif
@@ -1421,7 +1421,7 @@
 
 #ifndef _simd_f64x1_cast_f32_safe
 	#define _simd_f64x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_f64x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_f64x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_f32_enabled() true
 #endif
@@ -1457,7 +1457,7 @@
 
 #ifndef _simd_f64x1_cast_s64_safe
 	#define _simd_f64x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_f64x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_f64x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s64_enabled() true
 #endif
@@ -1493,7 +1493,7 @@
 
 #ifndef _simd_f64x1_cast_u64_safe
 	#define _simd_f64x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_f64x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_f64x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u64_enabled() true
 #endif
@@ -1529,7 +1529,7 @@
 
 #ifndef _simd_f64x1_cast_s32_safe
 	#define _simd_f64x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_f64x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_f64x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s32_enabled() true
 #endif
@@ -1565,7 +1565,7 @@
 
 #ifndef _simd_f64x1_cast_u32_safe
 	#define _simd_f64x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_f64x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_f64x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u32_enabled() true
 #endif
@@ -1601,7 +1601,7 @@
 
 #ifndef _simd_f64x1_cast_s16_safe
 	#define _simd_f64x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_f64x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_f64x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s16_enabled() true
 #endif
@@ -1637,7 +1637,7 @@
 
 #ifndef _simd_f64x1_cast_u16_safe
 	#define _simd_f64x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_f64x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_f64x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u16_enabled() true
 #endif
@@ -1673,7 +1673,7 @@
 
 #ifndef _simd_f64x1_cast_s8_safe
 	#define _simd_f64x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_f64x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_f64x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s8_enabled() true
 #endif
@@ -1709,7 +1709,7 @@
 
 #ifndef _simd_f64x1_cast_u8_safe
 	#define _simd_f64x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_f64x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_f64x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u8_enabled() true
 #endif
@@ -1745,7 +1745,7 @@
 
 #ifndef _simd_f64x1_cast_f32_safe
 	#define _simd_f64x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_f64x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_f64x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_f32_enabled() true
 #endif
@@ -1773,7 +1773,7 @@
 
 #ifndef _simd_f64x1_cast_s64_safe
 	#define _simd_f64x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_f64x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_f64x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s64_enabled() true
 #endif
@@ -1801,7 +1801,7 @@
 
 #ifndef _simd_f64x1_cast_u64_safe
 	#define _simd_f64x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_f64x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_f64x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u64_enabled() true
 #endif
@@ -1829,7 +1829,7 @@
 
 #ifndef _simd_f64x1_cast_s32_safe
 	#define _simd_f64x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_f64x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_f64x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s32_enabled() true
 #endif
@@ -1857,7 +1857,7 @@
 
 #ifndef _simd_f64x1_cast_u32_safe
 	#define _simd_f64x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_f64x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_f64x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u32_enabled() true
 #endif
@@ -1885,7 +1885,7 @@
 
 #ifndef _simd_f64x1_cast_s16_safe
 	#define _simd_f64x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_f64x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_f64x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s16_enabled() true
 #endif
@@ -1913,7 +1913,7 @@
 
 #ifndef _simd_f64x1_cast_u16_safe
 	#define _simd_f64x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_f64x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_f64x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u16_enabled() true
 #endif
@@ -1941,7 +1941,7 @@
 
 #ifndef _simd_f64x1_cast_s8_safe
 	#define _simd_f64x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_f64x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_f64x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s8_enabled() true
 #endif
@@ -1969,7 +1969,7 @@
 
 #ifndef _simd_f64x1_cast_u8_safe
 	#define _simd_f64x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_f64x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_f64x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u8_enabled() true
 #endif
@@ -1997,7 +1997,7 @@
 
 #ifndef _simd_f64x1_cast_f32_safe
 	#define _simd_f64x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_f64x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_f64x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_f32_enabled() true
 #endif
@@ -2017,7 +2017,7 @@
 
 #ifndef _simd_f64x1_cast_s64_safe
 	#define _simd_f64x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_f64x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_f64x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s64_enabled() true
 #endif
@@ -2037,7 +2037,7 @@
 
 #ifndef _simd_f64x1_cast_u64_safe
 	#define _simd_f64x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_f64x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_f64x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u64_enabled() true
 #endif
@@ -2057,7 +2057,7 @@
 
 #ifndef _simd_f64x1_cast_s32_safe
 	#define _simd_f64x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_f64x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_f64x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s32_enabled() true
 #endif
@@ -2077,7 +2077,7 @@
 
 #ifndef _simd_f64x1_cast_u32_safe
 	#define _simd_f64x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_f64x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_f64x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u32_enabled() true
 #endif
@@ -2097,7 +2097,7 @@
 
 #ifndef _simd_f64x1_cast_s16_safe
 	#define _simd_f64x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_f64x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_f64x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s16_enabled() true
 #endif
@@ -2117,7 +2117,7 @@
 
 #ifndef _simd_f64x1_cast_u16_safe
 	#define _simd_f64x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_f64x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_f64x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u16_enabled() true
 #endif
@@ -2137,7 +2137,7 @@
 
 #ifndef _simd_f64x1_cast_s8_safe
 	#define _simd_f64x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_f64x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_f64x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_s8_enabled() true
 #endif
@@ -2157,7 +2157,7 @@
 
 #ifndef _simd_f64x1_cast_u8_safe
 	#define _simd_f64x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_f64x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_f64x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_f64x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f64x1_cast_u8_enabled() true
 #endif
@@ -2179,7 +2179,7 @@
 
 #ifndef _simd_f32x1_cast_f64_safe
 	#define _simd_f32x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_f32x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_f32x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_f64_enabled() true
 #endif
@@ -2239,7 +2239,7 @@
 
 #ifndef _simd_f32x1_cast_s64_safe
 	#define _simd_f32x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_f32x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_f32x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s64_enabled() true
 #endif
@@ -2299,7 +2299,7 @@
 
 #ifndef _simd_f32x1_cast_u64_safe
 	#define _simd_f32x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_f32x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_f32x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u64_enabled() true
 #endif
@@ -2359,7 +2359,7 @@
 
 #ifndef _simd_f32x1_cast_s32_safe
 	#define _simd_f32x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_f32x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_f32x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s32_enabled() true
 #endif
@@ -2419,7 +2419,7 @@
 
 #ifndef _simd_f32x1_cast_u32_safe
 	#define _simd_f32x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_f32x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_f32x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u32_enabled() true
 #endif
@@ -2479,7 +2479,7 @@
 
 #ifndef _simd_f32x1_cast_s16_safe
 	#define _simd_f32x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_f32x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_f32x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s16_enabled() true
 #endif
@@ -2539,7 +2539,7 @@
 
 #ifndef _simd_f32x1_cast_u16_safe
 	#define _simd_f32x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_f32x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_f32x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u16_enabled() true
 #endif
@@ -2599,7 +2599,7 @@
 
 #ifndef _simd_f32x1_cast_s8_safe
 	#define _simd_f32x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_f32x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_f32x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s8_enabled() true
 #endif
@@ -2659,7 +2659,7 @@
 
 #ifndef _simd_f32x1_cast_u8_safe
 	#define _simd_f32x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_f32x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_f32x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u8_enabled() true
 #endif
@@ -2719,7 +2719,7 @@
 
 #ifndef _simd_f32x1_cast_f64_safe
 	#define _simd_f32x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_f32x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_f32x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_f64_enabled() true
 #endif
@@ -2771,7 +2771,7 @@
 
 #ifndef _simd_f32x1_cast_s64_safe
 	#define _simd_f32x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_f32x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_f32x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s64_enabled() true
 #endif
@@ -2823,7 +2823,7 @@
 
 #ifndef _simd_f32x1_cast_u64_safe
 	#define _simd_f32x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_f32x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_f32x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u64_enabled() true
 #endif
@@ -2875,7 +2875,7 @@
 
 #ifndef _simd_f32x1_cast_s32_safe
 	#define _simd_f32x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_f32x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_f32x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s32_enabled() true
 #endif
@@ -2927,7 +2927,7 @@
 
 #ifndef _simd_f32x1_cast_u32_safe
 	#define _simd_f32x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_f32x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_f32x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u32_enabled() true
 #endif
@@ -2979,7 +2979,7 @@
 
 #ifndef _simd_f32x1_cast_s16_safe
 	#define _simd_f32x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_f32x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_f32x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s16_enabled() true
 #endif
@@ -3031,7 +3031,7 @@
 
 #ifndef _simd_f32x1_cast_u16_safe
 	#define _simd_f32x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_f32x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_f32x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u16_enabled() true
 #endif
@@ -3083,7 +3083,7 @@
 
 #ifndef _simd_f32x1_cast_s8_safe
 	#define _simd_f32x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_f32x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_f32x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s8_enabled() true
 #endif
@@ -3135,7 +3135,7 @@
 
 #ifndef _simd_f32x1_cast_u8_safe
 	#define _simd_f32x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_f32x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_f32x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u8_enabled() true
 #endif
@@ -3187,7 +3187,7 @@
 
 #ifndef _simd_f32x1_cast_f64_safe
 	#define _simd_f32x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_f32x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_f32x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_f64_enabled() true
 #endif
@@ -3231,7 +3231,7 @@
 
 #ifndef _simd_f32x1_cast_s64_safe
 	#define _simd_f32x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_f32x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_f32x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s64_enabled() true
 #endif
@@ -3275,7 +3275,7 @@
 
 #ifndef _simd_f32x1_cast_u64_safe
 	#define _simd_f32x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_f32x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_f32x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u64_enabled() true
 #endif
@@ -3319,7 +3319,7 @@
 
 #ifndef _simd_f32x1_cast_s32_safe
 	#define _simd_f32x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_f32x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_f32x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s32_enabled() true
 #endif
@@ -3363,7 +3363,7 @@
 
 #ifndef _simd_f32x1_cast_u32_safe
 	#define _simd_f32x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_f32x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_f32x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u32_enabled() true
 #endif
@@ -3407,7 +3407,7 @@
 
 #ifndef _simd_f32x1_cast_s16_safe
 	#define _simd_f32x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_f32x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_f32x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s16_enabled() true
 #endif
@@ -3451,7 +3451,7 @@
 
 #ifndef _simd_f32x1_cast_u16_safe
 	#define _simd_f32x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_f32x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_f32x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u16_enabled() true
 #endif
@@ -3495,7 +3495,7 @@
 
 #ifndef _simd_f32x1_cast_s8_safe
 	#define _simd_f32x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_f32x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_f32x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s8_enabled() true
 #endif
@@ -3539,7 +3539,7 @@
 
 #ifndef _simd_f32x1_cast_u8_safe
 	#define _simd_f32x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_f32x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_f32x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u8_enabled() true
 #endif
@@ -3583,7 +3583,7 @@
 
 #ifndef _simd_f32x1_cast_f64_safe
 	#define _simd_f32x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_f32x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_f32x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_f64_enabled() true
 #endif
@@ -3619,7 +3619,7 @@
 
 #ifndef _simd_f32x1_cast_s64_safe
 	#define _simd_f32x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_f32x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_f32x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s64_enabled() true
 #endif
@@ -3655,7 +3655,7 @@
 
 #ifndef _simd_f32x1_cast_u64_safe
 	#define _simd_f32x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_f32x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_f32x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u64_enabled() true
 #endif
@@ -3691,7 +3691,7 @@
 
 #ifndef _simd_f32x1_cast_s32_safe
 	#define _simd_f32x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_f32x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_f32x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s32_enabled() true
 #endif
@@ -3727,7 +3727,7 @@
 
 #ifndef _simd_f32x1_cast_u32_safe
 	#define _simd_f32x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_f32x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_f32x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u32_enabled() true
 #endif
@@ -3763,7 +3763,7 @@
 
 #ifndef _simd_f32x1_cast_s16_safe
 	#define _simd_f32x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_f32x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_f32x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s16_enabled() true
 #endif
@@ -3799,7 +3799,7 @@
 
 #ifndef _simd_f32x1_cast_u16_safe
 	#define _simd_f32x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_f32x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_f32x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u16_enabled() true
 #endif
@@ -3835,7 +3835,7 @@
 
 #ifndef _simd_f32x1_cast_s8_safe
 	#define _simd_f32x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_f32x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_f32x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s8_enabled() true
 #endif
@@ -3871,7 +3871,7 @@
 
 #ifndef _simd_f32x1_cast_u8_safe
 	#define _simd_f32x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_f32x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_f32x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u8_enabled() true
 #endif
@@ -3907,7 +3907,7 @@
 
 #ifndef _simd_f32x1_cast_f64_safe
 	#define _simd_f32x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_f32x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_f32x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_f64_enabled() true
 #endif
@@ -3935,7 +3935,7 @@
 
 #ifndef _simd_f32x1_cast_s64_safe
 	#define _simd_f32x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_f32x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_f32x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s64_enabled() true
 #endif
@@ -3963,7 +3963,7 @@
 
 #ifndef _simd_f32x1_cast_u64_safe
 	#define _simd_f32x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_f32x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_f32x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u64_enabled() true
 #endif
@@ -3991,7 +3991,7 @@
 
 #ifndef _simd_f32x1_cast_s32_safe
 	#define _simd_f32x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_f32x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_f32x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s32_enabled() true
 #endif
@@ -4019,7 +4019,7 @@
 
 #ifndef _simd_f32x1_cast_u32_safe
 	#define _simd_f32x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_f32x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_f32x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u32_enabled() true
 #endif
@@ -4047,7 +4047,7 @@
 
 #ifndef _simd_f32x1_cast_s16_safe
 	#define _simd_f32x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_f32x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_f32x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s16_enabled() true
 #endif
@@ -4075,7 +4075,7 @@
 
 #ifndef _simd_f32x1_cast_u16_safe
 	#define _simd_f32x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_f32x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_f32x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u16_enabled() true
 #endif
@@ -4103,7 +4103,7 @@
 
 #ifndef _simd_f32x1_cast_s8_safe
 	#define _simd_f32x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_f32x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_f32x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s8_enabled() true
 #endif
@@ -4131,7 +4131,7 @@
 
 #ifndef _simd_f32x1_cast_u8_safe
 	#define _simd_f32x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_f32x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_f32x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u8_enabled() true
 #endif
@@ -4159,7 +4159,7 @@
 
 #ifndef _simd_f32x1_cast_f64_safe
 	#define _simd_f32x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_f32x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_f32x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_f64_enabled() true
 #endif
@@ -4179,7 +4179,7 @@
 
 #ifndef _simd_f32x1_cast_s64_safe
 	#define _simd_f32x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_f32x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_f32x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s64_enabled() true
 #endif
@@ -4199,7 +4199,7 @@
 
 #ifndef _simd_f32x1_cast_u64_safe
 	#define _simd_f32x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_f32x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_f32x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u64_enabled() true
 #endif
@@ -4219,7 +4219,7 @@
 
 #ifndef _simd_f32x1_cast_s32_safe
 	#define _simd_f32x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_f32x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_f32x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s32_enabled() true
 #endif
@@ -4239,7 +4239,7 @@
 
 #ifndef _simd_f32x1_cast_u32_safe
 	#define _simd_f32x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_f32x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_f32x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u32_enabled() true
 #endif
@@ -4259,7 +4259,7 @@
 
 #ifndef _simd_f32x1_cast_s16_safe
 	#define _simd_f32x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_f32x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_f32x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s16_enabled() true
 #endif
@@ -4279,7 +4279,7 @@
 
 #ifndef _simd_f32x1_cast_u16_safe
 	#define _simd_f32x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_f32x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_f32x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u16_enabled() true
 #endif
@@ -4299,7 +4299,7 @@
 
 #ifndef _simd_f32x1_cast_s8_safe
 	#define _simd_f32x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_f32x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_f32x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_s8_enabled() true
 #endif
@@ -4319,7 +4319,7 @@
 
 #ifndef _simd_f32x1_cast_u8_safe
 	#define _simd_f32x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_f32x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_f32x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_f32x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_f32x1_cast_u8_enabled() true
 #endif
@@ -4341,7 +4341,7 @@
 
 #ifndef _simd_s64x1_cast_f64_safe
 	#define _simd_s64x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s64x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s64x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_f64_enabled() true
 #endif
@@ -4401,7 +4401,7 @@
 
 #ifndef _simd_s64x1_cast_f32_safe
 	#define _simd_s64x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s64x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s64x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_f32_enabled() true
 #endif
@@ -4461,7 +4461,7 @@
 
 #ifndef _simd_s64x1_cast_u64_safe
 	#define _simd_s64x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s64x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s64x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u64_enabled() true
 #endif
@@ -4521,7 +4521,7 @@
 
 #ifndef _simd_s64x1_cast_s32_safe
 	#define _simd_s64x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_s64x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_s64x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_s32_enabled() true
 #endif
@@ -4581,7 +4581,7 @@
 
 #ifndef _simd_s64x1_cast_u32_safe
 	#define _simd_s64x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s64x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s64x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u32_enabled() true
 #endif
@@ -4641,7 +4641,7 @@
 
 #ifndef _simd_s64x1_cast_s16_safe
 	#define _simd_s64x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_s64x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_s64x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_s16_enabled() true
 #endif
@@ -4701,7 +4701,7 @@
 
 #ifndef _simd_s64x1_cast_u16_safe
 	#define _simd_s64x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s64x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s64x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u16_enabled() true
 #endif
@@ -4761,7 +4761,7 @@
 
 #ifndef _simd_s64x1_cast_s8_safe
 	#define _simd_s64x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_s64x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_s64x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_s8_enabled() true
 #endif
@@ -4821,7 +4821,7 @@
 
 #ifndef _simd_s64x1_cast_u8_safe
 	#define _simd_s64x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s64x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s64x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u8_enabled() true
 #endif
@@ -4881,7 +4881,7 @@
 
 #ifndef _simd_s64x1_cast_f64_safe
 	#define _simd_s64x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s64x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s64x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_f64_enabled() true
 #endif
@@ -4933,7 +4933,7 @@
 
 #ifndef _simd_s64x1_cast_f32_safe
 	#define _simd_s64x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s64x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s64x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_f32_enabled() true
 #endif
@@ -4985,7 +4985,7 @@
 
 #ifndef _simd_s64x1_cast_u64_safe
 	#define _simd_s64x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s64x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s64x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u64_enabled() true
 #endif
@@ -5037,7 +5037,7 @@
 
 #ifndef _simd_s64x1_cast_s32_safe
 	#define _simd_s64x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_s64x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_s64x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_s32_enabled() true
 #endif
@@ -5089,7 +5089,7 @@
 
 #ifndef _simd_s64x1_cast_u32_safe
 	#define _simd_s64x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s64x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s64x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u32_enabled() true
 #endif
@@ -5141,7 +5141,7 @@
 
 #ifndef _simd_s64x1_cast_s16_safe
 	#define _simd_s64x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_s64x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_s64x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_s16_enabled() true
 #endif
@@ -5193,7 +5193,7 @@
 
 #ifndef _simd_s64x1_cast_u16_safe
 	#define _simd_s64x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s64x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s64x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u16_enabled() true
 #endif
@@ -5245,7 +5245,7 @@
 
 #ifndef _simd_s64x1_cast_s8_safe
 	#define _simd_s64x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_s64x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_s64x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_s8_enabled() true
 #endif
@@ -5297,7 +5297,7 @@
 
 #ifndef _simd_s64x1_cast_u8_safe
 	#define _simd_s64x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s64x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s64x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u8_enabled() true
 #endif
@@ -5349,7 +5349,7 @@
 
 #ifndef _simd_s64x1_cast_f64_safe
 	#define _simd_s64x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s64x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s64x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_f64_enabled() true
 #endif
@@ -5393,7 +5393,7 @@
 
 #ifndef _simd_s64x1_cast_f32_safe
 	#define _simd_s64x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s64x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s64x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_f32_enabled() true
 #endif
@@ -5437,7 +5437,7 @@
 
 #ifndef _simd_s64x1_cast_u64_safe
 	#define _simd_s64x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s64x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s64x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u64_enabled() true
 #endif
@@ -5481,7 +5481,7 @@
 
 #ifndef _simd_s64x1_cast_s32_safe
 	#define _simd_s64x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_s64x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_s64x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_s32_enabled() true
 #endif
@@ -5525,7 +5525,7 @@
 
 #ifndef _simd_s64x1_cast_u32_safe
 	#define _simd_s64x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s64x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s64x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u32_enabled() true
 #endif
@@ -5569,7 +5569,7 @@
 
 #ifndef _simd_s64x1_cast_s16_safe
 	#define _simd_s64x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_s64x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_s64x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_s16_enabled() true
 #endif
@@ -5613,7 +5613,7 @@
 
 #ifndef _simd_s64x1_cast_u16_safe
 	#define _simd_s64x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s64x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s64x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u16_enabled() true
 #endif
@@ -5657,7 +5657,7 @@
 
 #ifndef _simd_s64x1_cast_s8_safe
 	#define _simd_s64x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_s64x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_s64x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_s8_enabled() true
 #endif
@@ -5701,7 +5701,7 @@
 
 #ifndef _simd_s64x1_cast_u8_safe
 	#define _simd_s64x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s64x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s64x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u8_enabled() true
 #endif
@@ -5745,7 +5745,7 @@
 
 #ifndef _simd_s64x1_cast_f64_safe
 	#define _simd_s64x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s64x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s64x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_f64_enabled() true
 #endif
@@ -5781,7 +5781,7 @@
 
 #ifndef _simd_s64x1_cast_f32_safe
 	#define _simd_s64x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s64x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s64x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_f32_enabled() true
 #endif
@@ -5817,7 +5817,7 @@
 
 #ifndef _simd_s64x1_cast_u64_safe
 	#define _simd_s64x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s64x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s64x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u64_enabled() true
 #endif
@@ -5853,7 +5853,7 @@
 
 #ifndef _simd_s64x1_cast_s32_safe
 	#define _simd_s64x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_s64x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_s64x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_s32_enabled() true
 #endif
@@ -5889,7 +5889,7 @@
 
 #ifndef _simd_s64x1_cast_u32_safe
 	#define _simd_s64x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s64x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s64x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u32_enabled() true
 #endif
@@ -5925,7 +5925,7 @@
 
 #ifndef _simd_s64x1_cast_s16_safe
 	#define _simd_s64x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_s64x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_s64x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_s16_enabled() true
 #endif
@@ -5961,7 +5961,7 @@
 
 #ifndef _simd_s64x1_cast_u16_safe
 	#define _simd_s64x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s64x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s64x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u16_enabled() true
 #endif
@@ -5997,7 +5997,7 @@
 
 #ifndef _simd_s64x1_cast_s8_safe
 	#define _simd_s64x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_s64x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_s64x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_s8_enabled() true
 #endif
@@ -6033,7 +6033,7 @@
 
 #ifndef _simd_s64x1_cast_u8_safe
 	#define _simd_s64x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s64x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s64x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u8_enabled() true
 #endif
@@ -6069,7 +6069,7 @@
 
 #ifndef _simd_s64x1_cast_f64_safe
 	#define _simd_s64x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s64x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s64x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_f64_enabled() true
 #endif
@@ -6097,7 +6097,7 @@
 
 #ifndef _simd_s64x1_cast_f32_safe
 	#define _simd_s64x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s64x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s64x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_f32_enabled() true
 #endif
@@ -6125,7 +6125,7 @@
 
 #ifndef _simd_s64x1_cast_u64_safe
 	#define _simd_s64x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s64x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s64x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u64_enabled() true
 #endif
@@ -6153,7 +6153,7 @@
 
 #ifndef _simd_s64x1_cast_s32_safe
 	#define _simd_s64x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_s64x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_s64x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_s32_enabled() true
 #endif
@@ -6181,7 +6181,7 @@
 
 #ifndef _simd_s64x1_cast_u32_safe
 	#define _simd_s64x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s64x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s64x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u32_enabled() true
 #endif
@@ -6209,7 +6209,7 @@
 
 #ifndef _simd_s64x1_cast_s16_safe
 	#define _simd_s64x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_s64x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_s64x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_s16_enabled() true
 #endif
@@ -6237,7 +6237,7 @@
 
 #ifndef _simd_s64x1_cast_u16_safe
 	#define _simd_s64x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s64x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s64x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u16_enabled() true
 #endif
@@ -6265,7 +6265,7 @@
 
 #ifndef _simd_s64x1_cast_s8_safe
 	#define _simd_s64x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_s64x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_s64x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_s8_enabled() true
 #endif
@@ -6293,7 +6293,7 @@
 
 #ifndef _simd_s64x1_cast_u8_safe
 	#define _simd_s64x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s64x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s64x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u8_enabled() true
 #endif
@@ -6321,7 +6321,7 @@
 
 #ifndef _simd_s64x1_cast_f64_safe
 	#define _simd_s64x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s64x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s64x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_f64_enabled() true
 #endif
@@ -6341,7 +6341,7 @@
 
 #ifndef _simd_s64x1_cast_f32_safe
 	#define _simd_s64x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s64x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s64x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_f32_enabled() true
 #endif
@@ -6361,7 +6361,7 @@
 
 #ifndef _simd_s64x1_cast_u64_safe
 	#define _simd_s64x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s64x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s64x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u64_enabled() true
 #endif
@@ -6381,7 +6381,7 @@
 
 #ifndef _simd_s64x1_cast_s32_safe
 	#define _simd_s64x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_s64x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_s64x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_s32_enabled() true
 #endif
@@ -6401,7 +6401,7 @@
 
 #ifndef _simd_s64x1_cast_u32_safe
 	#define _simd_s64x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s64x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s64x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u32_enabled() true
 #endif
@@ -6421,7 +6421,7 @@
 
 #ifndef _simd_s64x1_cast_s16_safe
 	#define _simd_s64x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_s64x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_s64x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_s16_enabled() true
 #endif
@@ -6441,7 +6441,7 @@
 
 #ifndef _simd_s64x1_cast_u16_safe
 	#define _simd_s64x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s64x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s64x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u16_enabled() true
 #endif
@@ -6461,7 +6461,7 @@
 
 #ifndef _simd_s64x1_cast_s8_safe
 	#define _simd_s64x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_s64x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_s64x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_s8_enabled() true
 #endif
@@ -6481,7 +6481,7 @@
 
 #ifndef _simd_s64x1_cast_u8_safe
 	#define _simd_s64x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s64x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s64x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s64x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s64x1_cast_u8_enabled() true
 #endif
@@ -6503,7 +6503,7 @@
 
 #ifndef _simd_u64x1_cast_f64_safe
 	#define _simd_u64x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u64x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u64x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_f64_enabled() true
 #endif
@@ -6563,7 +6563,7 @@
 
 #ifndef _simd_u64x1_cast_f32_safe
 	#define _simd_u64x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u64x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u64x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_f32_enabled() true
 #endif
@@ -6623,7 +6623,7 @@
 
 #ifndef _simd_u64x1_cast_s64_safe
 	#define _simd_u64x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u64x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u64x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s64_enabled() true
 #endif
@@ -6683,7 +6683,7 @@
 
 #ifndef _simd_u64x1_cast_s32_safe
 	#define _simd_u64x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u64x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u64x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s32_enabled() true
 #endif
@@ -6743,7 +6743,7 @@
 
 #ifndef _simd_u64x1_cast_u32_safe
 	#define _simd_u64x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_u64x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_u64x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_u32_enabled() true
 #endif
@@ -6803,7 +6803,7 @@
 
 #ifndef _simd_u64x1_cast_s16_safe
 	#define _simd_u64x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u64x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u64x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s16_enabled() true
 #endif
@@ -6863,7 +6863,7 @@
 
 #ifndef _simd_u64x1_cast_u16_safe
 	#define _simd_u64x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_u64x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_u64x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_u16_enabled() true
 #endif
@@ -6923,7 +6923,7 @@
 
 #ifndef _simd_u64x1_cast_s8_safe
 	#define _simd_u64x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u64x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u64x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s8_enabled() true
 #endif
@@ -6983,7 +6983,7 @@
 
 #ifndef _simd_u64x1_cast_u8_safe
 	#define _simd_u64x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_u64x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_u64x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_u8_enabled() true
 #endif
@@ -7043,7 +7043,7 @@
 
 #ifndef _simd_u64x1_cast_f64_safe
 	#define _simd_u64x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u64x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u64x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_f64_enabled() true
 #endif
@@ -7095,7 +7095,7 @@
 
 #ifndef _simd_u64x1_cast_f32_safe
 	#define _simd_u64x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u64x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u64x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_f32_enabled() true
 #endif
@@ -7147,7 +7147,7 @@
 
 #ifndef _simd_u64x1_cast_s64_safe
 	#define _simd_u64x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u64x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u64x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s64_enabled() true
 #endif
@@ -7199,7 +7199,7 @@
 
 #ifndef _simd_u64x1_cast_s32_safe
 	#define _simd_u64x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u64x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u64x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s32_enabled() true
 #endif
@@ -7251,7 +7251,7 @@
 
 #ifndef _simd_u64x1_cast_u32_safe
 	#define _simd_u64x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_u64x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_u64x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_u32_enabled() true
 #endif
@@ -7303,7 +7303,7 @@
 
 #ifndef _simd_u64x1_cast_s16_safe
 	#define _simd_u64x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u64x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u64x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s16_enabled() true
 #endif
@@ -7355,7 +7355,7 @@
 
 #ifndef _simd_u64x1_cast_u16_safe
 	#define _simd_u64x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_u64x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_u64x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_u16_enabled() true
 #endif
@@ -7407,7 +7407,7 @@
 
 #ifndef _simd_u64x1_cast_s8_safe
 	#define _simd_u64x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u64x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u64x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s8_enabled() true
 #endif
@@ -7459,7 +7459,7 @@
 
 #ifndef _simd_u64x1_cast_u8_safe
 	#define _simd_u64x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_u64x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_u64x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_u8_enabled() true
 #endif
@@ -7511,7 +7511,7 @@
 
 #ifndef _simd_u64x1_cast_f64_safe
 	#define _simd_u64x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u64x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u64x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_f64_enabled() true
 #endif
@@ -7555,7 +7555,7 @@
 
 #ifndef _simd_u64x1_cast_f32_safe
 	#define _simd_u64x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u64x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u64x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_f32_enabled() true
 #endif
@@ -7599,7 +7599,7 @@
 
 #ifndef _simd_u64x1_cast_s64_safe
 	#define _simd_u64x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u64x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u64x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s64_enabled() true
 #endif
@@ -7643,7 +7643,7 @@
 
 #ifndef _simd_u64x1_cast_s32_safe
 	#define _simd_u64x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u64x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u64x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s32_enabled() true
 #endif
@@ -7687,7 +7687,7 @@
 
 #ifndef _simd_u64x1_cast_u32_safe
 	#define _simd_u64x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_u64x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_u64x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_u32_enabled() true
 #endif
@@ -7731,7 +7731,7 @@
 
 #ifndef _simd_u64x1_cast_s16_safe
 	#define _simd_u64x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u64x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u64x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s16_enabled() true
 #endif
@@ -7775,7 +7775,7 @@
 
 #ifndef _simd_u64x1_cast_u16_safe
 	#define _simd_u64x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_u64x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_u64x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_u16_enabled() true
 #endif
@@ -7819,7 +7819,7 @@
 
 #ifndef _simd_u64x1_cast_s8_safe
 	#define _simd_u64x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u64x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u64x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s8_enabled() true
 #endif
@@ -7863,7 +7863,7 @@
 
 #ifndef _simd_u64x1_cast_u8_safe
 	#define _simd_u64x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_u64x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_u64x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_u8_enabled() true
 #endif
@@ -7907,7 +7907,7 @@
 
 #ifndef _simd_u64x1_cast_f64_safe
 	#define _simd_u64x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u64x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u64x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_f64_enabled() true
 #endif
@@ -7943,7 +7943,7 @@
 
 #ifndef _simd_u64x1_cast_f32_safe
 	#define _simd_u64x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u64x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u64x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_f32_enabled() true
 #endif
@@ -7979,7 +7979,7 @@
 
 #ifndef _simd_u64x1_cast_s64_safe
 	#define _simd_u64x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u64x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u64x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s64_enabled() true
 #endif
@@ -8015,7 +8015,7 @@
 
 #ifndef _simd_u64x1_cast_s32_safe
 	#define _simd_u64x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u64x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u64x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s32_enabled() true
 #endif
@@ -8051,7 +8051,7 @@
 
 #ifndef _simd_u64x1_cast_u32_safe
 	#define _simd_u64x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_u64x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_u64x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_u32_enabled() true
 #endif
@@ -8087,7 +8087,7 @@
 
 #ifndef _simd_u64x1_cast_s16_safe
 	#define _simd_u64x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u64x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u64x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s16_enabled() true
 #endif
@@ -8123,7 +8123,7 @@
 
 #ifndef _simd_u64x1_cast_u16_safe
 	#define _simd_u64x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_u64x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_u64x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_u16_enabled() true
 #endif
@@ -8159,7 +8159,7 @@
 
 #ifndef _simd_u64x1_cast_s8_safe
 	#define _simd_u64x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u64x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u64x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s8_enabled() true
 #endif
@@ -8195,7 +8195,7 @@
 
 #ifndef _simd_u64x1_cast_u8_safe
 	#define _simd_u64x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_u64x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_u64x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_u8_enabled() true
 #endif
@@ -8231,7 +8231,7 @@
 
 #ifndef _simd_u64x1_cast_f64_safe
 	#define _simd_u64x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u64x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u64x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_f64_enabled() true
 #endif
@@ -8259,7 +8259,7 @@
 
 #ifndef _simd_u64x1_cast_f32_safe
 	#define _simd_u64x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u64x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u64x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_f32_enabled() true
 #endif
@@ -8287,7 +8287,7 @@
 
 #ifndef _simd_u64x1_cast_s64_safe
 	#define _simd_u64x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u64x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u64x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s64_enabled() true
 #endif
@@ -8315,7 +8315,7 @@
 
 #ifndef _simd_u64x1_cast_s32_safe
 	#define _simd_u64x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u64x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u64x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s32_enabled() true
 #endif
@@ -8343,7 +8343,7 @@
 
 #ifndef _simd_u64x1_cast_u32_safe
 	#define _simd_u64x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_u64x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_u64x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_u32_enabled() true
 #endif
@@ -8371,7 +8371,7 @@
 
 #ifndef _simd_u64x1_cast_s16_safe
 	#define _simd_u64x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u64x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u64x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s16_enabled() true
 #endif
@@ -8399,7 +8399,7 @@
 
 #ifndef _simd_u64x1_cast_u16_safe
 	#define _simd_u64x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_u64x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_u64x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_u16_enabled() true
 #endif
@@ -8427,7 +8427,7 @@
 
 #ifndef _simd_u64x1_cast_s8_safe
 	#define _simd_u64x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u64x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u64x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s8_enabled() true
 #endif
@@ -8455,7 +8455,7 @@
 
 #ifndef _simd_u64x1_cast_u8_safe
 	#define _simd_u64x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_u64x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_u64x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_u8_enabled() true
 #endif
@@ -8483,7 +8483,7 @@
 
 #ifndef _simd_u64x1_cast_f64_safe
 	#define _simd_u64x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u64x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u64x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_f64_enabled() true
 #endif
@@ -8503,7 +8503,7 @@
 
 #ifndef _simd_u64x1_cast_f32_safe
 	#define _simd_u64x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u64x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u64x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_f32_enabled() true
 #endif
@@ -8523,7 +8523,7 @@
 
 #ifndef _simd_u64x1_cast_s64_safe
 	#define _simd_u64x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u64x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u64x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s64_enabled() true
 #endif
@@ -8543,7 +8543,7 @@
 
 #ifndef _simd_u64x1_cast_s32_safe
 	#define _simd_u64x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u64x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u64x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s32_enabled() true
 #endif
@@ -8563,7 +8563,7 @@
 
 #ifndef _simd_u64x1_cast_u32_safe
 	#define _simd_u64x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_u64x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_u64x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_u32_enabled() true
 #endif
@@ -8583,7 +8583,7 @@
 
 #ifndef _simd_u64x1_cast_s16_safe
 	#define _simd_u64x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u64x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u64x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s16_enabled() true
 #endif
@@ -8603,7 +8603,7 @@
 
 #ifndef _simd_u64x1_cast_u16_safe
 	#define _simd_u64x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_u64x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_u64x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_u16_enabled() true
 #endif
@@ -8623,7 +8623,7 @@
 
 #ifndef _simd_u64x1_cast_s8_safe
 	#define _simd_u64x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u64x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u64x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_s8_enabled() true
 #endif
@@ -8643,7 +8643,7 @@
 
 #ifndef _simd_u64x1_cast_u8_safe
 	#define _simd_u64x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_u64x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_u64x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_u64x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u64x1_cast_u8_enabled() true
 #endif
@@ -8665,7 +8665,7 @@
 
 #ifndef _simd_s32x1_cast_f64_safe
 	#define _simd_s32x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s32x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s32x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_f64_enabled() true
 #endif
@@ -8725,7 +8725,7 @@
 
 #ifndef _simd_s32x1_cast_f32_safe
 	#define _simd_s32x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s32x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s32x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_f32_enabled() true
 #endif
@@ -8785,7 +8785,7 @@
 
 #ifndef _simd_s32x1_cast_s64_safe
 	#define _simd_s32x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_s32x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_s32x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_s64_enabled() true
 #endif
@@ -8845,7 +8845,7 @@
 
 #ifndef _simd_s32x1_cast_u64_safe
 	#define _simd_s32x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s32x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s32x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u64_enabled() true
 #endif
@@ -8905,7 +8905,7 @@
 
 #ifndef _simd_s32x1_cast_u32_safe
 	#define _simd_s32x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s32x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s32x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u32_enabled() true
 #endif
@@ -8965,7 +8965,7 @@
 
 #ifndef _simd_s32x1_cast_s16_safe
 	#define _simd_s32x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_s32x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_s32x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_s16_enabled() true
 #endif
@@ -9025,7 +9025,7 @@
 
 #ifndef _simd_s32x1_cast_u16_safe
 	#define _simd_s32x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s32x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s32x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u16_enabled() true
 #endif
@@ -9085,7 +9085,7 @@
 
 #ifndef _simd_s32x1_cast_s8_safe
 	#define _simd_s32x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_s32x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_s32x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_s8_enabled() true
 #endif
@@ -9145,7 +9145,7 @@
 
 #ifndef _simd_s32x1_cast_u8_safe
 	#define _simd_s32x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s32x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s32x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u8_enabled() true
 #endif
@@ -9205,7 +9205,7 @@
 
 #ifndef _simd_s32x1_cast_f64_safe
 	#define _simd_s32x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s32x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s32x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_f64_enabled() true
 #endif
@@ -9257,7 +9257,7 @@
 
 #ifndef _simd_s32x1_cast_f32_safe
 	#define _simd_s32x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s32x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s32x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_f32_enabled() true
 #endif
@@ -9309,7 +9309,7 @@
 
 #ifndef _simd_s32x1_cast_s64_safe
 	#define _simd_s32x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_s32x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_s32x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_s64_enabled() true
 #endif
@@ -9361,7 +9361,7 @@
 
 #ifndef _simd_s32x1_cast_u64_safe
 	#define _simd_s32x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s32x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s32x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u64_enabled() true
 #endif
@@ -9413,7 +9413,7 @@
 
 #ifndef _simd_s32x1_cast_u32_safe
 	#define _simd_s32x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s32x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s32x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u32_enabled() true
 #endif
@@ -9465,7 +9465,7 @@
 
 #ifndef _simd_s32x1_cast_s16_safe
 	#define _simd_s32x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_s32x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_s32x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_s16_enabled() true
 #endif
@@ -9517,7 +9517,7 @@
 
 #ifndef _simd_s32x1_cast_u16_safe
 	#define _simd_s32x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s32x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s32x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u16_enabled() true
 #endif
@@ -9569,7 +9569,7 @@
 
 #ifndef _simd_s32x1_cast_s8_safe
 	#define _simd_s32x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_s32x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_s32x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_s8_enabled() true
 #endif
@@ -9621,7 +9621,7 @@
 
 #ifndef _simd_s32x1_cast_u8_safe
 	#define _simd_s32x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s32x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s32x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u8_enabled() true
 #endif
@@ -9673,7 +9673,7 @@
 
 #ifndef _simd_s32x1_cast_f64_safe
 	#define _simd_s32x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s32x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s32x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_f64_enabled() true
 #endif
@@ -9717,7 +9717,7 @@
 
 #ifndef _simd_s32x1_cast_f32_safe
 	#define _simd_s32x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s32x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s32x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_f32_enabled() true
 #endif
@@ -9761,7 +9761,7 @@
 
 #ifndef _simd_s32x1_cast_s64_safe
 	#define _simd_s32x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_s32x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_s32x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_s64_enabled() true
 #endif
@@ -9805,7 +9805,7 @@
 
 #ifndef _simd_s32x1_cast_u64_safe
 	#define _simd_s32x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s32x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s32x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u64_enabled() true
 #endif
@@ -9849,7 +9849,7 @@
 
 #ifndef _simd_s32x1_cast_u32_safe
 	#define _simd_s32x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s32x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s32x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u32_enabled() true
 #endif
@@ -9893,7 +9893,7 @@
 
 #ifndef _simd_s32x1_cast_s16_safe
 	#define _simd_s32x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_s32x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_s32x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_s16_enabled() true
 #endif
@@ -9937,7 +9937,7 @@
 
 #ifndef _simd_s32x1_cast_u16_safe
 	#define _simd_s32x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s32x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s32x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u16_enabled() true
 #endif
@@ -9981,7 +9981,7 @@
 
 #ifndef _simd_s32x1_cast_s8_safe
 	#define _simd_s32x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_s32x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_s32x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_s8_enabled() true
 #endif
@@ -10025,7 +10025,7 @@
 
 #ifndef _simd_s32x1_cast_u8_safe
 	#define _simd_s32x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s32x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s32x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u8_enabled() true
 #endif
@@ -10069,7 +10069,7 @@
 
 #ifndef _simd_s32x1_cast_f64_safe
 	#define _simd_s32x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s32x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s32x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_f64_enabled() true
 #endif
@@ -10105,7 +10105,7 @@
 
 #ifndef _simd_s32x1_cast_f32_safe
 	#define _simd_s32x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s32x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s32x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_f32_enabled() true
 #endif
@@ -10141,7 +10141,7 @@
 
 #ifndef _simd_s32x1_cast_s64_safe
 	#define _simd_s32x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_s32x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_s32x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_s64_enabled() true
 #endif
@@ -10177,7 +10177,7 @@
 
 #ifndef _simd_s32x1_cast_u64_safe
 	#define _simd_s32x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s32x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s32x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u64_enabled() true
 #endif
@@ -10213,7 +10213,7 @@
 
 #ifndef _simd_s32x1_cast_u32_safe
 	#define _simd_s32x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s32x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s32x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u32_enabled() true
 #endif
@@ -10249,7 +10249,7 @@
 
 #ifndef _simd_s32x1_cast_s16_safe
 	#define _simd_s32x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_s32x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_s32x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_s16_enabled() true
 #endif
@@ -10285,7 +10285,7 @@
 
 #ifndef _simd_s32x1_cast_u16_safe
 	#define _simd_s32x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s32x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s32x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u16_enabled() true
 #endif
@@ -10321,7 +10321,7 @@
 
 #ifndef _simd_s32x1_cast_s8_safe
 	#define _simd_s32x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_s32x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_s32x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_s8_enabled() true
 #endif
@@ -10357,7 +10357,7 @@
 
 #ifndef _simd_s32x1_cast_u8_safe
 	#define _simd_s32x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s32x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s32x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u8_enabled() true
 #endif
@@ -10393,7 +10393,7 @@
 
 #ifndef _simd_s32x1_cast_f64_safe
 	#define _simd_s32x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s32x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s32x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_f64_enabled() true
 #endif
@@ -10421,7 +10421,7 @@
 
 #ifndef _simd_s32x1_cast_f32_safe
 	#define _simd_s32x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s32x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s32x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_f32_enabled() true
 #endif
@@ -10449,7 +10449,7 @@
 
 #ifndef _simd_s32x1_cast_s64_safe
 	#define _simd_s32x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_s32x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_s32x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_s64_enabled() true
 #endif
@@ -10477,7 +10477,7 @@
 
 #ifndef _simd_s32x1_cast_u64_safe
 	#define _simd_s32x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s32x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s32x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u64_enabled() true
 #endif
@@ -10505,7 +10505,7 @@
 
 #ifndef _simd_s32x1_cast_u32_safe
 	#define _simd_s32x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s32x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s32x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u32_enabled() true
 #endif
@@ -10533,7 +10533,7 @@
 
 #ifndef _simd_s32x1_cast_s16_safe
 	#define _simd_s32x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_s32x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_s32x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_s16_enabled() true
 #endif
@@ -10561,7 +10561,7 @@
 
 #ifndef _simd_s32x1_cast_u16_safe
 	#define _simd_s32x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s32x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s32x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u16_enabled() true
 #endif
@@ -10589,7 +10589,7 @@
 
 #ifndef _simd_s32x1_cast_s8_safe
 	#define _simd_s32x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_s32x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_s32x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_s8_enabled() true
 #endif
@@ -10617,7 +10617,7 @@
 
 #ifndef _simd_s32x1_cast_u8_safe
 	#define _simd_s32x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s32x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s32x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u8_enabled() true
 #endif
@@ -10645,7 +10645,7 @@
 
 #ifndef _simd_s32x1_cast_f64_safe
 	#define _simd_s32x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s32x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s32x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_f64_enabled() true
 #endif
@@ -10665,7 +10665,7 @@
 
 #ifndef _simd_s32x1_cast_f32_safe
 	#define _simd_s32x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s32x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s32x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_f32_enabled() true
 #endif
@@ -10685,7 +10685,7 @@
 
 #ifndef _simd_s32x1_cast_s64_safe
 	#define _simd_s32x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_s32x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_s32x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_s64_enabled() true
 #endif
@@ -10705,7 +10705,7 @@
 
 #ifndef _simd_s32x1_cast_u64_safe
 	#define _simd_s32x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s32x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s32x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u64_enabled() true
 #endif
@@ -10725,7 +10725,7 @@
 
 #ifndef _simd_s32x1_cast_u32_safe
 	#define _simd_s32x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s32x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s32x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u32_enabled() true
 #endif
@@ -10745,7 +10745,7 @@
 
 #ifndef _simd_s32x1_cast_s16_safe
 	#define _simd_s32x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_s32x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_s32x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_s16_enabled() true
 #endif
@@ -10765,7 +10765,7 @@
 
 #ifndef _simd_s32x1_cast_u16_safe
 	#define _simd_s32x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s32x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s32x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u16_enabled() true
 #endif
@@ -10785,7 +10785,7 @@
 
 #ifndef _simd_s32x1_cast_s8_safe
 	#define _simd_s32x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_s32x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_s32x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_s8_enabled() true
 #endif
@@ -10805,7 +10805,7 @@
 
 #ifndef _simd_s32x1_cast_u8_safe
 	#define _simd_s32x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s32x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s32x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s32x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s32x1_cast_u8_enabled() true
 #endif
@@ -10827,7 +10827,7 @@
 
 #ifndef _simd_u32x1_cast_f64_safe
 	#define _simd_u32x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u32x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u32x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_f64_enabled() true
 #endif
@@ -10887,7 +10887,7 @@
 
 #ifndef _simd_u32x1_cast_f32_safe
 	#define _simd_u32x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u32x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u32x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_f32_enabled() true
 #endif
@@ -10947,7 +10947,7 @@
 
 #ifndef _simd_u32x1_cast_s64_safe
 	#define _simd_u32x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u32x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u32x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s64_enabled() true
 #endif
@@ -11007,7 +11007,7 @@
 
 #ifndef _simd_u32x1_cast_u64_safe
 	#define _simd_u32x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_u32x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_u32x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_u64_enabled() true
 #endif
@@ -11067,7 +11067,7 @@
 
 #ifndef _simd_u32x1_cast_s32_safe
 	#define _simd_u32x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u32x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u32x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s32_enabled() true
 #endif
@@ -11127,7 +11127,7 @@
 
 #ifndef _simd_u32x1_cast_s16_safe
 	#define _simd_u32x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u32x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u32x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s16_enabled() true
 #endif
@@ -11187,7 +11187,7 @@
 
 #ifndef _simd_u32x1_cast_u16_safe
 	#define _simd_u32x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_u32x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_u32x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_u16_enabled() true
 #endif
@@ -11247,7 +11247,7 @@
 
 #ifndef _simd_u32x1_cast_s8_safe
 	#define _simd_u32x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u32x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u32x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s8_enabled() true
 #endif
@@ -11307,7 +11307,7 @@
 
 #ifndef _simd_u32x1_cast_u8_safe
 	#define _simd_u32x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_u32x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_u32x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_u8_enabled() true
 #endif
@@ -11367,7 +11367,7 @@
 
 #ifndef _simd_u32x1_cast_f64_safe
 	#define _simd_u32x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u32x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u32x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_f64_enabled() true
 #endif
@@ -11419,7 +11419,7 @@
 
 #ifndef _simd_u32x1_cast_f32_safe
 	#define _simd_u32x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u32x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u32x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_f32_enabled() true
 #endif
@@ -11471,7 +11471,7 @@
 
 #ifndef _simd_u32x1_cast_s64_safe
 	#define _simd_u32x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u32x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u32x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s64_enabled() true
 #endif
@@ -11523,7 +11523,7 @@
 
 #ifndef _simd_u32x1_cast_u64_safe
 	#define _simd_u32x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_u32x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_u32x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_u64_enabled() true
 #endif
@@ -11575,7 +11575,7 @@
 
 #ifndef _simd_u32x1_cast_s32_safe
 	#define _simd_u32x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u32x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u32x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s32_enabled() true
 #endif
@@ -11627,7 +11627,7 @@
 
 #ifndef _simd_u32x1_cast_s16_safe
 	#define _simd_u32x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u32x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u32x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s16_enabled() true
 #endif
@@ -11679,7 +11679,7 @@
 
 #ifndef _simd_u32x1_cast_u16_safe
 	#define _simd_u32x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_u32x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_u32x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_u16_enabled() true
 #endif
@@ -11731,7 +11731,7 @@
 
 #ifndef _simd_u32x1_cast_s8_safe
 	#define _simd_u32x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u32x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u32x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s8_enabled() true
 #endif
@@ -11783,7 +11783,7 @@
 
 #ifndef _simd_u32x1_cast_u8_safe
 	#define _simd_u32x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_u32x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_u32x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_u8_enabled() true
 #endif
@@ -11835,7 +11835,7 @@
 
 #ifndef _simd_u32x1_cast_f64_safe
 	#define _simd_u32x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u32x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u32x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_f64_enabled() true
 #endif
@@ -11879,7 +11879,7 @@
 
 #ifndef _simd_u32x1_cast_f32_safe
 	#define _simd_u32x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u32x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u32x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_f32_enabled() true
 #endif
@@ -11923,7 +11923,7 @@
 
 #ifndef _simd_u32x1_cast_s64_safe
 	#define _simd_u32x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u32x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u32x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s64_enabled() true
 #endif
@@ -11967,7 +11967,7 @@
 
 #ifndef _simd_u32x1_cast_u64_safe
 	#define _simd_u32x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_u32x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_u32x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_u64_enabled() true
 #endif
@@ -12011,7 +12011,7 @@
 
 #ifndef _simd_u32x1_cast_s32_safe
 	#define _simd_u32x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u32x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u32x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s32_enabled() true
 #endif
@@ -12055,7 +12055,7 @@
 
 #ifndef _simd_u32x1_cast_s16_safe
 	#define _simd_u32x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u32x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u32x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s16_enabled() true
 #endif
@@ -12099,7 +12099,7 @@
 
 #ifndef _simd_u32x1_cast_u16_safe
 	#define _simd_u32x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_u32x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_u32x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_u16_enabled() true
 #endif
@@ -12143,7 +12143,7 @@
 
 #ifndef _simd_u32x1_cast_s8_safe
 	#define _simd_u32x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u32x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u32x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s8_enabled() true
 #endif
@@ -12187,7 +12187,7 @@
 
 #ifndef _simd_u32x1_cast_u8_safe
 	#define _simd_u32x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_u32x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_u32x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_u8_enabled() true
 #endif
@@ -12231,7 +12231,7 @@
 
 #ifndef _simd_u32x1_cast_f64_safe
 	#define _simd_u32x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u32x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u32x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_f64_enabled() true
 #endif
@@ -12267,7 +12267,7 @@
 
 #ifndef _simd_u32x1_cast_f32_safe
 	#define _simd_u32x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u32x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u32x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_f32_enabled() true
 #endif
@@ -12303,7 +12303,7 @@
 
 #ifndef _simd_u32x1_cast_s64_safe
 	#define _simd_u32x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u32x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u32x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s64_enabled() true
 #endif
@@ -12339,7 +12339,7 @@
 
 #ifndef _simd_u32x1_cast_u64_safe
 	#define _simd_u32x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_u32x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_u32x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_u64_enabled() true
 #endif
@@ -12375,7 +12375,7 @@
 
 #ifndef _simd_u32x1_cast_s32_safe
 	#define _simd_u32x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u32x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u32x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s32_enabled() true
 #endif
@@ -12411,7 +12411,7 @@
 
 #ifndef _simd_u32x1_cast_s16_safe
 	#define _simd_u32x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u32x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u32x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s16_enabled() true
 #endif
@@ -12447,7 +12447,7 @@
 
 #ifndef _simd_u32x1_cast_u16_safe
 	#define _simd_u32x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_u32x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_u32x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_u16_enabled() true
 #endif
@@ -12483,7 +12483,7 @@
 
 #ifndef _simd_u32x1_cast_s8_safe
 	#define _simd_u32x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u32x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u32x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s8_enabled() true
 #endif
@@ -12519,7 +12519,7 @@
 
 #ifndef _simd_u32x1_cast_u8_safe
 	#define _simd_u32x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_u32x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_u32x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_u8_enabled() true
 #endif
@@ -12555,7 +12555,7 @@
 
 #ifndef _simd_u32x1_cast_f64_safe
 	#define _simd_u32x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u32x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u32x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_f64_enabled() true
 #endif
@@ -12583,7 +12583,7 @@
 
 #ifndef _simd_u32x1_cast_f32_safe
 	#define _simd_u32x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u32x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u32x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_f32_enabled() true
 #endif
@@ -12611,7 +12611,7 @@
 
 #ifndef _simd_u32x1_cast_s64_safe
 	#define _simd_u32x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u32x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u32x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s64_enabled() true
 #endif
@@ -12639,7 +12639,7 @@
 
 #ifndef _simd_u32x1_cast_u64_safe
 	#define _simd_u32x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_u32x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_u32x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_u64_enabled() true
 #endif
@@ -12667,7 +12667,7 @@
 
 #ifndef _simd_u32x1_cast_s32_safe
 	#define _simd_u32x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u32x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u32x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s32_enabled() true
 #endif
@@ -12695,7 +12695,7 @@
 
 #ifndef _simd_u32x1_cast_s16_safe
 	#define _simd_u32x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u32x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u32x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s16_enabled() true
 #endif
@@ -12723,7 +12723,7 @@
 
 #ifndef _simd_u32x1_cast_u16_safe
 	#define _simd_u32x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_u32x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_u32x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_u16_enabled() true
 #endif
@@ -12751,7 +12751,7 @@
 
 #ifndef _simd_u32x1_cast_s8_safe
 	#define _simd_u32x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u32x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u32x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s8_enabled() true
 #endif
@@ -12779,7 +12779,7 @@
 
 #ifndef _simd_u32x1_cast_u8_safe
 	#define _simd_u32x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_u32x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_u32x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_u8_enabled() true
 #endif
@@ -12807,7 +12807,7 @@
 
 #ifndef _simd_u32x1_cast_f64_safe
 	#define _simd_u32x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u32x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u32x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_f64_enabled() true
 #endif
@@ -12827,7 +12827,7 @@
 
 #ifndef _simd_u32x1_cast_f32_safe
 	#define _simd_u32x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u32x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u32x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_f32_enabled() true
 #endif
@@ -12847,7 +12847,7 @@
 
 #ifndef _simd_u32x1_cast_s64_safe
 	#define _simd_u32x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u32x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u32x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s64_enabled() true
 #endif
@@ -12867,7 +12867,7 @@
 
 #ifndef _simd_u32x1_cast_u64_safe
 	#define _simd_u32x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_u32x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_u32x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_u64_enabled() true
 #endif
@@ -12887,7 +12887,7 @@
 
 #ifndef _simd_u32x1_cast_s32_safe
 	#define _simd_u32x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u32x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u32x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s32_enabled() true
 #endif
@@ -12907,7 +12907,7 @@
 
 #ifndef _simd_u32x1_cast_s16_safe
 	#define _simd_u32x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u32x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u32x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s16_enabled() true
 #endif
@@ -12927,7 +12927,7 @@
 
 #ifndef _simd_u32x1_cast_u16_safe
 	#define _simd_u32x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_u32x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_u32x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_u16_enabled() true
 #endif
@@ -12947,7 +12947,7 @@
 
 #ifndef _simd_u32x1_cast_s8_safe
 	#define _simd_u32x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u32x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u32x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_s8_enabled() true
 #endif
@@ -12967,7 +12967,7 @@
 
 #ifndef _simd_u32x1_cast_u8_safe
 	#define _simd_u32x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_u32x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_u32x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_u32x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u32x1_cast_u8_enabled() true
 #endif
@@ -12989,7 +12989,7 @@
 
 #ifndef _simd_s16x1_cast_f64_safe
 	#define _simd_s16x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s16x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s16x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_f64_enabled() true
 #endif
@@ -13049,7 +13049,7 @@
 
 #ifndef _simd_s16x1_cast_f32_safe
 	#define _simd_s16x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s16x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s16x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_f32_enabled() true
 #endif
@@ -13109,7 +13109,7 @@
 
 #ifndef _simd_s16x1_cast_s64_safe
 	#define _simd_s16x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_s16x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_s16x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_s64_enabled() true
 #endif
@@ -13169,7 +13169,7 @@
 
 #ifndef _simd_s16x1_cast_u64_safe
 	#define _simd_s16x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s16x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s16x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u64_enabled() true
 #endif
@@ -13229,7 +13229,7 @@
 
 #ifndef _simd_s16x1_cast_s32_safe
 	#define _simd_s16x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_s16x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_s16x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_s32_enabled() true
 #endif
@@ -13289,7 +13289,7 @@
 
 #ifndef _simd_s16x1_cast_u32_safe
 	#define _simd_s16x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s16x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s16x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u32_enabled() true
 #endif
@@ -13349,7 +13349,7 @@
 
 #ifndef _simd_s16x1_cast_u16_safe
 	#define _simd_s16x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s16x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s16x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u16_enabled() true
 #endif
@@ -13409,7 +13409,7 @@
 
 #ifndef _simd_s16x1_cast_s8_safe
 	#define _simd_s16x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_s16x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_s16x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_s8_enabled() true
 #endif
@@ -13469,7 +13469,7 @@
 
 #ifndef _simd_s16x1_cast_u8_safe
 	#define _simd_s16x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s16x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s16x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u8_enabled() true
 #endif
@@ -13529,7 +13529,7 @@
 
 #ifndef _simd_s16x1_cast_f64_safe
 	#define _simd_s16x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s16x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s16x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_f64_enabled() true
 #endif
@@ -13581,7 +13581,7 @@
 
 #ifndef _simd_s16x1_cast_f32_safe
 	#define _simd_s16x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s16x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s16x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_f32_enabled() true
 #endif
@@ -13633,7 +13633,7 @@
 
 #ifndef _simd_s16x1_cast_s64_safe
 	#define _simd_s16x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_s16x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_s16x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_s64_enabled() true
 #endif
@@ -13685,7 +13685,7 @@
 
 #ifndef _simd_s16x1_cast_u64_safe
 	#define _simd_s16x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s16x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s16x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u64_enabled() true
 #endif
@@ -13737,7 +13737,7 @@
 
 #ifndef _simd_s16x1_cast_s32_safe
 	#define _simd_s16x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_s16x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_s16x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_s32_enabled() true
 #endif
@@ -13789,7 +13789,7 @@
 
 #ifndef _simd_s16x1_cast_u32_safe
 	#define _simd_s16x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s16x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s16x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u32_enabled() true
 #endif
@@ -13841,7 +13841,7 @@
 
 #ifndef _simd_s16x1_cast_u16_safe
 	#define _simd_s16x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s16x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s16x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u16_enabled() true
 #endif
@@ -13893,7 +13893,7 @@
 
 #ifndef _simd_s16x1_cast_s8_safe
 	#define _simd_s16x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_s16x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_s16x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_s8_enabled() true
 #endif
@@ -13945,7 +13945,7 @@
 
 #ifndef _simd_s16x1_cast_u8_safe
 	#define _simd_s16x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s16x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s16x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u8_enabled() true
 #endif
@@ -13997,7 +13997,7 @@
 
 #ifndef _simd_s16x1_cast_f64_safe
 	#define _simd_s16x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s16x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s16x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_f64_enabled() true
 #endif
@@ -14041,7 +14041,7 @@
 
 #ifndef _simd_s16x1_cast_f32_safe
 	#define _simd_s16x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s16x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s16x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_f32_enabled() true
 #endif
@@ -14085,7 +14085,7 @@
 
 #ifndef _simd_s16x1_cast_s64_safe
 	#define _simd_s16x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_s16x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_s16x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_s64_enabled() true
 #endif
@@ -14129,7 +14129,7 @@
 
 #ifndef _simd_s16x1_cast_u64_safe
 	#define _simd_s16x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s16x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s16x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u64_enabled() true
 #endif
@@ -14173,7 +14173,7 @@
 
 #ifndef _simd_s16x1_cast_s32_safe
 	#define _simd_s16x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_s16x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_s16x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_s32_enabled() true
 #endif
@@ -14217,7 +14217,7 @@
 
 #ifndef _simd_s16x1_cast_u32_safe
 	#define _simd_s16x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s16x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s16x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u32_enabled() true
 #endif
@@ -14261,7 +14261,7 @@
 
 #ifndef _simd_s16x1_cast_u16_safe
 	#define _simd_s16x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s16x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s16x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u16_enabled() true
 #endif
@@ -14305,7 +14305,7 @@
 
 #ifndef _simd_s16x1_cast_s8_safe
 	#define _simd_s16x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_s16x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_s16x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_s8_enabled() true
 #endif
@@ -14349,7 +14349,7 @@
 
 #ifndef _simd_s16x1_cast_u8_safe
 	#define _simd_s16x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s16x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s16x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u8_enabled() true
 #endif
@@ -14393,7 +14393,7 @@
 
 #ifndef _simd_s16x1_cast_f64_safe
 	#define _simd_s16x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s16x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s16x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_f64_enabled() true
 #endif
@@ -14429,7 +14429,7 @@
 
 #ifndef _simd_s16x1_cast_f32_safe
 	#define _simd_s16x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s16x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s16x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_f32_enabled() true
 #endif
@@ -14465,7 +14465,7 @@
 
 #ifndef _simd_s16x1_cast_s64_safe
 	#define _simd_s16x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_s16x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_s16x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_s64_enabled() true
 #endif
@@ -14501,7 +14501,7 @@
 
 #ifndef _simd_s16x1_cast_u64_safe
 	#define _simd_s16x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s16x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s16x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u64_enabled() true
 #endif
@@ -14537,7 +14537,7 @@
 
 #ifndef _simd_s16x1_cast_s32_safe
 	#define _simd_s16x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_s16x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_s16x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_s32_enabled() true
 #endif
@@ -14573,7 +14573,7 @@
 
 #ifndef _simd_s16x1_cast_u32_safe
 	#define _simd_s16x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s16x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s16x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u32_enabled() true
 #endif
@@ -14609,7 +14609,7 @@
 
 #ifndef _simd_s16x1_cast_u16_safe
 	#define _simd_s16x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s16x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s16x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u16_enabled() true
 #endif
@@ -14645,7 +14645,7 @@
 
 #ifndef _simd_s16x1_cast_s8_safe
 	#define _simd_s16x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_s16x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_s16x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_s8_enabled() true
 #endif
@@ -14681,7 +14681,7 @@
 
 #ifndef _simd_s16x1_cast_u8_safe
 	#define _simd_s16x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s16x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s16x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u8_enabled() true
 #endif
@@ -14717,7 +14717,7 @@
 
 #ifndef _simd_s16x1_cast_f64_safe
 	#define _simd_s16x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s16x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s16x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_f64_enabled() true
 #endif
@@ -14745,7 +14745,7 @@
 
 #ifndef _simd_s16x1_cast_f32_safe
 	#define _simd_s16x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s16x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s16x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_f32_enabled() true
 #endif
@@ -14773,7 +14773,7 @@
 
 #ifndef _simd_s16x1_cast_s64_safe
 	#define _simd_s16x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_s16x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_s16x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_s64_enabled() true
 #endif
@@ -14801,7 +14801,7 @@
 
 #ifndef _simd_s16x1_cast_u64_safe
 	#define _simd_s16x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s16x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s16x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u64_enabled() true
 #endif
@@ -14829,7 +14829,7 @@
 
 #ifndef _simd_s16x1_cast_s32_safe
 	#define _simd_s16x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_s16x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_s16x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_s32_enabled() true
 #endif
@@ -14857,7 +14857,7 @@
 
 #ifndef _simd_s16x1_cast_u32_safe
 	#define _simd_s16x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s16x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s16x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u32_enabled() true
 #endif
@@ -14885,7 +14885,7 @@
 
 #ifndef _simd_s16x1_cast_u16_safe
 	#define _simd_s16x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s16x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s16x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u16_enabled() true
 #endif
@@ -14913,7 +14913,7 @@
 
 #ifndef _simd_s16x1_cast_s8_safe
 	#define _simd_s16x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_s16x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_s16x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_s8_enabled() true
 #endif
@@ -14941,7 +14941,7 @@
 
 #ifndef _simd_s16x1_cast_u8_safe
 	#define _simd_s16x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s16x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s16x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u8_enabled() true
 #endif
@@ -14969,7 +14969,7 @@
 
 #ifndef _simd_s16x1_cast_f64_safe
 	#define _simd_s16x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s16x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s16x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_f64_enabled() true
 #endif
@@ -14989,7 +14989,7 @@
 
 #ifndef _simd_s16x1_cast_f32_safe
 	#define _simd_s16x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s16x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s16x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_f32_enabled() true
 #endif
@@ -15009,7 +15009,7 @@
 
 #ifndef _simd_s16x1_cast_s64_safe
 	#define _simd_s16x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_s16x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_s16x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_s64_enabled() true
 #endif
@@ -15029,7 +15029,7 @@
 
 #ifndef _simd_s16x1_cast_u64_safe
 	#define _simd_s16x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s16x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s16x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u64_enabled() true
 #endif
@@ -15049,7 +15049,7 @@
 
 #ifndef _simd_s16x1_cast_s32_safe
 	#define _simd_s16x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_s16x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_s16x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_s32_enabled() true
 #endif
@@ -15069,7 +15069,7 @@
 
 #ifndef _simd_s16x1_cast_u32_safe
 	#define _simd_s16x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s16x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s16x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u32_enabled() true
 #endif
@@ -15089,7 +15089,7 @@
 
 #ifndef _simd_s16x1_cast_u16_safe
 	#define _simd_s16x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s16x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s16x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u16_enabled() true
 #endif
@@ -15109,7 +15109,7 @@
 
 #ifndef _simd_s16x1_cast_s8_safe
 	#define _simd_s16x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_s16x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_s16x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_s8_enabled() true
 #endif
@@ -15129,7 +15129,7 @@
 
 #ifndef _simd_s16x1_cast_u8_safe
 	#define _simd_s16x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s16x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s16x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s16x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s16x1_cast_u8_enabled() true
 #endif
@@ -15151,7 +15151,7 @@
 
 #ifndef _simd_u16x1_cast_f64_safe
 	#define _simd_u16x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u16x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u16x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_f64_enabled() true
 #endif
@@ -15211,7 +15211,7 @@
 
 #ifndef _simd_u16x1_cast_f32_safe
 	#define _simd_u16x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u16x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u16x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_f32_enabled() true
 #endif
@@ -15271,7 +15271,7 @@
 
 #ifndef _simd_u16x1_cast_s64_safe
 	#define _simd_u16x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u16x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u16x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s64_enabled() true
 #endif
@@ -15331,7 +15331,7 @@
 
 #ifndef _simd_u16x1_cast_u64_safe
 	#define _simd_u16x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_u16x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_u16x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_u64_enabled() true
 #endif
@@ -15391,7 +15391,7 @@
 
 #ifndef _simd_u16x1_cast_s32_safe
 	#define _simd_u16x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u16x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u16x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s32_enabled() true
 #endif
@@ -15451,7 +15451,7 @@
 
 #ifndef _simd_u16x1_cast_u32_safe
 	#define _simd_u16x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_u16x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_u16x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_u32_enabled() true
 #endif
@@ -15511,7 +15511,7 @@
 
 #ifndef _simd_u16x1_cast_s16_safe
 	#define _simd_u16x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u16x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u16x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s16_enabled() true
 #endif
@@ -15571,7 +15571,7 @@
 
 #ifndef _simd_u16x1_cast_s8_safe
 	#define _simd_u16x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u16x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u16x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s8_enabled() true
 #endif
@@ -15631,7 +15631,7 @@
 
 #ifndef _simd_u16x1_cast_u8_safe
 	#define _simd_u16x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_u16x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_u16x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_u8_enabled() true
 #endif
@@ -15691,7 +15691,7 @@
 
 #ifndef _simd_u16x1_cast_f64_safe
 	#define _simd_u16x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u16x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u16x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_f64_enabled() true
 #endif
@@ -15743,7 +15743,7 @@
 
 #ifndef _simd_u16x1_cast_f32_safe
 	#define _simd_u16x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u16x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u16x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_f32_enabled() true
 #endif
@@ -15795,7 +15795,7 @@
 
 #ifndef _simd_u16x1_cast_s64_safe
 	#define _simd_u16x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u16x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u16x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s64_enabled() true
 #endif
@@ -15847,7 +15847,7 @@
 
 #ifndef _simd_u16x1_cast_u64_safe
 	#define _simd_u16x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_u16x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_u16x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_u64_enabled() true
 #endif
@@ -15899,7 +15899,7 @@
 
 #ifndef _simd_u16x1_cast_s32_safe
 	#define _simd_u16x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u16x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u16x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s32_enabled() true
 #endif
@@ -15951,7 +15951,7 @@
 
 #ifndef _simd_u16x1_cast_u32_safe
 	#define _simd_u16x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_u16x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_u16x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_u32_enabled() true
 #endif
@@ -16003,7 +16003,7 @@
 
 #ifndef _simd_u16x1_cast_s16_safe
 	#define _simd_u16x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u16x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u16x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s16_enabled() true
 #endif
@@ -16055,7 +16055,7 @@
 
 #ifndef _simd_u16x1_cast_s8_safe
 	#define _simd_u16x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u16x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u16x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s8_enabled() true
 #endif
@@ -16107,7 +16107,7 @@
 
 #ifndef _simd_u16x1_cast_u8_safe
 	#define _simd_u16x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_u16x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_u16x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_u8_enabled() true
 #endif
@@ -16159,7 +16159,7 @@
 
 #ifndef _simd_u16x1_cast_f64_safe
 	#define _simd_u16x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u16x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u16x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_f64_enabled() true
 #endif
@@ -16203,7 +16203,7 @@
 
 #ifndef _simd_u16x1_cast_f32_safe
 	#define _simd_u16x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u16x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u16x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_f32_enabled() true
 #endif
@@ -16247,7 +16247,7 @@
 
 #ifndef _simd_u16x1_cast_s64_safe
 	#define _simd_u16x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u16x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u16x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s64_enabled() true
 #endif
@@ -16291,7 +16291,7 @@
 
 #ifndef _simd_u16x1_cast_u64_safe
 	#define _simd_u16x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_u16x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_u16x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_u64_enabled() true
 #endif
@@ -16335,7 +16335,7 @@
 
 #ifndef _simd_u16x1_cast_s32_safe
 	#define _simd_u16x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u16x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u16x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s32_enabled() true
 #endif
@@ -16379,7 +16379,7 @@
 
 #ifndef _simd_u16x1_cast_u32_safe
 	#define _simd_u16x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_u16x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_u16x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_u32_enabled() true
 #endif
@@ -16423,7 +16423,7 @@
 
 #ifndef _simd_u16x1_cast_s16_safe
 	#define _simd_u16x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u16x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u16x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s16_enabled() true
 #endif
@@ -16467,7 +16467,7 @@
 
 #ifndef _simd_u16x1_cast_s8_safe
 	#define _simd_u16x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u16x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u16x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s8_enabled() true
 #endif
@@ -16511,7 +16511,7 @@
 
 #ifndef _simd_u16x1_cast_u8_safe
 	#define _simd_u16x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_u16x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_u16x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_u8_enabled() true
 #endif
@@ -16555,7 +16555,7 @@
 
 #ifndef _simd_u16x1_cast_f64_safe
 	#define _simd_u16x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u16x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u16x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_f64_enabled() true
 #endif
@@ -16591,7 +16591,7 @@
 
 #ifndef _simd_u16x1_cast_f32_safe
 	#define _simd_u16x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u16x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u16x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_f32_enabled() true
 #endif
@@ -16627,7 +16627,7 @@
 
 #ifndef _simd_u16x1_cast_s64_safe
 	#define _simd_u16x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u16x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u16x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s64_enabled() true
 #endif
@@ -16663,7 +16663,7 @@
 
 #ifndef _simd_u16x1_cast_u64_safe
 	#define _simd_u16x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_u16x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_u16x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_u64_enabled() true
 #endif
@@ -16699,7 +16699,7 @@
 
 #ifndef _simd_u16x1_cast_s32_safe
 	#define _simd_u16x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u16x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u16x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s32_enabled() true
 #endif
@@ -16735,7 +16735,7 @@
 
 #ifndef _simd_u16x1_cast_u32_safe
 	#define _simd_u16x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_u16x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_u16x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_u32_enabled() true
 #endif
@@ -16771,7 +16771,7 @@
 
 #ifndef _simd_u16x1_cast_s16_safe
 	#define _simd_u16x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u16x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u16x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s16_enabled() true
 #endif
@@ -16807,7 +16807,7 @@
 
 #ifndef _simd_u16x1_cast_s8_safe
 	#define _simd_u16x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u16x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u16x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s8_enabled() true
 #endif
@@ -16843,7 +16843,7 @@
 
 #ifndef _simd_u16x1_cast_u8_safe
 	#define _simd_u16x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_u16x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_u16x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_u8_enabled() true
 #endif
@@ -16879,7 +16879,7 @@
 
 #ifndef _simd_u16x1_cast_f64_safe
 	#define _simd_u16x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u16x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u16x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_f64_enabled() true
 #endif
@@ -16907,7 +16907,7 @@
 
 #ifndef _simd_u16x1_cast_f32_safe
 	#define _simd_u16x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u16x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u16x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_f32_enabled() true
 #endif
@@ -16935,7 +16935,7 @@
 
 #ifndef _simd_u16x1_cast_s64_safe
 	#define _simd_u16x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u16x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u16x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s64_enabled() true
 #endif
@@ -16963,7 +16963,7 @@
 
 #ifndef _simd_u16x1_cast_u64_safe
 	#define _simd_u16x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_u16x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_u16x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_u64_enabled() true
 #endif
@@ -16991,7 +16991,7 @@
 
 #ifndef _simd_u16x1_cast_s32_safe
 	#define _simd_u16x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u16x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u16x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s32_enabled() true
 #endif
@@ -17019,7 +17019,7 @@
 
 #ifndef _simd_u16x1_cast_u32_safe
 	#define _simd_u16x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_u16x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_u16x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_u32_enabled() true
 #endif
@@ -17047,7 +17047,7 @@
 
 #ifndef _simd_u16x1_cast_s16_safe
 	#define _simd_u16x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u16x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u16x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s16_enabled() true
 #endif
@@ -17075,7 +17075,7 @@
 
 #ifndef _simd_u16x1_cast_s8_safe
 	#define _simd_u16x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u16x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u16x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s8_enabled() true
 #endif
@@ -17103,7 +17103,7 @@
 
 #ifndef _simd_u16x1_cast_u8_safe
 	#define _simd_u16x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_u16x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_u16x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_u8_enabled() true
 #endif
@@ -17131,7 +17131,7 @@
 
 #ifndef _simd_u16x1_cast_f64_safe
 	#define _simd_u16x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u16x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u16x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_f64_enabled() true
 #endif
@@ -17151,7 +17151,7 @@
 
 #ifndef _simd_u16x1_cast_f32_safe
 	#define _simd_u16x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u16x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u16x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_f32_enabled() true
 #endif
@@ -17171,7 +17171,7 @@
 
 #ifndef _simd_u16x1_cast_s64_safe
 	#define _simd_u16x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u16x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u16x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s64_enabled() true
 #endif
@@ -17191,7 +17191,7 @@
 
 #ifndef _simd_u16x1_cast_u64_safe
 	#define _simd_u16x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_u16x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_u16x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_u64_enabled() true
 #endif
@@ -17211,7 +17211,7 @@
 
 #ifndef _simd_u16x1_cast_s32_safe
 	#define _simd_u16x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u16x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u16x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s32_enabled() true
 #endif
@@ -17231,7 +17231,7 @@
 
 #ifndef _simd_u16x1_cast_u32_safe
 	#define _simd_u16x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_u16x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_u16x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_u32_enabled() true
 #endif
@@ -17251,7 +17251,7 @@
 
 #ifndef _simd_u16x1_cast_s16_safe
 	#define _simd_u16x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u16x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u16x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s16_enabled() true
 #endif
@@ -17271,7 +17271,7 @@
 
 #ifndef _simd_u16x1_cast_s8_safe
 	#define _simd_u16x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u16x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u16x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_s8_enabled() true
 #endif
@@ -17291,7 +17291,7 @@
 
 #ifndef _simd_u16x1_cast_u8_safe
 	#define _simd_u16x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_u16x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_u16x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_u16x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u16x1_cast_u8_enabled() true
 #endif
@@ -17313,7 +17313,7 @@
 
 #ifndef _simd_s8x1_cast_f64_safe
 	#define _simd_s8x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s8x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s8x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_f64_enabled() true
 #endif
@@ -17373,7 +17373,7 @@
 
 #ifndef _simd_s8x1_cast_f32_safe
 	#define _simd_s8x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s8x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s8x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_f32_enabled() true
 #endif
@@ -17433,7 +17433,7 @@
 
 #ifndef _simd_s8x1_cast_s64_safe
 	#define _simd_s8x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_s8x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_s8x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_s64_enabled() true
 #endif
@@ -17493,7 +17493,7 @@
 
 #ifndef _simd_s8x1_cast_u64_safe
 	#define _simd_s8x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s8x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s8x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u64_enabled() true
 #endif
@@ -17553,7 +17553,7 @@
 
 #ifndef _simd_s8x1_cast_s32_safe
 	#define _simd_s8x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_s8x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_s8x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_s32_enabled() true
 #endif
@@ -17613,7 +17613,7 @@
 
 #ifndef _simd_s8x1_cast_u32_safe
 	#define _simd_s8x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s8x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s8x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u32_enabled() true
 #endif
@@ -17673,7 +17673,7 @@
 
 #ifndef _simd_s8x1_cast_s16_safe
 	#define _simd_s8x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_s8x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_s8x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_s16_enabled() true
 #endif
@@ -17733,7 +17733,7 @@
 
 #ifndef _simd_s8x1_cast_u16_safe
 	#define _simd_s8x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s8x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s8x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u16_enabled() true
 #endif
@@ -17793,7 +17793,7 @@
 
 #ifndef _simd_s8x1_cast_u8_safe
 	#define _simd_s8x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s8x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s8x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u8_enabled() true
 #endif
@@ -17853,7 +17853,7 @@
 
 #ifndef _simd_s8x1_cast_f64_safe
 	#define _simd_s8x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s8x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s8x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_f64_enabled() true
 #endif
@@ -17905,7 +17905,7 @@
 
 #ifndef _simd_s8x1_cast_f32_safe
 	#define _simd_s8x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s8x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s8x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_f32_enabled() true
 #endif
@@ -17957,7 +17957,7 @@
 
 #ifndef _simd_s8x1_cast_s64_safe
 	#define _simd_s8x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_s8x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_s8x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_s64_enabled() true
 #endif
@@ -18009,7 +18009,7 @@
 
 #ifndef _simd_s8x1_cast_u64_safe
 	#define _simd_s8x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s8x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s8x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u64_enabled() true
 #endif
@@ -18061,7 +18061,7 @@
 
 #ifndef _simd_s8x1_cast_s32_safe
 	#define _simd_s8x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_s8x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_s8x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_s32_enabled() true
 #endif
@@ -18113,7 +18113,7 @@
 
 #ifndef _simd_s8x1_cast_u32_safe
 	#define _simd_s8x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s8x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s8x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u32_enabled() true
 #endif
@@ -18165,7 +18165,7 @@
 
 #ifndef _simd_s8x1_cast_s16_safe
 	#define _simd_s8x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_s8x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_s8x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_s16_enabled() true
 #endif
@@ -18217,7 +18217,7 @@
 
 #ifndef _simd_s8x1_cast_u16_safe
 	#define _simd_s8x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s8x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s8x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u16_enabled() true
 #endif
@@ -18269,7 +18269,7 @@
 
 #ifndef _simd_s8x1_cast_u8_safe
 	#define _simd_s8x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s8x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s8x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u8_enabled() true
 #endif
@@ -18321,7 +18321,7 @@
 
 #ifndef _simd_s8x1_cast_f64_safe
 	#define _simd_s8x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s8x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s8x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_f64_enabled() true
 #endif
@@ -18365,7 +18365,7 @@
 
 #ifndef _simd_s8x1_cast_f32_safe
 	#define _simd_s8x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s8x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s8x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_f32_enabled() true
 #endif
@@ -18409,7 +18409,7 @@
 
 #ifndef _simd_s8x1_cast_s64_safe
 	#define _simd_s8x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_s8x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_s8x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_s64_enabled() true
 #endif
@@ -18453,7 +18453,7 @@
 
 #ifndef _simd_s8x1_cast_u64_safe
 	#define _simd_s8x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s8x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s8x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u64_enabled() true
 #endif
@@ -18497,7 +18497,7 @@
 
 #ifndef _simd_s8x1_cast_s32_safe
 	#define _simd_s8x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_s8x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_s8x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_s32_enabled() true
 #endif
@@ -18541,7 +18541,7 @@
 
 #ifndef _simd_s8x1_cast_u32_safe
 	#define _simd_s8x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s8x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s8x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u32_enabled() true
 #endif
@@ -18585,7 +18585,7 @@
 
 #ifndef _simd_s8x1_cast_s16_safe
 	#define _simd_s8x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_s8x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_s8x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_s16_enabled() true
 #endif
@@ -18629,7 +18629,7 @@
 
 #ifndef _simd_s8x1_cast_u16_safe
 	#define _simd_s8x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s8x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s8x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u16_enabled() true
 #endif
@@ -18673,7 +18673,7 @@
 
 #ifndef _simd_s8x1_cast_u8_safe
 	#define _simd_s8x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s8x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s8x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u8_enabled() true
 #endif
@@ -18717,7 +18717,7 @@
 
 #ifndef _simd_s8x1_cast_f64_safe
 	#define _simd_s8x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s8x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s8x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_f64_enabled() true
 #endif
@@ -18753,7 +18753,7 @@
 
 #ifndef _simd_s8x1_cast_f32_safe
 	#define _simd_s8x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s8x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s8x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_f32_enabled() true
 #endif
@@ -18789,7 +18789,7 @@
 
 #ifndef _simd_s8x1_cast_s64_safe
 	#define _simd_s8x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_s8x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_s8x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_s64_enabled() true
 #endif
@@ -18825,7 +18825,7 @@
 
 #ifndef _simd_s8x1_cast_u64_safe
 	#define _simd_s8x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s8x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s8x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u64_enabled() true
 #endif
@@ -18861,7 +18861,7 @@
 
 #ifndef _simd_s8x1_cast_s32_safe
 	#define _simd_s8x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_s8x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_s8x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_s32_enabled() true
 #endif
@@ -18897,7 +18897,7 @@
 
 #ifndef _simd_s8x1_cast_u32_safe
 	#define _simd_s8x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s8x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s8x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u32_enabled() true
 #endif
@@ -18933,7 +18933,7 @@
 
 #ifndef _simd_s8x1_cast_s16_safe
 	#define _simd_s8x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_s8x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_s8x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_s16_enabled() true
 #endif
@@ -18969,7 +18969,7 @@
 
 #ifndef _simd_s8x1_cast_u16_safe
 	#define _simd_s8x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s8x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s8x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u16_enabled() true
 #endif
@@ -19005,7 +19005,7 @@
 
 #ifndef _simd_s8x1_cast_u8_safe
 	#define _simd_s8x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s8x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s8x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u8_enabled() true
 #endif
@@ -19041,7 +19041,7 @@
 
 #ifndef _simd_s8x1_cast_f64_safe
 	#define _simd_s8x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s8x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s8x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_f64_enabled() true
 #endif
@@ -19069,7 +19069,7 @@
 
 #ifndef _simd_s8x1_cast_f32_safe
 	#define _simd_s8x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s8x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s8x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_f32_enabled() true
 #endif
@@ -19097,7 +19097,7 @@
 
 #ifndef _simd_s8x1_cast_s64_safe
 	#define _simd_s8x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_s8x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_s8x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_s64_enabled() true
 #endif
@@ -19125,7 +19125,7 @@
 
 #ifndef _simd_s8x1_cast_u64_safe
 	#define _simd_s8x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s8x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s8x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u64_enabled() true
 #endif
@@ -19153,7 +19153,7 @@
 
 #ifndef _simd_s8x1_cast_s32_safe
 	#define _simd_s8x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_s8x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_s8x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_s32_enabled() true
 #endif
@@ -19181,7 +19181,7 @@
 
 #ifndef _simd_s8x1_cast_u32_safe
 	#define _simd_s8x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s8x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s8x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u32_enabled() true
 #endif
@@ -19209,7 +19209,7 @@
 
 #ifndef _simd_s8x1_cast_s16_safe
 	#define _simd_s8x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_s8x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_s8x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_s16_enabled() true
 #endif
@@ -19237,7 +19237,7 @@
 
 #ifndef _simd_s8x1_cast_u16_safe
 	#define _simd_s8x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s8x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s8x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u16_enabled() true
 #endif
@@ -19265,7 +19265,7 @@
 
 #ifndef _simd_s8x1_cast_u8_safe
 	#define _simd_s8x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s8x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s8x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u8_enabled() true
 #endif
@@ -19293,7 +19293,7 @@
 
 #ifndef _simd_s8x1_cast_f64_safe
 	#define _simd_s8x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_s8x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_s8x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_f64_enabled() true
 #endif
@@ -19313,7 +19313,7 @@
 
 #ifndef _simd_s8x1_cast_f32_safe
 	#define _simd_s8x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_s8x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_s8x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_f32_enabled() true
 #endif
@@ -19333,7 +19333,7 @@
 
 #ifndef _simd_s8x1_cast_s64_safe
 	#define _simd_s8x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_s8x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_s8x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_s64_enabled() true
 #endif
@@ -19353,7 +19353,7 @@
 
 #ifndef _simd_s8x1_cast_u64_safe
 	#define _simd_s8x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_s8x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_s8x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u64_enabled() true
 #endif
@@ -19373,7 +19373,7 @@
 
 #ifndef _simd_s8x1_cast_s32_safe
 	#define _simd_s8x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_s8x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_s8x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_s32_enabled() true
 #endif
@@ -19393,7 +19393,7 @@
 
 #ifndef _simd_s8x1_cast_u32_safe
 	#define _simd_s8x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_s8x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_s8x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u32_enabled() true
 #endif
@@ -19413,7 +19413,7 @@
 
 #ifndef _simd_s8x1_cast_s16_safe
 	#define _simd_s8x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_s8x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_s8x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_s16_enabled() true
 #endif
@@ -19433,7 +19433,7 @@
 
 #ifndef _simd_s8x1_cast_u16_safe
 	#define _simd_s8x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_s8x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_s8x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u16_enabled() true
 #endif
@@ -19453,7 +19453,7 @@
 
 #ifndef _simd_s8x1_cast_u8_safe
 	#define _simd_s8x1_cast_u8_safe(X) static_cast<uint8_t>(X)
-	#define _simd_s8x1_cast_(X) x1_cast_u8_safe(X)
+	#define _simd_s8x1_cast_u8_(X) x1_cast_u8_safe(X)
 	#define _simd_s8x1_cast_u8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_s8x1_cast_u8_enabled() true
 #endif
@@ -19475,7 +19475,7 @@
 
 #ifndef _simd_u8x1_cast_f64_safe
 	#define _simd_u8x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u8x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u8x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_f64_enabled() true
 #endif
@@ -19535,7 +19535,7 @@
 
 #ifndef _simd_u8x1_cast_f32_safe
 	#define _simd_u8x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u8x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u8x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_f32_enabled() true
 #endif
@@ -19595,7 +19595,7 @@
 
 #ifndef _simd_u8x1_cast_s64_safe
 	#define _simd_u8x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u8x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u8x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s64_enabled() true
 #endif
@@ -19655,7 +19655,7 @@
 
 #ifndef _simd_u8x1_cast_u64_safe
 	#define _simd_u8x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_u8x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_u8x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_u64_enabled() true
 #endif
@@ -19715,7 +19715,7 @@
 
 #ifndef _simd_u8x1_cast_s32_safe
 	#define _simd_u8x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u8x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u8x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s32_enabled() true
 #endif
@@ -19775,7 +19775,7 @@
 
 #ifndef _simd_u8x1_cast_u32_safe
 	#define _simd_u8x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_u8x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_u8x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_u32_enabled() true
 #endif
@@ -19835,7 +19835,7 @@
 
 #ifndef _simd_u8x1_cast_s16_safe
 	#define _simd_u8x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u8x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u8x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s16_enabled() true
 #endif
@@ -19895,7 +19895,7 @@
 
 #ifndef _simd_u8x1_cast_u16_safe
 	#define _simd_u8x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_u8x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_u8x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_u16_enabled() true
 #endif
@@ -19955,7 +19955,7 @@
 
 #ifndef _simd_u8x1_cast_s8_safe
 	#define _simd_u8x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u8x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u8x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s8_enabled() true
 #endif
@@ -20015,7 +20015,7 @@
 
 #ifndef _simd_u8x1_cast_f64_safe
 	#define _simd_u8x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u8x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u8x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_f64_enabled() true
 #endif
@@ -20067,7 +20067,7 @@
 
 #ifndef _simd_u8x1_cast_f32_safe
 	#define _simd_u8x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u8x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u8x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_f32_enabled() true
 #endif
@@ -20119,7 +20119,7 @@
 
 #ifndef _simd_u8x1_cast_s64_safe
 	#define _simd_u8x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u8x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u8x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s64_enabled() true
 #endif
@@ -20171,7 +20171,7 @@
 
 #ifndef _simd_u8x1_cast_u64_safe
 	#define _simd_u8x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_u8x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_u8x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_u64_enabled() true
 #endif
@@ -20223,7 +20223,7 @@
 
 #ifndef _simd_u8x1_cast_s32_safe
 	#define _simd_u8x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u8x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u8x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s32_enabled() true
 #endif
@@ -20275,7 +20275,7 @@
 
 #ifndef _simd_u8x1_cast_u32_safe
 	#define _simd_u8x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_u8x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_u8x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_u32_enabled() true
 #endif
@@ -20327,7 +20327,7 @@
 
 #ifndef _simd_u8x1_cast_s16_safe
 	#define _simd_u8x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u8x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u8x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s16_enabled() true
 #endif
@@ -20379,7 +20379,7 @@
 
 #ifndef _simd_u8x1_cast_u16_safe
 	#define _simd_u8x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_u8x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_u8x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_u16_enabled() true
 #endif
@@ -20431,7 +20431,7 @@
 
 #ifndef _simd_u8x1_cast_s8_safe
 	#define _simd_u8x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u8x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u8x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s8_enabled() true
 #endif
@@ -20483,7 +20483,7 @@
 
 #ifndef _simd_u8x1_cast_f64_safe
 	#define _simd_u8x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u8x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u8x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_f64_enabled() true
 #endif
@@ -20527,7 +20527,7 @@
 
 #ifndef _simd_u8x1_cast_f32_safe
 	#define _simd_u8x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u8x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u8x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_f32_enabled() true
 #endif
@@ -20571,7 +20571,7 @@
 
 #ifndef _simd_u8x1_cast_s64_safe
 	#define _simd_u8x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u8x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u8x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s64_enabled() true
 #endif
@@ -20615,7 +20615,7 @@
 
 #ifndef _simd_u8x1_cast_u64_safe
 	#define _simd_u8x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_u8x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_u8x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_u64_enabled() true
 #endif
@@ -20659,7 +20659,7 @@
 
 #ifndef _simd_u8x1_cast_s32_safe
 	#define _simd_u8x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u8x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u8x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s32_enabled() true
 #endif
@@ -20703,7 +20703,7 @@
 
 #ifndef _simd_u8x1_cast_u32_safe
 	#define _simd_u8x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_u8x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_u8x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_u32_enabled() true
 #endif
@@ -20747,7 +20747,7 @@
 
 #ifndef _simd_u8x1_cast_s16_safe
 	#define _simd_u8x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u8x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u8x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s16_enabled() true
 #endif
@@ -20791,7 +20791,7 @@
 
 #ifndef _simd_u8x1_cast_u16_safe
 	#define _simd_u8x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_u8x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_u8x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_u16_enabled() true
 #endif
@@ -20835,7 +20835,7 @@
 
 #ifndef _simd_u8x1_cast_s8_safe
 	#define _simd_u8x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u8x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u8x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s8_enabled() true
 #endif
@@ -20879,7 +20879,7 @@
 
 #ifndef _simd_u8x1_cast_f64_safe
 	#define _simd_u8x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u8x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u8x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_f64_enabled() true
 #endif
@@ -20915,7 +20915,7 @@
 
 #ifndef _simd_u8x1_cast_f32_safe
 	#define _simd_u8x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u8x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u8x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_f32_enabled() true
 #endif
@@ -20951,7 +20951,7 @@
 
 #ifndef _simd_u8x1_cast_s64_safe
 	#define _simd_u8x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u8x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u8x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s64_enabled() true
 #endif
@@ -20987,7 +20987,7 @@
 
 #ifndef _simd_u8x1_cast_u64_safe
 	#define _simd_u8x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_u8x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_u8x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_u64_enabled() true
 #endif
@@ -21023,7 +21023,7 @@
 
 #ifndef _simd_u8x1_cast_s32_safe
 	#define _simd_u8x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u8x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u8x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s32_enabled() true
 #endif
@@ -21059,7 +21059,7 @@
 
 #ifndef _simd_u8x1_cast_u32_safe
 	#define _simd_u8x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_u8x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_u8x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_u32_enabled() true
 #endif
@@ -21095,7 +21095,7 @@
 
 #ifndef _simd_u8x1_cast_s16_safe
 	#define _simd_u8x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u8x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u8x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s16_enabled() true
 #endif
@@ -21131,7 +21131,7 @@
 
 #ifndef _simd_u8x1_cast_u16_safe
 	#define _simd_u8x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_u8x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_u8x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_u16_enabled() true
 #endif
@@ -21167,7 +21167,7 @@
 
 #ifndef _simd_u8x1_cast_s8_safe
 	#define _simd_u8x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u8x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u8x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s8_enabled() true
 #endif
@@ -21203,7 +21203,7 @@
 
 #ifndef _simd_u8x1_cast_f64_safe
 	#define _simd_u8x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u8x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u8x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_f64_enabled() true
 #endif
@@ -21231,7 +21231,7 @@
 
 #ifndef _simd_u8x1_cast_f32_safe
 	#define _simd_u8x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u8x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u8x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_f32_enabled() true
 #endif
@@ -21259,7 +21259,7 @@
 
 #ifndef _simd_u8x1_cast_s64_safe
 	#define _simd_u8x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u8x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u8x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s64_enabled() true
 #endif
@@ -21287,7 +21287,7 @@
 
 #ifndef _simd_u8x1_cast_u64_safe
 	#define _simd_u8x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_u8x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_u8x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_u64_enabled() true
 #endif
@@ -21315,7 +21315,7 @@
 
 #ifndef _simd_u8x1_cast_s32_safe
 	#define _simd_u8x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u8x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u8x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s32_enabled() true
 #endif
@@ -21343,7 +21343,7 @@
 
 #ifndef _simd_u8x1_cast_u32_safe
 	#define _simd_u8x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_u8x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_u8x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_u32_enabled() true
 #endif
@@ -21371,7 +21371,7 @@
 
 #ifndef _simd_u8x1_cast_s16_safe
 	#define _simd_u8x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u8x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u8x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s16_enabled() true
 #endif
@@ -21399,7 +21399,7 @@
 
 #ifndef _simd_u8x1_cast_u16_safe
 	#define _simd_u8x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_u8x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_u8x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_u16_enabled() true
 #endif
@@ -21427,7 +21427,7 @@
 
 #ifndef _simd_u8x1_cast_s8_safe
 	#define _simd_u8x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u8x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u8x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s8_enabled() true
 #endif
@@ -21455,7 +21455,7 @@
 
 #ifndef _simd_u8x1_cast_f64_safe
 	#define _simd_u8x1_cast_f64_safe(X) static_cast<double>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_f64_safe(X)
+	#define _simd_u8x1_cast_f64_(X) x1_cast_f64_safe(X)
 	#define _simd_u8x1_cast_f64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_f64_enabled() true
 #endif
@@ -21475,7 +21475,7 @@
 
 #ifndef _simd_u8x1_cast_f32_safe
 	#define _simd_u8x1_cast_f32_safe(X) static_cast<float>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_f32_safe(X)
+	#define _simd_u8x1_cast_f32_(X) x1_cast_f32_safe(X)
 	#define _simd_u8x1_cast_f32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_f32_enabled() true
 #endif
@@ -21495,7 +21495,7 @@
 
 #ifndef _simd_u8x1_cast_s64_safe
 	#define _simd_u8x1_cast_s64_safe(X) static_cast<int64_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s64_safe(X)
+	#define _simd_u8x1_cast_s64_(X) x1_cast_s64_safe(X)
 	#define _simd_u8x1_cast_s64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s64_enabled() true
 #endif
@@ -21515,7 +21515,7 @@
 
 #ifndef _simd_u8x1_cast_u64_safe
 	#define _simd_u8x1_cast_u64_safe(X) static_cast<uint64_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_u64_safe(X)
+	#define _simd_u8x1_cast_u64_(X) x1_cast_u64_safe(X)
 	#define _simd_u8x1_cast_u64_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_u64_enabled() true
 #endif
@@ -21535,7 +21535,7 @@
 
 #ifndef _simd_u8x1_cast_s32_safe
 	#define _simd_u8x1_cast_s32_safe(X) static_cast<int32_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s32_safe(X)
+	#define _simd_u8x1_cast_s32_(X) x1_cast_s32_safe(X)
 	#define _simd_u8x1_cast_s32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s32_enabled() true
 #endif
@@ -21555,7 +21555,7 @@
 
 #ifndef _simd_u8x1_cast_u32_safe
 	#define _simd_u8x1_cast_u32_safe(X) static_cast<uint32_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_u32_safe(X)
+	#define _simd_u8x1_cast_u32_(X) x1_cast_u32_safe(X)
 	#define _simd_u8x1_cast_u32_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_u32_enabled() true
 #endif
@@ -21575,7 +21575,7 @@
 
 #ifndef _simd_u8x1_cast_s16_safe
 	#define _simd_u8x1_cast_s16_safe(X) static_cast<int16_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s16_safe(X)
+	#define _simd_u8x1_cast_s16_(X) x1_cast_s16_safe(X)
 	#define _simd_u8x1_cast_s16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s16_enabled() true
 #endif
@@ -21595,7 +21595,7 @@
 
 #ifndef _simd_u8x1_cast_u16_safe
 	#define _simd_u8x1_cast_u16_safe(X) static_cast<uint16_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_u16_safe(X)
+	#define _simd_u8x1_cast_u16_(X) x1_cast_u16_safe(X)
 	#define _simd_u8x1_cast_u16_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_u16_enabled() true
 #endif
@@ -21615,7 +21615,7 @@
 
 #ifndef _simd_u8x1_cast_s8_safe
 	#define _simd_u8x1_cast_s8_safe(X) static_cast<int8_t>(X)
-	#define _simd_u8x1_cast_(X) x1_cast_s8_safe(X)
+	#define _simd_u8x1_cast_s8_(X) x1_cast_s8_safe(X)
 	#define _simd_u8x1_cast_s8_instruction_set() anvil::simd::IS_NONE
 	#define _simd_u8x1_cast_s8_enabled() true
 #endif

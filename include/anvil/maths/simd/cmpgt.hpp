@@ -90,14 +90,14 @@
 	#define _simd_f64x2_cmpgt_scalar_(X,Y) _simd_f64x2_cmpgt_scalar_(X,Y)
 #elif defined(_simd_f64x2_cmpgt_)
 	#define _simd_f64x2_cmpgt_scalar_(X,Y) _simd_f64x2_cmpgt_(X,_simd_f64x2_fill_scalar_(Y))
-	#define _simd_f64x1_cmpgt_scalar_instruction_set _simd_f64x2_cmpgt_instruction_set
+	#define _simd_f64x2_cmpgt_scalar_instruction_set _simd_f64x2_cmpgt_instruction_set
 #endif
 #ifdef _simd_f64x2_cmpgt_scalar_
 	#define _simd_f64x2_cmpgt_scalar(X,Y) _simd_f64x2_cmpgt_scalar_(X,Y)
 	#define _simd_f64x2_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x2_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_f64x2_cmpgt_scalar(X,Y) _simd_f64x2_cmpgt_safe(X,_simd_f64x2_fill_scalar_safe(Y))
-	#define _simd_f64x1_cmpgt_scalar_enabled() true
+	#define _simd_f64x2_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_f64x1_cmpgt_safe
@@ -165,14 +165,14 @@
 	#define _simd_f64x4_cmpgt_scalar_(X,Y) _simd_f64x4_cmpgt_scalar_(X,Y)
 #elif defined(_simd_f64x4_cmpgt_)
 	#define _simd_f64x4_cmpgt_scalar_(X,Y) _simd_f64x4_cmpgt_(X,_simd_f64x4_fill_scalar_(Y))
-	#define _simd_f64x1_cmpgt_scalar_instruction_set _simd_f64x4_cmpgt_instruction_set
+	#define _simd_f64x4_cmpgt_scalar_instruction_set _simd_f64x4_cmpgt_instruction_set
 #endif
 #ifdef _simd_f64x4_cmpgt_scalar_
 	#define _simd_f64x4_cmpgt_scalar(X,Y) _simd_f64x4_cmpgt_scalar_(X,Y)
 	#define _simd_f64x4_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x4_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_f64x4_cmpgt_scalar(X,Y) _simd_f64x4_cmpgt_safe(X,_simd_f64x4_fill_scalar_safe(Y))
-	#define _simd_f64x1_cmpgt_scalar_enabled() true
+	#define _simd_f64x4_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_f64x1_cmpgt_safe
@@ -230,14 +230,14 @@
 	#define _simd_f64x8_cmpgt_scalar_(X,Y) _simd_f64x8_cmpgt_scalar_(X,Y)
 #elif defined(_simd_f64x8_cmpgt_)
 	#define _simd_f64x8_cmpgt_scalar_(X,Y) _simd_f64x8_cmpgt_(X,_simd_f64x8_fill_scalar_(Y))
-	#define _simd_f64x1_cmpgt_scalar_instruction_set _simd_f64x8_cmpgt_instruction_set
+	#define _simd_f64x8_cmpgt_scalar_instruction_set _simd_f64x8_cmpgt_instruction_set
 #endif
 #ifdef _simd_f64x8_cmpgt_scalar_
 	#define _simd_f64x8_cmpgt_scalar(X,Y) _simd_f64x8_cmpgt_scalar_(X,Y)
 	#define _simd_f64x8_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x8_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_f64x8_cmpgt_scalar(X,Y) _simd_f64x8_cmpgt_safe(X,_simd_f64x8_fill_scalar_safe(Y))
-	#define _simd_f64x1_cmpgt_scalar_enabled() true
+	#define _simd_f64x8_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_f64x1_cmpgt_safe
@@ -285,14 +285,14 @@
 	#define _simd_f64x16_cmpgt_scalar_(X,Y) _simd_f64x16_cmpgt_scalar_(X,Y)
 #elif defined(_simd_f64x16_cmpgt_)
 	#define _simd_f64x16_cmpgt_scalar_(X,Y) _simd_f64x16_cmpgt_(X,_simd_f64x16_fill_scalar_(Y))
-	#define _simd_f64x1_cmpgt_scalar_instruction_set _simd_f64x16_cmpgt_instruction_set
+	#define _simd_f64x16_cmpgt_scalar_instruction_set _simd_f64x16_cmpgt_instruction_set
 #endif
 #ifdef _simd_f64x16_cmpgt_scalar_
 	#define _simd_f64x16_cmpgt_scalar(X,Y) _simd_f64x16_cmpgt_scalar_(X,Y)
 	#define _simd_f64x16_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x16_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_f64x16_cmpgt_scalar(X,Y) _simd_f64x16_cmpgt_safe(X,_simd_f64x16_fill_scalar_safe(Y))
-	#define _simd_f64x1_cmpgt_scalar_enabled() true
+	#define _simd_f64x16_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_f64x1_cmpgt_safe
@@ -330,14 +330,14 @@
 	#define _simd_f64x32_cmpgt_scalar_(X,Y) _simd_f64x32_cmpgt_scalar_(X,Y)
 #elif defined(_simd_f64x32_cmpgt_)
 	#define _simd_f64x32_cmpgt_scalar_(X,Y) _simd_f64x32_cmpgt_(X,_simd_f64x32_fill_scalar_(Y))
-	#define _simd_f64x1_cmpgt_scalar_instruction_set _simd_f64x32_cmpgt_instruction_set
+	#define _simd_f64x32_cmpgt_scalar_instruction_set _simd_f64x32_cmpgt_instruction_set
 #endif
 #ifdef _simd_f64x32_cmpgt_scalar_
 	#define _simd_f64x32_cmpgt_scalar(X,Y) _simd_f64x32_cmpgt_scalar_(X,Y)
 	#define _simd_f64x32_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x32_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_f64x32_cmpgt_scalar(X,Y) _simd_f64x32_cmpgt_safe(X,_simd_f64x32_fill_scalar_safe(Y))
-	#define _simd_f64x1_cmpgt_scalar_enabled() true
+	#define _simd_f64x32_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_f64x1_cmpgt_safe
@@ -365,14 +365,14 @@
 	#define _simd_f64x64_cmpgt_scalar_(X,Y) _simd_f64x64_cmpgt_scalar_(X,Y)
 #elif defined(_simd_f64x64_cmpgt_)
 	#define _simd_f64x64_cmpgt_scalar_(X,Y) _simd_f64x64_cmpgt_(X,_simd_f64x64_fill_scalar_(Y))
-	#define _simd_f64x1_cmpgt_scalar_instruction_set _simd_f64x64_cmpgt_instruction_set
+	#define _simd_f64x64_cmpgt_scalar_instruction_set _simd_f64x64_cmpgt_instruction_set
 #endif
 #ifdef _simd_f64x64_cmpgt_scalar_
 	#define _simd_f64x64_cmpgt_scalar(X,Y) _simd_f64x64_cmpgt_scalar_(X,Y)
 	#define _simd_f64x64_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x64_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_f64x64_cmpgt_scalar(X,Y) _simd_f64x64_cmpgt_safe(X,_simd_f64x64_fill_scalar_safe(Y))
-	#define _simd_f64x1_cmpgt_scalar_enabled() true
+	#define _simd_f64x64_cmpgt_scalar_enabled() true
 #endif
 
 // -- f32 --
@@ -452,14 +452,14 @@
 	#define _simd_f32x2_cmpgt_scalar_(X,Y) _simd_f32x2_cmpgt_scalar_(X,Y)
 #elif defined(_simd_f32x2_cmpgt_)
 	#define _simd_f32x2_cmpgt_scalar_(X,Y) _simd_f32x2_cmpgt_(X,_simd_f32x2_fill_scalar_(Y))
-	#define _simd_f32x1_cmpgt_scalar_instruction_set _simd_f32x2_cmpgt_instruction_set
+	#define _simd_f32x2_cmpgt_scalar_instruction_set _simd_f32x2_cmpgt_instruction_set
 #endif
 #ifdef _simd_f32x2_cmpgt_scalar_
 	#define _simd_f32x2_cmpgt_scalar(X,Y) _simd_f32x2_cmpgt_scalar_(X,Y)
 	#define _simd_f32x2_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x2_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_f32x2_cmpgt_scalar(X,Y) _simd_f32x2_cmpgt_safe(X,_simd_f32x2_fill_scalar_safe(Y))
-	#define _simd_f32x1_cmpgt_scalar_enabled() true
+	#define _simd_f32x2_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_f32x1_cmpgt_safe
@@ -527,14 +527,14 @@
 	#define _simd_f32x4_cmpgt_scalar_(X,Y) _simd_f32x4_cmpgt_scalar_(X,Y)
 #elif defined(_simd_f32x4_cmpgt_)
 	#define _simd_f32x4_cmpgt_scalar_(X,Y) _simd_f32x4_cmpgt_(X,_simd_f32x4_fill_scalar_(Y))
-	#define _simd_f32x1_cmpgt_scalar_instruction_set _simd_f32x4_cmpgt_instruction_set
+	#define _simd_f32x4_cmpgt_scalar_instruction_set _simd_f32x4_cmpgt_instruction_set
 #endif
 #ifdef _simd_f32x4_cmpgt_scalar_
 	#define _simd_f32x4_cmpgt_scalar(X,Y) _simd_f32x4_cmpgt_scalar_(X,Y)
 	#define _simd_f32x4_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x4_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_f32x4_cmpgt_scalar(X,Y) _simd_f32x4_cmpgt_safe(X,_simd_f32x4_fill_scalar_safe(Y))
-	#define _simd_f32x1_cmpgt_scalar_enabled() true
+	#define _simd_f32x4_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_f32x1_cmpgt_safe
@@ -592,14 +592,14 @@
 	#define _simd_f32x8_cmpgt_scalar_(X,Y) _simd_f32x8_cmpgt_scalar_(X,Y)
 #elif defined(_simd_f32x8_cmpgt_)
 	#define _simd_f32x8_cmpgt_scalar_(X,Y) _simd_f32x8_cmpgt_(X,_simd_f32x8_fill_scalar_(Y))
-	#define _simd_f32x1_cmpgt_scalar_instruction_set _simd_f32x8_cmpgt_instruction_set
+	#define _simd_f32x8_cmpgt_scalar_instruction_set _simd_f32x8_cmpgt_instruction_set
 #endif
 #ifdef _simd_f32x8_cmpgt_scalar_
 	#define _simd_f32x8_cmpgt_scalar(X,Y) _simd_f32x8_cmpgt_scalar_(X,Y)
 	#define _simd_f32x8_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x8_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_f32x8_cmpgt_scalar(X,Y) _simd_f32x8_cmpgt_safe(X,_simd_f32x8_fill_scalar_safe(Y))
-	#define _simd_f32x1_cmpgt_scalar_enabled() true
+	#define _simd_f32x8_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_f32x1_cmpgt_safe
@@ -647,14 +647,14 @@
 	#define _simd_f32x16_cmpgt_scalar_(X,Y) _simd_f32x16_cmpgt_scalar_(X,Y)
 #elif defined(_simd_f32x16_cmpgt_)
 	#define _simd_f32x16_cmpgt_scalar_(X,Y) _simd_f32x16_cmpgt_(X,_simd_f32x16_fill_scalar_(Y))
-	#define _simd_f32x1_cmpgt_scalar_instruction_set _simd_f32x16_cmpgt_instruction_set
+	#define _simd_f32x16_cmpgt_scalar_instruction_set _simd_f32x16_cmpgt_instruction_set
 #endif
 #ifdef _simd_f32x16_cmpgt_scalar_
 	#define _simd_f32x16_cmpgt_scalar(X,Y) _simd_f32x16_cmpgt_scalar_(X,Y)
 	#define _simd_f32x16_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x16_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_f32x16_cmpgt_scalar(X,Y) _simd_f32x16_cmpgt_safe(X,_simd_f32x16_fill_scalar_safe(Y))
-	#define _simd_f32x1_cmpgt_scalar_enabled() true
+	#define _simd_f32x16_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_f32x1_cmpgt_safe
@@ -692,14 +692,14 @@
 	#define _simd_f32x32_cmpgt_scalar_(X,Y) _simd_f32x32_cmpgt_scalar_(X,Y)
 #elif defined(_simd_f32x32_cmpgt_)
 	#define _simd_f32x32_cmpgt_scalar_(X,Y) _simd_f32x32_cmpgt_(X,_simd_f32x32_fill_scalar_(Y))
-	#define _simd_f32x1_cmpgt_scalar_instruction_set _simd_f32x32_cmpgt_instruction_set
+	#define _simd_f32x32_cmpgt_scalar_instruction_set _simd_f32x32_cmpgt_instruction_set
 #endif
 #ifdef _simd_f32x32_cmpgt_scalar_
 	#define _simd_f32x32_cmpgt_scalar(X,Y) _simd_f32x32_cmpgt_scalar_(X,Y)
 	#define _simd_f32x32_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x32_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_f32x32_cmpgt_scalar(X,Y) _simd_f32x32_cmpgt_safe(X,_simd_f32x32_fill_scalar_safe(Y))
-	#define _simd_f32x1_cmpgt_scalar_enabled() true
+	#define _simd_f32x32_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_f32x1_cmpgt_safe
@@ -727,14 +727,14 @@
 	#define _simd_f32x64_cmpgt_scalar_(X,Y) _simd_f32x64_cmpgt_scalar_(X,Y)
 #elif defined(_simd_f32x64_cmpgt_)
 	#define _simd_f32x64_cmpgt_scalar_(X,Y) _simd_f32x64_cmpgt_(X,_simd_f32x64_fill_scalar_(Y))
-	#define _simd_f32x1_cmpgt_scalar_instruction_set _simd_f32x64_cmpgt_instruction_set
+	#define _simd_f32x64_cmpgt_scalar_instruction_set _simd_f32x64_cmpgt_instruction_set
 #endif
 #ifdef _simd_f32x64_cmpgt_scalar_
 	#define _simd_f32x64_cmpgt_scalar(X,Y) _simd_f32x64_cmpgt_scalar_(X,Y)
 	#define _simd_f32x64_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x64_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_f32x64_cmpgt_scalar(X,Y) _simd_f32x64_cmpgt_safe(X,_simd_f32x64_fill_scalar_safe(Y))
-	#define _simd_f32x1_cmpgt_scalar_enabled() true
+	#define _simd_f32x64_cmpgt_scalar_enabled() true
 #endif
 
 // -- s64 --
@@ -814,14 +814,14 @@
 	#define _simd_s64x2_cmpgt_scalar_(X,Y) _simd_s64x2_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s64x2_cmpgt_)
 	#define _simd_s64x2_cmpgt_scalar_(X,Y) _simd_s64x2_cmpgt_(X,_simd_s64x2_fill_scalar_(Y))
-	#define _simd_s64x1_cmpgt_scalar_instruction_set _simd_s64x2_cmpgt_instruction_set
+	#define _simd_s64x2_cmpgt_scalar_instruction_set _simd_s64x2_cmpgt_instruction_set
 #endif
 #ifdef _simd_s64x2_cmpgt_scalar_
 	#define _simd_s64x2_cmpgt_scalar(X,Y) _simd_s64x2_cmpgt_scalar_(X,Y)
 	#define _simd_s64x2_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x2_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s64x2_cmpgt_scalar(X,Y) _simd_s64x2_cmpgt_safe(X,_simd_s64x2_fill_scalar_safe(Y))
-	#define _simd_s64x1_cmpgt_scalar_enabled() true
+	#define _simd_s64x2_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s64x1_cmpgt_safe
@@ -889,14 +889,14 @@
 	#define _simd_s64x4_cmpgt_scalar_(X,Y) _simd_s64x4_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s64x4_cmpgt_)
 	#define _simd_s64x4_cmpgt_scalar_(X,Y) _simd_s64x4_cmpgt_(X,_simd_s64x4_fill_scalar_(Y))
-	#define _simd_s64x1_cmpgt_scalar_instruction_set _simd_s64x4_cmpgt_instruction_set
+	#define _simd_s64x4_cmpgt_scalar_instruction_set _simd_s64x4_cmpgt_instruction_set
 #endif
 #ifdef _simd_s64x4_cmpgt_scalar_
 	#define _simd_s64x4_cmpgt_scalar(X,Y) _simd_s64x4_cmpgt_scalar_(X,Y)
 	#define _simd_s64x4_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x4_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s64x4_cmpgt_scalar(X,Y) _simd_s64x4_cmpgt_safe(X,_simd_s64x4_fill_scalar_safe(Y))
-	#define _simd_s64x1_cmpgt_scalar_enabled() true
+	#define _simd_s64x4_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s64x1_cmpgt_safe
@@ -954,14 +954,14 @@
 	#define _simd_s64x8_cmpgt_scalar_(X,Y) _simd_s64x8_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s64x8_cmpgt_)
 	#define _simd_s64x8_cmpgt_scalar_(X,Y) _simd_s64x8_cmpgt_(X,_simd_s64x8_fill_scalar_(Y))
-	#define _simd_s64x1_cmpgt_scalar_instruction_set _simd_s64x8_cmpgt_instruction_set
+	#define _simd_s64x8_cmpgt_scalar_instruction_set _simd_s64x8_cmpgt_instruction_set
 #endif
 #ifdef _simd_s64x8_cmpgt_scalar_
 	#define _simd_s64x8_cmpgt_scalar(X,Y) _simd_s64x8_cmpgt_scalar_(X,Y)
 	#define _simd_s64x8_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x8_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s64x8_cmpgt_scalar(X,Y) _simd_s64x8_cmpgt_safe(X,_simd_s64x8_fill_scalar_safe(Y))
-	#define _simd_s64x1_cmpgt_scalar_enabled() true
+	#define _simd_s64x8_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s64x1_cmpgt_safe
@@ -1009,14 +1009,14 @@
 	#define _simd_s64x16_cmpgt_scalar_(X,Y) _simd_s64x16_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s64x16_cmpgt_)
 	#define _simd_s64x16_cmpgt_scalar_(X,Y) _simd_s64x16_cmpgt_(X,_simd_s64x16_fill_scalar_(Y))
-	#define _simd_s64x1_cmpgt_scalar_instruction_set _simd_s64x16_cmpgt_instruction_set
+	#define _simd_s64x16_cmpgt_scalar_instruction_set _simd_s64x16_cmpgt_instruction_set
 #endif
 #ifdef _simd_s64x16_cmpgt_scalar_
 	#define _simd_s64x16_cmpgt_scalar(X,Y) _simd_s64x16_cmpgt_scalar_(X,Y)
 	#define _simd_s64x16_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x16_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s64x16_cmpgt_scalar(X,Y) _simd_s64x16_cmpgt_safe(X,_simd_s64x16_fill_scalar_safe(Y))
-	#define _simd_s64x1_cmpgt_scalar_enabled() true
+	#define _simd_s64x16_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s64x1_cmpgt_safe
@@ -1054,14 +1054,14 @@
 	#define _simd_s64x32_cmpgt_scalar_(X,Y) _simd_s64x32_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s64x32_cmpgt_)
 	#define _simd_s64x32_cmpgt_scalar_(X,Y) _simd_s64x32_cmpgt_(X,_simd_s64x32_fill_scalar_(Y))
-	#define _simd_s64x1_cmpgt_scalar_instruction_set _simd_s64x32_cmpgt_instruction_set
+	#define _simd_s64x32_cmpgt_scalar_instruction_set _simd_s64x32_cmpgt_instruction_set
 #endif
 #ifdef _simd_s64x32_cmpgt_scalar_
 	#define _simd_s64x32_cmpgt_scalar(X,Y) _simd_s64x32_cmpgt_scalar_(X,Y)
 	#define _simd_s64x32_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x32_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s64x32_cmpgt_scalar(X,Y) _simd_s64x32_cmpgt_safe(X,_simd_s64x32_fill_scalar_safe(Y))
-	#define _simd_s64x1_cmpgt_scalar_enabled() true
+	#define _simd_s64x32_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s64x1_cmpgt_safe
@@ -1089,14 +1089,14 @@
 	#define _simd_s64x64_cmpgt_scalar_(X,Y) _simd_s64x64_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s64x64_cmpgt_)
 	#define _simd_s64x64_cmpgt_scalar_(X,Y) _simd_s64x64_cmpgt_(X,_simd_s64x64_fill_scalar_(Y))
-	#define _simd_s64x1_cmpgt_scalar_instruction_set _simd_s64x64_cmpgt_instruction_set
+	#define _simd_s64x64_cmpgt_scalar_instruction_set _simd_s64x64_cmpgt_instruction_set
 #endif
 #ifdef _simd_s64x64_cmpgt_scalar_
 	#define _simd_s64x64_cmpgt_scalar(X,Y) _simd_s64x64_cmpgt_scalar_(X,Y)
 	#define _simd_s64x64_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x64_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s64x64_cmpgt_scalar(X,Y) _simd_s64x64_cmpgt_safe(X,_simd_s64x64_fill_scalar_safe(Y))
-	#define _simd_s64x1_cmpgt_scalar_enabled() true
+	#define _simd_s64x64_cmpgt_scalar_enabled() true
 #endif
 
 // -- u64 --
@@ -1176,14 +1176,14 @@
 	#define _simd_u64x2_cmpgt_scalar_(X,Y) _simd_u64x2_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u64x2_cmpgt_)
 	#define _simd_u64x2_cmpgt_scalar_(X,Y) _simd_u64x2_cmpgt_(X,_simd_u64x2_fill_scalar_(Y))
-	#define _simd_u64x1_cmpgt_scalar_instruction_set _simd_u64x2_cmpgt_instruction_set
+	#define _simd_u64x2_cmpgt_scalar_instruction_set _simd_u64x2_cmpgt_instruction_set
 #endif
 #ifdef _simd_u64x2_cmpgt_scalar_
 	#define _simd_u64x2_cmpgt_scalar(X,Y) _simd_u64x2_cmpgt_scalar_(X,Y)
 	#define _simd_u64x2_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x2_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u64x2_cmpgt_scalar(X,Y) _simd_u64x2_cmpgt_safe(X,_simd_u64x2_fill_scalar_safe(Y))
-	#define _simd_u64x1_cmpgt_scalar_enabled() true
+	#define _simd_u64x2_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u64x1_cmpgt_safe
@@ -1251,14 +1251,14 @@
 	#define _simd_u64x4_cmpgt_scalar_(X,Y) _simd_u64x4_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u64x4_cmpgt_)
 	#define _simd_u64x4_cmpgt_scalar_(X,Y) _simd_u64x4_cmpgt_(X,_simd_u64x4_fill_scalar_(Y))
-	#define _simd_u64x1_cmpgt_scalar_instruction_set _simd_u64x4_cmpgt_instruction_set
+	#define _simd_u64x4_cmpgt_scalar_instruction_set _simd_u64x4_cmpgt_instruction_set
 #endif
 #ifdef _simd_u64x4_cmpgt_scalar_
 	#define _simd_u64x4_cmpgt_scalar(X,Y) _simd_u64x4_cmpgt_scalar_(X,Y)
 	#define _simd_u64x4_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x4_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u64x4_cmpgt_scalar(X,Y) _simd_u64x4_cmpgt_safe(X,_simd_u64x4_fill_scalar_safe(Y))
-	#define _simd_u64x1_cmpgt_scalar_enabled() true
+	#define _simd_u64x4_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u64x1_cmpgt_safe
@@ -1316,14 +1316,14 @@
 	#define _simd_u64x8_cmpgt_scalar_(X,Y) _simd_u64x8_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u64x8_cmpgt_)
 	#define _simd_u64x8_cmpgt_scalar_(X,Y) _simd_u64x8_cmpgt_(X,_simd_u64x8_fill_scalar_(Y))
-	#define _simd_u64x1_cmpgt_scalar_instruction_set _simd_u64x8_cmpgt_instruction_set
+	#define _simd_u64x8_cmpgt_scalar_instruction_set _simd_u64x8_cmpgt_instruction_set
 #endif
 #ifdef _simd_u64x8_cmpgt_scalar_
 	#define _simd_u64x8_cmpgt_scalar(X,Y) _simd_u64x8_cmpgt_scalar_(X,Y)
 	#define _simd_u64x8_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x8_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u64x8_cmpgt_scalar(X,Y) _simd_u64x8_cmpgt_safe(X,_simd_u64x8_fill_scalar_safe(Y))
-	#define _simd_u64x1_cmpgt_scalar_enabled() true
+	#define _simd_u64x8_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u64x1_cmpgt_safe
@@ -1371,14 +1371,14 @@
 	#define _simd_u64x16_cmpgt_scalar_(X,Y) _simd_u64x16_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u64x16_cmpgt_)
 	#define _simd_u64x16_cmpgt_scalar_(X,Y) _simd_u64x16_cmpgt_(X,_simd_u64x16_fill_scalar_(Y))
-	#define _simd_u64x1_cmpgt_scalar_instruction_set _simd_u64x16_cmpgt_instruction_set
+	#define _simd_u64x16_cmpgt_scalar_instruction_set _simd_u64x16_cmpgt_instruction_set
 #endif
 #ifdef _simd_u64x16_cmpgt_scalar_
 	#define _simd_u64x16_cmpgt_scalar(X,Y) _simd_u64x16_cmpgt_scalar_(X,Y)
 	#define _simd_u64x16_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x16_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u64x16_cmpgt_scalar(X,Y) _simd_u64x16_cmpgt_safe(X,_simd_u64x16_fill_scalar_safe(Y))
-	#define _simd_u64x1_cmpgt_scalar_enabled() true
+	#define _simd_u64x16_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u64x1_cmpgt_safe
@@ -1416,14 +1416,14 @@
 	#define _simd_u64x32_cmpgt_scalar_(X,Y) _simd_u64x32_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u64x32_cmpgt_)
 	#define _simd_u64x32_cmpgt_scalar_(X,Y) _simd_u64x32_cmpgt_(X,_simd_u64x32_fill_scalar_(Y))
-	#define _simd_u64x1_cmpgt_scalar_instruction_set _simd_u64x32_cmpgt_instruction_set
+	#define _simd_u64x32_cmpgt_scalar_instruction_set _simd_u64x32_cmpgt_instruction_set
 #endif
 #ifdef _simd_u64x32_cmpgt_scalar_
 	#define _simd_u64x32_cmpgt_scalar(X,Y) _simd_u64x32_cmpgt_scalar_(X,Y)
 	#define _simd_u64x32_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x32_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u64x32_cmpgt_scalar(X,Y) _simd_u64x32_cmpgt_safe(X,_simd_u64x32_fill_scalar_safe(Y))
-	#define _simd_u64x1_cmpgt_scalar_enabled() true
+	#define _simd_u64x32_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u64x1_cmpgt_safe
@@ -1451,14 +1451,14 @@
 	#define _simd_u64x64_cmpgt_scalar_(X,Y) _simd_u64x64_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u64x64_cmpgt_)
 	#define _simd_u64x64_cmpgt_scalar_(X,Y) _simd_u64x64_cmpgt_(X,_simd_u64x64_fill_scalar_(Y))
-	#define _simd_u64x1_cmpgt_scalar_instruction_set _simd_u64x64_cmpgt_instruction_set
+	#define _simd_u64x64_cmpgt_scalar_instruction_set _simd_u64x64_cmpgt_instruction_set
 #endif
 #ifdef _simd_u64x64_cmpgt_scalar_
 	#define _simd_u64x64_cmpgt_scalar(X,Y) _simd_u64x64_cmpgt_scalar_(X,Y)
 	#define _simd_u64x64_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x64_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u64x64_cmpgt_scalar(X,Y) _simd_u64x64_cmpgt_safe(X,_simd_u64x64_fill_scalar_safe(Y))
-	#define _simd_u64x1_cmpgt_scalar_enabled() true
+	#define _simd_u64x64_cmpgt_scalar_enabled() true
 #endif
 
 // -- s32 --
@@ -1538,14 +1538,14 @@
 	#define _simd_s32x2_cmpgt_scalar_(X,Y) _simd_s32x2_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s32x2_cmpgt_)
 	#define _simd_s32x2_cmpgt_scalar_(X,Y) _simd_s32x2_cmpgt_(X,_simd_s32x2_fill_scalar_(Y))
-	#define _simd_s32x1_cmpgt_scalar_instruction_set _simd_s32x2_cmpgt_instruction_set
+	#define _simd_s32x2_cmpgt_scalar_instruction_set _simd_s32x2_cmpgt_instruction_set
 #endif
 #ifdef _simd_s32x2_cmpgt_scalar_
 	#define _simd_s32x2_cmpgt_scalar(X,Y) _simd_s32x2_cmpgt_scalar_(X,Y)
 	#define _simd_s32x2_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x2_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s32x2_cmpgt_scalar(X,Y) _simd_s32x2_cmpgt_safe(X,_simd_s32x2_fill_scalar_safe(Y))
-	#define _simd_s32x1_cmpgt_scalar_enabled() true
+	#define _simd_s32x2_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s32x1_cmpgt_safe
@@ -1613,14 +1613,14 @@
 	#define _simd_s32x4_cmpgt_scalar_(X,Y) _simd_s32x4_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s32x4_cmpgt_)
 	#define _simd_s32x4_cmpgt_scalar_(X,Y) _simd_s32x4_cmpgt_(X,_simd_s32x4_fill_scalar_(Y))
-	#define _simd_s32x1_cmpgt_scalar_instruction_set _simd_s32x4_cmpgt_instruction_set
+	#define _simd_s32x4_cmpgt_scalar_instruction_set _simd_s32x4_cmpgt_instruction_set
 #endif
 #ifdef _simd_s32x4_cmpgt_scalar_
 	#define _simd_s32x4_cmpgt_scalar(X,Y) _simd_s32x4_cmpgt_scalar_(X,Y)
 	#define _simd_s32x4_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x4_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s32x4_cmpgt_scalar(X,Y) _simd_s32x4_cmpgt_safe(X,_simd_s32x4_fill_scalar_safe(Y))
-	#define _simd_s32x1_cmpgt_scalar_enabled() true
+	#define _simd_s32x4_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s32x1_cmpgt_safe
@@ -1678,14 +1678,14 @@
 	#define _simd_s32x8_cmpgt_scalar_(X,Y) _simd_s32x8_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s32x8_cmpgt_)
 	#define _simd_s32x8_cmpgt_scalar_(X,Y) _simd_s32x8_cmpgt_(X,_simd_s32x8_fill_scalar_(Y))
-	#define _simd_s32x1_cmpgt_scalar_instruction_set _simd_s32x8_cmpgt_instruction_set
+	#define _simd_s32x8_cmpgt_scalar_instruction_set _simd_s32x8_cmpgt_instruction_set
 #endif
 #ifdef _simd_s32x8_cmpgt_scalar_
 	#define _simd_s32x8_cmpgt_scalar(X,Y) _simd_s32x8_cmpgt_scalar_(X,Y)
 	#define _simd_s32x8_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x8_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s32x8_cmpgt_scalar(X,Y) _simd_s32x8_cmpgt_safe(X,_simd_s32x8_fill_scalar_safe(Y))
-	#define _simd_s32x1_cmpgt_scalar_enabled() true
+	#define _simd_s32x8_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s32x1_cmpgt_safe
@@ -1733,14 +1733,14 @@
 	#define _simd_s32x16_cmpgt_scalar_(X,Y) _simd_s32x16_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s32x16_cmpgt_)
 	#define _simd_s32x16_cmpgt_scalar_(X,Y) _simd_s32x16_cmpgt_(X,_simd_s32x16_fill_scalar_(Y))
-	#define _simd_s32x1_cmpgt_scalar_instruction_set _simd_s32x16_cmpgt_instruction_set
+	#define _simd_s32x16_cmpgt_scalar_instruction_set _simd_s32x16_cmpgt_instruction_set
 #endif
 #ifdef _simd_s32x16_cmpgt_scalar_
 	#define _simd_s32x16_cmpgt_scalar(X,Y) _simd_s32x16_cmpgt_scalar_(X,Y)
 	#define _simd_s32x16_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x16_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s32x16_cmpgt_scalar(X,Y) _simd_s32x16_cmpgt_safe(X,_simd_s32x16_fill_scalar_safe(Y))
-	#define _simd_s32x1_cmpgt_scalar_enabled() true
+	#define _simd_s32x16_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s32x1_cmpgt_safe
@@ -1778,14 +1778,14 @@
 	#define _simd_s32x32_cmpgt_scalar_(X,Y) _simd_s32x32_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s32x32_cmpgt_)
 	#define _simd_s32x32_cmpgt_scalar_(X,Y) _simd_s32x32_cmpgt_(X,_simd_s32x32_fill_scalar_(Y))
-	#define _simd_s32x1_cmpgt_scalar_instruction_set _simd_s32x32_cmpgt_instruction_set
+	#define _simd_s32x32_cmpgt_scalar_instruction_set _simd_s32x32_cmpgt_instruction_set
 #endif
 #ifdef _simd_s32x32_cmpgt_scalar_
 	#define _simd_s32x32_cmpgt_scalar(X,Y) _simd_s32x32_cmpgt_scalar_(X,Y)
 	#define _simd_s32x32_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x32_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s32x32_cmpgt_scalar(X,Y) _simd_s32x32_cmpgt_safe(X,_simd_s32x32_fill_scalar_safe(Y))
-	#define _simd_s32x1_cmpgt_scalar_enabled() true
+	#define _simd_s32x32_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s32x1_cmpgt_safe
@@ -1813,14 +1813,14 @@
 	#define _simd_s32x64_cmpgt_scalar_(X,Y) _simd_s32x64_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s32x64_cmpgt_)
 	#define _simd_s32x64_cmpgt_scalar_(X,Y) _simd_s32x64_cmpgt_(X,_simd_s32x64_fill_scalar_(Y))
-	#define _simd_s32x1_cmpgt_scalar_instruction_set _simd_s32x64_cmpgt_instruction_set
+	#define _simd_s32x64_cmpgt_scalar_instruction_set _simd_s32x64_cmpgt_instruction_set
 #endif
 #ifdef _simd_s32x64_cmpgt_scalar_
 	#define _simd_s32x64_cmpgt_scalar(X,Y) _simd_s32x64_cmpgt_scalar_(X,Y)
 	#define _simd_s32x64_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x64_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s32x64_cmpgt_scalar(X,Y) _simd_s32x64_cmpgt_safe(X,_simd_s32x64_fill_scalar_safe(Y))
-	#define _simd_s32x1_cmpgt_scalar_enabled() true
+	#define _simd_s32x64_cmpgt_scalar_enabled() true
 #endif
 
 // -- u32 --
@@ -1900,14 +1900,14 @@
 	#define _simd_u32x2_cmpgt_scalar_(X,Y) _simd_u32x2_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u32x2_cmpgt_)
 	#define _simd_u32x2_cmpgt_scalar_(X,Y) _simd_u32x2_cmpgt_(X,_simd_u32x2_fill_scalar_(Y))
-	#define _simd_u32x1_cmpgt_scalar_instruction_set _simd_u32x2_cmpgt_instruction_set
+	#define _simd_u32x2_cmpgt_scalar_instruction_set _simd_u32x2_cmpgt_instruction_set
 #endif
 #ifdef _simd_u32x2_cmpgt_scalar_
 	#define _simd_u32x2_cmpgt_scalar(X,Y) _simd_u32x2_cmpgt_scalar_(X,Y)
 	#define _simd_u32x2_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x2_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u32x2_cmpgt_scalar(X,Y) _simd_u32x2_cmpgt_safe(X,_simd_u32x2_fill_scalar_safe(Y))
-	#define _simd_u32x1_cmpgt_scalar_enabled() true
+	#define _simd_u32x2_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u32x1_cmpgt_safe
@@ -1975,14 +1975,14 @@
 	#define _simd_u32x4_cmpgt_scalar_(X,Y) _simd_u32x4_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u32x4_cmpgt_)
 	#define _simd_u32x4_cmpgt_scalar_(X,Y) _simd_u32x4_cmpgt_(X,_simd_u32x4_fill_scalar_(Y))
-	#define _simd_u32x1_cmpgt_scalar_instruction_set _simd_u32x4_cmpgt_instruction_set
+	#define _simd_u32x4_cmpgt_scalar_instruction_set _simd_u32x4_cmpgt_instruction_set
 #endif
 #ifdef _simd_u32x4_cmpgt_scalar_
 	#define _simd_u32x4_cmpgt_scalar(X,Y) _simd_u32x4_cmpgt_scalar_(X,Y)
 	#define _simd_u32x4_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x4_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u32x4_cmpgt_scalar(X,Y) _simd_u32x4_cmpgt_safe(X,_simd_u32x4_fill_scalar_safe(Y))
-	#define _simd_u32x1_cmpgt_scalar_enabled() true
+	#define _simd_u32x4_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u32x1_cmpgt_safe
@@ -2040,14 +2040,14 @@
 	#define _simd_u32x8_cmpgt_scalar_(X,Y) _simd_u32x8_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u32x8_cmpgt_)
 	#define _simd_u32x8_cmpgt_scalar_(X,Y) _simd_u32x8_cmpgt_(X,_simd_u32x8_fill_scalar_(Y))
-	#define _simd_u32x1_cmpgt_scalar_instruction_set _simd_u32x8_cmpgt_instruction_set
+	#define _simd_u32x8_cmpgt_scalar_instruction_set _simd_u32x8_cmpgt_instruction_set
 #endif
 #ifdef _simd_u32x8_cmpgt_scalar_
 	#define _simd_u32x8_cmpgt_scalar(X,Y) _simd_u32x8_cmpgt_scalar_(X,Y)
 	#define _simd_u32x8_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x8_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u32x8_cmpgt_scalar(X,Y) _simd_u32x8_cmpgt_safe(X,_simd_u32x8_fill_scalar_safe(Y))
-	#define _simd_u32x1_cmpgt_scalar_enabled() true
+	#define _simd_u32x8_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u32x1_cmpgt_safe
@@ -2095,14 +2095,14 @@
 	#define _simd_u32x16_cmpgt_scalar_(X,Y) _simd_u32x16_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u32x16_cmpgt_)
 	#define _simd_u32x16_cmpgt_scalar_(X,Y) _simd_u32x16_cmpgt_(X,_simd_u32x16_fill_scalar_(Y))
-	#define _simd_u32x1_cmpgt_scalar_instruction_set _simd_u32x16_cmpgt_instruction_set
+	#define _simd_u32x16_cmpgt_scalar_instruction_set _simd_u32x16_cmpgt_instruction_set
 #endif
 #ifdef _simd_u32x16_cmpgt_scalar_
 	#define _simd_u32x16_cmpgt_scalar(X,Y) _simd_u32x16_cmpgt_scalar_(X,Y)
 	#define _simd_u32x16_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x16_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u32x16_cmpgt_scalar(X,Y) _simd_u32x16_cmpgt_safe(X,_simd_u32x16_fill_scalar_safe(Y))
-	#define _simd_u32x1_cmpgt_scalar_enabled() true
+	#define _simd_u32x16_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u32x1_cmpgt_safe
@@ -2140,14 +2140,14 @@
 	#define _simd_u32x32_cmpgt_scalar_(X,Y) _simd_u32x32_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u32x32_cmpgt_)
 	#define _simd_u32x32_cmpgt_scalar_(X,Y) _simd_u32x32_cmpgt_(X,_simd_u32x32_fill_scalar_(Y))
-	#define _simd_u32x1_cmpgt_scalar_instruction_set _simd_u32x32_cmpgt_instruction_set
+	#define _simd_u32x32_cmpgt_scalar_instruction_set _simd_u32x32_cmpgt_instruction_set
 #endif
 #ifdef _simd_u32x32_cmpgt_scalar_
 	#define _simd_u32x32_cmpgt_scalar(X,Y) _simd_u32x32_cmpgt_scalar_(X,Y)
 	#define _simd_u32x32_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x32_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u32x32_cmpgt_scalar(X,Y) _simd_u32x32_cmpgt_safe(X,_simd_u32x32_fill_scalar_safe(Y))
-	#define _simd_u32x1_cmpgt_scalar_enabled() true
+	#define _simd_u32x32_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u32x1_cmpgt_safe
@@ -2175,14 +2175,14 @@
 	#define _simd_u32x64_cmpgt_scalar_(X,Y) _simd_u32x64_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u32x64_cmpgt_)
 	#define _simd_u32x64_cmpgt_scalar_(X,Y) _simd_u32x64_cmpgt_(X,_simd_u32x64_fill_scalar_(Y))
-	#define _simd_u32x1_cmpgt_scalar_instruction_set _simd_u32x64_cmpgt_instruction_set
+	#define _simd_u32x64_cmpgt_scalar_instruction_set _simd_u32x64_cmpgt_instruction_set
 #endif
 #ifdef _simd_u32x64_cmpgt_scalar_
 	#define _simd_u32x64_cmpgt_scalar(X,Y) _simd_u32x64_cmpgt_scalar_(X,Y)
 	#define _simd_u32x64_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x64_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u32x64_cmpgt_scalar(X,Y) _simd_u32x64_cmpgt_safe(X,_simd_u32x64_fill_scalar_safe(Y))
-	#define _simd_u32x1_cmpgt_scalar_enabled() true
+	#define _simd_u32x64_cmpgt_scalar_enabled() true
 #endif
 
 // -- s16 --
@@ -2262,14 +2262,14 @@
 	#define _simd_s16x2_cmpgt_scalar_(X,Y) _simd_s16x2_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s16x2_cmpgt_)
 	#define _simd_s16x2_cmpgt_scalar_(X,Y) _simd_s16x2_cmpgt_(X,_simd_s16x2_fill_scalar_(Y))
-	#define _simd_s16x1_cmpgt_scalar_instruction_set _simd_s16x2_cmpgt_instruction_set
+	#define _simd_s16x2_cmpgt_scalar_instruction_set _simd_s16x2_cmpgt_instruction_set
 #endif
 #ifdef _simd_s16x2_cmpgt_scalar_
 	#define _simd_s16x2_cmpgt_scalar(X,Y) _simd_s16x2_cmpgt_scalar_(X,Y)
 	#define _simd_s16x2_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x2_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s16x2_cmpgt_scalar(X,Y) _simd_s16x2_cmpgt_safe(X,_simd_s16x2_fill_scalar_safe(Y))
-	#define _simd_s16x1_cmpgt_scalar_enabled() true
+	#define _simd_s16x2_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s16x1_cmpgt_safe
@@ -2337,14 +2337,14 @@
 	#define _simd_s16x4_cmpgt_scalar_(X,Y) _simd_s16x4_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s16x4_cmpgt_)
 	#define _simd_s16x4_cmpgt_scalar_(X,Y) _simd_s16x4_cmpgt_(X,_simd_s16x4_fill_scalar_(Y))
-	#define _simd_s16x1_cmpgt_scalar_instruction_set _simd_s16x4_cmpgt_instruction_set
+	#define _simd_s16x4_cmpgt_scalar_instruction_set _simd_s16x4_cmpgt_instruction_set
 #endif
 #ifdef _simd_s16x4_cmpgt_scalar_
 	#define _simd_s16x4_cmpgt_scalar(X,Y) _simd_s16x4_cmpgt_scalar_(X,Y)
 	#define _simd_s16x4_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x4_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s16x4_cmpgt_scalar(X,Y) _simd_s16x4_cmpgt_safe(X,_simd_s16x4_fill_scalar_safe(Y))
-	#define _simd_s16x1_cmpgt_scalar_enabled() true
+	#define _simd_s16x4_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s16x1_cmpgt_safe
@@ -2402,14 +2402,14 @@
 	#define _simd_s16x8_cmpgt_scalar_(X,Y) _simd_s16x8_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s16x8_cmpgt_)
 	#define _simd_s16x8_cmpgt_scalar_(X,Y) _simd_s16x8_cmpgt_(X,_simd_s16x8_fill_scalar_(Y))
-	#define _simd_s16x1_cmpgt_scalar_instruction_set _simd_s16x8_cmpgt_instruction_set
+	#define _simd_s16x8_cmpgt_scalar_instruction_set _simd_s16x8_cmpgt_instruction_set
 #endif
 #ifdef _simd_s16x8_cmpgt_scalar_
 	#define _simd_s16x8_cmpgt_scalar(X,Y) _simd_s16x8_cmpgt_scalar_(X,Y)
 	#define _simd_s16x8_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x8_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s16x8_cmpgt_scalar(X,Y) _simd_s16x8_cmpgt_safe(X,_simd_s16x8_fill_scalar_safe(Y))
-	#define _simd_s16x1_cmpgt_scalar_enabled() true
+	#define _simd_s16x8_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s16x1_cmpgt_safe
@@ -2457,14 +2457,14 @@
 	#define _simd_s16x16_cmpgt_scalar_(X,Y) _simd_s16x16_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s16x16_cmpgt_)
 	#define _simd_s16x16_cmpgt_scalar_(X,Y) _simd_s16x16_cmpgt_(X,_simd_s16x16_fill_scalar_(Y))
-	#define _simd_s16x1_cmpgt_scalar_instruction_set _simd_s16x16_cmpgt_instruction_set
+	#define _simd_s16x16_cmpgt_scalar_instruction_set _simd_s16x16_cmpgt_instruction_set
 #endif
 #ifdef _simd_s16x16_cmpgt_scalar_
 	#define _simd_s16x16_cmpgt_scalar(X,Y) _simd_s16x16_cmpgt_scalar_(X,Y)
 	#define _simd_s16x16_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x16_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s16x16_cmpgt_scalar(X,Y) _simd_s16x16_cmpgt_safe(X,_simd_s16x16_fill_scalar_safe(Y))
-	#define _simd_s16x1_cmpgt_scalar_enabled() true
+	#define _simd_s16x16_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s16x1_cmpgt_safe
@@ -2502,14 +2502,14 @@
 	#define _simd_s16x32_cmpgt_scalar_(X,Y) _simd_s16x32_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s16x32_cmpgt_)
 	#define _simd_s16x32_cmpgt_scalar_(X,Y) _simd_s16x32_cmpgt_(X,_simd_s16x32_fill_scalar_(Y))
-	#define _simd_s16x1_cmpgt_scalar_instruction_set _simd_s16x32_cmpgt_instruction_set
+	#define _simd_s16x32_cmpgt_scalar_instruction_set _simd_s16x32_cmpgt_instruction_set
 #endif
 #ifdef _simd_s16x32_cmpgt_scalar_
 	#define _simd_s16x32_cmpgt_scalar(X,Y) _simd_s16x32_cmpgt_scalar_(X,Y)
 	#define _simd_s16x32_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x32_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s16x32_cmpgt_scalar(X,Y) _simd_s16x32_cmpgt_safe(X,_simd_s16x32_fill_scalar_safe(Y))
-	#define _simd_s16x1_cmpgt_scalar_enabled() true
+	#define _simd_s16x32_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s16x1_cmpgt_safe
@@ -2537,14 +2537,14 @@
 	#define _simd_s16x64_cmpgt_scalar_(X,Y) _simd_s16x64_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s16x64_cmpgt_)
 	#define _simd_s16x64_cmpgt_scalar_(X,Y) _simd_s16x64_cmpgt_(X,_simd_s16x64_fill_scalar_(Y))
-	#define _simd_s16x1_cmpgt_scalar_instruction_set _simd_s16x64_cmpgt_instruction_set
+	#define _simd_s16x64_cmpgt_scalar_instruction_set _simd_s16x64_cmpgt_instruction_set
 #endif
 #ifdef _simd_s16x64_cmpgt_scalar_
 	#define _simd_s16x64_cmpgt_scalar(X,Y) _simd_s16x64_cmpgt_scalar_(X,Y)
 	#define _simd_s16x64_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x64_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s16x64_cmpgt_scalar(X,Y) _simd_s16x64_cmpgt_safe(X,_simd_s16x64_fill_scalar_safe(Y))
-	#define _simd_s16x1_cmpgt_scalar_enabled() true
+	#define _simd_s16x64_cmpgt_scalar_enabled() true
 #endif
 
 // -- u16 --
@@ -2624,14 +2624,14 @@
 	#define _simd_u16x2_cmpgt_scalar_(X,Y) _simd_u16x2_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u16x2_cmpgt_)
 	#define _simd_u16x2_cmpgt_scalar_(X,Y) _simd_u16x2_cmpgt_(X,_simd_u16x2_fill_scalar_(Y))
-	#define _simd_u16x1_cmpgt_scalar_instruction_set _simd_u16x2_cmpgt_instruction_set
+	#define _simd_u16x2_cmpgt_scalar_instruction_set _simd_u16x2_cmpgt_instruction_set
 #endif
 #ifdef _simd_u16x2_cmpgt_scalar_
 	#define _simd_u16x2_cmpgt_scalar(X,Y) _simd_u16x2_cmpgt_scalar_(X,Y)
 	#define _simd_u16x2_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x2_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u16x2_cmpgt_scalar(X,Y) _simd_u16x2_cmpgt_safe(X,_simd_u16x2_fill_scalar_safe(Y))
-	#define _simd_u16x1_cmpgt_scalar_enabled() true
+	#define _simd_u16x2_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u16x1_cmpgt_safe
@@ -2699,14 +2699,14 @@
 	#define _simd_u16x4_cmpgt_scalar_(X,Y) _simd_u16x4_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u16x4_cmpgt_)
 	#define _simd_u16x4_cmpgt_scalar_(X,Y) _simd_u16x4_cmpgt_(X,_simd_u16x4_fill_scalar_(Y))
-	#define _simd_u16x1_cmpgt_scalar_instruction_set _simd_u16x4_cmpgt_instruction_set
+	#define _simd_u16x4_cmpgt_scalar_instruction_set _simd_u16x4_cmpgt_instruction_set
 #endif
 #ifdef _simd_u16x4_cmpgt_scalar_
 	#define _simd_u16x4_cmpgt_scalar(X,Y) _simd_u16x4_cmpgt_scalar_(X,Y)
 	#define _simd_u16x4_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x4_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u16x4_cmpgt_scalar(X,Y) _simd_u16x4_cmpgt_safe(X,_simd_u16x4_fill_scalar_safe(Y))
-	#define _simd_u16x1_cmpgt_scalar_enabled() true
+	#define _simd_u16x4_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u16x1_cmpgt_safe
@@ -2764,14 +2764,14 @@
 	#define _simd_u16x8_cmpgt_scalar_(X,Y) _simd_u16x8_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u16x8_cmpgt_)
 	#define _simd_u16x8_cmpgt_scalar_(X,Y) _simd_u16x8_cmpgt_(X,_simd_u16x8_fill_scalar_(Y))
-	#define _simd_u16x1_cmpgt_scalar_instruction_set _simd_u16x8_cmpgt_instruction_set
+	#define _simd_u16x8_cmpgt_scalar_instruction_set _simd_u16x8_cmpgt_instruction_set
 #endif
 #ifdef _simd_u16x8_cmpgt_scalar_
 	#define _simd_u16x8_cmpgt_scalar(X,Y) _simd_u16x8_cmpgt_scalar_(X,Y)
 	#define _simd_u16x8_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x8_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u16x8_cmpgt_scalar(X,Y) _simd_u16x8_cmpgt_safe(X,_simd_u16x8_fill_scalar_safe(Y))
-	#define _simd_u16x1_cmpgt_scalar_enabled() true
+	#define _simd_u16x8_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u16x1_cmpgt_safe
@@ -2819,14 +2819,14 @@
 	#define _simd_u16x16_cmpgt_scalar_(X,Y) _simd_u16x16_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u16x16_cmpgt_)
 	#define _simd_u16x16_cmpgt_scalar_(X,Y) _simd_u16x16_cmpgt_(X,_simd_u16x16_fill_scalar_(Y))
-	#define _simd_u16x1_cmpgt_scalar_instruction_set _simd_u16x16_cmpgt_instruction_set
+	#define _simd_u16x16_cmpgt_scalar_instruction_set _simd_u16x16_cmpgt_instruction_set
 #endif
 #ifdef _simd_u16x16_cmpgt_scalar_
 	#define _simd_u16x16_cmpgt_scalar(X,Y) _simd_u16x16_cmpgt_scalar_(X,Y)
 	#define _simd_u16x16_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x16_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u16x16_cmpgt_scalar(X,Y) _simd_u16x16_cmpgt_safe(X,_simd_u16x16_fill_scalar_safe(Y))
-	#define _simd_u16x1_cmpgt_scalar_enabled() true
+	#define _simd_u16x16_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u16x1_cmpgt_safe
@@ -2864,14 +2864,14 @@
 	#define _simd_u16x32_cmpgt_scalar_(X,Y) _simd_u16x32_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u16x32_cmpgt_)
 	#define _simd_u16x32_cmpgt_scalar_(X,Y) _simd_u16x32_cmpgt_(X,_simd_u16x32_fill_scalar_(Y))
-	#define _simd_u16x1_cmpgt_scalar_instruction_set _simd_u16x32_cmpgt_instruction_set
+	#define _simd_u16x32_cmpgt_scalar_instruction_set _simd_u16x32_cmpgt_instruction_set
 #endif
 #ifdef _simd_u16x32_cmpgt_scalar_
 	#define _simd_u16x32_cmpgt_scalar(X,Y) _simd_u16x32_cmpgt_scalar_(X,Y)
 	#define _simd_u16x32_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x32_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u16x32_cmpgt_scalar(X,Y) _simd_u16x32_cmpgt_safe(X,_simd_u16x32_fill_scalar_safe(Y))
-	#define _simd_u16x1_cmpgt_scalar_enabled() true
+	#define _simd_u16x32_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u16x1_cmpgt_safe
@@ -2899,14 +2899,14 @@
 	#define _simd_u16x64_cmpgt_scalar_(X,Y) _simd_u16x64_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u16x64_cmpgt_)
 	#define _simd_u16x64_cmpgt_scalar_(X,Y) _simd_u16x64_cmpgt_(X,_simd_u16x64_fill_scalar_(Y))
-	#define _simd_u16x1_cmpgt_scalar_instruction_set _simd_u16x64_cmpgt_instruction_set
+	#define _simd_u16x64_cmpgt_scalar_instruction_set _simd_u16x64_cmpgt_instruction_set
 #endif
 #ifdef _simd_u16x64_cmpgt_scalar_
 	#define _simd_u16x64_cmpgt_scalar(X,Y) _simd_u16x64_cmpgt_scalar_(X,Y)
 	#define _simd_u16x64_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x64_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u16x64_cmpgt_scalar(X,Y) _simd_u16x64_cmpgt_safe(X,_simd_u16x64_fill_scalar_safe(Y))
-	#define _simd_u16x1_cmpgt_scalar_enabled() true
+	#define _simd_u16x64_cmpgt_scalar_enabled() true
 #endif
 
 // -- s8 --
@@ -2986,14 +2986,14 @@
 	#define _simd_s8x2_cmpgt_scalar_(X,Y) _simd_s8x2_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s8x2_cmpgt_)
 	#define _simd_s8x2_cmpgt_scalar_(X,Y) _simd_s8x2_cmpgt_(X,_simd_s8x2_fill_scalar_(Y))
-	#define _simd_s8x1_cmpgt_scalar_instruction_set _simd_s8x2_cmpgt_instruction_set
+	#define _simd_s8x2_cmpgt_scalar_instruction_set _simd_s8x2_cmpgt_instruction_set
 #endif
 #ifdef _simd_s8x2_cmpgt_scalar_
 	#define _simd_s8x2_cmpgt_scalar(X,Y) _simd_s8x2_cmpgt_scalar_(X,Y)
 	#define _simd_s8x2_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x2_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s8x2_cmpgt_scalar(X,Y) _simd_s8x2_cmpgt_safe(X,_simd_s8x2_fill_scalar_safe(Y))
-	#define _simd_s8x1_cmpgt_scalar_enabled() true
+	#define _simd_s8x2_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s8x1_cmpgt_safe
@@ -3061,14 +3061,14 @@
 	#define _simd_s8x4_cmpgt_scalar_(X,Y) _simd_s8x4_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s8x4_cmpgt_)
 	#define _simd_s8x4_cmpgt_scalar_(X,Y) _simd_s8x4_cmpgt_(X,_simd_s8x4_fill_scalar_(Y))
-	#define _simd_s8x1_cmpgt_scalar_instruction_set _simd_s8x4_cmpgt_instruction_set
+	#define _simd_s8x4_cmpgt_scalar_instruction_set _simd_s8x4_cmpgt_instruction_set
 #endif
 #ifdef _simd_s8x4_cmpgt_scalar_
 	#define _simd_s8x4_cmpgt_scalar(X,Y) _simd_s8x4_cmpgt_scalar_(X,Y)
 	#define _simd_s8x4_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x4_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s8x4_cmpgt_scalar(X,Y) _simd_s8x4_cmpgt_safe(X,_simd_s8x4_fill_scalar_safe(Y))
-	#define _simd_s8x1_cmpgt_scalar_enabled() true
+	#define _simd_s8x4_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s8x1_cmpgt_safe
@@ -3126,14 +3126,14 @@
 	#define _simd_s8x8_cmpgt_scalar_(X,Y) _simd_s8x8_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s8x8_cmpgt_)
 	#define _simd_s8x8_cmpgt_scalar_(X,Y) _simd_s8x8_cmpgt_(X,_simd_s8x8_fill_scalar_(Y))
-	#define _simd_s8x1_cmpgt_scalar_instruction_set _simd_s8x8_cmpgt_instruction_set
+	#define _simd_s8x8_cmpgt_scalar_instruction_set _simd_s8x8_cmpgt_instruction_set
 #endif
 #ifdef _simd_s8x8_cmpgt_scalar_
 	#define _simd_s8x8_cmpgt_scalar(X,Y) _simd_s8x8_cmpgt_scalar_(X,Y)
 	#define _simd_s8x8_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x8_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s8x8_cmpgt_scalar(X,Y) _simd_s8x8_cmpgt_safe(X,_simd_s8x8_fill_scalar_safe(Y))
-	#define _simd_s8x1_cmpgt_scalar_enabled() true
+	#define _simd_s8x8_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s8x1_cmpgt_safe
@@ -3181,14 +3181,14 @@
 	#define _simd_s8x16_cmpgt_scalar_(X,Y) _simd_s8x16_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s8x16_cmpgt_)
 	#define _simd_s8x16_cmpgt_scalar_(X,Y) _simd_s8x16_cmpgt_(X,_simd_s8x16_fill_scalar_(Y))
-	#define _simd_s8x1_cmpgt_scalar_instruction_set _simd_s8x16_cmpgt_instruction_set
+	#define _simd_s8x16_cmpgt_scalar_instruction_set _simd_s8x16_cmpgt_instruction_set
 #endif
 #ifdef _simd_s8x16_cmpgt_scalar_
 	#define _simd_s8x16_cmpgt_scalar(X,Y) _simd_s8x16_cmpgt_scalar_(X,Y)
 	#define _simd_s8x16_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x16_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s8x16_cmpgt_scalar(X,Y) _simd_s8x16_cmpgt_safe(X,_simd_s8x16_fill_scalar_safe(Y))
-	#define _simd_s8x1_cmpgt_scalar_enabled() true
+	#define _simd_s8x16_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s8x1_cmpgt_safe
@@ -3226,14 +3226,14 @@
 	#define _simd_s8x32_cmpgt_scalar_(X,Y) _simd_s8x32_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s8x32_cmpgt_)
 	#define _simd_s8x32_cmpgt_scalar_(X,Y) _simd_s8x32_cmpgt_(X,_simd_s8x32_fill_scalar_(Y))
-	#define _simd_s8x1_cmpgt_scalar_instruction_set _simd_s8x32_cmpgt_instruction_set
+	#define _simd_s8x32_cmpgt_scalar_instruction_set _simd_s8x32_cmpgt_instruction_set
 #endif
 #ifdef _simd_s8x32_cmpgt_scalar_
 	#define _simd_s8x32_cmpgt_scalar(X,Y) _simd_s8x32_cmpgt_scalar_(X,Y)
 	#define _simd_s8x32_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x32_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s8x32_cmpgt_scalar(X,Y) _simd_s8x32_cmpgt_safe(X,_simd_s8x32_fill_scalar_safe(Y))
-	#define _simd_s8x1_cmpgt_scalar_enabled() true
+	#define _simd_s8x32_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_s8x1_cmpgt_safe
@@ -3261,14 +3261,14 @@
 	#define _simd_s8x64_cmpgt_scalar_(X,Y) _simd_s8x64_cmpgt_scalar_(X,Y)
 #elif defined(_simd_s8x64_cmpgt_)
 	#define _simd_s8x64_cmpgt_scalar_(X,Y) _simd_s8x64_cmpgt_(X,_simd_s8x64_fill_scalar_(Y))
-	#define _simd_s8x1_cmpgt_scalar_instruction_set _simd_s8x64_cmpgt_instruction_set
+	#define _simd_s8x64_cmpgt_scalar_instruction_set _simd_s8x64_cmpgt_instruction_set
 #endif
 #ifdef _simd_s8x64_cmpgt_scalar_
 	#define _simd_s8x64_cmpgt_scalar(X,Y) _simd_s8x64_cmpgt_scalar_(X,Y)
 	#define _simd_s8x64_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x64_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_s8x64_cmpgt_scalar(X,Y) _simd_s8x64_cmpgt_safe(X,_simd_s8x64_fill_scalar_safe(Y))
-	#define _simd_s8x1_cmpgt_scalar_enabled() true
+	#define _simd_s8x64_cmpgt_scalar_enabled() true
 #endif
 
 // -- u8 --
@@ -3348,14 +3348,14 @@
 	#define _simd_u8x2_cmpgt_scalar_(X,Y) _simd_u8x2_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u8x2_cmpgt_)
 	#define _simd_u8x2_cmpgt_scalar_(X,Y) _simd_u8x2_cmpgt_(X,_simd_u8x2_fill_scalar_(Y))
-	#define _simd_u8x1_cmpgt_scalar_instruction_set _simd_u8x2_cmpgt_instruction_set
+	#define _simd_u8x2_cmpgt_scalar_instruction_set _simd_u8x2_cmpgt_instruction_set
 #endif
 #ifdef _simd_u8x2_cmpgt_scalar_
 	#define _simd_u8x2_cmpgt_scalar(X,Y) _simd_u8x2_cmpgt_scalar_(X,Y)
 	#define _simd_u8x2_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x2_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u8x2_cmpgt_scalar(X,Y) _simd_u8x2_cmpgt_safe(X,_simd_u8x2_fill_scalar_safe(Y))
-	#define _simd_u8x1_cmpgt_scalar_enabled() true
+	#define _simd_u8x2_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u8x1_cmpgt_safe
@@ -3423,14 +3423,14 @@
 	#define _simd_u8x4_cmpgt_scalar_(X,Y) _simd_u8x4_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u8x4_cmpgt_)
 	#define _simd_u8x4_cmpgt_scalar_(X,Y) _simd_u8x4_cmpgt_(X,_simd_u8x4_fill_scalar_(Y))
-	#define _simd_u8x1_cmpgt_scalar_instruction_set _simd_u8x4_cmpgt_instruction_set
+	#define _simd_u8x4_cmpgt_scalar_instruction_set _simd_u8x4_cmpgt_instruction_set
 #endif
 #ifdef _simd_u8x4_cmpgt_scalar_
 	#define _simd_u8x4_cmpgt_scalar(X,Y) _simd_u8x4_cmpgt_scalar_(X,Y)
 	#define _simd_u8x4_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x4_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u8x4_cmpgt_scalar(X,Y) _simd_u8x4_cmpgt_safe(X,_simd_u8x4_fill_scalar_safe(Y))
-	#define _simd_u8x1_cmpgt_scalar_enabled() true
+	#define _simd_u8x4_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u8x1_cmpgt_safe
@@ -3488,14 +3488,14 @@
 	#define _simd_u8x8_cmpgt_scalar_(X,Y) _simd_u8x8_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u8x8_cmpgt_)
 	#define _simd_u8x8_cmpgt_scalar_(X,Y) _simd_u8x8_cmpgt_(X,_simd_u8x8_fill_scalar_(Y))
-	#define _simd_u8x1_cmpgt_scalar_instruction_set _simd_u8x8_cmpgt_instruction_set
+	#define _simd_u8x8_cmpgt_scalar_instruction_set _simd_u8x8_cmpgt_instruction_set
 #endif
 #ifdef _simd_u8x8_cmpgt_scalar_
 	#define _simd_u8x8_cmpgt_scalar(X,Y) _simd_u8x8_cmpgt_scalar_(X,Y)
 	#define _simd_u8x8_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x8_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u8x8_cmpgt_scalar(X,Y) _simd_u8x8_cmpgt_safe(X,_simd_u8x8_fill_scalar_safe(Y))
-	#define _simd_u8x1_cmpgt_scalar_enabled() true
+	#define _simd_u8x8_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u8x1_cmpgt_safe
@@ -3543,14 +3543,14 @@
 	#define _simd_u8x16_cmpgt_scalar_(X,Y) _simd_u8x16_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u8x16_cmpgt_)
 	#define _simd_u8x16_cmpgt_scalar_(X,Y) _simd_u8x16_cmpgt_(X,_simd_u8x16_fill_scalar_(Y))
-	#define _simd_u8x1_cmpgt_scalar_instruction_set _simd_u8x16_cmpgt_instruction_set
+	#define _simd_u8x16_cmpgt_scalar_instruction_set _simd_u8x16_cmpgt_instruction_set
 #endif
 #ifdef _simd_u8x16_cmpgt_scalar_
 	#define _simd_u8x16_cmpgt_scalar(X,Y) _simd_u8x16_cmpgt_scalar_(X,Y)
 	#define _simd_u8x16_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x16_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u8x16_cmpgt_scalar(X,Y) _simd_u8x16_cmpgt_safe(X,_simd_u8x16_fill_scalar_safe(Y))
-	#define _simd_u8x1_cmpgt_scalar_enabled() true
+	#define _simd_u8x16_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u8x1_cmpgt_safe
@@ -3588,14 +3588,14 @@
 	#define _simd_u8x32_cmpgt_scalar_(X,Y) _simd_u8x32_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u8x32_cmpgt_)
 	#define _simd_u8x32_cmpgt_scalar_(X,Y) _simd_u8x32_cmpgt_(X,_simd_u8x32_fill_scalar_(Y))
-	#define _simd_u8x1_cmpgt_scalar_instruction_set _simd_u8x32_cmpgt_instruction_set
+	#define _simd_u8x32_cmpgt_scalar_instruction_set _simd_u8x32_cmpgt_instruction_set
 #endif
 #ifdef _simd_u8x32_cmpgt_scalar_
 	#define _simd_u8x32_cmpgt_scalar(X,Y) _simd_u8x32_cmpgt_scalar_(X,Y)
 	#define _simd_u8x32_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x32_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u8x32_cmpgt_scalar(X,Y) _simd_u8x32_cmpgt_safe(X,_simd_u8x32_fill_scalar_safe(Y))
-	#define _simd_u8x1_cmpgt_scalar_enabled() true
+	#define _simd_u8x32_cmpgt_scalar_enabled() true
 #endif
 
 #ifndef _simd_u8x1_cmpgt_safe
@@ -3623,13 +3623,13 @@
 	#define _simd_u8x64_cmpgt_scalar_(X,Y) _simd_u8x64_cmpgt_scalar_(X,Y)
 #elif defined(_simd_u8x64_cmpgt_)
 	#define _simd_u8x64_cmpgt_scalar_(X,Y) _simd_u8x64_cmpgt_(X,_simd_u8x64_fill_scalar_(Y))
-	#define _simd_u8x1_cmpgt_scalar_instruction_set _simd_u8x64_cmpgt_instruction_set
+	#define _simd_u8x64_cmpgt_scalar_instruction_set _simd_u8x64_cmpgt_instruction_set
 #endif
 #ifdef _simd_u8x64_cmpgt_scalar_
 	#define _simd_u8x64_cmpgt_scalar(X,Y) _simd_u8x64_cmpgt_scalar_(X,Y)
 	#define _simd_u8x64_cmpgt_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x64_cmpgt_scalar_instruction_set>()
 #else
 	#define _simd_u8x64_cmpgt_scalar(X,Y) _simd_u8x64_cmpgt_safe(X,_simd_u8x64_fill_scalar_safe(Y))
-	#define _simd_u8x1_cmpgt_scalar_enabled() true
+	#define _simd_u8x64_cmpgt_scalar_enabled() true
 #endif
 

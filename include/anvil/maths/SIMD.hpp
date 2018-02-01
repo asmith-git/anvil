@@ -976,10 +976,10 @@
 #define _simd_f32x8_fms_instruction_set anvil::simd::IS_FMA
 
 #define _simd_s32x4_cast_f64_(X) _mm256_cvtepi32_pd(X)
-#define _simd_s32x4_cast_f32_instruction_set anvil::simd::IS_AVX
+#define _simd_s32x4_cast_f64_instruction_set anvil::simd::IS_AVX
 
 #define _simd_f64x4_cast_s32_(X) _mm256_cvttpd_epi32(X)
-#define _simd_f32x4_cast_s32_instruction_set anvil::simd::IS_AVX
+#define _simd_f64x4_cast_s32_instruction_set anvil::simd::IS_AVX
 
 #define _simd_s32x4_cast_f32_(X) _mm_cvtepi32_ps(X)
 #define _simd_s32x4_cast_f32_instruction_set anvil::simd::IS_SSE_2
