@@ -85,6 +85,21 @@
 	#define _simd_f64x2_mul_enable() (_simd_f64x1_mul_enable() && _simd_f64x2_combine_enable() && _simd_f64x2_splitlo_enable()  && _simd_f64x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_f64x2_mul_scalar_
+	#define _simd_f64x2_mul_scalar_(X,Y) _simd_f64x2_mul_scalar_(X,Y)
+#elif defined(_simd_f64x2_mul_)
+	#define _simd_f64x2_mul_scalar_(X,Y) _simd_f64x2_mul_(X,_simd_f64x2_fill_scalar_(Y))
+	#define _simd_f64x1_mul_scalar_instruction_set _simd_f64x2_mul_instruction_set
+#endif
+#ifdef _simd_f64x2_mul_scalar_
+	#define _simd_f64x2_mul_scalar(X,Y) _simd_f64x2_mul_scalar_(X,Y)
+	#define _simd_f64x2_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x2_mul_scalar_instruction_set>()
+#else
+	#define _simd_f64x2_mul_scalar(X,Y) _simd_f64x2_mul_safe(X,_simd_f64x2_fill_scalar_safe(Y))
+	#define _simd_f64x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_f64x1_mul_safe
 	#define _simd_f64x1_mul_safe(X,Y) (X * Y)
 	#define _simd_f64x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -145,6 +160,21 @@
 	#define _simd_f64x4_mul_enable() (_simd_f64x2_mul_enable() && _simd_f64x4_combine_enable() && _simd_f64x4_splitlo_enable()  && _simd_f64x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_f64x4_mul_scalar_
+	#define _simd_f64x4_mul_scalar_(X,Y) _simd_f64x4_mul_scalar_(X,Y)
+#elif defined(_simd_f64x4_mul_)
+	#define _simd_f64x4_mul_scalar_(X,Y) _simd_f64x4_mul_(X,_simd_f64x4_fill_scalar_(Y))
+	#define _simd_f64x1_mul_scalar_instruction_set _simd_f64x4_mul_instruction_set
+#endif
+#ifdef _simd_f64x4_mul_scalar_
+	#define _simd_f64x4_mul_scalar(X,Y) _simd_f64x4_mul_scalar_(X,Y)
+	#define _simd_f64x4_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x4_mul_scalar_instruction_set>()
+#else
+	#define _simd_f64x4_mul_scalar(X,Y) _simd_f64x4_mul_safe(X,_simd_f64x4_fill_scalar_safe(Y))
+	#define _simd_f64x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_f64x1_mul_safe
 	#define _simd_f64x1_mul_safe(X,Y) (X * Y)
 	#define _simd_f64x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -195,6 +225,21 @@
 	#define _simd_f64x8_mul_enable() (_simd_f64x4_mul_enable() && _simd_f64x8_combine_enable() && _simd_f64x8_splitlo_enable()  && _simd_f64x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_f64x8_mul_scalar_
+	#define _simd_f64x8_mul_scalar_(X,Y) _simd_f64x8_mul_scalar_(X,Y)
+#elif defined(_simd_f64x8_mul_)
+	#define _simd_f64x8_mul_scalar_(X,Y) _simd_f64x8_mul_(X,_simd_f64x8_fill_scalar_(Y))
+	#define _simd_f64x1_mul_scalar_instruction_set _simd_f64x8_mul_instruction_set
+#endif
+#ifdef _simd_f64x8_mul_scalar_
+	#define _simd_f64x8_mul_scalar(X,Y) _simd_f64x8_mul_scalar_(X,Y)
+	#define _simd_f64x8_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x8_mul_scalar_instruction_set>()
+#else
+	#define _simd_f64x8_mul_scalar(X,Y) _simd_f64x8_mul_safe(X,_simd_f64x8_fill_scalar_safe(Y))
+	#define _simd_f64x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_f64x1_mul_safe
 	#define _simd_f64x1_mul_safe(X,Y) (X * Y)
 	#define _simd_f64x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -235,6 +280,21 @@
 	#define _simd_f64x16_mul_enable() (_simd_f64x8_mul_enable() && _simd_f64x16_combine_enable() && _simd_f64x16_splitlo_enable()  && _simd_f64x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_f64x16_mul_scalar_
+	#define _simd_f64x16_mul_scalar_(X,Y) _simd_f64x16_mul_scalar_(X,Y)
+#elif defined(_simd_f64x16_mul_)
+	#define _simd_f64x16_mul_scalar_(X,Y) _simd_f64x16_mul_(X,_simd_f64x16_fill_scalar_(Y))
+	#define _simd_f64x1_mul_scalar_instruction_set _simd_f64x16_mul_instruction_set
+#endif
+#ifdef _simd_f64x16_mul_scalar_
+	#define _simd_f64x16_mul_scalar(X,Y) _simd_f64x16_mul_scalar_(X,Y)
+	#define _simd_f64x16_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x16_mul_scalar_instruction_set>()
+#else
+	#define _simd_f64x16_mul_scalar(X,Y) _simd_f64x16_mul_safe(X,_simd_f64x16_fill_scalar_safe(Y))
+	#define _simd_f64x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_f64x1_mul_safe
 	#define _simd_f64x1_mul_safe(X,Y) (X * Y)
 	#define _simd_f64x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -265,6 +325,21 @@
 	#define _simd_f64x32_mul_enable() (_simd_f64x16_mul_enable() && _simd_f64x32_combine_enable() && _simd_f64x32_splitlo_enable()  && _simd_f64x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_f64x32_mul_scalar_
+	#define _simd_f64x32_mul_scalar_(X,Y) _simd_f64x32_mul_scalar_(X,Y)
+#elif defined(_simd_f64x32_mul_)
+	#define _simd_f64x32_mul_scalar_(X,Y) _simd_f64x32_mul_(X,_simd_f64x32_fill_scalar_(Y))
+	#define _simd_f64x1_mul_scalar_instruction_set _simd_f64x32_mul_instruction_set
+#endif
+#ifdef _simd_f64x32_mul_scalar_
+	#define _simd_f64x32_mul_scalar(X,Y) _simd_f64x32_mul_scalar_(X,Y)
+	#define _simd_f64x32_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x32_mul_scalar_instruction_set>()
+#else
+	#define _simd_f64x32_mul_scalar(X,Y) _simd_f64x32_mul_safe(X,_simd_f64x32_fill_scalar_safe(Y))
+	#define _simd_f64x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_f64x1_mul_safe
 	#define _simd_f64x1_mul_safe(X,Y) (X * Y)
 	#define _simd_f64x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -283,6 +358,21 @@
 		_simd_f64x32_mul(_simd_f64x64_splitlo(X), _simd_f64x64_splitlo(Y)),\
 		_simd_f64x32_mul(_simd_f64x64_splithi(X), _simd_f64x64_splithi(Y)))
 	#define _simd_f64x64_mul_enable() (_simd_f64x32_mul_enable() && _simd_f64x64_combine_enable() && _simd_f64x64_splitlo_enable()  && _simd_f64x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_f64x64_mul_scalar_
+	#define _simd_f64x64_mul_scalar_(X,Y) _simd_f64x64_mul_scalar_(X,Y)
+#elif defined(_simd_f64x64_mul_)
+	#define _simd_f64x64_mul_scalar_(X,Y) _simd_f64x64_mul_(X,_simd_f64x64_fill_scalar_(Y))
+	#define _simd_f64x1_mul_scalar_instruction_set _simd_f64x64_mul_instruction_set
+#endif
+#ifdef _simd_f64x64_mul_scalar_
+	#define _simd_f64x64_mul_scalar(X,Y) _simd_f64x64_mul_scalar_(X,Y)
+	#define _simd_f64x64_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x64_mul_scalar_instruction_set>()
+#else
+	#define _simd_f64x64_mul_scalar(X,Y) _simd_f64x64_mul_safe(X,_simd_f64x64_fill_scalar_safe(Y))
+	#define _simd_f64x1_mul_scalar_enabled() true
 #endif
 
 // -- f32 --
@@ -357,6 +447,21 @@
 	#define _simd_f32x2_mul_enable() (_simd_f32x1_mul_enable() && _simd_f32x2_combine_enable() && _simd_f32x2_splitlo_enable()  && _simd_f32x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_f32x2_mul_scalar_
+	#define _simd_f32x2_mul_scalar_(X,Y) _simd_f32x2_mul_scalar_(X,Y)
+#elif defined(_simd_f32x2_mul_)
+	#define _simd_f32x2_mul_scalar_(X,Y) _simd_f32x2_mul_(X,_simd_f32x2_fill_scalar_(Y))
+	#define _simd_f32x1_mul_scalar_instruction_set _simd_f32x2_mul_instruction_set
+#endif
+#ifdef _simd_f32x2_mul_scalar_
+	#define _simd_f32x2_mul_scalar(X,Y) _simd_f32x2_mul_scalar_(X,Y)
+	#define _simd_f32x2_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x2_mul_scalar_instruction_set>()
+#else
+	#define _simd_f32x2_mul_scalar(X,Y) _simd_f32x2_mul_safe(X,_simd_f32x2_fill_scalar_safe(Y))
+	#define _simd_f32x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_f32x1_mul_safe
 	#define _simd_f32x1_mul_safe(X,Y) (X * Y)
 	#define _simd_f32x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -417,6 +522,21 @@
 	#define _simd_f32x4_mul_enable() (_simd_f32x2_mul_enable() && _simd_f32x4_combine_enable() && _simd_f32x4_splitlo_enable()  && _simd_f32x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_f32x4_mul_scalar_
+	#define _simd_f32x4_mul_scalar_(X,Y) _simd_f32x4_mul_scalar_(X,Y)
+#elif defined(_simd_f32x4_mul_)
+	#define _simd_f32x4_mul_scalar_(X,Y) _simd_f32x4_mul_(X,_simd_f32x4_fill_scalar_(Y))
+	#define _simd_f32x1_mul_scalar_instruction_set _simd_f32x4_mul_instruction_set
+#endif
+#ifdef _simd_f32x4_mul_scalar_
+	#define _simd_f32x4_mul_scalar(X,Y) _simd_f32x4_mul_scalar_(X,Y)
+	#define _simd_f32x4_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x4_mul_scalar_instruction_set>()
+#else
+	#define _simd_f32x4_mul_scalar(X,Y) _simd_f32x4_mul_safe(X,_simd_f32x4_fill_scalar_safe(Y))
+	#define _simd_f32x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_f32x1_mul_safe
 	#define _simd_f32x1_mul_safe(X,Y) (X * Y)
 	#define _simd_f32x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -467,6 +587,21 @@
 	#define _simd_f32x8_mul_enable() (_simd_f32x4_mul_enable() && _simd_f32x8_combine_enable() && _simd_f32x8_splitlo_enable()  && _simd_f32x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_f32x8_mul_scalar_
+	#define _simd_f32x8_mul_scalar_(X,Y) _simd_f32x8_mul_scalar_(X,Y)
+#elif defined(_simd_f32x8_mul_)
+	#define _simd_f32x8_mul_scalar_(X,Y) _simd_f32x8_mul_(X,_simd_f32x8_fill_scalar_(Y))
+	#define _simd_f32x1_mul_scalar_instruction_set _simd_f32x8_mul_instruction_set
+#endif
+#ifdef _simd_f32x8_mul_scalar_
+	#define _simd_f32x8_mul_scalar(X,Y) _simd_f32x8_mul_scalar_(X,Y)
+	#define _simd_f32x8_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x8_mul_scalar_instruction_set>()
+#else
+	#define _simd_f32x8_mul_scalar(X,Y) _simd_f32x8_mul_safe(X,_simd_f32x8_fill_scalar_safe(Y))
+	#define _simd_f32x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_f32x1_mul_safe
 	#define _simd_f32x1_mul_safe(X,Y) (X * Y)
 	#define _simd_f32x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -507,6 +642,21 @@
 	#define _simd_f32x16_mul_enable() (_simd_f32x8_mul_enable() && _simd_f32x16_combine_enable() && _simd_f32x16_splitlo_enable()  && _simd_f32x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_f32x16_mul_scalar_
+	#define _simd_f32x16_mul_scalar_(X,Y) _simd_f32x16_mul_scalar_(X,Y)
+#elif defined(_simd_f32x16_mul_)
+	#define _simd_f32x16_mul_scalar_(X,Y) _simd_f32x16_mul_(X,_simd_f32x16_fill_scalar_(Y))
+	#define _simd_f32x1_mul_scalar_instruction_set _simd_f32x16_mul_instruction_set
+#endif
+#ifdef _simd_f32x16_mul_scalar_
+	#define _simd_f32x16_mul_scalar(X,Y) _simd_f32x16_mul_scalar_(X,Y)
+	#define _simd_f32x16_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x16_mul_scalar_instruction_set>()
+#else
+	#define _simd_f32x16_mul_scalar(X,Y) _simd_f32x16_mul_safe(X,_simd_f32x16_fill_scalar_safe(Y))
+	#define _simd_f32x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_f32x1_mul_safe
 	#define _simd_f32x1_mul_safe(X,Y) (X * Y)
 	#define _simd_f32x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -537,6 +687,21 @@
 	#define _simd_f32x32_mul_enable() (_simd_f32x16_mul_enable() && _simd_f32x32_combine_enable() && _simd_f32x32_splitlo_enable()  && _simd_f32x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_f32x32_mul_scalar_
+	#define _simd_f32x32_mul_scalar_(X,Y) _simd_f32x32_mul_scalar_(X,Y)
+#elif defined(_simd_f32x32_mul_)
+	#define _simd_f32x32_mul_scalar_(X,Y) _simd_f32x32_mul_(X,_simd_f32x32_fill_scalar_(Y))
+	#define _simd_f32x1_mul_scalar_instruction_set _simd_f32x32_mul_instruction_set
+#endif
+#ifdef _simd_f32x32_mul_scalar_
+	#define _simd_f32x32_mul_scalar(X,Y) _simd_f32x32_mul_scalar_(X,Y)
+	#define _simd_f32x32_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x32_mul_scalar_instruction_set>()
+#else
+	#define _simd_f32x32_mul_scalar(X,Y) _simd_f32x32_mul_safe(X,_simd_f32x32_fill_scalar_safe(Y))
+	#define _simd_f32x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_f32x1_mul_safe
 	#define _simd_f32x1_mul_safe(X,Y) (X * Y)
 	#define _simd_f32x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -555,6 +720,21 @@
 		_simd_f32x32_mul(_simd_f32x64_splitlo(X), _simd_f32x64_splitlo(Y)),\
 		_simd_f32x32_mul(_simd_f32x64_splithi(X), _simd_f32x64_splithi(Y)))
 	#define _simd_f32x64_mul_enable() (_simd_f32x32_mul_enable() && _simd_f32x64_combine_enable() && _simd_f32x64_splitlo_enable()  && _simd_f32x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_f32x64_mul_scalar_
+	#define _simd_f32x64_mul_scalar_(X,Y) _simd_f32x64_mul_scalar_(X,Y)
+#elif defined(_simd_f32x64_mul_)
+	#define _simd_f32x64_mul_scalar_(X,Y) _simd_f32x64_mul_(X,_simd_f32x64_fill_scalar_(Y))
+	#define _simd_f32x1_mul_scalar_instruction_set _simd_f32x64_mul_instruction_set
+#endif
+#ifdef _simd_f32x64_mul_scalar_
+	#define _simd_f32x64_mul_scalar(X,Y) _simd_f32x64_mul_scalar_(X,Y)
+	#define _simd_f32x64_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x64_mul_scalar_instruction_set>()
+#else
+	#define _simd_f32x64_mul_scalar(X,Y) _simd_f32x64_mul_safe(X,_simd_f32x64_fill_scalar_safe(Y))
+	#define _simd_f32x1_mul_scalar_enabled() true
 #endif
 
 // -- s64 --
@@ -629,6 +809,21 @@
 	#define _simd_s64x2_mul_enable() (_simd_s64x1_mul_enable() && _simd_s64x2_combine_enable() && _simd_s64x2_splitlo_enable()  && _simd_s64x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_s64x2_mul_scalar_
+	#define _simd_s64x2_mul_scalar_(X,Y) _simd_s64x2_mul_scalar_(X,Y)
+#elif defined(_simd_s64x2_mul_)
+	#define _simd_s64x2_mul_scalar_(X,Y) _simd_s64x2_mul_(X,_simd_s64x2_fill_scalar_(Y))
+	#define _simd_s64x1_mul_scalar_instruction_set _simd_s64x2_mul_instruction_set
+#endif
+#ifdef _simd_s64x2_mul_scalar_
+	#define _simd_s64x2_mul_scalar(X,Y) _simd_s64x2_mul_scalar_(X,Y)
+	#define _simd_s64x2_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x2_mul_scalar_instruction_set>()
+#else
+	#define _simd_s64x2_mul_scalar(X,Y) _simd_s64x2_mul_safe(X,_simd_s64x2_fill_scalar_safe(Y))
+	#define _simd_s64x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s64x1_mul_safe
 	#define _simd_s64x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s64x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -689,6 +884,21 @@
 	#define _simd_s64x4_mul_enable() (_simd_s64x2_mul_enable() && _simd_s64x4_combine_enable() && _simd_s64x4_splitlo_enable()  && _simd_s64x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_s64x4_mul_scalar_
+	#define _simd_s64x4_mul_scalar_(X,Y) _simd_s64x4_mul_scalar_(X,Y)
+#elif defined(_simd_s64x4_mul_)
+	#define _simd_s64x4_mul_scalar_(X,Y) _simd_s64x4_mul_(X,_simd_s64x4_fill_scalar_(Y))
+	#define _simd_s64x1_mul_scalar_instruction_set _simd_s64x4_mul_instruction_set
+#endif
+#ifdef _simd_s64x4_mul_scalar_
+	#define _simd_s64x4_mul_scalar(X,Y) _simd_s64x4_mul_scalar_(X,Y)
+	#define _simd_s64x4_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x4_mul_scalar_instruction_set>()
+#else
+	#define _simd_s64x4_mul_scalar(X,Y) _simd_s64x4_mul_safe(X,_simd_s64x4_fill_scalar_safe(Y))
+	#define _simd_s64x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s64x1_mul_safe
 	#define _simd_s64x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s64x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -739,6 +949,21 @@
 	#define _simd_s64x8_mul_enable() (_simd_s64x4_mul_enable() && _simd_s64x8_combine_enable() && _simd_s64x8_splitlo_enable()  && _simd_s64x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_s64x8_mul_scalar_
+	#define _simd_s64x8_mul_scalar_(X,Y) _simd_s64x8_mul_scalar_(X,Y)
+#elif defined(_simd_s64x8_mul_)
+	#define _simd_s64x8_mul_scalar_(X,Y) _simd_s64x8_mul_(X,_simd_s64x8_fill_scalar_(Y))
+	#define _simd_s64x1_mul_scalar_instruction_set _simd_s64x8_mul_instruction_set
+#endif
+#ifdef _simd_s64x8_mul_scalar_
+	#define _simd_s64x8_mul_scalar(X,Y) _simd_s64x8_mul_scalar_(X,Y)
+	#define _simd_s64x8_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x8_mul_scalar_instruction_set>()
+#else
+	#define _simd_s64x8_mul_scalar(X,Y) _simd_s64x8_mul_safe(X,_simd_s64x8_fill_scalar_safe(Y))
+	#define _simd_s64x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s64x1_mul_safe
 	#define _simd_s64x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s64x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -779,6 +1004,21 @@
 	#define _simd_s64x16_mul_enable() (_simd_s64x8_mul_enable() && _simd_s64x16_combine_enable() && _simd_s64x16_splitlo_enable()  && _simd_s64x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_s64x16_mul_scalar_
+	#define _simd_s64x16_mul_scalar_(X,Y) _simd_s64x16_mul_scalar_(X,Y)
+#elif defined(_simd_s64x16_mul_)
+	#define _simd_s64x16_mul_scalar_(X,Y) _simd_s64x16_mul_(X,_simd_s64x16_fill_scalar_(Y))
+	#define _simd_s64x1_mul_scalar_instruction_set _simd_s64x16_mul_instruction_set
+#endif
+#ifdef _simd_s64x16_mul_scalar_
+	#define _simd_s64x16_mul_scalar(X,Y) _simd_s64x16_mul_scalar_(X,Y)
+	#define _simd_s64x16_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x16_mul_scalar_instruction_set>()
+#else
+	#define _simd_s64x16_mul_scalar(X,Y) _simd_s64x16_mul_safe(X,_simd_s64x16_fill_scalar_safe(Y))
+	#define _simd_s64x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s64x1_mul_safe
 	#define _simd_s64x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s64x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -809,6 +1049,21 @@
 	#define _simd_s64x32_mul_enable() (_simd_s64x16_mul_enable() && _simd_s64x32_combine_enable() && _simd_s64x32_splitlo_enable()  && _simd_s64x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_s64x32_mul_scalar_
+	#define _simd_s64x32_mul_scalar_(X,Y) _simd_s64x32_mul_scalar_(X,Y)
+#elif defined(_simd_s64x32_mul_)
+	#define _simd_s64x32_mul_scalar_(X,Y) _simd_s64x32_mul_(X,_simd_s64x32_fill_scalar_(Y))
+	#define _simd_s64x1_mul_scalar_instruction_set _simd_s64x32_mul_instruction_set
+#endif
+#ifdef _simd_s64x32_mul_scalar_
+	#define _simd_s64x32_mul_scalar(X,Y) _simd_s64x32_mul_scalar_(X,Y)
+	#define _simd_s64x32_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x32_mul_scalar_instruction_set>()
+#else
+	#define _simd_s64x32_mul_scalar(X,Y) _simd_s64x32_mul_safe(X,_simd_s64x32_fill_scalar_safe(Y))
+	#define _simd_s64x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s64x1_mul_safe
 	#define _simd_s64x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s64x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -827,6 +1082,21 @@
 		_simd_s64x32_mul(_simd_s64x64_splitlo(X), _simd_s64x64_splitlo(Y)),\
 		_simd_s64x32_mul(_simd_s64x64_splithi(X), _simd_s64x64_splithi(Y)))
 	#define _simd_s64x64_mul_enable() (_simd_s64x32_mul_enable() && _simd_s64x64_combine_enable() && _simd_s64x64_splitlo_enable()  && _simd_s64x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_s64x64_mul_scalar_
+	#define _simd_s64x64_mul_scalar_(X,Y) _simd_s64x64_mul_scalar_(X,Y)
+#elif defined(_simd_s64x64_mul_)
+	#define _simd_s64x64_mul_scalar_(X,Y) _simd_s64x64_mul_(X,_simd_s64x64_fill_scalar_(Y))
+	#define _simd_s64x1_mul_scalar_instruction_set _simd_s64x64_mul_instruction_set
+#endif
+#ifdef _simd_s64x64_mul_scalar_
+	#define _simd_s64x64_mul_scalar(X,Y) _simd_s64x64_mul_scalar_(X,Y)
+	#define _simd_s64x64_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x64_mul_scalar_instruction_set>()
+#else
+	#define _simd_s64x64_mul_scalar(X,Y) _simd_s64x64_mul_safe(X,_simd_s64x64_fill_scalar_safe(Y))
+	#define _simd_s64x1_mul_scalar_enabled() true
 #endif
 
 // -- u64 --
@@ -901,6 +1171,21 @@
 	#define _simd_u64x2_mul_enable() (_simd_u64x1_mul_enable() && _simd_u64x2_combine_enable() && _simd_u64x2_splitlo_enable()  && _simd_u64x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_u64x2_mul_scalar_
+	#define _simd_u64x2_mul_scalar_(X,Y) _simd_u64x2_mul_scalar_(X,Y)
+#elif defined(_simd_u64x2_mul_)
+	#define _simd_u64x2_mul_scalar_(X,Y) _simd_u64x2_mul_(X,_simd_u64x2_fill_scalar_(Y))
+	#define _simd_u64x1_mul_scalar_instruction_set _simd_u64x2_mul_instruction_set
+#endif
+#ifdef _simd_u64x2_mul_scalar_
+	#define _simd_u64x2_mul_scalar(X,Y) _simd_u64x2_mul_scalar_(X,Y)
+	#define _simd_u64x2_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x2_mul_scalar_instruction_set>()
+#else
+	#define _simd_u64x2_mul_scalar(X,Y) _simd_u64x2_mul_safe(X,_simd_u64x2_fill_scalar_safe(Y))
+	#define _simd_u64x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u64x1_mul_safe
 	#define _simd_u64x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u64x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -961,6 +1246,21 @@
 	#define _simd_u64x4_mul_enable() (_simd_u64x2_mul_enable() && _simd_u64x4_combine_enable() && _simd_u64x4_splitlo_enable()  && _simd_u64x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_u64x4_mul_scalar_
+	#define _simd_u64x4_mul_scalar_(X,Y) _simd_u64x4_mul_scalar_(X,Y)
+#elif defined(_simd_u64x4_mul_)
+	#define _simd_u64x4_mul_scalar_(X,Y) _simd_u64x4_mul_(X,_simd_u64x4_fill_scalar_(Y))
+	#define _simd_u64x1_mul_scalar_instruction_set _simd_u64x4_mul_instruction_set
+#endif
+#ifdef _simd_u64x4_mul_scalar_
+	#define _simd_u64x4_mul_scalar(X,Y) _simd_u64x4_mul_scalar_(X,Y)
+	#define _simd_u64x4_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x4_mul_scalar_instruction_set>()
+#else
+	#define _simd_u64x4_mul_scalar(X,Y) _simd_u64x4_mul_safe(X,_simd_u64x4_fill_scalar_safe(Y))
+	#define _simd_u64x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u64x1_mul_safe
 	#define _simd_u64x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u64x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1011,6 +1311,21 @@
 	#define _simd_u64x8_mul_enable() (_simd_u64x4_mul_enable() && _simd_u64x8_combine_enable() && _simd_u64x8_splitlo_enable()  && _simd_u64x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_u64x8_mul_scalar_
+	#define _simd_u64x8_mul_scalar_(X,Y) _simd_u64x8_mul_scalar_(X,Y)
+#elif defined(_simd_u64x8_mul_)
+	#define _simd_u64x8_mul_scalar_(X,Y) _simd_u64x8_mul_(X,_simd_u64x8_fill_scalar_(Y))
+	#define _simd_u64x1_mul_scalar_instruction_set _simd_u64x8_mul_instruction_set
+#endif
+#ifdef _simd_u64x8_mul_scalar_
+	#define _simd_u64x8_mul_scalar(X,Y) _simd_u64x8_mul_scalar_(X,Y)
+	#define _simd_u64x8_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x8_mul_scalar_instruction_set>()
+#else
+	#define _simd_u64x8_mul_scalar(X,Y) _simd_u64x8_mul_safe(X,_simd_u64x8_fill_scalar_safe(Y))
+	#define _simd_u64x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u64x1_mul_safe
 	#define _simd_u64x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u64x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1051,6 +1366,21 @@
 	#define _simd_u64x16_mul_enable() (_simd_u64x8_mul_enable() && _simd_u64x16_combine_enable() && _simd_u64x16_splitlo_enable()  && _simd_u64x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_u64x16_mul_scalar_
+	#define _simd_u64x16_mul_scalar_(X,Y) _simd_u64x16_mul_scalar_(X,Y)
+#elif defined(_simd_u64x16_mul_)
+	#define _simd_u64x16_mul_scalar_(X,Y) _simd_u64x16_mul_(X,_simd_u64x16_fill_scalar_(Y))
+	#define _simd_u64x1_mul_scalar_instruction_set _simd_u64x16_mul_instruction_set
+#endif
+#ifdef _simd_u64x16_mul_scalar_
+	#define _simd_u64x16_mul_scalar(X,Y) _simd_u64x16_mul_scalar_(X,Y)
+	#define _simd_u64x16_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x16_mul_scalar_instruction_set>()
+#else
+	#define _simd_u64x16_mul_scalar(X,Y) _simd_u64x16_mul_safe(X,_simd_u64x16_fill_scalar_safe(Y))
+	#define _simd_u64x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u64x1_mul_safe
 	#define _simd_u64x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u64x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1081,6 +1411,21 @@
 	#define _simd_u64x32_mul_enable() (_simd_u64x16_mul_enable() && _simd_u64x32_combine_enable() && _simd_u64x32_splitlo_enable()  && _simd_u64x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_u64x32_mul_scalar_
+	#define _simd_u64x32_mul_scalar_(X,Y) _simd_u64x32_mul_scalar_(X,Y)
+#elif defined(_simd_u64x32_mul_)
+	#define _simd_u64x32_mul_scalar_(X,Y) _simd_u64x32_mul_(X,_simd_u64x32_fill_scalar_(Y))
+	#define _simd_u64x1_mul_scalar_instruction_set _simd_u64x32_mul_instruction_set
+#endif
+#ifdef _simd_u64x32_mul_scalar_
+	#define _simd_u64x32_mul_scalar(X,Y) _simd_u64x32_mul_scalar_(X,Y)
+	#define _simd_u64x32_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x32_mul_scalar_instruction_set>()
+#else
+	#define _simd_u64x32_mul_scalar(X,Y) _simd_u64x32_mul_safe(X,_simd_u64x32_fill_scalar_safe(Y))
+	#define _simd_u64x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u64x1_mul_safe
 	#define _simd_u64x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u64x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1099,6 +1444,21 @@
 		_simd_u64x32_mul(_simd_u64x64_splitlo(X), _simd_u64x64_splitlo(Y)),\
 		_simd_u64x32_mul(_simd_u64x64_splithi(X), _simd_u64x64_splithi(Y)))
 	#define _simd_u64x64_mul_enable() (_simd_u64x32_mul_enable() && _simd_u64x64_combine_enable() && _simd_u64x64_splitlo_enable()  && _simd_u64x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_u64x64_mul_scalar_
+	#define _simd_u64x64_mul_scalar_(X,Y) _simd_u64x64_mul_scalar_(X,Y)
+#elif defined(_simd_u64x64_mul_)
+	#define _simd_u64x64_mul_scalar_(X,Y) _simd_u64x64_mul_(X,_simd_u64x64_fill_scalar_(Y))
+	#define _simd_u64x1_mul_scalar_instruction_set _simd_u64x64_mul_instruction_set
+#endif
+#ifdef _simd_u64x64_mul_scalar_
+	#define _simd_u64x64_mul_scalar(X,Y) _simd_u64x64_mul_scalar_(X,Y)
+	#define _simd_u64x64_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x64_mul_scalar_instruction_set>()
+#else
+	#define _simd_u64x64_mul_scalar(X,Y) _simd_u64x64_mul_safe(X,_simd_u64x64_fill_scalar_safe(Y))
+	#define _simd_u64x1_mul_scalar_enabled() true
 #endif
 
 // -- s32 --
@@ -1173,6 +1533,21 @@
 	#define _simd_s32x2_mul_enable() (_simd_s32x1_mul_enable() && _simd_s32x2_combine_enable() && _simd_s32x2_splitlo_enable()  && _simd_s32x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_s32x2_mul_scalar_
+	#define _simd_s32x2_mul_scalar_(X,Y) _simd_s32x2_mul_scalar_(X,Y)
+#elif defined(_simd_s32x2_mul_)
+	#define _simd_s32x2_mul_scalar_(X,Y) _simd_s32x2_mul_(X,_simd_s32x2_fill_scalar_(Y))
+	#define _simd_s32x1_mul_scalar_instruction_set _simd_s32x2_mul_instruction_set
+#endif
+#ifdef _simd_s32x2_mul_scalar_
+	#define _simd_s32x2_mul_scalar(X,Y) _simd_s32x2_mul_scalar_(X,Y)
+	#define _simd_s32x2_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x2_mul_scalar_instruction_set>()
+#else
+	#define _simd_s32x2_mul_scalar(X,Y) _simd_s32x2_mul_safe(X,_simd_s32x2_fill_scalar_safe(Y))
+	#define _simd_s32x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s32x1_mul_safe
 	#define _simd_s32x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s32x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1233,6 +1608,21 @@
 	#define _simd_s32x4_mul_enable() (_simd_s32x2_mul_enable() && _simd_s32x4_combine_enable() && _simd_s32x4_splitlo_enable()  && _simd_s32x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_s32x4_mul_scalar_
+	#define _simd_s32x4_mul_scalar_(X,Y) _simd_s32x4_mul_scalar_(X,Y)
+#elif defined(_simd_s32x4_mul_)
+	#define _simd_s32x4_mul_scalar_(X,Y) _simd_s32x4_mul_(X,_simd_s32x4_fill_scalar_(Y))
+	#define _simd_s32x1_mul_scalar_instruction_set _simd_s32x4_mul_instruction_set
+#endif
+#ifdef _simd_s32x4_mul_scalar_
+	#define _simd_s32x4_mul_scalar(X,Y) _simd_s32x4_mul_scalar_(X,Y)
+	#define _simd_s32x4_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x4_mul_scalar_instruction_set>()
+#else
+	#define _simd_s32x4_mul_scalar(X,Y) _simd_s32x4_mul_safe(X,_simd_s32x4_fill_scalar_safe(Y))
+	#define _simd_s32x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s32x1_mul_safe
 	#define _simd_s32x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s32x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1283,6 +1673,21 @@
 	#define _simd_s32x8_mul_enable() (_simd_s32x4_mul_enable() && _simd_s32x8_combine_enable() && _simd_s32x8_splitlo_enable()  && _simd_s32x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_s32x8_mul_scalar_
+	#define _simd_s32x8_mul_scalar_(X,Y) _simd_s32x8_mul_scalar_(X,Y)
+#elif defined(_simd_s32x8_mul_)
+	#define _simd_s32x8_mul_scalar_(X,Y) _simd_s32x8_mul_(X,_simd_s32x8_fill_scalar_(Y))
+	#define _simd_s32x1_mul_scalar_instruction_set _simd_s32x8_mul_instruction_set
+#endif
+#ifdef _simd_s32x8_mul_scalar_
+	#define _simd_s32x8_mul_scalar(X,Y) _simd_s32x8_mul_scalar_(X,Y)
+	#define _simd_s32x8_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x8_mul_scalar_instruction_set>()
+#else
+	#define _simd_s32x8_mul_scalar(X,Y) _simd_s32x8_mul_safe(X,_simd_s32x8_fill_scalar_safe(Y))
+	#define _simd_s32x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s32x1_mul_safe
 	#define _simd_s32x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s32x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1323,6 +1728,21 @@
 	#define _simd_s32x16_mul_enable() (_simd_s32x8_mul_enable() && _simd_s32x16_combine_enable() && _simd_s32x16_splitlo_enable()  && _simd_s32x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_s32x16_mul_scalar_
+	#define _simd_s32x16_mul_scalar_(X,Y) _simd_s32x16_mul_scalar_(X,Y)
+#elif defined(_simd_s32x16_mul_)
+	#define _simd_s32x16_mul_scalar_(X,Y) _simd_s32x16_mul_(X,_simd_s32x16_fill_scalar_(Y))
+	#define _simd_s32x1_mul_scalar_instruction_set _simd_s32x16_mul_instruction_set
+#endif
+#ifdef _simd_s32x16_mul_scalar_
+	#define _simd_s32x16_mul_scalar(X,Y) _simd_s32x16_mul_scalar_(X,Y)
+	#define _simd_s32x16_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x16_mul_scalar_instruction_set>()
+#else
+	#define _simd_s32x16_mul_scalar(X,Y) _simd_s32x16_mul_safe(X,_simd_s32x16_fill_scalar_safe(Y))
+	#define _simd_s32x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s32x1_mul_safe
 	#define _simd_s32x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s32x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1353,6 +1773,21 @@
 	#define _simd_s32x32_mul_enable() (_simd_s32x16_mul_enable() && _simd_s32x32_combine_enable() && _simd_s32x32_splitlo_enable()  && _simd_s32x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_s32x32_mul_scalar_
+	#define _simd_s32x32_mul_scalar_(X,Y) _simd_s32x32_mul_scalar_(X,Y)
+#elif defined(_simd_s32x32_mul_)
+	#define _simd_s32x32_mul_scalar_(X,Y) _simd_s32x32_mul_(X,_simd_s32x32_fill_scalar_(Y))
+	#define _simd_s32x1_mul_scalar_instruction_set _simd_s32x32_mul_instruction_set
+#endif
+#ifdef _simd_s32x32_mul_scalar_
+	#define _simd_s32x32_mul_scalar(X,Y) _simd_s32x32_mul_scalar_(X,Y)
+	#define _simd_s32x32_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x32_mul_scalar_instruction_set>()
+#else
+	#define _simd_s32x32_mul_scalar(X,Y) _simd_s32x32_mul_safe(X,_simd_s32x32_fill_scalar_safe(Y))
+	#define _simd_s32x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s32x1_mul_safe
 	#define _simd_s32x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s32x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1371,6 +1806,21 @@
 		_simd_s32x32_mul(_simd_s32x64_splitlo(X), _simd_s32x64_splitlo(Y)),\
 		_simd_s32x32_mul(_simd_s32x64_splithi(X), _simd_s32x64_splithi(Y)))
 	#define _simd_s32x64_mul_enable() (_simd_s32x32_mul_enable() && _simd_s32x64_combine_enable() && _simd_s32x64_splitlo_enable()  && _simd_s32x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_s32x64_mul_scalar_
+	#define _simd_s32x64_mul_scalar_(X,Y) _simd_s32x64_mul_scalar_(X,Y)
+#elif defined(_simd_s32x64_mul_)
+	#define _simd_s32x64_mul_scalar_(X,Y) _simd_s32x64_mul_(X,_simd_s32x64_fill_scalar_(Y))
+	#define _simd_s32x1_mul_scalar_instruction_set _simd_s32x64_mul_instruction_set
+#endif
+#ifdef _simd_s32x64_mul_scalar_
+	#define _simd_s32x64_mul_scalar(X,Y) _simd_s32x64_mul_scalar_(X,Y)
+	#define _simd_s32x64_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x64_mul_scalar_instruction_set>()
+#else
+	#define _simd_s32x64_mul_scalar(X,Y) _simd_s32x64_mul_safe(X,_simd_s32x64_fill_scalar_safe(Y))
+	#define _simd_s32x1_mul_scalar_enabled() true
 #endif
 
 // -- u32 --
@@ -1445,6 +1895,21 @@
 	#define _simd_u32x2_mul_enable() (_simd_u32x1_mul_enable() && _simd_u32x2_combine_enable() && _simd_u32x2_splitlo_enable()  && _simd_u32x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_u32x2_mul_scalar_
+	#define _simd_u32x2_mul_scalar_(X,Y) _simd_u32x2_mul_scalar_(X,Y)
+#elif defined(_simd_u32x2_mul_)
+	#define _simd_u32x2_mul_scalar_(X,Y) _simd_u32x2_mul_(X,_simd_u32x2_fill_scalar_(Y))
+	#define _simd_u32x1_mul_scalar_instruction_set _simd_u32x2_mul_instruction_set
+#endif
+#ifdef _simd_u32x2_mul_scalar_
+	#define _simd_u32x2_mul_scalar(X,Y) _simd_u32x2_mul_scalar_(X,Y)
+	#define _simd_u32x2_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x2_mul_scalar_instruction_set>()
+#else
+	#define _simd_u32x2_mul_scalar(X,Y) _simd_u32x2_mul_safe(X,_simd_u32x2_fill_scalar_safe(Y))
+	#define _simd_u32x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u32x1_mul_safe
 	#define _simd_u32x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u32x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1505,6 +1970,21 @@
 	#define _simd_u32x4_mul_enable() (_simd_u32x2_mul_enable() && _simd_u32x4_combine_enable() && _simd_u32x4_splitlo_enable()  && _simd_u32x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_u32x4_mul_scalar_
+	#define _simd_u32x4_mul_scalar_(X,Y) _simd_u32x4_mul_scalar_(X,Y)
+#elif defined(_simd_u32x4_mul_)
+	#define _simd_u32x4_mul_scalar_(X,Y) _simd_u32x4_mul_(X,_simd_u32x4_fill_scalar_(Y))
+	#define _simd_u32x1_mul_scalar_instruction_set _simd_u32x4_mul_instruction_set
+#endif
+#ifdef _simd_u32x4_mul_scalar_
+	#define _simd_u32x4_mul_scalar(X,Y) _simd_u32x4_mul_scalar_(X,Y)
+	#define _simd_u32x4_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x4_mul_scalar_instruction_set>()
+#else
+	#define _simd_u32x4_mul_scalar(X,Y) _simd_u32x4_mul_safe(X,_simd_u32x4_fill_scalar_safe(Y))
+	#define _simd_u32x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u32x1_mul_safe
 	#define _simd_u32x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u32x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1555,6 +2035,21 @@
 	#define _simd_u32x8_mul_enable() (_simd_u32x4_mul_enable() && _simd_u32x8_combine_enable() && _simd_u32x8_splitlo_enable()  && _simd_u32x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_u32x8_mul_scalar_
+	#define _simd_u32x8_mul_scalar_(X,Y) _simd_u32x8_mul_scalar_(X,Y)
+#elif defined(_simd_u32x8_mul_)
+	#define _simd_u32x8_mul_scalar_(X,Y) _simd_u32x8_mul_(X,_simd_u32x8_fill_scalar_(Y))
+	#define _simd_u32x1_mul_scalar_instruction_set _simd_u32x8_mul_instruction_set
+#endif
+#ifdef _simd_u32x8_mul_scalar_
+	#define _simd_u32x8_mul_scalar(X,Y) _simd_u32x8_mul_scalar_(X,Y)
+	#define _simd_u32x8_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x8_mul_scalar_instruction_set>()
+#else
+	#define _simd_u32x8_mul_scalar(X,Y) _simd_u32x8_mul_safe(X,_simd_u32x8_fill_scalar_safe(Y))
+	#define _simd_u32x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u32x1_mul_safe
 	#define _simd_u32x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u32x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1595,6 +2090,21 @@
 	#define _simd_u32x16_mul_enable() (_simd_u32x8_mul_enable() && _simd_u32x16_combine_enable() && _simd_u32x16_splitlo_enable()  && _simd_u32x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_u32x16_mul_scalar_
+	#define _simd_u32x16_mul_scalar_(X,Y) _simd_u32x16_mul_scalar_(X,Y)
+#elif defined(_simd_u32x16_mul_)
+	#define _simd_u32x16_mul_scalar_(X,Y) _simd_u32x16_mul_(X,_simd_u32x16_fill_scalar_(Y))
+	#define _simd_u32x1_mul_scalar_instruction_set _simd_u32x16_mul_instruction_set
+#endif
+#ifdef _simd_u32x16_mul_scalar_
+	#define _simd_u32x16_mul_scalar(X,Y) _simd_u32x16_mul_scalar_(X,Y)
+	#define _simd_u32x16_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x16_mul_scalar_instruction_set>()
+#else
+	#define _simd_u32x16_mul_scalar(X,Y) _simd_u32x16_mul_safe(X,_simd_u32x16_fill_scalar_safe(Y))
+	#define _simd_u32x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u32x1_mul_safe
 	#define _simd_u32x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u32x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1625,6 +2135,21 @@
 	#define _simd_u32x32_mul_enable() (_simd_u32x16_mul_enable() && _simd_u32x32_combine_enable() && _simd_u32x32_splitlo_enable()  && _simd_u32x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_u32x32_mul_scalar_
+	#define _simd_u32x32_mul_scalar_(X,Y) _simd_u32x32_mul_scalar_(X,Y)
+#elif defined(_simd_u32x32_mul_)
+	#define _simd_u32x32_mul_scalar_(X,Y) _simd_u32x32_mul_(X,_simd_u32x32_fill_scalar_(Y))
+	#define _simd_u32x1_mul_scalar_instruction_set _simd_u32x32_mul_instruction_set
+#endif
+#ifdef _simd_u32x32_mul_scalar_
+	#define _simd_u32x32_mul_scalar(X,Y) _simd_u32x32_mul_scalar_(X,Y)
+	#define _simd_u32x32_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x32_mul_scalar_instruction_set>()
+#else
+	#define _simd_u32x32_mul_scalar(X,Y) _simd_u32x32_mul_safe(X,_simd_u32x32_fill_scalar_safe(Y))
+	#define _simd_u32x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u32x1_mul_safe
 	#define _simd_u32x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u32x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1643,6 +2168,21 @@
 		_simd_u32x32_mul(_simd_u32x64_splitlo(X), _simd_u32x64_splitlo(Y)),\
 		_simd_u32x32_mul(_simd_u32x64_splithi(X), _simd_u32x64_splithi(Y)))
 	#define _simd_u32x64_mul_enable() (_simd_u32x32_mul_enable() && _simd_u32x64_combine_enable() && _simd_u32x64_splitlo_enable()  && _simd_u32x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_u32x64_mul_scalar_
+	#define _simd_u32x64_mul_scalar_(X,Y) _simd_u32x64_mul_scalar_(X,Y)
+#elif defined(_simd_u32x64_mul_)
+	#define _simd_u32x64_mul_scalar_(X,Y) _simd_u32x64_mul_(X,_simd_u32x64_fill_scalar_(Y))
+	#define _simd_u32x1_mul_scalar_instruction_set _simd_u32x64_mul_instruction_set
+#endif
+#ifdef _simd_u32x64_mul_scalar_
+	#define _simd_u32x64_mul_scalar(X,Y) _simd_u32x64_mul_scalar_(X,Y)
+	#define _simd_u32x64_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x64_mul_scalar_instruction_set>()
+#else
+	#define _simd_u32x64_mul_scalar(X,Y) _simd_u32x64_mul_safe(X,_simd_u32x64_fill_scalar_safe(Y))
+	#define _simd_u32x1_mul_scalar_enabled() true
 #endif
 
 // -- s16 --
@@ -1717,6 +2257,21 @@
 	#define _simd_s16x2_mul_enable() (_simd_s16x1_mul_enable() && _simd_s16x2_combine_enable() && _simd_s16x2_splitlo_enable()  && _simd_s16x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_s16x2_mul_scalar_
+	#define _simd_s16x2_mul_scalar_(X,Y) _simd_s16x2_mul_scalar_(X,Y)
+#elif defined(_simd_s16x2_mul_)
+	#define _simd_s16x2_mul_scalar_(X,Y) _simd_s16x2_mul_(X,_simd_s16x2_fill_scalar_(Y))
+	#define _simd_s16x1_mul_scalar_instruction_set _simd_s16x2_mul_instruction_set
+#endif
+#ifdef _simd_s16x2_mul_scalar_
+	#define _simd_s16x2_mul_scalar(X,Y) _simd_s16x2_mul_scalar_(X,Y)
+	#define _simd_s16x2_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x2_mul_scalar_instruction_set>()
+#else
+	#define _simd_s16x2_mul_scalar(X,Y) _simd_s16x2_mul_safe(X,_simd_s16x2_fill_scalar_safe(Y))
+	#define _simd_s16x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s16x1_mul_safe
 	#define _simd_s16x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s16x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1777,6 +2332,21 @@
 	#define _simd_s16x4_mul_enable() (_simd_s16x2_mul_enable() && _simd_s16x4_combine_enable() && _simd_s16x4_splitlo_enable()  && _simd_s16x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_s16x4_mul_scalar_
+	#define _simd_s16x4_mul_scalar_(X,Y) _simd_s16x4_mul_scalar_(X,Y)
+#elif defined(_simd_s16x4_mul_)
+	#define _simd_s16x4_mul_scalar_(X,Y) _simd_s16x4_mul_(X,_simd_s16x4_fill_scalar_(Y))
+	#define _simd_s16x1_mul_scalar_instruction_set _simd_s16x4_mul_instruction_set
+#endif
+#ifdef _simd_s16x4_mul_scalar_
+	#define _simd_s16x4_mul_scalar(X,Y) _simd_s16x4_mul_scalar_(X,Y)
+	#define _simd_s16x4_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x4_mul_scalar_instruction_set>()
+#else
+	#define _simd_s16x4_mul_scalar(X,Y) _simd_s16x4_mul_safe(X,_simd_s16x4_fill_scalar_safe(Y))
+	#define _simd_s16x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s16x1_mul_safe
 	#define _simd_s16x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s16x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1827,6 +2397,21 @@
 	#define _simd_s16x8_mul_enable() (_simd_s16x4_mul_enable() && _simd_s16x8_combine_enable() && _simd_s16x8_splitlo_enable()  && _simd_s16x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_s16x8_mul_scalar_
+	#define _simd_s16x8_mul_scalar_(X,Y) _simd_s16x8_mul_scalar_(X,Y)
+#elif defined(_simd_s16x8_mul_)
+	#define _simd_s16x8_mul_scalar_(X,Y) _simd_s16x8_mul_(X,_simd_s16x8_fill_scalar_(Y))
+	#define _simd_s16x1_mul_scalar_instruction_set _simd_s16x8_mul_instruction_set
+#endif
+#ifdef _simd_s16x8_mul_scalar_
+	#define _simd_s16x8_mul_scalar(X,Y) _simd_s16x8_mul_scalar_(X,Y)
+	#define _simd_s16x8_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x8_mul_scalar_instruction_set>()
+#else
+	#define _simd_s16x8_mul_scalar(X,Y) _simd_s16x8_mul_safe(X,_simd_s16x8_fill_scalar_safe(Y))
+	#define _simd_s16x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s16x1_mul_safe
 	#define _simd_s16x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s16x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1867,6 +2452,21 @@
 	#define _simd_s16x16_mul_enable() (_simd_s16x8_mul_enable() && _simd_s16x16_combine_enable() && _simd_s16x16_splitlo_enable()  && _simd_s16x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_s16x16_mul_scalar_
+	#define _simd_s16x16_mul_scalar_(X,Y) _simd_s16x16_mul_scalar_(X,Y)
+#elif defined(_simd_s16x16_mul_)
+	#define _simd_s16x16_mul_scalar_(X,Y) _simd_s16x16_mul_(X,_simd_s16x16_fill_scalar_(Y))
+	#define _simd_s16x1_mul_scalar_instruction_set _simd_s16x16_mul_instruction_set
+#endif
+#ifdef _simd_s16x16_mul_scalar_
+	#define _simd_s16x16_mul_scalar(X,Y) _simd_s16x16_mul_scalar_(X,Y)
+	#define _simd_s16x16_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x16_mul_scalar_instruction_set>()
+#else
+	#define _simd_s16x16_mul_scalar(X,Y) _simd_s16x16_mul_safe(X,_simd_s16x16_fill_scalar_safe(Y))
+	#define _simd_s16x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s16x1_mul_safe
 	#define _simd_s16x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s16x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1897,6 +2497,21 @@
 	#define _simd_s16x32_mul_enable() (_simd_s16x16_mul_enable() && _simd_s16x32_combine_enable() && _simd_s16x32_splitlo_enable()  && _simd_s16x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_s16x32_mul_scalar_
+	#define _simd_s16x32_mul_scalar_(X,Y) _simd_s16x32_mul_scalar_(X,Y)
+#elif defined(_simd_s16x32_mul_)
+	#define _simd_s16x32_mul_scalar_(X,Y) _simd_s16x32_mul_(X,_simd_s16x32_fill_scalar_(Y))
+	#define _simd_s16x1_mul_scalar_instruction_set _simd_s16x32_mul_instruction_set
+#endif
+#ifdef _simd_s16x32_mul_scalar_
+	#define _simd_s16x32_mul_scalar(X,Y) _simd_s16x32_mul_scalar_(X,Y)
+	#define _simd_s16x32_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x32_mul_scalar_instruction_set>()
+#else
+	#define _simd_s16x32_mul_scalar(X,Y) _simd_s16x32_mul_safe(X,_simd_s16x32_fill_scalar_safe(Y))
+	#define _simd_s16x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s16x1_mul_safe
 	#define _simd_s16x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s16x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -1915,6 +2530,21 @@
 		_simd_s16x32_mul(_simd_s16x64_splitlo(X), _simd_s16x64_splitlo(Y)),\
 		_simd_s16x32_mul(_simd_s16x64_splithi(X), _simd_s16x64_splithi(Y)))
 	#define _simd_s16x64_mul_enable() (_simd_s16x32_mul_enable() && _simd_s16x64_combine_enable() && _simd_s16x64_splitlo_enable()  && _simd_s16x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_s16x64_mul_scalar_
+	#define _simd_s16x64_mul_scalar_(X,Y) _simd_s16x64_mul_scalar_(X,Y)
+#elif defined(_simd_s16x64_mul_)
+	#define _simd_s16x64_mul_scalar_(X,Y) _simd_s16x64_mul_(X,_simd_s16x64_fill_scalar_(Y))
+	#define _simd_s16x1_mul_scalar_instruction_set _simd_s16x64_mul_instruction_set
+#endif
+#ifdef _simd_s16x64_mul_scalar_
+	#define _simd_s16x64_mul_scalar(X,Y) _simd_s16x64_mul_scalar_(X,Y)
+	#define _simd_s16x64_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x64_mul_scalar_instruction_set>()
+#else
+	#define _simd_s16x64_mul_scalar(X,Y) _simd_s16x64_mul_safe(X,_simd_s16x64_fill_scalar_safe(Y))
+	#define _simd_s16x1_mul_scalar_enabled() true
 #endif
 
 // -- u16 --
@@ -1989,6 +2619,21 @@
 	#define _simd_u16x2_mul_enable() (_simd_u16x1_mul_enable() && _simd_u16x2_combine_enable() && _simd_u16x2_splitlo_enable()  && _simd_u16x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_u16x2_mul_scalar_
+	#define _simd_u16x2_mul_scalar_(X,Y) _simd_u16x2_mul_scalar_(X,Y)
+#elif defined(_simd_u16x2_mul_)
+	#define _simd_u16x2_mul_scalar_(X,Y) _simd_u16x2_mul_(X,_simd_u16x2_fill_scalar_(Y))
+	#define _simd_u16x1_mul_scalar_instruction_set _simd_u16x2_mul_instruction_set
+#endif
+#ifdef _simd_u16x2_mul_scalar_
+	#define _simd_u16x2_mul_scalar(X,Y) _simd_u16x2_mul_scalar_(X,Y)
+	#define _simd_u16x2_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x2_mul_scalar_instruction_set>()
+#else
+	#define _simd_u16x2_mul_scalar(X,Y) _simd_u16x2_mul_safe(X,_simd_u16x2_fill_scalar_safe(Y))
+	#define _simd_u16x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u16x1_mul_safe
 	#define _simd_u16x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u16x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -2049,6 +2694,21 @@
 	#define _simd_u16x4_mul_enable() (_simd_u16x2_mul_enable() && _simd_u16x4_combine_enable() && _simd_u16x4_splitlo_enable()  && _simd_u16x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_u16x4_mul_scalar_
+	#define _simd_u16x4_mul_scalar_(X,Y) _simd_u16x4_mul_scalar_(X,Y)
+#elif defined(_simd_u16x4_mul_)
+	#define _simd_u16x4_mul_scalar_(X,Y) _simd_u16x4_mul_(X,_simd_u16x4_fill_scalar_(Y))
+	#define _simd_u16x1_mul_scalar_instruction_set _simd_u16x4_mul_instruction_set
+#endif
+#ifdef _simd_u16x4_mul_scalar_
+	#define _simd_u16x4_mul_scalar(X,Y) _simd_u16x4_mul_scalar_(X,Y)
+	#define _simd_u16x4_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x4_mul_scalar_instruction_set>()
+#else
+	#define _simd_u16x4_mul_scalar(X,Y) _simd_u16x4_mul_safe(X,_simd_u16x4_fill_scalar_safe(Y))
+	#define _simd_u16x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u16x1_mul_safe
 	#define _simd_u16x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u16x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -2099,6 +2759,21 @@
 	#define _simd_u16x8_mul_enable() (_simd_u16x4_mul_enable() && _simd_u16x8_combine_enable() && _simd_u16x8_splitlo_enable()  && _simd_u16x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_u16x8_mul_scalar_
+	#define _simd_u16x8_mul_scalar_(X,Y) _simd_u16x8_mul_scalar_(X,Y)
+#elif defined(_simd_u16x8_mul_)
+	#define _simd_u16x8_mul_scalar_(X,Y) _simd_u16x8_mul_(X,_simd_u16x8_fill_scalar_(Y))
+	#define _simd_u16x1_mul_scalar_instruction_set _simd_u16x8_mul_instruction_set
+#endif
+#ifdef _simd_u16x8_mul_scalar_
+	#define _simd_u16x8_mul_scalar(X,Y) _simd_u16x8_mul_scalar_(X,Y)
+	#define _simd_u16x8_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x8_mul_scalar_instruction_set>()
+#else
+	#define _simd_u16x8_mul_scalar(X,Y) _simd_u16x8_mul_safe(X,_simd_u16x8_fill_scalar_safe(Y))
+	#define _simd_u16x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u16x1_mul_safe
 	#define _simd_u16x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u16x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -2139,6 +2814,21 @@
 	#define _simd_u16x16_mul_enable() (_simd_u16x8_mul_enable() && _simd_u16x16_combine_enable() && _simd_u16x16_splitlo_enable()  && _simd_u16x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_u16x16_mul_scalar_
+	#define _simd_u16x16_mul_scalar_(X,Y) _simd_u16x16_mul_scalar_(X,Y)
+#elif defined(_simd_u16x16_mul_)
+	#define _simd_u16x16_mul_scalar_(X,Y) _simd_u16x16_mul_(X,_simd_u16x16_fill_scalar_(Y))
+	#define _simd_u16x1_mul_scalar_instruction_set _simd_u16x16_mul_instruction_set
+#endif
+#ifdef _simd_u16x16_mul_scalar_
+	#define _simd_u16x16_mul_scalar(X,Y) _simd_u16x16_mul_scalar_(X,Y)
+	#define _simd_u16x16_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x16_mul_scalar_instruction_set>()
+#else
+	#define _simd_u16x16_mul_scalar(X,Y) _simd_u16x16_mul_safe(X,_simd_u16x16_fill_scalar_safe(Y))
+	#define _simd_u16x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u16x1_mul_safe
 	#define _simd_u16x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u16x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -2169,6 +2859,21 @@
 	#define _simd_u16x32_mul_enable() (_simd_u16x16_mul_enable() && _simd_u16x32_combine_enable() && _simd_u16x32_splitlo_enable()  && _simd_u16x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_u16x32_mul_scalar_
+	#define _simd_u16x32_mul_scalar_(X,Y) _simd_u16x32_mul_scalar_(X,Y)
+#elif defined(_simd_u16x32_mul_)
+	#define _simd_u16x32_mul_scalar_(X,Y) _simd_u16x32_mul_(X,_simd_u16x32_fill_scalar_(Y))
+	#define _simd_u16x1_mul_scalar_instruction_set _simd_u16x32_mul_instruction_set
+#endif
+#ifdef _simd_u16x32_mul_scalar_
+	#define _simd_u16x32_mul_scalar(X,Y) _simd_u16x32_mul_scalar_(X,Y)
+	#define _simd_u16x32_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x32_mul_scalar_instruction_set>()
+#else
+	#define _simd_u16x32_mul_scalar(X,Y) _simd_u16x32_mul_safe(X,_simd_u16x32_fill_scalar_safe(Y))
+	#define _simd_u16x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u16x1_mul_safe
 	#define _simd_u16x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u16x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -2187,6 +2892,21 @@
 		_simd_u16x32_mul(_simd_u16x64_splitlo(X), _simd_u16x64_splitlo(Y)),\
 		_simd_u16x32_mul(_simd_u16x64_splithi(X), _simd_u16x64_splithi(Y)))
 	#define _simd_u16x64_mul_enable() (_simd_u16x32_mul_enable() && _simd_u16x64_combine_enable() && _simd_u16x64_splitlo_enable()  && _simd_u16x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_u16x64_mul_scalar_
+	#define _simd_u16x64_mul_scalar_(X,Y) _simd_u16x64_mul_scalar_(X,Y)
+#elif defined(_simd_u16x64_mul_)
+	#define _simd_u16x64_mul_scalar_(X,Y) _simd_u16x64_mul_(X,_simd_u16x64_fill_scalar_(Y))
+	#define _simd_u16x1_mul_scalar_instruction_set _simd_u16x64_mul_instruction_set
+#endif
+#ifdef _simd_u16x64_mul_scalar_
+	#define _simd_u16x64_mul_scalar(X,Y) _simd_u16x64_mul_scalar_(X,Y)
+	#define _simd_u16x64_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x64_mul_scalar_instruction_set>()
+#else
+	#define _simd_u16x64_mul_scalar(X,Y) _simd_u16x64_mul_safe(X,_simd_u16x64_fill_scalar_safe(Y))
+	#define _simd_u16x1_mul_scalar_enabled() true
 #endif
 
 // -- s8 --
@@ -2261,6 +2981,21 @@
 	#define _simd_s8x2_mul_enable() (_simd_s8x1_mul_enable() && _simd_s8x2_combine_enable() && _simd_s8x2_splitlo_enable()  && _simd_s8x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_s8x2_mul_scalar_
+	#define _simd_s8x2_mul_scalar_(X,Y) _simd_s8x2_mul_scalar_(X,Y)
+#elif defined(_simd_s8x2_mul_)
+	#define _simd_s8x2_mul_scalar_(X,Y) _simd_s8x2_mul_(X,_simd_s8x2_fill_scalar_(Y))
+	#define _simd_s8x1_mul_scalar_instruction_set _simd_s8x2_mul_instruction_set
+#endif
+#ifdef _simd_s8x2_mul_scalar_
+	#define _simd_s8x2_mul_scalar(X,Y) _simd_s8x2_mul_scalar_(X,Y)
+	#define _simd_s8x2_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x2_mul_scalar_instruction_set>()
+#else
+	#define _simd_s8x2_mul_scalar(X,Y) _simd_s8x2_mul_safe(X,_simd_s8x2_fill_scalar_safe(Y))
+	#define _simd_s8x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s8x1_mul_safe
 	#define _simd_s8x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s8x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -2321,6 +3056,21 @@
 	#define _simd_s8x4_mul_enable() (_simd_s8x2_mul_enable() && _simd_s8x4_combine_enable() && _simd_s8x4_splitlo_enable()  && _simd_s8x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_s8x4_mul_scalar_
+	#define _simd_s8x4_mul_scalar_(X,Y) _simd_s8x4_mul_scalar_(X,Y)
+#elif defined(_simd_s8x4_mul_)
+	#define _simd_s8x4_mul_scalar_(X,Y) _simd_s8x4_mul_(X,_simd_s8x4_fill_scalar_(Y))
+	#define _simd_s8x1_mul_scalar_instruction_set _simd_s8x4_mul_instruction_set
+#endif
+#ifdef _simd_s8x4_mul_scalar_
+	#define _simd_s8x4_mul_scalar(X,Y) _simd_s8x4_mul_scalar_(X,Y)
+	#define _simd_s8x4_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x4_mul_scalar_instruction_set>()
+#else
+	#define _simd_s8x4_mul_scalar(X,Y) _simd_s8x4_mul_safe(X,_simd_s8x4_fill_scalar_safe(Y))
+	#define _simd_s8x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s8x1_mul_safe
 	#define _simd_s8x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s8x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -2371,6 +3121,21 @@
 	#define _simd_s8x8_mul_enable() (_simd_s8x4_mul_enable() && _simd_s8x8_combine_enable() && _simd_s8x8_splitlo_enable()  && _simd_s8x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_s8x8_mul_scalar_
+	#define _simd_s8x8_mul_scalar_(X,Y) _simd_s8x8_mul_scalar_(X,Y)
+#elif defined(_simd_s8x8_mul_)
+	#define _simd_s8x8_mul_scalar_(X,Y) _simd_s8x8_mul_(X,_simd_s8x8_fill_scalar_(Y))
+	#define _simd_s8x1_mul_scalar_instruction_set _simd_s8x8_mul_instruction_set
+#endif
+#ifdef _simd_s8x8_mul_scalar_
+	#define _simd_s8x8_mul_scalar(X,Y) _simd_s8x8_mul_scalar_(X,Y)
+	#define _simd_s8x8_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x8_mul_scalar_instruction_set>()
+#else
+	#define _simd_s8x8_mul_scalar(X,Y) _simd_s8x8_mul_safe(X,_simd_s8x8_fill_scalar_safe(Y))
+	#define _simd_s8x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s8x1_mul_safe
 	#define _simd_s8x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s8x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -2411,6 +3176,21 @@
 	#define _simd_s8x16_mul_enable() (_simd_s8x8_mul_enable() && _simd_s8x16_combine_enable() && _simd_s8x16_splitlo_enable()  && _simd_s8x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_s8x16_mul_scalar_
+	#define _simd_s8x16_mul_scalar_(X,Y) _simd_s8x16_mul_scalar_(X,Y)
+#elif defined(_simd_s8x16_mul_)
+	#define _simd_s8x16_mul_scalar_(X,Y) _simd_s8x16_mul_(X,_simd_s8x16_fill_scalar_(Y))
+	#define _simd_s8x1_mul_scalar_instruction_set _simd_s8x16_mul_instruction_set
+#endif
+#ifdef _simd_s8x16_mul_scalar_
+	#define _simd_s8x16_mul_scalar(X,Y) _simd_s8x16_mul_scalar_(X,Y)
+	#define _simd_s8x16_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x16_mul_scalar_instruction_set>()
+#else
+	#define _simd_s8x16_mul_scalar(X,Y) _simd_s8x16_mul_safe(X,_simd_s8x16_fill_scalar_safe(Y))
+	#define _simd_s8x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s8x1_mul_safe
 	#define _simd_s8x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s8x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -2441,6 +3221,21 @@
 	#define _simd_s8x32_mul_enable() (_simd_s8x16_mul_enable() && _simd_s8x32_combine_enable() && _simd_s8x32_splitlo_enable()  && _simd_s8x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_s8x32_mul_scalar_
+	#define _simd_s8x32_mul_scalar_(X,Y) _simd_s8x32_mul_scalar_(X,Y)
+#elif defined(_simd_s8x32_mul_)
+	#define _simd_s8x32_mul_scalar_(X,Y) _simd_s8x32_mul_(X,_simd_s8x32_fill_scalar_(Y))
+	#define _simd_s8x1_mul_scalar_instruction_set _simd_s8x32_mul_instruction_set
+#endif
+#ifdef _simd_s8x32_mul_scalar_
+	#define _simd_s8x32_mul_scalar(X,Y) _simd_s8x32_mul_scalar_(X,Y)
+	#define _simd_s8x32_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x32_mul_scalar_instruction_set>()
+#else
+	#define _simd_s8x32_mul_scalar(X,Y) _simd_s8x32_mul_safe(X,_simd_s8x32_fill_scalar_safe(Y))
+	#define _simd_s8x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_s8x1_mul_safe
 	#define _simd_s8x1_mul_safe(X,Y) (X * Y)
 	#define _simd_s8x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -2459,6 +3254,21 @@
 		_simd_s8x32_mul(_simd_s8x64_splitlo(X), _simd_s8x64_splitlo(Y)),\
 		_simd_s8x32_mul(_simd_s8x64_splithi(X), _simd_s8x64_splithi(Y)))
 	#define _simd_s8x64_mul_enable() (_simd_s8x32_mul_enable() && _simd_s8x64_combine_enable() && _simd_s8x64_splitlo_enable()  && _simd_s8x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_s8x64_mul_scalar_
+	#define _simd_s8x64_mul_scalar_(X,Y) _simd_s8x64_mul_scalar_(X,Y)
+#elif defined(_simd_s8x64_mul_)
+	#define _simd_s8x64_mul_scalar_(X,Y) _simd_s8x64_mul_(X,_simd_s8x64_fill_scalar_(Y))
+	#define _simd_s8x1_mul_scalar_instruction_set _simd_s8x64_mul_instruction_set
+#endif
+#ifdef _simd_s8x64_mul_scalar_
+	#define _simd_s8x64_mul_scalar(X,Y) _simd_s8x64_mul_scalar_(X,Y)
+	#define _simd_s8x64_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x64_mul_scalar_instruction_set>()
+#else
+	#define _simd_s8x64_mul_scalar(X,Y) _simd_s8x64_mul_safe(X,_simd_s8x64_fill_scalar_safe(Y))
+	#define _simd_s8x1_mul_scalar_enabled() true
 #endif
 
 // -- u8 --
@@ -2533,6 +3343,21 @@
 	#define _simd_u8x2_mul_enable() (_simd_u8x1_mul_enable() && _simd_u8x2_combine_enable() && _simd_u8x2_splitlo_enable()  && _simd_u8x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_u8x2_mul_scalar_
+	#define _simd_u8x2_mul_scalar_(X,Y) _simd_u8x2_mul_scalar_(X,Y)
+#elif defined(_simd_u8x2_mul_)
+	#define _simd_u8x2_mul_scalar_(X,Y) _simd_u8x2_mul_(X,_simd_u8x2_fill_scalar_(Y))
+	#define _simd_u8x1_mul_scalar_instruction_set _simd_u8x2_mul_instruction_set
+#endif
+#ifdef _simd_u8x2_mul_scalar_
+	#define _simd_u8x2_mul_scalar(X,Y) _simd_u8x2_mul_scalar_(X,Y)
+	#define _simd_u8x2_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x2_mul_scalar_instruction_set>()
+#else
+	#define _simd_u8x2_mul_scalar(X,Y) _simd_u8x2_mul_safe(X,_simd_u8x2_fill_scalar_safe(Y))
+	#define _simd_u8x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u8x1_mul_safe
 	#define _simd_u8x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u8x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -2593,6 +3418,21 @@
 	#define _simd_u8x4_mul_enable() (_simd_u8x2_mul_enable() && _simd_u8x4_combine_enable() && _simd_u8x4_splitlo_enable()  && _simd_u8x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_u8x4_mul_scalar_
+	#define _simd_u8x4_mul_scalar_(X,Y) _simd_u8x4_mul_scalar_(X,Y)
+#elif defined(_simd_u8x4_mul_)
+	#define _simd_u8x4_mul_scalar_(X,Y) _simd_u8x4_mul_(X,_simd_u8x4_fill_scalar_(Y))
+	#define _simd_u8x1_mul_scalar_instruction_set _simd_u8x4_mul_instruction_set
+#endif
+#ifdef _simd_u8x4_mul_scalar_
+	#define _simd_u8x4_mul_scalar(X,Y) _simd_u8x4_mul_scalar_(X,Y)
+	#define _simd_u8x4_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x4_mul_scalar_instruction_set>()
+#else
+	#define _simd_u8x4_mul_scalar(X,Y) _simd_u8x4_mul_safe(X,_simd_u8x4_fill_scalar_safe(Y))
+	#define _simd_u8x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u8x1_mul_safe
 	#define _simd_u8x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u8x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -2643,6 +3483,21 @@
 	#define _simd_u8x8_mul_enable() (_simd_u8x4_mul_enable() && _simd_u8x8_combine_enable() && _simd_u8x8_splitlo_enable()  && _simd_u8x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_u8x8_mul_scalar_
+	#define _simd_u8x8_mul_scalar_(X,Y) _simd_u8x8_mul_scalar_(X,Y)
+#elif defined(_simd_u8x8_mul_)
+	#define _simd_u8x8_mul_scalar_(X,Y) _simd_u8x8_mul_(X,_simd_u8x8_fill_scalar_(Y))
+	#define _simd_u8x1_mul_scalar_instruction_set _simd_u8x8_mul_instruction_set
+#endif
+#ifdef _simd_u8x8_mul_scalar_
+	#define _simd_u8x8_mul_scalar(X,Y) _simd_u8x8_mul_scalar_(X,Y)
+	#define _simd_u8x8_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x8_mul_scalar_instruction_set>()
+#else
+	#define _simd_u8x8_mul_scalar(X,Y) _simd_u8x8_mul_safe(X,_simd_u8x8_fill_scalar_safe(Y))
+	#define _simd_u8x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u8x1_mul_safe
 	#define _simd_u8x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u8x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -2683,6 +3538,21 @@
 	#define _simd_u8x16_mul_enable() (_simd_u8x8_mul_enable() && _simd_u8x16_combine_enable() && _simd_u8x16_splitlo_enable()  && _simd_u8x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_u8x16_mul_scalar_
+	#define _simd_u8x16_mul_scalar_(X,Y) _simd_u8x16_mul_scalar_(X,Y)
+#elif defined(_simd_u8x16_mul_)
+	#define _simd_u8x16_mul_scalar_(X,Y) _simd_u8x16_mul_(X,_simd_u8x16_fill_scalar_(Y))
+	#define _simd_u8x1_mul_scalar_instruction_set _simd_u8x16_mul_instruction_set
+#endif
+#ifdef _simd_u8x16_mul_scalar_
+	#define _simd_u8x16_mul_scalar(X,Y) _simd_u8x16_mul_scalar_(X,Y)
+	#define _simd_u8x16_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x16_mul_scalar_instruction_set>()
+#else
+	#define _simd_u8x16_mul_scalar(X,Y) _simd_u8x16_mul_safe(X,_simd_u8x16_fill_scalar_safe(Y))
+	#define _simd_u8x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u8x1_mul_safe
 	#define _simd_u8x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u8x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -2713,6 +3583,21 @@
 	#define _simd_u8x32_mul_enable() (_simd_u8x16_mul_enable() && _simd_u8x32_combine_enable() && _simd_u8x32_splitlo_enable()  && _simd_u8x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_u8x32_mul_scalar_
+	#define _simd_u8x32_mul_scalar_(X,Y) _simd_u8x32_mul_scalar_(X,Y)
+#elif defined(_simd_u8x32_mul_)
+	#define _simd_u8x32_mul_scalar_(X,Y) _simd_u8x32_mul_(X,_simd_u8x32_fill_scalar_(Y))
+	#define _simd_u8x1_mul_scalar_instruction_set _simd_u8x32_mul_instruction_set
+#endif
+#ifdef _simd_u8x32_mul_scalar_
+	#define _simd_u8x32_mul_scalar(X,Y) _simd_u8x32_mul_scalar_(X,Y)
+	#define _simd_u8x32_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x32_mul_scalar_instruction_set>()
+#else
+	#define _simd_u8x32_mul_scalar(X,Y) _simd_u8x32_mul_safe(X,_simd_u8x32_fill_scalar_safe(Y))
+	#define _simd_u8x1_mul_scalar_enabled() true
+#endif
+
 #ifndef _simd_u8x1_mul_safe
 	#define _simd_u8x1_mul_safe(X,Y) (X * Y)
 	#define _simd_u8x1_mul_(X,Y) x1_mul_safe(X,Y)
@@ -2731,5 +3616,20 @@
 		_simd_u8x32_mul(_simd_u8x64_splitlo(X), _simd_u8x64_splitlo(Y)),\
 		_simd_u8x32_mul(_simd_u8x64_splithi(X), _simd_u8x64_splithi(Y)))
 	#define _simd_u8x64_mul_enable() (_simd_u8x32_mul_enable() && _simd_u8x64_combine_enable() && _simd_u8x64_splitlo_enable()  && _simd_u8x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_u8x64_mul_scalar_
+	#define _simd_u8x64_mul_scalar_(X,Y) _simd_u8x64_mul_scalar_(X,Y)
+#elif defined(_simd_u8x64_mul_)
+	#define _simd_u8x64_mul_scalar_(X,Y) _simd_u8x64_mul_(X,_simd_u8x64_fill_scalar_(Y))
+	#define _simd_u8x1_mul_scalar_instruction_set _simd_u8x64_mul_instruction_set
+#endif
+#ifdef _simd_u8x64_mul_scalar_
+	#define _simd_u8x64_mul_scalar(X,Y) _simd_u8x64_mul_scalar_(X,Y)
+	#define _simd_u8x64_mul_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x64_mul_scalar_instruction_set>()
+#else
+	#define _simd_u8x64_mul_scalar(X,Y) _simd_u8x64_mul_safe(X,_simd_u8x64_fill_scalar_safe(Y))
+	#define _simd_u8x1_mul_scalar_enabled() true
 #endif
 

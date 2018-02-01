@@ -90,6 +90,21 @@
 	#define _simd_f64x2_fms_enable() (_simd_f64x1_fms_enable() && _simd_f64x2_combine_enable() && _simd_f64x2_splitlo_enable()  && _simd_f64x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_f64x2_fms_scalar_
+	#define _simd_f64x2_fms_scalar_(X,Y,Z) _simd_f64x2_fms_scalar_(X,Y,Y)
+#elif defined(_simd_f64x2_fms_)
+	#define _simd_f64x2_fms_scalar_(X,Y,Z) _simd_f64x2_fms_(X,_simd_f64x2_fill_scalar_(Y),_simd_f64x2_fill_scalar_(Z))
+	#define _simd_f64x1_fms_scalar_instruction_set _simd_f64x2_fms_instruction_set
+#endif
+#ifdef _simd_f64x2_fms_scalar_
+	#define _simd_f64x2_fms_scalar(X,Y,Z) _simd_f64x2_fms_scalar_(X,Y,Z)
+	#define _simd_f64x2_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x2_fms_scalar_instruction_set>()
+#else
+	#define _simd_f64x2_fms_scalar(X,Y,Z) _simd_f64x2_fms_safe(X,_simd_f64x2_fill_scalar_safe(Y),_simd_f64x2_fill_scalar_safe(Z))
+	#define _simd_f64x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_f64x1_fms_safe
 	#define _simd_f64x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_f64x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -154,6 +169,21 @@
 	#define _simd_f64x4_fms_enable() (_simd_f64x2_fms_enable() && _simd_f64x4_combine_enable() && _simd_f64x4_splitlo_enable()  && _simd_f64x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_f64x4_fms_scalar_
+	#define _simd_f64x4_fms_scalar_(X,Y,Z) _simd_f64x4_fms_scalar_(X,Y,Y)
+#elif defined(_simd_f64x4_fms_)
+	#define _simd_f64x4_fms_scalar_(X,Y,Z) _simd_f64x4_fms_(X,_simd_f64x4_fill_scalar_(Y),_simd_f64x4_fill_scalar_(Z))
+	#define _simd_f64x1_fms_scalar_instruction_set _simd_f64x4_fms_instruction_set
+#endif
+#ifdef _simd_f64x4_fms_scalar_
+	#define _simd_f64x4_fms_scalar(X,Y,Z) _simd_f64x4_fms_scalar_(X,Y,Z)
+	#define _simd_f64x4_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x4_fms_scalar_instruction_set>()
+#else
+	#define _simd_f64x4_fms_scalar(X,Y,Z) _simd_f64x4_fms_safe(X,_simd_f64x4_fill_scalar_safe(Y),_simd_f64x4_fill_scalar_safe(Z))
+	#define _simd_f64x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_f64x1_fms_safe
 	#define _simd_f64x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_f64x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -207,6 +237,21 @@
 	#define _simd_f64x8_fms_enable() (_simd_f64x4_fms_enable() && _simd_f64x8_combine_enable() && _simd_f64x8_splitlo_enable()  && _simd_f64x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_f64x8_fms_scalar_
+	#define _simd_f64x8_fms_scalar_(X,Y,Z) _simd_f64x8_fms_scalar_(X,Y,Y)
+#elif defined(_simd_f64x8_fms_)
+	#define _simd_f64x8_fms_scalar_(X,Y,Z) _simd_f64x8_fms_(X,_simd_f64x8_fill_scalar_(Y),_simd_f64x8_fill_scalar_(Z))
+	#define _simd_f64x1_fms_scalar_instruction_set _simd_f64x8_fms_instruction_set
+#endif
+#ifdef _simd_f64x8_fms_scalar_
+	#define _simd_f64x8_fms_scalar(X,Y,Z) _simd_f64x8_fms_scalar_(X,Y,Z)
+	#define _simd_f64x8_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x8_fms_scalar_instruction_set>()
+#else
+	#define _simd_f64x8_fms_scalar(X,Y,Z) _simd_f64x8_fms_safe(X,_simd_f64x8_fill_scalar_safe(Y),_simd_f64x8_fill_scalar_safe(Z))
+	#define _simd_f64x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_f64x1_fms_safe
 	#define _simd_f64x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_f64x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -249,6 +294,21 @@
 	#define _simd_f64x16_fms_enable() (_simd_f64x8_fms_enable() && _simd_f64x16_combine_enable() && _simd_f64x16_splitlo_enable()  && _simd_f64x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_f64x16_fms_scalar_
+	#define _simd_f64x16_fms_scalar_(X,Y,Z) _simd_f64x16_fms_scalar_(X,Y,Y)
+#elif defined(_simd_f64x16_fms_)
+	#define _simd_f64x16_fms_scalar_(X,Y,Z) _simd_f64x16_fms_(X,_simd_f64x16_fill_scalar_(Y),_simd_f64x16_fill_scalar_(Z))
+	#define _simd_f64x1_fms_scalar_instruction_set _simd_f64x16_fms_instruction_set
+#endif
+#ifdef _simd_f64x16_fms_scalar_
+	#define _simd_f64x16_fms_scalar(X,Y,Z) _simd_f64x16_fms_scalar_(X,Y,Z)
+	#define _simd_f64x16_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x16_fms_scalar_instruction_set>()
+#else
+	#define _simd_f64x16_fms_scalar(X,Y,Z) _simd_f64x16_fms_safe(X,_simd_f64x16_fill_scalar_safe(Y),_simd_f64x16_fill_scalar_safe(Z))
+	#define _simd_f64x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_f64x1_fms_safe
 	#define _simd_f64x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_f64x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -280,6 +340,21 @@
 	#define _simd_f64x32_fms_enable() (_simd_f64x16_fms_enable() && _simd_f64x32_combine_enable() && _simd_f64x32_splitlo_enable()  && _simd_f64x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_f64x32_fms_scalar_
+	#define _simd_f64x32_fms_scalar_(X,Y,Z) _simd_f64x32_fms_scalar_(X,Y,Y)
+#elif defined(_simd_f64x32_fms_)
+	#define _simd_f64x32_fms_scalar_(X,Y,Z) _simd_f64x32_fms_(X,_simd_f64x32_fill_scalar_(Y),_simd_f64x32_fill_scalar_(Z))
+	#define _simd_f64x1_fms_scalar_instruction_set _simd_f64x32_fms_instruction_set
+#endif
+#ifdef _simd_f64x32_fms_scalar_
+	#define _simd_f64x32_fms_scalar(X,Y,Z) _simd_f64x32_fms_scalar_(X,Y,Z)
+	#define _simd_f64x32_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x32_fms_scalar_instruction_set>()
+#else
+	#define _simd_f64x32_fms_scalar(X,Y,Z) _simd_f64x32_fms_safe(X,_simd_f64x32_fill_scalar_safe(Y),_simd_f64x32_fill_scalar_safe(Z))
+	#define _simd_f64x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_f64x1_fms_safe
 	#define _simd_f64x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_f64x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -298,6 +373,21 @@
 		_simd_f64x32_fms(_simd_f64x64_splitlo(X), _simd_f64x64_splitlo(Y), _simd_f64x64_splitlo(Z)),\
 		_simd_f64x32_fms(_simd_f64x64_splithi(X), _simd_f64x64_splithi(Y), _simd_f64x64_splithi(Z)))
 	#define _simd_f64x64_fms_enable() (_simd_f64x32_fms_enable() && _simd_f64x64_combine_enable() && _simd_f64x64_splitlo_enable()  && _simd_f64x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_f64x64_fms_scalar_
+	#define _simd_f64x64_fms_scalar_(X,Y,Z) _simd_f64x64_fms_scalar_(X,Y,Y)
+#elif defined(_simd_f64x64_fms_)
+	#define _simd_f64x64_fms_scalar_(X,Y,Z) _simd_f64x64_fms_(X,_simd_f64x64_fill_scalar_(Y),_simd_f64x64_fill_scalar_(Z))
+	#define _simd_f64x1_fms_scalar_instruction_set _simd_f64x64_fms_instruction_set
+#endif
+#ifdef _simd_f64x64_fms_scalar_
+	#define _simd_f64x64_fms_scalar(X,Y,Z) _simd_f64x64_fms_scalar_(X,Y,Z)
+	#define _simd_f64x64_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f64x64_fms_scalar_instruction_set>()
+#else
+	#define _simd_f64x64_fms_scalar(X,Y,Z) _simd_f64x64_fms_safe(X,_simd_f64x64_fill_scalar_safe(Y),_simd_f64x64_fill_scalar_safe(Z))
+	#define _simd_f64x1_fms_scalar_enabled() true
 #endif
 
 // -- f32 --
@@ -377,6 +467,21 @@
 	#define _simd_f32x2_fms_enable() (_simd_f32x1_fms_enable() && _simd_f32x2_combine_enable() && _simd_f32x2_splitlo_enable()  && _simd_f32x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_f32x2_fms_scalar_
+	#define _simd_f32x2_fms_scalar_(X,Y,Z) _simd_f32x2_fms_scalar_(X,Y,Y)
+#elif defined(_simd_f32x2_fms_)
+	#define _simd_f32x2_fms_scalar_(X,Y,Z) _simd_f32x2_fms_(X,_simd_f32x2_fill_scalar_(Y),_simd_f32x2_fill_scalar_(Z))
+	#define _simd_f32x1_fms_scalar_instruction_set _simd_f32x2_fms_instruction_set
+#endif
+#ifdef _simd_f32x2_fms_scalar_
+	#define _simd_f32x2_fms_scalar(X,Y,Z) _simd_f32x2_fms_scalar_(X,Y,Z)
+	#define _simd_f32x2_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x2_fms_scalar_instruction_set>()
+#else
+	#define _simd_f32x2_fms_scalar(X,Y,Z) _simd_f32x2_fms_safe(X,_simd_f32x2_fill_scalar_safe(Y),_simd_f32x2_fill_scalar_safe(Z))
+	#define _simd_f32x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_f32x1_fms_safe
 	#define _simd_f32x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_f32x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -441,6 +546,21 @@
 	#define _simd_f32x4_fms_enable() (_simd_f32x2_fms_enable() && _simd_f32x4_combine_enable() && _simd_f32x4_splitlo_enable()  && _simd_f32x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_f32x4_fms_scalar_
+	#define _simd_f32x4_fms_scalar_(X,Y,Z) _simd_f32x4_fms_scalar_(X,Y,Y)
+#elif defined(_simd_f32x4_fms_)
+	#define _simd_f32x4_fms_scalar_(X,Y,Z) _simd_f32x4_fms_(X,_simd_f32x4_fill_scalar_(Y),_simd_f32x4_fill_scalar_(Z))
+	#define _simd_f32x1_fms_scalar_instruction_set _simd_f32x4_fms_instruction_set
+#endif
+#ifdef _simd_f32x4_fms_scalar_
+	#define _simd_f32x4_fms_scalar(X,Y,Z) _simd_f32x4_fms_scalar_(X,Y,Z)
+	#define _simd_f32x4_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x4_fms_scalar_instruction_set>()
+#else
+	#define _simd_f32x4_fms_scalar(X,Y,Z) _simd_f32x4_fms_safe(X,_simd_f32x4_fill_scalar_safe(Y),_simd_f32x4_fill_scalar_safe(Z))
+	#define _simd_f32x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_f32x1_fms_safe
 	#define _simd_f32x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_f32x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -494,6 +614,21 @@
 	#define _simd_f32x8_fms_enable() (_simd_f32x4_fms_enable() && _simd_f32x8_combine_enable() && _simd_f32x8_splitlo_enable()  && _simd_f32x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_f32x8_fms_scalar_
+	#define _simd_f32x8_fms_scalar_(X,Y,Z) _simd_f32x8_fms_scalar_(X,Y,Y)
+#elif defined(_simd_f32x8_fms_)
+	#define _simd_f32x8_fms_scalar_(X,Y,Z) _simd_f32x8_fms_(X,_simd_f32x8_fill_scalar_(Y),_simd_f32x8_fill_scalar_(Z))
+	#define _simd_f32x1_fms_scalar_instruction_set _simd_f32x8_fms_instruction_set
+#endif
+#ifdef _simd_f32x8_fms_scalar_
+	#define _simd_f32x8_fms_scalar(X,Y,Z) _simd_f32x8_fms_scalar_(X,Y,Z)
+	#define _simd_f32x8_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x8_fms_scalar_instruction_set>()
+#else
+	#define _simd_f32x8_fms_scalar(X,Y,Z) _simd_f32x8_fms_safe(X,_simd_f32x8_fill_scalar_safe(Y),_simd_f32x8_fill_scalar_safe(Z))
+	#define _simd_f32x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_f32x1_fms_safe
 	#define _simd_f32x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_f32x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -536,6 +671,21 @@
 	#define _simd_f32x16_fms_enable() (_simd_f32x8_fms_enable() && _simd_f32x16_combine_enable() && _simd_f32x16_splitlo_enable()  && _simd_f32x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_f32x16_fms_scalar_
+	#define _simd_f32x16_fms_scalar_(X,Y,Z) _simd_f32x16_fms_scalar_(X,Y,Y)
+#elif defined(_simd_f32x16_fms_)
+	#define _simd_f32x16_fms_scalar_(X,Y,Z) _simd_f32x16_fms_(X,_simd_f32x16_fill_scalar_(Y),_simd_f32x16_fill_scalar_(Z))
+	#define _simd_f32x1_fms_scalar_instruction_set _simd_f32x16_fms_instruction_set
+#endif
+#ifdef _simd_f32x16_fms_scalar_
+	#define _simd_f32x16_fms_scalar(X,Y,Z) _simd_f32x16_fms_scalar_(X,Y,Z)
+	#define _simd_f32x16_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x16_fms_scalar_instruction_set>()
+#else
+	#define _simd_f32x16_fms_scalar(X,Y,Z) _simd_f32x16_fms_safe(X,_simd_f32x16_fill_scalar_safe(Y),_simd_f32x16_fill_scalar_safe(Z))
+	#define _simd_f32x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_f32x1_fms_safe
 	#define _simd_f32x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_f32x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -567,6 +717,21 @@
 	#define _simd_f32x32_fms_enable() (_simd_f32x16_fms_enable() && _simd_f32x32_combine_enable() && _simd_f32x32_splitlo_enable()  && _simd_f32x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_f32x32_fms_scalar_
+	#define _simd_f32x32_fms_scalar_(X,Y,Z) _simd_f32x32_fms_scalar_(X,Y,Y)
+#elif defined(_simd_f32x32_fms_)
+	#define _simd_f32x32_fms_scalar_(X,Y,Z) _simd_f32x32_fms_(X,_simd_f32x32_fill_scalar_(Y),_simd_f32x32_fill_scalar_(Z))
+	#define _simd_f32x1_fms_scalar_instruction_set _simd_f32x32_fms_instruction_set
+#endif
+#ifdef _simd_f32x32_fms_scalar_
+	#define _simd_f32x32_fms_scalar(X,Y,Z) _simd_f32x32_fms_scalar_(X,Y,Z)
+	#define _simd_f32x32_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x32_fms_scalar_instruction_set>()
+#else
+	#define _simd_f32x32_fms_scalar(X,Y,Z) _simd_f32x32_fms_safe(X,_simd_f32x32_fill_scalar_safe(Y),_simd_f32x32_fill_scalar_safe(Z))
+	#define _simd_f32x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_f32x1_fms_safe
 	#define _simd_f32x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_f32x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -585,6 +750,21 @@
 		_simd_f32x32_fms(_simd_f32x64_splitlo(X), _simd_f32x64_splitlo(Y), _simd_f32x64_splitlo(Z)),\
 		_simd_f32x32_fms(_simd_f32x64_splithi(X), _simd_f32x64_splithi(Y), _simd_f32x64_splithi(Z)))
 	#define _simd_f32x64_fms_enable() (_simd_f32x32_fms_enable() && _simd_f32x64_combine_enable() && _simd_f32x64_splitlo_enable()  && _simd_f32x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_f32x64_fms_scalar_
+	#define _simd_f32x64_fms_scalar_(X,Y,Z) _simd_f32x64_fms_scalar_(X,Y,Y)
+#elif defined(_simd_f32x64_fms_)
+	#define _simd_f32x64_fms_scalar_(X,Y,Z) _simd_f32x64_fms_(X,_simd_f32x64_fill_scalar_(Y),_simd_f32x64_fill_scalar_(Z))
+	#define _simd_f32x1_fms_scalar_instruction_set _simd_f32x64_fms_instruction_set
+#endif
+#ifdef _simd_f32x64_fms_scalar_
+	#define _simd_f32x64_fms_scalar(X,Y,Z) _simd_f32x64_fms_scalar_(X,Y,Z)
+	#define _simd_f32x64_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_f32x64_fms_scalar_instruction_set>()
+#else
+	#define _simd_f32x64_fms_scalar(X,Y,Z) _simd_f32x64_fms_safe(X,_simd_f32x64_fill_scalar_safe(Y),_simd_f32x64_fill_scalar_safe(Z))
+	#define _simd_f32x1_fms_scalar_enabled() true
 #endif
 
 // -- s64 --
@@ -664,6 +844,21 @@
 	#define _simd_s64x2_fms_enable() (_simd_s64x1_fms_enable() && _simd_s64x2_combine_enable() && _simd_s64x2_splitlo_enable()  && _simd_s64x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_s64x2_fms_scalar_
+	#define _simd_s64x2_fms_scalar_(X,Y,Z) _simd_s64x2_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s64x2_fms_)
+	#define _simd_s64x2_fms_scalar_(X,Y,Z) _simd_s64x2_fms_(X,_simd_s64x2_fill_scalar_(Y),_simd_s64x2_fill_scalar_(Z))
+	#define _simd_s64x1_fms_scalar_instruction_set _simd_s64x2_fms_instruction_set
+#endif
+#ifdef _simd_s64x2_fms_scalar_
+	#define _simd_s64x2_fms_scalar(X,Y,Z) _simd_s64x2_fms_scalar_(X,Y,Z)
+	#define _simd_s64x2_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x2_fms_scalar_instruction_set>()
+#else
+	#define _simd_s64x2_fms_scalar(X,Y,Z) _simd_s64x2_fms_safe(X,_simd_s64x2_fill_scalar_safe(Y),_simd_s64x2_fill_scalar_safe(Z))
+	#define _simd_s64x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s64x1_fms_safe
 	#define _simd_s64x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s64x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -728,6 +923,21 @@
 	#define _simd_s64x4_fms_enable() (_simd_s64x2_fms_enable() && _simd_s64x4_combine_enable() && _simd_s64x4_splitlo_enable()  && _simd_s64x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_s64x4_fms_scalar_
+	#define _simd_s64x4_fms_scalar_(X,Y,Z) _simd_s64x4_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s64x4_fms_)
+	#define _simd_s64x4_fms_scalar_(X,Y,Z) _simd_s64x4_fms_(X,_simd_s64x4_fill_scalar_(Y),_simd_s64x4_fill_scalar_(Z))
+	#define _simd_s64x1_fms_scalar_instruction_set _simd_s64x4_fms_instruction_set
+#endif
+#ifdef _simd_s64x4_fms_scalar_
+	#define _simd_s64x4_fms_scalar(X,Y,Z) _simd_s64x4_fms_scalar_(X,Y,Z)
+	#define _simd_s64x4_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x4_fms_scalar_instruction_set>()
+#else
+	#define _simd_s64x4_fms_scalar(X,Y,Z) _simd_s64x4_fms_safe(X,_simd_s64x4_fill_scalar_safe(Y),_simd_s64x4_fill_scalar_safe(Z))
+	#define _simd_s64x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s64x1_fms_safe
 	#define _simd_s64x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s64x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -781,6 +991,21 @@
 	#define _simd_s64x8_fms_enable() (_simd_s64x4_fms_enable() && _simd_s64x8_combine_enable() && _simd_s64x8_splitlo_enable()  && _simd_s64x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_s64x8_fms_scalar_
+	#define _simd_s64x8_fms_scalar_(X,Y,Z) _simd_s64x8_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s64x8_fms_)
+	#define _simd_s64x8_fms_scalar_(X,Y,Z) _simd_s64x8_fms_(X,_simd_s64x8_fill_scalar_(Y),_simd_s64x8_fill_scalar_(Z))
+	#define _simd_s64x1_fms_scalar_instruction_set _simd_s64x8_fms_instruction_set
+#endif
+#ifdef _simd_s64x8_fms_scalar_
+	#define _simd_s64x8_fms_scalar(X,Y,Z) _simd_s64x8_fms_scalar_(X,Y,Z)
+	#define _simd_s64x8_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x8_fms_scalar_instruction_set>()
+#else
+	#define _simd_s64x8_fms_scalar(X,Y,Z) _simd_s64x8_fms_safe(X,_simd_s64x8_fill_scalar_safe(Y),_simd_s64x8_fill_scalar_safe(Z))
+	#define _simd_s64x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s64x1_fms_safe
 	#define _simd_s64x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s64x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -823,6 +1048,21 @@
 	#define _simd_s64x16_fms_enable() (_simd_s64x8_fms_enable() && _simd_s64x16_combine_enable() && _simd_s64x16_splitlo_enable()  && _simd_s64x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_s64x16_fms_scalar_
+	#define _simd_s64x16_fms_scalar_(X,Y,Z) _simd_s64x16_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s64x16_fms_)
+	#define _simd_s64x16_fms_scalar_(X,Y,Z) _simd_s64x16_fms_(X,_simd_s64x16_fill_scalar_(Y),_simd_s64x16_fill_scalar_(Z))
+	#define _simd_s64x1_fms_scalar_instruction_set _simd_s64x16_fms_instruction_set
+#endif
+#ifdef _simd_s64x16_fms_scalar_
+	#define _simd_s64x16_fms_scalar(X,Y,Z) _simd_s64x16_fms_scalar_(X,Y,Z)
+	#define _simd_s64x16_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x16_fms_scalar_instruction_set>()
+#else
+	#define _simd_s64x16_fms_scalar(X,Y,Z) _simd_s64x16_fms_safe(X,_simd_s64x16_fill_scalar_safe(Y),_simd_s64x16_fill_scalar_safe(Z))
+	#define _simd_s64x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s64x1_fms_safe
 	#define _simd_s64x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s64x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -854,6 +1094,21 @@
 	#define _simd_s64x32_fms_enable() (_simd_s64x16_fms_enable() && _simd_s64x32_combine_enable() && _simd_s64x32_splitlo_enable()  && _simd_s64x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_s64x32_fms_scalar_
+	#define _simd_s64x32_fms_scalar_(X,Y,Z) _simd_s64x32_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s64x32_fms_)
+	#define _simd_s64x32_fms_scalar_(X,Y,Z) _simd_s64x32_fms_(X,_simd_s64x32_fill_scalar_(Y),_simd_s64x32_fill_scalar_(Z))
+	#define _simd_s64x1_fms_scalar_instruction_set _simd_s64x32_fms_instruction_set
+#endif
+#ifdef _simd_s64x32_fms_scalar_
+	#define _simd_s64x32_fms_scalar(X,Y,Z) _simd_s64x32_fms_scalar_(X,Y,Z)
+	#define _simd_s64x32_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x32_fms_scalar_instruction_set>()
+#else
+	#define _simd_s64x32_fms_scalar(X,Y,Z) _simd_s64x32_fms_safe(X,_simd_s64x32_fill_scalar_safe(Y),_simd_s64x32_fill_scalar_safe(Z))
+	#define _simd_s64x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s64x1_fms_safe
 	#define _simd_s64x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s64x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -872,6 +1127,21 @@
 		_simd_s64x32_fms(_simd_s64x64_splitlo(X), _simd_s64x64_splitlo(Y), _simd_s64x64_splitlo(Z)),\
 		_simd_s64x32_fms(_simd_s64x64_splithi(X), _simd_s64x64_splithi(Y), _simd_s64x64_splithi(Z)))
 	#define _simd_s64x64_fms_enable() (_simd_s64x32_fms_enable() && _simd_s64x64_combine_enable() && _simd_s64x64_splitlo_enable()  && _simd_s64x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_s64x64_fms_scalar_
+	#define _simd_s64x64_fms_scalar_(X,Y,Z) _simd_s64x64_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s64x64_fms_)
+	#define _simd_s64x64_fms_scalar_(X,Y,Z) _simd_s64x64_fms_(X,_simd_s64x64_fill_scalar_(Y),_simd_s64x64_fill_scalar_(Z))
+	#define _simd_s64x1_fms_scalar_instruction_set _simd_s64x64_fms_instruction_set
+#endif
+#ifdef _simd_s64x64_fms_scalar_
+	#define _simd_s64x64_fms_scalar(X,Y,Z) _simd_s64x64_fms_scalar_(X,Y,Z)
+	#define _simd_s64x64_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s64x64_fms_scalar_instruction_set>()
+#else
+	#define _simd_s64x64_fms_scalar(X,Y,Z) _simd_s64x64_fms_safe(X,_simd_s64x64_fill_scalar_safe(Y),_simd_s64x64_fill_scalar_safe(Z))
+	#define _simd_s64x1_fms_scalar_enabled() true
 #endif
 
 // -- u64 --
@@ -951,6 +1221,21 @@
 	#define _simd_u64x2_fms_enable() (_simd_u64x1_fms_enable() && _simd_u64x2_combine_enable() && _simd_u64x2_splitlo_enable()  && _simd_u64x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_u64x2_fms_scalar_
+	#define _simd_u64x2_fms_scalar_(X,Y,Z) _simd_u64x2_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u64x2_fms_)
+	#define _simd_u64x2_fms_scalar_(X,Y,Z) _simd_u64x2_fms_(X,_simd_u64x2_fill_scalar_(Y),_simd_u64x2_fill_scalar_(Z))
+	#define _simd_u64x1_fms_scalar_instruction_set _simd_u64x2_fms_instruction_set
+#endif
+#ifdef _simd_u64x2_fms_scalar_
+	#define _simd_u64x2_fms_scalar(X,Y,Z) _simd_u64x2_fms_scalar_(X,Y,Z)
+	#define _simd_u64x2_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x2_fms_scalar_instruction_set>()
+#else
+	#define _simd_u64x2_fms_scalar(X,Y,Z) _simd_u64x2_fms_safe(X,_simd_u64x2_fill_scalar_safe(Y),_simd_u64x2_fill_scalar_safe(Z))
+	#define _simd_u64x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u64x1_fms_safe
 	#define _simd_u64x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u64x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -1015,6 +1300,21 @@
 	#define _simd_u64x4_fms_enable() (_simd_u64x2_fms_enable() && _simd_u64x4_combine_enable() && _simd_u64x4_splitlo_enable()  && _simd_u64x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_u64x4_fms_scalar_
+	#define _simd_u64x4_fms_scalar_(X,Y,Z) _simd_u64x4_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u64x4_fms_)
+	#define _simd_u64x4_fms_scalar_(X,Y,Z) _simd_u64x4_fms_(X,_simd_u64x4_fill_scalar_(Y),_simd_u64x4_fill_scalar_(Z))
+	#define _simd_u64x1_fms_scalar_instruction_set _simd_u64x4_fms_instruction_set
+#endif
+#ifdef _simd_u64x4_fms_scalar_
+	#define _simd_u64x4_fms_scalar(X,Y,Z) _simd_u64x4_fms_scalar_(X,Y,Z)
+	#define _simd_u64x4_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x4_fms_scalar_instruction_set>()
+#else
+	#define _simd_u64x4_fms_scalar(X,Y,Z) _simd_u64x4_fms_safe(X,_simd_u64x4_fill_scalar_safe(Y),_simd_u64x4_fill_scalar_safe(Z))
+	#define _simd_u64x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u64x1_fms_safe
 	#define _simd_u64x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u64x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -1068,6 +1368,21 @@
 	#define _simd_u64x8_fms_enable() (_simd_u64x4_fms_enable() && _simd_u64x8_combine_enable() && _simd_u64x8_splitlo_enable()  && _simd_u64x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_u64x8_fms_scalar_
+	#define _simd_u64x8_fms_scalar_(X,Y,Z) _simd_u64x8_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u64x8_fms_)
+	#define _simd_u64x8_fms_scalar_(X,Y,Z) _simd_u64x8_fms_(X,_simd_u64x8_fill_scalar_(Y),_simd_u64x8_fill_scalar_(Z))
+	#define _simd_u64x1_fms_scalar_instruction_set _simd_u64x8_fms_instruction_set
+#endif
+#ifdef _simd_u64x8_fms_scalar_
+	#define _simd_u64x8_fms_scalar(X,Y,Z) _simd_u64x8_fms_scalar_(X,Y,Z)
+	#define _simd_u64x8_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x8_fms_scalar_instruction_set>()
+#else
+	#define _simd_u64x8_fms_scalar(X,Y,Z) _simd_u64x8_fms_safe(X,_simd_u64x8_fill_scalar_safe(Y),_simd_u64x8_fill_scalar_safe(Z))
+	#define _simd_u64x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u64x1_fms_safe
 	#define _simd_u64x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u64x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -1110,6 +1425,21 @@
 	#define _simd_u64x16_fms_enable() (_simd_u64x8_fms_enable() && _simd_u64x16_combine_enable() && _simd_u64x16_splitlo_enable()  && _simd_u64x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_u64x16_fms_scalar_
+	#define _simd_u64x16_fms_scalar_(X,Y,Z) _simd_u64x16_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u64x16_fms_)
+	#define _simd_u64x16_fms_scalar_(X,Y,Z) _simd_u64x16_fms_(X,_simd_u64x16_fill_scalar_(Y),_simd_u64x16_fill_scalar_(Z))
+	#define _simd_u64x1_fms_scalar_instruction_set _simd_u64x16_fms_instruction_set
+#endif
+#ifdef _simd_u64x16_fms_scalar_
+	#define _simd_u64x16_fms_scalar(X,Y,Z) _simd_u64x16_fms_scalar_(X,Y,Z)
+	#define _simd_u64x16_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x16_fms_scalar_instruction_set>()
+#else
+	#define _simd_u64x16_fms_scalar(X,Y,Z) _simd_u64x16_fms_safe(X,_simd_u64x16_fill_scalar_safe(Y),_simd_u64x16_fill_scalar_safe(Z))
+	#define _simd_u64x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u64x1_fms_safe
 	#define _simd_u64x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u64x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -1141,6 +1471,21 @@
 	#define _simd_u64x32_fms_enable() (_simd_u64x16_fms_enable() && _simd_u64x32_combine_enable() && _simd_u64x32_splitlo_enable()  && _simd_u64x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_u64x32_fms_scalar_
+	#define _simd_u64x32_fms_scalar_(X,Y,Z) _simd_u64x32_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u64x32_fms_)
+	#define _simd_u64x32_fms_scalar_(X,Y,Z) _simd_u64x32_fms_(X,_simd_u64x32_fill_scalar_(Y),_simd_u64x32_fill_scalar_(Z))
+	#define _simd_u64x1_fms_scalar_instruction_set _simd_u64x32_fms_instruction_set
+#endif
+#ifdef _simd_u64x32_fms_scalar_
+	#define _simd_u64x32_fms_scalar(X,Y,Z) _simd_u64x32_fms_scalar_(X,Y,Z)
+	#define _simd_u64x32_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x32_fms_scalar_instruction_set>()
+#else
+	#define _simd_u64x32_fms_scalar(X,Y,Z) _simd_u64x32_fms_safe(X,_simd_u64x32_fill_scalar_safe(Y),_simd_u64x32_fill_scalar_safe(Z))
+	#define _simd_u64x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u64x1_fms_safe
 	#define _simd_u64x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u64x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -1159,6 +1504,21 @@
 		_simd_u64x32_fms(_simd_u64x64_splitlo(X), _simd_u64x64_splitlo(Y), _simd_u64x64_splitlo(Z)),\
 		_simd_u64x32_fms(_simd_u64x64_splithi(X), _simd_u64x64_splithi(Y), _simd_u64x64_splithi(Z)))
 	#define _simd_u64x64_fms_enable() (_simd_u64x32_fms_enable() && _simd_u64x64_combine_enable() && _simd_u64x64_splitlo_enable()  && _simd_u64x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_u64x64_fms_scalar_
+	#define _simd_u64x64_fms_scalar_(X,Y,Z) _simd_u64x64_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u64x64_fms_)
+	#define _simd_u64x64_fms_scalar_(X,Y,Z) _simd_u64x64_fms_(X,_simd_u64x64_fill_scalar_(Y),_simd_u64x64_fill_scalar_(Z))
+	#define _simd_u64x1_fms_scalar_instruction_set _simd_u64x64_fms_instruction_set
+#endif
+#ifdef _simd_u64x64_fms_scalar_
+	#define _simd_u64x64_fms_scalar(X,Y,Z) _simd_u64x64_fms_scalar_(X,Y,Z)
+	#define _simd_u64x64_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u64x64_fms_scalar_instruction_set>()
+#else
+	#define _simd_u64x64_fms_scalar(X,Y,Z) _simd_u64x64_fms_safe(X,_simd_u64x64_fill_scalar_safe(Y),_simd_u64x64_fill_scalar_safe(Z))
+	#define _simd_u64x1_fms_scalar_enabled() true
 #endif
 
 // -- s32 --
@@ -1238,6 +1598,21 @@
 	#define _simd_s32x2_fms_enable() (_simd_s32x1_fms_enable() && _simd_s32x2_combine_enable() && _simd_s32x2_splitlo_enable()  && _simd_s32x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_s32x2_fms_scalar_
+	#define _simd_s32x2_fms_scalar_(X,Y,Z) _simd_s32x2_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s32x2_fms_)
+	#define _simd_s32x2_fms_scalar_(X,Y,Z) _simd_s32x2_fms_(X,_simd_s32x2_fill_scalar_(Y),_simd_s32x2_fill_scalar_(Z))
+	#define _simd_s32x1_fms_scalar_instruction_set _simd_s32x2_fms_instruction_set
+#endif
+#ifdef _simd_s32x2_fms_scalar_
+	#define _simd_s32x2_fms_scalar(X,Y,Z) _simd_s32x2_fms_scalar_(X,Y,Z)
+	#define _simd_s32x2_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x2_fms_scalar_instruction_set>()
+#else
+	#define _simd_s32x2_fms_scalar(X,Y,Z) _simd_s32x2_fms_safe(X,_simd_s32x2_fill_scalar_safe(Y),_simd_s32x2_fill_scalar_safe(Z))
+	#define _simd_s32x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s32x1_fms_safe
 	#define _simd_s32x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s32x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -1302,6 +1677,21 @@
 	#define _simd_s32x4_fms_enable() (_simd_s32x2_fms_enable() && _simd_s32x4_combine_enable() && _simd_s32x4_splitlo_enable()  && _simd_s32x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_s32x4_fms_scalar_
+	#define _simd_s32x4_fms_scalar_(X,Y,Z) _simd_s32x4_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s32x4_fms_)
+	#define _simd_s32x4_fms_scalar_(X,Y,Z) _simd_s32x4_fms_(X,_simd_s32x4_fill_scalar_(Y),_simd_s32x4_fill_scalar_(Z))
+	#define _simd_s32x1_fms_scalar_instruction_set _simd_s32x4_fms_instruction_set
+#endif
+#ifdef _simd_s32x4_fms_scalar_
+	#define _simd_s32x4_fms_scalar(X,Y,Z) _simd_s32x4_fms_scalar_(X,Y,Z)
+	#define _simd_s32x4_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x4_fms_scalar_instruction_set>()
+#else
+	#define _simd_s32x4_fms_scalar(X,Y,Z) _simd_s32x4_fms_safe(X,_simd_s32x4_fill_scalar_safe(Y),_simd_s32x4_fill_scalar_safe(Z))
+	#define _simd_s32x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s32x1_fms_safe
 	#define _simd_s32x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s32x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -1355,6 +1745,21 @@
 	#define _simd_s32x8_fms_enable() (_simd_s32x4_fms_enable() && _simd_s32x8_combine_enable() && _simd_s32x8_splitlo_enable()  && _simd_s32x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_s32x8_fms_scalar_
+	#define _simd_s32x8_fms_scalar_(X,Y,Z) _simd_s32x8_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s32x8_fms_)
+	#define _simd_s32x8_fms_scalar_(X,Y,Z) _simd_s32x8_fms_(X,_simd_s32x8_fill_scalar_(Y),_simd_s32x8_fill_scalar_(Z))
+	#define _simd_s32x1_fms_scalar_instruction_set _simd_s32x8_fms_instruction_set
+#endif
+#ifdef _simd_s32x8_fms_scalar_
+	#define _simd_s32x8_fms_scalar(X,Y,Z) _simd_s32x8_fms_scalar_(X,Y,Z)
+	#define _simd_s32x8_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x8_fms_scalar_instruction_set>()
+#else
+	#define _simd_s32x8_fms_scalar(X,Y,Z) _simd_s32x8_fms_safe(X,_simd_s32x8_fill_scalar_safe(Y),_simd_s32x8_fill_scalar_safe(Z))
+	#define _simd_s32x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s32x1_fms_safe
 	#define _simd_s32x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s32x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -1397,6 +1802,21 @@
 	#define _simd_s32x16_fms_enable() (_simd_s32x8_fms_enable() && _simd_s32x16_combine_enable() && _simd_s32x16_splitlo_enable()  && _simd_s32x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_s32x16_fms_scalar_
+	#define _simd_s32x16_fms_scalar_(X,Y,Z) _simd_s32x16_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s32x16_fms_)
+	#define _simd_s32x16_fms_scalar_(X,Y,Z) _simd_s32x16_fms_(X,_simd_s32x16_fill_scalar_(Y),_simd_s32x16_fill_scalar_(Z))
+	#define _simd_s32x1_fms_scalar_instruction_set _simd_s32x16_fms_instruction_set
+#endif
+#ifdef _simd_s32x16_fms_scalar_
+	#define _simd_s32x16_fms_scalar(X,Y,Z) _simd_s32x16_fms_scalar_(X,Y,Z)
+	#define _simd_s32x16_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x16_fms_scalar_instruction_set>()
+#else
+	#define _simd_s32x16_fms_scalar(X,Y,Z) _simd_s32x16_fms_safe(X,_simd_s32x16_fill_scalar_safe(Y),_simd_s32x16_fill_scalar_safe(Z))
+	#define _simd_s32x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s32x1_fms_safe
 	#define _simd_s32x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s32x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -1428,6 +1848,21 @@
 	#define _simd_s32x32_fms_enable() (_simd_s32x16_fms_enable() && _simd_s32x32_combine_enable() && _simd_s32x32_splitlo_enable()  && _simd_s32x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_s32x32_fms_scalar_
+	#define _simd_s32x32_fms_scalar_(X,Y,Z) _simd_s32x32_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s32x32_fms_)
+	#define _simd_s32x32_fms_scalar_(X,Y,Z) _simd_s32x32_fms_(X,_simd_s32x32_fill_scalar_(Y),_simd_s32x32_fill_scalar_(Z))
+	#define _simd_s32x1_fms_scalar_instruction_set _simd_s32x32_fms_instruction_set
+#endif
+#ifdef _simd_s32x32_fms_scalar_
+	#define _simd_s32x32_fms_scalar(X,Y,Z) _simd_s32x32_fms_scalar_(X,Y,Z)
+	#define _simd_s32x32_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x32_fms_scalar_instruction_set>()
+#else
+	#define _simd_s32x32_fms_scalar(X,Y,Z) _simd_s32x32_fms_safe(X,_simd_s32x32_fill_scalar_safe(Y),_simd_s32x32_fill_scalar_safe(Z))
+	#define _simd_s32x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s32x1_fms_safe
 	#define _simd_s32x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s32x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -1446,6 +1881,21 @@
 		_simd_s32x32_fms(_simd_s32x64_splitlo(X), _simd_s32x64_splitlo(Y), _simd_s32x64_splitlo(Z)),\
 		_simd_s32x32_fms(_simd_s32x64_splithi(X), _simd_s32x64_splithi(Y), _simd_s32x64_splithi(Z)))
 	#define _simd_s32x64_fms_enable() (_simd_s32x32_fms_enable() && _simd_s32x64_combine_enable() && _simd_s32x64_splitlo_enable()  && _simd_s32x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_s32x64_fms_scalar_
+	#define _simd_s32x64_fms_scalar_(X,Y,Z) _simd_s32x64_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s32x64_fms_)
+	#define _simd_s32x64_fms_scalar_(X,Y,Z) _simd_s32x64_fms_(X,_simd_s32x64_fill_scalar_(Y),_simd_s32x64_fill_scalar_(Z))
+	#define _simd_s32x1_fms_scalar_instruction_set _simd_s32x64_fms_instruction_set
+#endif
+#ifdef _simd_s32x64_fms_scalar_
+	#define _simd_s32x64_fms_scalar(X,Y,Z) _simd_s32x64_fms_scalar_(X,Y,Z)
+	#define _simd_s32x64_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s32x64_fms_scalar_instruction_set>()
+#else
+	#define _simd_s32x64_fms_scalar(X,Y,Z) _simd_s32x64_fms_safe(X,_simd_s32x64_fill_scalar_safe(Y),_simd_s32x64_fill_scalar_safe(Z))
+	#define _simd_s32x1_fms_scalar_enabled() true
 #endif
 
 // -- u32 --
@@ -1525,6 +1975,21 @@
 	#define _simd_u32x2_fms_enable() (_simd_u32x1_fms_enable() && _simd_u32x2_combine_enable() && _simd_u32x2_splitlo_enable()  && _simd_u32x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_u32x2_fms_scalar_
+	#define _simd_u32x2_fms_scalar_(X,Y,Z) _simd_u32x2_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u32x2_fms_)
+	#define _simd_u32x2_fms_scalar_(X,Y,Z) _simd_u32x2_fms_(X,_simd_u32x2_fill_scalar_(Y),_simd_u32x2_fill_scalar_(Z))
+	#define _simd_u32x1_fms_scalar_instruction_set _simd_u32x2_fms_instruction_set
+#endif
+#ifdef _simd_u32x2_fms_scalar_
+	#define _simd_u32x2_fms_scalar(X,Y,Z) _simd_u32x2_fms_scalar_(X,Y,Z)
+	#define _simd_u32x2_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x2_fms_scalar_instruction_set>()
+#else
+	#define _simd_u32x2_fms_scalar(X,Y,Z) _simd_u32x2_fms_safe(X,_simd_u32x2_fill_scalar_safe(Y),_simd_u32x2_fill_scalar_safe(Z))
+	#define _simd_u32x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u32x1_fms_safe
 	#define _simd_u32x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u32x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -1589,6 +2054,21 @@
 	#define _simd_u32x4_fms_enable() (_simd_u32x2_fms_enable() && _simd_u32x4_combine_enable() && _simd_u32x4_splitlo_enable()  && _simd_u32x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_u32x4_fms_scalar_
+	#define _simd_u32x4_fms_scalar_(X,Y,Z) _simd_u32x4_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u32x4_fms_)
+	#define _simd_u32x4_fms_scalar_(X,Y,Z) _simd_u32x4_fms_(X,_simd_u32x4_fill_scalar_(Y),_simd_u32x4_fill_scalar_(Z))
+	#define _simd_u32x1_fms_scalar_instruction_set _simd_u32x4_fms_instruction_set
+#endif
+#ifdef _simd_u32x4_fms_scalar_
+	#define _simd_u32x4_fms_scalar(X,Y,Z) _simd_u32x4_fms_scalar_(X,Y,Z)
+	#define _simd_u32x4_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x4_fms_scalar_instruction_set>()
+#else
+	#define _simd_u32x4_fms_scalar(X,Y,Z) _simd_u32x4_fms_safe(X,_simd_u32x4_fill_scalar_safe(Y),_simd_u32x4_fill_scalar_safe(Z))
+	#define _simd_u32x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u32x1_fms_safe
 	#define _simd_u32x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u32x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -1642,6 +2122,21 @@
 	#define _simd_u32x8_fms_enable() (_simd_u32x4_fms_enable() && _simd_u32x8_combine_enable() && _simd_u32x8_splitlo_enable()  && _simd_u32x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_u32x8_fms_scalar_
+	#define _simd_u32x8_fms_scalar_(X,Y,Z) _simd_u32x8_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u32x8_fms_)
+	#define _simd_u32x8_fms_scalar_(X,Y,Z) _simd_u32x8_fms_(X,_simd_u32x8_fill_scalar_(Y),_simd_u32x8_fill_scalar_(Z))
+	#define _simd_u32x1_fms_scalar_instruction_set _simd_u32x8_fms_instruction_set
+#endif
+#ifdef _simd_u32x8_fms_scalar_
+	#define _simd_u32x8_fms_scalar(X,Y,Z) _simd_u32x8_fms_scalar_(X,Y,Z)
+	#define _simd_u32x8_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x8_fms_scalar_instruction_set>()
+#else
+	#define _simd_u32x8_fms_scalar(X,Y,Z) _simd_u32x8_fms_safe(X,_simd_u32x8_fill_scalar_safe(Y),_simd_u32x8_fill_scalar_safe(Z))
+	#define _simd_u32x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u32x1_fms_safe
 	#define _simd_u32x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u32x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -1684,6 +2179,21 @@
 	#define _simd_u32x16_fms_enable() (_simd_u32x8_fms_enable() && _simd_u32x16_combine_enable() && _simd_u32x16_splitlo_enable()  && _simd_u32x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_u32x16_fms_scalar_
+	#define _simd_u32x16_fms_scalar_(X,Y,Z) _simd_u32x16_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u32x16_fms_)
+	#define _simd_u32x16_fms_scalar_(X,Y,Z) _simd_u32x16_fms_(X,_simd_u32x16_fill_scalar_(Y),_simd_u32x16_fill_scalar_(Z))
+	#define _simd_u32x1_fms_scalar_instruction_set _simd_u32x16_fms_instruction_set
+#endif
+#ifdef _simd_u32x16_fms_scalar_
+	#define _simd_u32x16_fms_scalar(X,Y,Z) _simd_u32x16_fms_scalar_(X,Y,Z)
+	#define _simd_u32x16_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x16_fms_scalar_instruction_set>()
+#else
+	#define _simd_u32x16_fms_scalar(X,Y,Z) _simd_u32x16_fms_safe(X,_simd_u32x16_fill_scalar_safe(Y),_simd_u32x16_fill_scalar_safe(Z))
+	#define _simd_u32x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u32x1_fms_safe
 	#define _simd_u32x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u32x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -1715,6 +2225,21 @@
 	#define _simd_u32x32_fms_enable() (_simd_u32x16_fms_enable() && _simd_u32x32_combine_enable() && _simd_u32x32_splitlo_enable()  && _simd_u32x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_u32x32_fms_scalar_
+	#define _simd_u32x32_fms_scalar_(X,Y,Z) _simd_u32x32_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u32x32_fms_)
+	#define _simd_u32x32_fms_scalar_(X,Y,Z) _simd_u32x32_fms_(X,_simd_u32x32_fill_scalar_(Y),_simd_u32x32_fill_scalar_(Z))
+	#define _simd_u32x1_fms_scalar_instruction_set _simd_u32x32_fms_instruction_set
+#endif
+#ifdef _simd_u32x32_fms_scalar_
+	#define _simd_u32x32_fms_scalar(X,Y,Z) _simd_u32x32_fms_scalar_(X,Y,Z)
+	#define _simd_u32x32_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x32_fms_scalar_instruction_set>()
+#else
+	#define _simd_u32x32_fms_scalar(X,Y,Z) _simd_u32x32_fms_safe(X,_simd_u32x32_fill_scalar_safe(Y),_simd_u32x32_fill_scalar_safe(Z))
+	#define _simd_u32x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u32x1_fms_safe
 	#define _simd_u32x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u32x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -1733,6 +2258,21 @@
 		_simd_u32x32_fms(_simd_u32x64_splitlo(X), _simd_u32x64_splitlo(Y), _simd_u32x64_splitlo(Z)),\
 		_simd_u32x32_fms(_simd_u32x64_splithi(X), _simd_u32x64_splithi(Y), _simd_u32x64_splithi(Z)))
 	#define _simd_u32x64_fms_enable() (_simd_u32x32_fms_enable() && _simd_u32x64_combine_enable() && _simd_u32x64_splitlo_enable()  && _simd_u32x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_u32x64_fms_scalar_
+	#define _simd_u32x64_fms_scalar_(X,Y,Z) _simd_u32x64_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u32x64_fms_)
+	#define _simd_u32x64_fms_scalar_(X,Y,Z) _simd_u32x64_fms_(X,_simd_u32x64_fill_scalar_(Y),_simd_u32x64_fill_scalar_(Z))
+	#define _simd_u32x1_fms_scalar_instruction_set _simd_u32x64_fms_instruction_set
+#endif
+#ifdef _simd_u32x64_fms_scalar_
+	#define _simd_u32x64_fms_scalar(X,Y,Z) _simd_u32x64_fms_scalar_(X,Y,Z)
+	#define _simd_u32x64_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u32x64_fms_scalar_instruction_set>()
+#else
+	#define _simd_u32x64_fms_scalar(X,Y,Z) _simd_u32x64_fms_safe(X,_simd_u32x64_fill_scalar_safe(Y),_simd_u32x64_fill_scalar_safe(Z))
+	#define _simd_u32x1_fms_scalar_enabled() true
 #endif
 
 // -- s16 --
@@ -1812,6 +2352,21 @@
 	#define _simd_s16x2_fms_enable() (_simd_s16x1_fms_enable() && _simd_s16x2_combine_enable() && _simd_s16x2_splitlo_enable()  && _simd_s16x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_s16x2_fms_scalar_
+	#define _simd_s16x2_fms_scalar_(X,Y,Z) _simd_s16x2_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s16x2_fms_)
+	#define _simd_s16x2_fms_scalar_(X,Y,Z) _simd_s16x2_fms_(X,_simd_s16x2_fill_scalar_(Y),_simd_s16x2_fill_scalar_(Z))
+	#define _simd_s16x1_fms_scalar_instruction_set _simd_s16x2_fms_instruction_set
+#endif
+#ifdef _simd_s16x2_fms_scalar_
+	#define _simd_s16x2_fms_scalar(X,Y,Z) _simd_s16x2_fms_scalar_(X,Y,Z)
+	#define _simd_s16x2_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x2_fms_scalar_instruction_set>()
+#else
+	#define _simd_s16x2_fms_scalar(X,Y,Z) _simd_s16x2_fms_safe(X,_simd_s16x2_fill_scalar_safe(Y),_simd_s16x2_fill_scalar_safe(Z))
+	#define _simd_s16x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s16x1_fms_safe
 	#define _simd_s16x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s16x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -1876,6 +2431,21 @@
 	#define _simd_s16x4_fms_enable() (_simd_s16x2_fms_enable() && _simd_s16x4_combine_enable() && _simd_s16x4_splitlo_enable()  && _simd_s16x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_s16x4_fms_scalar_
+	#define _simd_s16x4_fms_scalar_(X,Y,Z) _simd_s16x4_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s16x4_fms_)
+	#define _simd_s16x4_fms_scalar_(X,Y,Z) _simd_s16x4_fms_(X,_simd_s16x4_fill_scalar_(Y),_simd_s16x4_fill_scalar_(Z))
+	#define _simd_s16x1_fms_scalar_instruction_set _simd_s16x4_fms_instruction_set
+#endif
+#ifdef _simd_s16x4_fms_scalar_
+	#define _simd_s16x4_fms_scalar(X,Y,Z) _simd_s16x4_fms_scalar_(X,Y,Z)
+	#define _simd_s16x4_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x4_fms_scalar_instruction_set>()
+#else
+	#define _simd_s16x4_fms_scalar(X,Y,Z) _simd_s16x4_fms_safe(X,_simd_s16x4_fill_scalar_safe(Y),_simd_s16x4_fill_scalar_safe(Z))
+	#define _simd_s16x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s16x1_fms_safe
 	#define _simd_s16x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s16x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -1929,6 +2499,21 @@
 	#define _simd_s16x8_fms_enable() (_simd_s16x4_fms_enable() && _simd_s16x8_combine_enable() && _simd_s16x8_splitlo_enable()  && _simd_s16x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_s16x8_fms_scalar_
+	#define _simd_s16x8_fms_scalar_(X,Y,Z) _simd_s16x8_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s16x8_fms_)
+	#define _simd_s16x8_fms_scalar_(X,Y,Z) _simd_s16x8_fms_(X,_simd_s16x8_fill_scalar_(Y),_simd_s16x8_fill_scalar_(Z))
+	#define _simd_s16x1_fms_scalar_instruction_set _simd_s16x8_fms_instruction_set
+#endif
+#ifdef _simd_s16x8_fms_scalar_
+	#define _simd_s16x8_fms_scalar(X,Y,Z) _simd_s16x8_fms_scalar_(X,Y,Z)
+	#define _simd_s16x8_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x8_fms_scalar_instruction_set>()
+#else
+	#define _simd_s16x8_fms_scalar(X,Y,Z) _simd_s16x8_fms_safe(X,_simd_s16x8_fill_scalar_safe(Y),_simd_s16x8_fill_scalar_safe(Z))
+	#define _simd_s16x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s16x1_fms_safe
 	#define _simd_s16x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s16x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -1971,6 +2556,21 @@
 	#define _simd_s16x16_fms_enable() (_simd_s16x8_fms_enable() && _simd_s16x16_combine_enable() && _simd_s16x16_splitlo_enable()  && _simd_s16x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_s16x16_fms_scalar_
+	#define _simd_s16x16_fms_scalar_(X,Y,Z) _simd_s16x16_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s16x16_fms_)
+	#define _simd_s16x16_fms_scalar_(X,Y,Z) _simd_s16x16_fms_(X,_simd_s16x16_fill_scalar_(Y),_simd_s16x16_fill_scalar_(Z))
+	#define _simd_s16x1_fms_scalar_instruction_set _simd_s16x16_fms_instruction_set
+#endif
+#ifdef _simd_s16x16_fms_scalar_
+	#define _simd_s16x16_fms_scalar(X,Y,Z) _simd_s16x16_fms_scalar_(X,Y,Z)
+	#define _simd_s16x16_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x16_fms_scalar_instruction_set>()
+#else
+	#define _simd_s16x16_fms_scalar(X,Y,Z) _simd_s16x16_fms_safe(X,_simd_s16x16_fill_scalar_safe(Y),_simd_s16x16_fill_scalar_safe(Z))
+	#define _simd_s16x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s16x1_fms_safe
 	#define _simd_s16x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s16x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -2002,6 +2602,21 @@
 	#define _simd_s16x32_fms_enable() (_simd_s16x16_fms_enable() && _simd_s16x32_combine_enable() && _simd_s16x32_splitlo_enable()  && _simd_s16x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_s16x32_fms_scalar_
+	#define _simd_s16x32_fms_scalar_(X,Y,Z) _simd_s16x32_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s16x32_fms_)
+	#define _simd_s16x32_fms_scalar_(X,Y,Z) _simd_s16x32_fms_(X,_simd_s16x32_fill_scalar_(Y),_simd_s16x32_fill_scalar_(Z))
+	#define _simd_s16x1_fms_scalar_instruction_set _simd_s16x32_fms_instruction_set
+#endif
+#ifdef _simd_s16x32_fms_scalar_
+	#define _simd_s16x32_fms_scalar(X,Y,Z) _simd_s16x32_fms_scalar_(X,Y,Z)
+	#define _simd_s16x32_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x32_fms_scalar_instruction_set>()
+#else
+	#define _simd_s16x32_fms_scalar(X,Y,Z) _simd_s16x32_fms_safe(X,_simd_s16x32_fill_scalar_safe(Y),_simd_s16x32_fill_scalar_safe(Z))
+	#define _simd_s16x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s16x1_fms_safe
 	#define _simd_s16x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s16x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -2020,6 +2635,21 @@
 		_simd_s16x32_fms(_simd_s16x64_splitlo(X), _simd_s16x64_splitlo(Y), _simd_s16x64_splitlo(Z)),\
 		_simd_s16x32_fms(_simd_s16x64_splithi(X), _simd_s16x64_splithi(Y), _simd_s16x64_splithi(Z)))
 	#define _simd_s16x64_fms_enable() (_simd_s16x32_fms_enable() && _simd_s16x64_combine_enable() && _simd_s16x64_splitlo_enable()  && _simd_s16x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_s16x64_fms_scalar_
+	#define _simd_s16x64_fms_scalar_(X,Y,Z) _simd_s16x64_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s16x64_fms_)
+	#define _simd_s16x64_fms_scalar_(X,Y,Z) _simd_s16x64_fms_(X,_simd_s16x64_fill_scalar_(Y),_simd_s16x64_fill_scalar_(Z))
+	#define _simd_s16x1_fms_scalar_instruction_set _simd_s16x64_fms_instruction_set
+#endif
+#ifdef _simd_s16x64_fms_scalar_
+	#define _simd_s16x64_fms_scalar(X,Y,Z) _simd_s16x64_fms_scalar_(X,Y,Z)
+	#define _simd_s16x64_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s16x64_fms_scalar_instruction_set>()
+#else
+	#define _simd_s16x64_fms_scalar(X,Y,Z) _simd_s16x64_fms_safe(X,_simd_s16x64_fill_scalar_safe(Y),_simd_s16x64_fill_scalar_safe(Z))
+	#define _simd_s16x1_fms_scalar_enabled() true
 #endif
 
 // -- u16 --
@@ -2099,6 +2729,21 @@
 	#define _simd_u16x2_fms_enable() (_simd_u16x1_fms_enable() && _simd_u16x2_combine_enable() && _simd_u16x2_splitlo_enable()  && _simd_u16x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_u16x2_fms_scalar_
+	#define _simd_u16x2_fms_scalar_(X,Y,Z) _simd_u16x2_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u16x2_fms_)
+	#define _simd_u16x2_fms_scalar_(X,Y,Z) _simd_u16x2_fms_(X,_simd_u16x2_fill_scalar_(Y),_simd_u16x2_fill_scalar_(Z))
+	#define _simd_u16x1_fms_scalar_instruction_set _simd_u16x2_fms_instruction_set
+#endif
+#ifdef _simd_u16x2_fms_scalar_
+	#define _simd_u16x2_fms_scalar(X,Y,Z) _simd_u16x2_fms_scalar_(X,Y,Z)
+	#define _simd_u16x2_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x2_fms_scalar_instruction_set>()
+#else
+	#define _simd_u16x2_fms_scalar(X,Y,Z) _simd_u16x2_fms_safe(X,_simd_u16x2_fill_scalar_safe(Y),_simd_u16x2_fill_scalar_safe(Z))
+	#define _simd_u16x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u16x1_fms_safe
 	#define _simd_u16x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u16x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -2163,6 +2808,21 @@
 	#define _simd_u16x4_fms_enable() (_simd_u16x2_fms_enable() && _simd_u16x4_combine_enable() && _simd_u16x4_splitlo_enable()  && _simd_u16x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_u16x4_fms_scalar_
+	#define _simd_u16x4_fms_scalar_(X,Y,Z) _simd_u16x4_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u16x4_fms_)
+	#define _simd_u16x4_fms_scalar_(X,Y,Z) _simd_u16x4_fms_(X,_simd_u16x4_fill_scalar_(Y),_simd_u16x4_fill_scalar_(Z))
+	#define _simd_u16x1_fms_scalar_instruction_set _simd_u16x4_fms_instruction_set
+#endif
+#ifdef _simd_u16x4_fms_scalar_
+	#define _simd_u16x4_fms_scalar(X,Y,Z) _simd_u16x4_fms_scalar_(X,Y,Z)
+	#define _simd_u16x4_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x4_fms_scalar_instruction_set>()
+#else
+	#define _simd_u16x4_fms_scalar(X,Y,Z) _simd_u16x4_fms_safe(X,_simd_u16x4_fill_scalar_safe(Y),_simd_u16x4_fill_scalar_safe(Z))
+	#define _simd_u16x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u16x1_fms_safe
 	#define _simd_u16x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u16x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -2216,6 +2876,21 @@
 	#define _simd_u16x8_fms_enable() (_simd_u16x4_fms_enable() && _simd_u16x8_combine_enable() && _simd_u16x8_splitlo_enable()  && _simd_u16x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_u16x8_fms_scalar_
+	#define _simd_u16x8_fms_scalar_(X,Y,Z) _simd_u16x8_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u16x8_fms_)
+	#define _simd_u16x8_fms_scalar_(X,Y,Z) _simd_u16x8_fms_(X,_simd_u16x8_fill_scalar_(Y),_simd_u16x8_fill_scalar_(Z))
+	#define _simd_u16x1_fms_scalar_instruction_set _simd_u16x8_fms_instruction_set
+#endif
+#ifdef _simd_u16x8_fms_scalar_
+	#define _simd_u16x8_fms_scalar(X,Y,Z) _simd_u16x8_fms_scalar_(X,Y,Z)
+	#define _simd_u16x8_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x8_fms_scalar_instruction_set>()
+#else
+	#define _simd_u16x8_fms_scalar(X,Y,Z) _simd_u16x8_fms_safe(X,_simd_u16x8_fill_scalar_safe(Y),_simd_u16x8_fill_scalar_safe(Z))
+	#define _simd_u16x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u16x1_fms_safe
 	#define _simd_u16x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u16x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -2258,6 +2933,21 @@
 	#define _simd_u16x16_fms_enable() (_simd_u16x8_fms_enable() && _simd_u16x16_combine_enable() && _simd_u16x16_splitlo_enable()  && _simd_u16x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_u16x16_fms_scalar_
+	#define _simd_u16x16_fms_scalar_(X,Y,Z) _simd_u16x16_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u16x16_fms_)
+	#define _simd_u16x16_fms_scalar_(X,Y,Z) _simd_u16x16_fms_(X,_simd_u16x16_fill_scalar_(Y),_simd_u16x16_fill_scalar_(Z))
+	#define _simd_u16x1_fms_scalar_instruction_set _simd_u16x16_fms_instruction_set
+#endif
+#ifdef _simd_u16x16_fms_scalar_
+	#define _simd_u16x16_fms_scalar(X,Y,Z) _simd_u16x16_fms_scalar_(X,Y,Z)
+	#define _simd_u16x16_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x16_fms_scalar_instruction_set>()
+#else
+	#define _simd_u16x16_fms_scalar(X,Y,Z) _simd_u16x16_fms_safe(X,_simd_u16x16_fill_scalar_safe(Y),_simd_u16x16_fill_scalar_safe(Z))
+	#define _simd_u16x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u16x1_fms_safe
 	#define _simd_u16x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u16x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -2289,6 +2979,21 @@
 	#define _simd_u16x32_fms_enable() (_simd_u16x16_fms_enable() && _simd_u16x32_combine_enable() && _simd_u16x32_splitlo_enable()  && _simd_u16x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_u16x32_fms_scalar_
+	#define _simd_u16x32_fms_scalar_(X,Y,Z) _simd_u16x32_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u16x32_fms_)
+	#define _simd_u16x32_fms_scalar_(X,Y,Z) _simd_u16x32_fms_(X,_simd_u16x32_fill_scalar_(Y),_simd_u16x32_fill_scalar_(Z))
+	#define _simd_u16x1_fms_scalar_instruction_set _simd_u16x32_fms_instruction_set
+#endif
+#ifdef _simd_u16x32_fms_scalar_
+	#define _simd_u16x32_fms_scalar(X,Y,Z) _simd_u16x32_fms_scalar_(X,Y,Z)
+	#define _simd_u16x32_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x32_fms_scalar_instruction_set>()
+#else
+	#define _simd_u16x32_fms_scalar(X,Y,Z) _simd_u16x32_fms_safe(X,_simd_u16x32_fill_scalar_safe(Y),_simd_u16x32_fill_scalar_safe(Z))
+	#define _simd_u16x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u16x1_fms_safe
 	#define _simd_u16x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u16x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -2307,6 +3012,21 @@
 		_simd_u16x32_fms(_simd_u16x64_splitlo(X), _simd_u16x64_splitlo(Y), _simd_u16x64_splitlo(Z)),\
 		_simd_u16x32_fms(_simd_u16x64_splithi(X), _simd_u16x64_splithi(Y), _simd_u16x64_splithi(Z)))
 	#define _simd_u16x64_fms_enable() (_simd_u16x32_fms_enable() && _simd_u16x64_combine_enable() && _simd_u16x64_splitlo_enable()  && _simd_u16x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_u16x64_fms_scalar_
+	#define _simd_u16x64_fms_scalar_(X,Y,Z) _simd_u16x64_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u16x64_fms_)
+	#define _simd_u16x64_fms_scalar_(X,Y,Z) _simd_u16x64_fms_(X,_simd_u16x64_fill_scalar_(Y),_simd_u16x64_fill_scalar_(Z))
+	#define _simd_u16x1_fms_scalar_instruction_set _simd_u16x64_fms_instruction_set
+#endif
+#ifdef _simd_u16x64_fms_scalar_
+	#define _simd_u16x64_fms_scalar(X,Y,Z) _simd_u16x64_fms_scalar_(X,Y,Z)
+	#define _simd_u16x64_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u16x64_fms_scalar_instruction_set>()
+#else
+	#define _simd_u16x64_fms_scalar(X,Y,Z) _simd_u16x64_fms_safe(X,_simd_u16x64_fill_scalar_safe(Y),_simd_u16x64_fill_scalar_safe(Z))
+	#define _simd_u16x1_fms_scalar_enabled() true
 #endif
 
 // -- s8 --
@@ -2386,6 +3106,21 @@
 	#define _simd_s8x2_fms_enable() (_simd_s8x1_fms_enable() && _simd_s8x2_combine_enable() && _simd_s8x2_splitlo_enable()  && _simd_s8x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_s8x2_fms_scalar_
+	#define _simd_s8x2_fms_scalar_(X,Y,Z) _simd_s8x2_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s8x2_fms_)
+	#define _simd_s8x2_fms_scalar_(X,Y,Z) _simd_s8x2_fms_(X,_simd_s8x2_fill_scalar_(Y),_simd_s8x2_fill_scalar_(Z))
+	#define _simd_s8x1_fms_scalar_instruction_set _simd_s8x2_fms_instruction_set
+#endif
+#ifdef _simd_s8x2_fms_scalar_
+	#define _simd_s8x2_fms_scalar(X,Y,Z) _simd_s8x2_fms_scalar_(X,Y,Z)
+	#define _simd_s8x2_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x2_fms_scalar_instruction_set>()
+#else
+	#define _simd_s8x2_fms_scalar(X,Y,Z) _simd_s8x2_fms_safe(X,_simd_s8x2_fill_scalar_safe(Y),_simd_s8x2_fill_scalar_safe(Z))
+	#define _simd_s8x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s8x1_fms_safe
 	#define _simd_s8x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s8x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -2450,6 +3185,21 @@
 	#define _simd_s8x4_fms_enable() (_simd_s8x2_fms_enable() && _simd_s8x4_combine_enable() && _simd_s8x4_splitlo_enable()  && _simd_s8x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_s8x4_fms_scalar_
+	#define _simd_s8x4_fms_scalar_(X,Y,Z) _simd_s8x4_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s8x4_fms_)
+	#define _simd_s8x4_fms_scalar_(X,Y,Z) _simd_s8x4_fms_(X,_simd_s8x4_fill_scalar_(Y),_simd_s8x4_fill_scalar_(Z))
+	#define _simd_s8x1_fms_scalar_instruction_set _simd_s8x4_fms_instruction_set
+#endif
+#ifdef _simd_s8x4_fms_scalar_
+	#define _simd_s8x4_fms_scalar(X,Y,Z) _simd_s8x4_fms_scalar_(X,Y,Z)
+	#define _simd_s8x4_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x4_fms_scalar_instruction_set>()
+#else
+	#define _simd_s8x4_fms_scalar(X,Y,Z) _simd_s8x4_fms_safe(X,_simd_s8x4_fill_scalar_safe(Y),_simd_s8x4_fill_scalar_safe(Z))
+	#define _simd_s8x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s8x1_fms_safe
 	#define _simd_s8x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s8x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -2503,6 +3253,21 @@
 	#define _simd_s8x8_fms_enable() (_simd_s8x4_fms_enable() && _simd_s8x8_combine_enable() && _simd_s8x8_splitlo_enable()  && _simd_s8x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_s8x8_fms_scalar_
+	#define _simd_s8x8_fms_scalar_(X,Y,Z) _simd_s8x8_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s8x8_fms_)
+	#define _simd_s8x8_fms_scalar_(X,Y,Z) _simd_s8x8_fms_(X,_simd_s8x8_fill_scalar_(Y),_simd_s8x8_fill_scalar_(Z))
+	#define _simd_s8x1_fms_scalar_instruction_set _simd_s8x8_fms_instruction_set
+#endif
+#ifdef _simd_s8x8_fms_scalar_
+	#define _simd_s8x8_fms_scalar(X,Y,Z) _simd_s8x8_fms_scalar_(X,Y,Z)
+	#define _simd_s8x8_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x8_fms_scalar_instruction_set>()
+#else
+	#define _simd_s8x8_fms_scalar(X,Y,Z) _simd_s8x8_fms_safe(X,_simd_s8x8_fill_scalar_safe(Y),_simd_s8x8_fill_scalar_safe(Z))
+	#define _simd_s8x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s8x1_fms_safe
 	#define _simd_s8x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s8x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -2545,6 +3310,21 @@
 	#define _simd_s8x16_fms_enable() (_simd_s8x8_fms_enable() && _simd_s8x16_combine_enable() && _simd_s8x16_splitlo_enable()  && _simd_s8x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_s8x16_fms_scalar_
+	#define _simd_s8x16_fms_scalar_(X,Y,Z) _simd_s8x16_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s8x16_fms_)
+	#define _simd_s8x16_fms_scalar_(X,Y,Z) _simd_s8x16_fms_(X,_simd_s8x16_fill_scalar_(Y),_simd_s8x16_fill_scalar_(Z))
+	#define _simd_s8x1_fms_scalar_instruction_set _simd_s8x16_fms_instruction_set
+#endif
+#ifdef _simd_s8x16_fms_scalar_
+	#define _simd_s8x16_fms_scalar(X,Y,Z) _simd_s8x16_fms_scalar_(X,Y,Z)
+	#define _simd_s8x16_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x16_fms_scalar_instruction_set>()
+#else
+	#define _simd_s8x16_fms_scalar(X,Y,Z) _simd_s8x16_fms_safe(X,_simd_s8x16_fill_scalar_safe(Y),_simd_s8x16_fill_scalar_safe(Z))
+	#define _simd_s8x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s8x1_fms_safe
 	#define _simd_s8x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s8x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -2576,6 +3356,21 @@
 	#define _simd_s8x32_fms_enable() (_simd_s8x16_fms_enable() && _simd_s8x32_combine_enable() && _simd_s8x32_splitlo_enable()  && _simd_s8x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_s8x32_fms_scalar_
+	#define _simd_s8x32_fms_scalar_(X,Y,Z) _simd_s8x32_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s8x32_fms_)
+	#define _simd_s8x32_fms_scalar_(X,Y,Z) _simd_s8x32_fms_(X,_simd_s8x32_fill_scalar_(Y),_simd_s8x32_fill_scalar_(Z))
+	#define _simd_s8x1_fms_scalar_instruction_set _simd_s8x32_fms_instruction_set
+#endif
+#ifdef _simd_s8x32_fms_scalar_
+	#define _simd_s8x32_fms_scalar(X,Y,Z) _simd_s8x32_fms_scalar_(X,Y,Z)
+	#define _simd_s8x32_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x32_fms_scalar_instruction_set>()
+#else
+	#define _simd_s8x32_fms_scalar(X,Y,Z) _simd_s8x32_fms_safe(X,_simd_s8x32_fill_scalar_safe(Y),_simd_s8x32_fill_scalar_safe(Z))
+	#define _simd_s8x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_s8x1_fms_safe
 	#define _simd_s8x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_s8x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -2594,6 +3389,21 @@
 		_simd_s8x32_fms(_simd_s8x64_splitlo(X), _simd_s8x64_splitlo(Y), _simd_s8x64_splitlo(Z)),\
 		_simd_s8x32_fms(_simd_s8x64_splithi(X), _simd_s8x64_splithi(Y), _simd_s8x64_splithi(Z)))
 	#define _simd_s8x64_fms_enable() (_simd_s8x32_fms_enable() && _simd_s8x64_combine_enable() && _simd_s8x64_splitlo_enable()  && _simd_s8x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_s8x64_fms_scalar_
+	#define _simd_s8x64_fms_scalar_(X,Y,Z) _simd_s8x64_fms_scalar_(X,Y,Y)
+#elif defined(_simd_s8x64_fms_)
+	#define _simd_s8x64_fms_scalar_(X,Y,Z) _simd_s8x64_fms_(X,_simd_s8x64_fill_scalar_(Y),_simd_s8x64_fill_scalar_(Z))
+	#define _simd_s8x1_fms_scalar_instruction_set _simd_s8x64_fms_instruction_set
+#endif
+#ifdef _simd_s8x64_fms_scalar_
+	#define _simd_s8x64_fms_scalar(X,Y,Z) _simd_s8x64_fms_scalar_(X,Y,Z)
+	#define _simd_s8x64_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_s8x64_fms_scalar_instruction_set>()
+#else
+	#define _simd_s8x64_fms_scalar(X,Y,Z) _simd_s8x64_fms_safe(X,_simd_s8x64_fill_scalar_safe(Y),_simd_s8x64_fill_scalar_safe(Z))
+	#define _simd_s8x1_fms_scalar_enabled() true
 #endif
 
 // -- u8 --
@@ -2673,6 +3483,21 @@
 	#define _simd_u8x2_fms_enable() (_simd_u8x1_fms_enable() && _simd_u8x2_combine_enable() && _simd_u8x2_splitlo_enable()  && _simd_u8x2_splithi_enable())
 #endif
 
+
+#ifdef _simd_u8x2_fms_scalar_
+	#define _simd_u8x2_fms_scalar_(X,Y,Z) _simd_u8x2_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u8x2_fms_)
+	#define _simd_u8x2_fms_scalar_(X,Y,Z) _simd_u8x2_fms_(X,_simd_u8x2_fill_scalar_(Y),_simd_u8x2_fill_scalar_(Z))
+	#define _simd_u8x1_fms_scalar_instruction_set _simd_u8x2_fms_instruction_set
+#endif
+#ifdef _simd_u8x2_fms_scalar_
+	#define _simd_u8x2_fms_scalar(X,Y,Z) _simd_u8x2_fms_scalar_(X,Y,Z)
+	#define _simd_u8x2_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x2_fms_scalar_instruction_set>()
+#else
+	#define _simd_u8x2_fms_scalar(X,Y,Z) _simd_u8x2_fms_safe(X,_simd_u8x2_fill_scalar_safe(Y),_simd_u8x2_fill_scalar_safe(Z))
+	#define _simd_u8x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u8x1_fms_safe
 	#define _simd_u8x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u8x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -2737,6 +3562,21 @@
 	#define _simd_u8x4_fms_enable() (_simd_u8x2_fms_enable() && _simd_u8x4_combine_enable() && _simd_u8x4_splitlo_enable()  && _simd_u8x4_splithi_enable())
 #endif
 
+
+#ifdef _simd_u8x4_fms_scalar_
+	#define _simd_u8x4_fms_scalar_(X,Y,Z) _simd_u8x4_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u8x4_fms_)
+	#define _simd_u8x4_fms_scalar_(X,Y,Z) _simd_u8x4_fms_(X,_simd_u8x4_fill_scalar_(Y),_simd_u8x4_fill_scalar_(Z))
+	#define _simd_u8x1_fms_scalar_instruction_set _simd_u8x4_fms_instruction_set
+#endif
+#ifdef _simd_u8x4_fms_scalar_
+	#define _simd_u8x4_fms_scalar(X,Y,Z) _simd_u8x4_fms_scalar_(X,Y,Z)
+	#define _simd_u8x4_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x4_fms_scalar_instruction_set>()
+#else
+	#define _simd_u8x4_fms_scalar(X,Y,Z) _simd_u8x4_fms_safe(X,_simd_u8x4_fill_scalar_safe(Y),_simd_u8x4_fill_scalar_safe(Z))
+	#define _simd_u8x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u8x1_fms_safe
 	#define _simd_u8x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u8x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -2790,6 +3630,21 @@
 	#define _simd_u8x8_fms_enable() (_simd_u8x4_fms_enable() && _simd_u8x8_combine_enable() && _simd_u8x8_splitlo_enable()  && _simd_u8x8_splithi_enable())
 #endif
 
+
+#ifdef _simd_u8x8_fms_scalar_
+	#define _simd_u8x8_fms_scalar_(X,Y,Z) _simd_u8x8_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u8x8_fms_)
+	#define _simd_u8x8_fms_scalar_(X,Y,Z) _simd_u8x8_fms_(X,_simd_u8x8_fill_scalar_(Y),_simd_u8x8_fill_scalar_(Z))
+	#define _simd_u8x1_fms_scalar_instruction_set _simd_u8x8_fms_instruction_set
+#endif
+#ifdef _simd_u8x8_fms_scalar_
+	#define _simd_u8x8_fms_scalar(X,Y,Z) _simd_u8x8_fms_scalar_(X,Y,Z)
+	#define _simd_u8x8_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x8_fms_scalar_instruction_set>()
+#else
+	#define _simd_u8x8_fms_scalar(X,Y,Z) _simd_u8x8_fms_safe(X,_simd_u8x8_fill_scalar_safe(Y),_simd_u8x8_fill_scalar_safe(Z))
+	#define _simd_u8x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u8x1_fms_safe
 	#define _simd_u8x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u8x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -2832,6 +3687,21 @@
 	#define _simd_u8x16_fms_enable() (_simd_u8x8_fms_enable() && _simd_u8x16_combine_enable() && _simd_u8x16_splitlo_enable()  && _simd_u8x16_splithi_enable())
 #endif
 
+
+#ifdef _simd_u8x16_fms_scalar_
+	#define _simd_u8x16_fms_scalar_(X,Y,Z) _simd_u8x16_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u8x16_fms_)
+	#define _simd_u8x16_fms_scalar_(X,Y,Z) _simd_u8x16_fms_(X,_simd_u8x16_fill_scalar_(Y),_simd_u8x16_fill_scalar_(Z))
+	#define _simd_u8x1_fms_scalar_instruction_set _simd_u8x16_fms_instruction_set
+#endif
+#ifdef _simd_u8x16_fms_scalar_
+	#define _simd_u8x16_fms_scalar(X,Y,Z) _simd_u8x16_fms_scalar_(X,Y,Z)
+	#define _simd_u8x16_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x16_fms_scalar_instruction_set>()
+#else
+	#define _simd_u8x16_fms_scalar(X,Y,Z) _simd_u8x16_fms_safe(X,_simd_u8x16_fill_scalar_safe(Y),_simd_u8x16_fill_scalar_safe(Z))
+	#define _simd_u8x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u8x1_fms_safe
 	#define _simd_u8x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u8x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -2863,6 +3733,21 @@
 	#define _simd_u8x32_fms_enable() (_simd_u8x16_fms_enable() && _simd_u8x32_combine_enable() && _simd_u8x32_splitlo_enable()  && _simd_u8x32_splithi_enable())
 #endif
 
+
+#ifdef _simd_u8x32_fms_scalar_
+	#define _simd_u8x32_fms_scalar_(X,Y,Z) _simd_u8x32_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u8x32_fms_)
+	#define _simd_u8x32_fms_scalar_(X,Y,Z) _simd_u8x32_fms_(X,_simd_u8x32_fill_scalar_(Y),_simd_u8x32_fill_scalar_(Z))
+	#define _simd_u8x1_fms_scalar_instruction_set _simd_u8x32_fms_instruction_set
+#endif
+#ifdef _simd_u8x32_fms_scalar_
+	#define _simd_u8x32_fms_scalar(X,Y,Z) _simd_u8x32_fms_scalar_(X,Y,Z)
+	#define _simd_u8x32_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x32_fms_scalar_instruction_set>()
+#else
+	#define _simd_u8x32_fms_scalar(X,Y,Z) _simd_u8x32_fms_safe(X,_simd_u8x32_fill_scalar_safe(Y),_simd_u8x32_fill_scalar_safe(Z))
+	#define _simd_u8x1_fms_scalar_enabled() true
+#endif
+
 #ifndef _simd_u8x1_fms_safe
 	#define _simd_u8x1_fms_safe(X,Y,Z) (X * Y - Z)
 	#define _simd_u8x1_fms_(X,Y,Z) x1_fms_safe(X,Y,Z)
@@ -2881,5 +3766,20 @@
 		_simd_u8x32_fms(_simd_u8x64_splitlo(X), _simd_u8x64_splitlo(Y), _simd_u8x64_splitlo(Z)),\
 		_simd_u8x32_fms(_simd_u8x64_splithi(X), _simd_u8x64_splithi(Y), _simd_u8x64_splithi(Z)))
 	#define _simd_u8x64_fms_enable() (_simd_u8x32_fms_enable() && _simd_u8x64_combine_enable() && _simd_u8x64_splitlo_enable()  && _simd_u8x64_splithi_enable())
+#endif
+
+
+#ifdef _simd_u8x64_fms_scalar_
+	#define _simd_u8x64_fms_scalar_(X,Y,Z) _simd_u8x64_fms_scalar_(X,Y,Y)
+#elif defined(_simd_u8x64_fms_)
+	#define _simd_u8x64_fms_scalar_(X,Y,Z) _simd_u8x64_fms_(X,_simd_u8x64_fill_scalar_(Y),_simd_u8x64_fill_scalar_(Z))
+	#define _simd_u8x1_fms_scalar_instruction_set _simd_u8x64_fms_instruction_set
+#endif
+#ifdef _simd_u8x64_fms_scalar_
+	#define _simd_u8x64_fms_scalar(X,Y,Z) _simd_u8x64_fms_scalar_(X,Y,Z)
+	#define _simd_u8x64_fms_scalar_enable() anvil::simd::IsInstructionSetSupported<_simd_u8x64_fms_scalar_instruction_set>()
+#else
+	#define _simd_u8x64_fms_scalar(X,Y,Z) _simd_u8x64_fms_safe(X,_simd_u8x64_fill_scalar_safe(Y),_simd_u8x64_fill_scalar_safe(Z))
+	#define _simd_u8x1_fms_scalar_enabled() true
 #endif
 
