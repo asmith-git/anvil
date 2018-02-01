@@ -152,13 +152,24 @@ static ANVIL_STRONG_INLINE __m128 ANVIL_SIMD_CALL _mm_set_ps(const float a, cons
 //! \todo __m128 _mm_shuffle_ps (__m128 a, __m128 b, unsigned int imm8)
 //! \todo __m128 _mm_sqrt_ps (__m128 a)
 //! \todo __m128 _mm_sqrt_ss (__m128 a)
-//! \todo void _mm_store_ps (float* mem_addr, __m128 a)
-//! \todo void _mm_store_ps1 (float* mem_addr, __m128 a)
-//! \todo void _mm_store_ss (float* mem_addr, __m128 a)
-//! \todo void _mm_store1_ps (float* mem_addr, __m128 a)
-//! \todo void _mm_storer_ps (float* mem_addr, __m128 a)
-//! \todo void _mm_storeu_ps (float* mem_addr, __m128 a)
-//! \todo void _mm_stream_ps (float* mem_addr, __m128 a)
+#define _mm_store_ps(X,Y) _mm_storeu_ps(X,Y)
+#define _mm_store_ps1(X,Y) _mm_store1_ps(X,Y)
+#define _mm_store_ss(X,Y) _mm_store1_ps(X,Y)
+static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL _mm_store1_ps(float* ptr, __m128 a) throw() {
+	float tmp;
+	vst1q_lane_f32(&tmp, a, 0);
+	for (int i = 0; i < 4; ++i) ptr[i] = tmp;
+}
+static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL _mm_storer_ps(float* ptr, __m128 a) throw() {
+	float buf[4];
+	_mm_store_ps(buf, a);
+	ptr[0] = buf[3];
+	ptr[1] = buf[2];
+	ptr[2] = buf[1];
+	ptr[3] = buf[0];
+}
+#define _mm_storeu_ps(X,Y) vst1q_f32(X,Y)
+#define _mm_stream_ps(X,Y) _mm_storeu_ps(X,Y)
 #define _mm_sub_ps(X,Y) vsubq_f32(X,Y)
 #define _mm_sub_ss(X,Y) vsetq_lane_f32(vget_lane_f32(vsub_f32(vget_low_f32(X), vget_low_f32(Y)),0), Y, 0)
 //! \todo _MM_TRANSPOSE4_PS (__m128 row0, __m128 row1, __m128 row2, __m128 row3)
