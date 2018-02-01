@@ -989,6 +989,12 @@
 #define _simd_f32x4_cast_f64_(X) _mm256_cvtps_pd(X)
 #define _simd_f32x4_cast_f64_instruction_set anvil::simd::IS_SSE_2 
 
+#define _simd_s32x8_cast_f32_(X) _mm256_cvtepi32_ps(X)
+#define _simd_s32x8_cast_f32_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x8_cast_s32_(X) _mm256_cvtps_epi32(X)
+#define _simd_f32x8_cast_s32_instruction_set anvil::simd::IS_AVX
+
 #endif
 
 // Types
@@ -1874,6 +1880,7 @@ _simd_extract(u8)
 #include "anvil/maths/simd/mod.hpp"
 #include "anvil/maths/simd/dim.hpp"
 #include "anvil/maths/simd/exp.hpp"
+#include "anvil/maths/simd/cast.hpp"
 
 namespace anvil { namespace simd {
 
