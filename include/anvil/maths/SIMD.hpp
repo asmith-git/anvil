@@ -1756,63 +1756,10 @@ typedef uint8_t	 _simd_u8x1;
 // Set
 
 #include "anvil/maths/simd/set.hpp"
-// Insert
 
-#define _simd_insert_(A,S)\
-	static ANVIL_STRONG_INLINE _simd_ ## A  ANVIL_SIMD_CALL _simd_ ## A ## _insert_safe(register _simd_ ## A x, int i, const register S s)  { reinterpret_cast<S*>(&x)[i] = s;  return x; }
-
-#define _simd_insert(T)\
-	_simd_insert_(T ## x2, _simd_ ## T ## x1)\
-	_simd_insert_(T ## x4, _simd_ ## T ## x1)\
-	_simd_insert_(T ## x8, _simd_ ## T ## x1)\
-	_simd_insert_(T ## x16, _simd_ ## T ## x1)\
-	_simd_insert_(T ## x32, _simd_ ## T ## x1)\
-	_simd_insert_(T ## x64, _simd_ ## T ## x1)
-
-_simd_insert(f64)
-_simd_insert(f32)
-_simd_insert(s64)
-_simd_insert(u64)
-_simd_insert(s32)
-_simd_insert(u32)
-_simd_insert(s16)
-_simd_insert(u16)
-_simd_insert(s8)
-_simd_insert(u8)
-
-#undef _simd_insert
-#undef _simd_insert_
+// Insert / Extract
 
 #include "anvil/maths/simd/insert.hpp"
-
-// Extract
-
-#define _simd_extract_(A,S)\
-	static ANVIL_STRONG_INLINE S ANVIL_SIMD_CALL _simd_ ## A ## _extract_safe(const register _simd_ ## A x, int i)  { return reinterpret_cast<const S*>(&x)[i]; }
-
-#define _simd_extract(T)\
-	_simd_extract_(T ## x2, _simd_ ## T ## x1)\
-	_simd_extract_(T ## x4, _simd_ ## T ## x1)\
-	_simd_extract_(T ## x8, _simd_ ## T ## x1)\
-	_simd_extract_(T ## x16, _simd_ ## T ## x1)\
-	_simd_extract_(T ## x32, _simd_ ## T ## x1)\
-	_simd_extract_(T ## x64, _simd_ ## T ## x1)
-
-_simd_extract(f64)
-_simd_extract(f32)
-_simd_extract(s64)
-_simd_extract(u64)
-_simd_extract(s32)
-_simd_extract(u32)
-_simd_extract(s16)
-_simd_extract(u16)
-_simd_extract(s8)
-_simd_extract(u8)
-
-#undef _simd_extract
-#undef _simd_extract_
-
-#include "anvil/maths/simd/extract.hpp"
 
 // Numeric Operators
 
