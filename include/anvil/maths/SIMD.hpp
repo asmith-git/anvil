@@ -971,6 +971,24 @@
 #define _simd_f32x8_fms_(X,Y,Z) _mm256_fmsub_ps(X,Y,Z)
 #define _simd_f32x8_fms_instruction_set anvil::simd::IS_FMA
 
+#define _simd_s32x4_cast_f64(X) _mm256_cvtepi32_pd(X)
+#define _simd_s32x4_cast_f32_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f64x4_cast_s32(X) _mm256_cvttpd_epi32(X)
+#define _simd_f32x4_cast_s32_instruction_set anvil::simd::IS_AVX
+
+#define _simd_s32x4_cast_f32(X) _mm_cvtepi32_ps(X)
+#define _simd_s32x4_cast_f32_instruction_set anvil::simd::IS_SSE_2
+
+#define _simd_f32x4_cast_s32(X) _mm_cvtps_epi32(X)
+#define _simd_f32x4_cast_s32_instruction_set anvil::simd::IS_SSE_2
+
+#define _simd_f64x4_cast_f32(X) _mm256_cvtpd_ps(X)
+#define _simd_f64x4_cast_f32_instruction_set anvil::simd::IS_AVX
+
+#define _simd_f32x4_cast_f64(X) _mm256_cvtps_pd(X)
+#define _simd_f32x4_cast_f64_instruction_set anvil::simd::IS_SSE_2 
+
 #endif
 
 // Types
