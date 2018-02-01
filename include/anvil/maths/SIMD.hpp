@@ -1002,16 +1002,16 @@
 #endif
 
 // Types
-#define _simd_f64x1 double
-#define _simd_f32x1 float
-#define _simd_s64x1 int64_t
-#define _simd_u64x1 uint64_t
-#define _simd_s32x1 int32_t
-#define _simd_u32x1 uint32_t
-#define _simd_s16x1 int16_t
-#define _simd_u16x1 uint16_t
-#define _simd_s8x1 int8_t
-#define _simd_u8x1 uint8_t
+typedef double	 _simd_f64x1;
+typedef float	 _simd_f32x1;
+typedef int64_t	 _simd_s64x1;
+typedef uint64_t _simd_u64x1;
+typedef int32_t	 _simd_s32x1;
+typedef uint32_t _simd_u32x1;
+typedef int16_t	 _simd_s16x1;
+typedef uint16_t _simd_u16x1;
+typedef int8_t	 _simd_s8x1;
+typedef uint8_t	 _simd_u8x1;
 
 #ifndef _simd_f64x2
 	struct _simd_f64x2 {
