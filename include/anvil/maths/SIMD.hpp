@@ -25,7 +25,11 @@
 
 #if ANVIL_ARCHITECTURE == ANVIL_X86 || ANVIL_ARCHITECTURE == ANVIL_X64
 	#define ANVIL_USE_INTEL_SIMD_INTRINSICS
+#if ANVIL_CPP_VER < 2011
 	#include <immintrin.h>
+#else
+	#include <zmmintrin.h>
+#endif
 	#include <intrin.h>
 
 	#define ANVIL_SIMD_CALL __vectorcall 
