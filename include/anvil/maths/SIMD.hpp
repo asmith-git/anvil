@@ -40,34 +40,105 @@
 #ifdef ANVIL_USE_INTEL_SIMD_INTRINSICS
 
 #define _simd_f64x2 __m128d
+
 #define _simd_f64x4 __m256d
+
+#define _simd_f64x4_splitlo_(X) _mm256_extractf128_pd(X,0)
+#define _simd_f64x4_splitlo_instruction_set anvil::simd::AVX
+#define _simd_f64x4_splithi_(X) _mm256_extractf128_pd(X,1)
+#define _simd_f64x4_splithi_instruction_set anvil::simd::AVX
+#define _simd_f64x4_combine_(X,Y) _mm256_insertf128_pd(_mm256_insertf128_pd(_mm256_undefined_pd(),X,0),Y,1)
+#define _simd_f64x4_combine_instruction_set anvil::simd::AVX
 
 #define _simd_f32x4 __m128
 #define _simd_f32x8 __m256
 
+#define _simd_f32x8_splitlo_(X) _mm256_extractf128_ps(X,0)
+#define _simd_f32x8_splitlo_instruction_set anvil::simd::AVX
+#define _simd_f32x8_splithi_(X) _mm256_extractf128_ps(X,1)
+#define _simd_f32x8_splithi_instruction_set anvil::simd::AVX
+#define _simd_f32x8_combine_(X,Y) _mm256_insertf128_ps(_mm256_insertf128_ps(_mm256_undefined_ps(),X,0),Y,1)
+#define _simd_f32x8_combine_instruction_set anvil::simd::AVX
+
 #define _simd_s64x2 __m128i
 #define _simd_s64x4 __m256i
+
+#define _simd_s64x4_splitlo_(X) _mm256_extractf128_si256(X,0)
+#define _simd_s64x4_splitlo_instruction_set anvil::simd::AVX
+#define _simd_s64x4_splithi_(X) _mm256_extractf128_si256(X,1)
+#define _simd_s64x4_splithi_instruction_set anvil::simd::AVX
+#define _simd_s64x4_combine_(X,Y) _mm256_insertf128_si256(_mm256_insertf128_si256(_mm256_undefined_si256(),X,0),Y,1)
+#define _simd_s64x4_combine_instruction_set anvil::simd::AVX
 
 #define _simd_u64x2 __m128i
 #define _simd_u64x4 __m256i
 
+#define _simd_u64x4_splitlo_(X)             _simd_s64x4_splitlo_(X)
+#define _simd_u64x4_splitlo_instruction_set _simd_s64x4_splitlo_instruction_set
+#define _simd_u64x4_splithi_(X)             _simd_s64x4_splithi_(X)
+#define _simd_u64x4_splithi_instruction_set _simd_s64x4_splithi_instruction_set
+#define _simd_u64x4_combine_(X,Y)           _simd_s64x4_combine_(X,Y)
+#define _simd_u64x4_combine_instruction_set _simd_s64x4_combine_instruction_set
+
 #define _simd_s32x4 __m128i
 #define _simd_s32x8 __m256i
+
+#define _simd_s32x8_splitlo_(X)             _simd_s64x4_splitlo_(X)
+#define _simd_s32x8_splitlo_instruction_set _simd_s64x4_splitlo_instruction_set
+#define _simd_s32x8_splithi_(X)             _simd_s64x4_splithi_(X)
+#define _simd_s32x8_splithi_instruction_set _simd_s64x4_splithi_instruction_set
+#define _simd_s32x8_combine_(X,Y)           _simd_s64x4_combine_(X,Y)
+#define _simd_s32x8_combine_instruction_set _simd_s64x4_combine_instruction_set
 
 #define _simd_u32x4 __m128i
 #define _simd_u32x8 __m256i
 
+#define _simd_u32x8_splitlo_(X)             _simd_s64x4_splitlo_(X)
+#define _simd_u32x8_splitlo_instruction_set _simd_s64x4_splitlo_instruction_set
+#define _simd_u32x8_splithi_(X)             _simd_s64x4_splithi_(X)
+#define _simd_u32x8_splithi_instruction_set _simd_s64x4_splithi_instruction_set
+#define _simd_u32x8_combine_(X,Y)           _simd_s64x4_combine_(X,Y)
+#define _simd_u32x8_combine_instruction_set _simd_s64x4_combine_instruction_set
+
 #define _simd_s16x8 __m128i
 #define _simd_s16x16 __m256i
+
+#define _simd_s16x16_splitlo_(X)             _simd_s64x4_splitlo_(X)
+#define _simd_s16x16_splitlo_instruction_set _simd_s64x4_splitlo_instruction_set
+#define _simd_s16x16_splithi_(X)             _simd_s64x4_splithi_(X)
+#define _simd_s16x16_splithi_instruction_set _simd_s64x4_splithi_instruction_set
+#define _simd_s16x16_combine_(X,Y)           _simd_s64x4_combine_(X,Y)
+#define _simd_s16x16_combine_instruction_set _simd_s64x4_combine_instruction_set
 
 #define _simd_u16x8 __m128i
 #define _simd_u16x16 __m256i
 
+#define _simd_u16x16_splitlo_(X)             _simd_s64x4_splitlo_(X)
+#define _simd_u16x16_splitlo_instruction_set _simd_s64x4_splitlo_instruction_set
+#define _simd_u16x16_splithi_(X)             _simd_s64x4_splithi_(X)
+#define _simd_u16x16_splithi_instruction_set _simd_s64x4_splithi_instruction_set
+#define _simd_u16x16_combine_(X,Y)           _simd_s64x4_combine_(X,Y)
+#define _simd_u16x16_combine_instruction_set _simd_s64x4_combine_instruction_set
+
 #define _simd_s8x16 __m128i
 #define _simd_s8x32 __m256i
 
+#define _simd_s8x32_splitlo_(X)             _simd_s64x4_splitlo_(X)
+#define _simd_s8x32_splitlo_instruction_set _simd_s64x4_splitlo_instruction_set
+#define _simd_s8x32_splithi_(X)             _simd_s64x4_splithi_(X)
+#define _simd_s8x32_splithi_instruction_set _simd_s64x4_splithi_instruction_set
+#define _simd_s8x32_combine_(X,Y)           _simd_s64x4_combine_(X,Y)
+#define _simd_s8x32_combine_instruction_set _simd_s64x4_combine_instruction_set
+
 #define _simd_u8x16 __m128i
 #define _simd_u8x32 __m256i
+
+#define _simd_u8x32_splitlo_(X)             _simd_s64x4_splitlo_(X)
+#define _simd_u8x32_splitlo_instruction_set _simd_s64x4_splitlo_instruction_set
+#define _simd_u8x32_splithi_(X)             _simd_s64x4_splithi_(X)
+#define _simd_u8x32_splithi_instruction_set _simd_s64x4_splithi_instruction_set
+#define _simd_u8x32_combine_(X,Y)           _simd_s64x4_combine_(X,Y)
+#define _simd_u8x32_combine_instruction_set _simd_s64x4_combine_instruction_set
 
 #define _simd_f64x2_load_(X) _mm_load_pd(X)
 #define _simd_f64x2_load_instruction_set anvil::simd::IS_SSE
@@ -1639,32 +1710,6 @@
 
 #include "anvil/maths/simd/splitlo.hpp"
 #include "anvil/maths/simd/splithi.hpp"
-
-#define _simd_combine_(A,B)\
-	static ANVIL_STRONG_INLINE _simd_ ## A  ANVIL_SIMD_CALL _simd_ ## A ## _combine_safe(const register _simd_ ## B x, const register _simd_ ## B y)  { _simd_ ## A tmp;  reinterpret_cast<_simd_ ## B *>(&tmp)[0] = x;  reinterpret_cast<_simd_ ## B *>(&tmp)[1] = x;  return tmp; }
-
-#define _simd_combine(T)\
-	_simd_combine_(T ## x2, T ## x1)\
-	_simd_combine_(T ## x4, T ## x2)\
-	_simd_combine_(T ## x8, T ## x4)\
-	_simd_combine_(T ## x16, T ## x8)\
-	_simd_combine_(T ## x32, T ## x16)\
-	_simd_combine_(T ## x64, T ## x32)
-
-	_simd_combine(f64)
-		_simd_combine(f32)
-		_simd_combine(s64)
-		_simd_combine(u64)
-		_simd_combine(s32)
-		_simd_combine(u32)
-		_simd_combine(s16)
-		_simd_combine(u16)
-		_simd_combine(s8)
-		_simd_combine(u8)
-
-#undef _simd_combine
-#undef _simd_combine_
-
 #include "anvil/maths/simd/combine.hpp"
 
 
