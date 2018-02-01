@@ -14,62 +14,70 @@
 
 typedef float32x4_t __m128;
 
+// Non-SSE Helpers
+
+#define _mm_not_ps(X) vreinterpretq_f32_s32(vmvnq_s32(vreinterpretq_s32_f32(X)))
+
+namespace anvil { namespace detail {
+	static ANVIL_CONSTEXPR_FN float f32_all_ones(const uint32_t aValue) { return *reinterpret_cast<const float*>(&aValue); }
+}}
+
+static ANVIL_CONSTEXPR_VAR const float ANVIL_ALL_ONE_F32 = anvil::detail::f32_all_ones(UINT32_MAX);
+
+// SSE Intrinsics
+
 #define _mm_add_ps(X,Y) vaddq_f32(X,Y)
 #define _mm_add_ss(X,Y) vsetq_lane_f32(vget_lane_f32(vadd_f32(vget_low_f32(X), vget_low_f32(Y)),0), Y, 0)
 #define _mm_and_ps(X,Y) vreinterpretq_f32_s32(vandq_s32(vreinterpretq_s32_f32(X),vreinterpretq_s32_f32(Y)))
-#define _mm_andnot_ps(X,Y) _mm_and_ps(vreinterpretq_f32_s32(vmvnq_s32(vreinterpretq_s32_f32(X))),Y)
+#define _mm_andnot_ps(X,Y) _mm_and_ps(_mm_not_ps(X),Y)
 #define _mm_cmpeq_ps(X,Y) vreinterpretq_f32_s32(vceqq_f32(vreinterpretq_s32_f32(X),vreinterpretq_s32_f32(Y)))
-//! \todo __m128 _mm_cmpeq_ss (__m128 a, __m128 b)
+#define _mm_cmpeq_ss(X,Y) vsetq_lane_f32(vgetq_lane_f32(X,0) == vgetq_lane_f32(Y,0) ? ANVIL_ALL_ONE_F32 : 0.f, Y, 0)
 static ANVIL_STRONG_INLINE __m128 ANVIL_SIMD_CALL _mm_cmpge_ps(const __m128 a, const __m128 b) throw() {
 	float bufA[4];
 	float bufB[4];
-	uint32_t bufC[4];
 	vst1q_f32(bufA, a);
 	vst1q_f32(bufB, b);
-	for (int i = 0; i < 4; ++i) bufC[i] bufA[i] >= bufB[i] ? UINT32_MAX : 0;
-	return vld1q_f32(reinterpret_cast<float*>(bufC));
+	for (int i = 0; i < 4; ++i) bufA[i] bufA[i] >= bufB[i] ? ANVIL_ALL_ONE_F32 : 0.f;
+	return vld1q_f32(reinterpret_cast<float*>(bufA));
 }
-//! \todo __m128 _mm_cmpge_ss (__m128 a, __m128 b)
+#define _mm_cmpeq_ss(X,Y) vsetq_lane_f32(vgetq_lane_f32(X,0) >= vgetq_lane_f32(Y,0) ? ANVIL_ALL_ONE_F32 : 0.f, Y, 0)
 static ANVIL_STRONG_INLINE __m128 ANVIL_SIMD_CALL _mm_cmpgt_ps(const __m128 a, const __m128 b) throw() {
 	float bufA[4];
 	float bufB[4];
-	uint32_t bufC[4];
 	vst1q_f32(bufA, a);
 	vst1q_f32(bufB, b);
-	for (int i = 0; i < 4; ++i) bufC[i] bufA[i] > bufB[i] ? UINT32_MAX : 0;
-	return vld1q_f32(reinterpret_cast<float*>(bufC));
+	for (int i = 0; i < 4; ++i) bufA[i] bufA[i] > bufB[i] ? ANVIL_ALL_ONE_F32 : 0.f;
+	return vld1q_f32(reinterpret_cast<float*>(bufA));
 }
-//! \todo __m128 _mm_cmpgt_ss (__m128 a, __m128 b)
+#define _mm_cmpeq_ss(X,Y) vsetq_lane_f32(vgetq_lane_f32(X,0) > vgetq_lane_f32(Y,0) ? ANVIL_ALL_ONE_F32 : 0.f, Y, 0)
 static ANVIL_STRONG_INLINE __m128 ANVIL_SIMD_CALL _mm_cmple_ps(const __m128 a, const __m128 b) throw() {
 	float bufA[4];
 	float bufB[4];
-	uint32_t bufC[4];
 	vst1q_f32(bufA, a);
 	vst1q_f32(bufB, b);
-	for (int i = 0; i < 4; ++i) bufC[i] bufA[i] <= bufB[i] ? UINT32_MAX : 0;
-	return vld1q_f32(reinterpret_cast<float*>(bufC));
+	for (int i = 0; i < 4; ++i) bufA[i] bufA[i] <= bufB[i] ? ANVIL_ALL_ONE_F32 : 0.f;
+	return vld1q_f32(reinterpret_cast<float*>(bufA));
 }
-//! \todo __m128 _mm_cmple_ss (__m128 a, __m128 b)
+#define _mm_cmpeq_ss(X,Y) vsetq_lane_f32(vgetq_lane_f32(X,0) <= vgetq_lane_f32(Y,0) ? ANVIL_ALL_ONE_F32 : 0.f, Y, 0)
 static ANVIL_STRONG_INLINE __m128 ANVIL_SIMD_CALL _mm_cmplt_ps(const __m128 a, const __m128 b) throw() {
 	float bufA[4];
 	float bufB[4];
-	uint32_t bufC[4];
 	vst1q_f32(bufA, a);
 	vst1q_f32(bufB, b);
-	for (int i = 0; i < 4; ++i) bufC[i] bufA[i] < bufB[i] ? UINT32_MAX : 0;
-	return vld1q_f32(reinterpret_cast<float*>(bufC));
+	for (int i = 0; i < 4; ++i) bufA[i] bufA[i] < bufB[i] ? ANVIL_ALL_ONE_F32 : 0.f;
+	return vld1q_f32(reinterpret_cast<float*>(bufA));
 }
-//! \todo __m128 _mm_cmplt_ss (__m128 a, __m128 b)
+#define _mm_cmpeq_ss(X,Y) vsetq_lane_f32(vgetq_lane_f32(X,0) < vgetq_lane_f32(Y,0) ? ANVIL_ALL_ONE_F32 : 0.f, Y, 0)
 #define _mm_cmpneq_ps(X,Y) vreinterpretq_f32_s32(vmvnq_s32(vceqq_f32(vreinterpretq_s32_f32(X),vreinterpretq_s32_f32(Y))))
-//! \todo __m128 _mm_cmpneq_ss (__m128 a, __m128 b)
+#define _mm_cmpeq_ss(X,Y) vsetq_lane_f32(vgetq_lane_f32(X,0) != vgetq_lane_f32(Y,0) ? ANVIL_ALL_ONE_F32 : 0.f, Y, 0)
 #define _mm_cmpnge_ps(X,Y) vreinterpretq_f32_s32(vmvnq_s32(vreinterpretq_s32_f32(_mm_cmpge_ps(X,Y)))))
-//! \todo __m128 _mm_cmpnge_ss (__m128 a, __m128 b)
+#define _mm_cmpnge_ss(X,Y) _mm_cmplt_ss(X,Y)
 #define _mm_cmpngt_ps(X,Y) vreinterpretq_f32_s32(vmvnq_s32(vreinterpretq_s32_f32(_mm_cmpgt_ps(X,Y))))
-//! \todo __m128 _mm_cmpngt_ss (__m128 a, __m128 b)
+#define _mm_cmpnge_ss(X,Y) _mm_cmple_ss(X,Y)
 #define _mm_cmpnle_ps(X,Y) vreinterpretq_f32_s32(vmvnq_s32(vreinterpretq_s32_f32(_mm_cmple_ps(X,Y))))
-//! \todo __m128 _mm_cmpnle_ss (__m128 a, __m128 b)
+#define _mm_cmpnle_ss(X,Y) _mm_cmpgt_ss(X,Y)
 #define _mm_cmpnlt_ps(X,Y) vreinterpretq_f32_s32(vmvnq_s32(vreinterpretq_s32_f32(_mm_cmplt_ps(X,Y))))
-//! \todo __m128 _mm_cmpnlt_ss (__m128 a, __m128 b)
+#define _mm_cmpnlt_ss(X,Y) _mm_cmpge_ss(X,Y)
 //! \todo __m128 _mm_cmpord_ps (__m128 a, __m128 b)
 //! \todo __m128 _mm_cmpord_ss (__m128 a, __m128 b)
 //! \todo __m128 _mm_cmpunord_ps (__m128 a, __m128 b)
@@ -161,6 +169,6 @@ static ANVIL_STRONG_INLINE __m128 ANVIL_SIMD_CALL _mm_set_ps(const float a, cons
 //! \todo int _mm_ucomilt_ss (__m128 a, __m128 b)
 //! \todo int _mm_ucomineq_ss (__m128 a, __m128 b)
 #define _mm_undefined_ps() __m128()
-//! \todo __m128 _mm_unpackhi_ps (__m128 a, __m128 b)
-//! \todo __m128 _mm_unpacklo_ps (__m128 a, __m128 b)
+#define _mm_unpackhi_ps(X,Y) vcombine_f32(vget_high_f32(X),vget_high_f32(Y))
+#define _mm_unpacklo_ps(X,Y) vcombine_f32(vget_low_f32(X),vget_low_f32(Y))
 #define _mm_xor_ps(X,Y) vreinterpretq_f32_s32(veorq_s32(vreinterpretq_s32_f32(X),vreinterpretq_s32_f32(Y)))
