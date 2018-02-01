@@ -91,9 +91,9 @@ static ANVIL_STRONG_INLINE __m128 ANVIL_SIMD_CALL _mm_div_ps(const __m128 a, con
 #define _mm_max_ss(X,Y) _mm_helper2_ss(vmax_f32,X,Y)
 #define _mm_min_ps(X,Y) vminq_f32(X,Y)
 #define _mm_min_ss(X,Y) _mm_helper2_ss(vmin_f32,X,Y)
-//! \todo __m128 _mm_move_ss (__m128 a, __m128 b)
-//! \todo __m128 _mm_movehl_ps (__m128 a, __m128 b)
-//! \todo __m128 _mm_movelh_ps (__m128 a, __m128 b)
+#define _mm_move_ss(X,Y)  vsetq_lane_f32(vgetq_lane_f32(X,0),Y,0)
+#define _mm_movehl_ps(X,Y) vcombine_f32(vget_high_f32(Y),vget_high_f32(X))
+#define _mm_movelh_ps(X,Y) vcombine_f32(vget_low_f32(X),vget_low_f32(Y))
 //! \todo int _mm_movemask_ps (__m128 a)
 #define _mm_mul_ps(X,Y) vmulq_f32(X,Y)
 #define _mm_mul_ss(X,Y) _mm_helper2_ss(vmul_f32,X,Y)
@@ -115,7 +115,7 @@ static ANVIL_STRONG_INLINE __m128 ANVIL_SIMD_CALL _mm_set_ps(const float a, cons
 #define _mm_set_ss(X) vsetq_lane_f32(X,_mm_setzero_ps(),0)
 #define _mm_set1_ps(X) vdupq_n_f32(X)
 #define _mm_setcsr(X)
-#define _mm_setr_ps(X,Y,Z,W) _mm_set_ps(W,Z,Y,X)
+#define _mm_setr_ps(X,Y,Z,W) vrev64q_f32(_mm_setr_ps(X,Y,Z,W))
 #define _mm_setzero_ps() _mm_set1_ps(0.f)
 #define _mm_sfence()
 //! \todo __m128 _mm_shuffle_ps (__m128 a, __m128 b, unsigned int imm8)
@@ -129,14 +129,7 @@ static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL _mm_store1_ps(float* ptr, __m128
 	vst1q_lane_f32(&tmp, a, 0);
 	for (int i = 0; i < 4; ++i) ptr[i] = tmp;
 }
-static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL _mm_storer_ps(float* ptr, __m128 a) throw() {
-	float buf[4];
-	_mm_store_ps(buf, a);
-	ptr[0] = buf[3];
-	ptr[1] = buf[2];
-	ptr[2] = buf[1];
-	ptr[3] = buf[0];
-}
+#define _mm_storer_ps(X,Y) _mm_store_ps(X,vrev64q_f32(Y))
 #define _mm_storeu_ps(X,Y) vst1q_f32(X,Y)
 #define _mm_stream_ps(X,Y) _mm_storeu_ps(X,Y)
 #define _mm_sub_ps(X,Y) vsubq_f32(X,Y)
