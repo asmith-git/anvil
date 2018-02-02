@@ -39,6 +39,26 @@ struct __m512i {
 	__m256i lo;
 	__m256i hi;
 };
+
+#define _mm_loadu_ps(P) vld1q_f32(reinterpret_cast<const float*>(P))
+#define _mm_load_ps(P) _mm_loadu_ps(P)
+#define _mm_loadr_ps(P) vrev64q_f32(_mm_loadu_ps(P))
+#define _mm_loadu_pd(P) _mm_loadu_ps(P)
+#define _mm_load_pd(P) _mm_load_ps(P)
+#define _mm_loadr_pd(P) _mm_loadr_ps(P)
+#define _mm_loadu_si128(P) vld1q_u32(reinterpret_cast<const uint32_t*>(P))
+#define _mm_load_si128(P) _mm_loadu_si128(P)
+#define _mm_loadr_si128(P) vrev64q_u32(_mm_loadu_si128(P))
+#define _mm_storeu_ps(P,X) vst1q_f32(reinterpret_cast<float*>(P),X)
+#define _mm_store_ps(P,X) _mm_storeu_ps(P,X)
+#define _mm_storer_ps(P,X) vrev64q_f32(_mm_storeu_ps(P,X))
+#define _mm_storeu_pd(P,X) _mm_storeu_ps(P,X)
+#define _mm_store_pd(P,X) _mm_store_ps(P,X)
+#define _mm_storer_pd(P,X) _mm_storer_ps(_mm_storeu_ps(P,X))
+#define _mm_storeu_si128(P,X) vst1q_u32(reinterpret_cast<uint32_t*>(P),X)
+#define _mm_store_si128(P,X) _mm_storeu_si128(P,X)
+#define _mm_storer_si128(P,X) vrev64q_u32(_mm_storeu_si128(P,X))
+
 #define _mm_add_pd(X, Y) (vaddq_f32(X, Y))
 static ANVIL_STRONG_INLINE __m256d ANVIL_SIMD_CALL _mm256_add_pd(const __m256d x, const __m256d y) {
 	__m256d tmp;
