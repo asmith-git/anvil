@@ -40,24 +40,172 @@ struct __m512i {
 	__m256i hi;
 };
 
+// -- LOAD / STORE -- 
+
+static ANVIL_STRONG_INLINE __m128d ANVIL_SIMD_CALL _mm_loadu_pd(const double* p) {
+	const float buf[4] = { static_cast<float>(p[0]), static_cast<float>(p[1]), 0.f, 0.f };
+	return vld1q_f32(buf);
+}
+#define _mm_load_pd(P) _mm_loadu_pd(P)
+#define _mm_loadr_pd(P) vrev64q_f32(_mm_loadu_pd(P)) //! \bug Vector is wrong length for reverse
 #define _mm_loadu_ps(P) vld1q_f32(reinterpret_cast<const float*>(P))
 #define _mm_load_ps(P) _mm_loadu_ps(P)
 #define _mm_loadr_ps(P) vrev64q_f32(_mm_loadu_ps(P))
-#define _mm_loadu_pd(P) _mm_loadu_ps(P)
-#define _mm_load_pd(P) _mm_load_ps(P)
-#define _mm_loadr_pd(P) _mm_loadr_ps(P)
 #define _mm_loadu_si128(P) vld1q_u32(reinterpret_cast<const uint32_t*>(P))
 #define _mm_load_si128(P) _mm_loadu_si128(P)
 #define _mm_loadr_si128(P) vrev64q_u32(_mm_loadu_si128(P))
+
+
+static ANVIL_STRONG_INLINE void _mm_storeu_pd(double* p, const __m128d x) {
+	float buf[4];
+	vst1q_f32(buf, x);
+	p[0] = static_cast<double>(buf[0]);
+	p[1] = static_cast<double>(buf[1]);
+}
+#define _mm_store_pd(P,X) _mm_storeu_pd(P,X)
+#define _mm_storer_pd(P,X) _mm_storeu_pd(P,vrev64q_u32(X)) //! \bug Vector is wrong length for reverse
 #define _mm_storeu_ps(P,X) vst1q_f32(reinterpret_cast<float*>(P),X)
 #define _mm_store_ps(P,X) _mm_storeu_ps(P,X)
-#define _mm_storer_ps(P,X) vrev64q_f32(_mm_storeu_ps(P,X))
-#define _mm_storeu_pd(P,X) _mm_storeu_ps(P,X)
-#define _mm_store_pd(P,X) _mm_store_ps(P,X)
-#define _mm_storer_pd(P,X) _mm_storer_ps(_mm_storeu_ps(P,X))
+#define _mm_storer_ps(P,X) _mm_storeu_ps(P,vrev64q_f32(X))
 #define _mm_storeu_si128(P,X) vst1q_u32(reinterpret_cast<uint32_t*>(P),X)
 #define _mm_store_si128(P,X) _mm_storeu_si128(P,X)
-#define _mm_storer_si128(P,X) vrev64q_u32(_mm_storeu_si128(P,X))
+#define _mm_storer_si128(P,X) _mm_storeu_si128(P,vrev64q_u32(X))
+
+static ANVIL_STRONG_INLINE __m256d ANVIL_SIMD_CALL _mm256_loadu_pd(const double* const p) {
+	__m256d tmp;
+	tmp.lo = _mm_loadu_pd(p);
+	tmp.hi = _mm_loadu_pd(p + 2);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m256d ANVIL_SIMD_CALL _mm256_loadr_pd(const double* const p) {
+	__m256d tmp;
+	tmp.hi = _mm_loadr_pd(p);
+	tmp.lo = _mm_loadr_pd(p + 2);
+	return tmp;
+}
+#define _mm256_load_pd(P) _mm256_loadu_pd(P)
+static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL _mm256_storeu_pd(double* const p, __m256d x) {
+	_mm_storeu_pd(p, x.lo);
+	_mm_storeu_pd(p + 2, x.hi);
+}
+static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL _mm256_storer_pd(double* const p, __m256d x) {
+	_mm_storeu_pd(p, x.hi);
+	_mm_storeu_pd(p + 2, x.lo);
+}
+#define _mm256_store_pd(P,X) _mm256_storeu_pd(P,X)
+static ANVIL_STRONG_INLINE __m256 ANVIL_SIMD_CALL _mm256_loadu_ps(const float* const p) {
+	__m256 tmp;
+	tmp.lo = _mm_loadu_ps(p);
+	tmp.hi = _mm_loadu_ps(p + 4);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m256 ANVIL_SIMD_CALL _mm256_loadr_ps(const float* const p) {
+	__m256 tmp;
+	tmp.hi = _mm_loadr_ps(p);
+	tmp.lo = _mm_loadr_ps(p + 4);
+	return tmp;
+}
+#define _mm256_load_ps(P) _mm256_loadu_ps(P)
+static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL _mm256_storeu_ps(float* const p, __m256 x) {
+	_mm_storeu_ps(p, x.lo);
+	_mm_storeu_ps(p + 4, x.hi);
+}
+static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL _mm256_storer_ps(float* const p, __m256 x) {
+	_mm_storeu_ps(p, x.hi);
+	_mm_storeu_ps(p + 4, x.lo);
+}
+#define _mm256_store_ps(P,X) _mm256_storeu_ps(P,X)
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_loadu_si256(const uint32_t* const p) {
+	__m256i tmp;
+	tmp.lo = _mm_loadu_si128(p);
+	tmp.hi = _mm_loadu_si128(p + 4);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_loadr_si256(const uint32_t* const p) {
+	__m256i tmp;
+	tmp.hi = _mm_loadr_si128(p);
+	tmp.lo = _mm_loadr_si128(p + 4);
+	return tmp;
+}
+#define _mm256_load_si256(P) _mm256_loadu_si256(P)
+static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL _mm256_storeu_si256(uint32_t* const p, __m256i x) {
+	_mm_storeu_si128(p, x.lo);
+	_mm_storeu_si128(p + 4, x.hi);
+}
+static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL _mm256_storer_si256(uint32_t* const p, __m256i x) {
+	_mm_storeu_si128(p, x.hi);
+	_mm_storeu_si128(p + 4, x.lo);
+}
+#define _mm256_store_si256(P,X) _mm256_storeu_si256(P,X)
+static ANVIL_STRONG_INLINE __m512d ANVIL_SIMD_CALL _mm512_loadu_pd(const double* const p) {
+	__m512d tmp;
+	tmp.lo = _mm256_loadu_pd(p);
+	tmp.hi = _mm256_loadu_pd(p + 4);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m512d ANVIL_SIMD_CALL _mm512_loadr_pd(const double* const p) {
+	__m512d tmp;
+	tmp.hi = _mm256_loadr_pd(p);
+	tmp.lo = _mm256_loadr_pd(p + 4);
+	return tmp;
+}
+#define _mm512_load_pd(P) _mm512_loadu_pd(P)
+static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL _mm512_storeu_pd(double* const p, __m512d x) {
+	_mm256_storeu_pd(p, x.lo);
+	_mm256_storeu_pd(p + 4, x.hi);
+}
+static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL _mm512_storer_pd(double* const p, __m512d x) {
+	_mm256_storeu_pd(p, x.hi);
+	_mm256_storeu_pd(p + 4, x.lo);
+}
+#define _mm512_store_pd(P,X) _mm512_storeu_pd(P,X)
+static ANVIL_STRONG_INLINE __m512 ANVIL_SIMD_CALL _mm512_loadu_ps(const float* const p) {
+	__m512 tmp;
+	tmp.lo = _mm256_loadu_ps(p);
+	tmp.hi = _mm256_loadu_ps(p + 8);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m512 ANVIL_SIMD_CALL _mm512_loadr_ps(const float* const p) {
+	__m512 tmp;
+	tmp.hi = _mm256_loadr_ps(p);
+	tmp.lo = _mm256_loadr_ps(p + 8);
+	return tmp;
+}
+#define _mm512_load_ps(P) _mm512_loadu_ps(P)
+static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL _mm512_storeu_ps(float* const p, __m512 x) {
+	_mm256_storeu_ps(p, x.lo);
+	_mm256_storeu_ps(p + 8, x.hi);
+}
+static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL _mm512_storer_ps(float* const p, __m512 x) {
+	_mm256_storeu_ps(p, x.hi);
+	_mm256_storeu_ps(p + 8, x.lo);
+}
+#define _mm512_store_ps(P,X) _mm512_storeu_ps(P,X)
+static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_loadu_si512(const uint32_t* const p) {
+	__m512i tmp;
+	tmp.lo = _mm256_loadu_si256(p);
+	tmp.hi = _mm256_loadu_si256(p + 8);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_loadr_si512(const uint32_t* const p) {
+	__m512i tmp;
+	tmp.hi = _mm256_loadr_si256(p);
+	tmp.lo = _mm256_loadr_si256(p + 8);
+	return tmp;
+}
+#define _mm512_load_si512(P) _mm512_loadu_si512(P)
+static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL _mm512_storeu_si512(uint32_t* const p, __m512i x) {
+	_mm256_storeu_si256(p, x.lo);
+	_mm256_storeu_si256(p + 8, x.hi);
+}
+static ANVIL_STRONG_INLINE void ANVIL_SIMD_CALL _mm512_storer_si512(uint32_t* const p, __m512i x) {
+	_mm256_storeu_si256(p, x.hi);
+	_mm256_storeu_si256(p + 8, x.lo);
+}
+#define _mm512_store_si512(P,X) _mm512_storeu_si512(P,X)
+
+
+// -- ADD / SUB / MUL / DIV / MIN / MAX --
 
 #define _mm_add_pd(X, Y) (vaddq_f32(X, Y))
 static ANVIL_STRONG_INLINE __m256d ANVIL_SIMD_CALL _mm256_add_pd(const __m256d x, const __m256d y) {
