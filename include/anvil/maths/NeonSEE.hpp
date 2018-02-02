@@ -12,6 +12,12 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
+
+#include <arm_neon.h>
+#include "anvil/core/Keywords.hpp"
+
+#define ANVIL_SIMD_CALL ANVIL_CALL
+
 typedef float32x4_t __m128;
 typedef __m128 __m128d;
 typedef uint32x4_t __m128i;
@@ -34,8 +40,8 @@ struct __m512i {
 	__m256i hi;
 };
 #define _mm_add_pd(X, Y) (vaddq_f32(X, Y))
-static ANVIL_STRONG_INLINE __256d ANVIL_SIMD_CALL _mm256_add_pd(const __256d x, const __256d y) {
-	__256d tmp;
+static ANVIL_STRONG_INLINE __m256d ANVIL_SIMD_CALL _mm256_add_pd(const __m256d x, const __m256d y) {
+	__m256d tmp;
 	_mm_add_pd(x.lo, y.lo);
 	_mm_add_pd(x.hi, y.hi);
 	return tmp;
@@ -47,8 +53,8 @@ static ANVIL_STRONG_INLINE __m512d ANVIL_SIMD_CALL _mm512_add_pd(const __m512d x
 	return tmp;
 }
 #define _mm_sub_pd(X, Y) (vsubq_f32(X, Y))
-static ANVIL_STRONG_INLINE __256d ANVIL_SIMD_CALL _mm256_sub_pd(const __256d x, const __256d y) {
-	__256d tmp;
+static ANVIL_STRONG_INLINE __m256d ANVIL_SIMD_CALL _mm256_sub_pd(const __m256d x, const __m256d y) {
+	__m256d tmp;
 	_mm_sub_pd(x.lo, y.lo);
 	_mm_sub_pd(x.hi, y.hi);
 	return tmp;
@@ -60,8 +66,8 @@ static ANVIL_STRONG_INLINE __m512d ANVIL_SIMD_CALL _mm512_sub_pd(const __m512d x
 	return tmp;
 }
 #define _mm_mul_pd(X, Y) (vmulq_f32(X, Y))
-static ANVIL_STRONG_INLINE __256d ANVIL_SIMD_CALL _mm256_mul_pd(const __256d x, const __256d y) {
-	__256d tmp;
+static ANVIL_STRONG_INLINE __m256d ANVIL_SIMD_CALL _mm256_mul_pd(const __m256d x, const __m256d y) {
+	__m256d tmp;
 	_mm_mul_pd(x.lo, y.lo);
 	_mm_mul_pd(x.hi, y.hi);
 	return tmp;
@@ -72,9 +78,36 @@ static ANVIL_STRONG_INLINE __m512d ANVIL_SIMD_CALL _mm512_mul_pd(const __m512d x
 	_mm256_mul_pd(x.hi, y.hi);
 	return tmp;
 }
-#define _mm_min_pd(X, Y) (minq_f32(X, Y))
-static ANVIL_STRONG_INLINE __256d ANVIL_SIMD_CALL _mm256_min_pd(const __256d x, const __256d y) {
-	__256d tmp;
+static ANVIL_STRONG_INLINE __m128d ANVIL_SIMD_CALL _mm_div_pd(const __m128d x, const __m128d y) {
+	double bufA[2];
+	double bufB[2];
+	_mm_storeu_pd(bufA, x);
+	_mm_storeu_pd(bufB, y);
+	for (int i = 0; i < 2; ++i) bufA[i] = bufA[i] / bufB[i];
+	return _mm_loadu_pd(bufA);
+}
+static ANVIL_STRONG_INLINE __m256d ANVIL_SIMD_CALL _mm256_div_pd(const __m256d x, const __m256d y) {
+	__m256d tmp;
+	_mm_div_pd(x.lo, y.lo);
+	_mm_div_pd(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m512d ANVIL_SIMD_CALL _mm512_div_pd(const __m512d x, const __m512d y) {
+	__m512d tmp;
+	_mm256_div_pd(x.lo, y.lo);
+	_mm256_div_pd(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m128d ANVIL_SIMD_CALL _mm_min_pd(const __m128d x, const __m128d y) {
+	double bufA[2];
+	double bufB[2];
+	_mm_storeu_pd(bufA, x);
+	_mm_storeu_pd(bufB, y);
+	for (int i = 0; i < 2; ++i) bufA[i] = std::min(bufA[i], bufB[i]);;
+	return _mm_loadu_pd(bufA);
+}
+static ANVIL_STRONG_INLINE __m256d ANVIL_SIMD_CALL _mm256_min_pd(const __m256d x, const __m256d y) {
+	__m256d tmp;
 	_mm_min_pd(x.lo, y.lo);
 	_mm_min_pd(x.hi, y.hi);
 	return tmp;
@@ -85,9 +118,16 @@ static ANVIL_STRONG_INLINE __m512d ANVIL_SIMD_CALL _mm512_min_pd(const __m512d x
 	_mm256_min_pd(x.hi, y.hi);
 	return tmp;
 }
-#define _mm_max_pd(X, Y) (maxq_f32(X, Y))
-static ANVIL_STRONG_INLINE __256d ANVIL_SIMD_CALL _mm256_max_pd(const __256d x, const __256d y) {
-	__256d tmp;
+static ANVIL_STRONG_INLINE __m128d ANVIL_SIMD_CALL _mm_max_pd(const __m128d x, const __m128d y) {
+	double bufA[2];
+	double bufB[2];
+	_mm_storeu_pd(bufA, x);
+	_mm_storeu_pd(bufB, y);
+	for (int i = 0; i < 2; ++i) bufA[i] = std::max(bufA[i], bufB[i]);;
+	return _mm_loadu_pd(bufA);
+}
+static ANVIL_STRONG_INLINE __m256d ANVIL_SIMD_CALL _mm256_max_pd(const __m256d x, const __m256d y) {
+	__m256d tmp;
 	_mm_max_pd(x.lo, y.lo);
 	_mm_max_pd(x.hi, y.hi);
 	return tmp;
@@ -99,8 +139,8 @@ static ANVIL_STRONG_INLINE __m512d ANVIL_SIMD_CALL _mm512_max_pd(const __m512d x
 	return tmp;
 }
 #define _mm_add_ps(X, Y) (vaddq_f32(X, Y))
-static ANVIL_STRONG_INLINE __256 ANVIL_SIMD_CALL _mm256_add_ps(const __256 x, const __256 y) {
-	__256 tmp;
+static ANVIL_STRONG_INLINE __m256 ANVIL_SIMD_CALL _mm256_add_ps(const __m256 x, const __m256 y) {
+	__m256 tmp;
 	_mm_add_ps(x.lo, y.lo);
 	_mm_add_ps(x.hi, y.hi);
 	return tmp;
@@ -112,8 +152,8 @@ static ANVIL_STRONG_INLINE __m512 ANVIL_SIMD_CALL _mm512_add_ps(const __m512 x, 
 	return tmp;
 }
 #define _mm_sub_ps(X, Y) (vsubq_f32(X, Y))
-static ANVIL_STRONG_INLINE __256 ANVIL_SIMD_CALL _mm256_sub_ps(const __256 x, const __256 y) {
-	__256 tmp;
+static ANVIL_STRONG_INLINE __m256 ANVIL_SIMD_CALL _mm256_sub_ps(const __m256 x, const __m256 y) {
+	__m256 tmp;
 	_mm_sub_ps(x.lo, y.lo);
 	_mm_sub_ps(x.hi, y.hi);
 	return tmp;
@@ -125,8 +165,8 @@ static ANVIL_STRONG_INLINE __m512 ANVIL_SIMD_CALL _mm512_sub_ps(const __m512 x, 
 	return tmp;
 }
 #define _mm_mul_ps(X, Y) (vmulq_f32(X, Y))
-static ANVIL_STRONG_INLINE __256 ANVIL_SIMD_CALL _mm256_mul_ps(const __256 x, const __256 y) {
-	__256 tmp;
+static ANVIL_STRONG_INLINE __m256 ANVIL_SIMD_CALL _mm256_mul_ps(const __m256 x, const __m256 y) {
+	__m256 tmp;
 	_mm_mul_ps(x.lo, y.lo);
 	_mm_mul_ps(x.hi, y.hi);
 	return tmp;
@@ -137,9 +177,36 @@ static ANVIL_STRONG_INLINE __m512 ANVIL_SIMD_CALL _mm512_mul_ps(const __m512 x, 
 	_mm256_mul_ps(x.hi, y.hi);
 	return tmp;
 }
-#define _mm_min_ps(X, Y) (minq_f32(X, Y))
-static ANVIL_STRONG_INLINE __256 ANVIL_SIMD_CALL _mm256_min_ps(const __256 x, const __256 y) {
-	__256 tmp;
+static ANVIL_STRONG_INLINE __m128 ANVIL_SIMD_CALL _mm_div_ps(const __m128 x, const __m128 y) {
+	float bufA[4];
+	float bufB[4];
+	_mm_storeu_ps(bufA, x);
+	_mm_storeu_ps(bufB, y);
+	for (int i = 0; i < 4; ++i) bufA[i] = bufA[i] / bufB[i];
+	return _mm_loadu_ps(bufA);
+}
+static ANVIL_STRONG_INLINE __m256 ANVIL_SIMD_CALL _mm256_div_ps(const __m256 x, const __m256 y) {
+	__m256 tmp;
+	_mm_div_ps(x.lo, y.lo);
+	_mm_div_ps(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m512 ANVIL_SIMD_CALL _mm512_div_ps(const __m512 x, const __m512 y) {
+	__m512 tmp;
+	_mm256_div_ps(x.lo, y.lo);
+	_mm256_div_ps(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m128 ANVIL_SIMD_CALL _mm_min_ps(const __m128 x, const __m128 y) {
+	float bufA[4];
+	float bufB[4];
+	_mm_storeu_ps(bufA, x);
+	_mm_storeu_ps(bufB, y);
+	for (int i = 0; i < 4; ++i) bufA[i] = std::min(bufA[i], bufB[i]);;
+	return _mm_loadu_ps(bufA);
+}
+static ANVIL_STRONG_INLINE __m256 ANVIL_SIMD_CALL _mm256_min_ps(const __m256 x, const __m256 y) {
+	__m256 tmp;
 	_mm_min_ps(x.lo, y.lo);
 	_mm_min_ps(x.hi, y.hi);
 	return tmp;
@@ -150,9 +217,16 @@ static ANVIL_STRONG_INLINE __m512 ANVIL_SIMD_CALL _mm512_min_ps(const __m512 x, 
 	_mm256_min_ps(x.hi, y.hi);
 	return tmp;
 }
-#define _mm_max_ps(X, Y) (maxq_f32(X, Y))
-static ANVIL_STRONG_INLINE __256 ANVIL_SIMD_CALL _mm256_max_ps(const __256 x, const __256 y) {
-	__256 tmp;
+static ANVIL_STRONG_INLINE __m128 ANVIL_SIMD_CALL _mm_max_ps(const __m128 x, const __m128 y) {
+	float bufA[4];
+	float bufB[4];
+	_mm_storeu_ps(bufA, x);
+	_mm_storeu_ps(bufB, y);
+	for (int i = 0; i < 4; ++i) bufA[i] = std::max(bufA[i], bufB[i]);;
+	return _mm_loadu_ps(bufA);
+}
+static ANVIL_STRONG_INLINE __m256 ANVIL_SIMD_CALL _mm256_max_ps(const __m256 x, const __m256 y) {
+	__m256 tmp;
 	_mm_max_ps(x.lo, y.lo);
 	_mm_max_ps(x.hi, y.hi);
 	return tmp;
@@ -164,8 +238,8 @@ static ANVIL_STRONG_INLINE __m512 ANVIL_SIMD_CALL _mm512_max_ps(const __m512 x, 
 	return tmp;
 }
 #define _mm_add_epi64(X, Y) vreinterpretq_u32_s32(vaddq_s32(vreinterpretq_s32_u32(name), vreinterpretq_s32_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_add_epi64(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_add_epi64(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_add_epi64(x.lo, y.lo);
 	_mm_add_epi64(x.hi, y.hi);
 	return tmp;
@@ -177,8 +251,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_add_epi64(const __m512
 	return tmp;
 }
 #define _mm_sub_epi64(X, Y) vreinterpretq_u32_s32(vsubq_s32(vreinterpretq_s32_u32(name), vreinterpretq_s32_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_sub_epi64(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_sub_epi64(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_sub_epi64(x.lo, y.lo);
 	_mm_sub_epi64(x.hi, y.hi);
 	return tmp;
@@ -190,8 +264,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_sub_epi64(const __m512
 	return tmp;
 }
 #define _mm_mul_epi64(X, Y) vreinterpretq_u32_s32(vmulq_s32(vreinterpretq_s32_u32(name), vreinterpretq_s32_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_mul_epi64(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_mul_epi64(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_mul_epi64(x.lo, y.lo);
 	_mm_mul_epi64(x.hi, y.hi);
 	return tmp;
@@ -202,9 +276,36 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_mul_epi64(const __m512
 	_mm256_mul_epi64(x.hi, y.hi);
 	return tmp;
 }
-#define _mm_min_epi64(X, Y) vreinterpretq_u32_s32(minq_s32(vreinterpretq_s32_u32(name), vreinterpretq_s32_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_min_epi64(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m128i ANVIL_SIMD_CALL _mm_div_epi64(const __m128i x, const __m128i y) {
+	int64_t bufA[2];
+	int64_t bufB[2];
+	_mm_storeu_epi64(bufA, x);
+	_mm_storeu_epi64(bufB, y);
+	for (int i = 0; i < 2; ++i) bufA[i] = bufA[i] / bufB[i];
+	return _mm_loadu_epi64(bufA);
+}
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_div_epi64(const __m256i x, const __m256i y) {
+	__m256i tmp;
+	_mm_div_epi64(x.lo, y.lo);
+	_mm_div_epi64(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_div_epi64(const __m512i x, const __m512i y) {
+	__m512i tmp;
+	_mm256_div_epi64(x.lo, y.lo);
+	_mm256_div_epi64(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m128i ANVIL_SIMD_CALL _mm_min_epi64(const __m128i x, const __m128i y) {
+	int64_t bufA[2];
+	int64_t bufB[2];
+	_mm_storeu_epi64(bufA, x);
+	_mm_storeu_epi64(bufB, y);
+	for (int i = 0; i < 2; ++i) bufA[i] = std::min(bufA[i], bufB[i]);;
+	return _mm_loadu_epi64(bufA);
+}
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_min_epi64(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_min_epi64(x.lo, y.lo);
 	_mm_min_epi64(x.hi, y.hi);
 	return tmp;
@@ -216,8 +317,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_min_epi64(const __m512
 	return tmp;
 }
 #define _mm_max_epi64(X, Y) vreinterpretq_u32_s32(maxq_s32(vreinterpretq_s32_u32(name), vreinterpretq_s32_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_max_epi64(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_max_epi64(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_max_epi64(x.lo, y.lo);
 	_mm_max_epi64(x.hi, y.hi);
 	return tmp;
@@ -229,8 +330,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_max_epi64(const __m512
 	return tmp;
 }
 #define _mm_add_epu64(X, Y) (vaddq_u32(X, Y))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_add_epu64(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_add_epu64(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_add_epu64(x.lo, y.lo);
 	_mm_add_epu64(x.hi, y.hi);
 	return tmp;
@@ -242,8 +343,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_add_epu64(const __m512
 	return tmp;
 }
 #define _mm_sub_epu64(X, Y) (vsubq_u32(X, Y))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_sub_epu64(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_sub_epu64(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_sub_epu64(x.lo, y.lo);
 	_mm_sub_epu64(x.hi, y.hi);
 	return tmp;
@@ -255,8 +356,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_sub_epu64(const __m512
 	return tmp;
 }
 #define _mm_mul_epu64(X, Y) (vmulq_u32(X, Y))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_mul_epu64(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_mul_epu64(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_mul_epu64(x.lo, y.lo);
 	_mm_mul_epu64(x.hi, y.hi);
 	return tmp;
@@ -267,9 +368,36 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_mul_epu64(const __m512
 	_mm256_mul_epu64(x.hi, y.hi);
 	return tmp;
 }
-#define _mm_min_epu64(X, Y) (minq_u32(X, Y))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_min_epu64(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m128i ANVIL_SIMD_CALL _mm_div_epu64(const __m128i x, const __m128i y) {
+	uint64_t bufA[2];
+	uint64_t bufB[2];
+	_mm_storeu_epu64(bufA, x);
+	_mm_storeu_epu64(bufB, y);
+	for (int i = 0; i < 2; ++i) bufA[i] = bufA[i] / bufB[i];
+	return _mm_loadu_epu64(bufA);
+}
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_div_epu64(const __m256i x, const __m256i y) {
+	__m256i tmp;
+	_mm_div_epu64(x.lo, y.lo);
+	_mm_div_epu64(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_div_epu64(const __m512i x, const __m512i y) {
+	__m512i tmp;
+	_mm256_div_epu64(x.lo, y.lo);
+	_mm256_div_epu64(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m128i ANVIL_SIMD_CALL _mm_min_epu64(const __m128i x, const __m128i y) {
+	uint64_t bufA[2];
+	uint64_t bufB[2];
+	_mm_storeu_epu64(bufA, x);
+	_mm_storeu_epu64(bufB, y);
+	for (int i = 0; i < 2; ++i) bufA[i] = std::min(bufA[i], bufB[i]);;
+	return _mm_loadu_epu64(bufA);
+}
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_min_epu64(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_min_epu64(x.lo, y.lo);
 	_mm_min_epu64(x.hi, y.hi);
 	return tmp;
@@ -281,8 +409,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_min_epu64(const __m512
 	return tmp;
 }
 #define _mm_max_epu64(X, Y) (maxq_u32(X, Y))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_max_epu64(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_max_epu64(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_max_epu64(x.lo, y.lo);
 	_mm_max_epu64(x.hi, y.hi);
 	return tmp;
@@ -294,8 +422,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_max_epu64(const __m512
 	return tmp;
 }
 #define _mm_add_epi32(X, Y) vreinterpretq_u32_s32(vaddq_s32(vreinterpretq_s32_u32(name), vreinterpretq_s32_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_add_epi32(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_add_epi32(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_add_epi32(x.lo, y.lo);
 	_mm_add_epi32(x.hi, y.hi);
 	return tmp;
@@ -307,8 +435,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_add_epi32(const __m512
 	return tmp;
 }
 #define _mm_sub_epi32(X, Y) vreinterpretq_u32_s32(vsubq_s32(vreinterpretq_s32_u32(name), vreinterpretq_s32_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_sub_epi32(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_sub_epi32(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_sub_epi32(x.lo, y.lo);
 	_mm_sub_epi32(x.hi, y.hi);
 	return tmp;
@@ -320,8 +448,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_sub_epi32(const __m512
 	return tmp;
 }
 #define _mm_mul_epi32(X, Y) vreinterpretq_u32_s32(vmulq_s32(vreinterpretq_s32_u32(name), vreinterpretq_s32_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_mul_epi32(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_mul_epi32(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_mul_epi32(x.lo, y.lo);
 	_mm_mul_epi32(x.hi, y.hi);
 	return tmp;
@@ -332,9 +460,36 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_mul_epi32(const __m512
 	_mm256_mul_epi32(x.hi, y.hi);
 	return tmp;
 }
-#define _mm_min_epi32(X, Y) vreinterpretq_u32_s32(minq_s32(vreinterpretq_s32_u32(name), vreinterpretq_s32_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_min_epi32(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m128i ANVIL_SIMD_CALL _mm_div_epi32(const __m128i x, const __m128i y) {
+	int32_t bufA[4];
+	int32_t bufB[4];
+	_mm_storeu_epi32(bufA, x);
+	_mm_storeu_epi32(bufB, y);
+	for (int i = 0; i < 4; ++i) bufA[i] = bufA[i] / bufB[i];
+	return _mm_loadu_epi32(bufA);
+}
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_div_epi32(const __m256i x, const __m256i y) {
+	__m256i tmp;
+	_mm_div_epi32(x.lo, y.lo);
+	_mm_div_epi32(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_div_epi32(const __m512i x, const __m512i y) {
+	__m512i tmp;
+	_mm256_div_epi32(x.lo, y.lo);
+	_mm256_div_epi32(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m128i ANVIL_SIMD_CALL _mm_min_epi32(const __m128i x, const __m128i y) {
+	int32_t bufA[4];
+	int32_t bufB[4];
+	_mm_storeu_epi32(bufA, x);
+	_mm_storeu_epi32(bufB, y);
+	for (int i = 0; i < 4; ++i) bufA[i] = std::min(bufA[i], bufB[i]);;
+	return _mm_loadu_epi32(bufA);
+}
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_min_epi32(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_min_epi32(x.lo, y.lo);
 	_mm_min_epi32(x.hi, y.hi);
 	return tmp;
@@ -346,8 +501,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_min_epi32(const __m512
 	return tmp;
 }
 #define _mm_max_epi32(X, Y) vreinterpretq_u32_s32(maxq_s32(vreinterpretq_s32_u32(name), vreinterpretq_s32_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_max_epi32(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_max_epi32(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_max_epi32(x.lo, y.lo);
 	_mm_max_epi32(x.hi, y.hi);
 	return tmp;
@@ -359,8 +514,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_max_epi32(const __m512
 	return tmp;
 }
 #define _mm_add_epu32(X, Y) (vaddq_u32(X, Y))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_add_epu32(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_add_epu32(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_add_epu32(x.lo, y.lo);
 	_mm_add_epu32(x.hi, y.hi);
 	return tmp;
@@ -372,8 +527,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_add_epu32(const __m512
 	return tmp;
 }
 #define _mm_sub_epu32(X, Y) (vsubq_u32(X, Y))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_sub_epu32(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_sub_epu32(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_sub_epu32(x.lo, y.lo);
 	_mm_sub_epu32(x.hi, y.hi);
 	return tmp;
@@ -385,8 +540,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_sub_epu32(const __m512
 	return tmp;
 }
 #define _mm_mul_epu32(X, Y) (vmulq_u32(X, Y))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_mul_epu32(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_mul_epu32(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_mul_epu32(x.lo, y.lo);
 	_mm_mul_epu32(x.hi, y.hi);
 	return tmp;
@@ -397,9 +552,36 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_mul_epu32(const __m512
 	_mm256_mul_epu32(x.hi, y.hi);
 	return tmp;
 }
-#define _mm_min_epu32(X, Y) (minq_u32(X, Y))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_min_epu32(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m128i ANVIL_SIMD_CALL _mm_div_epu32(const __m128i x, const __m128i y) {
+	uint32_t bufA[4];
+	uint32_t bufB[4];
+	_mm_storeu_epu32(bufA, x);
+	_mm_storeu_epu32(bufB, y);
+	for (int i = 0; i < 4; ++i) bufA[i] = bufA[i] / bufB[i];
+	return _mm_loadu_epu32(bufA);
+}
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_div_epu32(const __m256i x, const __m256i y) {
+	__m256i tmp;
+	_mm_div_epu32(x.lo, y.lo);
+	_mm_div_epu32(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_div_epu32(const __m512i x, const __m512i y) {
+	__m512i tmp;
+	_mm256_div_epu32(x.lo, y.lo);
+	_mm256_div_epu32(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m128i ANVIL_SIMD_CALL _mm_min_epu32(const __m128i x, const __m128i y) {
+	uint32_t bufA[4];
+	uint32_t bufB[4];
+	_mm_storeu_epu32(bufA, x);
+	_mm_storeu_epu32(bufB, y);
+	for (int i = 0; i < 4; ++i) bufA[i] = std::min(bufA[i], bufB[i]);;
+	return _mm_loadu_epu32(bufA);
+}
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_min_epu32(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_min_epu32(x.lo, y.lo);
 	_mm_min_epu32(x.hi, y.hi);
 	return tmp;
@@ -411,8 +593,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_min_epu32(const __m512
 	return tmp;
 }
 #define _mm_max_epu32(X, Y) (maxq_u32(X, Y))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_max_epu32(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_max_epu32(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_max_epu32(x.lo, y.lo);
 	_mm_max_epu32(x.hi, y.hi);
 	return tmp;
@@ -424,8 +606,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_max_epu32(const __m512
 	return tmp;
 }
 #define _mm_add_epi16(X, Y) vreinterpretq_u32_s16(vaddq_s16(vreinterpretq_s16_u32(name), vreinterpretq_s16_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_add_epi16(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_add_epi16(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_add_epi16(x.lo, y.lo);
 	_mm_add_epi16(x.hi, y.hi);
 	return tmp;
@@ -437,8 +619,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_add_epi16(const __m512
 	return tmp;
 }
 #define _mm_sub_epi16(X, Y) vreinterpretq_u32_s16(vsubq_s16(vreinterpretq_s16_u32(name), vreinterpretq_s16_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_sub_epi16(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_sub_epi16(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_sub_epi16(x.lo, y.lo);
 	_mm_sub_epi16(x.hi, y.hi);
 	return tmp;
@@ -450,8 +632,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_sub_epi16(const __m512
 	return tmp;
 }
 #define _mm_mul_epi16(X, Y) vreinterpretq_u32_s16(vmulq_s16(vreinterpretq_s16_u32(name), vreinterpretq_s16_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_mul_epi16(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_mul_epi16(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_mul_epi16(x.lo, y.lo);
 	_mm_mul_epi16(x.hi, y.hi);
 	return tmp;
@@ -462,9 +644,36 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_mul_epi16(const __m512
 	_mm256_mul_epi16(x.hi, y.hi);
 	return tmp;
 }
-#define _mm_min_epi16(X, Y) vreinterpretq_u32_s16(minq_s16(vreinterpretq_s16_u32(name), vreinterpretq_s16_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_min_epi16(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m128i ANVIL_SIMD_CALL _mm_div_epi16(const __m128i x, const __m128i y) {
+	int16_t bufA[8];
+	int16_t bufB[8];
+	_mm_storeu_epi16(bufA, x);
+	_mm_storeu_epi16(bufB, y);
+	for (int i = 0; i < 8; ++i) bufA[i] = bufA[i] / bufB[i];
+	return _mm_loadu_epi16(bufA);
+}
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_div_epi16(const __m256i x, const __m256i y) {
+	__m256i tmp;
+	_mm_div_epi16(x.lo, y.lo);
+	_mm_div_epi16(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_div_epi16(const __m512i x, const __m512i y) {
+	__m512i tmp;
+	_mm256_div_epi16(x.lo, y.lo);
+	_mm256_div_epi16(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m128i ANVIL_SIMD_CALL _mm_min_epi16(const __m128i x, const __m128i y) {
+	int16_t bufA[8];
+	int16_t bufB[8];
+	_mm_storeu_epi16(bufA, x);
+	_mm_storeu_epi16(bufB, y);
+	for (int i = 0; i < 8; ++i) bufA[i] = std::min(bufA[i], bufB[i]);;
+	return _mm_loadu_epi16(bufA);
+}
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_min_epi16(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_min_epi16(x.lo, y.lo);
 	_mm_min_epi16(x.hi, y.hi);
 	return tmp;
@@ -476,8 +685,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_min_epi16(const __m512
 	return tmp;
 }
 #define _mm_max_epi16(X, Y) vreinterpretq_u32_s16(maxq_s16(vreinterpretq_s16_u32(name), vreinterpretq_s16_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_max_epi16(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_max_epi16(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_max_epi16(x.lo, y.lo);
 	_mm_max_epi16(x.hi, y.hi);
 	return tmp;
@@ -489,8 +698,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_max_epi16(const __m512
 	return tmp;
 }
 #define _mm_add_epu16(X, Y) vreinterpretq_u32_u16(vaddq_u16(vreinterpretq_u16_u32(name), vreinterpretq_u16_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_add_epu16(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_add_epu16(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_add_epu16(x.lo, y.lo);
 	_mm_add_epu16(x.hi, y.hi);
 	return tmp;
@@ -502,8 +711,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_add_epu16(const __m512
 	return tmp;
 }
 #define _mm_sub_epu16(X, Y) vreinterpretq_u32_u16(vsubq_u16(vreinterpretq_u16_u32(name), vreinterpretq_u16_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_sub_epu16(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_sub_epu16(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_sub_epu16(x.lo, y.lo);
 	_mm_sub_epu16(x.hi, y.hi);
 	return tmp;
@@ -515,8 +724,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_sub_epu16(const __m512
 	return tmp;
 }
 #define _mm_mul_epu16(X, Y) vreinterpretq_u32_u16(vmulq_u16(vreinterpretq_u16_u32(name), vreinterpretq_u16_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_mul_epu16(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_mul_epu16(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_mul_epu16(x.lo, y.lo);
 	_mm_mul_epu16(x.hi, y.hi);
 	return tmp;
@@ -527,9 +736,36 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_mul_epu16(const __m512
 	_mm256_mul_epu16(x.hi, y.hi);
 	return tmp;
 }
-#define _mm_min_epu16(X, Y) vreinterpretq_u32_u16(minq_u16(vreinterpretq_u16_u32(name), vreinterpretq_u16_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_min_epu16(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m128i ANVIL_SIMD_CALL _mm_div_epu16(const __m128i x, const __m128i y) {
+	uint16_t bufA[8];
+	uint16_t bufB[8];
+	_mm_storeu_epu16(bufA, x);
+	_mm_storeu_epu16(bufB, y);
+	for (int i = 0; i < 8; ++i) bufA[i] = bufA[i] / bufB[i];
+	return _mm_loadu_epu16(bufA);
+}
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_div_epu16(const __m256i x, const __m256i y) {
+	__m256i tmp;
+	_mm_div_epu16(x.lo, y.lo);
+	_mm_div_epu16(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_div_epu16(const __m512i x, const __m512i y) {
+	__m512i tmp;
+	_mm256_div_epu16(x.lo, y.lo);
+	_mm256_div_epu16(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m128i ANVIL_SIMD_CALL _mm_min_epu16(const __m128i x, const __m128i y) {
+	uint16_t bufA[8];
+	uint16_t bufB[8];
+	_mm_storeu_epu16(bufA, x);
+	_mm_storeu_epu16(bufB, y);
+	for (int i = 0; i < 8; ++i) bufA[i] = std::min(bufA[i], bufB[i]);;
+	return _mm_loadu_epu16(bufA);
+}
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_min_epu16(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_min_epu16(x.lo, y.lo);
 	_mm_min_epu16(x.hi, y.hi);
 	return tmp;
@@ -541,8 +777,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_min_epu16(const __m512
 	return tmp;
 }
 #define _mm_max_epu16(X, Y) vreinterpretq_u32_u16(maxq_u16(vreinterpretq_u16_u32(name), vreinterpretq_u16_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_max_epu16(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_max_epu16(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_max_epu16(x.lo, y.lo);
 	_mm_max_epu16(x.hi, y.hi);
 	return tmp;
@@ -554,8 +790,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_max_epu16(const __m512
 	return tmp;
 }
 #define _mm_add_epi8(X, Y) vreinterpretq_u32_s8(vaddq_s8(vreinterpretq_s8_u32(name), vreinterpretq_s8_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_add_epi8(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_add_epi8(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_add_epi8(x.lo, y.lo);
 	_mm_add_epi8(x.hi, y.hi);
 	return tmp;
@@ -567,8 +803,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_add_epi8(const __m512i
 	return tmp;
 }
 #define _mm_sub_epi8(X, Y) vreinterpretq_u32_s8(vsubq_s8(vreinterpretq_s8_u32(name), vreinterpretq_s8_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_sub_epi8(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_sub_epi8(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_sub_epi8(x.lo, y.lo);
 	_mm_sub_epi8(x.hi, y.hi);
 	return tmp;
@@ -580,8 +816,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_sub_epi8(const __m512i
 	return tmp;
 }
 #define _mm_mul_epi8(X, Y) vreinterpretq_u32_s8(vmulq_s8(vreinterpretq_s8_u32(name), vreinterpretq_s8_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_mul_epi8(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_mul_epi8(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_mul_epi8(x.lo, y.lo);
 	_mm_mul_epi8(x.hi, y.hi);
 	return tmp;
@@ -592,9 +828,36 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_mul_epi8(const __m512i
 	_mm256_mul_epi8(x.hi, y.hi);
 	return tmp;
 }
-#define _mm_min_epi8(X, Y) vreinterpretq_u32_s8(minq_s8(vreinterpretq_s8_u32(name), vreinterpretq_s8_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_min_epi8(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m128i ANVIL_SIMD_CALL _mm_div_epi8(const __m128i x, const __m128i y) {
+	int8_t bufA[16];
+	int8_t bufB[16];
+	_mm_storeu_epi8(bufA, x);
+	_mm_storeu_epi8(bufB, y);
+	for (int i = 0; i < 16; ++i) bufA[i] = bufA[i] / bufB[i];
+	return _mm_loadu_epi8(bufA);
+}
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_div_epi8(const __m256i x, const __m256i y) {
+	__m256i tmp;
+	_mm_div_epi8(x.lo, y.lo);
+	_mm_div_epi8(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_div_epi8(const __m512i x, const __m512i y) {
+	__m512i tmp;
+	_mm256_div_epi8(x.lo, y.lo);
+	_mm256_div_epi8(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m128i ANVIL_SIMD_CALL _mm_min_epi8(const __m128i x, const __m128i y) {
+	int8_t bufA[16];
+	int8_t bufB[16];
+	_mm_storeu_epi8(bufA, x);
+	_mm_storeu_epi8(bufB, y);
+	for (int i = 0; i < 16; ++i) bufA[i] = std::min(bufA[i], bufB[i]);;
+	return _mm_loadu_epi8(bufA);
+}
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_min_epi8(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_min_epi8(x.lo, y.lo);
 	_mm_min_epi8(x.hi, y.hi);
 	return tmp;
@@ -606,8 +869,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_min_epi8(const __m512i
 	return tmp;
 }
 #define _mm_max_epi8(X, Y) vreinterpretq_u32_s8(maxq_s8(vreinterpretq_s8_u32(name), vreinterpretq_s8_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_max_epi8(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_max_epi8(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_max_epi8(x.lo, y.lo);
 	_mm_max_epi8(x.hi, y.hi);
 	return tmp;
@@ -619,8 +882,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_max_epi8(const __m512i
 	return tmp;
 }
 #define _mm_add_epu8(X, Y) vreinterpretq_u32_u8(vaddq_u8(vreinterpretq_u8_u32(name), vreinterpretq_u8_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_add_epu8(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_add_epu8(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_add_epu8(x.lo, y.lo);
 	_mm_add_epu8(x.hi, y.hi);
 	return tmp;
@@ -632,8 +895,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_add_epu8(const __m512i
 	return tmp;
 }
 #define _mm_sub_epu8(X, Y) vreinterpretq_u32_u8(vsubq_u8(vreinterpretq_u8_u32(name), vreinterpretq_u8_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_sub_epu8(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_sub_epu8(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_sub_epu8(x.lo, y.lo);
 	_mm_sub_epu8(x.hi, y.hi);
 	return tmp;
@@ -645,8 +908,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_sub_epu8(const __m512i
 	return tmp;
 }
 #define _mm_mul_epu8(X, Y) vreinterpretq_u32_u8(vmulq_u8(vreinterpretq_u8_u32(name), vreinterpretq_u8_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_mul_epu8(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_mul_epu8(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_mul_epu8(x.lo, y.lo);
 	_mm_mul_epu8(x.hi, y.hi);
 	return tmp;
@@ -657,9 +920,36 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_mul_epu8(const __m512i
 	_mm256_mul_epu8(x.hi, y.hi);
 	return tmp;
 }
-#define _mm_min_epu8(X, Y) vreinterpretq_u32_u8(minq_u8(vreinterpretq_u8_u32(name), vreinterpretq_u8_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_min_epu8(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m128i ANVIL_SIMD_CALL _mm_div_epu8(const __m128i x, const __m128i y) {
+	uint8_t bufA[16];
+	uint8_t bufB[16];
+	_mm_storeu_epu8(bufA, x);
+	_mm_storeu_epu8(bufB, y);
+	for (int i = 0; i < 16; ++i) bufA[i] = bufA[i] / bufB[i];
+	return _mm_loadu_epu8(bufA);
+}
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_div_epu8(const __m256i x, const __m256i y) {
+	__m256i tmp;
+	_mm_div_epu8(x.lo, y.lo);
+	_mm_div_epu8(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_div_epu8(const __m512i x, const __m512i y) {
+	__m512i tmp;
+	_mm256_div_epu8(x.lo, y.lo);
+	_mm256_div_epu8(x.hi, y.hi);
+	return tmp;
+}
+static ANVIL_STRONG_INLINE __m128i ANVIL_SIMD_CALL _mm_min_epu8(const __m128i x, const __m128i y) {
+	uint8_t bufA[16];
+	uint8_t bufB[16];
+	_mm_storeu_epu8(bufA, x);
+	_mm_storeu_epu8(bufB, y);
+	for (int i = 0; i < 16; ++i) bufA[i] = std::min(bufA[i], bufB[i]);;
+	return _mm_loadu_epu8(bufA);
+}
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_min_epu8(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_min_epu8(x.lo, y.lo);
 	_mm_min_epu8(x.hi, y.hi);
 	return tmp;
@@ -671,8 +961,8 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_min_epu8(const __m512i
 	return tmp;
 }
 #define _mm_max_epu8(X, Y) vreinterpretq_u32_u8(maxq_u8(vreinterpretq_u8_u32(name), vreinterpretq_u8_u32(name)))
-static ANVIL_STRONG_INLINE __256i ANVIL_SIMD_CALL _mm256_max_epu8(const __256i x, const __256i y) {
-	__256i tmp;
+static ANVIL_STRONG_INLINE __m256i ANVIL_SIMD_CALL _mm256_max_epu8(const __m256i x, const __m256i y) {
+	__m256i tmp;
 	_mm_max_epu8(x.lo, y.lo);
 	_mm_max_epu8(x.hi, y.hi);
 	return tmp;
@@ -683,7 +973,6 @@ static ANVIL_STRONG_INLINE __m512i ANVIL_SIMD_CALL _mm512_max_epu8(const __m512i
 	_mm256_max_epu8(x.hi, y.hi);
 	return tmp;
 }
-
 
 //
 //typedef float32x4_t __m128;
