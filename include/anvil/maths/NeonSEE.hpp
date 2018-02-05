@@ -13,6 +13,7 @@
 //limitations under the License.
 
 #include "anvil/core/Cpu.hpp"
+#include "anvil/core/Keywords.hpp"
 
 #if (ANVIL_ARCHITECTURE == ANVIL_X86) || (ANVIL_ARCHITECTURE == ANVIL_X64)
 	#if ANVIL_COMPILER == ANVIL_MSVC
@@ -20,15 +21,506 @@
 		#include <intrin.h>
 	#else
 		#include <x86intrin.h>
-	#endif
+#endif
+#define ANVIL_SIMD_CALL __vectorcall 
 
-	// SSE Extensions
-	#define _mm_not_ps(X) _mm_andnot_ps(X, _mm_set1_ps(*reinterpret_cast<float*>(&(~0ui32))))
-	#define _mm_not_pd(X) _mm_andnot_pd(X, _mm_set1_pd(*reinterpret_cast<double*>(&(~0ui64))))
-	#define _mm_not_si128(X) _mm_andnot_si128(X, _mm_set1_epi32(~0i32))
-	#define _mm256_not_ps(X) _mm_andnot_ps(X, _mm256_set1_ps(*reinterpret_cast<float*>(&(~0ui32))))
-	#define _mm256_not_pd(X) _mm_andnot_pd(X, _mm256_set1_pd(*reinterpret_cast<double*>(&(~0ui64))))
-	#define _mm256_not_si256(X) _mm256_andnot_si256(X, _mm256_set1_epi32(~0i32))
+// Types
+typedef double float64x1_t;
+typedef float float32x1_t;
+typedef int64_t int64x1_t;
+typedef uint64_t uint64x1_t;
+typedef int32_t int32x1_t;
+typedef uint32_t uint32x1_t;
+typedef int16_t int16x1_t;
+typedef uint16_t uint16x1_t;
+typedef int8_t int8x1_t;
+typedef uint8_t uint16x8_t;
+
+typedef __m128d float64x2_t;
+typedef __m256d float64x4_t;
+typedef __m128 float32x4_t;
+typedef __m256 float32x8_t;
+typedef __m128i int64x2_t;
+typedef __m256i int64x4_t;
+typedef __m128i uint64x2_t;
+typedef __m256i uint64x4_t;
+typedef __m128i int32x4_t;
+typedef __m256i int32x8_t;
+typedef __m128i uint32x4_t;
+typedef __m256i uint32x8_t;
+typedef __m128i int16x8_t;
+typedef __m256i int16x16_t;
+typedef __m128i uint16x8_t;
+typedef __m256i uint16x16_t;
+typedef __m128i int8x16_t;
+typedef __m256i int8x32_t;
+typedef __m128i uint8x16_t;
+typedef __m256i uint8x32_t;
+
+typedef float32x4_t float32x2_t;
+typedef int32x4_t int32x2_t;
+typedef uint32x4_t uint32x2_t;
+typedef int16x8_t int16x4_t;
+typedef uint16x8_t uint16x4_t;
+typedef int8x16_t int8x8_t;
+typedef uint8x16_t uint8x8_t;
+
+// Reinterpret
+
+#define _simd_reinterpret_f64x1_as_s64x1(X) *reinterpret_cast<const int64x1_t*(&X)
+#define _simd_reinterpret_f64x1_as_u64x1(X) *reinterpret_cast<const uint64x1_t*(&X)
+#define _simd_reinterpret_f64x1_as_f32x2(X) *reinterpret_cast<const float32x2_t*(&X)
+#define _simd_reinterpret_f64x2_as_f32x4(X) *reinterpret_cast<const float32x4_t*(&X)
+#define _simd_reinterpret_f64x4_as_f32x8(X) *reinterpret_cast<const float32x8_t*(&X)
+#define _simd_reinterpret_f64x1_as_s64x1(X) *reinterpret_cast<const int64x1_t*(&X)
+#define _simd_reinterpret_f64x2_as_s64x2(X) *reinterpret_cast<const int64x2_t*(&X)
+#define _simd_reinterpret_f64x4_as_s64x4(X) *reinterpret_cast<const int64x4_t*(&X)
+#define _simd_reinterpret_f64x1_as_u64x1(X) *reinterpret_cast<const uint64x1_t*(&X)
+#define _simd_reinterpret_f64x2_as_u64x2(X) *reinterpret_cast<const uint64x2_t*(&X)
+#define _simd_reinterpret_f64x4_as_u64x4(X) *reinterpret_cast<const uint64x4_t*(&X)
+#define _simd_reinterpret_f64x1_as_s32x2(X) *reinterpret_cast<const int32x2_t*(&X)
+#define _simd_reinterpret_f64x2_as_s32x4(X) *reinterpret_cast<const int32x4_t*(&X)
+#define _simd_reinterpret_f64x4_as_s32x8(X) *reinterpret_cast<const int32x8_t*(&X)
+#define _simd_reinterpret_f64x1_as_u32x2(X) *reinterpret_cast<const uint32x2_t*(&X)
+#define _simd_reinterpret_f64x2_as_u32x4(X) *reinterpret_cast<const uint32x4_t*(&X)
+#define _simd_reinterpret_f64x4_as_u32x8(X) *reinterpret_cast<const uint32x8_t*(&X)
+#define _simd_reinterpret_f64x1_as_s16x4(X) *reinterpret_cast<const int16x4_t*(&X)
+#define _simd_reinterpret_f64x2_as_s16x8(X) *reinterpret_cast<const int16x8_t*(&X)
+#define _simd_reinterpret_f64x4_as_s16x16(X) *reinterpret_cast<const int16x16_t*(&X)
+#define _simd_reinterpret_f64x1_as_u16x4(X) *reinterpret_cast<const uint16x4_t*(&X)
+#define _simd_reinterpret_f64x2_as_u16x8(X) *reinterpret_cast<const uint16x8_t*(&X)
+#define _simd_reinterpret_f64x4_as_u16x16(X) *reinterpret_cast<const uint16x16_t*(&X)
+#define _simd_reinterpret_f64x1_as_s8x8(X) *reinterpret_cast<const int8x8_t*(&X)
+#define _simd_reinterpret_f64x2_as_s8x16(X) *reinterpret_cast<const int8x16_t*(&X)
+#define _simd_reinterpret_f64x4_as_s8x32(X) *reinterpret_cast<const int8x32_t*(&X)
+#define _simd_reinterpret_f64x1_as_u8x8(X) *reinterpret_cast<const uint8x8_t*(&X)
+#define _simd_reinterpret_f64x2_as_u8x16(X) *reinterpret_cast<const uint8x16_t*(&X)
+#define _simd_reinterpret_f64x4_as_u8x32(X) *reinterpret_cast<const uint8x32_t*(&X)
+#define _simd_reinterpret_f32x1_as_s32x1(X) *reinterpret_cast<const int32x1_t*(&X)
+#define _simd_reinterpret_f32x1_as_u32x1(X) *reinterpret_cast<const uint32x1_t*(&X)
+#define _simd_reinterpret_f32x2_as_f64x1(X) *reinterpret_cast<const float64x1_t*(&X)
+#define _simd_reinterpret_f32x4_as_f64x2(X) *reinterpret_cast<const float64x2_t*(&X)
+#define _simd_reinterpret_f32x8_as_f64x4(X) *reinterpret_cast<const float64x4_t*(&X)
+#define _simd_reinterpret_f32x2_as_s64x1(X) *reinterpret_cast<const int64x1_t*(&X)
+#define _simd_reinterpret_f32x4_as_s64x2(X) *reinterpret_cast<const int64x2_t*(&X)
+#define _simd_reinterpret_f32x8_as_s64x4(X) *reinterpret_cast<const int64x4_t*(&X)
+#define _simd_reinterpret_f32x2_as_u64x1(X) *reinterpret_cast<const uint64x1_t*(&X)
+#define _simd_reinterpret_f32x4_as_u64x2(X) *reinterpret_cast<const uint64x2_t*(&X)
+#define _simd_reinterpret_f32x8_as_u64x4(X) *reinterpret_cast<const uint64x4_t*(&X)
+#define _simd_reinterpret_f32x2_as_s32x2(X) *reinterpret_cast<const int32x2_t*(&X)
+#define _simd_reinterpret_f32x4_as_s32x4(X) *reinterpret_cast<const int32x4_t*(&X)
+#define _simd_reinterpret_f32x8_as_s32x8(X) *reinterpret_cast<const int32x8_t*(&X)
+#define _simd_reinterpret_f32x2_as_u32x2(X) *reinterpret_cast<const uint32x2_t*(&X)
+#define _simd_reinterpret_f32x4_as_u32x4(X) *reinterpret_cast<const uint32x4_t*(&X)
+#define _simd_reinterpret_f32x8_as_u32x8(X) *reinterpret_cast<const uint32x8_t*(&X)
+#define _simd_reinterpret_f32x2_as_s16x4(X) *reinterpret_cast<const int16x4_t*(&X)
+#define _simd_reinterpret_f32x4_as_s16x8(X) *reinterpret_cast<const int16x8_t*(&X)
+#define _simd_reinterpret_f32x8_as_s16x16(X) *reinterpret_cast<const int16x16_t*(&X)
+#define _simd_reinterpret_f32x2_as_u16x4(X) *reinterpret_cast<const uint16x4_t*(&X)
+#define _simd_reinterpret_f32x4_as_u16x8(X) *reinterpret_cast<const uint16x8_t*(&X)
+#define _simd_reinterpret_f32x8_as_u16x16(X) *reinterpret_cast<const uint16x16_t*(&X)
+#define _simd_reinterpret_f32x2_as_s8x8(X) *reinterpret_cast<const int8x8_t*(&X)
+#define _simd_reinterpret_f32x4_as_s8x16(X) *reinterpret_cast<const int8x16_t*(&X)
+#define _simd_reinterpret_f32x8_as_s8x32(X) *reinterpret_cast<const int8x32_t*(&X)
+#define _simd_reinterpret_f32x2_as_u8x8(X) *reinterpret_cast<const uint8x8_t*(&X)
+#define _simd_reinterpret_f32x4_as_u8x16(X) *reinterpret_cast<const uint8x16_t*(&X)
+#define _simd_reinterpret_f32x8_as_u8x32(X) *reinterpret_cast<const uint8x32_t*(&X)
+#define _simd_reinterpret_s64x1_as_f64x1(X) *reinterpret_cast<const float64x1_t*(&X)
+#define _simd_reinterpret_s64x1_as_u64x1(X) *reinterpret_cast<const uint64x1_t*(&X)
+#define _simd_reinterpret_s64x1_as_f64x1(X) *reinterpret_cast<const float64x1_t*(&X)
+#define _simd_reinterpret_s64x2_as_f64x2(X) *reinterpret_cast<const float64x2_t*(&X)
+#define _simd_reinterpret_s64x4_as_f64x4(X) *reinterpret_cast<const float64x4_t*(&X)
+#define _simd_reinterpret_s64x1_as_f32x2(X) *reinterpret_cast<const float32x2_t*(&X)
+#define _simd_reinterpret_s64x2_as_f32x4(X) *reinterpret_cast<const float32x4_t*(&X)
+#define _simd_reinterpret_s64x4_as_f32x8(X) *reinterpret_cast<const float32x8_t*(&X)
+#define _simd_reinterpret_s64x1_as_u64x1(X) *reinterpret_cast<const uint64x1_t*(&X)
+#define _simd_reinterpret_s64x2_as_u64x2(X) *reinterpret_cast<const uint64x2_t*(&X)
+#define _simd_reinterpret_s64x4_as_u64x4(X) *reinterpret_cast<const uint64x4_t*(&X)
+#define _simd_reinterpret_s64x1_as_s32x2(X) *reinterpret_cast<const int32x2_t*(&X)
+#define _simd_reinterpret_s64x2_as_s32x4(X) *reinterpret_cast<const int32x4_t*(&X)
+#define _simd_reinterpret_s64x4_as_s32x8(X) *reinterpret_cast<const int32x8_t*(&X)
+#define _simd_reinterpret_s64x1_as_u32x2(X) *reinterpret_cast<const uint32x2_t*(&X)
+#define _simd_reinterpret_s64x2_as_u32x4(X) *reinterpret_cast<const uint32x4_t*(&X)
+#define _simd_reinterpret_s64x4_as_u32x8(X) *reinterpret_cast<const uint32x8_t*(&X)
+#define _simd_reinterpret_s64x1_as_s16x4(X) *reinterpret_cast<const int16x4_t*(&X)
+#define _simd_reinterpret_s64x2_as_s16x8(X) *reinterpret_cast<const int16x8_t*(&X)
+#define _simd_reinterpret_s64x4_as_s16x16(X) *reinterpret_cast<const int16x16_t*(&X)
+#define _simd_reinterpret_s64x1_as_u16x4(X) *reinterpret_cast<const uint16x4_t*(&X)
+#define _simd_reinterpret_s64x2_as_u16x8(X) *reinterpret_cast<const uint16x8_t*(&X)
+#define _simd_reinterpret_s64x4_as_u16x16(X) *reinterpret_cast<const uint16x16_t*(&X)
+#define _simd_reinterpret_s64x1_as_s8x8(X) *reinterpret_cast<const int8x8_t*(&X)
+#define _simd_reinterpret_s64x2_as_s8x16(X) *reinterpret_cast<const int8x16_t*(&X)
+#define _simd_reinterpret_s64x4_as_s8x32(X) *reinterpret_cast<const int8x32_t*(&X)
+#define _simd_reinterpret_s64x1_as_u8x8(X) *reinterpret_cast<const uint8x8_t*(&X)
+#define _simd_reinterpret_s64x2_as_u8x16(X) *reinterpret_cast<const uint8x16_t*(&X)
+#define _simd_reinterpret_s64x4_as_u8x32(X) *reinterpret_cast<const uint8x32_t*(&X)
+#define _simd_reinterpret_u64x1_as_f64x1(X) *reinterpret_cast<const float64x1_t*(&X)
+#define _simd_reinterpret_u64x1_as_s64x1(X) *reinterpret_cast<const int64x1_t*(&X)
+#define _simd_reinterpret_u64x1_as_f64x1(X) *reinterpret_cast<const float64x1_t*(&X)
+#define _simd_reinterpret_u64x2_as_f64x2(X) *reinterpret_cast<const float64x2_t*(&X)
+#define _simd_reinterpret_u64x4_as_f64x4(X) *reinterpret_cast<const float64x4_t*(&X)
+#define _simd_reinterpret_u64x1_as_f32x2(X) *reinterpret_cast<const float32x2_t*(&X)
+#define _simd_reinterpret_u64x2_as_f32x4(X) *reinterpret_cast<const float32x4_t*(&X)
+#define _simd_reinterpret_u64x4_as_f32x8(X) *reinterpret_cast<const float32x8_t*(&X)
+#define _simd_reinterpret_u64x1_as_s64x1(X) *reinterpret_cast<const int64x1_t*(&X)
+#define _simd_reinterpret_u64x2_as_s64x2(X) *reinterpret_cast<const int64x2_t*(&X)
+#define _simd_reinterpret_u64x4_as_s64x4(X) *reinterpret_cast<const int64x4_t*(&X)
+#define _simd_reinterpret_u64x1_as_s32x2(X) *reinterpret_cast<const int32x2_t*(&X)
+#define _simd_reinterpret_u64x2_as_s32x4(X) *reinterpret_cast<const int32x4_t*(&X)
+#define _simd_reinterpret_u64x4_as_s32x8(X) *reinterpret_cast<const int32x8_t*(&X)
+#define _simd_reinterpret_u64x1_as_u32x2(X) *reinterpret_cast<const uint32x2_t*(&X)
+#define _simd_reinterpret_u64x2_as_u32x4(X) *reinterpret_cast<const uint32x4_t*(&X)
+#define _simd_reinterpret_u64x4_as_u32x8(X) *reinterpret_cast<const uint32x8_t*(&X)
+#define _simd_reinterpret_u64x1_as_s16x4(X) *reinterpret_cast<const int16x4_t*(&X)
+#define _simd_reinterpret_u64x2_as_s16x8(X) *reinterpret_cast<const int16x8_t*(&X)
+#define _simd_reinterpret_u64x4_as_s16x16(X) *reinterpret_cast<const int16x16_t*(&X)
+#define _simd_reinterpret_u64x1_as_u16x4(X) *reinterpret_cast<const uint16x4_t*(&X)
+#define _simd_reinterpret_u64x2_as_u16x8(X) *reinterpret_cast<const uint16x8_t*(&X)
+#define _simd_reinterpret_u64x4_as_u16x16(X) *reinterpret_cast<const uint16x16_t*(&X)
+#define _simd_reinterpret_u64x1_as_s8x8(X) *reinterpret_cast<const int8x8_t*(&X)
+#define _simd_reinterpret_u64x2_as_s8x16(X) *reinterpret_cast<const int8x16_t*(&X)
+#define _simd_reinterpret_u64x4_as_s8x32(X) *reinterpret_cast<const int8x32_t*(&X)
+#define _simd_reinterpret_u64x1_as_u8x8(X) *reinterpret_cast<const uint8x8_t*(&X)
+#define _simd_reinterpret_u64x2_as_u8x16(X) *reinterpret_cast<const uint8x16_t*(&X)
+#define _simd_reinterpret_u64x4_as_u8x32(X) *reinterpret_cast<const uint8x32_t*(&X)
+#define _simd_reinterpret_s32x1_as_f32x1(X) *reinterpret_cast<const float32x1_t*(&X)
+#define _simd_reinterpret_s32x1_as_u32x1(X) *reinterpret_cast<const uint32x1_t*(&X)
+#define _simd_reinterpret_s32x2_as_f64x1(X) *reinterpret_cast<const float64x1_t*(&X)
+#define _simd_reinterpret_s32x4_as_f64x2(X) *reinterpret_cast<const float64x2_t*(&X)
+#define _simd_reinterpret_s32x8_as_f64x4(X) *reinterpret_cast<const float64x4_t*(&X)
+#define _simd_reinterpret_s32x2_as_f32x2(X) *reinterpret_cast<const float32x2_t*(&X)
+#define _simd_reinterpret_s32x4_as_f32x4(X) *reinterpret_cast<const float32x4_t*(&X)
+#define _simd_reinterpret_s32x8_as_f32x8(X) *reinterpret_cast<const float32x8_t*(&X)
+#define _simd_reinterpret_s32x2_as_s64x1(X) *reinterpret_cast<const int64x1_t*(&X)
+#define _simd_reinterpret_s32x4_as_s64x2(X) *reinterpret_cast<const int64x2_t*(&X)
+#define _simd_reinterpret_s32x8_as_s64x4(X) *reinterpret_cast<const int64x4_t*(&X)
+#define _simd_reinterpret_s32x2_as_u64x1(X) *reinterpret_cast<const uint64x1_t*(&X)
+#define _simd_reinterpret_s32x4_as_u64x2(X) *reinterpret_cast<const uint64x2_t*(&X)
+#define _simd_reinterpret_s32x8_as_u64x4(X) *reinterpret_cast<const uint64x4_t*(&X)
+#define _simd_reinterpret_s32x2_as_u32x2(X) *reinterpret_cast<const uint32x2_t*(&X)
+#define _simd_reinterpret_s32x4_as_u32x4(X) *reinterpret_cast<const uint32x4_t*(&X)
+#define _simd_reinterpret_s32x8_as_u32x8(X) *reinterpret_cast<const uint32x8_t*(&X)
+#define _simd_reinterpret_s32x2_as_s16x4(X) *reinterpret_cast<const int16x4_t*(&X)
+#define _simd_reinterpret_s32x4_as_s16x8(X) *reinterpret_cast<const int16x8_t*(&X)
+#define _simd_reinterpret_s32x8_as_s16x16(X) *reinterpret_cast<const int16x16_t*(&X)
+#define _simd_reinterpret_s32x2_as_u16x4(X) *reinterpret_cast<const uint16x4_t*(&X)
+#define _simd_reinterpret_s32x4_as_u16x8(X) *reinterpret_cast<const uint16x8_t*(&X)
+#define _simd_reinterpret_s32x8_as_u16x16(X) *reinterpret_cast<const uint16x16_t*(&X)
+#define _simd_reinterpret_s32x2_as_s8x8(X) *reinterpret_cast<const int8x8_t*(&X)
+#define _simd_reinterpret_s32x4_as_s8x16(X) *reinterpret_cast<const int8x16_t*(&X)
+#define _simd_reinterpret_s32x8_as_s8x32(X) *reinterpret_cast<const int8x32_t*(&X)
+#define _simd_reinterpret_s32x2_as_u8x8(X) *reinterpret_cast<const uint8x8_t*(&X)
+#define _simd_reinterpret_s32x4_as_u8x16(X) *reinterpret_cast<const uint8x16_t*(&X)
+#define _simd_reinterpret_s32x8_as_u8x32(X) *reinterpret_cast<const uint8x32_t*(&X)
+#define _simd_reinterpret_u32x1_as_f32x1(X) *reinterpret_cast<const float32x1_t*(&X)
+#define _simd_reinterpret_u32x1_as_s32x1(X) *reinterpret_cast<const int32x1_t*(&X)
+#define _simd_reinterpret_u32x2_as_f64x1(X) *reinterpret_cast<const float64x1_t*(&X)
+#define _simd_reinterpret_u32x4_as_f64x2(X) *reinterpret_cast<const float64x2_t*(&X)
+#define _simd_reinterpret_u32x8_as_f64x4(X) *reinterpret_cast<const float64x4_t*(&X)
+#define _simd_reinterpret_u32x2_as_f32x2(X) *reinterpret_cast<const float32x2_t*(&X)
+#define _simd_reinterpret_u32x4_as_f32x4(X) *reinterpret_cast<const float32x4_t*(&X)
+#define _simd_reinterpret_u32x8_as_f32x8(X) *reinterpret_cast<const float32x8_t*(&X)
+#define _simd_reinterpret_u32x2_as_s64x1(X) *reinterpret_cast<const int64x1_t*(&X)
+#define _simd_reinterpret_u32x4_as_s64x2(X) *reinterpret_cast<const int64x2_t*(&X)
+#define _simd_reinterpret_u32x8_as_s64x4(X) *reinterpret_cast<const int64x4_t*(&X)
+#define _simd_reinterpret_u32x2_as_u64x1(X) *reinterpret_cast<const uint64x1_t*(&X)
+#define _simd_reinterpret_u32x4_as_u64x2(X) *reinterpret_cast<const uint64x2_t*(&X)
+#define _simd_reinterpret_u32x8_as_u64x4(X) *reinterpret_cast<const uint64x4_t*(&X)
+#define _simd_reinterpret_u32x2_as_s32x2(X) *reinterpret_cast<const int32x2_t*(&X)
+#define _simd_reinterpret_u32x4_as_s32x4(X) *reinterpret_cast<const int32x4_t*(&X)
+#define _simd_reinterpret_u32x8_as_s32x8(X) *reinterpret_cast<const int32x8_t*(&X)
+#define _simd_reinterpret_u32x2_as_s16x4(X) *reinterpret_cast<const int16x4_t*(&X)
+#define _simd_reinterpret_u32x4_as_s16x8(X) *reinterpret_cast<const int16x8_t*(&X)
+#define _simd_reinterpret_u32x8_as_s16x16(X) *reinterpret_cast<const int16x16_t*(&X)
+#define _simd_reinterpret_u32x2_as_u16x4(X) *reinterpret_cast<const uint16x4_t*(&X)
+#define _simd_reinterpret_u32x4_as_u16x8(X) *reinterpret_cast<const uint16x8_t*(&X)
+#define _simd_reinterpret_u32x8_as_u16x16(X) *reinterpret_cast<const uint16x16_t*(&X)
+#define _simd_reinterpret_u32x2_as_s8x8(X) *reinterpret_cast<const int8x8_t*(&X)
+#define _simd_reinterpret_u32x4_as_s8x16(X) *reinterpret_cast<const int8x16_t*(&X)
+#define _simd_reinterpret_u32x8_as_s8x32(X) *reinterpret_cast<const int8x32_t*(&X)
+#define _simd_reinterpret_u32x2_as_u8x8(X) *reinterpret_cast<const uint8x8_t*(&X)
+#define _simd_reinterpret_u32x4_as_u8x16(X) *reinterpret_cast<const uint8x16_t*(&X)
+#define _simd_reinterpret_u32x8_as_u8x32(X) *reinterpret_cast<const uint8x32_t*(&X)
+#define _simd_reinterpret_s16x1_as_u16x1(X) *reinterpret_cast<const uint16x1_t*(&X)
+#define _simd_reinterpret_s16x4_as_f64x1(X) *reinterpret_cast<const float64x1_t*(&X)
+#define _simd_reinterpret_s16x8_as_f64x2(X) *reinterpret_cast<const float64x2_t*(&X)
+#define _simd_reinterpret_s16x16_as_f64x4(X) *reinterpret_cast<const float64x4_t*(&X)
+#define _simd_reinterpret_s16x4_as_f32x2(X) *reinterpret_cast<const float32x2_t*(&X)
+#define _simd_reinterpret_s16x8_as_f32x4(X) *reinterpret_cast<const float32x4_t*(&X)
+#define _simd_reinterpret_s16x16_as_f32x8(X) *reinterpret_cast<const float32x8_t*(&X)
+#define _simd_reinterpret_s16x4_as_s64x1(X) *reinterpret_cast<const int64x1_t*(&X)
+#define _simd_reinterpret_s16x8_as_s64x2(X) *reinterpret_cast<const int64x2_t*(&X)
+#define _simd_reinterpret_s16x16_as_s64x4(X) *reinterpret_cast<const int64x4_t*(&X)
+#define _simd_reinterpret_s16x4_as_u64x1(X) *reinterpret_cast<const uint64x1_t*(&X)
+#define _simd_reinterpret_s16x8_as_u64x2(X) *reinterpret_cast<const uint64x2_t*(&X)
+#define _simd_reinterpret_s16x16_as_u64x4(X) *reinterpret_cast<const uint64x4_t*(&X)
+#define _simd_reinterpret_s16x4_as_s32x2(X) *reinterpret_cast<const int32x2_t*(&X)
+#define _simd_reinterpret_s16x8_as_s32x4(X) *reinterpret_cast<const int32x4_t*(&X)
+#define _simd_reinterpret_s16x16_as_s32x8(X) *reinterpret_cast<const int32x8_t*(&X)
+#define _simd_reinterpret_s16x4_as_u32x2(X) *reinterpret_cast<const uint32x2_t*(&X)
+#define _simd_reinterpret_s16x8_as_u32x4(X) *reinterpret_cast<const uint32x4_t*(&X)
+#define _simd_reinterpret_s16x16_as_u32x8(X) *reinterpret_cast<const uint32x8_t*(&X)
+#define _simd_reinterpret_s16x4_as_u16x4(X) *reinterpret_cast<const uint16x4_t*(&X)
+#define _simd_reinterpret_s16x8_as_u16x8(X) *reinterpret_cast<const uint16x8_t*(&X)
+#define _simd_reinterpret_s16x16_as_u16x16(X) *reinterpret_cast<const uint16x16_t*(&X)
+#define _simd_reinterpret_s16x4_as_s8x8(X) *reinterpret_cast<const int8x8_t*(&X)
+#define _simd_reinterpret_s16x8_as_s8x16(X) *reinterpret_cast<const int8x16_t*(&X)
+#define _simd_reinterpret_s16x16_as_s8x32(X) *reinterpret_cast<const int8x32_t*(&X)
+#define _simd_reinterpret_s16x4_as_u8x8(X) *reinterpret_cast<const uint8x8_t*(&X)
+#define _simd_reinterpret_s16x8_as_u8x16(X) *reinterpret_cast<const uint8x16_t*(&X)
+#define _simd_reinterpret_s16x16_as_u8x32(X) *reinterpret_cast<const uint8x32_t*(&X)
+#define _simd_reinterpret_u16x1_as_s16x1(X) *reinterpret_cast<const int16x1_t*(&X)
+#define _simd_reinterpret_u16x4_as_f64x1(X) *reinterpret_cast<const float64x1_t*(&X)
+#define _simd_reinterpret_u16x8_as_f64x2(X) *reinterpret_cast<const float64x2_t*(&X)
+#define _simd_reinterpret_u16x16_as_f64x4(X) *reinterpret_cast<const float64x4_t*(&X)
+#define _simd_reinterpret_u16x4_as_f32x2(X) *reinterpret_cast<const float32x2_t*(&X)
+#define _simd_reinterpret_u16x8_as_f32x4(X) *reinterpret_cast<const float32x4_t*(&X)
+#define _simd_reinterpret_u16x16_as_f32x8(X) *reinterpret_cast<const float32x8_t*(&X)
+#define _simd_reinterpret_u16x4_as_s64x1(X) *reinterpret_cast<const int64x1_t*(&X)
+#define _simd_reinterpret_u16x8_as_s64x2(X) *reinterpret_cast<const int64x2_t*(&X)
+#define _simd_reinterpret_u16x16_as_s64x4(X) *reinterpret_cast<const int64x4_t*(&X)
+#define _simd_reinterpret_u16x4_as_u64x1(X) *reinterpret_cast<const uint64x1_t*(&X)
+#define _simd_reinterpret_u16x8_as_u64x2(X) *reinterpret_cast<const uint64x2_t*(&X)
+#define _simd_reinterpret_u16x16_as_u64x4(X) *reinterpret_cast<const uint64x4_t*(&X)
+#define _simd_reinterpret_u16x4_as_s32x2(X) *reinterpret_cast<const int32x2_t*(&X)
+#define _simd_reinterpret_u16x8_as_s32x4(X) *reinterpret_cast<const int32x4_t*(&X)
+#define _simd_reinterpret_u16x16_as_s32x8(X) *reinterpret_cast<const int32x8_t*(&X)
+#define _simd_reinterpret_u16x4_as_u32x2(X) *reinterpret_cast<const uint32x2_t*(&X)
+#define _simd_reinterpret_u16x8_as_u32x4(X) *reinterpret_cast<const uint32x4_t*(&X)
+#define _simd_reinterpret_u16x16_as_u32x8(X) *reinterpret_cast<const uint32x8_t*(&X)
+#define _simd_reinterpret_u16x4_as_s16x4(X) *reinterpret_cast<const int16x4_t*(&X)
+#define _simd_reinterpret_u16x8_as_s16x8(X) *reinterpret_cast<const int16x8_t*(&X)
+#define _simd_reinterpret_u16x16_as_s16x16(X) *reinterpret_cast<const int16x16_t*(&X)
+#define _simd_reinterpret_u16x4_as_s8x8(X) *reinterpret_cast<const int8x8_t*(&X)
+#define _simd_reinterpret_u16x8_as_s8x16(X) *reinterpret_cast<const int8x16_t*(&X)
+#define _simd_reinterpret_u16x16_as_s8x32(X) *reinterpret_cast<const int8x32_t*(&X)
+#define _simd_reinterpret_u16x4_as_u8x8(X) *reinterpret_cast<const uint8x8_t*(&X)
+#define _simd_reinterpret_u16x8_as_u8x16(X) *reinterpret_cast<const uint8x16_t*(&X)
+#define _simd_reinterpret_u16x16_as_u8x32(X) *reinterpret_cast<const uint8x32_t*(&X)
+#define _simd_reinterpret_s8x1_as_u8x1(X) *reinterpret_cast<const uint8x1_t*(&X)
+#define _simd_reinterpret_s8x8_as_f64x1(X) *reinterpret_cast<const float64x1_t*(&X)
+#define _simd_reinterpret_s8x16_as_f64x2(X) *reinterpret_cast<const float64x2_t*(&X)
+#define _simd_reinterpret_s8x32_as_f64x4(X) *reinterpret_cast<const float64x4_t*(&X)
+#define _simd_reinterpret_s8x8_as_f32x2(X) *reinterpret_cast<const float32x2_t*(&X)
+#define _simd_reinterpret_s8x16_as_f32x4(X) *reinterpret_cast<const float32x4_t*(&X)
+#define _simd_reinterpret_s8x32_as_f32x8(X) *reinterpret_cast<const float32x8_t*(&X)
+#define _simd_reinterpret_s8x8_as_s64x1(X) *reinterpret_cast<const int64x1_t*(&X)
+#define _simd_reinterpret_s8x16_as_s64x2(X) *reinterpret_cast<const int64x2_t*(&X)
+#define _simd_reinterpret_s8x32_as_s64x4(X) *reinterpret_cast<const int64x4_t*(&X)
+#define _simd_reinterpret_s8x8_as_u64x1(X) *reinterpret_cast<const uint64x1_t*(&X)
+#define _simd_reinterpret_s8x16_as_u64x2(X) *reinterpret_cast<const uint64x2_t*(&X)
+#define _simd_reinterpret_s8x32_as_u64x4(X) *reinterpret_cast<const uint64x4_t*(&X)
+#define _simd_reinterpret_s8x8_as_s32x2(X) *reinterpret_cast<const int32x2_t*(&X)
+#define _simd_reinterpret_s8x16_as_s32x4(X) *reinterpret_cast<const int32x4_t*(&X)
+#define _simd_reinterpret_s8x32_as_s32x8(X) *reinterpret_cast<const int32x8_t*(&X)
+#define _simd_reinterpret_s8x8_as_u32x2(X) *reinterpret_cast<const uint32x2_t*(&X)
+#define _simd_reinterpret_s8x16_as_u32x4(X) *reinterpret_cast<const uint32x4_t*(&X)
+#define _simd_reinterpret_s8x32_as_u32x8(X) *reinterpret_cast<const uint32x8_t*(&X)
+#define _simd_reinterpret_s8x8_as_s16x4(X) *reinterpret_cast<const int16x4_t*(&X)
+#define _simd_reinterpret_s8x16_as_s16x8(X) *reinterpret_cast<const int16x8_t*(&X)
+#define _simd_reinterpret_s8x32_as_s16x16(X) *reinterpret_cast<const int16x16_t*(&X)
+#define _simd_reinterpret_s8x8_as_u16x4(X) *reinterpret_cast<const uint16x4_t*(&X)
+#define _simd_reinterpret_s8x16_as_u16x8(X) *reinterpret_cast<const uint16x8_t*(&X)
+#define _simd_reinterpret_s8x32_as_u16x16(X) *reinterpret_cast<const uint16x16_t*(&X)
+#define _simd_reinterpret_s8x8_as_u8x8(X) *reinterpret_cast<const uint8x8_t*(&X)
+#define _simd_reinterpret_s8x16_as_u8x16(X) *reinterpret_cast<const uint8x16_t*(&X)
+#define _simd_reinterpret_s8x32_as_u8x32(X) *reinterpret_cast<const uint8x32_t*(&X)
+#define _simd_reinterpret_u8x1_as_s8x1(X) *reinterpret_cast<const int8x1_t*(&X)
+#define _simd_reinterpret_u8x8_as_f64x1(X) *reinterpret_cast<const float64x1_t*(&X)
+#define _simd_reinterpret_u8x16_as_f64x2(X) *reinterpret_cast<const float64x2_t*(&X)
+#define _simd_reinterpret_u8x32_as_f64x4(X) *reinterpret_cast<const float64x4_t*(&X)
+#define _simd_reinterpret_u8x8_as_f32x2(X) *reinterpret_cast<const float32x2_t*(&X)
+#define _simd_reinterpret_u8x16_as_f32x4(X) *reinterpret_cast<const float32x4_t*(&X)
+#define _simd_reinterpret_u8x32_as_f32x8(X) *reinterpret_cast<const float32x8_t*(&X)
+#define _simd_reinterpret_u8x8_as_s64x1(X) *reinterpret_cast<const int64x1_t*(&X)
+#define _simd_reinterpret_u8x16_as_s64x2(X) *reinterpret_cast<const int64x2_t*(&X)
+#define _simd_reinterpret_u8x32_as_s64x4(X) *reinterpret_cast<const int64x4_t*(&X)
+#define _simd_reinterpret_u8x8_as_u64x1(X) *reinterpret_cast<const uint64x1_t*(&X)
+#define _simd_reinterpret_u8x16_as_u64x2(X) *reinterpret_cast<const uint64x2_t*(&X)
+#define _simd_reinterpret_u8x32_as_u64x4(X) *reinterpret_cast<const uint64x4_t*(&X)
+#define _simd_reinterpret_u8x8_as_s32x2(X) *reinterpret_cast<const int32x2_t*(&X)
+#define _simd_reinterpret_u8x16_as_s32x4(X) *reinterpret_cast<const int32x4_t*(&X)
+#define _simd_reinterpret_u8x32_as_s32x8(X) *reinterpret_cast<const int32x8_t*(&X)
+#define _simd_reinterpret_u8x8_as_u32x2(X) *reinterpret_cast<const uint32x2_t*(&X)
+#define _simd_reinterpret_u8x16_as_u32x4(X) *reinterpret_cast<const uint32x4_t*(&X)
+#define _simd_reinterpret_u8x32_as_u32x8(X) *reinterpret_cast<const uint32x8_t*(&X)
+#define _simd_reinterpret_u8x8_as_s16x4(X) *reinterpret_cast<const int16x4_t*(&X)
+#define _simd_reinterpret_u8x16_as_s16x8(X) *reinterpret_cast<const int16x8_t*(&X)
+#define _simd_reinterpret_u8x32_as_s16x16(X) *reinterpret_cast<const int16x16_t*(&X)
+#define _simd_reinterpret_u8x8_as_u16x4(X) *reinterpret_cast<const uint16x4_t*(&X)
+#define _simd_reinterpret_u8x16_as_u16x8(X) *reinterpret_cast<const uint16x8_t*(&X)
+#define _simd_reinterpret_u8x32_as_u16x16(X) *reinterpret_cast<const uint16x16_t*(&X)
+#define _simd_reinterpret_u8x8_as_s8x8(X) *reinterpret_cast<const int8x8_t*(&X)
+#define _simd_reinterpret_u8x16_as_s8x16(X) *reinterpret_cast<const int8x16_t*(&X)
+#define _simd_reinterpret_u8x32_as_s8x32(X) *reinterpret_cast<const int8x32_t*(&X)
+
+
+// Not
+
+#define _simd_not_f64x1(X) _simd_reinterpret_s64x1_as_f64x1(~(_simd_reinterpret_f64x1_as_s64x1(X)))
+#define _simd_not_f64x2(X) _mm_andnot_pd(X, _mm_set1_pd(*_simd_reinterpret_s64x1_as_f64x1<(~0i64)))
+#define _simd_not_f64x4(X) _mm256_andnot_pd(X, _mm256_set1_pd(*_simd_reinterpret_s64x1_as_f64x1<(~0i64)))
+
+#define _simd_not_f32x1(X) _simd_reinterpret_s32x1_as_f32x1(~(_simd_reinterpret_f32x1_as_s32x1(X)))
+#define _simd_not_f32x2(X) _simd_not_f32x4(X)
+#define _simd_not_f32x4(X) _mm_andnot_ps(X, _mm_set1_ps(*_simd_reinterpret_s32x1_as_f32x1<(~0i32)))
+#define _simd_not_f32x8(X) _mm256_andnot_ps(X, _mm256_set1_ps(*_simd_reinterpret_s32x1_as_f32x1<(~0i32)))
+
+#define _simd_not_s64x1(X) (~X)
+#define _simd_not_s64x2(X) _mm_andnot_si128 (X, _mm_set1_epi32(~0i32))
+#define _simd_not_s64x4(X) _mm256_andnot_si256(X, _mm256_set1_epi32(~0i32))
+
+#define _simd_not_u64x1(X) (~X)
+#define _simd_not_u64x2(X) _simd_not_s64x2(X)
+#define _simd_not_u64x4(X) _simd_not_s64x4(X)
+
+#define _simd_not_s32x1(X) (~X)
+#define _simd_not_s32x2(X) _simd_not_s64x2(X)
+#define _simd_not_s32x4(X) _simd_not_s64x2(X)
+#define _simd_not_s32x8(X) _simd_not_s64x4(X)
+
+#define _simd_not_u32x1(X) (~X)
+#define _simd_not_u32x2(X) _simd_not_s64x2(X)
+#define _simd_not_u32x4(X) _simd_not_s64x2(X)
+#define _simd_not_u32x8(X) _simd_not_s64x4(X)
+
+#define _simd_not_s16x1(X) (~X)
+#define _simd_not_16x4(X) _simd_not_s64x2(X)
+#define _simd_not_16x8(X) _simd_not_s64x2(X)
+#define _simd_not_16x16(X) _simd_not_s64x4(X)
+
+#define _simd_not_u16x1(X) (~X)
+#define _simd_not_u16x4(X) _simd_not_s64x2(X)
+#define _simd_not_u16x8(X) _simd_not_s64x2(X)
+#define _simd_not_u16x16(X) _simd_not_s64x4(X)
+
+#define _simd_not_sx1(X) (~X)
+#define _simd_not_s8x8(X) _simd_not_s64x2(X)
+#define _simd_not_s8x16(X) _simd_not_s64x2(X)
+#define _simd_not_s8x32(X) _simd_not_s64x4(X)
+
+#define _simd_not_u8x1(X) (~X)
+#define _simd_not_u8x8(X) _simd_not_s64x2(X)
+#define _simd_not_u8x16(X) _simd_not_s64x2(X)
+#define _simd_not_u8x32(X) _simd_not_s64x4(X)
+
+// Add
+
+#define _simd_add_f64x1(X,Y) (X + Y)
+#define _simd_add_f64x2(X,Y) _mm_add_pd(X,Y)
+#define _simd_add_f64x4(X,Y) _mm256_add_pd(X,Y)
+
+#define _simd_add_f32x1(X,Y) (X + Y)
+#define _simd_add_f32x2(X,Y) _simd_add_f32x4(X + Y)
+#define _simd_add_f32x4(X,Y) _mm_add_ps(X,Y)
+#define _simd_add_f32x8(X,Y) _mm256_add_ps(X,Y)
+
+#define _simd_add_s64x1(X,Y) (X + Y)
+#define _simd_add_s64x2(X,Y) _mm_add_epi64(X,Y)
+#define _simd_add_s64x4(X,Y) _mm256_add_epi64(X,Y)
+
+#define _simd_add_u64x1(X,Y) (X + Y)
+#define _simd_add_u64x2(X,Y) _mm_add_epi64(X,Y)
+#define _simd_add_u64x4(X,Y) _mm256_add_epi64(X,Y)
+
+#define _simd_add_s32x1(X,Y) (X + Y)
+#define _simd_add_s32x2(X,Y) _simd_add_s32x4(X + Y)
+#define _simd_add_s32x4(X,Y) _mm_add_epi32(X,Y)
+#define _simd_add_s32x8(X,Y) _mm256_add_epi32(X,Y)
+
+#define _simd_add_u32x1(X,Y) (X + Y)
+#define _simd_add_u32x2(X,Y) _simd_add_u32x4(X + Y)
+#define _simd_add_u32x4(X,Y) _mm_add_epi32(X,Y)
+#define _simd_add_u32x8(X,Y) _mm256_add_epi32(X,Y)
+
+#define _simd_add_s16x1(X,Y) (X + Y)
+#define _simd_add_s16x4(X,Y) _simd_add_s16x8(X + Y)
+#define _simd_add_s16x8(X,Y) _mm_add_epi16(X,Y)
+#define _simd_add_s16x16(X,Y) _mm256_add_epi16(X,Y)
+
+#define _simd_add_u16x1(X,Y) (X + Y)
+#define _simd_add_u16x4(X,Y) _simd_add_u16x8(X + Y)
+#define _simd_add_u16x8(X,Y) _mm_add_epi16(X,Y)
+#define _simd_add_u16x16(X,Y) _mm256_add_epi16(X,Y)
+
+#define _simd_add_s8x1(X,Y) (X + Y)
+#define _simd_add_s8x8(X,Y) _simd_add_s8x16(X + Y)
+#define _simd_add_s8x16(X,Y) _mm_add_epi8(X,Y)
+#define _simd_add_s8x32(X,Y) _mm256_add_epi8(X,Y)
+
+#define _simd_add_u8x1(X,Y) (X + Y)
+#define _simd_add_u8x8(X,Y) _simd_add_u8x16(X + Y)
+#define _simd_add_u8x16(X,Y) _mm_add_epi8(X,Y)
+#define _simd_add_u8x32(X,Y) _mm256_add_epi8(X,Y)
+
+// Sub
+
+#define _simd_sub_f64x1(X,Y) (X + Y)
+#define _simd_sub_f64x2(X,Y) _mm_sub_pd(X,Y)
+#define _simd_sub_f64x4(X,Y) _mm256_sub_pd(X,Y)
+
+#define _simd_sub_f32x1(X,Y) (X + Y)
+#define _simd_sub_f32x2(X,Y) _simd_sub_f32x4(X + Y)
+#define _simd_sub_f32x4(X,Y) _mm_sub_ps(X,Y)
+#define _simd_sub_f32x8(X,Y) _mm256_sub_ps(X,Y)
+
+#define _simd_sub_s64x1(X,Y) (X + Y)
+#define _simd_sub_s64x2(X,Y) _mm_sub_epi64(X,Y)
+#define _simd_sub_s64x4(X,Y) _mm256_sub_epi64(X,Y)
+
+#define _simd_sub_u64x1(X,Y) (X + Y)
+#define _simd_sub_u64x2(X,Y) _mm_sub_epi64(X,Y)
+#define _simd_sub_u64x4(X,Y) _mm256_sub_epi64(X,Y)
+
+#define _simd_sub_s32x1(X,Y) (X + Y)
+#define _simd_sub_s32x2(X,Y) _simd_sub_s32x4(X + Y)
+#define _simd_sub_s32x4(X,Y) _mm_sub_epi32(X,Y)
+#define _simd_sub_s32x8(X,Y) _mm256_sub_epi32(X,Y)
+
+#define _simd_sub_u32x1(X,Y) (X + Y)
+#define _simd_sub_u32x2(X,Y) _simd_sub_u32x4(X + Y)
+#define _simd_sub_u32x4(X,Y) _mm_sub_epi32(X,Y)
+#define _simd_sub_u32x8(X,Y) _mm256_sub_epi32(X,Y)
+
+#define _simd_sub_s16x1(X,Y) (X + Y)
+#define _simd_sub_s16x4(X,Y) _simd_sub_s16x8(X + Y)
+#define _simd_sub_s16x8(X,Y) _mm_sub_epi16(X,Y)
+#define _simd_sub_s16x16(X,Y) _mm256_sub_epi16(X,Y)
+
+#define _simd_sub_u16x1(X,Y) (X + Y)
+#define _simd_sub_u16x4(X,Y) _simd_sub_u16x8(X + Y)
+#define _simd_sub_u16x8(X,Y) _mm_sub_epi16(X,Y)
+#define _simd_sub_u16x16(X,Y) _mm256_sub_epi16(X,Y)
+
+#define _simd_sub_s8x1(X,Y) (X + Y)
+#define _simd_sub_s8x8(X,Y) _simd_sub_s8x16(X + Y)
+#define _simd_sub_s8x16(X,Y) _mm_sub_epi8(X,Y)
+#define _simd_sub_s8x32(X,Y) _mm256_sub_epi8(X,Y)
+
+#define _simd_sub_u8x1(X,Y) (X + Y)
+#define _simd_sub_u8x8(X,Y) _simd_sub_u8x16(X + Y)
+#define _simd_sub_u8x16(X,Y) _mm_sub_epi8(X,Y)
+#define _simd_sub_u8x32(X,Y) _mm256_sub_epi8(X,Y)
+
+// Multiply
+
+static ANVIL_STRONG_INLINE int8x16_t ANVIL_SIMD_CALL _simd_mul_s8x16(const register int8x16_t x, const register int8x16_t y) {
+	const register __m128i dst_even = _mm_mullo_epi16(x, y);
+	const register __m128i dst_odd = _mm_mullo_epi16(_mm_srli_epi16(x, 8),_mm_srli_epi16(y, 8));
+	return _mm_or_si128(_mm_slli_epi16(dst_odd, 8), _mm_srli_epi16(_mm_slli_epi16(dst_even,8), 8));
+}
+
+// Sum
+
+static ANVIL_STRONG_INLINE int32x1_t ANVIL_SIMD_CALL _simd_sum_s32x4(const register int32x4_t x) {
+	const register __m128i tmp = _mm_add_epi32(_mm_unpackhi_epi32(x, x), _mm_unpacklo_epi32(x, x));
+	int32x1_t buffer[2];
+	_mm_storel_epi64(reinterpret_cast<__m128i*>(buffer), tmp);
+	return buffer[0] + buffer[1];
+}
+
+#define _simd_sum_s8x16(X) _simd_sum_s32x4(_mm_madd_epi16(X, _mm_set1_epi16(1)))
+
 #else
 	#include <arm_neon.h>
 	#include "anvil/core/Keywords.hpp"
