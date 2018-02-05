@@ -366,13 +366,13 @@ typedef uint8x16_t uint8x8_t;
 #define _simd_not_f32x4(X) _mm_xor_ps(X, _mm_cmpeq_ps(X,X))
 #define _simd_not_f32x8(X) _mm256_xor_ps(X, _mm256_cmpeq_ps(X,X))
 
-//#define _simd_not_s64x1(X) (~X)
-//#define _simd_not_s64x2(X) _mm_xor_si128(X, _mm_cmpeq_ps(X,X))
-//#define _simd_not_s64x4(X) _mm256_andnot_si256(X, _mm256_set1_epi32(~0i32))
-//
-//#define _simd_not_u64x1(X) (~X)
-//#define _simd_not_u64x2(X) _simd_not_s64x2(X)
-//#define _simd_not_u64x4(X) _simd_not_s64x4(X)
+#define _simd_not_s64x1(X) (~X)
+#define _simd_not_s64x2(X) _mm_castpd_si128(_mm_xor_si128(X, _mm_cmpeq_pd(_mm_castsi128_pd(X),_mm_castsi128_pd(X))))
+#define _simd_not_s64x4(X) _mm256_castpd_si256(_mm256_xor_si256(X, _mm256_cmpeq_pd(_mm256_castsi256_pd(X),_mm256_castsi256_pd(X))))
+
+#define _simd_not_u64x1(X) (~X)
+#define _simd_not_u64x2(X) _simd_not_s64x2(X)
+#define _simd_not_u64x4(X) _simd_not_s64x4(X)
 
 #define _simd_not_s32x1(X) (~X)
 #define _simd_not_s32x2(X) _simd_not_s32x4(X)
