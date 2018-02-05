@@ -417,7 +417,7 @@ static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL _simd_not_s32x8(const regi
 #define _simd_cmpgt_s32x8(X,Y) _mm256_cmpgt_epi32(X,Y)
 #define _simd_cmplt_s32x8(X,Y) _mm256_cmpgt_epi32(Y,X)
 #define _simd_cmpge_s32x8(X,Y) _simd_not_s32x8(_mm256_cmpgt_epi32(Y,X))
-#define _simd_cmple_s32x8(X,Y) _simd_not_s32x8(_mm256_cmpgt_epi32(Y,X))
+#define _simd_cmple_s32x8(X,Y) _simd_not_s32x8(_mm256_cmpgt_epi32(X,Y))
 
 // Add
 
