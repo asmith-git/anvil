@@ -358,51 +358,51 @@ typedef uint8x16_t uint8x8_t;
 // Not
 
 #define _simd_not_f64x1(X) _simd_reinterpret_s64x1_as_f64x1(~(_simd_reinterpret_f64x1_as_s64x1(X)))
-#define _simd_not_f64x2(X) _mm_andnot_pd(X, _mm_set1_pd(*_simd_reinterpret_s64x1_as_f64x1<(~0i64)))
-#define _simd_not_f64x4(X) _mm256_andnot_pd(X, _mm256_set1_pd(*_simd_reinterpret_s64x1_as_f64x1<(~0i64)))
+#define _simd_not_f64x2(X) _mm_xor_pd(X, _mm_cmpeq_pd(X,X))
+#define _simd_not_f64x4(X) _mm256_xor_pd(X, _mm256_cmpeq_pd(X,X))
 
 #define _simd_not_f32x1(X) _simd_reinterpret_s32x1_as_f32x1(~(_simd_reinterpret_f32x1_as_s32x1(X)))
 #define _simd_not_f32x2(X) _simd_not_f32x4(X)
-#define _simd_not_f32x4(X) _mm_andnot_ps(X, _mm_set1_ps(*_simd_reinterpret_s32x1_as_f32x1<(~0i32)))
-#define _simd_not_f32x8(X) _mm256_andnot_ps(X, _mm256_set1_ps(*_simd_reinterpret_s32x1_as_f32x1<(~0i32)))
+#define _simd_not_f32x4(X) _mm_xor_ps(X, _mm_cmpeq_ps(X,X))
+#define _simd_not_f32x8(X) _mm256_xor_ps(X, _mm256_cmpeq_ps(X,X))
 
-#define _simd_not_s64x1(X) (~X)
-#define _simd_not_s64x2(X) _mm_andnot_si128 (X, _mm_set1_epi32(~0i32))
-#define _simd_not_s64x4(X) _mm256_andnot_si256(X, _mm256_set1_epi32(~0i32))
-
-#define _simd_not_u64x1(X) (~X)
-#define _simd_not_u64x2(X) _simd_not_s64x2(X)
-#define _simd_not_u64x4(X) _simd_not_s64x4(X)
+//#define _simd_not_s64x1(X) (~X)
+//#define _simd_not_s64x2(X) _mm_xor_si128(X, _mm_cmpeq_ps(X,X))
+//#define _simd_not_s64x4(X) _mm256_andnot_si256(X, _mm256_set1_epi32(~0i32))
+//
+//#define _simd_not_u64x1(X) (~X)
+//#define _simd_not_u64x2(X) _simd_not_s64x2(X)
+//#define _simd_not_u64x4(X) _simd_not_s64x4(X)
 
 #define _simd_not_s32x1(X) (~X)
-#define _simd_not_s32x2(X) _simd_not_s64x2(X)
-#define _simd_not_s32x4(X) _simd_not_s64x2(X)
-#define _simd_not_s32x8(X) _simd_not_s64x4(X)
+#define _simd_not_s32x2(X) _simd_not_s32x4(X)
+#define _simd_not_s32x4(X) _mm_xor_si128(X, _mm_cmpeq_epi32(X,X))
+#define _simd_not_s32x8(X) _mm256_xor_si256(X, _mm256_cmpeq_epi32(X,X))
 
 #define _simd_not_u32x1(X) (~X)
-#define _simd_not_u32x2(X) _simd_not_s64x2(X)
-#define _simd_not_u32x4(X) _simd_not_s64x2(X)
-#define _simd_not_u32x8(X) _simd_not_s64x4(X)
+#define _simd_not_u32x2(X) _simd_not_u32x4(X)
+#define _simd_not_u32x4(X) _simd_not_s32x4(X)
+#define _simd_not_u32x8(X) _simd_not_s32x8(X)
 
 #define _simd_not_s16x1(X) (~X)
-#define _simd_not_16x4(X) _simd_not_s64x2(X)
-#define _simd_not_16x8(X) _simd_not_s64x2(X)
-#define _simd_not_16x16(X) _simd_not_s64x4(X)
+#define _simd_not_16x4(X) _simd_not_16x8(X)
+#define _simd_not_16x8(X) _mm_xor_si128(X, _mm_cmpeq_epi16(X,X))
+#define _simd_not_16x16(X) _mm256_xor_si256(X, _mm256_cmpeq_epi16(X,X))
 
 #define _simd_not_u16x1(X) (~X)
-#define _simd_not_u16x4(X) _simd_not_s64x2(X)
-#define _simd_not_u16x8(X) _simd_not_s64x2(X)
-#define _simd_not_u16x16(X) _simd_not_s64x4(X)
+#define _simd_not_u16x4(X) _simd_not_u16x8(X)
+#define _simd_not_u16x8(X) _simd_not_16x8(X)
+#define _simd_not_u16x16(X) _simd_not_16x16(X)
 
 #define _simd_not_sx1(X) (~X)
-#define _simd_not_s8x8(X) _simd_not_s64x2(X)
-#define _simd_not_s8x16(X) _simd_not_s64x2(X)
-#define _simd_not_s8x32(X) _simd_not_s64x4(X)
+#define _simd_not_s8x8(X) _simd_not_s8x16(X)
+#define _simd_not_s8x16(X) _mm_xor_si128(X, _mm_cmpeq_epi8(X,X))
+#define _simd_not_s8x32(X) _mm256_xor_si256(X, _mm256_cmpeq_epi8(X,X))
 
 #define _simd_not_u8x1(X) (~X)
-#define _simd_not_u8x8(X) _simd_not_s64x2(X)
-#define _simd_not_u8x16(X) _simd_not_s64x2(X)
-#define _simd_not_u8x32(X) _simd_not_s64x4(X)
+#define _simd_not_u8x8(X) _simd_not_u8x16(X)
+#define _simd_not_u8x16(X) _simd_not_s8x16(X)
+#define _simd_not_u8x32(X) _simd_not_s8x32(X)
 
 // Add
 
