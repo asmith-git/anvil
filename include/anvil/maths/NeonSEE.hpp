@@ -28,7 +28,7 @@
 	#define _mm_not_si128(X) _mm_andnot_si128(X, _mm_set1_epi32(~0i32))
 	#define _mm256_not_ps(X) _mm_andnot_ps(X, _mm256_set1_ps(*reinterpret_cast<float*>(&(~0ui32))))
 	#define _mm256_not_pd(X) _mm_andnot_pd(X, _mm256_set1_pd(*reinterpret_cast<double*>(&(~0ui64))))
-	#define _mm256_not_si1256(X) _mm256_andnot_si256(X, _mm256_set1_epi32(~0i32))
+	#define _mm256_not_si256(X) _mm256_andnot_si256(X, _mm256_set1_epi32(~0i32))
 #else
 	#include <arm_neon.h>
 	#include "anvil/core/Keywords.hpp"
