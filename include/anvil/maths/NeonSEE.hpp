@@ -354,21 +354,20 @@ typedef uint8x16_t uint8x8_t;
 #define _simd_reinterpret_u8x16_as_s8x16(X) *reinterpret_cast<const int8x16_t*(&X)
 #define _simd_reinterpret_u8x32_as_s8x32(X) *reinterpret_cast<const int8x32_t*(&X)
 
-
 // Not
 
 #define _simd_not_f64x1(X) _simd_reinterpret_s64x1_as_f64x1(~(_simd_reinterpret_f64x1_as_s64x1(X)))
-#define _simd_not_f64x2(X) _mm_xor_pd(X, _mm_cmpeq_pd(X,X))
-#define _simd_not_f64x4(X) _mm256_xor_pd(X, _mm256_cmpeq_pd(X,X))
+static ANVIL_STRONG_INLINE float64x2_t ANVIL_SIMD_CALL _simd_not_f64x2(const register float64x2_t x) { return _mm_xor_pd(x, _mm_cmpeq_pd(x, x)); }
+static ANVIL_STRONG_INLINE float64x4_t ANVIL_SIMD_CALL _simd_not_f64x4(const register float64x4_t x) { return _mm256_xor_pd(x, _mm256_cmp_pd(x, x, _CMP_EQ_OQ)); }
 
 #define _simd_not_f32x1(X) _simd_reinterpret_s32x1_as_f32x1(~(_simd_reinterpret_f32x1_as_s32x1(X)))
 #define _simd_not_f32x2(X) _simd_not_f32x4(X)
-#define _simd_not_f32x4(X) _mm_xor_ps(X, _mm_cmpeq_ps(X,X))
-#define _simd_not_f32x8(X) _mm256_xor_ps(X, _mm256_cmpeq_ps(X,X))
+static ANVIL_STRONG_INLINE float32x4_t ANVIL_SIMD_CALL _simd_not_f32x4(const register float32x4_t x) { return _mm_xor_ps(x, _mm_cmpeq_ps(x, x)); }
+static ANVIL_STRONG_INLINE float32x8_t ANVIL_SIMD_CALL _simd_not_f32x8(const register float32x8_t x) { return _mm256_xor_ps(x, _mm256_cmp_ps(x, x, _CMP_EQ_OQ)); }
 
 #define _simd_not_s64x1(X) (~X)
-#define _simd_not_s64x2(X) _mm_castpd_si128(_mm_xor_si128(X, _mm_cmpeq_pd(_mm_castsi128_pd(X),_mm_castsi128_pd(X))))
-#define _simd_not_s64x4(X) _mm256_castpd_si256(_mm256_xor_si256(X, _mm256_cmpeq_pd(_mm256_castsi256_pd(X),_mm256_castsi256_pd(X))))
+static ANVIL_STRONG_INLINE int64x2_t ANVIL_SIMD_CALL _simd_not_s64x2(const register int64x2_t x) { return _mm_castpd_si128(_mm_xor_pd(_mm_castsi128_pd(x), _mm_cmpeq_pd(_mm_castsi128_pd(x), _mm_castsi128_pd(x)))); }
+static ANVIL_STRONG_INLINE int64x4_t ANVIL_SIMD_CALL _simd_not_s64x4(const register int64x4_t x) { return _mm256_castpd_si256(_mm256_xor_pd(_mm256_castsi256_pd(x), _mm256_cmp_pd(_mm256_castsi256_pd(x), _mm256_castsi256_pd(x), _CMP_EQ_OQ))); }
 
 #define _simd_not_u64x1(X) (~X)
 #define _simd_not_u64x2(X) _simd_not_s64x2(X)
@@ -376,8 +375,8 @@ typedef uint8x16_t uint8x8_t;
 
 #define _simd_not_s32x1(X) (~X)
 #define _simd_not_s32x2(X) _simd_not_s32x4(X)
-#define _simd_not_s32x4(X) _mm_xor_si128(X, _mm_cmpeq_epi32(X,X))
-#define _simd_not_s32x8(X) _mm256_xor_si256(X, _mm256_cmpeq_epi32(X,X))
+static ANVIL_STRONG_INLINE int32x4_t ANVIL_SIMD_CALL _simd_not_s32x4(const register int32x4_t x) { return _mm_xor_si128(x, _mm_cmpeq_epi32(x, x)); }
+static ANVIL_STRONG_INLINE int32x8_t ANVIL_SIMD_CALL _simd_not_s32x8(const register int32x8_t x) { return _mm256_xor_si256(x, _mm256_cmpeq_epi32(x, x)); }
 
 #define _simd_not_u32x1(X) (~X)
 #define _simd_not_u32x2(X) _simd_not_u32x4(X)
@@ -386,8 +385,8 @@ typedef uint8x16_t uint8x8_t;
 
 #define _simd_not_s16x1(X) (~X)
 #define _simd_not_16x4(X) _simd_not_16x8(X)
-#define _simd_not_16x8(X) _mm_xor_si128(X, _mm_cmpeq_epi16(X,X))
-#define _simd_not_16x16(X) _mm256_xor_si256(X, _mm256_cmpeq_epi16(X,X))
+static ANVIL_STRONG_INLINE int16x8_t ANVIL_SIMD_CALL _simd_not_s32x4(const register int32x4_t x) { return _mm_xor_si128(x, _mm_cmpeq_epi16(x, x)); }
+static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL _simd_not_s32x8(const register int32x8_t x) { return _mm256_xor_si256(x, _mm256_cmpeq_epi16(x, x)); }
 
 #define _simd_not_u16x1(X) (~X)
 #define _simd_not_u16x4(X) _simd_not_u16x8(X)
@@ -396,8 +395,8 @@ typedef uint8x16_t uint8x8_t;
 
 #define _simd_not_sx1(X) (~X)
 #define _simd_not_s8x8(X) _simd_not_s8x16(X)
-#define _simd_not_s8x16(X) _mm_xor_si128(X, _mm_cmpeq_epi8(X,X))
-#define _simd_not_s8x32(X) _mm256_xor_si256(X, _mm256_cmpeq_epi8(X,X))
+static ANVIL_STRONG_INLINE int16x8_t ANVIL_SIMD_CALL _simd_not_s32x4(const register int32x4_t x) { return _mm_xor_si128(x, _mm_cmpeq_epi8(x, x)); }
+static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL _simd_not_s32x8(const register int32x8_t x) { return _mm256_xor_si256(x, _mm256_cmpeq_epi8(x, x)); }
 
 #define _simd_not_u8x1(X) (~X)
 #define _simd_not_u8x8(X) _simd_not_u8x16(X)
