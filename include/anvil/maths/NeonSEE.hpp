@@ -403,6 +403,22 @@ static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL _simd_not_s32x8(const regi
 #define _simd_not_u8x16(X) _simd_not_s8x16(X)
 #define _simd_not_u8x32(X) _simd_not_s8x32(X)
 
+// Cmp
+
+#define _simd_cmpeq_s32x4(X,Y) _mm_cmpeq_epi32(X,Y)
+#define _simd_cmpneq_s32x4(X,Y) _simd_not_s32x4(_mm_cmpeq_epi32(X,Y))
+#define _simd_cmpgt_s32x4(X,Y) _mm_cmpgt_epi32(X,Y)
+#define _simd_cmplt_s32x4(X,Y) _mm_cmpgt_epi32(Y,X)
+#define _simd_cmpge_s32x4(X,Y) _simd_not_s32x4(_mm_cmpgt_epi32(Y,X))
+#define _simd_cmple_s32x4(X,Y) _simd_not_s32x4(_mm_cmpgt_epi32(Y,X))
+
+#define _simd_cmpeq_s32x8(X,Y) _mm256_cmpeq_epi32(X,Y)
+#define _simd_cmpneq_s32x8(X,Y) _simd_not_s32x4(_mm256_cmpeq_epi32(X,Y))
+#define _simd_cmpgt_s32x8(X,Y) _mm256_cmpgt_epi32(X,Y)
+#define _simd_cmplt_s32x8(X,Y) _mm256_cmpgt_epi32(Y,X)
+#define _simd_cmpge_s32x8(X,Y) _simd_not_s32x8(_mm256_cmpgt_epi32(Y,X))
+#define _simd_cmple_s32x8(X,Y) _simd_not_s32x8(_mm256_cmpgt_epi32(Y,X))
+
 // Add
 
 #define _simd_add_f64x1(X,Y) (X + Y)
