@@ -455,6 +455,51 @@ typedef uint8x16_t uint8x8_t;
 #define anvil_convert_f64x4_to_f32x4(X) _mm256_cvtpd_ps 
 //! \todo Remaining conversions
 
+// Split
+
+#define anvil_halflo_f64x4(X) _mm256_extractf128_pd(X, 0)
+#define anvil_halfhi_f64x4(X) _mm256_extractf128_pd(X, 1)
+
+#define anvil_halflo_f32x4(X) _mm256_extractf128_ps(X, 0)
+#define anvil_halfhi_f32x4(X) _mm256_extractf128_ps(X, 1)
+
+#define anvil_halflo_s64x4(X) _mm256_extractf128_si256(X, 0)
+#define anvil_halfhi_s64x4(X) _mm256_extractf128_si256(X, 1)
+
+#define anvil_halflo_u64x4(X) _mm256_extractf128_si256(X, 0)
+#define anvil_halfhi_u64x4(X) _mm256_extractf128_si256(X, 1)
+
+#define anvil_halflo_s32x8(X) _mm256_extractf128_si256(X, 0)
+#define anvil_halfhi_s32x8(X) _mm256_extractf128_si256(X, 1)
+
+#define anvil_halflo_u32x8(X) _mm256_extractf128_si256(X, 0)
+#define anvil_halfhi_u32x8(X) _mm256_extractf128_si256(X, 1)
+
+#define anvil_halflo_s16x16(X) _mm256_extractf128_si256(X, 0)
+#define anvil_halfhi_s16x16(X) _mm256_extractf128_si256(X, 1)
+
+#define anvil_halflo_u16x16(X) _mm256_extractf128_si256(X, 0)
+#define anvil_halfhi_u16x16(X) _mm256_extractf128_si256(X, 1)
+
+#define anvil_halflo_s8x32(X) _mm256_extractf128_si256(X, 0)
+#define anvil_halfhi_s8x32(X) _mm256_extractf128_si256(X, 1)
+
+#define anvil_halflo_u8x32(X) _mm256_extractf128_si256(X, 0)
+#define anvil_halfhi_u8x32(X) _mm256_extractf128_si256(X, 1)
+
+// Combine
+
+#define anvil_combine_f64x4(X,Y) _mm256_set_m128d(Y,X)
+#define anvil_combine_f32x8(X,Y) _mm256_set_m128(Y,X)
+#define anvil_combine_s64x4(X,Y) _mm256_set_m128i(Y,X)
+#define anvil_combine_u64x4(X,Y) _mm256_set_m128i(Y,X)
+#define anvil_combine_s32x8(X,Y) _mm256_set_m128i(Y,X)
+#define anvil_combine_u32x8(X,Y) _mm256_set_m128i(Y,X)
+#define anvil_combine_s16x16(X,Y) _mm256_set_m128i(Y,X)
+#define anvil_combine_u16x16(X,Y) _mm256_set_m128i(Y,X)
+#define anvil_combine_s8x32(X,Y) _mm256_set_m128i(Y,X)
+#define anvil_combine_u8x32(X,Y) _mm256_set_m128i(Y,X)
+
 // Not
 
 #define anvil_not_f64x1(X) anvil_reinterpret_s64x1_as_f64x1(~(anvil_reinterpret_f64x1_as_s64x1(X)))
