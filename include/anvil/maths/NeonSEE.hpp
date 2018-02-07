@@ -34,7 +34,7 @@ typedef uint32_t uint32x1_t;
 typedef int16_t int16x1_t;
 typedef uint16_t uint16x1_t;
 typedef int8_t int8x1_t;
-typedef uint8_t uint16x8_t;
+typedef uint8_t uint8x1_t;
 
 typedef __m128d float64x2_t;
 typedef __m256d float64x4_t;
@@ -614,6 +614,333 @@ static ANVIL_STRONG_INLINE int8x32_t ANVIL_SIMD_CALL anvil_mul_s8x16(const regis
 #define anvil_mul_u8x1(X,Y) (X * Y)
 #define anvil_mul_u8x16(X,Y) anvil_mul_s8x16(X,Y)
 #define anvil_mul_u8x32(X,Y) anvil_mul_s8x32(X,Y)
+
+// Div
+
+#define anvil_div_float64x1(X,Y) (X / Y)
+#define anvil_div_float64x2(X,Y) _mm_div_pd(X,Y)
+#define anvil_div_float64x4(X,Y) _mm256_div_pd(X,Y)
+
+#define anvil_div_float32x1(X,Y) (X / Y)
+#define anvil_div_float32x4(X,Y) _mm_div_ps(X,Y)
+#define anvil_div_float32x8(X,Y) _mm256_div_ps(X,Y)
+
+#define anvil_div_int64x1(X,Y) (X / Y)
+
+static ANVIL_STRONG_INLINE int64x2_t ANVIL_SIMD_CALL anvil_div_int64x2(const register int64x2_t x, const register int64x2_t y) {
+	ANVIL_ALIGN(16) int64x1_t a[2];
+	ANVIL_ALIGN(16) int64x1_t b[2];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	_mm_store_si128(reinterpret_cast<__m128i*>(b), y);
+	a[0] /= b[0];
+	a[1] /= b[1];
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int64x4_t ANVIL_SIMD_CALL anvil_div_int64x4(const register int64x4_t x, const register int64x4_t y) {
+	ANVIL_ALIGN(16) int64x1_t a[4];
+	ANVIL_ALIGN(16) int64x1_t b[4];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	_mm256_store_si256(reinterpret_cast<__m256i*>(b), y);
+	a[0] /= b[0];
+	a[1] /= b[1];
+	a[2] /= b[2];
+	a[3] /= b[3];
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+#define anvil_div_uint64x1(X,Y) (X / Y)
+
+static ANVIL_STRONG_INLINE uint64x2_t ANVIL_SIMD_CALL anvil_div_uint64x2(const register uint64x2_t x, const register uint64x2_t y) {
+	ANVIL_ALIGN(16) uint64x1_t a[2];
+	ANVIL_ALIGN(16) uint64x1_t b[2];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	_mm_store_si128(reinterpret_cast<__m128i*>(b), y);
+	a[0] /= b[0];
+	a[1] /= b[1];
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint64x4_t ANVIL_SIMD_CALL anvil_div_uint64x4(const register uint64x4_t x, const register uint64x4_t y) {
+	ANVIL_ALIGN(16) uint64x1_t a[4];
+	ANVIL_ALIGN(16) uint64x1_t b[4];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	_mm256_store_si256(reinterpret_cast<__m256i*>(b), y);
+	a[0] /= b[0];
+	a[1] /= b[1];
+	a[2] /= b[2];
+	a[3] /= b[3];
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+#define anvil_div_int32x1(X,Y) (X / Y)
+
+static ANVIL_STRONG_INLINE int32x4_t ANVIL_SIMD_CALL anvil_div_int32x4(const register int32x4_t x, const register int32x4_t y) {
+	ANVIL_ALIGN(16) int32x1_t a[4];
+	ANVIL_ALIGN(16) int32x1_t b[4];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	_mm_store_si128(reinterpret_cast<__m128i*>(b), y);
+	a[0] /= b[0];
+	a[1] /= b[1];
+	a[2] /= b[2];
+	a[3] /= b[3];
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int32x8_t ANVIL_SIMD_CALL anvil_div_int32x8(const register int32x8_t x, const register int32x8_t y) {
+	ANVIL_ALIGN(16) int32x1_t a[8];
+	ANVIL_ALIGN(16) int32x1_t b[8];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	_mm256_store_si256(reinterpret_cast<__m256i*>(b), y);
+	a[0] /= b[0];
+	a[1] /= b[1];
+	a[2] /= b[2];
+	a[3] /= b[3];
+	a[4] /= b[4];
+	a[5] /= b[5];
+	a[6] /= b[6];
+	a[7] /= b[7];
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+#define anvil_div_uint32x1(X,Y) (X / Y)
+
+static ANVIL_STRONG_INLINE uint32x4_t ANVIL_SIMD_CALL anvil_div_uint32x4(const register uint32x4_t x, const register uint32x4_t y) {
+	ANVIL_ALIGN(16) uint32x1_t a[4];
+	ANVIL_ALIGN(16) uint32x1_t b[4];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	_mm_store_si128(reinterpret_cast<__m128i*>(b), y);
+	a[0] /= b[0];
+	a[1] /= b[1];
+	a[2] /= b[2];
+	a[3] /= b[3];
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint32x8_t ANVIL_SIMD_CALL anvil_div_uint32x8(const register uint32x8_t x, const register uint32x8_t y) {
+	ANVIL_ALIGN(16) uint32x1_t a[8];
+	ANVIL_ALIGN(16) uint32x1_t b[8];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	_mm256_store_si256(reinterpret_cast<__m256i*>(b), y);
+	a[0] /= b[0];
+	a[1] /= b[1];
+	a[2] /= b[2];
+	a[3] /= b[3];
+	a[4] /= b[4];
+	a[5] /= b[5];
+	a[6] /= b[6];
+	a[7] /= b[7];
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+#define anvil_div_int16x1(X,Y) (X / Y)
+
+static ANVIL_STRONG_INLINE int16x8_t ANVIL_SIMD_CALL anvil_div_int16x8(const register int16x8_t x, const register int16x8_t y) {
+	ANVIL_ALIGN(16) int16x1_t a[8];
+	ANVIL_ALIGN(16) int16x1_t b[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	_mm_store_si128(reinterpret_cast<__m128i*>(b), y);
+	a[0] /= b[0];
+	a[1] /= b[1];
+	a[2] /= b[2];
+	a[3] /= b[3];
+	a[4] /= b[4];
+	a[5] /= b[5];
+	a[6] /= b[6];
+	a[7] /= b[7];
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL anvil_div_int16x16(const register int16x16_t x, const register int16x16_t y) {
+	ANVIL_ALIGN(16) int16x1_t a[16];
+	ANVIL_ALIGN(16) int16x1_t b[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	_mm256_store_si256(reinterpret_cast<__m256i*>(b), y);
+	a[0] /= b[0];
+	a[1] /= b[1];
+	a[2] /= b[2];
+	a[3] /= b[3];
+	a[4] /= b[4];
+	a[5] /= b[5];
+	a[6] /= b[6];
+	a[7] /= b[7];
+	a[8] /= b[8];
+	a[9] /= b[9];
+	a[10] /= b[10];
+	a[11] /= b[11];
+	a[12] /= b[12];
+	a[13] /= b[13];
+	a[14] /= b[14];
+	a[15] /= b[15];
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+#define anvil_div_uint16x1(X,Y) (X / Y)
+
+static ANVIL_STRONG_INLINE uint16x8_t ANVIL_SIMD_CALL anvil_div_uint16x8(const register uint16x8_t x, const register uint16x8_t y) {
+	ANVIL_ALIGN(16) uint16x1_t a[8];
+	ANVIL_ALIGN(16) uint16x1_t b[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	_mm_store_si128(reinterpret_cast<__m128i*>(b), y);
+	a[0] /= b[0];
+	a[1] /= b[1];
+	a[2] /= b[2];
+	a[3] /= b[3];
+	a[4] /= b[4];
+	a[5] /= b[5];
+	a[6] /= b[6];
+	a[7] /= b[7];
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint16x16_t ANVIL_SIMD_CALL anvil_div_uint16x16(const register uint16x16_t x, const register uint16x16_t y) {
+	ANVIL_ALIGN(16) uint16x1_t a[16];
+	ANVIL_ALIGN(16) uint16x1_t b[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	_mm256_store_si256(reinterpret_cast<__m256i*>(b), y);
+	a[0] /= b[0];
+	a[1] /= b[1];
+	a[2] /= b[2];
+	a[3] /= b[3];
+	a[4] /= b[4];
+	a[5] /= b[5];
+	a[6] /= b[6];
+	a[7] /= b[7];
+	a[8] /= b[8];
+	a[9] /= b[9];
+	a[10] /= b[10];
+	a[11] /= b[11];
+	a[12] /= b[12];
+	a[13] /= b[13];
+	a[14] /= b[14];
+	a[15] /= b[15];
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+#define anvil_div_int8x1(X,Y) (X / Y)
+
+static ANVIL_STRONG_INLINE int8x16_t ANVIL_SIMD_CALL anvil_div_int8x16(const register int8x16_t x, const register int8x16_t y) {
+	ANVIL_ALIGN(16) int8x1_t a[16];
+	ANVIL_ALIGN(16) int8x1_t b[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	_mm_store_si128(reinterpret_cast<__m128i*>(b), y);
+	a[0] /= b[0];
+	a[1] /= b[1];
+	a[2] /= b[2];
+	a[3] /= b[3];
+	a[4] /= b[4];
+	a[5] /= b[5];
+	a[6] /= b[6];
+	a[7] /= b[7];
+	a[8] /= b[8];
+	a[9] /= b[9];
+	a[10] /= b[10];
+	a[11] /= b[11];
+	a[12] /= b[12];
+	a[13] /= b[13];
+	a[14] /= b[14];
+	a[15] /= b[15];
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int8x32_t ANVIL_SIMD_CALL anvil_div_int8x32(const register int8x32_t x, const register int8x32_t y) {
+	ANVIL_ALIGN(16) int8x1_t a[32];
+	ANVIL_ALIGN(16) int8x1_t b[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	_mm256_store_si256(reinterpret_cast<__m256i*>(b), y);
+	a[0] /= b[0];
+	a[1] /= b[1];
+	a[2] /= b[2];
+	a[3] /= b[3];
+	a[4] /= b[4];
+	a[5] /= b[5];
+	a[6] /= b[6];
+	a[7] /= b[7];
+	a[8] /= b[8];
+	a[9] /= b[9];
+	a[10] /= b[10];
+	a[11] /= b[11];
+	a[12] /= b[12];
+	a[13] /= b[13];
+	a[14] /= b[14];
+	a[15] /= b[15];
+	a[16] /= b[16];
+	a[17] /= b[17];
+	a[18] /= b[18];
+	a[19] /= b[19];
+	a[20] /= b[20];
+	a[21] /= b[21];
+	a[22] /= b[22];
+	a[23] /= b[23];
+	a[24] /= b[24];
+	a[25] /= b[25];
+	a[26] /= b[26];
+	a[27] /= b[27];
+	a[28] /= b[28];
+	a[29] /= b[29];
+	a[30] /= b[30];
+	a[31] /= b[31];
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+#define anvil_div_uint8x1(X,Y) (X / Y)
+
+static ANVIL_STRONG_INLINE uint8x16_t ANVIL_SIMD_CALL anvil_div_uint8x16(const register uint8x16_t x, const register uint8x16_t y) {
+	ANVIL_ALIGN(16) uint8x1_t a[16];
+	ANVIL_ALIGN(16) uint8x1_t b[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	_mm_store_si128(reinterpret_cast<__m128i*>(b), y);
+	a[0] /= b[0];
+	a[1] /= b[1];
+	a[2] /= b[2];
+	a[3] /= b[3];
+	a[4] /= b[4];
+	a[5] /= b[5];
+	a[6] /= b[6];
+	a[7] /= b[7];
+	a[8] /= b[8];
+	a[9] /= b[9];
+	a[10] /= b[10];
+	a[11] /= b[11];
+	a[12] /= b[12];
+	a[13] /= b[13];
+	a[14] /= b[14];
+	a[15] /= b[15];
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint8x32_t ANVIL_SIMD_CALL anvil_div_uint8x32(const register uint8x32_t x, const register uint8x32_t y) {
+	ANVIL_ALIGN(16) uint8x1_t a[32];
+	ANVIL_ALIGN(16) uint8x1_t b[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	_mm256_store_si256(reinterpret_cast<__m256i*>(b), y);
+	a[0] /= b[0];
+	a[1] /= b[1];
+	a[2] /= b[2];
+	a[3] /= b[3];
+	a[4] /= b[4];
+	a[5] /= b[5];
+	a[6] /= b[6];
+	a[7] /= b[7];
+	a[8] /= b[8];
+	a[9] /= b[9];
+	a[10] /= b[10];
+	a[11] /= b[11];
+	a[12] /= b[12];
+	a[13] /= b[13];
+	a[14] /= b[14];
+	a[15] /= b[15];
+	a[16] /= b[16];
+	a[17] /= b[17];
+	a[18] /= b[18];
+	a[19] /= b[19];
+	a[20] /= b[20];
+	a[21] /= b[21];
+	a[22] /= b[22];
+	a[23] /= b[23];
+	a[24] /= b[24];
+	a[25] /= b[25];
+	a[26] /= b[26];
+	a[27] /= b[27];
+	a[28] /= b[28];
+	a[29] /= b[29];
+	a[30] /= b[30];
+	a[31] /= b[31];
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
 
 // Sum
 
