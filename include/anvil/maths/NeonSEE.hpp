@@ -527,6 +527,54 @@ static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL anvil_not_s32x8(const regi
 #define anvil_mul_f32x4(X,Y) _mm_mul_ps(X,Y)
 #define anvil_mul_f32x8(X,Y) _mm256_mul_ps(X,Y)
 
+#define anvil_mul_s64x1(X,Y) (X * Y)
+
+static ANVIL_STRONG_INLINE int64x2_t ANVIL_SIMD_CALL anvil_mul_s64x2(const register int64x2_t x, const register int64x2_t y) {
+	ANVIL_ALIGN(16) int64_t a[2];
+	ANVIL_ALIGN(16) int64_t b[2];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	_mm_store_si128(reinterpret_cast<__m128i*>(b), y);
+	a[0] *= b[0];
+	a[1] *= b[1];
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int64x4_t ANVIL_SIMD_CALL anvil_mul_s64x4(const register int64x4_t x, const register int64x4_t y) {
+	ANVIL_ALIGN(32) int64_t a[4];
+	ANVIL_ALIGN(32) int64_t b[4];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	_mm256_store_si256(reinterpret_cast<__m256i*>(b), y);
+	a[0] *= b[0];
+	a[1] *= b[1];
+	a[2] *= b[2];
+	a[3] *= b[3];
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_mul_u64x1(X,Y) (X * Y)
+
+static ANVIL_STRONG_INLINE uint64x2_t ANVIL_SIMD_CALL anvil_mul_u64x2(const register uint64x2_t x, const register uint64x2_t y) {
+	ANVIL_ALIGN(16) uint64_t a[2];
+	ANVIL_ALIGN(16) uint64_t b[2];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	_mm_store_si128(reinterpret_cast<__m128i*>(b), y);
+	a[0] *= b[0];
+	a[1] *= b[1];
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint64x4_t ANVIL_SIMD_CALL anvil_mul_u64x4(const register uint64x4_t x, const register uint64x4_t y) {
+	ANVIL_ALIGN(32) uint64_t a[4];
+	ANVIL_ALIGN(32) uint64_t b[4];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	_mm256_store_si256(reinterpret_cast<__m256i*>(b), y);
+	a[0] *= b[0];
+	a[1] *= b[1];
+	a[2] *= b[2];
+	a[3] *= b[3];
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
 #define anvil_mul_s32x1(X,Y) (X * Y)
 #define anvil_mul_s32x4(X,Y) _mm_mullo_epi32(X,Y)
 #define anvil_mul_s32x8(X,Y) _mm256_mullo_epi32(X,Y)
