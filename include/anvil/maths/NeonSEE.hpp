@@ -12,6 +12,7 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
+#include <cmath>
 #include "anvil/core/Cpu.hpp"
 #include "anvil/core/Keywords.hpp"
 
@@ -354,6 +355,98 @@ typedef uint8x16_t uint8x8_t;
 #define anvil_reinterpret_u8x16_as_s8x16(X) *reinterpret_cast<const int8x16_t*(&X)
 #define anvil_reinterpret_u8x32_as_s8x32(X) *reinterpret_cast<const int8x32_t*(&X)
 
+// convert
+
+#define anvil_convert_f64x1_to_f32x1(X) static_cast<float64x1_t>(X)
+#define anvil_convert_f64x1_to_s64x1(X) static_cast<float64x1_t>(X)
+#define anvil_convert_f64x1_to_u64x1(X) static_cast<float64x1_t>(X)
+#define anvil_convert_f64x1_to_s32x1(X) static_cast<float64x1_t>(X)
+#define anvil_convert_f64x1_to_u32x1(X) static_cast<float64x1_t>(X)
+#define anvil_convert_f64x1_to_s16x1(X) static_cast<float64x1_t>(X)
+#define anvil_convert_f64x1_to_u16x1(X) static_cast<float64x1_t>(X)
+#define anvil_convert_f64x1_to_s8x1(X) static_cast<float64x1_t>(X)
+#define anvil_convert_f64x1_to_u8x1(X) static_cast<float64x1_t>(X)
+#define anvil_convert_f32x1_to_f64x1(X) static_cast<float32x1_t>(X)
+#define anvil_convert_f32x1_to_s64x1(X) static_cast<float32x1_t>(X)
+#define anvil_convert_f32x1_to_u64x1(X) static_cast<float32x1_t>(X)
+#define anvil_convert_f32x1_to_s32x1(X) static_cast<float32x1_t>(X)
+#define anvil_convert_f32x1_to_u32x1(X) static_cast<float32x1_t>(X)
+#define anvil_convert_f32x1_to_s16x1(X) static_cast<float32x1_t>(X)
+#define anvil_convert_f32x1_to_u16x1(X) static_cast<float32x1_t>(X)
+#define anvil_convert_f32x1_to_s8x1(X) static_cast<float32x1_t>(X)
+#define anvil_convert_f32x1_to_u8x1(X) static_cast<float32x1_t>(X)
+#define anvil_convert_s64x1_to_f64x1(X) static_cast<int64x1_t>(X)
+#define anvil_convert_s64x1_to_f32x1(X) static_cast<int64x1_t>(X)
+#define anvil_convert_s64x1_to_u64x1(X) static_cast<int64x1_t>(X)
+#define anvil_convert_s64x1_to_s32x1(X) static_cast<int64x1_t>(X)
+#define anvil_convert_s64x1_to_u32x1(X) static_cast<int64x1_t>(X)
+#define anvil_convert_s64x1_to_s16x1(X) static_cast<int64x1_t>(X)
+#define anvil_convert_s64x1_to_u16x1(X) static_cast<int64x1_t>(X)
+#define anvil_convert_s64x1_to_s8x1(X) static_cast<int64x1_t>(X)
+#define anvil_convert_s64x1_to_u8x1(X) static_cast<int64x1_t>(X)
+#define anvil_convert_u64x1_to_f64x1(X) static_cast<uint64x1_t>(X)
+#define anvil_convert_u64x1_to_f32x1(X) static_cast<uint64x1_t>(X)
+#define anvil_convert_u64x1_to_s64x1(X) static_cast<uint64x1_t>(X)
+#define anvil_convert_u64x1_to_s32x1(X) static_cast<uint64x1_t>(X)
+#define anvil_convert_u64x1_to_u32x1(X) static_cast<uint64x1_t>(X)
+#define anvil_convert_u64x1_to_s16x1(X) static_cast<uint64x1_t>(X)
+#define anvil_convert_u64x1_to_u16x1(X) static_cast<uint64x1_t>(X)
+#define anvil_convert_u64x1_to_s8x1(X) static_cast<uint64x1_t>(X)
+#define anvil_convert_u64x1_to_u8x1(X) static_cast<uint64x1_t>(X)
+#define anvil_convert_s32x1_to_f64x1(X) static_cast<int32x1_t>(X)
+#define anvil_convert_s32x1_to_f32x1(X) static_cast<int32x1_t>(X)
+#define anvil_convert_s32x1_to_s64x1(X) static_cast<int32x1_t>(X)
+#define anvil_convert_s32x1_to_u64x1(X) static_cast<int32x1_t>(X)
+#define anvil_convert_s32x1_to_u32x1(X) static_cast<int32x1_t>(X)
+#define anvil_convert_s32x1_to_s16x1(X) static_cast<int32x1_t>(X)
+#define anvil_convert_s32x1_to_u16x1(X) static_cast<int32x1_t>(X)
+#define anvil_convert_s32x1_to_s8x1(X) static_cast<int32x1_t>(X)
+#define anvil_convert_s32x1_to_u8x1(X) static_cast<int32x1_t>(X)
+#define anvil_convert_u32x1_to_f64x1(X) static_cast<uint32x1_t>(X)
+#define anvil_convert_u32x1_to_f32x1(X) static_cast<uint32x1_t>(X)
+#define anvil_convert_u32x1_to_s64x1(X) static_cast<uint32x1_t>(X)
+#define anvil_convert_u32x1_to_u64x1(X) static_cast<uint32x1_t>(X)
+#define anvil_convert_u32x1_to_s32x1(X) static_cast<uint32x1_t>(X)
+#define anvil_convert_u32x1_to_s16x1(X) static_cast<uint32x1_t>(X)
+#define anvil_convert_u32x1_to_u16x1(X) static_cast<uint32x1_t>(X)
+#define anvil_convert_u32x1_to_s8x1(X) static_cast<uint32x1_t>(X)
+#define anvil_convert_u32x1_to_u8x1(X) static_cast<uint32x1_t>(X)
+#define anvil_convert_s16x1_to_f64x1(X) static_cast<int16x1_t>(X)
+#define anvil_convert_s16x1_to_f32x1(X) static_cast<int16x1_t>(X)
+#define anvil_convert_s16x1_to_s64x1(X) static_cast<int16x1_t>(X)
+#define anvil_convert_s16x1_to_u64x1(X) static_cast<int16x1_t>(X)
+#define anvil_convert_s16x1_to_s32x1(X) static_cast<int16x1_t>(X)
+#define anvil_convert_s16x1_to_u32x1(X) static_cast<int16x1_t>(X)
+#define anvil_convert_s16x1_to_u16x1(X) static_cast<int16x1_t>(X)
+#define anvil_convert_s16x1_to_s8x1(X) static_cast<int16x1_t>(X)
+#define anvil_convert_s16x1_to_u8x1(X) static_cast<int16x1_t>(X)
+#define anvil_convert_u16x1_to_f64x1(X) static_cast<uint16x1_t>(X)
+#define anvil_convert_u16x1_to_f32x1(X) static_cast<uint16x1_t>(X)
+#define anvil_convert_u16x1_to_s64x1(X) static_cast<uint16x1_t>(X)
+#define anvil_convert_u16x1_to_u64x1(X) static_cast<uint16x1_t>(X)
+#define anvil_convert_u16x1_to_s32x1(X) static_cast<uint16x1_t>(X)
+#define anvil_convert_u16x1_to_u32x1(X) static_cast<uint16x1_t>(X)
+#define anvil_convert_u16x1_to_s16x1(X) static_cast<uint16x1_t>(X)
+#define anvil_convert_u16x1_to_s8x1(X) static_cast<uint16x1_t>(X)
+#define anvil_convert_u16x1_to_u8x1(X) static_cast<uint16x1_t>(X)
+#define anvil_convert_s8x1_to_f64x1(X) static_cast<int8x1_t>(X)
+#define anvil_convert_s8x1_to_f32x1(X) static_cast<int8x1_t>(X)
+#define anvil_convert_s8x1_to_s64x1(X) static_cast<int8x1_t>(X)
+#define anvil_convert_s8x1_to_u64x1(X) static_cast<int8x1_t>(X)
+#define anvil_convert_s8x1_to_s32x1(X) static_cast<int8x1_t>(X)
+#define anvil_convert_s8x1_to_u32x1(X) static_cast<int8x1_t>(X)
+#define anvil_convert_s8x1_to_s16x1(X) static_cast<int8x1_t>(X)
+#define anvil_convert_s8x1_to_u16x1(X) static_cast<int8x1_t>(X)
+#define anvil_convert_s8x1_to_u8x1(X) static_cast<int8x1_t>(X)
+#define anvil_convert_u8x1_to_f64x1(X) static_cast<uint8x1_t>(X)
+#define anvil_convert_u8x1_to_f32x1(X) static_cast<uint8x1_t>(X)
+#define anvil_convert_u8x1_to_s64x1(X) static_cast<uint8x1_t>(X)
+#define anvil_convert_u8x1_to_u64x1(X) static_cast<uint8x1_t>(X)
+#define anvil_convert_u8x1_to_s32x1(X) static_cast<uint8x1_t>(X)
+#define anvil_convert_u8x1_to_u32x1(X) static_cast<uint8x1_t>(X)
+#define anvil_convert_u8x1_to_s16x1(X) static_cast<uint8x1_t>(X)
+#define anvil_convert_u8x1_to_u16x1(X) static_cast<uint8x1_t>(X)
+
 // Not
 
 #define anvil_not_f64x1(X) anvil_reinterpret_s64x1_as_f64x1(~(anvil_reinterpret_f64x1_as_s64x1(X)))
@@ -385,8 +478,8 @@ static ANVIL_STRONG_INLINE int32x8_t ANVIL_SIMD_CALL anvil_not_s32x8(const regis
 
 #define anvil_not_s16x1(X) (~X)
 #define anvil_not_16x4(X) anvil_not_16x8(X)
-static ANVIL_STRONG_INLINE int16x8_t ANVIL_SIMD_CALL anvil_not_s32x4(const register int32x4_t x) { return _mm_xor_si128(x, _mm_cmpeq_epi16(x, x)); }
-static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL anvil_not_s32x8(const register int32x8_t x) { return _mm256_xor_si256(x, _mm256_cmpeq_epi16(x, x)); }
+static ANVIL_STRONG_INLINE int16x8_t ANVIL_SIMD_CALL anvil_not_s16x8(const register int16x8_t x) { return _mm_xor_si128(x, _mm_cmpeq_epi16(x, x)); }
+static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL anvil_not_s16x16(const register int16x16_t x) { return _mm256_xor_si256(x, _mm256_cmpeq_epi16(x, x)); }
 
 #define anvil_not_u16x1(X) (~X)
 #define anvil_not_u16x4(X) anvil_not_u16x8(X)
@@ -395,8 +488,8 @@ static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL anvil_not_s32x8(const regi
 
 #define anvil_not_sx1(X) (~X)
 #define anvil_not_s8x8(X) anvil_not_s8x16(X)
-static ANVIL_STRONG_INLINE int16x8_t ANVIL_SIMD_CALL anvil_not_s32x4(const register int32x4_t x) { return _mm_xor_si128(x, _mm_cmpeq_epi8(x, x)); }
-static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL anvil_not_s32x8(const register int32x8_t x) { return _mm256_xor_si256(x, _mm256_cmpeq_epi8(x, x)); }
+static ANVIL_STRONG_INLINE int8x16_t ANVIL_SIMD_CALL anvil_not_s8x16(const register int8x16_t x) { return _mm_xor_si128(x, _mm_cmpeq_epi8(x, x)); }
+static ANVIL_STRONG_INLINE int8x32_t ANVIL_SIMD_CALL anvil_not_s8x32(const register int8x32_t x) { return _mm256_xor_si256(x, _mm256_cmpeq_epi8(x, x)); }
 
 #define anvil_not_u8x1(X) (~X)
 #define anvil_not_u8x8(X) anvil_not_u8x16(X)
@@ -939,6 +1032,2346 @@ static ANVIL_STRONG_INLINE uint8x32_t ANVIL_SIMD_CALL anvil_div_u8x32(const regi
 	a[29] /= b[29];
 	a[30] /= b[30];
 	a[31] /= b[31];
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+// cos
+
+#define anvil_cos_f64x1(X) std::cos(X)
+
+static ANVIL_STRONG_INLINE float64x2_t ANVIL_SIMD_CALL anvil_cos_f64x2(const register float64x2_t x) {
+	ANVIL_ALIGN(16) float64x1_t a[2];
+	_mm_store_pd(a, x);
+	a[0] = anvil_cos_f64x1(a[0]);
+	a[1] = anvil_cos_f64x1(a[1]);
+	return _mm_load_pd(a); 
+}
+
+static ANVIL_STRONG_INLINE float64x4_t ANVIL_SIMD_CALL anvil_cos_f64x4(const register float64x4_t x) {
+	ANVIL_ALIGN(16) float64x1_t a[4];
+	_mm256_store_pd(a, x);
+	a[0] = anvil_cos_f64x1(a[0]);
+	a[1] = anvil_cos_f64x1(a[1]);
+	a[2] = anvil_cos_f64x1(a[2]);
+	a[3] = anvil_cos_f64x1(a[3]);
+	return _mm256_load_pd(a); 
+}
+
+#define anvil_cos_f32x1(X) std::cos(X)
+
+static ANVIL_STRONG_INLINE float32x4_t ANVIL_SIMD_CALL anvil_cos_f32x4(const register float32x4_t x) {
+	ANVIL_ALIGN(16) float32x1_t a[4];
+	_mm_store_ps(a, x);
+	a[0] = anvil_cos_f32x1(a[0]);
+	a[1] = anvil_cos_f32x1(a[1]);
+	a[2] = anvil_cos_f32x1(a[2]);
+	a[3] = anvil_cos_f32x1(a[3]);
+	return _mm_load_ps(a); 
+}
+
+static ANVIL_STRONG_INLINE float32x8_t ANVIL_SIMD_CALL anvil_cos_f32x8(const register float32x8_t x) {
+	ANVIL_ALIGN(16) float32x1_t a[8];
+	_mm256_store_ps(a, x);
+	a[0] = anvil_cos_f32x1(a[0]);
+	a[1] = anvil_cos_f32x1(a[1]);
+	a[2] = anvil_cos_f32x1(a[2]);
+	a[3] = anvil_cos_f32x1(a[3]);
+	a[4] = anvil_cos_f32x1(a[4]);
+	a[5] = anvil_cos_f32x1(a[5]);
+	a[6] = anvil_cos_f32x1(a[6]);
+	a[7] = anvil_cos_f32x1(a[7]);
+	return _mm256_load_ps(a); 
+}
+
+#define anvil_cos_s64x1(X) anvil_convert_f64x1_to_s64x1(anvil_cos_f64x1(anvil_convert_s64x1_to_f64x1(X)))
+#define anvil_cos_s64x2(X) anvil_convert_f64x2_to_s64x2(anvil_cos_f64x2(anvil_convert_s64x2_to_f64x2(X)))
+#define anvil_cos_s64x4(X) anvil_convert_f64x4_to_s64x4(anvil_cos_f64x4(anvil_convert_s64x4_to_f64x4(X)))
+
+#define anvil_cos_u64x1(X) anvil_convert_f64x1_to_u64x1(anvil_cos_f64x1(anvil_convert_u64x1_to_f64x1(X)))
+#define anvil_cos_u64x2(X) anvil_convert_f64x2_to_u64x2(anvil_cos_f64x2(anvil_convert_u64x2_to_f64x2(X)))
+#define anvil_cos_u64x4(X) anvil_convert_f64x4_to_u64x4(anvil_cos_f64x4(anvil_convert_u64x4_to_f64x4(X)))
+
+#define anvil_cos_s32x1(X) anvil_convert_f32x1_to_s32x1(anvil_cos_f32x1(anvil_convert_s32x1_to_f32x1(X)))
+#define anvil_cos_s32x4(X) anvil_convert_f32x4_to_s32x4(anvil_cos_f32x4(anvil_convert_s32x4_to_f32x4(X)))
+#define anvil_cos_s32x8(X) anvil_convert_f32x8_to_s32x8(anvil_cos_f32x8(anvil_convert_s32x8_to_f32x8(X)))
+
+#define anvil_cos_u32x1(X) anvil_convert_f32x1_to_u32x1(anvil_cos_f32x1(anvil_convert_u32x1_to_f32x1(X)))
+#define anvil_cos_u32x4(X) anvil_convert_f32x4_to_u32x4(anvil_cos_f32x4(anvil_convert_u32x4_to_f32x4(X)))
+#define anvil_cos_u32x8(X) anvil_convert_f32x8_to_u32x8(anvil_cos_f32x8(anvil_convert_u32x8_to_f32x8(X)))
+
+#define anvil_cos_s16x1(X) anvil_convert_f32x1_to_s16x1(anvil_cos_f32x1(anvil_convert_s16x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE int16x8_t ANVIL_SIMD_CALL anvil_cos_s16x8(const register int16x8_t x) {
+	ANVIL_ALIGN(16) int16x1_t a[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_cos_s16x1(a[0]);
+	a[1] = anvil_cos_s16x1(a[1]);
+	a[2] = anvil_cos_s16x1(a[2]);
+	a[3] = anvil_cos_s16x1(a[3]);
+	a[4] = anvil_cos_s16x1(a[4]);
+	a[5] = anvil_cos_s16x1(a[5]);
+	a[6] = anvil_cos_s16x1(a[6]);
+	a[7] = anvil_cos_s16x1(a[7]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL anvil_cos_s16x16(const register int16x16_t x) {
+	ANVIL_ALIGN(16) int16x1_t a[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_cos_s16x1(a[0]);
+	a[1] = anvil_cos_s16x1(a[1]);
+	a[2] = anvil_cos_s16x1(a[2]);
+	a[3] = anvil_cos_s16x1(a[3]);
+	a[4] = anvil_cos_s16x1(a[4]);
+	a[5] = anvil_cos_s16x1(a[5]);
+	a[6] = anvil_cos_s16x1(a[6]);
+	a[7] = anvil_cos_s16x1(a[7]);
+	a[8] = anvil_cos_s16x1(a[8]);
+	a[9] = anvil_cos_s16x1(a[9]);
+	a[10] = anvil_cos_s16x1(a[10]);
+	a[11] = anvil_cos_s16x1(a[11]);
+	a[12] = anvil_cos_s16x1(a[12]);
+	a[13] = anvil_cos_s16x1(a[13]);
+	a[14] = anvil_cos_s16x1(a[14]);
+	a[15] = anvil_cos_s16x1(a[15]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_cos_u16x1(X) anvil_convert_f32x1_to_u16x1(anvil_cos_f32x1(anvil_convert_u16x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE uint16x8_t ANVIL_SIMD_CALL anvil_cos_u16x8(const register uint16x8_t x) {
+	ANVIL_ALIGN(16) uint16x1_t a[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_cos_u16x1(a[0]);
+	a[1] = anvil_cos_u16x1(a[1]);
+	a[2] = anvil_cos_u16x1(a[2]);
+	a[3] = anvil_cos_u16x1(a[3]);
+	a[4] = anvil_cos_u16x1(a[4]);
+	a[5] = anvil_cos_u16x1(a[5]);
+	a[6] = anvil_cos_u16x1(a[6]);
+	a[7] = anvil_cos_u16x1(a[7]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint16x16_t ANVIL_SIMD_CALL anvil_cos_u16x16(const register uint16x16_t x) {
+	ANVIL_ALIGN(16) uint16x1_t a[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_cos_u16x1(a[0]);
+	a[1] = anvil_cos_u16x1(a[1]);
+	a[2] = anvil_cos_u16x1(a[2]);
+	a[3] = anvil_cos_u16x1(a[3]);
+	a[4] = anvil_cos_u16x1(a[4]);
+	a[5] = anvil_cos_u16x1(a[5]);
+	a[6] = anvil_cos_u16x1(a[6]);
+	a[7] = anvil_cos_u16x1(a[7]);
+	a[8] = anvil_cos_u16x1(a[8]);
+	a[9] = anvil_cos_u16x1(a[9]);
+	a[10] = anvil_cos_u16x1(a[10]);
+	a[11] = anvil_cos_u16x1(a[11]);
+	a[12] = anvil_cos_u16x1(a[12]);
+	a[13] = anvil_cos_u16x1(a[13]);
+	a[14] = anvil_cos_u16x1(a[14]);
+	a[15] = anvil_cos_u16x1(a[15]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_cos_s8x1(X) anvil_convert_f32x1_to_s8x1(anvil_cos_f32x1(anvil_convert_s8x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE int8x16_t ANVIL_SIMD_CALL anvil_cos_s8x16(const register int8x16_t x) {
+	ANVIL_ALIGN(16) int8x1_t a[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_cos_s8x1(a[0]);
+	a[1] = anvil_cos_s8x1(a[1]);
+	a[2] = anvil_cos_s8x1(a[2]);
+	a[3] = anvil_cos_s8x1(a[3]);
+	a[4] = anvil_cos_s8x1(a[4]);
+	a[5] = anvil_cos_s8x1(a[5]);
+	a[6] = anvil_cos_s8x1(a[6]);
+	a[7] = anvil_cos_s8x1(a[7]);
+	a[8] = anvil_cos_s8x1(a[8]);
+	a[9] = anvil_cos_s8x1(a[9]);
+	a[10] = anvil_cos_s8x1(a[10]);
+	a[11] = anvil_cos_s8x1(a[11]);
+	a[12] = anvil_cos_s8x1(a[12]);
+	a[13] = anvil_cos_s8x1(a[13]);
+	a[14] = anvil_cos_s8x1(a[14]);
+	a[15] = anvil_cos_s8x1(a[15]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int8x32_t ANVIL_SIMD_CALL anvil_cos_s8x32(const register int8x32_t x) {
+	ANVIL_ALIGN(16) int8x1_t a[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_cos_s8x1(a[0]);
+	a[1] = anvil_cos_s8x1(a[1]);
+	a[2] = anvil_cos_s8x1(a[2]);
+	a[3] = anvil_cos_s8x1(a[3]);
+	a[4] = anvil_cos_s8x1(a[4]);
+	a[5] = anvil_cos_s8x1(a[5]);
+	a[6] = anvil_cos_s8x1(a[6]);
+	a[7] = anvil_cos_s8x1(a[7]);
+	a[8] = anvil_cos_s8x1(a[8]);
+	a[9] = anvil_cos_s8x1(a[9]);
+	a[10] = anvil_cos_s8x1(a[10]);
+	a[11] = anvil_cos_s8x1(a[11]);
+	a[12] = anvil_cos_s8x1(a[12]);
+	a[13] = anvil_cos_s8x1(a[13]);
+	a[14] = anvil_cos_s8x1(a[14]);
+	a[15] = anvil_cos_s8x1(a[15]);
+	a[16] = anvil_cos_s8x1(a[16]);
+	a[17] = anvil_cos_s8x1(a[17]);
+	a[18] = anvil_cos_s8x1(a[18]);
+	a[19] = anvil_cos_s8x1(a[19]);
+	a[20] = anvil_cos_s8x1(a[20]);
+	a[21] = anvil_cos_s8x1(a[21]);
+	a[22] = anvil_cos_s8x1(a[22]);
+	a[23] = anvil_cos_s8x1(a[23]);
+	a[24] = anvil_cos_s8x1(a[24]);
+	a[25] = anvil_cos_s8x1(a[25]);
+	a[26] = anvil_cos_s8x1(a[26]);
+	a[27] = anvil_cos_s8x1(a[27]);
+	a[28] = anvil_cos_s8x1(a[28]);
+	a[29] = anvil_cos_s8x1(a[29]);
+	a[30] = anvil_cos_s8x1(a[30]);
+	a[31] = anvil_cos_s8x1(a[31]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_cos_u8x1(X) anvil_convert_f32x1_to_u8x1(anvil_cos_f32x1(anvil_convert_u8x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE uint8x16_t ANVIL_SIMD_CALL anvil_cos_u8x16(const register uint8x16_t x) {
+	ANVIL_ALIGN(16) uint8x1_t a[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_cos_u8x1(a[0]);
+	a[1] = anvil_cos_u8x1(a[1]);
+	a[2] = anvil_cos_u8x1(a[2]);
+	a[3] = anvil_cos_u8x1(a[3]);
+	a[4] = anvil_cos_u8x1(a[4]);
+	a[5] = anvil_cos_u8x1(a[5]);
+	a[6] = anvil_cos_u8x1(a[6]);
+	a[7] = anvil_cos_u8x1(a[7]);
+	a[8] = anvil_cos_u8x1(a[8]);
+	a[9] = anvil_cos_u8x1(a[9]);
+	a[10] = anvil_cos_u8x1(a[10]);
+	a[11] = anvil_cos_u8x1(a[11]);
+	a[12] = anvil_cos_u8x1(a[12]);
+	a[13] = anvil_cos_u8x1(a[13]);
+	a[14] = anvil_cos_u8x1(a[14]);
+	a[15] = anvil_cos_u8x1(a[15]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint8x32_t ANVIL_SIMD_CALL anvil_cos_u8x32(const register uint8x32_t x) {
+	ANVIL_ALIGN(16) uint8x1_t a[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_cos_u8x1(a[0]);
+	a[1] = anvil_cos_u8x1(a[1]);
+	a[2] = anvil_cos_u8x1(a[2]);
+	a[3] = anvil_cos_u8x1(a[3]);
+	a[4] = anvil_cos_u8x1(a[4]);
+	a[5] = anvil_cos_u8x1(a[5]);
+	a[6] = anvil_cos_u8x1(a[6]);
+	a[7] = anvil_cos_u8x1(a[7]);
+	a[8] = anvil_cos_u8x1(a[8]);
+	a[9] = anvil_cos_u8x1(a[9]);
+	a[10] = anvil_cos_u8x1(a[10]);
+	a[11] = anvil_cos_u8x1(a[11]);
+	a[12] = anvil_cos_u8x1(a[12]);
+	a[13] = anvil_cos_u8x1(a[13]);
+	a[14] = anvil_cos_u8x1(a[14]);
+	a[15] = anvil_cos_u8x1(a[15]);
+	a[16] = anvil_cos_u8x1(a[16]);
+	a[17] = anvil_cos_u8x1(a[17]);
+	a[18] = anvil_cos_u8x1(a[18]);
+	a[19] = anvil_cos_u8x1(a[19]);
+	a[20] = anvil_cos_u8x1(a[20]);
+	a[21] = anvil_cos_u8x1(a[21]);
+	a[22] = anvil_cos_u8x1(a[22]);
+	a[23] = anvil_cos_u8x1(a[23]);
+	a[24] = anvil_cos_u8x1(a[24]);
+	a[25] = anvil_cos_u8x1(a[25]);
+	a[26] = anvil_cos_u8x1(a[26]);
+	a[27] = anvil_cos_u8x1(a[27]);
+	a[28] = anvil_cos_u8x1(a[28]);
+	a[29] = anvil_cos_u8x1(a[29]);
+	a[30] = anvil_cos_u8x1(a[30]);
+	a[31] = anvil_cos_u8x1(a[31]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+// sin
+
+#define anvil_sin_f64x1(X) std::sin(X)
+
+static ANVIL_STRONG_INLINE float64x2_t ANVIL_SIMD_CALL anvil_sin_f64x2(const register float64x2_t x) {
+	ANVIL_ALIGN(16) float64x1_t a[2];
+	_mm_store_pd(a, x);
+	a[0] = anvil_sin_f64x1(a[0]);
+	a[1] = anvil_sin_f64x1(a[1]);
+	return _mm_load_pd(a); 
+}
+
+static ANVIL_STRONG_INLINE float64x4_t ANVIL_SIMD_CALL anvil_sin_f64x4(const register float64x4_t x) {
+	ANVIL_ALIGN(16) float64x1_t a[4];
+	_mm256_store_pd(a, x);
+	a[0] = anvil_sin_f64x1(a[0]);
+	a[1] = anvil_sin_f64x1(a[1]);
+	a[2] = anvil_sin_f64x1(a[2]);
+	a[3] = anvil_sin_f64x1(a[3]);
+	return _mm256_load_pd(a); 
+}
+
+#define anvil_sin_f32x1(X) std::sin(X)
+
+static ANVIL_STRONG_INLINE float32x4_t ANVIL_SIMD_CALL anvil_sin_f32x4(const register float32x4_t x) {
+	ANVIL_ALIGN(16) float32x1_t a[4];
+	_mm_store_ps(a, x);
+	a[0] = anvil_sin_f32x1(a[0]);
+	a[1] = anvil_sin_f32x1(a[1]);
+	a[2] = anvil_sin_f32x1(a[2]);
+	a[3] = anvil_sin_f32x1(a[3]);
+	return _mm_load_ps(a); 
+}
+
+static ANVIL_STRONG_INLINE float32x8_t ANVIL_SIMD_CALL anvil_sin_f32x8(const register float32x8_t x) {
+	ANVIL_ALIGN(16) float32x1_t a[8];
+	_mm256_store_ps(a, x);
+	a[0] = anvil_sin_f32x1(a[0]);
+	a[1] = anvil_sin_f32x1(a[1]);
+	a[2] = anvil_sin_f32x1(a[2]);
+	a[3] = anvil_sin_f32x1(a[3]);
+	a[4] = anvil_sin_f32x1(a[4]);
+	a[5] = anvil_sin_f32x1(a[5]);
+	a[6] = anvil_sin_f32x1(a[6]);
+	a[7] = anvil_sin_f32x1(a[7]);
+	return _mm256_load_ps(a); 
+}
+
+#define anvil_sin_s64x1(X) anvil_convert_f64x1_to_s64x1(anvil_sin_f64x1(anvil_convert_s64x1_to_f64x1(X)))
+#define anvil_sin_s64x2(X) anvil_convert_f64x2_to_s64x2(anvil_sin_f64x2(anvil_convert_s64x2_to_f64x2(X)))
+#define anvil_sin_s64x4(X) anvil_convert_f64x4_to_s64x4(anvil_sin_f64x4(anvil_convert_s64x4_to_f64x4(X)))
+
+#define anvil_sin_u64x1(X) anvil_convert_f64x1_to_u64x1(anvil_sin_f64x1(anvil_convert_u64x1_to_f64x1(X)))
+#define anvil_sin_u64x2(X) anvil_convert_f64x2_to_u64x2(anvil_sin_f64x2(anvil_convert_u64x2_to_f64x2(X)))
+#define anvil_sin_u64x4(X) anvil_convert_f64x4_to_u64x4(anvil_sin_f64x4(anvil_convert_u64x4_to_f64x4(X)))
+
+#define anvil_sin_s32x1(X) anvil_convert_f32x1_to_s32x1(anvil_sin_f32x1(anvil_convert_s32x1_to_f32x1(X)))
+#define anvil_sin_s32x4(X) anvil_convert_f32x4_to_s32x4(anvil_sin_f32x4(anvil_convert_s32x4_to_f32x4(X)))
+#define anvil_sin_s32x8(X) anvil_convert_f32x8_to_s32x8(anvil_sin_f32x8(anvil_convert_s32x8_to_f32x8(X)))
+
+#define anvil_sin_u32x1(X) anvil_convert_f32x1_to_u32x1(anvil_sin_f32x1(anvil_convert_u32x1_to_f32x1(X)))
+#define anvil_sin_u32x4(X) anvil_convert_f32x4_to_u32x4(anvil_sin_f32x4(anvil_convert_u32x4_to_f32x4(X)))
+#define anvil_sin_u32x8(X) anvil_convert_f32x8_to_u32x8(anvil_sin_f32x8(anvil_convert_u32x8_to_f32x8(X)))
+
+#define anvil_sin_s16x1(X) anvil_convert_f32x1_to_s16x1(anvil_sin_f32x1(anvil_convert_s16x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE int16x8_t ANVIL_SIMD_CALL anvil_sin_s16x8(const register int16x8_t x) {
+	ANVIL_ALIGN(16) int16x1_t a[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_sin_s16x1(a[0]);
+	a[1] = anvil_sin_s16x1(a[1]);
+	a[2] = anvil_sin_s16x1(a[2]);
+	a[3] = anvil_sin_s16x1(a[3]);
+	a[4] = anvil_sin_s16x1(a[4]);
+	a[5] = anvil_sin_s16x1(a[5]);
+	a[6] = anvil_sin_s16x1(a[6]);
+	a[7] = anvil_sin_s16x1(a[7]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL anvil_sin_s16x16(const register int16x16_t x) {
+	ANVIL_ALIGN(16) int16x1_t a[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_sin_s16x1(a[0]);
+	a[1] = anvil_sin_s16x1(a[1]);
+	a[2] = anvil_sin_s16x1(a[2]);
+	a[3] = anvil_sin_s16x1(a[3]);
+	a[4] = anvil_sin_s16x1(a[4]);
+	a[5] = anvil_sin_s16x1(a[5]);
+	a[6] = anvil_sin_s16x1(a[6]);
+	a[7] = anvil_sin_s16x1(a[7]);
+	a[8] = anvil_sin_s16x1(a[8]);
+	a[9] = anvil_sin_s16x1(a[9]);
+	a[10] = anvil_sin_s16x1(a[10]);
+	a[11] = anvil_sin_s16x1(a[11]);
+	a[12] = anvil_sin_s16x1(a[12]);
+	a[13] = anvil_sin_s16x1(a[13]);
+	a[14] = anvil_sin_s16x1(a[14]);
+	a[15] = anvil_sin_s16x1(a[15]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_sin_u16x1(X) anvil_convert_f32x1_to_u16x1(anvil_sin_f32x1(anvil_convert_u16x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE uint16x8_t ANVIL_SIMD_CALL anvil_sin_u16x8(const register uint16x8_t x) {
+	ANVIL_ALIGN(16) uint16x1_t a[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_sin_u16x1(a[0]);
+	a[1] = anvil_sin_u16x1(a[1]);
+	a[2] = anvil_sin_u16x1(a[2]);
+	a[3] = anvil_sin_u16x1(a[3]);
+	a[4] = anvil_sin_u16x1(a[4]);
+	a[5] = anvil_sin_u16x1(a[5]);
+	a[6] = anvil_sin_u16x1(a[6]);
+	a[7] = anvil_sin_u16x1(a[7]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint16x16_t ANVIL_SIMD_CALL anvil_sin_u16x16(const register uint16x16_t x) {
+	ANVIL_ALIGN(16) uint16x1_t a[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_sin_u16x1(a[0]);
+	a[1] = anvil_sin_u16x1(a[1]);
+	a[2] = anvil_sin_u16x1(a[2]);
+	a[3] = anvil_sin_u16x1(a[3]);
+	a[4] = anvil_sin_u16x1(a[4]);
+	a[5] = anvil_sin_u16x1(a[5]);
+	a[6] = anvil_sin_u16x1(a[6]);
+	a[7] = anvil_sin_u16x1(a[7]);
+	a[8] = anvil_sin_u16x1(a[8]);
+	a[9] = anvil_sin_u16x1(a[9]);
+	a[10] = anvil_sin_u16x1(a[10]);
+	a[11] = anvil_sin_u16x1(a[11]);
+	a[12] = anvil_sin_u16x1(a[12]);
+	a[13] = anvil_sin_u16x1(a[13]);
+	a[14] = anvil_sin_u16x1(a[14]);
+	a[15] = anvil_sin_u16x1(a[15]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_sin_s8x1(X) anvil_convert_f32x1_to_s8x1(anvil_sin_f32x1(anvil_convert_s8x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE int8x16_t ANVIL_SIMD_CALL anvil_sin_s8x16(const register int8x16_t x) {
+	ANVIL_ALIGN(16) int8x1_t a[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_sin_s8x1(a[0]);
+	a[1] = anvil_sin_s8x1(a[1]);
+	a[2] = anvil_sin_s8x1(a[2]);
+	a[3] = anvil_sin_s8x1(a[3]);
+	a[4] = anvil_sin_s8x1(a[4]);
+	a[5] = anvil_sin_s8x1(a[5]);
+	a[6] = anvil_sin_s8x1(a[6]);
+	a[7] = anvil_sin_s8x1(a[7]);
+	a[8] = anvil_sin_s8x1(a[8]);
+	a[9] = anvil_sin_s8x1(a[9]);
+	a[10] = anvil_sin_s8x1(a[10]);
+	a[11] = anvil_sin_s8x1(a[11]);
+	a[12] = anvil_sin_s8x1(a[12]);
+	a[13] = anvil_sin_s8x1(a[13]);
+	a[14] = anvil_sin_s8x1(a[14]);
+	a[15] = anvil_sin_s8x1(a[15]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int8x32_t ANVIL_SIMD_CALL anvil_sin_s8x32(const register int8x32_t x) {
+	ANVIL_ALIGN(16) int8x1_t a[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_sin_s8x1(a[0]);
+	a[1] = anvil_sin_s8x1(a[1]);
+	a[2] = anvil_sin_s8x1(a[2]);
+	a[3] = anvil_sin_s8x1(a[3]);
+	a[4] = anvil_sin_s8x1(a[4]);
+	a[5] = anvil_sin_s8x1(a[5]);
+	a[6] = anvil_sin_s8x1(a[6]);
+	a[7] = anvil_sin_s8x1(a[7]);
+	a[8] = anvil_sin_s8x1(a[8]);
+	a[9] = anvil_sin_s8x1(a[9]);
+	a[10] = anvil_sin_s8x1(a[10]);
+	a[11] = anvil_sin_s8x1(a[11]);
+	a[12] = anvil_sin_s8x1(a[12]);
+	a[13] = anvil_sin_s8x1(a[13]);
+	a[14] = anvil_sin_s8x1(a[14]);
+	a[15] = anvil_sin_s8x1(a[15]);
+	a[16] = anvil_sin_s8x1(a[16]);
+	a[17] = anvil_sin_s8x1(a[17]);
+	a[18] = anvil_sin_s8x1(a[18]);
+	a[19] = anvil_sin_s8x1(a[19]);
+	a[20] = anvil_sin_s8x1(a[20]);
+	a[21] = anvil_sin_s8x1(a[21]);
+	a[22] = anvil_sin_s8x1(a[22]);
+	a[23] = anvil_sin_s8x1(a[23]);
+	a[24] = anvil_sin_s8x1(a[24]);
+	a[25] = anvil_sin_s8x1(a[25]);
+	a[26] = anvil_sin_s8x1(a[26]);
+	a[27] = anvil_sin_s8x1(a[27]);
+	a[28] = anvil_sin_s8x1(a[28]);
+	a[29] = anvil_sin_s8x1(a[29]);
+	a[30] = anvil_sin_s8x1(a[30]);
+	a[31] = anvil_sin_s8x1(a[31]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_sin_u8x1(X) anvil_convert_f32x1_to_u8x1(anvil_sin_f32x1(anvil_convert_u8x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE uint8x16_t ANVIL_SIMD_CALL anvil_sin_u8x16(const register uint8x16_t x) {
+	ANVIL_ALIGN(16) uint8x1_t a[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_sin_u8x1(a[0]);
+	a[1] = anvil_sin_u8x1(a[1]);
+	a[2] = anvil_sin_u8x1(a[2]);
+	a[3] = anvil_sin_u8x1(a[3]);
+	a[4] = anvil_sin_u8x1(a[4]);
+	a[5] = anvil_sin_u8x1(a[5]);
+	a[6] = anvil_sin_u8x1(a[6]);
+	a[7] = anvil_sin_u8x1(a[7]);
+	a[8] = anvil_sin_u8x1(a[8]);
+	a[9] = anvil_sin_u8x1(a[9]);
+	a[10] = anvil_sin_u8x1(a[10]);
+	a[11] = anvil_sin_u8x1(a[11]);
+	a[12] = anvil_sin_u8x1(a[12]);
+	a[13] = anvil_sin_u8x1(a[13]);
+	a[14] = anvil_sin_u8x1(a[14]);
+	a[15] = anvil_sin_u8x1(a[15]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint8x32_t ANVIL_SIMD_CALL anvil_sin_u8x32(const register uint8x32_t x) {
+	ANVIL_ALIGN(16) uint8x1_t a[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_sin_u8x1(a[0]);
+	a[1] = anvil_sin_u8x1(a[1]);
+	a[2] = anvil_sin_u8x1(a[2]);
+	a[3] = anvil_sin_u8x1(a[3]);
+	a[4] = anvil_sin_u8x1(a[4]);
+	a[5] = anvil_sin_u8x1(a[5]);
+	a[6] = anvil_sin_u8x1(a[6]);
+	a[7] = anvil_sin_u8x1(a[7]);
+	a[8] = anvil_sin_u8x1(a[8]);
+	a[9] = anvil_sin_u8x1(a[9]);
+	a[10] = anvil_sin_u8x1(a[10]);
+	a[11] = anvil_sin_u8x1(a[11]);
+	a[12] = anvil_sin_u8x1(a[12]);
+	a[13] = anvil_sin_u8x1(a[13]);
+	a[14] = anvil_sin_u8x1(a[14]);
+	a[15] = anvil_sin_u8x1(a[15]);
+	a[16] = anvil_sin_u8x1(a[16]);
+	a[17] = anvil_sin_u8x1(a[17]);
+	a[18] = anvil_sin_u8x1(a[18]);
+	a[19] = anvil_sin_u8x1(a[19]);
+	a[20] = anvil_sin_u8x1(a[20]);
+	a[21] = anvil_sin_u8x1(a[21]);
+	a[22] = anvil_sin_u8x1(a[22]);
+	a[23] = anvil_sin_u8x1(a[23]);
+	a[24] = anvil_sin_u8x1(a[24]);
+	a[25] = anvil_sin_u8x1(a[25]);
+	a[26] = anvil_sin_u8x1(a[26]);
+	a[27] = anvil_sin_u8x1(a[27]);
+	a[28] = anvil_sin_u8x1(a[28]);
+	a[29] = anvil_sin_u8x1(a[29]);
+	a[30] = anvil_sin_u8x1(a[30]);
+	a[31] = anvil_sin_u8x1(a[31]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+// tan
+
+#define anvil_tan_f64x1(X) std::tan(X)
+
+static ANVIL_STRONG_INLINE float64x2_t ANVIL_SIMD_CALL anvil_tan_f64x2(const register float64x2_t x) {
+	ANVIL_ALIGN(16) float64x1_t a[2];
+	_mm_store_pd(a, x);
+	a[0] = anvil_tan_f64x1(a[0]);
+	a[1] = anvil_tan_f64x1(a[1]);
+	return _mm_load_pd(a); 
+}
+
+static ANVIL_STRONG_INLINE float64x4_t ANVIL_SIMD_CALL anvil_tan_f64x4(const register float64x4_t x) {
+	ANVIL_ALIGN(16) float64x1_t a[4];
+	_mm256_store_pd(a, x);
+	a[0] = anvil_tan_f64x1(a[0]);
+	a[1] = anvil_tan_f64x1(a[1]);
+	a[2] = anvil_tan_f64x1(a[2]);
+	a[3] = anvil_tan_f64x1(a[3]);
+	return _mm256_load_pd(a); 
+}
+
+#define anvil_tan_f32x1(X) std::tan(X)
+
+static ANVIL_STRONG_INLINE float32x4_t ANVIL_SIMD_CALL anvil_tan_f32x4(const register float32x4_t x) {
+	ANVIL_ALIGN(16) float32x1_t a[4];
+	_mm_store_ps(a, x);
+	a[0] = anvil_tan_f32x1(a[0]);
+	a[1] = anvil_tan_f32x1(a[1]);
+	a[2] = anvil_tan_f32x1(a[2]);
+	a[3] = anvil_tan_f32x1(a[3]);
+	return _mm_load_ps(a); 
+}
+
+static ANVIL_STRONG_INLINE float32x8_t ANVIL_SIMD_CALL anvil_tan_f32x8(const register float32x8_t x) {
+	ANVIL_ALIGN(16) float32x1_t a[8];
+	_mm256_store_ps(a, x);
+	a[0] = anvil_tan_f32x1(a[0]);
+	a[1] = anvil_tan_f32x1(a[1]);
+	a[2] = anvil_tan_f32x1(a[2]);
+	a[3] = anvil_tan_f32x1(a[3]);
+	a[4] = anvil_tan_f32x1(a[4]);
+	a[5] = anvil_tan_f32x1(a[5]);
+	a[6] = anvil_tan_f32x1(a[6]);
+	a[7] = anvil_tan_f32x1(a[7]);
+	return _mm256_load_ps(a); 
+}
+
+#define anvil_tan_s64x1(X) anvil_convert_f64x1_to_s64x1(anvil_tan_f64x1(anvil_convert_s64x1_to_f64x1(X)))
+#define anvil_tan_s64x2(X) anvil_convert_f64x2_to_s64x2(anvil_tan_f64x2(anvil_convert_s64x2_to_f64x2(X)))
+#define anvil_tan_s64x4(X) anvil_convert_f64x4_to_s64x4(anvil_tan_f64x4(anvil_convert_s64x4_to_f64x4(X)))
+
+#define anvil_tan_u64x1(X) anvil_convert_f64x1_to_u64x1(anvil_tan_f64x1(anvil_convert_u64x1_to_f64x1(X)))
+#define anvil_tan_u64x2(X) anvil_convert_f64x2_to_u64x2(anvil_tan_f64x2(anvil_convert_u64x2_to_f64x2(X)))
+#define anvil_tan_u64x4(X) anvil_convert_f64x4_to_u64x4(anvil_tan_f64x4(anvil_convert_u64x4_to_f64x4(X)))
+
+#define anvil_tan_s32x1(X) anvil_convert_f32x1_to_s32x1(anvil_tan_f32x1(anvil_convert_s32x1_to_f32x1(X)))
+#define anvil_tan_s32x4(X) anvil_convert_f32x4_to_s32x4(anvil_tan_f32x4(anvil_convert_s32x4_to_f32x4(X)))
+#define anvil_tan_s32x8(X) anvil_convert_f32x8_to_s32x8(anvil_tan_f32x8(anvil_convert_s32x8_to_f32x8(X)))
+
+#define anvil_tan_u32x1(X) anvil_convert_f32x1_to_u32x1(anvil_tan_f32x1(anvil_convert_u32x1_to_f32x1(X)))
+#define anvil_tan_u32x4(X) anvil_convert_f32x4_to_u32x4(anvil_tan_f32x4(anvil_convert_u32x4_to_f32x4(X)))
+#define anvil_tan_u32x8(X) anvil_convert_f32x8_to_u32x8(anvil_tan_f32x8(anvil_convert_u32x8_to_f32x8(X)))
+
+#define anvil_tan_s16x1(X) anvil_convert_f32x1_to_s16x1(anvil_tan_f32x1(anvil_convert_s16x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE int16x8_t ANVIL_SIMD_CALL anvil_tan_s16x8(const register int16x8_t x) {
+	ANVIL_ALIGN(16) int16x1_t a[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_tan_s16x1(a[0]);
+	a[1] = anvil_tan_s16x1(a[1]);
+	a[2] = anvil_tan_s16x1(a[2]);
+	a[3] = anvil_tan_s16x1(a[3]);
+	a[4] = anvil_tan_s16x1(a[4]);
+	a[5] = anvil_tan_s16x1(a[5]);
+	a[6] = anvil_tan_s16x1(a[6]);
+	a[7] = anvil_tan_s16x1(a[7]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL anvil_tan_s16x16(const register int16x16_t x) {
+	ANVIL_ALIGN(16) int16x1_t a[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_tan_s16x1(a[0]);
+	a[1] = anvil_tan_s16x1(a[1]);
+	a[2] = anvil_tan_s16x1(a[2]);
+	a[3] = anvil_tan_s16x1(a[3]);
+	a[4] = anvil_tan_s16x1(a[4]);
+	a[5] = anvil_tan_s16x1(a[5]);
+	a[6] = anvil_tan_s16x1(a[6]);
+	a[7] = anvil_tan_s16x1(a[7]);
+	a[8] = anvil_tan_s16x1(a[8]);
+	a[9] = anvil_tan_s16x1(a[9]);
+	a[10] = anvil_tan_s16x1(a[10]);
+	a[11] = anvil_tan_s16x1(a[11]);
+	a[12] = anvil_tan_s16x1(a[12]);
+	a[13] = anvil_tan_s16x1(a[13]);
+	a[14] = anvil_tan_s16x1(a[14]);
+	a[15] = anvil_tan_s16x1(a[15]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_tan_u16x1(X) anvil_convert_f32x1_to_u16x1(anvil_tan_f32x1(anvil_convert_u16x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE uint16x8_t ANVIL_SIMD_CALL anvil_tan_u16x8(const register uint16x8_t x) {
+	ANVIL_ALIGN(16) uint16x1_t a[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_tan_u16x1(a[0]);
+	a[1] = anvil_tan_u16x1(a[1]);
+	a[2] = anvil_tan_u16x1(a[2]);
+	a[3] = anvil_tan_u16x1(a[3]);
+	a[4] = anvil_tan_u16x1(a[4]);
+	a[5] = anvil_tan_u16x1(a[5]);
+	a[6] = anvil_tan_u16x1(a[6]);
+	a[7] = anvil_tan_u16x1(a[7]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint16x16_t ANVIL_SIMD_CALL anvil_tan_u16x16(const register uint16x16_t x) {
+	ANVIL_ALIGN(16) uint16x1_t a[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_tan_u16x1(a[0]);
+	a[1] = anvil_tan_u16x1(a[1]);
+	a[2] = anvil_tan_u16x1(a[2]);
+	a[3] = anvil_tan_u16x1(a[3]);
+	a[4] = anvil_tan_u16x1(a[4]);
+	a[5] = anvil_tan_u16x1(a[5]);
+	a[6] = anvil_tan_u16x1(a[6]);
+	a[7] = anvil_tan_u16x1(a[7]);
+	a[8] = anvil_tan_u16x1(a[8]);
+	a[9] = anvil_tan_u16x1(a[9]);
+	a[10] = anvil_tan_u16x1(a[10]);
+	a[11] = anvil_tan_u16x1(a[11]);
+	a[12] = anvil_tan_u16x1(a[12]);
+	a[13] = anvil_tan_u16x1(a[13]);
+	a[14] = anvil_tan_u16x1(a[14]);
+	a[15] = anvil_tan_u16x1(a[15]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_tan_s8x1(X) anvil_convert_f32x1_to_s8x1(anvil_tan_f32x1(anvil_convert_s8x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE int8x16_t ANVIL_SIMD_CALL anvil_tan_s8x16(const register int8x16_t x) {
+	ANVIL_ALIGN(16) int8x1_t a[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_tan_s8x1(a[0]);
+	a[1] = anvil_tan_s8x1(a[1]);
+	a[2] = anvil_tan_s8x1(a[2]);
+	a[3] = anvil_tan_s8x1(a[3]);
+	a[4] = anvil_tan_s8x1(a[4]);
+	a[5] = anvil_tan_s8x1(a[5]);
+	a[6] = anvil_tan_s8x1(a[6]);
+	a[7] = anvil_tan_s8x1(a[7]);
+	a[8] = anvil_tan_s8x1(a[8]);
+	a[9] = anvil_tan_s8x1(a[9]);
+	a[10] = anvil_tan_s8x1(a[10]);
+	a[11] = anvil_tan_s8x1(a[11]);
+	a[12] = anvil_tan_s8x1(a[12]);
+	a[13] = anvil_tan_s8x1(a[13]);
+	a[14] = anvil_tan_s8x1(a[14]);
+	a[15] = anvil_tan_s8x1(a[15]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int8x32_t ANVIL_SIMD_CALL anvil_tan_s8x32(const register int8x32_t x) {
+	ANVIL_ALIGN(16) int8x1_t a[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_tan_s8x1(a[0]);
+	a[1] = anvil_tan_s8x1(a[1]);
+	a[2] = anvil_tan_s8x1(a[2]);
+	a[3] = anvil_tan_s8x1(a[3]);
+	a[4] = anvil_tan_s8x1(a[4]);
+	a[5] = anvil_tan_s8x1(a[5]);
+	a[6] = anvil_tan_s8x1(a[6]);
+	a[7] = anvil_tan_s8x1(a[7]);
+	a[8] = anvil_tan_s8x1(a[8]);
+	a[9] = anvil_tan_s8x1(a[9]);
+	a[10] = anvil_tan_s8x1(a[10]);
+	a[11] = anvil_tan_s8x1(a[11]);
+	a[12] = anvil_tan_s8x1(a[12]);
+	a[13] = anvil_tan_s8x1(a[13]);
+	a[14] = anvil_tan_s8x1(a[14]);
+	a[15] = anvil_tan_s8x1(a[15]);
+	a[16] = anvil_tan_s8x1(a[16]);
+	a[17] = anvil_tan_s8x1(a[17]);
+	a[18] = anvil_tan_s8x1(a[18]);
+	a[19] = anvil_tan_s8x1(a[19]);
+	a[20] = anvil_tan_s8x1(a[20]);
+	a[21] = anvil_tan_s8x1(a[21]);
+	a[22] = anvil_tan_s8x1(a[22]);
+	a[23] = anvil_tan_s8x1(a[23]);
+	a[24] = anvil_tan_s8x1(a[24]);
+	a[25] = anvil_tan_s8x1(a[25]);
+	a[26] = anvil_tan_s8x1(a[26]);
+	a[27] = anvil_tan_s8x1(a[27]);
+	a[28] = anvil_tan_s8x1(a[28]);
+	a[29] = anvil_tan_s8x1(a[29]);
+	a[30] = anvil_tan_s8x1(a[30]);
+	a[31] = anvil_tan_s8x1(a[31]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_tan_u8x1(X) anvil_convert_f32x1_to_u8x1(anvil_tan_f32x1(anvil_convert_u8x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE uint8x16_t ANVIL_SIMD_CALL anvil_tan_u8x16(const register uint8x16_t x) {
+	ANVIL_ALIGN(16) uint8x1_t a[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_tan_u8x1(a[0]);
+	a[1] = anvil_tan_u8x1(a[1]);
+	a[2] = anvil_tan_u8x1(a[2]);
+	a[3] = anvil_tan_u8x1(a[3]);
+	a[4] = anvil_tan_u8x1(a[4]);
+	a[5] = anvil_tan_u8x1(a[5]);
+	a[6] = anvil_tan_u8x1(a[6]);
+	a[7] = anvil_tan_u8x1(a[7]);
+	a[8] = anvil_tan_u8x1(a[8]);
+	a[9] = anvil_tan_u8x1(a[9]);
+	a[10] = anvil_tan_u8x1(a[10]);
+	a[11] = anvil_tan_u8x1(a[11]);
+	a[12] = anvil_tan_u8x1(a[12]);
+	a[13] = anvil_tan_u8x1(a[13]);
+	a[14] = anvil_tan_u8x1(a[14]);
+	a[15] = anvil_tan_u8x1(a[15]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint8x32_t ANVIL_SIMD_CALL anvil_tan_u8x32(const register uint8x32_t x) {
+	ANVIL_ALIGN(16) uint8x1_t a[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_tan_u8x1(a[0]);
+	a[1] = anvil_tan_u8x1(a[1]);
+	a[2] = anvil_tan_u8x1(a[2]);
+	a[3] = anvil_tan_u8x1(a[3]);
+	a[4] = anvil_tan_u8x1(a[4]);
+	a[5] = anvil_tan_u8x1(a[5]);
+	a[6] = anvil_tan_u8x1(a[6]);
+	a[7] = anvil_tan_u8x1(a[7]);
+	a[8] = anvil_tan_u8x1(a[8]);
+	a[9] = anvil_tan_u8x1(a[9]);
+	a[10] = anvil_tan_u8x1(a[10]);
+	a[11] = anvil_tan_u8x1(a[11]);
+	a[12] = anvil_tan_u8x1(a[12]);
+	a[13] = anvil_tan_u8x1(a[13]);
+	a[14] = anvil_tan_u8x1(a[14]);
+	a[15] = anvil_tan_u8x1(a[15]);
+	a[16] = anvil_tan_u8x1(a[16]);
+	a[17] = anvil_tan_u8x1(a[17]);
+	a[18] = anvil_tan_u8x1(a[18]);
+	a[19] = anvil_tan_u8x1(a[19]);
+	a[20] = anvil_tan_u8x1(a[20]);
+	a[21] = anvil_tan_u8x1(a[21]);
+	a[22] = anvil_tan_u8x1(a[22]);
+	a[23] = anvil_tan_u8x1(a[23]);
+	a[24] = anvil_tan_u8x1(a[24]);
+	a[25] = anvil_tan_u8x1(a[25]);
+	a[26] = anvil_tan_u8x1(a[26]);
+	a[27] = anvil_tan_u8x1(a[27]);
+	a[28] = anvil_tan_u8x1(a[28]);
+	a[29] = anvil_tan_u8x1(a[29]);
+	a[30] = anvil_tan_u8x1(a[30]);
+	a[31] = anvil_tan_u8x1(a[31]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+// acos
+
+#define anvil_acos_f64x1(X) std::acos(X)
+
+static ANVIL_STRONG_INLINE float64x2_t ANVIL_SIMD_CALL anvil_acos_f64x2(const register float64x2_t x) {
+	ANVIL_ALIGN(16) float64x1_t a[2];
+	_mm_store_pd(a, x);
+	a[0] = anvil_acos_f64x1(a[0]);
+	a[1] = anvil_acos_f64x1(a[1]);
+	return _mm_load_pd(a); 
+}
+
+static ANVIL_STRONG_INLINE float64x4_t ANVIL_SIMD_CALL anvil_acos_f64x4(const register float64x4_t x) {
+	ANVIL_ALIGN(16) float64x1_t a[4];
+	_mm256_store_pd(a, x);
+	a[0] = anvil_acos_f64x1(a[0]);
+	a[1] = anvil_acos_f64x1(a[1]);
+	a[2] = anvil_acos_f64x1(a[2]);
+	a[3] = anvil_acos_f64x1(a[3]);
+	return _mm256_load_pd(a); 
+}
+
+#define anvil_acos_f32x1(X) std::acos(X)
+
+static ANVIL_STRONG_INLINE float32x4_t ANVIL_SIMD_CALL anvil_acos_f32x4(const register float32x4_t x) {
+	ANVIL_ALIGN(16) float32x1_t a[4];
+	_mm_store_ps(a, x);
+	a[0] = anvil_acos_f32x1(a[0]);
+	a[1] = anvil_acos_f32x1(a[1]);
+	a[2] = anvil_acos_f32x1(a[2]);
+	a[3] = anvil_acos_f32x1(a[3]);
+	return _mm_load_ps(a); 
+}
+
+static ANVIL_STRONG_INLINE float32x8_t ANVIL_SIMD_CALL anvil_acos_f32x8(const register float32x8_t x) {
+	ANVIL_ALIGN(16) float32x1_t a[8];
+	_mm256_store_ps(a, x);
+	a[0] = anvil_acos_f32x1(a[0]);
+	a[1] = anvil_acos_f32x1(a[1]);
+	a[2] = anvil_acos_f32x1(a[2]);
+	a[3] = anvil_acos_f32x1(a[3]);
+	a[4] = anvil_acos_f32x1(a[4]);
+	a[5] = anvil_acos_f32x1(a[5]);
+	a[6] = anvil_acos_f32x1(a[6]);
+	a[7] = anvil_acos_f32x1(a[7]);
+	return _mm256_load_ps(a); 
+}
+
+#define anvil_acos_s64x1(X) anvil_convert_f64x1_to_s64x1(anvil_acos_f64x1(anvil_convert_s64x1_to_f64x1(X)))
+#define anvil_acos_s64x2(X) anvil_convert_f64x2_to_s64x2(anvil_acos_f64x2(anvil_convert_s64x2_to_f64x2(X)))
+#define anvil_acos_s64x4(X) anvil_convert_f64x4_to_s64x4(anvil_acos_f64x4(anvil_convert_s64x4_to_f64x4(X)))
+
+#define anvil_acos_u64x1(X) anvil_convert_f64x1_to_u64x1(anvil_acos_f64x1(anvil_convert_u64x1_to_f64x1(X)))
+#define anvil_acos_u64x2(X) anvil_convert_f64x2_to_u64x2(anvil_acos_f64x2(anvil_convert_u64x2_to_f64x2(X)))
+#define anvil_acos_u64x4(X) anvil_convert_f64x4_to_u64x4(anvil_acos_f64x4(anvil_convert_u64x4_to_f64x4(X)))
+
+#define anvil_acos_s32x1(X) anvil_convert_f32x1_to_s32x1(anvil_acos_f32x1(anvil_convert_s32x1_to_f32x1(X)))
+#define anvil_acos_s32x4(X) anvil_convert_f32x4_to_s32x4(anvil_acos_f32x4(anvil_convert_s32x4_to_f32x4(X)))
+#define anvil_acos_s32x8(X) anvil_convert_f32x8_to_s32x8(anvil_acos_f32x8(anvil_convert_s32x8_to_f32x8(X)))
+
+#define anvil_acos_u32x1(X) anvil_convert_f32x1_to_u32x1(anvil_acos_f32x1(anvil_convert_u32x1_to_f32x1(X)))
+#define anvil_acos_u32x4(X) anvil_convert_f32x4_to_u32x4(anvil_acos_f32x4(anvil_convert_u32x4_to_f32x4(X)))
+#define anvil_acos_u32x8(X) anvil_convert_f32x8_to_u32x8(anvil_acos_f32x8(anvil_convert_u32x8_to_f32x8(X)))
+
+#define anvil_acos_s16x1(X) anvil_convert_f32x1_to_s16x1(anvil_acos_f32x1(anvil_convert_s16x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE int16x8_t ANVIL_SIMD_CALL anvil_acos_s16x8(const register int16x8_t x) {
+	ANVIL_ALIGN(16) int16x1_t a[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_acos_s16x1(a[0]);
+	a[1] = anvil_acos_s16x1(a[1]);
+	a[2] = anvil_acos_s16x1(a[2]);
+	a[3] = anvil_acos_s16x1(a[3]);
+	a[4] = anvil_acos_s16x1(a[4]);
+	a[5] = anvil_acos_s16x1(a[5]);
+	a[6] = anvil_acos_s16x1(a[6]);
+	a[7] = anvil_acos_s16x1(a[7]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL anvil_acos_s16x16(const register int16x16_t x) {
+	ANVIL_ALIGN(16) int16x1_t a[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_acos_s16x1(a[0]);
+	a[1] = anvil_acos_s16x1(a[1]);
+	a[2] = anvil_acos_s16x1(a[2]);
+	a[3] = anvil_acos_s16x1(a[3]);
+	a[4] = anvil_acos_s16x1(a[4]);
+	a[5] = anvil_acos_s16x1(a[5]);
+	a[6] = anvil_acos_s16x1(a[6]);
+	a[7] = anvil_acos_s16x1(a[7]);
+	a[8] = anvil_acos_s16x1(a[8]);
+	a[9] = anvil_acos_s16x1(a[9]);
+	a[10] = anvil_acos_s16x1(a[10]);
+	a[11] = anvil_acos_s16x1(a[11]);
+	a[12] = anvil_acos_s16x1(a[12]);
+	a[13] = anvil_acos_s16x1(a[13]);
+	a[14] = anvil_acos_s16x1(a[14]);
+	a[15] = anvil_acos_s16x1(a[15]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_acos_u16x1(X) anvil_convert_f32x1_to_u16x1(anvil_acos_f32x1(anvil_convert_u16x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE uint16x8_t ANVIL_SIMD_CALL anvil_acos_u16x8(const register uint16x8_t x) {
+	ANVIL_ALIGN(16) uint16x1_t a[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_acos_u16x1(a[0]);
+	a[1] = anvil_acos_u16x1(a[1]);
+	a[2] = anvil_acos_u16x1(a[2]);
+	a[3] = anvil_acos_u16x1(a[3]);
+	a[4] = anvil_acos_u16x1(a[4]);
+	a[5] = anvil_acos_u16x1(a[5]);
+	a[6] = anvil_acos_u16x1(a[6]);
+	a[7] = anvil_acos_u16x1(a[7]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint16x16_t ANVIL_SIMD_CALL anvil_acos_u16x16(const register uint16x16_t x) {
+	ANVIL_ALIGN(16) uint16x1_t a[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_acos_u16x1(a[0]);
+	a[1] = anvil_acos_u16x1(a[1]);
+	a[2] = anvil_acos_u16x1(a[2]);
+	a[3] = anvil_acos_u16x1(a[3]);
+	a[4] = anvil_acos_u16x1(a[4]);
+	a[5] = anvil_acos_u16x1(a[5]);
+	a[6] = anvil_acos_u16x1(a[6]);
+	a[7] = anvil_acos_u16x1(a[7]);
+	a[8] = anvil_acos_u16x1(a[8]);
+	a[9] = anvil_acos_u16x1(a[9]);
+	a[10] = anvil_acos_u16x1(a[10]);
+	a[11] = anvil_acos_u16x1(a[11]);
+	a[12] = anvil_acos_u16x1(a[12]);
+	a[13] = anvil_acos_u16x1(a[13]);
+	a[14] = anvil_acos_u16x1(a[14]);
+	a[15] = anvil_acos_u16x1(a[15]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_acos_s8x1(X) anvil_convert_f32x1_to_s8x1(anvil_acos_f32x1(anvil_convert_s8x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE int8x16_t ANVIL_SIMD_CALL anvil_acos_s8x16(const register int8x16_t x) {
+	ANVIL_ALIGN(16) int8x1_t a[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_acos_s8x1(a[0]);
+	a[1] = anvil_acos_s8x1(a[1]);
+	a[2] = anvil_acos_s8x1(a[2]);
+	a[3] = anvil_acos_s8x1(a[3]);
+	a[4] = anvil_acos_s8x1(a[4]);
+	a[5] = anvil_acos_s8x1(a[5]);
+	a[6] = anvil_acos_s8x1(a[6]);
+	a[7] = anvil_acos_s8x1(a[7]);
+	a[8] = anvil_acos_s8x1(a[8]);
+	a[9] = anvil_acos_s8x1(a[9]);
+	a[10] = anvil_acos_s8x1(a[10]);
+	a[11] = anvil_acos_s8x1(a[11]);
+	a[12] = anvil_acos_s8x1(a[12]);
+	a[13] = anvil_acos_s8x1(a[13]);
+	a[14] = anvil_acos_s8x1(a[14]);
+	a[15] = anvil_acos_s8x1(a[15]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int8x32_t ANVIL_SIMD_CALL anvil_acos_s8x32(const register int8x32_t x) {
+	ANVIL_ALIGN(16) int8x1_t a[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_acos_s8x1(a[0]);
+	a[1] = anvil_acos_s8x1(a[1]);
+	a[2] = anvil_acos_s8x1(a[2]);
+	a[3] = anvil_acos_s8x1(a[3]);
+	a[4] = anvil_acos_s8x1(a[4]);
+	a[5] = anvil_acos_s8x1(a[5]);
+	a[6] = anvil_acos_s8x1(a[6]);
+	a[7] = anvil_acos_s8x1(a[7]);
+	a[8] = anvil_acos_s8x1(a[8]);
+	a[9] = anvil_acos_s8x1(a[9]);
+	a[10] = anvil_acos_s8x1(a[10]);
+	a[11] = anvil_acos_s8x1(a[11]);
+	a[12] = anvil_acos_s8x1(a[12]);
+	a[13] = anvil_acos_s8x1(a[13]);
+	a[14] = anvil_acos_s8x1(a[14]);
+	a[15] = anvil_acos_s8x1(a[15]);
+	a[16] = anvil_acos_s8x1(a[16]);
+	a[17] = anvil_acos_s8x1(a[17]);
+	a[18] = anvil_acos_s8x1(a[18]);
+	a[19] = anvil_acos_s8x1(a[19]);
+	a[20] = anvil_acos_s8x1(a[20]);
+	a[21] = anvil_acos_s8x1(a[21]);
+	a[22] = anvil_acos_s8x1(a[22]);
+	a[23] = anvil_acos_s8x1(a[23]);
+	a[24] = anvil_acos_s8x1(a[24]);
+	a[25] = anvil_acos_s8x1(a[25]);
+	a[26] = anvil_acos_s8x1(a[26]);
+	a[27] = anvil_acos_s8x1(a[27]);
+	a[28] = anvil_acos_s8x1(a[28]);
+	a[29] = anvil_acos_s8x1(a[29]);
+	a[30] = anvil_acos_s8x1(a[30]);
+	a[31] = anvil_acos_s8x1(a[31]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_acos_u8x1(X) anvil_convert_f32x1_to_u8x1(anvil_acos_f32x1(anvil_convert_u8x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE uint8x16_t ANVIL_SIMD_CALL anvil_acos_u8x16(const register uint8x16_t x) {
+	ANVIL_ALIGN(16) uint8x1_t a[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_acos_u8x1(a[0]);
+	a[1] = anvil_acos_u8x1(a[1]);
+	a[2] = anvil_acos_u8x1(a[2]);
+	a[3] = anvil_acos_u8x1(a[3]);
+	a[4] = anvil_acos_u8x1(a[4]);
+	a[5] = anvil_acos_u8x1(a[5]);
+	a[6] = anvil_acos_u8x1(a[6]);
+	a[7] = anvil_acos_u8x1(a[7]);
+	a[8] = anvil_acos_u8x1(a[8]);
+	a[9] = anvil_acos_u8x1(a[9]);
+	a[10] = anvil_acos_u8x1(a[10]);
+	a[11] = anvil_acos_u8x1(a[11]);
+	a[12] = anvil_acos_u8x1(a[12]);
+	a[13] = anvil_acos_u8x1(a[13]);
+	a[14] = anvil_acos_u8x1(a[14]);
+	a[15] = anvil_acos_u8x1(a[15]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint8x32_t ANVIL_SIMD_CALL anvil_acos_u8x32(const register uint8x32_t x) {
+	ANVIL_ALIGN(16) uint8x1_t a[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_acos_u8x1(a[0]);
+	a[1] = anvil_acos_u8x1(a[1]);
+	a[2] = anvil_acos_u8x1(a[2]);
+	a[3] = anvil_acos_u8x1(a[3]);
+	a[4] = anvil_acos_u8x1(a[4]);
+	a[5] = anvil_acos_u8x1(a[5]);
+	a[6] = anvil_acos_u8x1(a[6]);
+	a[7] = anvil_acos_u8x1(a[7]);
+	a[8] = anvil_acos_u8x1(a[8]);
+	a[9] = anvil_acos_u8x1(a[9]);
+	a[10] = anvil_acos_u8x1(a[10]);
+	a[11] = anvil_acos_u8x1(a[11]);
+	a[12] = anvil_acos_u8x1(a[12]);
+	a[13] = anvil_acos_u8x1(a[13]);
+	a[14] = anvil_acos_u8x1(a[14]);
+	a[15] = anvil_acos_u8x1(a[15]);
+	a[16] = anvil_acos_u8x1(a[16]);
+	a[17] = anvil_acos_u8x1(a[17]);
+	a[18] = anvil_acos_u8x1(a[18]);
+	a[19] = anvil_acos_u8x1(a[19]);
+	a[20] = anvil_acos_u8x1(a[20]);
+	a[21] = anvil_acos_u8x1(a[21]);
+	a[22] = anvil_acos_u8x1(a[22]);
+	a[23] = anvil_acos_u8x1(a[23]);
+	a[24] = anvil_acos_u8x1(a[24]);
+	a[25] = anvil_acos_u8x1(a[25]);
+	a[26] = anvil_acos_u8x1(a[26]);
+	a[27] = anvil_acos_u8x1(a[27]);
+	a[28] = anvil_acos_u8x1(a[28]);
+	a[29] = anvil_acos_u8x1(a[29]);
+	a[30] = anvil_acos_u8x1(a[30]);
+	a[31] = anvil_acos_u8x1(a[31]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+// asin
+
+#define anvil_asin_f64x1(X) std::asin(X)
+
+static ANVIL_STRONG_INLINE float64x2_t ANVIL_SIMD_CALL anvil_asin_f64x2(const register float64x2_t x) {
+	ANVIL_ALIGN(16) float64x1_t a[2];
+	_mm_store_pd(a, x);
+	a[0] = anvil_asin_f64x1(a[0]);
+	a[1] = anvil_asin_f64x1(a[1]);
+	return _mm_load_pd(a); 
+}
+
+static ANVIL_STRONG_INLINE float64x4_t ANVIL_SIMD_CALL anvil_asin_f64x4(const register float64x4_t x) {
+	ANVIL_ALIGN(16) float64x1_t a[4];
+	_mm256_store_pd(a, x);
+	a[0] = anvil_asin_f64x1(a[0]);
+	a[1] = anvil_asin_f64x1(a[1]);
+	a[2] = anvil_asin_f64x1(a[2]);
+	a[3] = anvil_asin_f64x1(a[3]);
+	return _mm256_load_pd(a); 
+}
+
+#define anvil_asin_f32x1(X) std::asin(X)
+
+static ANVIL_STRONG_INLINE float32x4_t ANVIL_SIMD_CALL anvil_asin_f32x4(const register float32x4_t x) {
+	ANVIL_ALIGN(16) float32x1_t a[4];
+	_mm_store_ps(a, x);
+	a[0] = anvil_asin_f32x1(a[0]);
+	a[1] = anvil_asin_f32x1(a[1]);
+	a[2] = anvil_asin_f32x1(a[2]);
+	a[3] = anvil_asin_f32x1(a[3]);
+	return _mm_load_ps(a); 
+}
+
+static ANVIL_STRONG_INLINE float32x8_t ANVIL_SIMD_CALL anvil_asin_f32x8(const register float32x8_t x) {
+	ANVIL_ALIGN(16) float32x1_t a[8];
+	_mm256_store_ps(a, x);
+	a[0] = anvil_asin_f32x1(a[0]);
+	a[1] = anvil_asin_f32x1(a[1]);
+	a[2] = anvil_asin_f32x1(a[2]);
+	a[3] = anvil_asin_f32x1(a[3]);
+	a[4] = anvil_asin_f32x1(a[4]);
+	a[5] = anvil_asin_f32x1(a[5]);
+	a[6] = anvil_asin_f32x1(a[6]);
+	a[7] = anvil_asin_f32x1(a[7]);
+	return _mm256_load_ps(a); 
+}
+
+#define anvil_asin_s64x1(X) anvil_convert_f64x1_to_s64x1(anvil_asin_f64x1(anvil_convert_s64x1_to_f64x1(X)))
+#define anvil_asin_s64x2(X) anvil_convert_f64x2_to_s64x2(anvil_asin_f64x2(anvil_convert_s64x2_to_f64x2(X)))
+#define anvil_asin_s64x4(X) anvil_convert_f64x4_to_s64x4(anvil_asin_f64x4(anvil_convert_s64x4_to_f64x4(X)))
+
+#define anvil_asin_u64x1(X) anvil_convert_f64x1_to_u64x1(anvil_asin_f64x1(anvil_convert_u64x1_to_f64x1(X)))
+#define anvil_asin_u64x2(X) anvil_convert_f64x2_to_u64x2(anvil_asin_f64x2(anvil_convert_u64x2_to_f64x2(X)))
+#define anvil_asin_u64x4(X) anvil_convert_f64x4_to_u64x4(anvil_asin_f64x4(anvil_convert_u64x4_to_f64x4(X)))
+
+#define anvil_asin_s32x1(X) anvil_convert_f32x1_to_s32x1(anvil_asin_f32x1(anvil_convert_s32x1_to_f32x1(X)))
+#define anvil_asin_s32x4(X) anvil_convert_f32x4_to_s32x4(anvil_asin_f32x4(anvil_convert_s32x4_to_f32x4(X)))
+#define anvil_asin_s32x8(X) anvil_convert_f32x8_to_s32x8(anvil_asin_f32x8(anvil_convert_s32x8_to_f32x8(X)))
+
+#define anvil_asin_u32x1(X) anvil_convert_f32x1_to_u32x1(anvil_asin_f32x1(anvil_convert_u32x1_to_f32x1(X)))
+#define anvil_asin_u32x4(X) anvil_convert_f32x4_to_u32x4(anvil_asin_f32x4(anvil_convert_u32x4_to_f32x4(X)))
+#define anvil_asin_u32x8(X) anvil_convert_f32x8_to_u32x8(anvil_asin_f32x8(anvil_convert_u32x8_to_f32x8(X)))
+
+#define anvil_asin_s16x1(X) anvil_convert_f32x1_to_s16x1(anvil_asin_f32x1(anvil_convert_s16x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE int16x8_t ANVIL_SIMD_CALL anvil_asin_s16x8(const register int16x8_t x) {
+	ANVIL_ALIGN(16) int16x1_t a[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_asin_s16x1(a[0]);
+	a[1] = anvil_asin_s16x1(a[1]);
+	a[2] = anvil_asin_s16x1(a[2]);
+	a[3] = anvil_asin_s16x1(a[3]);
+	a[4] = anvil_asin_s16x1(a[4]);
+	a[5] = anvil_asin_s16x1(a[5]);
+	a[6] = anvil_asin_s16x1(a[6]);
+	a[7] = anvil_asin_s16x1(a[7]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL anvil_asin_s16x16(const register int16x16_t x) {
+	ANVIL_ALIGN(16) int16x1_t a[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_asin_s16x1(a[0]);
+	a[1] = anvil_asin_s16x1(a[1]);
+	a[2] = anvil_asin_s16x1(a[2]);
+	a[3] = anvil_asin_s16x1(a[3]);
+	a[4] = anvil_asin_s16x1(a[4]);
+	a[5] = anvil_asin_s16x1(a[5]);
+	a[6] = anvil_asin_s16x1(a[6]);
+	a[7] = anvil_asin_s16x1(a[7]);
+	a[8] = anvil_asin_s16x1(a[8]);
+	a[9] = anvil_asin_s16x1(a[9]);
+	a[10] = anvil_asin_s16x1(a[10]);
+	a[11] = anvil_asin_s16x1(a[11]);
+	a[12] = anvil_asin_s16x1(a[12]);
+	a[13] = anvil_asin_s16x1(a[13]);
+	a[14] = anvil_asin_s16x1(a[14]);
+	a[15] = anvil_asin_s16x1(a[15]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_asin_u16x1(X) anvil_convert_f32x1_to_u16x1(anvil_asin_f32x1(anvil_convert_u16x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE uint16x8_t ANVIL_SIMD_CALL anvil_asin_u16x8(const register uint16x8_t x) {
+	ANVIL_ALIGN(16) uint16x1_t a[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_asin_u16x1(a[0]);
+	a[1] = anvil_asin_u16x1(a[1]);
+	a[2] = anvil_asin_u16x1(a[2]);
+	a[3] = anvil_asin_u16x1(a[3]);
+	a[4] = anvil_asin_u16x1(a[4]);
+	a[5] = anvil_asin_u16x1(a[5]);
+	a[6] = anvil_asin_u16x1(a[6]);
+	a[7] = anvil_asin_u16x1(a[7]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint16x16_t ANVIL_SIMD_CALL anvil_asin_u16x16(const register uint16x16_t x) {
+	ANVIL_ALIGN(16) uint16x1_t a[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_asin_u16x1(a[0]);
+	a[1] = anvil_asin_u16x1(a[1]);
+	a[2] = anvil_asin_u16x1(a[2]);
+	a[3] = anvil_asin_u16x1(a[3]);
+	a[4] = anvil_asin_u16x1(a[4]);
+	a[5] = anvil_asin_u16x1(a[5]);
+	a[6] = anvil_asin_u16x1(a[6]);
+	a[7] = anvil_asin_u16x1(a[7]);
+	a[8] = anvil_asin_u16x1(a[8]);
+	a[9] = anvil_asin_u16x1(a[9]);
+	a[10] = anvil_asin_u16x1(a[10]);
+	a[11] = anvil_asin_u16x1(a[11]);
+	a[12] = anvil_asin_u16x1(a[12]);
+	a[13] = anvil_asin_u16x1(a[13]);
+	a[14] = anvil_asin_u16x1(a[14]);
+	a[15] = anvil_asin_u16x1(a[15]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_asin_s8x1(X) anvil_convert_f32x1_to_s8x1(anvil_asin_f32x1(anvil_convert_s8x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE int8x16_t ANVIL_SIMD_CALL anvil_asin_s8x16(const register int8x16_t x) {
+	ANVIL_ALIGN(16) int8x1_t a[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_asin_s8x1(a[0]);
+	a[1] = anvil_asin_s8x1(a[1]);
+	a[2] = anvil_asin_s8x1(a[2]);
+	a[3] = anvil_asin_s8x1(a[3]);
+	a[4] = anvil_asin_s8x1(a[4]);
+	a[5] = anvil_asin_s8x1(a[5]);
+	a[6] = anvil_asin_s8x1(a[6]);
+	a[7] = anvil_asin_s8x1(a[7]);
+	a[8] = anvil_asin_s8x1(a[8]);
+	a[9] = anvil_asin_s8x1(a[9]);
+	a[10] = anvil_asin_s8x1(a[10]);
+	a[11] = anvil_asin_s8x1(a[11]);
+	a[12] = anvil_asin_s8x1(a[12]);
+	a[13] = anvil_asin_s8x1(a[13]);
+	a[14] = anvil_asin_s8x1(a[14]);
+	a[15] = anvil_asin_s8x1(a[15]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int8x32_t ANVIL_SIMD_CALL anvil_asin_s8x32(const register int8x32_t x) {
+	ANVIL_ALIGN(16) int8x1_t a[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_asin_s8x1(a[0]);
+	a[1] = anvil_asin_s8x1(a[1]);
+	a[2] = anvil_asin_s8x1(a[2]);
+	a[3] = anvil_asin_s8x1(a[3]);
+	a[4] = anvil_asin_s8x1(a[4]);
+	a[5] = anvil_asin_s8x1(a[5]);
+	a[6] = anvil_asin_s8x1(a[6]);
+	a[7] = anvil_asin_s8x1(a[7]);
+	a[8] = anvil_asin_s8x1(a[8]);
+	a[9] = anvil_asin_s8x1(a[9]);
+	a[10] = anvil_asin_s8x1(a[10]);
+	a[11] = anvil_asin_s8x1(a[11]);
+	a[12] = anvil_asin_s8x1(a[12]);
+	a[13] = anvil_asin_s8x1(a[13]);
+	a[14] = anvil_asin_s8x1(a[14]);
+	a[15] = anvil_asin_s8x1(a[15]);
+	a[16] = anvil_asin_s8x1(a[16]);
+	a[17] = anvil_asin_s8x1(a[17]);
+	a[18] = anvil_asin_s8x1(a[18]);
+	a[19] = anvil_asin_s8x1(a[19]);
+	a[20] = anvil_asin_s8x1(a[20]);
+	a[21] = anvil_asin_s8x1(a[21]);
+	a[22] = anvil_asin_s8x1(a[22]);
+	a[23] = anvil_asin_s8x1(a[23]);
+	a[24] = anvil_asin_s8x1(a[24]);
+	a[25] = anvil_asin_s8x1(a[25]);
+	a[26] = anvil_asin_s8x1(a[26]);
+	a[27] = anvil_asin_s8x1(a[27]);
+	a[28] = anvil_asin_s8x1(a[28]);
+	a[29] = anvil_asin_s8x1(a[29]);
+	a[30] = anvil_asin_s8x1(a[30]);
+	a[31] = anvil_asin_s8x1(a[31]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_asin_u8x1(X) anvil_convert_f32x1_to_u8x1(anvil_asin_f32x1(anvil_convert_u8x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE uint8x16_t ANVIL_SIMD_CALL anvil_asin_u8x16(const register uint8x16_t x) {
+	ANVIL_ALIGN(16) uint8x1_t a[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_asin_u8x1(a[0]);
+	a[1] = anvil_asin_u8x1(a[1]);
+	a[2] = anvil_asin_u8x1(a[2]);
+	a[3] = anvil_asin_u8x1(a[3]);
+	a[4] = anvil_asin_u8x1(a[4]);
+	a[5] = anvil_asin_u8x1(a[5]);
+	a[6] = anvil_asin_u8x1(a[6]);
+	a[7] = anvil_asin_u8x1(a[7]);
+	a[8] = anvil_asin_u8x1(a[8]);
+	a[9] = anvil_asin_u8x1(a[9]);
+	a[10] = anvil_asin_u8x1(a[10]);
+	a[11] = anvil_asin_u8x1(a[11]);
+	a[12] = anvil_asin_u8x1(a[12]);
+	a[13] = anvil_asin_u8x1(a[13]);
+	a[14] = anvil_asin_u8x1(a[14]);
+	a[15] = anvil_asin_u8x1(a[15]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint8x32_t ANVIL_SIMD_CALL anvil_asin_u8x32(const register uint8x32_t x) {
+	ANVIL_ALIGN(16) uint8x1_t a[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_asin_u8x1(a[0]);
+	a[1] = anvil_asin_u8x1(a[1]);
+	a[2] = anvil_asin_u8x1(a[2]);
+	a[3] = anvil_asin_u8x1(a[3]);
+	a[4] = anvil_asin_u8x1(a[4]);
+	a[5] = anvil_asin_u8x1(a[5]);
+	a[6] = anvil_asin_u8x1(a[6]);
+	a[7] = anvil_asin_u8x1(a[7]);
+	a[8] = anvil_asin_u8x1(a[8]);
+	a[9] = anvil_asin_u8x1(a[9]);
+	a[10] = anvil_asin_u8x1(a[10]);
+	a[11] = anvil_asin_u8x1(a[11]);
+	a[12] = anvil_asin_u8x1(a[12]);
+	a[13] = anvil_asin_u8x1(a[13]);
+	a[14] = anvil_asin_u8x1(a[14]);
+	a[15] = anvil_asin_u8x1(a[15]);
+	a[16] = anvil_asin_u8x1(a[16]);
+	a[17] = anvil_asin_u8x1(a[17]);
+	a[18] = anvil_asin_u8x1(a[18]);
+	a[19] = anvil_asin_u8x1(a[19]);
+	a[20] = anvil_asin_u8x1(a[20]);
+	a[21] = anvil_asin_u8x1(a[21]);
+	a[22] = anvil_asin_u8x1(a[22]);
+	a[23] = anvil_asin_u8x1(a[23]);
+	a[24] = anvil_asin_u8x1(a[24]);
+	a[25] = anvil_asin_u8x1(a[25]);
+	a[26] = anvil_asin_u8x1(a[26]);
+	a[27] = anvil_asin_u8x1(a[27]);
+	a[28] = anvil_asin_u8x1(a[28]);
+	a[29] = anvil_asin_u8x1(a[29]);
+	a[30] = anvil_asin_u8x1(a[30]);
+	a[31] = anvil_asin_u8x1(a[31]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+// atan
+
+#define anvil_atan_f64x1(X) std::atan(X)
+
+static ANVIL_STRONG_INLINE float64x2_t ANVIL_SIMD_CALL anvil_atan_f64x2(const register float64x2_t x) {
+	ANVIL_ALIGN(16) float64x1_t a[2];
+	_mm_store_pd(a, x);
+	a[0] = anvil_atan_f64x1(a[0]);
+	a[1] = anvil_atan_f64x1(a[1]);
+	return _mm_load_pd(a); 
+}
+
+static ANVIL_STRONG_INLINE float64x4_t ANVIL_SIMD_CALL anvil_atan_f64x4(const register float64x4_t x) {
+	ANVIL_ALIGN(16) float64x1_t a[4];
+	_mm256_store_pd(a, x);
+	a[0] = anvil_atan_f64x1(a[0]);
+	a[1] = anvil_atan_f64x1(a[1]);
+	a[2] = anvil_atan_f64x1(a[2]);
+	a[3] = anvil_atan_f64x1(a[3]);
+	return _mm256_load_pd(a); 
+}
+
+#define anvil_atan_f32x1(X) std::atan(X)
+
+static ANVIL_STRONG_INLINE float32x4_t ANVIL_SIMD_CALL anvil_atan_f32x4(const register float32x4_t x) {
+	ANVIL_ALIGN(16) float32x1_t a[4];
+	_mm_store_ps(a, x);
+	a[0] = anvil_atan_f32x1(a[0]);
+	a[1] = anvil_atan_f32x1(a[1]);
+	a[2] = anvil_atan_f32x1(a[2]);
+	a[3] = anvil_atan_f32x1(a[3]);
+	return _mm_load_ps(a); 
+}
+
+static ANVIL_STRONG_INLINE float32x8_t ANVIL_SIMD_CALL anvil_atan_f32x8(const register float32x8_t x) {
+	ANVIL_ALIGN(16) float32x1_t a[8];
+	_mm256_store_ps(a, x);
+	a[0] = anvil_atan_f32x1(a[0]);
+	a[1] = anvil_atan_f32x1(a[1]);
+	a[2] = anvil_atan_f32x1(a[2]);
+	a[3] = anvil_atan_f32x1(a[3]);
+	a[4] = anvil_atan_f32x1(a[4]);
+	a[5] = anvil_atan_f32x1(a[5]);
+	a[6] = anvil_atan_f32x1(a[6]);
+	a[7] = anvil_atan_f32x1(a[7]);
+	return _mm256_load_ps(a); 
+}
+
+#define anvil_atan_s64x1(X) anvil_convert_f64x1_to_s64x1(anvil_atan_f64x1(anvil_convert_s64x1_to_f64x1(X)))
+#define anvil_atan_s64x2(X) anvil_convert_f64x2_to_s64x2(anvil_atan_f64x2(anvil_convert_s64x2_to_f64x2(X)))
+#define anvil_atan_s64x4(X) anvil_convert_f64x4_to_s64x4(anvil_atan_f64x4(anvil_convert_s64x4_to_f64x4(X)))
+
+#define anvil_atan_u64x1(X) anvil_convert_f64x1_to_u64x1(anvil_atan_f64x1(anvil_convert_u64x1_to_f64x1(X)))
+#define anvil_atan_u64x2(X) anvil_convert_f64x2_to_u64x2(anvil_atan_f64x2(anvil_convert_u64x2_to_f64x2(X)))
+#define anvil_atan_u64x4(X) anvil_convert_f64x4_to_u64x4(anvil_atan_f64x4(anvil_convert_u64x4_to_f64x4(X)))
+
+#define anvil_atan_s32x1(X) anvil_convert_f32x1_to_s32x1(anvil_atan_f32x1(anvil_convert_s32x1_to_f32x1(X)))
+#define anvil_atan_s32x4(X) anvil_convert_f32x4_to_s32x4(anvil_atan_f32x4(anvil_convert_s32x4_to_f32x4(X)))
+#define anvil_atan_s32x8(X) anvil_convert_f32x8_to_s32x8(anvil_atan_f32x8(anvil_convert_s32x8_to_f32x8(X)))
+
+#define anvil_atan_u32x1(X) anvil_convert_f32x1_to_u32x1(anvil_atan_f32x1(anvil_convert_u32x1_to_f32x1(X)))
+#define anvil_atan_u32x4(X) anvil_convert_f32x4_to_u32x4(anvil_atan_f32x4(anvil_convert_u32x4_to_f32x4(X)))
+#define anvil_atan_u32x8(X) anvil_convert_f32x8_to_u32x8(anvil_atan_f32x8(anvil_convert_u32x8_to_f32x8(X)))
+
+#define anvil_atan_s16x1(X) anvil_convert_f32x1_to_s16x1(anvil_atan_f32x1(anvil_convert_s16x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE int16x8_t ANVIL_SIMD_CALL anvil_atan_s16x8(const register int16x8_t x) {
+	ANVIL_ALIGN(16) int16x1_t a[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_atan_s16x1(a[0]);
+	a[1] = anvil_atan_s16x1(a[1]);
+	a[2] = anvil_atan_s16x1(a[2]);
+	a[3] = anvil_atan_s16x1(a[3]);
+	a[4] = anvil_atan_s16x1(a[4]);
+	a[5] = anvil_atan_s16x1(a[5]);
+	a[6] = anvil_atan_s16x1(a[6]);
+	a[7] = anvil_atan_s16x1(a[7]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL anvil_atan_s16x16(const register int16x16_t x) {
+	ANVIL_ALIGN(16) int16x1_t a[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_atan_s16x1(a[0]);
+	a[1] = anvil_atan_s16x1(a[1]);
+	a[2] = anvil_atan_s16x1(a[2]);
+	a[3] = anvil_atan_s16x1(a[3]);
+	a[4] = anvil_atan_s16x1(a[4]);
+	a[5] = anvil_atan_s16x1(a[5]);
+	a[6] = anvil_atan_s16x1(a[6]);
+	a[7] = anvil_atan_s16x1(a[7]);
+	a[8] = anvil_atan_s16x1(a[8]);
+	a[9] = anvil_atan_s16x1(a[9]);
+	a[10] = anvil_atan_s16x1(a[10]);
+	a[11] = anvil_atan_s16x1(a[11]);
+	a[12] = anvil_atan_s16x1(a[12]);
+	a[13] = anvil_atan_s16x1(a[13]);
+	a[14] = anvil_atan_s16x1(a[14]);
+	a[15] = anvil_atan_s16x1(a[15]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_atan_u16x1(X) anvil_convert_f32x1_to_u16x1(anvil_atan_f32x1(anvil_convert_u16x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE uint16x8_t ANVIL_SIMD_CALL anvil_atan_u16x8(const register uint16x8_t x) {
+	ANVIL_ALIGN(16) uint16x1_t a[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_atan_u16x1(a[0]);
+	a[1] = anvil_atan_u16x1(a[1]);
+	a[2] = anvil_atan_u16x1(a[2]);
+	a[3] = anvil_atan_u16x1(a[3]);
+	a[4] = anvil_atan_u16x1(a[4]);
+	a[5] = anvil_atan_u16x1(a[5]);
+	a[6] = anvil_atan_u16x1(a[6]);
+	a[7] = anvil_atan_u16x1(a[7]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint16x16_t ANVIL_SIMD_CALL anvil_atan_u16x16(const register uint16x16_t x) {
+	ANVIL_ALIGN(16) uint16x1_t a[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_atan_u16x1(a[0]);
+	a[1] = anvil_atan_u16x1(a[1]);
+	a[2] = anvil_atan_u16x1(a[2]);
+	a[3] = anvil_atan_u16x1(a[3]);
+	a[4] = anvil_atan_u16x1(a[4]);
+	a[5] = anvil_atan_u16x1(a[5]);
+	a[6] = anvil_atan_u16x1(a[6]);
+	a[7] = anvil_atan_u16x1(a[7]);
+	a[8] = anvil_atan_u16x1(a[8]);
+	a[9] = anvil_atan_u16x1(a[9]);
+	a[10] = anvil_atan_u16x1(a[10]);
+	a[11] = anvil_atan_u16x1(a[11]);
+	a[12] = anvil_atan_u16x1(a[12]);
+	a[13] = anvil_atan_u16x1(a[13]);
+	a[14] = anvil_atan_u16x1(a[14]);
+	a[15] = anvil_atan_u16x1(a[15]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_atan_s8x1(X) anvil_convert_f32x1_to_s8x1(anvil_atan_f32x1(anvil_convert_s8x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE int8x16_t ANVIL_SIMD_CALL anvil_atan_s8x16(const register int8x16_t x) {
+	ANVIL_ALIGN(16) int8x1_t a[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_atan_s8x1(a[0]);
+	a[1] = anvil_atan_s8x1(a[1]);
+	a[2] = anvil_atan_s8x1(a[2]);
+	a[3] = anvil_atan_s8x1(a[3]);
+	a[4] = anvil_atan_s8x1(a[4]);
+	a[5] = anvil_atan_s8x1(a[5]);
+	a[6] = anvil_atan_s8x1(a[6]);
+	a[7] = anvil_atan_s8x1(a[7]);
+	a[8] = anvil_atan_s8x1(a[8]);
+	a[9] = anvil_atan_s8x1(a[9]);
+	a[10] = anvil_atan_s8x1(a[10]);
+	a[11] = anvil_atan_s8x1(a[11]);
+	a[12] = anvil_atan_s8x1(a[12]);
+	a[13] = anvil_atan_s8x1(a[13]);
+	a[14] = anvil_atan_s8x1(a[14]);
+	a[15] = anvil_atan_s8x1(a[15]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int8x32_t ANVIL_SIMD_CALL anvil_atan_s8x32(const register int8x32_t x) {
+	ANVIL_ALIGN(16) int8x1_t a[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_atan_s8x1(a[0]);
+	a[1] = anvil_atan_s8x1(a[1]);
+	a[2] = anvil_atan_s8x1(a[2]);
+	a[3] = anvil_atan_s8x1(a[3]);
+	a[4] = anvil_atan_s8x1(a[4]);
+	a[5] = anvil_atan_s8x1(a[5]);
+	a[6] = anvil_atan_s8x1(a[6]);
+	a[7] = anvil_atan_s8x1(a[7]);
+	a[8] = anvil_atan_s8x1(a[8]);
+	a[9] = anvil_atan_s8x1(a[9]);
+	a[10] = anvil_atan_s8x1(a[10]);
+	a[11] = anvil_atan_s8x1(a[11]);
+	a[12] = anvil_atan_s8x1(a[12]);
+	a[13] = anvil_atan_s8x1(a[13]);
+	a[14] = anvil_atan_s8x1(a[14]);
+	a[15] = anvil_atan_s8x1(a[15]);
+	a[16] = anvil_atan_s8x1(a[16]);
+	a[17] = anvil_atan_s8x1(a[17]);
+	a[18] = anvil_atan_s8x1(a[18]);
+	a[19] = anvil_atan_s8x1(a[19]);
+	a[20] = anvil_atan_s8x1(a[20]);
+	a[21] = anvil_atan_s8x1(a[21]);
+	a[22] = anvil_atan_s8x1(a[22]);
+	a[23] = anvil_atan_s8x1(a[23]);
+	a[24] = anvil_atan_s8x1(a[24]);
+	a[25] = anvil_atan_s8x1(a[25]);
+	a[26] = anvil_atan_s8x1(a[26]);
+	a[27] = anvil_atan_s8x1(a[27]);
+	a[28] = anvil_atan_s8x1(a[28]);
+	a[29] = anvil_atan_s8x1(a[29]);
+	a[30] = anvil_atan_s8x1(a[30]);
+	a[31] = anvil_atan_s8x1(a[31]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_atan_u8x1(X) anvil_convert_f32x1_to_u8x1(anvil_atan_f32x1(anvil_convert_u8x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE uint8x16_t ANVIL_SIMD_CALL anvil_atan_u8x16(const register uint8x16_t x) {
+	ANVIL_ALIGN(16) uint8x1_t a[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_atan_u8x1(a[0]);
+	a[1] = anvil_atan_u8x1(a[1]);
+	a[2] = anvil_atan_u8x1(a[2]);
+	a[3] = anvil_atan_u8x1(a[3]);
+	a[4] = anvil_atan_u8x1(a[4]);
+	a[5] = anvil_atan_u8x1(a[5]);
+	a[6] = anvil_atan_u8x1(a[6]);
+	a[7] = anvil_atan_u8x1(a[7]);
+	a[8] = anvil_atan_u8x1(a[8]);
+	a[9] = anvil_atan_u8x1(a[9]);
+	a[10] = anvil_atan_u8x1(a[10]);
+	a[11] = anvil_atan_u8x1(a[11]);
+	a[12] = anvil_atan_u8x1(a[12]);
+	a[13] = anvil_atan_u8x1(a[13]);
+	a[14] = anvil_atan_u8x1(a[14]);
+	a[15] = anvil_atan_u8x1(a[15]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint8x32_t ANVIL_SIMD_CALL anvil_atan_u8x32(const register uint8x32_t x) {
+	ANVIL_ALIGN(16) uint8x1_t a[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_atan_u8x1(a[0]);
+	a[1] = anvil_atan_u8x1(a[1]);
+	a[2] = anvil_atan_u8x1(a[2]);
+	a[3] = anvil_atan_u8x1(a[3]);
+	a[4] = anvil_atan_u8x1(a[4]);
+	a[5] = anvil_atan_u8x1(a[5]);
+	a[6] = anvil_atan_u8x1(a[6]);
+	a[7] = anvil_atan_u8x1(a[7]);
+	a[8] = anvil_atan_u8x1(a[8]);
+	a[9] = anvil_atan_u8x1(a[9]);
+	a[10] = anvil_atan_u8x1(a[10]);
+	a[11] = anvil_atan_u8x1(a[11]);
+	a[12] = anvil_atan_u8x1(a[12]);
+	a[13] = anvil_atan_u8x1(a[13]);
+	a[14] = anvil_atan_u8x1(a[14]);
+	a[15] = anvil_atan_u8x1(a[15]);
+	a[16] = anvil_atan_u8x1(a[16]);
+	a[17] = anvil_atan_u8x1(a[17]);
+	a[18] = anvil_atan_u8x1(a[18]);
+	a[19] = anvil_atan_u8x1(a[19]);
+	a[20] = anvil_atan_u8x1(a[20]);
+	a[21] = anvil_atan_u8x1(a[21]);
+	a[22] = anvil_atan_u8x1(a[22]);
+	a[23] = anvil_atan_u8x1(a[23]);
+	a[24] = anvil_atan_u8x1(a[24]);
+	a[25] = anvil_atan_u8x1(a[25]);
+	a[26] = anvil_atan_u8x1(a[26]);
+	a[27] = anvil_atan_u8x1(a[27]);
+	a[28] = anvil_atan_u8x1(a[28]);
+	a[29] = anvil_atan_u8x1(a[29]);
+	a[30] = anvil_atan_u8x1(a[30]);
+	a[31] = anvil_atan_u8x1(a[31]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+// cosh
+
+#define anvil_cosh_f64x1(X) std::cosh(X)
+
+static ANVIL_STRONG_INLINE float64x2_t ANVIL_SIMD_CALL anvil_cosh_f64x2(const register float64x2_t x) {
+	ANVIL_ALIGN(16) float64x1_t a[2];
+	_mm_store_pd(a, x);
+	a[0] = anvil_cosh_f64x1(a[0]);
+	a[1] = anvil_cosh_f64x1(a[1]);
+	return _mm_load_pd(a); 
+}
+
+static ANVIL_STRONG_INLINE float64x4_t ANVIL_SIMD_CALL anvil_cosh_f64x4(const register float64x4_t x) {
+	ANVIL_ALIGN(16) float64x1_t a[4];
+	_mm256_store_pd(a, x);
+	a[0] = anvil_cosh_f64x1(a[0]);
+	a[1] = anvil_cosh_f64x1(a[1]);
+	a[2] = anvil_cosh_f64x1(a[2]);
+	a[3] = anvil_cosh_f64x1(a[3]);
+	return _mm256_load_pd(a); 
+}
+
+#define anvil_cosh_f32x1(X) std::cosh(X)
+
+static ANVIL_STRONG_INLINE float32x4_t ANVIL_SIMD_CALL anvil_cosh_f32x4(const register float32x4_t x) {
+	ANVIL_ALIGN(16) float32x1_t a[4];
+	_mm_store_ps(a, x);
+	a[0] = anvil_cosh_f32x1(a[0]);
+	a[1] = anvil_cosh_f32x1(a[1]);
+	a[2] = anvil_cosh_f32x1(a[2]);
+	a[3] = anvil_cosh_f32x1(a[3]);
+	return _mm_load_ps(a); 
+}
+
+static ANVIL_STRONG_INLINE float32x8_t ANVIL_SIMD_CALL anvil_cosh_f32x8(const register float32x8_t x) {
+	ANVIL_ALIGN(16) float32x1_t a[8];
+	_mm256_store_ps(a, x);
+	a[0] = anvil_cosh_f32x1(a[0]);
+	a[1] = anvil_cosh_f32x1(a[1]);
+	a[2] = anvil_cosh_f32x1(a[2]);
+	a[3] = anvil_cosh_f32x1(a[3]);
+	a[4] = anvil_cosh_f32x1(a[4]);
+	a[5] = anvil_cosh_f32x1(a[5]);
+	a[6] = anvil_cosh_f32x1(a[6]);
+	a[7] = anvil_cosh_f32x1(a[7]);
+	return _mm256_load_ps(a); 
+}
+
+#define anvil_cosh_s64x1(X) anvil_convert_f64x1_to_s64x1(anvil_cosh_f64x1(anvil_convert_s64x1_to_f64x1(X)))
+#define anvil_cosh_s64x2(X) anvil_convert_f64x2_to_s64x2(anvil_cosh_f64x2(anvil_convert_s64x2_to_f64x2(X)))
+#define anvil_cosh_s64x4(X) anvil_convert_f64x4_to_s64x4(anvil_cosh_f64x4(anvil_convert_s64x4_to_f64x4(X)))
+
+#define anvil_cosh_u64x1(X) anvil_convert_f64x1_to_u64x1(anvil_cosh_f64x1(anvil_convert_u64x1_to_f64x1(X)))
+#define anvil_cosh_u64x2(X) anvil_convert_f64x2_to_u64x2(anvil_cosh_f64x2(anvil_convert_u64x2_to_f64x2(X)))
+#define anvil_cosh_u64x4(X) anvil_convert_f64x4_to_u64x4(anvil_cosh_f64x4(anvil_convert_u64x4_to_f64x4(X)))
+
+#define anvil_cosh_s32x1(X) anvil_convert_f32x1_to_s32x1(anvil_cosh_f32x1(anvil_convert_s32x1_to_f32x1(X)))
+#define anvil_cosh_s32x4(X) anvil_convert_f32x4_to_s32x4(anvil_cosh_f32x4(anvil_convert_s32x4_to_f32x4(X)))
+#define anvil_cosh_s32x8(X) anvil_convert_f32x8_to_s32x8(anvil_cosh_f32x8(anvil_convert_s32x8_to_f32x8(X)))
+
+#define anvil_cosh_u32x1(X) anvil_convert_f32x1_to_u32x1(anvil_cosh_f32x1(anvil_convert_u32x1_to_f32x1(X)))
+#define anvil_cosh_u32x4(X) anvil_convert_f32x4_to_u32x4(anvil_cosh_f32x4(anvil_convert_u32x4_to_f32x4(X)))
+#define anvil_cosh_u32x8(X) anvil_convert_f32x8_to_u32x8(anvil_cosh_f32x8(anvil_convert_u32x8_to_f32x8(X)))
+
+#define anvil_cosh_s16x1(X) anvil_convert_f32x1_to_s16x1(anvil_cosh_f32x1(anvil_convert_s16x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE int16x8_t ANVIL_SIMD_CALL anvil_cosh_s16x8(const register int16x8_t x) {
+	ANVIL_ALIGN(16) int16x1_t a[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_cosh_s16x1(a[0]);
+	a[1] = anvil_cosh_s16x1(a[1]);
+	a[2] = anvil_cosh_s16x1(a[2]);
+	a[3] = anvil_cosh_s16x1(a[3]);
+	a[4] = anvil_cosh_s16x1(a[4]);
+	a[5] = anvil_cosh_s16x1(a[5]);
+	a[6] = anvil_cosh_s16x1(a[6]);
+	a[7] = anvil_cosh_s16x1(a[7]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL anvil_cosh_s16x16(const register int16x16_t x) {
+	ANVIL_ALIGN(16) int16x1_t a[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_cosh_s16x1(a[0]);
+	a[1] = anvil_cosh_s16x1(a[1]);
+	a[2] = anvil_cosh_s16x1(a[2]);
+	a[3] = anvil_cosh_s16x1(a[3]);
+	a[4] = anvil_cosh_s16x1(a[4]);
+	a[5] = anvil_cosh_s16x1(a[5]);
+	a[6] = anvil_cosh_s16x1(a[6]);
+	a[7] = anvil_cosh_s16x1(a[7]);
+	a[8] = anvil_cosh_s16x1(a[8]);
+	a[9] = anvil_cosh_s16x1(a[9]);
+	a[10] = anvil_cosh_s16x1(a[10]);
+	a[11] = anvil_cosh_s16x1(a[11]);
+	a[12] = anvil_cosh_s16x1(a[12]);
+	a[13] = anvil_cosh_s16x1(a[13]);
+	a[14] = anvil_cosh_s16x1(a[14]);
+	a[15] = anvil_cosh_s16x1(a[15]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_cosh_u16x1(X) anvil_convert_f32x1_to_u16x1(anvil_cosh_f32x1(anvil_convert_u16x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE uint16x8_t ANVIL_SIMD_CALL anvil_cosh_u16x8(const register uint16x8_t x) {
+	ANVIL_ALIGN(16) uint16x1_t a[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_cosh_u16x1(a[0]);
+	a[1] = anvil_cosh_u16x1(a[1]);
+	a[2] = anvil_cosh_u16x1(a[2]);
+	a[3] = anvil_cosh_u16x1(a[3]);
+	a[4] = anvil_cosh_u16x1(a[4]);
+	a[5] = anvil_cosh_u16x1(a[5]);
+	a[6] = anvil_cosh_u16x1(a[6]);
+	a[7] = anvil_cosh_u16x1(a[7]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint16x16_t ANVIL_SIMD_CALL anvil_cosh_u16x16(const register uint16x16_t x) {
+	ANVIL_ALIGN(16) uint16x1_t a[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_cosh_u16x1(a[0]);
+	a[1] = anvil_cosh_u16x1(a[1]);
+	a[2] = anvil_cosh_u16x1(a[2]);
+	a[3] = anvil_cosh_u16x1(a[3]);
+	a[4] = anvil_cosh_u16x1(a[4]);
+	a[5] = anvil_cosh_u16x1(a[5]);
+	a[6] = anvil_cosh_u16x1(a[6]);
+	a[7] = anvil_cosh_u16x1(a[7]);
+	a[8] = anvil_cosh_u16x1(a[8]);
+	a[9] = anvil_cosh_u16x1(a[9]);
+	a[10] = anvil_cosh_u16x1(a[10]);
+	a[11] = anvil_cosh_u16x1(a[11]);
+	a[12] = anvil_cosh_u16x1(a[12]);
+	a[13] = anvil_cosh_u16x1(a[13]);
+	a[14] = anvil_cosh_u16x1(a[14]);
+	a[15] = anvil_cosh_u16x1(a[15]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_cosh_s8x1(X) anvil_convert_f32x1_to_s8x1(anvil_cosh_f32x1(anvil_convert_s8x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE int8x16_t ANVIL_SIMD_CALL anvil_cosh_s8x16(const register int8x16_t x) {
+	ANVIL_ALIGN(16) int8x1_t a[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_cosh_s8x1(a[0]);
+	a[1] = anvil_cosh_s8x1(a[1]);
+	a[2] = anvil_cosh_s8x1(a[2]);
+	a[3] = anvil_cosh_s8x1(a[3]);
+	a[4] = anvil_cosh_s8x1(a[4]);
+	a[5] = anvil_cosh_s8x1(a[5]);
+	a[6] = anvil_cosh_s8x1(a[6]);
+	a[7] = anvil_cosh_s8x1(a[7]);
+	a[8] = anvil_cosh_s8x1(a[8]);
+	a[9] = anvil_cosh_s8x1(a[9]);
+	a[10] = anvil_cosh_s8x1(a[10]);
+	a[11] = anvil_cosh_s8x1(a[11]);
+	a[12] = anvil_cosh_s8x1(a[12]);
+	a[13] = anvil_cosh_s8x1(a[13]);
+	a[14] = anvil_cosh_s8x1(a[14]);
+	a[15] = anvil_cosh_s8x1(a[15]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int8x32_t ANVIL_SIMD_CALL anvil_cosh_s8x32(const register int8x32_t x) {
+	ANVIL_ALIGN(16) int8x1_t a[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_cosh_s8x1(a[0]);
+	a[1] = anvil_cosh_s8x1(a[1]);
+	a[2] = anvil_cosh_s8x1(a[2]);
+	a[3] = anvil_cosh_s8x1(a[3]);
+	a[4] = anvil_cosh_s8x1(a[4]);
+	a[5] = anvil_cosh_s8x1(a[5]);
+	a[6] = anvil_cosh_s8x1(a[6]);
+	a[7] = anvil_cosh_s8x1(a[7]);
+	a[8] = anvil_cosh_s8x1(a[8]);
+	a[9] = anvil_cosh_s8x1(a[9]);
+	a[10] = anvil_cosh_s8x1(a[10]);
+	a[11] = anvil_cosh_s8x1(a[11]);
+	a[12] = anvil_cosh_s8x1(a[12]);
+	a[13] = anvil_cosh_s8x1(a[13]);
+	a[14] = anvil_cosh_s8x1(a[14]);
+	a[15] = anvil_cosh_s8x1(a[15]);
+	a[16] = anvil_cosh_s8x1(a[16]);
+	a[17] = anvil_cosh_s8x1(a[17]);
+	a[18] = anvil_cosh_s8x1(a[18]);
+	a[19] = anvil_cosh_s8x1(a[19]);
+	a[20] = anvil_cosh_s8x1(a[20]);
+	a[21] = anvil_cosh_s8x1(a[21]);
+	a[22] = anvil_cosh_s8x1(a[22]);
+	a[23] = anvil_cosh_s8x1(a[23]);
+	a[24] = anvil_cosh_s8x1(a[24]);
+	a[25] = anvil_cosh_s8x1(a[25]);
+	a[26] = anvil_cosh_s8x1(a[26]);
+	a[27] = anvil_cosh_s8x1(a[27]);
+	a[28] = anvil_cosh_s8x1(a[28]);
+	a[29] = anvil_cosh_s8x1(a[29]);
+	a[30] = anvil_cosh_s8x1(a[30]);
+	a[31] = anvil_cosh_s8x1(a[31]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_cosh_u8x1(X) anvil_convert_f32x1_to_u8x1(anvil_cosh_f32x1(anvil_convert_u8x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE uint8x16_t ANVIL_SIMD_CALL anvil_cosh_u8x16(const register uint8x16_t x) {
+	ANVIL_ALIGN(16) uint8x1_t a[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_cosh_u8x1(a[0]);
+	a[1] = anvil_cosh_u8x1(a[1]);
+	a[2] = anvil_cosh_u8x1(a[2]);
+	a[3] = anvil_cosh_u8x1(a[3]);
+	a[4] = anvil_cosh_u8x1(a[4]);
+	a[5] = anvil_cosh_u8x1(a[5]);
+	a[6] = anvil_cosh_u8x1(a[6]);
+	a[7] = anvil_cosh_u8x1(a[7]);
+	a[8] = anvil_cosh_u8x1(a[8]);
+	a[9] = anvil_cosh_u8x1(a[9]);
+	a[10] = anvil_cosh_u8x1(a[10]);
+	a[11] = anvil_cosh_u8x1(a[11]);
+	a[12] = anvil_cosh_u8x1(a[12]);
+	a[13] = anvil_cosh_u8x1(a[13]);
+	a[14] = anvil_cosh_u8x1(a[14]);
+	a[15] = anvil_cosh_u8x1(a[15]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint8x32_t ANVIL_SIMD_CALL anvil_cosh_u8x32(const register uint8x32_t x) {
+	ANVIL_ALIGN(16) uint8x1_t a[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_cosh_u8x1(a[0]);
+	a[1] = anvil_cosh_u8x1(a[1]);
+	a[2] = anvil_cosh_u8x1(a[2]);
+	a[3] = anvil_cosh_u8x1(a[3]);
+	a[4] = anvil_cosh_u8x1(a[4]);
+	a[5] = anvil_cosh_u8x1(a[5]);
+	a[6] = anvil_cosh_u8x1(a[6]);
+	a[7] = anvil_cosh_u8x1(a[7]);
+	a[8] = anvil_cosh_u8x1(a[8]);
+	a[9] = anvil_cosh_u8x1(a[9]);
+	a[10] = anvil_cosh_u8x1(a[10]);
+	a[11] = anvil_cosh_u8x1(a[11]);
+	a[12] = anvil_cosh_u8x1(a[12]);
+	a[13] = anvil_cosh_u8x1(a[13]);
+	a[14] = anvil_cosh_u8x1(a[14]);
+	a[15] = anvil_cosh_u8x1(a[15]);
+	a[16] = anvil_cosh_u8x1(a[16]);
+	a[17] = anvil_cosh_u8x1(a[17]);
+	a[18] = anvil_cosh_u8x1(a[18]);
+	a[19] = anvil_cosh_u8x1(a[19]);
+	a[20] = anvil_cosh_u8x1(a[20]);
+	a[21] = anvil_cosh_u8x1(a[21]);
+	a[22] = anvil_cosh_u8x1(a[22]);
+	a[23] = anvil_cosh_u8x1(a[23]);
+	a[24] = anvil_cosh_u8x1(a[24]);
+	a[25] = anvil_cosh_u8x1(a[25]);
+	a[26] = anvil_cosh_u8x1(a[26]);
+	a[27] = anvil_cosh_u8x1(a[27]);
+	a[28] = anvil_cosh_u8x1(a[28]);
+	a[29] = anvil_cosh_u8x1(a[29]);
+	a[30] = anvil_cosh_u8x1(a[30]);
+	a[31] = anvil_cosh_u8x1(a[31]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+// sinh
+
+#define anvil_sinh_f64x1(X) std::sinh(X)
+
+static ANVIL_STRONG_INLINE float64x2_t ANVIL_SIMD_CALL anvil_sinh_f64x2(const register float64x2_t x) {
+	ANVIL_ALIGN(16) float64x1_t a[2];
+	_mm_store_pd(a, x);
+	a[0] = anvil_sinh_f64x1(a[0]);
+	a[1] = anvil_sinh_f64x1(a[1]);
+	return _mm_load_pd(a); 
+}
+
+static ANVIL_STRONG_INLINE float64x4_t ANVIL_SIMD_CALL anvil_sinh_f64x4(const register float64x4_t x) {
+	ANVIL_ALIGN(16) float64x1_t a[4];
+	_mm256_store_pd(a, x);
+	a[0] = anvil_sinh_f64x1(a[0]);
+	a[1] = anvil_sinh_f64x1(a[1]);
+	a[2] = anvil_sinh_f64x1(a[2]);
+	a[3] = anvil_sinh_f64x1(a[3]);
+	return _mm256_load_pd(a); 
+}
+
+#define anvil_sinh_f32x1(X) std::sinh(X)
+
+static ANVIL_STRONG_INLINE float32x4_t ANVIL_SIMD_CALL anvil_sinh_f32x4(const register float32x4_t x) {
+	ANVIL_ALIGN(16) float32x1_t a[4];
+	_mm_store_ps(a, x);
+	a[0] = anvil_sinh_f32x1(a[0]);
+	a[1] = anvil_sinh_f32x1(a[1]);
+	a[2] = anvil_sinh_f32x1(a[2]);
+	a[3] = anvil_sinh_f32x1(a[3]);
+	return _mm_load_ps(a); 
+}
+
+static ANVIL_STRONG_INLINE float32x8_t ANVIL_SIMD_CALL anvil_sinh_f32x8(const register float32x8_t x) {
+	ANVIL_ALIGN(16) float32x1_t a[8];
+	_mm256_store_ps(a, x);
+	a[0] = anvil_sinh_f32x1(a[0]);
+	a[1] = anvil_sinh_f32x1(a[1]);
+	a[2] = anvil_sinh_f32x1(a[2]);
+	a[3] = anvil_sinh_f32x1(a[3]);
+	a[4] = anvil_sinh_f32x1(a[4]);
+	a[5] = anvil_sinh_f32x1(a[5]);
+	a[6] = anvil_sinh_f32x1(a[6]);
+	a[7] = anvil_sinh_f32x1(a[7]);
+	return _mm256_load_ps(a); 
+}
+
+#define anvil_sinh_s64x1(X) anvil_convert_f64x1_to_s64x1(anvil_sinh_f64x1(anvil_convert_s64x1_to_f64x1(X)))
+#define anvil_sinh_s64x2(X) anvil_convert_f64x2_to_s64x2(anvil_sinh_f64x2(anvil_convert_s64x2_to_f64x2(X)))
+#define anvil_sinh_s64x4(X) anvil_convert_f64x4_to_s64x4(anvil_sinh_f64x4(anvil_convert_s64x4_to_f64x4(X)))
+
+#define anvil_sinh_u64x1(X) anvil_convert_f64x1_to_u64x1(anvil_sinh_f64x1(anvil_convert_u64x1_to_f64x1(X)))
+#define anvil_sinh_u64x2(X) anvil_convert_f64x2_to_u64x2(anvil_sinh_f64x2(anvil_convert_u64x2_to_f64x2(X)))
+#define anvil_sinh_u64x4(X) anvil_convert_f64x4_to_u64x4(anvil_sinh_f64x4(anvil_convert_u64x4_to_f64x4(X)))
+
+#define anvil_sinh_s32x1(X) anvil_convert_f32x1_to_s32x1(anvil_sinh_f32x1(anvil_convert_s32x1_to_f32x1(X)))
+#define anvil_sinh_s32x4(X) anvil_convert_f32x4_to_s32x4(anvil_sinh_f32x4(anvil_convert_s32x4_to_f32x4(X)))
+#define anvil_sinh_s32x8(X) anvil_convert_f32x8_to_s32x8(anvil_sinh_f32x8(anvil_convert_s32x8_to_f32x8(X)))
+
+#define anvil_sinh_u32x1(X) anvil_convert_f32x1_to_u32x1(anvil_sinh_f32x1(anvil_convert_u32x1_to_f32x1(X)))
+#define anvil_sinh_u32x4(X) anvil_convert_f32x4_to_u32x4(anvil_sinh_f32x4(anvil_convert_u32x4_to_f32x4(X)))
+#define anvil_sinh_u32x8(X) anvil_convert_f32x8_to_u32x8(anvil_sinh_f32x8(anvil_convert_u32x8_to_f32x8(X)))
+
+#define anvil_sinh_s16x1(X) anvil_convert_f32x1_to_s16x1(anvil_sinh_f32x1(anvil_convert_s16x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE int16x8_t ANVIL_SIMD_CALL anvil_sinh_s16x8(const register int16x8_t x) {
+	ANVIL_ALIGN(16) int16x1_t a[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_sinh_s16x1(a[0]);
+	a[1] = anvil_sinh_s16x1(a[1]);
+	a[2] = anvil_sinh_s16x1(a[2]);
+	a[3] = anvil_sinh_s16x1(a[3]);
+	a[4] = anvil_sinh_s16x1(a[4]);
+	a[5] = anvil_sinh_s16x1(a[5]);
+	a[6] = anvil_sinh_s16x1(a[6]);
+	a[7] = anvil_sinh_s16x1(a[7]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL anvil_sinh_s16x16(const register int16x16_t x) {
+	ANVIL_ALIGN(16) int16x1_t a[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_sinh_s16x1(a[0]);
+	a[1] = anvil_sinh_s16x1(a[1]);
+	a[2] = anvil_sinh_s16x1(a[2]);
+	a[3] = anvil_sinh_s16x1(a[3]);
+	a[4] = anvil_sinh_s16x1(a[4]);
+	a[5] = anvil_sinh_s16x1(a[5]);
+	a[6] = anvil_sinh_s16x1(a[6]);
+	a[7] = anvil_sinh_s16x1(a[7]);
+	a[8] = anvil_sinh_s16x1(a[8]);
+	a[9] = anvil_sinh_s16x1(a[9]);
+	a[10] = anvil_sinh_s16x1(a[10]);
+	a[11] = anvil_sinh_s16x1(a[11]);
+	a[12] = anvil_sinh_s16x1(a[12]);
+	a[13] = anvil_sinh_s16x1(a[13]);
+	a[14] = anvil_sinh_s16x1(a[14]);
+	a[15] = anvil_sinh_s16x1(a[15]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_sinh_u16x1(X) anvil_convert_f32x1_to_u16x1(anvil_sinh_f32x1(anvil_convert_u16x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE uint16x8_t ANVIL_SIMD_CALL anvil_sinh_u16x8(const register uint16x8_t x) {
+	ANVIL_ALIGN(16) uint16x1_t a[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_sinh_u16x1(a[0]);
+	a[1] = anvil_sinh_u16x1(a[1]);
+	a[2] = anvil_sinh_u16x1(a[2]);
+	a[3] = anvil_sinh_u16x1(a[3]);
+	a[4] = anvil_sinh_u16x1(a[4]);
+	a[5] = anvil_sinh_u16x1(a[5]);
+	a[6] = anvil_sinh_u16x1(a[6]);
+	a[7] = anvil_sinh_u16x1(a[7]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint16x16_t ANVIL_SIMD_CALL anvil_sinh_u16x16(const register uint16x16_t x) {
+	ANVIL_ALIGN(16) uint16x1_t a[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_sinh_u16x1(a[0]);
+	a[1] = anvil_sinh_u16x1(a[1]);
+	a[2] = anvil_sinh_u16x1(a[2]);
+	a[3] = anvil_sinh_u16x1(a[3]);
+	a[4] = anvil_sinh_u16x1(a[4]);
+	a[5] = anvil_sinh_u16x1(a[5]);
+	a[6] = anvil_sinh_u16x1(a[6]);
+	a[7] = anvil_sinh_u16x1(a[7]);
+	a[8] = anvil_sinh_u16x1(a[8]);
+	a[9] = anvil_sinh_u16x1(a[9]);
+	a[10] = anvil_sinh_u16x1(a[10]);
+	a[11] = anvil_sinh_u16x1(a[11]);
+	a[12] = anvil_sinh_u16x1(a[12]);
+	a[13] = anvil_sinh_u16x1(a[13]);
+	a[14] = anvil_sinh_u16x1(a[14]);
+	a[15] = anvil_sinh_u16x1(a[15]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_sinh_s8x1(X) anvil_convert_f32x1_to_s8x1(anvil_sinh_f32x1(anvil_convert_s8x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE int8x16_t ANVIL_SIMD_CALL anvil_sinh_s8x16(const register int8x16_t x) {
+	ANVIL_ALIGN(16) int8x1_t a[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_sinh_s8x1(a[0]);
+	a[1] = anvil_sinh_s8x1(a[1]);
+	a[2] = anvil_sinh_s8x1(a[2]);
+	a[3] = anvil_sinh_s8x1(a[3]);
+	a[4] = anvil_sinh_s8x1(a[4]);
+	a[5] = anvil_sinh_s8x1(a[5]);
+	a[6] = anvil_sinh_s8x1(a[6]);
+	a[7] = anvil_sinh_s8x1(a[7]);
+	a[8] = anvil_sinh_s8x1(a[8]);
+	a[9] = anvil_sinh_s8x1(a[9]);
+	a[10] = anvil_sinh_s8x1(a[10]);
+	a[11] = anvil_sinh_s8x1(a[11]);
+	a[12] = anvil_sinh_s8x1(a[12]);
+	a[13] = anvil_sinh_s8x1(a[13]);
+	a[14] = anvil_sinh_s8x1(a[14]);
+	a[15] = anvil_sinh_s8x1(a[15]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int8x32_t ANVIL_SIMD_CALL anvil_sinh_s8x32(const register int8x32_t x) {
+	ANVIL_ALIGN(16) int8x1_t a[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_sinh_s8x1(a[0]);
+	a[1] = anvil_sinh_s8x1(a[1]);
+	a[2] = anvil_sinh_s8x1(a[2]);
+	a[3] = anvil_sinh_s8x1(a[3]);
+	a[4] = anvil_sinh_s8x1(a[4]);
+	a[5] = anvil_sinh_s8x1(a[5]);
+	a[6] = anvil_sinh_s8x1(a[6]);
+	a[7] = anvil_sinh_s8x1(a[7]);
+	a[8] = anvil_sinh_s8x1(a[8]);
+	a[9] = anvil_sinh_s8x1(a[9]);
+	a[10] = anvil_sinh_s8x1(a[10]);
+	a[11] = anvil_sinh_s8x1(a[11]);
+	a[12] = anvil_sinh_s8x1(a[12]);
+	a[13] = anvil_sinh_s8x1(a[13]);
+	a[14] = anvil_sinh_s8x1(a[14]);
+	a[15] = anvil_sinh_s8x1(a[15]);
+	a[16] = anvil_sinh_s8x1(a[16]);
+	a[17] = anvil_sinh_s8x1(a[17]);
+	a[18] = anvil_sinh_s8x1(a[18]);
+	a[19] = anvil_sinh_s8x1(a[19]);
+	a[20] = anvil_sinh_s8x1(a[20]);
+	a[21] = anvil_sinh_s8x1(a[21]);
+	a[22] = anvil_sinh_s8x1(a[22]);
+	a[23] = anvil_sinh_s8x1(a[23]);
+	a[24] = anvil_sinh_s8x1(a[24]);
+	a[25] = anvil_sinh_s8x1(a[25]);
+	a[26] = anvil_sinh_s8x1(a[26]);
+	a[27] = anvil_sinh_s8x1(a[27]);
+	a[28] = anvil_sinh_s8x1(a[28]);
+	a[29] = anvil_sinh_s8x1(a[29]);
+	a[30] = anvil_sinh_s8x1(a[30]);
+	a[31] = anvil_sinh_s8x1(a[31]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_sinh_u8x1(X) anvil_convert_f32x1_to_u8x1(anvil_sinh_f32x1(anvil_convert_u8x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE uint8x16_t ANVIL_SIMD_CALL anvil_sinh_u8x16(const register uint8x16_t x) {
+	ANVIL_ALIGN(16) uint8x1_t a[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_sinh_u8x1(a[0]);
+	a[1] = anvil_sinh_u8x1(a[1]);
+	a[2] = anvil_sinh_u8x1(a[2]);
+	a[3] = anvil_sinh_u8x1(a[3]);
+	a[4] = anvil_sinh_u8x1(a[4]);
+	a[5] = anvil_sinh_u8x1(a[5]);
+	a[6] = anvil_sinh_u8x1(a[6]);
+	a[7] = anvil_sinh_u8x1(a[7]);
+	a[8] = anvil_sinh_u8x1(a[8]);
+	a[9] = anvil_sinh_u8x1(a[9]);
+	a[10] = anvil_sinh_u8x1(a[10]);
+	a[11] = anvil_sinh_u8x1(a[11]);
+	a[12] = anvil_sinh_u8x1(a[12]);
+	a[13] = anvil_sinh_u8x1(a[13]);
+	a[14] = anvil_sinh_u8x1(a[14]);
+	a[15] = anvil_sinh_u8x1(a[15]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint8x32_t ANVIL_SIMD_CALL anvil_sinh_u8x32(const register uint8x32_t x) {
+	ANVIL_ALIGN(16) uint8x1_t a[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_sinh_u8x1(a[0]);
+	a[1] = anvil_sinh_u8x1(a[1]);
+	a[2] = anvil_sinh_u8x1(a[2]);
+	a[3] = anvil_sinh_u8x1(a[3]);
+	a[4] = anvil_sinh_u8x1(a[4]);
+	a[5] = anvil_sinh_u8x1(a[5]);
+	a[6] = anvil_sinh_u8x1(a[6]);
+	a[7] = anvil_sinh_u8x1(a[7]);
+	a[8] = anvil_sinh_u8x1(a[8]);
+	a[9] = anvil_sinh_u8x1(a[9]);
+	a[10] = anvil_sinh_u8x1(a[10]);
+	a[11] = anvil_sinh_u8x1(a[11]);
+	a[12] = anvil_sinh_u8x1(a[12]);
+	a[13] = anvil_sinh_u8x1(a[13]);
+	a[14] = anvil_sinh_u8x1(a[14]);
+	a[15] = anvil_sinh_u8x1(a[15]);
+	a[16] = anvil_sinh_u8x1(a[16]);
+	a[17] = anvil_sinh_u8x1(a[17]);
+	a[18] = anvil_sinh_u8x1(a[18]);
+	a[19] = anvil_sinh_u8x1(a[19]);
+	a[20] = anvil_sinh_u8x1(a[20]);
+	a[21] = anvil_sinh_u8x1(a[21]);
+	a[22] = anvil_sinh_u8x1(a[22]);
+	a[23] = anvil_sinh_u8x1(a[23]);
+	a[24] = anvil_sinh_u8x1(a[24]);
+	a[25] = anvil_sinh_u8x1(a[25]);
+	a[26] = anvil_sinh_u8x1(a[26]);
+	a[27] = anvil_sinh_u8x1(a[27]);
+	a[28] = anvil_sinh_u8x1(a[28]);
+	a[29] = anvil_sinh_u8x1(a[29]);
+	a[30] = anvil_sinh_u8x1(a[30]);
+	a[31] = anvil_sinh_u8x1(a[31]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+// tanh
+
+#define anvil_tanh_f64x1(X) std::tanh(X)
+
+static ANVIL_STRONG_INLINE float64x2_t ANVIL_SIMD_CALL anvil_tanh_f64x2(const register float64x2_t x) {
+	ANVIL_ALIGN(16) float64x1_t a[2];
+	_mm_store_pd(a, x);
+	a[0] = anvil_tanh_f64x1(a[0]);
+	a[1] = anvil_tanh_f64x1(a[1]);
+	return _mm_load_pd(a); 
+}
+
+static ANVIL_STRONG_INLINE float64x4_t ANVIL_SIMD_CALL anvil_tanh_f64x4(const register float64x4_t x) {
+	ANVIL_ALIGN(16) float64x1_t a[4];
+	_mm256_store_pd(a, x);
+	a[0] = anvil_tanh_f64x1(a[0]);
+	a[1] = anvil_tanh_f64x1(a[1]);
+	a[2] = anvil_tanh_f64x1(a[2]);
+	a[3] = anvil_tanh_f64x1(a[3]);
+	return _mm256_load_pd(a); 
+}
+
+#define anvil_tanh_f32x1(X) std::tanh(X)
+
+static ANVIL_STRONG_INLINE float32x4_t ANVIL_SIMD_CALL anvil_tanh_f32x4(const register float32x4_t x) {
+	ANVIL_ALIGN(16) float32x1_t a[4];
+	_mm_store_ps(a, x);
+	a[0] = anvil_tanh_f32x1(a[0]);
+	a[1] = anvil_tanh_f32x1(a[1]);
+	a[2] = anvil_tanh_f32x1(a[2]);
+	a[3] = anvil_tanh_f32x1(a[3]);
+	return _mm_load_ps(a); 
+}
+
+static ANVIL_STRONG_INLINE float32x8_t ANVIL_SIMD_CALL anvil_tanh_f32x8(const register float32x8_t x) {
+	ANVIL_ALIGN(16) float32x1_t a[8];
+	_mm256_store_ps(a, x);
+	a[0] = anvil_tanh_f32x1(a[0]);
+	a[1] = anvil_tanh_f32x1(a[1]);
+	a[2] = anvil_tanh_f32x1(a[2]);
+	a[3] = anvil_tanh_f32x1(a[3]);
+	a[4] = anvil_tanh_f32x1(a[4]);
+	a[5] = anvil_tanh_f32x1(a[5]);
+	a[6] = anvil_tanh_f32x1(a[6]);
+	a[7] = anvil_tanh_f32x1(a[7]);
+	return _mm256_load_ps(a); 
+}
+
+#define anvil_tanh_s64x1(X) anvil_convert_f64x1_to_s64x1(anvil_tanh_f64x1(anvil_convert_s64x1_to_f64x1(X)))
+#define anvil_tanh_s64x2(X) anvil_convert_f64x2_to_s64x2(anvil_tanh_f64x2(anvil_convert_s64x2_to_f64x2(X)))
+#define anvil_tanh_s64x4(X) anvil_convert_f64x4_to_s64x4(anvil_tanh_f64x4(anvil_convert_s64x4_to_f64x4(X)))
+
+#define anvil_tanh_u64x1(X) anvil_convert_f64x1_to_u64x1(anvil_tanh_f64x1(anvil_convert_u64x1_to_f64x1(X)))
+#define anvil_tanh_u64x2(X) anvil_convert_f64x2_to_u64x2(anvil_tanh_f64x2(anvil_convert_u64x2_to_f64x2(X)))
+#define anvil_tanh_u64x4(X) anvil_convert_f64x4_to_u64x4(anvil_tanh_f64x4(anvil_convert_u64x4_to_f64x4(X)))
+
+#define anvil_tanh_s32x1(X) anvil_convert_f32x1_to_s32x1(anvil_tanh_f32x1(anvil_convert_s32x1_to_f32x1(X)))
+#define anvil_tanh_s32x4(X) anvil_convert_f32x4_to_s32x4(anvil_tanh_f32x4(anvil_convert_s32x4_to_f32x4(X)))
+#define anvil_tanh_s32x8(X) anvil_convert_f32x8_to_s32x8(anvil_tanh_f32x8(anvil_convert_s32x8_to_f32x8(X)))
+
+#define anvil_tanh_u32x1(X) anvil_convert_f32x1_to_u32x1(anvil_tanh_f32x1(anvil_convert_u32x1_to_f32x1(X)))
+#define anvil_tanh_u32x4(X) anvil_convert_f32x4_to_u32x4(anvil_tanh_f32x4(anvil_convert_u32x4_to_f32x4(X)))
+#define anvil_tanh_u32x8(X) anvil_convert_f32x8_to_u32x8(anvil_tanh_f32x8(anvil_convert_u32x8_to_f32x8(X)))
+
+#define anvil_tanh_s16x1(X) anvil_convert_f32x1_to_s16x1(anvil_tanh_f32x1(anvil_convert_s16x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE int16x8_t ANVIL_SIMD_CALL anvil_tanh_s16x8(const register int16x8_t x) {
+	ANVIL_ALIGN(16) int16x1_t a[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_tanh_s16x1(a[0]);
+	a[1] = anvil_tanh_s16x1(a[1]);
+	a[2] = anvil_tanh_s16x1(a[2]);
+	a[3] = anvil_tanh_s16x1(a[3]);
+	a[4] = anvil_tanh_s16x1(a[4]);
+	a[5] = anvil_tanh_s16x1(a[5]);
+	a[6] = anvil_tanh_s16x1(a[6]);
+	a[7] = anvil_tanh_s16x1(a[7]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int16x16_t ANVIL_SIMD_CALL anvil_tanh_s16x16(const register int16x16_t x) {
+	ANVIL_ALIGN(16) int16x1_t a[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_tanh_s16x1(a[0]);
+	a[1] = anvil_tanh_s16x1(a[1]);
+	a[2] = anvil_tanh_s16x1(a[2]);
+	a[3] = anvil_tanh_s16x1(a[3]);
+	a[4] = anvil_tanh_s16x1(a[4]);
+	a[5] = anvil_tanh_s16x1(a[5]);
+	a[6] = anvil_tanh_s16x1(a[6]);
+	a[7] = anvil_tanh_s16x1(a[7]);
+	a[8] = anvil_tanh_s16x1(a[8]);
+	a[9] = anvil_tanh_s16x1(a[9]);
+	a[10] = anvil_tanh_s16x1(a[10]);
+	a[11] = anvil_tanh_s16x1(a[11]);
+	a[12] = anvil_tanh_s16x1(a[12]);
+	a[13] = anvil_tanh_s16x1(a[13]);
+	a[14] = anvil_tanh_s16x1(a[14]);
+	a[15] = anvil_tanh_s16x1(a[15]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_tanh_u16x1(X) anvil_convert_f32x1_to_u16x1(anvil_tanh_f32x1(anvil_convert_u16x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE uint16x8_t ANVIL_SIMD_CALL anvil_tanh_u16x8(const register uint16x8_t x) {
+	ANVIL_ALIGN(16) uint16x1_t a[8];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_tanh_u16x1(a[0]);
+	a[1] = anvil_tanh_u16x1(a[1]);
+	a[2] = anvil_tanh_u16x1(a[2]);
+	a[3] = anvil_tanh_u16x1(a[3]);
+	a[4] = anvil_tanh_u16x1(a[4]);
+	a[5] = anvil_tanh_u16x1(a[5]);
+	a[6] = anvil_tanh_u16x1(a[6]);
+	a[7] = anvil_tanh_u16x1(a[7]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint16x16_t ANVIL_SIMD_CALL anvil_tanh_u16x16(const register uint16x16_t x) {
+	ANVIL_ALIGN(16) uint16x1_t a[16];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_tanh_u16x1(a[0]);
+	a[1] = anvil_tanh_u16x1(a[1]);
+	a[2] = anvil_tanh_u16x1(a[2]);
+	a[3] = anvil_tanh_u16x1(a[3]);
+	a[4] = anvil_tanh_u16x1(a[4]);
+	a[5] = anvil_tanh_u16x1(a[5]);
+	a[6] = anvil_tanh_u16x1(a[6]);
+	a[7] = anvil_tanh_u16x1(a[7]);
+	a[8] = anvil_tanh_u16x1(a[8]);
+	a[9] = anvil_tanh_u16x1(a[9]);
+	a[10] = anvil_tanh_u16x1(a[10]);
+	a[11] = anvil_tanh_u16x1(a[11]);
+	a[12] = anvil_tanh_u16x1(a[12]);
+	a[13] = anvil_tanh_u16x1(a[13]);
+	a[14] = anvil_tanh_u16x1(a[14]);
+	a[15] = anvil_tanh_u16x1(a[15]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_tanh_s8x1(X) anvil_convert_f32x1_to_s8x1(anvil_tanh_f32x1(anvil_convert_s8x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE int8x16_t ANVIL_SIMD_CALL anvil_tanh_s8x16(const register int8x16_t x) {
+	ANVIL_ALIGN(16) int8x1_t a[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_tanh_s8x1(a[0]);
+	a[1] = anvil_tanh_s8x1(a[1]);
+	a[2] = anvil_tanh_s8x1(a[2]);
+	a[3] = anvil_tanh_s8x1(a[3]);
+	a[4] = anvil_tanh_s8x1(a[4]);
+	a[5] = anvil_tanh_s8x1(a[5]);
+	a[6] = anvil_tanh_s8x1(a[6]);
+	a[7] = anvil_tanh_s8x1(a[7]);
+	a[8] = anvil_tanh_s8x1(a[8]);
+	a[9] = anvil_tanh_s8x1(a[9]);
+	a[10] = anvil_tanh_s8x1(a[10]);
+	a[11] = anvil_tanh_s8x1(a[11]);
+	a[12] = anvil_tanh_s8x1(a[12]);
+	a[13] = anvil_tanh_s8x1(a[13]);
+	a[14] = anvil_tanh_s8x1(a[14]);
+	a[15] = anvil_tanh_s8x1(a[15]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE int8x32_t ANVIL_SIMD_CALL anvil_tanh_s8x32(const register int8x32_t x) {
+	ANVIL_ALIGN(16) int8x1_t a[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_tanh_s8x1(a[0]);
+	a[1] = anvil_tanh_s8x1(a[1]);
+	a[2] = anvil_tanh_s8x1(a[2]);
+	a[3] = anvil_tanh_s8x1(a[3]);
+	a[4] = anvil_tanh_s8x1(a[4]);
+	a[5] = anvil_tanh_s8x1(a[5]);
+	a[6] = anvil_tanh_s8x1(a[6]);
+	a[7] = anvil_tanh_s8x1(a[7]);
+	a[8] = anvil_tanh_s8x1(a[8]);
+	a[9] = anvil_tanh_s8x1(a[9]);
+	a[10] = anvil_tanh_s8x1(a[10]);
+	a[11] = anvil_tanh_s8x1(a[11]);
+	a[12] = anvil_tanh_s8x1(a[12]);
+	a[13] = anvil_tanh_s8x1(a[13]);
+	a[14] = anvil_tanh_s8x1(a[14]);
+	a[15] = anvil_tanh_s8x1(a[15]);
+	a[16] = anvil_tanh_s8x1(a[16]);
+	a[17] = anvil_tanh_s8x1(a[17]);
+	a[18] = anvil_tanh_s8x1(a[18]);
+	a[19] = anvil_tanh_s8x1(a[19]);
+	a[20] = anvil_tanh_s8x1(a[20]);
+	a[21] = anvil_tanh_s8x1(a[21]);
+	a[22] = anvil_tanh_s8x1(a[22]);
+	a[23] = anvil_tanh_s8x1(a[23]);
+	a[24] = anvil_tanh_s8x1(a[24]);
+	a[25] = anvil_tanh_s8x1(a[25]);
+	a[26] = anvil_tanh_s8x1(a[26]);
+	a[27] = anvil_tanh_s8x1(a[27]);
+	a[28] = anvil_tanh_s8x1(a[28]);
+	a[29] = anvil_tanh_s8x1(a[29]);
+	a[30] = anvil_tanh_s8x1(a[30]);
+	a[31] = anvil_tanh_s8x1(a[31]);
+	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
+}
+
+#define anvil_tanh_u8x1(X) anvil_convert_f32x1_to_u8x1(anvil_tanh_f32x1(anvil_convert_u8x1_to_f32x1(X)))
+static ANVIL_STRONG_INLINE uint8x16_t ANVIL_SIMD_CALL anvil_tanh_u8x16(const register uint8x16_t x) {
+	ANVIL_ALIGN(16) uint8x1_t a[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(a), x);
+	a[0] = anvil_tanh_u8x1(a[0]);
+	a[1] = anvil_tanh_u8x1(a[1]);
+	a[2] = anvil_tanh_u8x1(a[2]);
+	a[3] = anvil_tanh_u8x1(a[3]);
+	a[4] = anvil_tanh_u8x1(a[4]);
+	a[5] = anvil_tanh_u8x1(a[5]);
+	a[6] = anvil_tanh_u8x1(a[6]);
+	a[7] = anvil_tanh_u8x1(a[7]);
+	a[8] = anvil_tanh_u8x1(a[8]);
+	a[9] = anvil_tanh_u8x1(a[9]);
+	a[10] = anvil_tanh_u8x1(a[10]);
+	a[11] = anvil_tanh_u8x1(a[11]);
+	a[12] = anvil_tanh_u8x1(a[12]);
+	a[13] = anvil_tanh_u8x1(a[13]);
+	a[14] = anvil_tanh_u8x1(a[14]);
+	a[15] = anvil_tanh_u8x1(a[15]);
+	return _mm_load_si128(reinterpret_cast<__m128i*>(a));
+}
+
+static ANVIL_STRONG_INLINE uint8x32_t ANVIL_SIMD_CALL anvil_tanh_u8x32(const register uint8x32_t x) {
+	ANVIL_ALIGN(16) uint8x1_t a[32];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(a), x);
+	a[0] = anvil_tanh_u8x1(a[0]);
+	a[1] = anvil_tanh_u8x1(a[1]);
+	a[2] = anvil_tanh_u8x1(a[2]);
+	a[3] = anvil_tanh_u8x1(a[3]);
+	a[4] = anvil_tanh_u8x1(a[4]);
+	a[5] = anvil_tanh_u8x1(a[5]);
+	a[6] = anvil_tanh_u8x1(a[6]);
+	a[7] = anvil_tanh_u8x1(a[7]);
+	a[8] = anvil_tanh_u8x1(a[8]);
+	a[9] = anvil_tanh_u8x1(a[9]);
+	a[10] = anvil_tanh_u8x1(a[10]);
+	a[11] = anvil_tanh_u8x1(a[11]);
+	a[12] = anvil_tanh_u8x1(a[12]);
+	a[13] = anvil_tanh_u8x1(a[13]);
+	a[14] = anvil_tanh_u8x1(a[14]);
+	a[15] = anvil_tanh_u8x1(a[15]);
+	a[16] = anvil_tanh_u8x1(a[16]);
+	a[17] = anvil_tanh_u8x1(a[17]);
+	a[18] = anvil_tanh_u8x1(a[18]);
+	a[19] = anvil_tanh_u8x1(a[19]);
+	a[20] = anvil_tanh_u8x1(a[20]);
+	a[21] = anvil_tanh_u8x1(a[21]);
+	a[22] = anvil_tanh_u8x1(a[22]);
+	a[23] = anvil_tanh_u8x1(a[23]);
+	a[24] = anvil_tanh_u8x1(a[24]);
+	a[25] = anvil_tanh_u8x1(a[25]);
+	a[26] = anvil_tanh_u8x1(a[26]);
+	a[27] = anvil_tanh_u8x1(a[27]);
+	a[28] = anvil_tanh_u8x1(a[28]);
+	a[29] = anvil_tanh_u8x1(a[29]);
+	a[30] = anvil_tanh_u8x1(a[30]);
+	a[31] = anvil_tanh_u8x1(a[31]);
 	return _mm256_load_si256(reinterpret_cast<__m256i*>(a));
 }
 
