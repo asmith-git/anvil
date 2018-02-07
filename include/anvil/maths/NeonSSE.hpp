@@ -447,6 +447,14 @@ typedef uint8x16_t uint8x8_t;
 #define anvil_convert_u8x1_to_s16x1(X) static_cast<uint8x1_t>(X)
 #define anvil_convert_u8x1_to_u16x1(X) static_cast<uint8x1_t>(X)
 
+#define anvil_convert_f32x4_to_s32x4(X) _mm_cvtpd_epi32
+#define anvil_convert_s32x4_to_f32x4(X) _mm_cvtepi32_pd 
+#define anvil_convert_f32x8_to_s32x8(X) _mm256_cvtpd_epi32
+#define anvil_convert_s32x8_to_f32x8(X) _mm256_cvtepi32_pd 
+#define anvil_convert_f32x4_to_f64x4(X) _mm256_cvtps_pd
+#define anvil_convert_f64x4_to_f32x4(X) _mm256_cvtpd_ps 
+//! \todo Remaining conversions
+
 // Not
 
 #define anvil_not_f64x1(X) anvil_reinterpret_s64x1_as_f64x1(~(anvil_reinterpret_f64x1_as_s64x1(X)))
