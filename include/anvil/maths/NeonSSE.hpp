@@ -693,12 +693,10 @@ static ANVIL_STRONG_INLINE int8x16_t ANVIL_SIMD_CALL anvil_mul_s8x16(const regis
 }
 
 static ANVIL_STRONG_INLINE int8x32_t ANVIL_SIMD_CALL anvil_mul_s8x16(const register int8x32_t x, const register int8x32_t y) {
-	__m128i x_hi;
-	__m128i x_lo;
-	__m128i y_hi;
-	__m128i y_lo;
-	_mm256_storeu2_m128i(&x_hi, &x_lo, x);
-	_mm256_storeu2_m128i(&y_hi, &y_lo, y);
+	register __m128i x_hi = _mm256_extractf128_si256(x, 0);
+	register __m128i x_lo = _mm256_extractf128_si256(x, 1);
+	const register __m128i y_hi = _mm256_extractf128_si256(y, 0);
+	const register __m128i y_lo = _mm256_extractf128_si256(y, 1);
 	x_hi = anvil_mul_s8x16(x_hi, y_hi);
 	x_lo = anvil_mul_s8x16(x_lo, y_lo);
 	return _mm256_set_m128i(x_hi, x_lo);
