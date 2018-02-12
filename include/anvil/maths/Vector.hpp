@@ -138,24 +138,14 @@ struct VectorInfo;
 			return _mm_div_ps(xmm0, xmm1);
 		}
 
-#define ANVIL_HORISONTAL_HELPER(NAME)\
-		register __m128 xmm2;\
-		register __m128 xmm3;\
-		xmm2.m128_f32[0] = xmm0.m128_f32[0];\
-		xmm3.m128_f32[0] = xmm0.m128_f32[1];\
-		xmm2.m128_f32[1] = xmm0.m128_f32[3];\
-		xmm3.m128_f32[1] = xmm0.m128_f32[4];\
-		xmm2.m128_f32[2] = xmm1.m128_f32[0];\
-		xmm3.m128_f32[2] = xmm1.m128_f32[1];\
-		xmm2.m128_f32[3] = xmm1.m128_f32[3];\
-		xmm3.m128_f32[3] = xmm1.m128_f32[4];\
-		return NAME(xmm2, xmm3);
+#define ANVIL_HORISONTAL_HELPER(NAME, XMM0, XMM1)\
+		return NAME(_mm_shuffle_ps(XMM0, XMM1, _MM_SHUFFLE(2, 0, 2, 0)), _mm_shuffle_ps(XMM0, XMM1, _MM_SHUFFLE(3, 1, 3, 1)))
 
 		ANVIL_STRONG_INLINE static vector_t ANVIL_VECTOR_CALL add_horisontal(const register vector_t xmm0, const vector_t xmm1) throw() {
 			if (VER >= ANVIL_SSE3) {
 				return _mm_hadd_ps(xmm0, xmm1);
 			} else {
-				ANVIL_HORISONTAL_HELPER(_mm_add_ps);
+				ANVIL_HORISONTAL_HELPER(_mm_add_ps, xmm0, xmm1);
 			}
 		}
 
@@ -163,16 +153,16 @@ struct VectorInfo;
 			if (VER >= ANVIL_SSE3) {
 				return _mm_hsub_ps(xmm0, xmm1);
 			} else {
-				ANVIL_HORISONTAL_HELPER(_mm_sub_ps);
+				ANVIL_HORISONTAL_HELPER(_mm_sub_ps, xmm0, xmm1);
 			}
 		}
 
 		ANVIL_STRONG_INLINE static vector_t ANVIL_VECTOR_CALL multiply_horisontal(const register vector_t xmm0, const vector_t xmm1) throw() {
-			ANVIL_HORISONTAL_HELPER(_mm_mul_ps);
+			ANVIL_HORISONTAL_HELPER(_mm_mul_ps, xmm0, xmm1);
 		}
 
 		ANVIL_STRONG_INLINE static vector_t ANVIL_VECTOR_CALL divide_horisontal(const register vector_t xmm0, const vector_t xmm1) throw() {
-			ANVIL_HORISONTAL_HELPER(_mm_div_ps);
+			ANVIL_HORISONTAL_HELPER(_mm_div_ps, xmm0, xmm1);
 		}
 
 		ANVIL_STRONG_INLINE static vector_t ANVIL_VECTOR_CALL lshift(const register vector_t xmm0, const int32_t* count) throw() {
@@ -204,15 +194,15 @@ struct VectorInfo;
 		}
 
 		ANVIL_STRONG_INLINE static vector_t ANVIL_VECTOR_CALL and_horisontal(const register vector_t xmm0, const vector_t xmm1) throw() {
-			ANVIL_HORISONTAL_HELPER(_mm_and_ps);
+			ANVIL_HORISONTAL_HELPER(_mm_and_ps, xmm0, xmm1);
 		}
 
 		ANVIL_STRONG_INLINE static vector_t ANVIL_VECTOR_CALL or_horisontal(const register vector_t xmm0, const vector_t xmm1) throw() {
-			ANVIL_HORISONTAL_HELPER(_mm_or_ps);
+			ANVIL_HORISONTAL_HELPER(_mm_or_ps, xmm0, xmm1);
 		}
 
 		ANVIL_STRONG_INLINE static vector_t ANVIL_VECTOR_CALL xor_horisontal(const register vector_t xmm0, const vector_t xmm1) throw() {
-			ANVIL_HORISONTAL_HELPER(_mm_xor_ps);
+			ANVIL_HORISONTAL_HELPER(_mm_xor_ps, xmm0, xmm1);
 		}
 
 		ANVIL_STRONG_INLINE static vector_t ANVIL_VECTOR_CALL compare_eq(const register vector_t xmm0, const vector_t xmm1) throw() {
@@ -240,27 +230,27 @@ struct VectorInfo;
 		}
 
 		ANVIL_STRONG_INLINE static vector_t ANVIL_VECTOR_CALL compare_eq_horisontal(const register vector_t xmm0, const vector_t xmm1) throw() {
-			ANVIL_HORISONTAL_HELPER(_mm_cmpeq_ps);
+			ANVIL_HORISONTAL_HELPER(_mm_cmpeq_ps, xmm0, xmm1);
 		}
 
 		ANVIL_STRONG_INLINE static vector_t ANVIL_VECTOR_CALL compare_ne_horisontal(const register vector_t xmm0, const vector_t xmm1) throw() {
-			ANVIL_HORISONTAL_HELPER(_mm_cmpneq_ps);
+			ANVIL_HORISONTAL_HELPER(_mm_cmpneq_ps, xmm0, xmm1);
 		}
 
 		ANVIL_STRONG_INLINE static vector_t ANVIL_VECTOR_CALL compare_gt_horisontal(const register vector_t xmm0, const vector_t xmm1) throw() {
-			ANVIL_HORISONTAL_HELPER(_mm_cmpgt_ps);
+			ANVIL_HORISONTAL_HELPER(_mm_cmpgt_ps, xmm0, xmm1);
 		}
 
 		ANVIL_STRONG_INLINE static vector_t ANVIL_VECTOR_CALL compare_ge_horisontal(const register vector_t xmm0, const vector_t xmm1) throw() {
-			ANVIL_HORISONTAL_HELPER(_mm_cmpge_ps);
+			ANVIL_HORISONTAL_HELPER(_mm_cmpge_ps, xmm0, xmm1);
 		}
 
 		ANVIL_STRONG_INLINE static vector_t ANVIL_VECTOR_CALL compare_lt_horisontal(const register vector_t xmm0, const vector_t xmm1) throw() {
-			ANVIL_HORISONTAL_HELPER(_mm_cmplt_ps);
+			ANVIL_HORISONTAL_HELPER(_mm_cmplt_ps, xmm0, xmm1);
 		}
 
 		ANVIL_STRONG_INLINE static vector_t ANVIL_VECTOR_CALL compare_le_horisontal(const register vector_t xmm0, const vector_t xmm1) throw() {
-			ANVIL_HORISONTAL_HELPER(_mm_cmple_ps);
+			ANVIL_HORISONTAL_HELPER(_mm_cmple_ps, xmm0, xmm1);
 		}
 
 		ANVIL_STRONG_INLINE static scalar_t ANVIL_VECTOR_CALL sum(const register vector_t xmm0) throw() {
@@ -393,11 +383,11 @@ struct VectorInfo;
 		}
 
 		ANVIL_STRONG_INLINE static vector_t ANVIL_VECTOR_CALL min_horisontal(const register vector_t xmm0, const vector_t xmm1) throw() {
-			ANVIL_HORISONTAL_HELPER(_mm_min_ps);
+			ANVIL_HORISONTAL_HELPER(_mm_min_ps, xmm0, xmm1);
 		}
 
 		ANVIL_STRONG_INLINE static vector_t ANVIL_VECTOR_CALL max_horisontal(const register vector_t xmm0, const vector_t xmm1) throw() {
-			ANVIL_HORISONTAL_HELPER(_mm_max_ps);
+			ANVIL_HORISONTAL_HELPER(_mm_max_ps, xmm0, xmm1);
 		}
 
 		ANVIL_STRONG_INLINE static scalar_t ANVIL_VECTOR_CALL min(const register vector_t xmm0) throw() {
