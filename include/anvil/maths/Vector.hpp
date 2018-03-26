@@ -18,6 +18,10 @@
 #include <cstdint>
 #include "anvil/Core/Keywords.hpp"
 
+#ifdef ANVIL_SSE
+#include <xmmintrin.h>
+#endif
+
 namespace anvil { namespace maths {
 	template<class T, size_t S>
 	struct Vector;
@@ -214,77 +218,140 @@ namespace anvil { namespace maths {
 	typedef Vector<double, 16> float64x16_t;
 
 	union VectorUnion {
-		uint8x1_t  u8x1;
-		uint8x2_t  u8x2;
-		uint8x3_t  u8x3;
-		uint8x4_t  u8x4;
-		uint8x8_t  u8x8;
+		uint8x1_t  u8x1[16];
+		uint8x2_t  u8x2[8];
+		uint8x3_t  u8x3[5];
+		uint8x4_t  u8x4[4];
+		uint8x8_t  u8x8[2];
 		uint8x16_t u8x16;
-		int8x1_t  s8x1;
-		int8x2_t  s8x2;
-		int8x3_t  s8x3;
-		int8x4_t  s8x4;
-		int8x8_t  s8x8;
+		int8x1_t  s8x1[16];
+		int8x2_t  s8x2[8];
+		int8x3_t  s8x3[5];
+		int8x4_t  s8x4[4];
+		int8x8_t  s8x8[2];
 		int8x16_t s8x16;
-		uint16x1_t  u16x1;
-		uint16x2_t  u16x2;
-		uint16x3_t  u16x3;
-		uint16x4_t  u16x4;
-		uint16x8_t  u16x8;
+		uint16x1_t  u16x1[16];
+		uint16x2_t  u16x2[8];
+		uint16x3_t  u16x3[5];
+		uint16x4_t  u16x4[4];
+		uint16x8_t  u16x8[2];
 		uint16x16_t u16x16;
-		int16x1_t  s16x1;
-		int16x2_t  s16x2;
-		int16x3_t  s16x3;
-		int16x4_t  s16x4;
-		int16x8_t  s16x8;
+		int16x1_t  s16x1[16];
+		int16x2_t  s16x2[8];
+		int16x3_t  s16x3[5];
+		int16x4_t  s16x4[4];
+		int16x8_t  s16x8[2];
 		int16x16_t s16x16;
-		uint32x1_t  u32x1;
-		uint32x2_t  u32x2;
-		uint32x3_t  u32x3;
-		uint32x4_t  u32x4;
-		uint32x8_t  u32x8;
+		uint32x1_t  u32x1[16];
+		uint32x2_t  u32x2[8];
+		uint32x3_t  u32x3[5];
+		uint32x4_t  u32x4[4];
+		uint32x8_t  u32x8[2];
 		uint32x16_t u32x16;
-		int32x1_t  s32x1;
-		int32x2_t  s32x2;
-		int32x3_t  s32x3;
-		int32x4_t  s32x4;
-		int32x8_t  s32x8;
+		int32x1_t  s32x1[16];
+		int32x2_t  s32x2[8];
+		int32x3_t  s32x3[5];
+		int32x4_t  s32x4[4];
+		int32x8_t  s32x8[2];
 		int32x16_t s32x16;
-		uint64x1_t  u64x1;
-		uint64x2_t  u64x2;
-		uint64x3_t  u64x3;
-		uint64x4_t  u64x4;
-		uint64x8_t  u64x8;
+		uint64x1_t  u64x1[16];
+		uint64x2_t  u64x2[8];
+		uint64x3_t  u64x3[5];
+		uint64x4_t  u64x4[4];
+		uint64x8_t  u64x8[2];
 		uint64x16_t u64x16;
-		int64x1_t  s64x1;
-		int64x2_t  s64x2;
-		int64x3_t  s64x3;
-		int64x4_t  s64x4;
-		int64x8_t  s64x8;
+		int64x1_t  s64x1[16];
+		int64x2_t  s64x2[8];
+		int64x3_t  s64x3[5];
+		int64x4_t  s64x4[4];
+		int64x8_t  s64x8[2];
 		int64x16_t s64x16;
-		float32x1_t  f32x1;
-		float32x2_t  f32x2;
-		float32x3_t  f32x3;
-		float32x4_t  f32x4;
-		float32x8_t  f32x8;
+		float32x1_t  f32x1[16];
+		float32x2_t  f32x2[8];
+		float32x3_t  f32x3[5];
+		float32x4_t  f32x4[4];
+		float32x8_t  f32x8[2];
 		float32x16_t f32x16;
-		float64x1_t  f64x1;
-		float64x2_t  f64x2;
-		float64x3_t  f64x3;
-		float64x4_t  f64x4;
-		float64x8_t  f64x8;
+		float64x1_t  f64x1[16];
+		float64x2_t  f64x2[8];
+		float64x3_t  f64x3[5];
+		float64x4_t  f64x4[4];
+		float64x8_t  f64x8[2];
 		float64x16_t f64x16;
 	};
 
 	namespace detail {
 		template<class T, size_t S>
-		struct VectorWorkType_ {
+		struct VectorWorkType {
+			enum { 
+				optimised = 0,
+				alignment = 0
+			};
 			typedef Vector<T, S> type;
+
+			static ANVIL_STRONG_INLINE type load(const Vector<T, S> a_value) throw() {
+				return a_value;
+			}
+
+			static ANVIL_STRONG_INLINE Vector<T, S> store(const type a_value) throw() {
+				return a_value;
+			}
 		};
 
+		//template<class T>
+		//struct VectorWorkType<T, 8> {
+		//	enum {
+		//		optimised = VectorWorkType<T, 4>::optimised
+		//		alignment = VectorWorkType<T, 4>::alignment
+		//	};
+		//	
+		//	struct type {
+		//		typename VectorWorkType<T, 4>::type lo;
+		//		typename VectorWorkType<T, 4>::type hi;
+		//	};
 
-		template<class T, size_t S>
-		using VectorWorkType = typename VectorWorkType_<T, S>::type;
+		//	static ANVIL_STRONG_INLINE type load(const Vector<T, 8> a_value) throw() {
+		//		union {
+		//			const Vector<T, 8> v8;
+		//			const Vector<T, 4> v4[2];
+		//		} u;
+		//		v8 = a_value;
+		//		tmp.lo = VectorWorkType<T, 4>::load(u.v4[0]);
+		//		tmp.hi = VectorWorkType<T, 4>::load(u.v4[1]);
+		//		return tmp;
+		//	}
+
+		//	static ANVIL_STRONG_INLINE Vector<T, 8> store(const type a_value) throw() {
+		//		union {
+		//			const Vector<T, 8> v8;
+		//			const Vector<T, 4> v4[2];
+		//		} u;
+		//		u.v4[0] = VectorWorkType<T, 4>::store(a_value.lo);
+		//		u.v4[1] = VectorWorkType<T, 4>::store(a_value.hi);
+		//		return u.v8;
+		//	}
+		//};
+
+#ifdef ANVIL_SSE
+		template<>
+		struct VectorWorkType<float,4> {
+			enum {
+				optimised = 1,
+				alignment = 16
+			};
+			typedef __m128 type;
+
+			static ANVIL_STRONG_INLINE type load(const Vector<float, 4> a_value) throw() {
+				return _mm_load_ps(a_value.elements);
+			}
+
+			static ANVIL_STRONG_INLINE Vector<float, 4> store(const type a_value) throw() {
+				Vector<float, 4> tmp;
+				_mm_store_ps(tmp.elements, a_value);
+				return tmp;
+			}
+		};
+#endif
 	}
 }}
 
