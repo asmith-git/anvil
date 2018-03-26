@@ -16,13 +16,14 @@
 #define ANVIL_MATHS_VECTOR_HPP
 
 #include <cstdint>
+#include <type_traits>
 #include "anvil/Core/Keywords.hpp"
 
 #ifdef ANVIL_SSE
 #include <xmmintrin.h>
 #endif
 
-namespace anvil { namespace maths {
+namespace anvil {
 	template<class T, size_t S>
 	struct Vector;
 
@@ -280,8 +281,10 @@ namespace anvil { namespace maths {
 		float64x16_t f64x16;
 	};
 
+	static_assert(sizeof(VectorUnion) == (8 * 16), "VectorUnion different size than expected");
+
 	namespace detail {
-		template<class T, size_t S>
+		template<class T, size_t S, class ENABLE = void>
 		struct VectorWorkType {
 			enum { 
 				optimised = 0,
@@ -298,39 +301,39 @@ namespace anvil { namespace maths {
 			}
 		};
 
-		//template<class T>
-		//struct VectorWorkType<T, 8> {
-		//	enum {
-		//		optimised = VectorWorkType<T, 4>::optimised
-		//		alignment = VectorWorkType<T, 4>::alignment
-		//	};
-		//	
-		//	struct type {
-		//		typename VectorWorkType<T, 4>::type lo;
-		//		typename VectorWorkType<T, 4>::type hi;
-		//	};
+		template<class T>
+		struct VectorWorkType<T, 8, typename std::enable_if<VectorWorkType<T, 4>::optimised>::type> {
+			enum {
+				optimised = VectorWorkType<T, 4>::optimised
+				alignment = VectorWorkType<T, 4>::alignment
+			};
+			
+			struct type {
+				typename VectorWorkType<T, 4>::type lo;
+				typename VectorWorkType<T, 4>::type hi;
+			};
 
-		//	static ANVIL_STRONG_INLINE type load(const Vector<T, 8> a_value) throw() {
-		//		union {
-		//			const Vector<T, 8> v8;
-		//			const Vector<T, 4> v4[2];
-		//		} u;
-		//		v8 = a_value;
-		//		tmp.lo = VectorWorkType<T, 4>::load(u.v4[0]);
-		//		tmp.hi = VectorWorkType<T, 4>::load(u.v4[1]);
-		//		return tmp;
-		//	}
+			static ANVIL_STRONG_INLINE type load(const Vector<T, 8> a_value) throw() {
+				union {
+					const Vector<T, 8> v8;
+					const Vector<T, 4> v4[2];
+				} u;
+				v8 = a_value;
+				tmp.lo = VectorWorkType<T, 4>::load(u.v4[0]);
+				tmp.hi = VectorWorkType<T, 4>::load(u.v4[1]);
+				return tmp;
+			}
 
-		//	static ANVIL_STRONG_INLINE Vector<T, 8> store(const type a_value) throw() {
-		//		union {
-		//			const Vector<T, 8> v8;
-		//			const Vector<T, 4> v4[2];
-		//		} u;
-		//		u.v4[0] = VectorWorkType<T, 4>::store(a_value.lo);
-		//		u.v4[1] = VectorWorkType<T, 4>::store(a_value.hi);
-		//		return u.v8;
-		//	}
-		//};
+			static ANVIL_STRONG_INLINE Vector<T, 8> store(const type a_value) throw() {
+				union {
+					const Vector<T, 8> v8;
+					const Vector<T, 4> v4[2];
+				} u;
+				u.v4[0] = VectorWorkType<T, 4>::store(a_value.lo);
+				u.v4[1] = VectorWorkType<T, 4>::store(a_value.hi);
+				return u.v8;
+			}
+		};
 
 #ifdef ANVIL_SSE
 		template<>
@@ -353,6 +356,6 @@ namespace anvil { namespace maths {
 		};
 #endif
 	}
-}}
+}
 
 #endif
