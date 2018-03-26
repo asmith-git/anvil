@@ -23,6 +23,9 @@ namespace anvil { namespace maths {
 
 	template<class T>
 	struct Vector<class T, 2> {
+		enum { size = 2 };
+		typedef T type;
+
 		union {
 			struct {
 				T s0, s1
@@ -30,7 +33,7 @@ namespace anvil { namespace maths {
 			struct {
 				T x, y
 			};
-			T elements[2];
+			T elements[size];
 		};
 
 		ANVIL_STRONG_INLINE T& operator[](const size_t a_index) throw() {
@@ -44,21 +47,24 @@ namespace anvil { namespace maths {
 
 	template<class T>
 	struct Vector<class T, 3> {
+		enum { size = 3 };
+		typedef T type;
+
 		union {
 			struct {
-				T s0, s1, s2
+				type s0, s1, s2
 			};
 			struct {
-				T x, y, z
+				type x, y, z
 			};
-			T elements[3];
+			type elements[size];
 		};
 
-		ANVIL_STRONG_INLINE T& operator[](const size_t a_index) throw() {
+		ANVIL_STRONG_INLINE type& operator[](const size_t a_index) throw() {
 			return elements[a_index];
 		}
 
-		ANVIL_STRONG_INLINE T operator[](const size_t a_index) const throw() {
+		ANVIL_STRONG_INLINE type operator[](const size_t a_index) const throw() {
 			return elements[a_index];
 		}
 	};
@@ -66,63 +72,72 @@ namespace anvil { namespace maths {
 
 	template<class T>
 	struct Vector<class T,4> {
+		enum { size = 4 };
+		typedef T type;
+
 		union {
 			struct {
-				T s0, s1, s2, s3
+				type s0, s1, s2, s3
 			};
 			struct {
-				T x, y, z, w
+				type x, y, z, w
 			};
-			T elements[4];
+			type elements[size];
 		};
 
-		ANVIL_STRONG_INLINE T& operator[](const size_t a_index) throw() {
+		ANVIL_STRONG_INLINE type& operator[](const size_t a_index) throw() {
 			return elements[a_index];
 		}
 
-		ANVIL_STRONG_INLINE T operator[](const size_t a_index) const throw() {
+		ANVIL_STRONG_INLINE type operator[](const size_t a_index) const throw() {
 			return elements[a_index];
 		}
 	};
 
 	template<class T>
 	struct Vector<class T, 8> {
+		enum { size = 8 };
+		typedef T type;
+
 		union {
 			struct {
-				T s0, s1, s2, s3, s4, s5, s6, s7
+				type s0, s1, s2, s3, s4, s5, s6, s7
 			};
 			struct {
-				T x, y, z, w
+				type x, y, z, w
 			};
-			T elements[8];
+			type elements[size];
 		};
 
-		ANVIL_STRONG_INLINE T& operator[](const size_t a_index) throw() {
+		ANVIL_STRONG_INLINE type& operator[](const size_t a_index) throw() {
 			return elements[a_index];
 		}
 
-		ANVIL_STRONG_INLINE T operator[](const size_t a_index) const throw() {
+		ANVIL_STRONG_INLINE type operator[](const size_t a_index) const throw() {
 			return elements[a_index];
 		}
 	};
 
 	template<class T>
 	struct Vector<class T, 16> {
+		enum { size = 16 };
+		typedef T type;
+
 		union {
 			struct {
-				T s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15
+				type s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15
 			};
 			struct {
-				T x, y, z, w
+				type x, y, z, w
 			};
-			T elements[16];
+			type elements[size];
 		};
 
-		ANVIL_STRONG_INLINE T& operator[](const size_t a_index) throw() {
+		ANVIL_STRONG_INLINE type& operator[](const size_t a_index) throw() {
 			return elements[a_index];
 		}
 
-		ANVIL_STRONG_INLINE T operator[](const size_t a_index) const throw() {
+		ANVIL_STRONG_INLINE type operator[](const size_t a_index) const throw() {
 			return elements[a_index];
 		}
 	};
