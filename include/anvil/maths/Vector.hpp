@@ -284,78 +284,112 @@ namespace anvil {
 	static_assert(sizeof(VectorUnion) == (8 * 16), "VectorUnion different size than expected");
 
 	namespace detail {
-		template<class T, size_t S, class ENABLE = void>
-		struct VectorWorkType {
-			enum { 
-				optimised = 0,
-				alignment = 0
-			};
-			typedef Vector<T, S> type;
 
-			static ANVIL_STRONG_INLINE type load(const Vector<T, S> a_value) throw() {
-				return a_value;
-			}
+		enum {
+			VEC_ADD
+		};
 
-			static ANVIL_STRONG_INLINE Vector<T, S> store(const type a_value) throw() {
-				return a_value;
+		template<class T, size_t S, int F, class ENABLE = void>
+		struct VectorOp2;
+
+		template<class T, int F>
+		struct VectorOp2<T, 8, F, typename std::enable_if<VectorOp2<T, 4, F>::optimised>::type> {
+			enum { optimised = 1 };
+			static ANVIL_STRONG_INLINE Vector<T, 8> implementation(const Vector<T, 8> a, const Vector<T, 8> b) throw() {
+				union {
+					Vector<T, 4> v4[2];
+					Vector<T, 8> v8;
+				} a2, b2;
+
+				a2.v8 = a;
+				b2.v8 = b;
+				a2.v4[0] = VectorOp2<T, 4, F>::implementation(a2.v4[0], b2.v4[0]);
+				a2.v4[1] = VectorOp2<T, 4, F>::implementation(a2.v4[1], b2.v4[1]);
+				return a2.v8;
 			}
 		};
 
-		template<class T>
-		struct VectorWorkType<T, 8, typename std::enable_if<VectorWorkType<T, 4>::optimised>::type> {
-			enum {
-				optimised = VectorWorkType<T, 4>::optimised
-				alignment = VectorWorkType<T, 4>::alignment
-			};
-			
-			struct type {
-				typename VectorWorkType<T, 4>::type lo;
-				typename VectorWorkType<T, 4>::type hi;
-			};
-
-			static ANVIL_STRONG_INLINE type load(const Vector<T, 8> a_value) throw() {
+		template<class T, int F>
+		struct VectorOp2<T, 16, F, typename std::enable_if<VectorOp2<T, 8, F>::optimised>::type> {
+			enum { optimised = 1 };
+			static ANVIL_STRONG_INLINE Vector<T, 16> implementation(const Vector<T, 16> a, const Vector<T, 16> b) throw() {
 				union {
-					const Vector<T, 8> v8;
-					const Vector<T, 4> v4[2];
-				} u;
-				v8 = a_value;
-				tmp.lo = VectorWorkType<T, 4>::load(u.v4[0]);
-				tmp.hi = VectorWorkType<T, 4>::load(u.v4[1]);
+					Vector<T, 8> v8[2];
+					Vector<T, 16> v16;
+				} a2, b2;
+
+				a2.v16 = a;
+				b2.v16 = b;
+				a2.v8[0] = VectorOp2<T, 8, F>::implementation(a2.v8[0], b2.v8[0]);
+				a2.v8[1] = VectorOp2<T, 8, F>::implementation(a2.v8[1], b2.v8[1]);
+				return a2.v16;
+			}
+		};
+
+		template<class T, size_t S>
+		struct VectorOp2<T, S, VEC_ADD> {
+			enum { optimised = 0 };
+			static ANVIL_STRONG_INLINE Vector<T, S> implementation(const Vector<T, S> a, const Vector<T, S> b) throw() {
+				Vector<T, S> tmp;
+				for (size_t i = 0; i < S; ++i) {
+					tmp.elements[i] = a.elements[i] + b.elements[i];
+				}
 				return tmp;
 			}
+		};
 
-			static ANVIL_STRONG_INLINE Vector<T, 8> store(const type a_value) throw() {
+		template<class T, int F>
+		struct VectorOp2<T, 3, F, typename std::enable_if<VectorOp2<T, 4, F>::optimised>::type> {
+			enum { optimised = 1 };
+			static ANVIL_STRONG_INLINE Vector<T, 3> implementation(const Vector<T, 3> a, const Vector<T, 3> b) throw() {
 				union {
-					const Vector<T, 8> v8;
-					const Vector<T, 4> v4[2];
-				} u;
-				u.v4[0] = VectorWorkType<T, 4>::store(a_value.lo);
-				u.v4[1] = VectorWorkType<T, 4>::store(a_value.hi);
-				return u.v8;
+					Vector<T, 4> v4;
+					Vector<T, 3> v3;
+				} a2, b2;
+
+				a2.v3 = a;
+				b2.v3 = b;
+				a2.v4 = VectorOp2<T, 4, F>::implementation(a2.v4, b2.v4);
+				return a2.v3;
+			}
+		};
+
+		template<class T, int F>
+		struct VectorOp2<T, 2, F, typename std::enable_if<VectorOp2<T, 4, F>::optimised>::type> {
+			enum { optimised = 1 };
+			static ANVIL_STRONG_INLINE Vector<T, 2> implementation(const Vector<T, 2> a, const Vector<T, 2> b) throw() {
+				union {
+					Vector<T, 4> v4;
+					Vector<T, 2> v2;
+				} a2, b2;
+
+				a2.v2 = a;
+				b2.v2 = b;
+				a2.v4 = VectorOp2<T, 4, F>::implementation(a2.v4, b2.v4);
+				return a2.v2;
 			}
 		};
 
 #ifdef ANVIL_SSE
 		template<>
-		struct VectorWorkType<float,4> {
-			enum {
-				optimised = 1,
-				alignment = 16
-			};
-			typedef __m128 type;
-
-			static ANVIL_STRONG_INLINE type load(const Vector<float, 4> a_value) throw() {
-				return _mm_load_ps(a_value.elements);
-			}
-
-			static ANVIL_STRONG_INLINE Vector<float, 4> store(const type a_value) throw() {
+		struct VectorOp2<float, 4, VEC_ADD> {
+			enum { optimised = 1 };
+			static ANVIL_STRONG_INLINE Vector<float, 4> implementation(const Vector<float, 4> a, const Vector<float, 4> b) throw() {
 				Vector<float, 4> tmp;
-				_mm_store_ps(tmp.elements, a_value);
+				register __m128 xmm0 = _mm_load_ps(a.elements);
+				const register __m128 xmm1 = _mm_load_ps(b.elements);
+				xmm0 = _mm_add_ps(xmm0, xmm1);
+				_mm_store_ps(tmp.elements, xmm0);
 				return tmp;
 			}
 		};
 #endif
 	}
+}
+
+template<class T, size_t S>
+anvil::Vector<T, S> operator+(const anvil::Vector<T, S> a, const anvil::Vector<T, S> b) {
+	return anvil::detail::VectorOp2<T, S, anvil::detail::VEC_ADD>::implementation(a, b);
 }
 
 #endif
