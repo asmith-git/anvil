@@ -17,7 +17,14 @@
 
 #include <cstdint>
 #include <type_traits>
-#include "anvil/Core/Keywords.hpp"
+#include "anvil/core/Keywords.hpp"
+#include "anvil/core/Cpu.hpp"
+
+#if ANVIL_ARCHITECTURE == ANVIL_X86 || ANVIL_ARCHITECTURE == ANVIL_X64
+#define ANVIL_VECTOR_CALL __vectorcall
+#else
+#define ANVIL_VECTOR_CALL ANVIL_CALL 
+#endif
 
 #ifdef ANVIL_SSE
 #include <xmmintrin.h>
@@ -42,11 +49,11 @@ namespace anvil {
 			T elements[size];
 		};
 
-		ANVIL_STRONG_INLINE T& operator[](const size_t a_index) throw() {
+		ANVIL_STRONG_INLINE T& ANVIL_VECTOR_CALL  operator[](const size_t a_index) throw() {
 			return elements[a_index];
 		}
 
-		ANVIL_STRONG_INLINE T operator[](const size_t a_index) const throw() {
+		ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL  operator[](const size_t a_index) const throw() {
 			return elements[a_index];
 		}
 	};
@@ -66,11 +73,11 @@ namespace anvil {
 			type elements[size];
 		};
 
-		ANVIL_STRONG_INLINE type& operator[](const size_t a_index) throw() {
+		ANVIL_STRONG_INLINE type& ANVIL_VECTOR_CALL  operator[](const size_t a_index) throw() {
 			return elements[a_index];
 		}
 
-		ANVIL_STRONG_INLINE type operator[](const size_t a_index) const throw() {
+		ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL  operator[](const size_t a_index) const throw() {
 			return elements[a_index];
 		}
 	};
@@ -91,11 +98,11 @@ namespace anvil {
 			type elements[size];
 		};
 
-		ANVIL_STRONG_INLINE type& operator[](const size_t a_index) throw() {
+		ANVIL_STRONG_INLINE type& ANVIL_VECTOR_CALL  operator[](const size_t a_index) throw() {
 			return elements[a_index];
 		}
 
-		ANVIL_STRONG_INLINE type operator[](const size_t a_index) const throw() {
+		ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL  operator[](const size_t a_index) const throw() {
 			return elements[a_index];
 		}
 	};
@@ -115,11 +122,11 @@ namespace anvil {
 			type elements[size];
 		};
 
-		ANVIL_STRONG_INLINE type& operator[](const size_t a_index) throw() {
+		ANVIL_STRONG_INLINE type& ANVIL_VECTOR_CALL  operator[](const size_t a_index) throw() {
 			return elements[a_index];
 		}
 
-		ANVIL_STRONG_INLINE type operator[](const size_t a_index) const throw() {
+		ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL  operator[](const size_t a_index) const throw() {
 			return elements[a_index];
 		}
 	};
@@ -139,11 +146,11 @@ namespace anvil {
 			type elements[size];
 		};
 
-		ANVIL_STRONG_INLINE type& operator[](const size_t a_index) throw() {
+		ANVIL_STRONG_INLINE type& ANVIL_VECTOR_CALL  operator[](const size_t a_index) throw() {
 			return elements[a_index];
 		}
 
-		ANVIL_STRONG_INLINE type operator[](const size_t a_index) const throw() {
+		ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL  operator[](const size_t a_index) const throw() {
 			return elements[a_index];
 		}
 	};
@@ -286,101 +293,490 @@ namespace anvil {
 	namespace detail {
 
 		enum {
-			VEC_ADD
-		};
-
-		template<class T, size_t S, int F, class ENABLE = void>
-		struct VectorOp2;
-
-		template<class T, int F>
-		struct VectorOp2<T, 8, F, typename std::enable_if<VectorOp2<T, 4, F>::optimised>::type> {
-			enum { optimised = 1 };
-			static ANVIL_STRONG_INLINE Vector<T, 8> implementation(const Vector<T, 8> a, const Vector<T, 8> b) throw() {
-				union {
-					Vector<T, 4> v4[2];
-					Vector<T, 8> v8;
-				} a2, b2;
-
-				a2.v8 = a;
-				b2.v8 = b;
-				a2.v4[0] = VectorOp2<T, 4, F>::implementation(a2.v4[0], b2.v4[0]);
-				a2.v4[1] = VectorOp2<T, 4, F>::implementation(a2.v4[1], b2.v4[1]);
-				return a2.v8;
-			}
+			VEC_ADD,
+			VEC_SUB,
+			VEC_MUL,
+			VEC_DIV
 		};
 
 		template<class T, int F>
-		struct VectorOp2<T, 16, F, typename std::enable_if<VectorOp2<T, 8, F>::optimised>::type> {
-			enum { optimised = 1 };
-			static ANVIL_STRONG_INLINE Vector<T, 16> implementation(const Vector<T, 16> a, const Vector<T, 16> b) throw() {
-				union {
-					Vector<T, 8> v8[2];
-					Vector<T, 16> v16;
-				} a2, b2;
+		struct VectorOp2_;
 
-				a2.v16 = a;
-				b2.v16 = b;
-				a2.v8[0] = VectorOp2<T, 8, F>::implementation(a2.v8[0], b2.v8[0]);
-				a2.v8[1] = VectorOp2<T, 8, F>::implementation(a2.v8[1], b2.v8[1]);
-				return a2.v16;
-			}
-		};
+		template<class T, int F>
+		struct VectorOp2 {
+			enum {
+				optimised = VectorOp2_<T,F>::optimised,
+				alignment = VectorOp2_<T,F>::alignment
+			};
 
-		template<class T, size_t S>
-		struct VectorOp2<T, S, VEC_ADD> {
-			enum { optimised = 0 };
-			static ANVIL_STRONG_INLINE Vector<T, S> implementation(const Vector<T, S> a, const Vector<T, S> b) throw() {
-				Vector<T, S> tmp;
-				for (size_t i = 0; i < S; ++i) {
-					tmp.elements[i] = a.elements[i] + b.elements[i];
+			static void ANVIL_VECTOR_CALL implementation(const float* a, const float* b, float* c, size_t a_count) throw() {
+				const intptr_t a_align(reinterpret_cast<intptr_t>(a) & (alignment-1));
+				const intptr_t b_align(reinterpret_cast<intptr_t>(b) & (alignment-1));
+				const intptr_t c_align(reinterpret_cast<intptr_t>(c) & (alignment-1));
+
+				if (a_align == b_align && a_align == c_align) {
+					for (size_t i = 0; i < a_align; ++i) {
+						c[i] = a[i] + b[i];
+					}
+
+					a_count -= a_align;
+
+					const size_t loops = a_count >> 3;
+					size_t remainder = a_count & 7;
+					const float* const loop_end = a + loops;
+
+					while (a != loop_end) {
+						VectorOp2_<T, F>::implementation8(a, b, c);
+						a += 8;
+						b += 8;
+						c += 8;
+					}
+
+					if (remainder >= 4) {
+						remainder -= 4;
+						VectorOp2_<T, F>::implementation4(a, b, c);
+						a += 4;
+						b += 4;
+						c += 4;
+					}
+				} else {
+					const size_t loops = a_count >> 3;
+					const size_t remainder = a_count & 7;
+					const float* const loop_end = a + loops;
+
+					while (a != loop_end) {
+						VectorOp2_<T, F>::implementation8u(a, b, c);
+						a += 8;
+						b += 8;
+						c += 8;
+					}
+
+					if (remainder >= 4) {
+						remainder -= 4;
+						VectorOp2_<T, F>::implementation4u(a, b, c);
+						a += 4;
+						b += 4;
+						c += 4;
+					}
 				}
+
+				for (size_t i = 0; i < remainder; ++i) {
+					c[i] = a[i] + b[i];
+				}
+			}
+
+			static ANVIL_STRONG_INLINE Vector<T, 16> ANVIL_VECTOR_CALL implementation(const Vector<T, 16> a, const Vector<T, 16> b) throw() {
+				Vector<T, 16> tmp;
+				VectorOp2_<T,F>::implementation8(a.elements, b.elements, tmp.elements);
+				VectorOp2_<T,F>::implementation8(a.elements + 8, b.elements + 8, tmp.elements + 8);
 				return tmp;
 			}
-		};
 
-		template<class T, int F>
-		struct VectorOp2<T, 3, F, typename std::enable_if<VectorOp2<T, 4, F>::optimised>::type> {
-			enum { optimised = 1 };
-			static ANVIL_STRONG_INLINE Vector<T, 3> implementation(const Vector<T, 3> a, const Vector<T, 3> b) throw() {
+			static ANVIL_STRONG_INLINE Vector<T, 8> ANVIL_VECTOR_CALL implementation(const Vector<T, 8> a, const Vector<T, 8> b) throw() {
+				Vector<T, 8> tmp;
+				VectorOp2_<T, F>::implementation8(a.elements, b.elements, tmp.elements);
+				return tmp;
+			}
+
+			static ANVIL_STRONG_INLINE Vector<T, 4> ANVIL_VECTOR_CALL implementation(const Vector<T, 4> a, const Vector<T, 4> b) throw() {
+				Vector<T, 4> tmp;
+				VectorOp2_<T, F>::implementation4(a.elements, b.elements, tmp.elements);
+				return tmp;
+			}
+
+			static ANVIL_STRONG_INLINE Vector<T, 3> ANVIL_VECTOR_CALL implementation(const Vector<T, 3> a, const Vector<T, 3> b) throw() {
 				union {
-					Vector<T, 4> v4;
-					Vector<T, 3> v3;
+					Vector<T, 4> native;
+					Vector<T, 3> in;
 				} a2, b2;
+				a2.in = a;
+				b2.in = b;
+				VectorOp2_<T, F>::implementation4(a2.native.elements, b2.native.elements, a2.native.elements);
+				return a2.in;
+			}
 
-				a2.v3 = a;
-				b2.v3 = b;
-				a2.v4 = VectorOp2<T, 4, F>::implementation(a2.v4, b2.v4);
-				return a2.v3;
+			static ANVIL_STRONG_INLINE Vector<T, 2> ANVIL_VECTOR_CALL implementation(const Vector<T, 2> a, const Vector<T, 2> b) throw() {
+				union {
+					Vector<T, 4> native;
+					Vector<T, 2> in;
+				} a2, b2;
+				VectorOp2_<T, F>::implementation4(a2.native.elements, b2.native.elements, a2.native.elements);
+				return a2.in;
 			}
 		};
 
-		template<class T, int F>
-		struct VectorOp2<T, 2, F, typename std::enable_if<VectorOp2<T, 4, F>::optimised>::type> {
-			enum { optimised = 1 };
-			static ANVIL_STRONG_INLINE Vector<T, 2> implementation(const Vector<T, 2> a, const Vector<T, 2> b) throw() {
-				union {
-					Vector<T, 4> v4;
-					Vector<T, 2> v2;
-				} a2, b2;
+		template<class T>
+		struct VectorOp2_<T, VEC_ADD> {
+			enum {
+				optimised = 0,
+				alignment = 0
+			};
 
-				a2.v2 = a;
-				b2.v2 = b;
-				a2.v4 = VectorOp2<T, 4, F>::implementation(a2.v4, b2.v4);
-				return a2.v2;
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation4u(const T* const a, const T* b, T* const c) throw() {
+				c[0] = a[0] + b[0];
+				c[1] = a[1] + b[1];
+				c[2] = a[2] + b[2];
+				c[3] = a[3] + b[3];
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8u(const T* const a, const T* b, T* const c) throw() {
+				implementation4u(a, b, c);
+				implementation4u(a + 4, b + 4, c + 4);
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8(const T* const a, const T* b, T* const c) throw() {
+				implementation4u(a, b, c);
+				implementation4u(a + 4, b + 4, c + 4);
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation4(const T* const a, const T* b, T* const c) throw() {
+				implementation4u(a, b, c);
+			}
+		};
+
+		template<class T>
+		struct VectorOp2_<T, VEC_SUB> {
+			enum {
+				optimised = 0,
+				alignment = 0
+			};
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation4u(const T* const a, const T* b, T* const c) throw() {
+				c[0] = a[0] - b[0];
+				c[1] = a[1] - b[1];
+				c[2] = a[2] - b[2];
+				c[3] = a[3] - b[3];
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8u(const T* const a, const T* b, T* const c) throw() {
+				implementation4u(a, b, c);
+				implementation4u(a + 4, b + 4, c + 4);
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8(const T* const a, const T* b, T* const c) throw() {
+				implementation4u(a, b, c);
+				implementation4u(a + 4, b + 4, c + 4);
+			}
+
+			static ANVIL_STRONG_INLINE void implementation4(const T* const a, const T* b, T* const c) throw() {
+				implementation4u(a, b, c);
+			}
+		};
+
+		template<class T>
+		struct VectorOp2_<T, VEC_MUL> {
+			enum {
+				optimised = 0,
+				alignment = 0
+			};
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation4u(const T* const a, const T* b, T* const c) throw() {
+				c[0] = a[0] * b[0];
+				c[1] = a[1] * b[1];
+				c[2] = a[2] * b[2];
+				c[3] = a[3] * b[3];
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8u(const T* const a, const T* b, T* const c) throw() {
+				implementation4u(a, b, c);
+				implementation4u(a + 4, b + 4, c + 4);
+			}
+
+			static ANVIL_STRONG_INLINE void implementation8(const T* const a, const T* b, T* const c) throw() {
+				implementation4u(a, b, c);
+				implementation4u(a + 4, b + 4, c + 4);
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation4(const T* const a, const T* b, T* const c) throw() {
+				implementation4u(a, b, c);
+			}
+		};
+
+		template<class T>
+		struct VectorOp2_<T, VEC_DIV> {
+			enum {
+				optimised = 0,
+				alignment = 0
+			};
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation4u(const T* const a, const T* b, T* const c) throw() {
+				c[0] = a[0] / b[0];
+				c[1] = a[1] / b[1];
+				c[2] = a[2] / b[2];
+				c[3] = a[3] / b[3];
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8u(const T* const a, const T* b, T* const c) throw() {
+				implementation4u(a, b, c);
+				implementation4u(a + 4, b + 4, c + 4);
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8(const T* const a, const T* b, T* const c) throw() {
+				implementation4u(a, b, c);
+				implementation4u(a + 4, b + 4, c + 4);
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation4(const T* const a, const T* b, T* const c) throw() {
+				implementation4u(a, b, c);
 			}
 		};
 
 #ifdef ANVIL_SSE
 		template<>
-		struct VectorOp2<float, 4, VEC_ADD> {
-			enum { optimised = 1 };
-			static ANVIL_STRONG_INLINE Vector<float, 4> implementation(const Vector<float, 4> a, const Vector<float, 4> b) throw() {
-				Vector<float, 4> tmp;
-				register __m128 xmm0 = _mm_load_ps(a.elements);
-				const register __m128 xmm1 = _mm_load_ps(b.elements);
+		struct VectorOp2_<float, VEC_ADD> {
+#ifdef ANVIL_AVX
+			enum {
+				optimised = 1,
+				alignment = 32
+			};
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8(const float* const a, const float* b, float* const c) throw() {
+				register __m256 xmm0 = _mm256_load_ps(a);
+				register __m256 xmm1 = _mm256_load_ps(b);
+				xmm0 = _mm256_add_ps(xmm0, xmm1);
+				_mm256_store_ps(c, xmm0);
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8u(const float* const a, const float* b, float* const c) throw() {
+				register __m256 xmm0 = _mm256_loadu_ps(a);
+				register __m256 xmm1 = _mm256_loadu_ps(b);
+				xmm0 = _mm256_add_ps(xmm0, xmm1);
+				_mm256_storeu_ps(c, xmm0);
+			}
+#else
+			enum {
+				optimised = 1,
+				alignment = 16
+			};
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8(const float* const a, const float* b, float* const c) throw() {
+				register __m128 xmm0 = _mm_load_ps(a);
+				const register __m128 xmm1 = _mm_load_ps(b);
 				xmm0 = _mm_add_ps(xmm0, xmm1);
-				_mm_store_ps(tmp.elements, xmm0);
-				return tmp;
+				_mm_store_ps(c, xmm0);
+				register __m128 xmm2 = _mm_load_ps(a + 4);
+				const register __m128 xmm3 = _mm_load_ps(b + 4);
+				xmm2 = _mm_add_ps(xmm2, xmm3);
+				_mm_store_ps(c + 4, xmm2);
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8u(const float* const a, const float* b, float* const c) throw() {
+				register __m128 xmm0 = _mm_loadu_ps(a);
+				const register __m128 xmm1 = _mm_loadu_ps(b);
+				xmm0 = _mm_add_ps(xmm0, xmm1);
+				_mm_storeu_ps(c, xmm0);
+				register __m128 xmm2 = _mm_loadu_ps(a + 4);
+				const register __m128 xmm3 = _mm_loadu_ps(b + 4);
+				xmm2 = _mm_add_ps(xmm2, xmm3);
+				_mm_storeu_ps(c + 4, xmm2);
+			}
+#endif
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation4(const float* const a, const float* b, float* const c) throw() {
+				register __m128 xmm0 = _mm_load_ps(a);
+				const register __m128 xmm1 = _mm_load_ps(b);
+				xmm0 = _mm_add_ps(xmm0, xmm1);
+				_mm_store_ps(c, xmm0);
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation4u(const float* const a, const float* b, float* const c) throw() {
+				register __m128 xmm0 = _mm_loadu_ps(a);
+				const register __m128 xmm1 = _mm_loadu_ps(b);
+				xmm0 = _mm_add_ps(xmm0, xmm1);
+				_mm_storeu_ps(c, xmm0);
+			}
+		};
+
+		template<>
+		struct VectorOp2_<float, VEC_SUB> {
+#ifdef ANVIL_AVX
+			enum {
+				optimised = 1,
+				alignment = 32
+			};
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8(const float* const a, const float* b, float* const c) throw() {
+				register __m256 xmm0 = _mm256_load_ps(a);
+				register __m256 xmm1 = _mm256_load_ps(b);
+				xmm0 = _mm256_sub_ps(xmm0, xmm1);
+				_mm256_store_ps(c, xmm0);
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8u(const float* const a, const float* b, float* const c) throw() {
+				register __m256 xmm0 = _mm256_loadu_ps(a);
+				register __m256 xmm1 = _mm256_loadu_ps(b);
+				xmm0 = _mm256_sub_ps(xmm0, xmm1);
+				_mm256_storeu_ps(c, xmm0);
+			}
+#else
+			enum {
+				optimised = 1,
+				alignment = 16
+			};
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8(const float* const a, const float* b, float* const c) throw() {
+				register __m128 xmm0 = _mm_load_ps(a);
+				const register __m128 xmm1 = _mm_load_ps(b);
+				xmm0 = _mm_sub_ps(xmm0, xmm1);
+				_mm_store_ps(c, xmm0);
+				register __m128 xmm2 = _mm_load_ps(a + 4);
+				const register __m128 xmm3 = _mm_load_ps(b + 4);
+				xmm2 = _mm_sub_ps(xmm2, xmm3);
+				_mm_store_ps(c + 4, xmm2);
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8u(const float* const a, const float* b, float* const c) throw() {
+				register __m128 xmm0 = _mm_loadu_ps(a);
+				const register __m128 xmm1 = _mm_loadu_ps(b);
+				xmm0 = _mm_sub_ps(xmm0, xmm1);
+				_mm_storeu_ps(c, xmm0);
+				register __m128 xmm2 = _mm_loadu_ps(a + 4);
+				const register __m128 xmm3 = _mm_loadu_ps(b + 4);
+				xmm2 = _mm_sub_ps(xmm2, xmm3);
+				_mm_storeu_ps(c + 4, xmm2);
+			}
+#endif
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation4(const float* const a, const float* b, float* const c) throw() {
+				register __m128 xmm0 = _mm_load_ps(a);
+				const register __m128 xmm1 = _mm_load_ps(b);
+				xmm0 = _mm_sub_ps(xmm0, xmm1);
+				_mm_store_ps(c, xmm0);
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation4u(const float* const a, const float* b, float* const c) throw() {
+				register __m128 xmm0 = _mm_loadu_ps(a);
+				const register __m128 xmm1 = _mm_loadu_ps(b);
+				xmm0 = _mm_sub_ps(xmm0, xmm1);
+				_mm_storeu_ps(c, xmm0);
+			}
+		};
+
+
+		template<>
+		struct VectorOp2_<float, VEC_MUL> {
+#ifdef ANVIL_AVX
+			enum {
+				optimised = 1,
+				alignment = 32
+			};
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8(const float* const a, const float* b, float* const c) throw() {
+				register __m256 xmm0 = _mm256_load_ps(a);
+				register __m256 xmm1 = _mm256_load_ps(b);
+				xmm0 = _mm256_mul_ps(xmm0, xmm1);
+				_mm256_store_ps(c, xmm0);
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8u(const float* const a, const float* b, float* const c) throw() {
+				register __m256 xmm0 = _mm256_loadu_ps(a);
+				register __m256 xmm1 = _mm256_loadu_ps(b);
+				xmm0 = _mm256_mul_ps(xmm0, xmm1);
+				_mm256_storeu_ps(c, xmm0);
+			}
+#else
+			enum {
+				optimised = 1,
+				alignment = 16
+			};
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8(const float* const a, const float* b, float* const c) throw() {
+				register __m128 xmm0 = _mm_load_ps(a);
+				const register __m128 xmm1 = _mm_load_ps(b);
+				xmm0 = _mm_mul_ps(xmm0, xmm1);
+				_mm_store_ps(c, xmm0);
+				register __m128 xmm2 = _mm_load_ps(a + 4);
+				const register __m128 xmm3 = _mm_load_ps(b + 4);
+				xmm2 = _mm_mul_ps(xmm2, xmm3);
+				_mm_store_ps(c + 4, xmm2);
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8u(const float* const a, const float* b, float* const c) throw() {
+				register __m128 xmm0 = _mm_loadu_ps(a);
+				const register __m128 xmm1 = _mm_loadu_ps(b);
+				xmm0 = _mm_mul_ps(xmm0, xmm1);
+				_mm_storeu_ps(c, xmm0);
+				register __m128 xmm2 = _mm_loadu_ps(a + 4);
+				const register __m128 xmm3 = _mm_loadu_ps(b + 4);
+				xmm2 = _mm_mul_ps(xmm2, xmm3);
+				_mm_storeu_ps(c + 4, xmm2);
+			}
+#endif
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation4(const float* const a, const float* b, float* const c) throw() {
+				register __m128 xmm0 = _mm_load_ps(a);
+				const register __m128 xmm1 = _mm_load_ps(b);
+				xmm0 = _mm_mul_ps(xmm0, xmm1);
+				_mm_store_ps(c, xmm0);
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation4u(const float* const a, const float* b, float* const c) throw() {
+				register __m128 xmm0 = _mm_loadu_ps(a);
+				const register __m128 xmm1 = _mm_loadu_ps(b);
+				xmm0 = _mm_mul_ps(xmm0, xmm1);
+				_mm_storeu_ps(c, xmm0);
+			}
+		};
+
+
+		template<>
+		struct VectorOp2_<float, VEC_DIV> {
+#ifdef ANVIL_AVX
+			enum {
+				optimised = 1,
+				alignment = 32
+			};
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8(const float* const a, const float* b, float* const c) throw() {
+				register __m256 xmm0 = _mm256_load_ps(a);
+				register __m256 xmm1 = _mm256_load_ps(b);
+				xmm0 = _mm256_div_ps(xmm0, xmm1);
+				_mm256_store_ps(c, xmm0);
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8u(const float* const a, const float* b, float* const c) throw() {
+				register __m256 xmm0 = _mm256_loadu_ps(a);
+				register __m256 xmm1 = _mm256_loadu_ps(b);
+				xmm0 = _mm256_div_ps(xmm0, xmm1);
+				_mm256_storeu_ps(c, xmm0);
+			}
+#else
+			enum {
+				optimised = 1,
+				alignment = 16
+			};
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8(const float* const a, const float* b, float* const c) throw() {
+				register __m128 xmm0 = _mm_load_ps(a);
+				const register __m128 xmm1 = _mm_load_ps(b);
+				xmm0 = _mm_div_ps(xmm0, xmm1);
+				_mm_store_ps(c, xmm0);
+				register __m128 xmm2 = _mm_load_ps(a + 4);
+				const register __m128 xmm3 = _mm_load_ps(b + 4);
+				xmm2 = _mm_div_ps(xmm2, xmm3);
+				_mm_store_ps(c + 4, xmm2);
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation8u(const float* const a, const float* b, float* const c) throw() {
+				register __m128 xmm0 = _mm_loadu_ps(a);
+				const register __m128 xmm1 = _mm_loadu_ps(b);
+				xmm0 = _mm_div_ps(xmm0, xmm1);
+				_mm_storeu_ps(c, xmm0);
+				register __m128 xmm2 = _mm_loadu_ps(a + 4);
+				const register __m128 xmm3 = _mm_loadu_ps(b + 4);
+				xmm2 = _mm_div_ps(xmm2, xmm3);
+				_mm_storeu_ps(c + 4, xmm2);
+			}
+#endif
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation4(const float* const a, const float* b, float* const c) throw() {
+				register __m128 xmm0 = _mm_load_ps(a);
+				const register __m128 xmm1 = _mm_load_ps(b);
+				xmm0 = _mm_div_ps(xmm0, xmm1);
+				_mm_store_ps(c, xmm0);
+			}
+
+			static ANVIL_STRONG_INLINE void ANVIL_VECTOR_CALL implementation4u(const float* const a, const float* b, float* const c) throw() {
+				register __m128 xmm0 = _mm_loadu_ps(a);
+				const register __m128 xmm1 = _mm_loadu_ps(b);
+				xmm0 = _mm_div_ps(xmm0, xmm1);
+				_mm_storeu_ps(c, xmm0);
 			}
 		};
 #endif
@@ -388,8 +784,47 @@ namespace anvil {
 }
 
 template<class T, size_t S>
-anvil::Vector<T, S> operator+(const anvil::Vector<T, S> a, const anvil::Vector<T, S> b) {
-	return anvil::detail::VectorOp2<T, S, anvil::detail::VEC_ADD>::implementation(a, b);
+ANVIL_STRONG_INLINE anvil::Vector<T, S> operator+(const anvil::Vector<T, S> a, const anvil::Vector<T, S> b) {
+	return anvil::detail::VectorOp2<T, anvil::detail::VEC_ADD>::implementation(a, b);
+}
+
+template<class T, size_t S>
+ANVIL_STRONG_INLINE anvil::Vector<T, S>& operator+=(anvil::Vector<T, S>& a, const anvil::Vector<T, S> b) {
+	a = anvil::detail::VectorOp2<T, anvil::detail::VEC_ADD>::implementation(a, b);
+	return a;
+}
+
+template<class T, size_t S>
+ANVIL_STRONG_INLINE anvil::Vector<T, S> operator-(const anvil::Vector<T, S> a, const anvil::Vector<T, S> b) {
+	return anvil::detail::VectorOp2<T, anvil::detail::VEC_SUB>::implementation(a, b);
+}
+
+template<class T, size_t S>
+ANVIL_STRONG_INLINE anvil::Vector<T, S>& operator-=(anvil::Vector<T, S>& a, const anvil::Vector<T, S> b) {
+	a = anvil::detail::VectorOp2<T, anvil::detail::VEC_SUB>::implementation(a, b);
+	return a;
+}
+
+template<class T, size_t S>
+ANVIL_STRONG_INLINE anvil::Vector<T, S> operator*(const anvil::Vector<T, S> a, const anvil::Vector<T, S> b) {
+	return anvil::detail::VectorOp2<T, anvil::detail::VEC_MUL>::implementation(a, b);
+}
+
+template<class T, size_t S>
+ANVIL_STRONG_INLINE anvil::Vector<T, S>& operator*=(anvil::Vector<T, S>& a, const anvil::Vector<T, S> b) {
+	a = anvil::detail::VectorOp2<T, anvil::detail::VEC_MUL>::implementation(a, b);
+	return a;
+}
+
+template<class T, size_t S>
+ANVIL_STRONG_INLINE anvil::Vector<T, S> operator/(const anvil::Vector<T, S> a, const anvil::Vector<T, S> b) {
+	return anvil::detail::VectorOp2<T, anvil::detail::VEC_DIV>::implementation(a, b);
+}
+
+template<class T, size_t S>
+ANVIL_STRONG_INLINE anvil::Vector<T, S>& operator/=(anvil::Vector<T, S>& a, const anvil::Vector<T, S> b) {
+	a = anvil::detail::VectorOp2<T, anvil::detail::VEC_DIV>::implementation(a, b);
+	return a;
 }
 
 #endif
