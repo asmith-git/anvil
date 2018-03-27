@@ -321,10 +321,10 @@ namespace anvil {
 			};
 
 			static void ANVIL_VECTOR_CALL implementation(const float* a, const float* b, const float* c, float* d, size_t a_count) throw() {
-				const intptr_t a_align(reinterpret_cast<intptr_t>(a) & (alignment - 1));
-				const intptr_t b_align(reinterpret_cast<intptr_t>(b) & (alignment - 1));
-				const intptr_t c_align(reinterpret_cast<intptr_t>(c) & (alignment - 1));
-				const intptr_t d_align(reinterpret_cast<intptr_t>(d) & (alignment - 1));
+				const intptr_t a_align = alignment == 0 ? 0 : (reinterpret_cast<intptr_t>(a) & (alignment - 1));
+				const intptr_t b_align = alignment == 0 ? 0 : (reinterpret_cast<intptr_t>(b) & (alignment - 1));
+				const intptr_t c_align = alignment == 0 ? 0 : (reinterpret_cast<intptr_t>(c) & (alignment - 1));
+				const intptr_t d_align = alignment == 0 ? 0 : (reinterpret_cast<intptr_t>(d) & (alignment - 1));
 
 				if (a_align == b_align && a_align == c_align && a_align == d_align) {
 					for (size_t i = 0; i < a_align; ++i) {
@@ -434,9 +434,9 @@ namespace anvil {
 			};
 
 			static void ANVIL_VECTOR_CALL implementation(const float* a, const float* b, float* c, size_t a_count) throw() {
-				const intptr_t a_align(reinterpret_cast<intptr_t>(a) & (alignment-1));
-				const intptr_t b_align(reinterpret_cast<intptr_t>(b) & (alignment-1));
-				const intptr_t c_align(reinterpret_cast<intptr_t>(c) & (alignment-1));
+				const intptr_t a_align = alignment == 0 ? 0 : (reinterpret_cast<intptr_t>(a) & (alignment-1));
+				const intptr_t b_align = alignment == 0 ? 0 : (reinterpret_cast<intptr_t>(b) & (alignment-1));
+				const intptr_t c_align = alignment == 0 ? 0 : (reinterpret_cast<intptr_t>(c) & (alignment-1));
 
 				if (a_align == b_align && a_align == c_align) {
 					for (size_t i = 0; i < a_align; ++i) {
