@@ -58,6 +58,12 @@ namespace anvil {
 			return elements[a_index];
 		}
 
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL zeros() throw() {
+			Vector<T, size> tmp;
+			tmp ^= tmp;
+			return tmp;
+		}
+
 		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T i0) throw() {
 			Vector<T, size> tmp;
 			tmp.x = i0;
@@ -94,6 +100,12 @@ namespace anvil {
 
 		ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL operator[](const size_t a_index) const throw() {
 			return elements[a_index];
+		}
+
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL zeros() throw() {
+			Vector<T, size> tmp;
+			tmp ^= tmp;
+			return tmp;
 		}
 
 		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T a0) throw() {
@@ -137,6 +149,12 @@ namespace anvil {
 			return elements[a_index];
 		}
 
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL zeros() throw() {
+			Vector<T, size> tmp;
+			tmp ^= tmp;
+			return tmp;
+		}
+
 		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T a0) throw() {
 			Vector<T, size> tmp;
 			tmp.x = a0;
@@ -177,6 +195,12 @@ namespace anvil {
 
 		ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL operator[](const size_t a_index) const throw() {
 			return elements[a_index];
+		}
+
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL zeros() throw() {
+			Vector<T, size> tmp;
+			tmp ^= tmp;
+			return tmp;
 		}
 
 		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T a0) throw() {
@@ -227,6 +251,12 @@ namespace anvil {
 
 		ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL operator[](const size_t a_index) const throw() {
 			return elements[a_index];
+		}
+
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL zeros() throw() {
+			Vector<T, size> tmp;
+			tmp ^= tmp;
+			return tmp;
 		}
 
 		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T a0) throw() {
