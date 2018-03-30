@@ -50,12 +50,26 @@ namespace anvil {
 			T elements[size];
 		};
 
-		ANVIL_STRONG_INLINE T& ANVIL_VECTOR_CALL  operator[](const size_t a_index) throw() {
+		ANVIL_STRONG_INLINE T& ANVIL_VECTOR_CALL operator[](const size_t a_index) throw() {
 			return elements[a_index];
 		}
 
-		ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL  operator[](const size_t a_index) const throw() {
+		ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL operator[](const size_t a_index) const throw() {
 			return elements[a_index];
+		}
+
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T i0) throw() {
+			Vector<T, size> tmp;
+			tmp.x = i0;
+			tmp.y = i0;
+			return tmp;
+		}
+
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T i0, const T i1) throw() {
+			Vector<T, size> tmp;
+			tmp.x = i0;
+			tmp.y = i1;
+			return tmp;
 		}
 	};
 
@@ -74,12 +88,28 @@ namespace anvil {
 			type elements[size];
 		};
 
-		ANVIL_STRONG_INLINE type& ANVIL_VECTOR_CALL  operator[](const size_t a_index) throw() {
+		ANVIL_STRONG_INLINE type& ANVIL_VECTOR_CALL operator[](const size_t a_index) throw() {
 			return elements[a_index];
 		}
 
-		ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL  operator[](const size_t a_index) const throw() {
+		ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL operator[](const size_t a_index) const throw() {
 			return elements[a_index];
+		}
+
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T a0) throw() {
+			Vector<T, size> tmp;
+			tmp.x = a0;
+			tmp.y = a0;
+			tmp.z = a0;
+			return tmp;
+		}
+
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T a0, const T a1, const T a2) throw() {
+			Vector<T, size> tmp;
+			tmp.x = a0;
+			tmp.y = a1;
+			tmp.z = a2;
+			return tmp;
 		}
 	};
 
@@ -99,12 +129,30 @@ namespace anvil {
 			type elements[size];
 		};
 
-		ANVIL_STRONG_INLINE type& ANVIL_VECTOR_CALL  operator[](const size_t a_index) throw() {
+		ANVIL_STRONG_INLINE type& ANVIL_VECTOR_CALL operator[](const size_t a_index) throw() {
 			return elements[a_index];
 		}
 
-		ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL  operator[](const size_t a_index) const throw() {
+		ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL operator[](const size_t a_index) const throw() {
 			return elements[a_index];
+		}
+
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T a0) throw() {
+			Vector<T, size> tmp;
+			tmp.x = a0;
+			tmp.y = a0;
+			tmp.z = a0;
+			tmp.w = a0;
+			return tmp;
+		}
+
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T a0, const T a1, const T a2, const T a3) throw() {
+			Vector<T, size> tmp;
+			tmp.x = a0;
+			tmp.y = a1;
+			tmp.z = a2;
+			tmp.w = a3;
+			return tmp;
 		}
 	};
 
@@ -123,12 +171,38 @@ namespace anvil {
 			type elements[size];
 		};
 
-		ANVIL_STRONG_INLINE type& ANVIL_VECTOR_CALL  operator[](const size_t a_index) throw() {
+		ANVIL_STRONG_INLINE type& ANVIL_VECTOR_CALL operator[](const size_t a_index) throw() {
 			return elements[a_index];
 		}
 
-		ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL  operator[](const size_t a_index) const throw() {
+		ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL operator[](const size_t a_index) const throw() {
 			return elements[a_index];
+		}
+
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T a0) throw() {
+			Vector<T, size> tmp;
+			tmp.s0 = a0;
+			tmp.s1 = a0;
+			tmp.s2 = a0;
+			tmp.s3 = a0;
+			tmp.s4 = a0;
+			tmp.s5 = a0;
+			tmp.s6 = a0;
+			tmp.s7 = a0;
+			return tmp;
+		}
+
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T a0, const T a1, const T a2, const T a3, const T a4, const T a5, const T a6, const T a7) throw() {
+			Vector<T, size> tmp;
+			tmp.s0 = a0;
+			tmp.s1 = a1;
+			tmp.s2 = a2;
+			tmp.s3 = a3;
+			tmp.s4 = a4;
+			tmp.s5 = a5;
+			tmp.s6 = a6;
+			tmp.s7 = a7;
+			return tmp;
 		}
 	};
 
@@ -147,12 +221,56 @@ namespace anvil {
 			type elements[size];
 		};
 
-		ANVIL_STRONG_INLINE type& ANVIL_VECTOR_CALL  operator[](const size_t a_index) throw() {
+		ANVIL_STRONG_INLINE type& ANVIL_VECTOR_CALL operator[](const size_t a_index) throw() {
 			return elements[a_index];
 		}
 
-		ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL  operator[](const size_t a_index) const throw() {
+		ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL operator[](const size_t a_index) const throw() {
 			return elements[a_index];
+		}
+
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T a0) throw() {
+			Vector<T, size> tmp;
+			tmp.s0 = a0;
+			tmp.s1 = a0;
+			tmp.s2 = a0;
+			tmp.s3 = a0;
+			tmp.s4 = a0;
+			tmp.s5 = a0;
+			tmp.s6 = a0;
+			tmp.s7 = a0;
+			tmp.s8 = a0;
+			tmp.s9 = a0;
+			tmp.s10 = a0;
+			tmp.s11 = a0;
+			tmp.s12 = a0;
+			tmp.s13 = a0;
+			tmp.s14 = a0;
+			tmp.s15 = a0;
+			return tmp;
+		}
+
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T a0, const T a1, const T a2, const T a3, const T a4, const T a5, const T a6, const T a7,
+			const T a8, const T a9, const T a10, const T a11, const T a12, const T a13, const T a14, const T a15
+		) throw() {
+			Vector<T, size> tmp;
+			tmp.s0 = a0;
+			tmp.s1 = a1;
+			tmp.s2 = a2;
+			tmp.s3 = a3;
+			tmp.s4 = a4;
+			tmp.s5 = a5;
+			tmp.s6 = a6;
+			tmp.s7 = a7;
+			tmp.s8 = a8;
+			tmp.s9 = a9;
+			tmp.s10 = a10;
+			tmp.s11 = a11;
+			tmp.s12 = a12;
+			tmp.s13 = a13;
+			tmp.s14 = a14;
+			tmp.s15 = a15;
+			return tmp;
 		}
 	};
 
@@ -311,7 +429,7 @@ namespace anvil {
 			}
 
 			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL store(const register type aValue) throw() {
-				return aVector;
+				return aValue;
 			}
 		};
 
@@ -460,9 +578,10 @@ namespace anvil {
 			VEC_AND,
 			VEC_OR,
 			VEC_XOR,
-
 			VEC_FMA,
-			VEC_FMS
+			VEC_FMS,
+			VEC_SQRT,
+			VEC_CBRT
 		};
 
 		template<class T, VectorOperationID ID, size_t P>
@@ -579,6 +698,15 @@ namespace anvil {
 			}
 		};
 
+		template<class T, size_t S>
+		struct VectorOperation<Vector<T, S>, VEC_SQRT, 1> {
+			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL implementation(const Vector<T, S> a) {
+				Vector<T, S> tmp;
+				for (size_t i = 0; i < S; ++i) tmp.elements[i] = std::sqrt(a.elements[i]);
+				return tmp;
+			}
+		};
+
 #ifdef ANVIL_SSE
 		template<>
 		struct VectorOperation<__m128, VEC_ADD, 2> {
@@ -650,6 +778,13 @@ namespace anvil {
 #endif
 			}
 		};
+
+		template<>
+		struct VectorOperation<__m128, VEC_SQRT, 1> {
+			static ANVIL_STRONG_INLINE __m128 ANVIL_VECTOR_CALL implementation(const __m128 a) {
+				return _mm_sqrt_ps(a);
+			}
+		};
 #endif
 
 #ifdef ANVIL_AVX
@@ -681,6 +816,13 @@ namespace anvil {
 #endif
 			}
 		};
+
+		template<>
+		struct VectorOperation<__m256, VEC_SQRT, 1> {
+			static ANVIL_STRONG_INLINE __m256 ANVIL_VECTOR_CALL implementation(const __m256 a) {
+				return _mm256_sqrt_ps(a);
+			}
+		};
 #endif
 	}
 
@@ -698,6 +840,14 @@ namespace anvil {
 		typedef typename OpVec::type type;
 
 		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_FMS, 3>::implementation(OpVec::load(a), OpVec::load(b), OpVec::load(c)));
+	}
+
+	template<class T, size_t S>
+	ANVIL_STRONG_INLINE anvil::Vector<T, S> sqrt(const anvil::Vector<T, S> a) {
+		typedef anvil::detail::OptimisedVector<T, S> OpVec;
+		typedef typename OpVec::type type;
+
+		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_SQRT, 1>::implementation(OpVec::load(a)));
 	}
 }
 
