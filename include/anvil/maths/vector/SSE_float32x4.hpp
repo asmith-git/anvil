@@ -15,7 +15,11 @@
 #ifndef ANVIL_MATHS_VECTOR_SSE_FLOAT32X4_HPP
 #define ANVIL_MATHS_VECTOR_SSE_FLOAT32X4_HPP
 
-#include <xmmintrin.h>
+#ifdef ANVIL_SSE_4_1
+	#include <smmintrin.h>
+#else
+	#include <xmmintrin.h>
+#endif
 
 namespace anvil { namespace detail {
 
@@ -155,7 +159,7 @@ ANVIL_VECTOR_OP1(VEC_NOT, ANVIL_VECTOR_NOT)
 	#define ANVIL_VECTOR_ROUND(A) _mm_round_ps(A, (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC))
 	ANVIL_VECTOR_OP1(VEC_FLOOR, _mm_floor_ps)
 	ANVIL_VECTOR_OP1(VEC_CEIL, _mm_ceil_ps)
-	ANVIL_VECTOR_OP1(VEC_FLOOR, ANVIL_VECTOR_ROUND)
+	ANVIL_VECTOR_OP1(VEC_ROUND, ANVIL_VECTOR_ROUND)
 	#undef ANVIL_VECTOR_ROUND
 #endif
 

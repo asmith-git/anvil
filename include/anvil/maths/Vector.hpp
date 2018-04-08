@@ -60,9 +60,14 @@ namespace anvil {
 		}
 
 		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL zeros() throw() {
-			Vector<T, size> tmp;
+			uint8_t buffer[sizeof(Vector<T, size>)];
+			Vector<T, size>& tmp = *reinterpret_cast<Vector<T, size>*>(buffer);
 			tmp ^= tmp;
 			return tmp;
+		}
+
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL ones() throw() {
+			return ~zeros();
 		}
 
 		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T i0) throw() {
@@ -104,9 +109,14 @@ namespace anvil {
 		}
 
 		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL zeros() throw() {
-			Vector<T, size> tmp;
+			uint8_t buffer[sizeof(Vector<T, size>)];
+			Vector<T, size>& tmp = *reinterpret_cast<Vector<T, size>*>(buffer);
 			tmp ^= tmp;
 			return tmp;
+		}
+
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL ones() throw() {
+			return ~zeros();
 		}
 
 		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T a0) throw() {
@@ -206,6 +216,10 @@ namespace anvil {
 			return tmp;
 		}
 
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL ones() throw() {
+			return ~zeros();
+		}
+
 		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T a0) throw() {
 			Vector<T, size> tmp;
 			tmp.s0 = a0;
@@ -257,9 +271,14 @@ namespace anvil {
 		}
 
 		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL zeros() throw() {
-			Vector<T, size> tmp;
+			uint8_t buffer[sizeof(Vector<T, size>)];
+			Vector<T, size>& tmp = *reinterpret_cast<Vector<T, size>*>(buffer);
 			tmp ^= tmp;
 			return tmp;
+		}
+
+		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL ones() throw() {
+			return ~zeros();
 		}
 
 		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL create(const T a0) throw() {
@@ -1271,6 +1290,12 @@ namespace anvil {
 
 #ifdef ANVIL_SSE
 #include "anvil/maths/vector/SSE_float32x4.hpp"
+#endif
+
+#ifdef ANVIL_SSE_2
+#include "anvil/maths/vector/SSE_int8x16.hpp"
+#include "anvil/maths/vector/SSE_int16x8.hpp"
+#include "anvil/maths/vector/SSE_int32x4.hpp"
 #endif
 
 #endif
