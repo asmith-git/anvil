@@ -873,6 +873,13 @@ namespace anvil {
 		};
 
 		template<class T>
+		struct PrimativeVectorOperation<T, VEC_EXP> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::exp(a);
+			}
+		};
+
+		template<class T>
 		struct PrimativeVectorOperation<T, VEC_FLOOR> {
 			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
 				return a;
@@ -1221,7 +1228,7 @@ namespace anvil {
 
 #undef ANVIL_VECTOR_OP
 
-	#define ANVIL_VECTOR_OP(ID, NAME)\
+#define ANVIL_VECTOR_OP(ID, NAME)\
 	template<class T, size_t S>\
 	ANVIL_STRONG_INLINE anvil::Vector<T, S> NAME(anvil::Vector<T, S> a, const anvil::Vector<T, S> b) {\
 		using namespace anvil::detail;\
@@ -1262,8 +1269,8 @@ namespace anvil {
 #undef ANVIL_VECTOR_OP
 }
 
-//#ifdef ANVIL_SSE
-//#include "anvil/maths/vector/SSE_float32x4.hpp"
-//#endif
+#ifdef ANVIL_SSE
+#include "anvil/maths/vector/SSE_float32x4.hpp"
+#endif
 
 #endif
