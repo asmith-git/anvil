@@ -55,4 +55,54 @@ namespace anvil {
 #endif
 }
 
+#if ANVIL_ARCHITECTURE == ANVIL_X64 
+	#undef ANVIL_SSE_2
+	#define ANVIL_SSE_2
+#endif
+
+#ifdef ANVIL_AVX_512
+	#undef ANVIL_FMA
+	#define ANVIL_FMA
+#endif
+
+#ifdef ANVIL_FMA
+	#undef ANVIL_AVX_2
+	#define ANVIL_AVX_2
+#endif
+
+#ifdef ANVIL_AVX_2
+	#undef ANVIL_AVX
+	#define ANVIL_AVX
+#endif
+
+#ifdef ANVIL_AVX
+	#undef ANVIL_SSE_4_2
+	#define ANVIL_SSE_4_2
+#endif
+
+#ifdef ANVIL_SSE_4_2
+	#undef ANVIL_SSE_4_1
+	#define ANVIL_SSE_4_1
+#endif
+
+#ifdef ANVIL_SSE_4_1
+	#undef ANVIL_SSSE_3
+	#define ANVIL_SSSE_3
+#endif
+
+#ifdef ANVIL_SSSE_3
+	#undef ANVIL_SSE_3
+	#define ANVIL_SSE_3
+#endif
+
+#ifdef ANVIL_SSE_3
+	#undef ANVIL_SSE_2
+	#define ANVIL_SSE_2
+#endif
+
+#ifdef ANVIL_SSE_2
+	#undef ANVIL_SSE
+	#define ANVIL_SSE
+#endif
+
 #endif
