@@ -140,24 +140,12 @@ namespace anvil { namespace detail {
 	template<>\
 	struct PrimativeVectorOperation<__m128i, ID, int32_t, 4> {\
 		static inline __m128i ANVIL_VECTOR_CALL implementation(const register __m128i a) {\
-			ANVIL_ALIGN(16) int32_t buffer_a[16];\
+			ANVIL_ALIGN(16) int32_t buffer_a[4];\
 			_mm_store_si128(reinterpret_cast<__m128i*>(buffer_a), a);\
 			buffer_a[0] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[0]);\
 			buffer_a[1] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[1]);\
 			buffer_a[2] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[2]);\
 			buffer_a[3] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[3]);\
-			buffer_a[4] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[4]);\
-			buffer_a[5] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[5]);\
-			buffer_a[6] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[6]);\
-			buffer_a[7] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[7]);\
-			buffer_a[8] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[8]);\
-			buffer_a[9] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[9]);\
-			buffer_a[10] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[10]);\
-			buffer_a[11] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[11]);\
-			buffer_a[12] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[12]);\
-			buffer_a[13] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[13]);\
-			buffer_a[14] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[14]);\
-			buffer_a[15] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[15]);\
 			return _mm_load_si128(reinterpret_cast<__m128i*>(buffer_a));\
 		}\
 	};
@@ -216,26 +204,14 @@ ANVIL_VECTOR_OP2(VEC_EXP)
 	template<>\
 	struct PrimativeVectorOperation<__m128i, ID, int32_t, 4> {\
 		static inline __m128i ANVIL_VECTOR_CALL implementation(const register __m128i a, const register __m128i b) {\
-			ANVIL_ALIGN(16) int32_t buffer_a[16];\
-			ANVIL_ALIGN(16) int32_t buffer_b[16];\
+			ANVIL_ALIGN(16) int32_t buffer_a[4];\
+			ANVIL_ALIGN(16) int32_t buffer_b[4];\
 			_mm_store_si128(reinterpret_cast<__m128i*>(buffer_a), a);\
 			_mm_store_si128(reinterpret_cast<__m128i*>(buffer_b), b);\
 			buffer_a[0] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[0], buffer_b[0]);\
 			buffer_a[1] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[1], buffer_b[1]);\
 			buffer_a[2] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[2], buffer_b[2]);\
 			buffer_a[3] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[3], buffer_b[3]);\
-			buffer_a[4] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[4], buffer_b[4]);\
-			buffer_a[5] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[5], buffer_b[5]);\
-			buffer_a[6] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[6], buffer_b[6]);\
-			buffer_a[7] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[7], buffer_b[7]);\
-			buffer_a[8] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[8], buffer_b[8]);\
-			buffer_a[9] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[9], buffer_b[9]);\
-			buffer_a[10] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[10], buffer_b[10]);\
-			buffer_a[11] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[11], buffer_b[11]);\
-			buffer_a[12] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[12], buffer_b[12]);\
-			buffer_a[13] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[13], buffer_b[13]);\
-			buffer_a[14] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[14], buffer_b[14]);\
-			buffer_a[15] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[15], buffer_b[15]);\
 			return _mm_load_si128(reinterpret_cast<__m128i*>(buffer_a));\
 		}\
 	};
@@ -303,9 +279,9 @@ ANVIL_VECTOR_OP2(VEC_HYPOT)
 	template<>\
 	struct PrimativeVectorOperation<__m128i, ID, int32_t, 4> {\
 		static inline __m128i ANVIL_VECTOR_CALL implementation(const register __m128i a, const register __m128i b, const register __m128i c) {\
-			ANVIL_ALIGN(16) int32_t buffer_a[16];\
-			ANVIL_ALIGN(16) int32_t buffer_b[16];\
-			ANVIL_ALIGN(16) int32_t buffer_c[16];\
+			ANVIL_ALIGN(16) int32_t buffer_a[4];\
+			ANVIL_ALIGN(16) int32_t buffer_b[4];\
+			ANVIL_ALIGN(16) int32_t buffer_c[4];\
 			_mm_store_si128(reinterpret_cast<__m128i*>(buffer_a), a);\
 			_mm_store_si128(reinterpret_cast<__m128i*>(buffer_b), b);\
 			_mm_store_si128(reinterpret_cast<__m128i*>(buffer_c), c);\
@@ -313,18 +289,6 @@ ANVIL_VECTOR_OP2(VEC_HYPOT)
 			buffer_a[1] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[1], buffer_b[1], buffer_c[1]);\
 			buffer_a[2] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[2], buffer_b[2], buffer_c[2]);\
 			buffer_a[3] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[3], buffer_b[3], buffer_c[3]);\
-			buffer_a[4] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[4], buffer_b[4], buffer_c[4]);\
-			buffer_a[5] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[5], buffer_b[5], buffer_c[5]);\
-			buffer_a[6] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[6], buffer_b[6], buffer_c[6]);\
-			buffer_a[7] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[7], buffer_b[7], buffer_c[7]);\
-			buffer_a[8] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[8], buffer_b[8], buffer_c[8]);\
-			buffer_a[9] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[9], buffer_b[9], buffer_c[9]);\
-			buffer_a[10] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[10], buffer_b[10], buffer_c[10]);\
-			buffer_a[11] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[11], buffer_b[11], buffer_c[11]);\
-			buffer_a[12] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[12], buffer_b[12], buffer_c[12]);\
-			buffer_a[13] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[13], buffer_b[13], buffer_c[13]);\
-			buffer_a[14] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[14], buffer_b[14], buffer_c[14]);\
-			buffer_a[15] = PrimativeVectorOperation<int32_t, ID, int32_t, 1>::implementation(buffer_a[15], buffer_b[15], buffer_c[15]);\
 			return _mm_load_si128(reinterpret_cast<__m128i*>(buffer_a));\
 		}\
 	};
