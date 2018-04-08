@@ -15,6 +15,7 @@
 #ifndef ANVIL_MATHS_VECTOR_HPP
 #define ANVIL_MATHS_VECTOR_HPP
 
+#include <array>
 #include <cstdint>
 #include <type_traits>
 #include <iostream>
@@ -150,7 +151,8 @@ namespace anvil {
 		}
 
 		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL zeros() throw() {
-			Vector<T, size> tmp;
+			uint8_t buffer[sizeof(Vector<T, size>)];
+			Vector<T, size>& tmp = *reinterpret_cast<Vector<T, size>*>(buffer);
 			tmp ^= tmp;
 			return tmp;
 		}
@@ -198,7 +200,8 @@ namespace anvil {
 		}
 
 		static ANVIL_STRONG_INLINE Vector<T, size> ANVIL_VECTOR_CALL zeros() throw() {
-			Vector<T, size> tmp;
+			uint8_t buffer[sizeof(Vector<T, size>)];
+			Vector<T, size>& tmp = *reinterpret_cast<Vector<T, size>*>(buffer);
 			tmp ^= tmp;
 			return tmp;
 		}
@@ -440,166 +443,34 @@ namespace anvil {
 	static_assert(sizeof(VectorUnion) == (8 * 16), "VectorUnion different size than expected");
 
 	namespace detail {
-		template<class T>
-		struct OptimisedVectorPair {
-			T lo;
-			T hi;
-		};
 
 		template<class T, size_t S>
 		struct OptimisedVector {
-			typedef Vector<T, S> type;
-			enum {
-				size = S,
-				optimised = 0
-			};
+			typedef std::array<T, S> type;
+			enum { optimised = 0 };
+
 
 			static ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL load(const Vector<T, S> aVector) throw() {
-				return aVector;
-			}
+				union {
+					std::array<T, S> a;
+					Vector<T, S> v;
+				};
 
-			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL store(const register type aValue) throw() {
-				return aValue;
-			}
-		};
-
-#ifdef ANVIL_SSE
-
-		template<>
-		struct OptimisedVector<float, 2> {
-			typedef float T;
-			enum { S = 2, optimised = 1 };
-			typedef __m128 type;
-
-			static ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL load(const Vector<T, S> aVector) throw() {
-				return _mm_set_ps(0.f, 0, aVector.y, aVector.x);
+				v = aVector;
+				return a;
 			}
 
 			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL store(const register type aValue) throw() {
 				union {
-					Vector<T, 4> tmp;
-					Vector<T, S> out;
+					std::array<T, S> a;
+					Vector<T, S> v;
 				};
-				_mm_store_ps(tmp.elements, aValue);
-				return out;
+
+				a = aValue;
+				return v;
 			}
 		};
 
-		template<>
-		struct OptimisedVector<float, 3> {
-			typedef float T;
-			enum { S = 3, optimised = 1 };
-			typedef __m128 type;
-
-			static ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL load(const Vector<T, S> aVector) throw() {
-				return _mm_set_ps(0.f, aVector.z, aVector.y, aVector.x);
-			}
-
-			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL store(const register type aValue) throw() {
-				union {
-					Vector<T, 4> tmp;
-					Vector<T, S> out;
-				};
-				_mm_store_ps(tmp.elements, aValue);
-				return out;
-			}
-		};
-
-		template<>
-		struct OptimisedVector<float, 4> {
-			typedef float T;
-			enum { S = 4, optimised = 1 };
-			typedef __m128 type;
-
-			static ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL load(const Vector<T, S> aVector) throw() {
-				return _mm_load_ps(aVector.elements);
-			}
-
-			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL store(const register type aValue) throw() {
-				Vector<T, S> tmp;
-				_mm_store_ps(tmp.elements, aValue);
-				return tmp;
-			}
-		};
-
-		template<>
-		struct OptimisedVector<float, 8> {
-			typedef float T;
-			enum { S = 8, optimised = 1 };
-#ifdef ANVIL_AVX
-			typedef __m256 type;
-
-			static ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL load(const Vector<T, S> aVector) throw() {
-				return _mm256_load_ps(aVector.elements);
-			}
-
-			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL store(const register type aValue) throw() {
-				Vector<T, S> tmp;
-				_mm_store256_ps(tmp.elements, aValue);
-				return tmp;
-			}
-#else
-			typedef OptimisedVectorPair<__m128> type;
-
-			static ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL load(const Vector<T, S> aVector) throw() {
-				type tmp;
-				tmp.lo = _mm_load_ps(aVector.elements);
-				tmp.hi = _mm_load_ps(aVector.elements + 4);
-				return tmp;
-			}
-
-			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL store(const register type aValue) throw() {
-				Vector<T, S> tmp;
-				_mm_store_ps(tmp.elements, aValue.lo);
-				_mm_store_ps(tmp.elements + 4, aValue.hi);
-				return tmp;
-			}
-#endif
-		};
-
-		template<>
-		struct OptimisedVector<float, 16> {
-			typedef float T;
-			enum { S = 16, optimised = 1 };
-#ifdef ANVIL_AVX
-			typedef OptimisedVectorPair<__m256> type;
-
-			static ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL load(const Vector<T, S> aVector) throw() {
-				type tmp;
-				tmp.lo = _mm256_load_ps(aVector.elements);
-				tmp.hi = _mm256_load_ps(aVector.elements + 8);
-				return tmp;
-			}
-
-			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL store(const register type aValue) throw() {
-				Vector<T, S> tmp;
-				_mm256_store_ps(tmp.elements, aValue.lo);
-				_mm256_store_ps(tmp.elements + 8, aValue.hi);
-				return tmp;
-			}
-#else
-			typedef OptimisedVectorPair<OptimisedVectorPair<__m128>> type;
-
-			static ANVIL_STRONG_INLINE type ANVIL_VECTOR_CALL load(const Vector<T, S> aVector) throw() {
-				type tmp;
-				tmp.lo.lo = _mm_load_ps(aVector.elements);
-				tmp.lo.hi = _mm_load_ps(aVector.elements + 4);
-				tmp.hi.lo = _mm_load_ps(aVector.elements + 8);
-				tmp.hi.hi = _mm_load_ps(aVector.elements + 12);
-				return tmp;
-			}
-
-			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL store(const register type aValue) throw() {
-				Vector<T, S> tmp;
-				_mm_store_ps(tmp.elements, aValue.lo.lo);
-				_mm_store_ps(tmp.elements + 4, aValue.lo.hi);
-				_mm_store_ps(tmp.elements + 8, aValue.hi.lo);
-				_mm_store_ps(tmp.elements + 12, aValue.hi.hi);
-				return tmp;
-			}
-#endif
-		};
-#endif
 		enum VectorOperationID {
 			VEC_ADD,
 			VEC_SUB,
@@ -624,492 +495,600 @@ namespace anvil {
 			VEC_TANH,
 			VEC_ACOSH,
 			VEC_ASINH,
-			VEC_ATANH
+			VEC_ATANH,
+			VEC_MIN,
+			VEC_MAX,
+
+			VEC_LOG,
+			VEC_LOG2,
+			VEC_LOG10,
+			VEC_ABS,
+			VEC_EXP,
+			VEC_FLOOR,
+			VEC_CEIL,
+			VEC_ROUND,
+
+			VEC_CMPEQ,
+			VEC_CMPNE,
+			VEC_CMPLT,
+			VEC_CMPGT,
+			VEC_CMPLE,
+			VEC_CMPGE,
+
+			VEC_MOD,
+			VEC_ATAN2,
+			VEC_POW,
+			VEC_HYPOT,
 		};
 
-		template<class T, VectorOperationID ID, size_t P>
-		struct VectorOperation;
+		template<class T, VectorOperationID ID, class T2 = T, size_t S = 1>
+		struct PrimativeVectorOperation;
 
-		template<class T, VectorOperationID ID>
-		struct VectorOperation<OptimisedVectorPair<T>, ID, 1> {
-			static ANVIL_STRONG_INLINE OptimisedVectorPair<T> ANVIL_VECTOR_CALL implementation(const OptimisedVectorPair<T> a) {
-				OptimisedVectorPair<T> tmp;
-				tmp.lo = VectorOperation<T, ID, 1>::implementation(a.lo);
-				tmp.hi = VectorOperation<T, ID, 1>::implementation(a.hi);
-				return tmp;
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_ADD> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return a + b;
 			}
 		};
 
-		template<class T, VectorOperationID ID>
-		struct VectorOperation<OptimisedVectorPair<T>, ID, 2> {
-			static ANVIL_STRONG_INLINE OptimisedVectorPair<T> ANVIL_VECTOR_CALL implementation(const OptimisedVectorPair<T> a, const OptimisedVectorPair<T> b) {
-				OptimisedVectorPair<T> tmp;
-				tmp.lo = VectorOperation<T, ID, 2>::implementation(a.lo, b.lo);
-				tmp.hi = VectorOperation<T, ID, 2>::implementation(a.hi, b.hi);
-				return tmp;
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_SUB> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return a - b;
 			}
 		};
 
-		template<class T, VectorOperationID ID>
-		struct VectorOperation<OptimisedVectorPair<T>, ID, 3> {
-			static ANVIL_STRONG_INLINE OptimisedVectorPair<T> ANVIL_VECTOR_CALL implementation(const OptimisedVectorPair<T> a, const OptimisedVectorPair<T> b, const OptimisedVectorPair<T> c) {
-				OptimisedVectorPair<T> tmp;
-				tmp.lo = VectorOperation<T, ID, 3>::implementation(a.lo, b.lo, c.lo);
-				tmp.hi = VectorOperation<T, ID, 3>::implementation(a.hi, b.hi, c.hi);
-				return tmp;
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_MUL> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return a * b;
 			}
 		};
 
-		template<class T, size_t S>
-		struct VectorOperation<Vector<T, S>, VEC_ADD, 2> {
-			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL implementation(const Vector<T, S> a, const Vector<T, S> b) {
-				Vector<T, S> tmp;
-				for (size_t i = 0; i < S; ++i) tmp.elements[i] = a.elements[i] + b.elements[i];
-				return tmp;
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_DIV> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return a / b;
 			}
 		};
 
-		template<class T, size_t S>
-		struct VectorOperation<Vector<T, S>, VEC_SUB, 2> {
-			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL implementation(const Vector<T, S> a, const Vector<T, S> b) {
-				Vector<T, S> tmp;
-				for (size_t i = 0; i < S; ++i) tmp.elements[i] = a.elements[i] - b.elements[i];
-				return tmp;
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_AND> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return a & b;
 			}
 		};
 
-		template<class T, size_t S>
-		struct VectorOperation<Vector<T, S>, VEC_MUL, 2> {
-			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL implementation(const Vector<T, S> a, const Vector<T, S> b) {
-				Vector<T, S> tmp;
-				for (size_t i = 0; i < S; ++i) tmp.elements[i] = a.elements[i] * b.elements[i];
-				return tmp;
+		template<>
+		struct PrimativeVectorOperation<float, VEC_AND> {
+			static ANVIL_STRONG_INLINE float ANVIL_VECTOR_CALL implementation(const float a, const float b) {
+				union {
+					float f;
+					uint32_t u;
+				} a2, b2;
+				a2.f = a;
+				b2.f = b;
+				a2.u &= b2.u;
+				return a2.f;
 			}
 		};
 
-		template<class T, size_t S>
-		struct VectorOperation<Vector<T, S>, VEC_DIV, 2> {
-			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL implementation(const Vector<T, S> a, const Vector<T, S> b) {
-				Vector<T, S> tmp;
-				for (size_t i = 0; i < S; ++i) tmp.elements[i] = a.elements[i] / b.elements[i];
-				return tmp;
+		template<>
+		struct PrimativeVectorOperation<double, VEC_AND> {
+			static ANVIL_STRONG_INLINE double ANVIL_VECTOR_CALL implementation(const double a, const double b) {
+				union {
+					double f;
+					uint64_t u;
+				} a2, b2;
+				a2.f = a;
+				b2.f = b;
+				a2.u &= b2.u;
+				return a2.f;
 			}
 		};
 
-		template<class T, size_t S>
-		struct VectorOperation<Vector<T, S>, VEC_AND, 2> {
-			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL implementation(const Vector<T, S> a, const Vector<T, S> b) {
-				Vector<T, S> tmp;
-				for (size_t i = 0; i < S; ++i) tmp.elements[i] = a.elements[i] & b.elements[i];
-				return tmp;
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_OR> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return a | b;
 			}
 		};
 
-		template<class T, size_t S>
-		struct VectorOperation<Vector<T, S>, VEC_OR, 2> {
-			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL implementation(const Vector<T, S> a, const Vector<T, S> b) {
-				Vector<T, S> tmp;
-				for (size_t i = 0; i < S; ++i) tmp.elements[i] = a.elements[i] | b.elements[i];
-				return tmp;
+		template<>
+		struct PrimativeVectorOperation<float, VEC_OR> {
+			static ANVIL_STRONG_INLINE float ANVIL_VECTOR_CALL implementation(const float a, const float b) {
+				union {
+					float f;
+					uint32_t u;
+				} a2, b2;
+				a2.f = a;
+				b2.f = b;
+				a2.u |= b2.u;
+				return a2.f;
 			}
 		};
 
-		template<class T, size_t S>
-		struct VectorOperation<Vector<T, S>, VEC_XOR, 2> {
-			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL implementation(const Vector<T, S> a, const Vector<T, S> b) {
-				Vector<T, S> tmp;
-				for (size_t i = 0; i < S; ++i) tmp.elements[i] = a.elements[i] ^ b.elements[i];
-				return tmp;
+		template<>
+		struct PrimativeVectorOperation<double, VEC_OR> {
+			static ANVIL_STRONG_INLINE double ANVIL_VECTOR_CALL implementation(const double a, const double b) {
+				union {
+					double f;
+					uint64_t u;
+				} a2, b2;
+				a2.f = a;
+				b2.f = b;
+				a2.u |= b2.u;
+				return a2.f;
 			}
 		};
 
-		template<class T, size_t S>
-		struct VectorOperation<Vector<T, S>, VEC_FMA, 3> {
-			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL implementation(const Vector<T, S> a, const Vector<T, S> b, const Vector<T, S> c) {
-				Vector<T, S> tmp;
-				for (size_t i = 0; i < S; ++i) tmp.elements[i] = (a.elements[i] * b.elements[i]) + c.elements[i];
-				return tmp;
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_XOR> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return a ^ b;
 			}
 		};
 
-		template<class T, size_t S>
-		struct VectorOperation<Vector<T, S>, VEC_FMS, 3> {
-			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL implementation(const Vector<T, S> a, const Vector<T, S> b, const Vector<T, S> c) {
-				Vector<T, S> tmp;
-				for (size_t i = 0; i < S; ++i) tmp.elements[i] = (a.elements[i] * b.elements[i]) - c.elements[i];
-				return tmp;
+		template<>
+		struct PrimativeVectorOperation<float, VEC_XOR> {
+			static ANVIL_STRONG_INLINE float ANVIL_VECTOR_CALL implementation(const float a, const float b) {
+				union {
+					float f;
+					uint32_t u;
+				} a2, b2;
+				a2.f = a;
+				b2.f = b;
+				a2.u ^= b2.u;
+				return a2.f;
 			}
 		};
 
-		template<class T, size_t S>
-		struct VectorOperation<Vector<T, S>, VEC_SQRT, 1> {
-			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL implementation(const Vector<T, S> a) {
-				Vector<T, S> tmp;
-				for (size_t i = 0; i < S; ++i) tmp.elements[i] = std::sqrt(a.elements[i]);
-				return tmp;
+		template<>
+		struct PrimativeVectorOperation<double, VEC_XOR> {
+			static ANVIL_STRONG_INLINE double ANVIL_VECTOR_CALL implementation(const double a, const double b) {
+				union {
+					double f;
+					uint64_t u;
+				} a2, b2;
+				a2.f = a;
+				b2.f = b;
+				a2.u ^= b2.u;
+				return a2.f;
 			}
 		};
 
-#define ANVIL_VECTOR_OPERATOR(ID, FN)\
-		template<class T, size_t S>\
-		struct VectorOperation<Vector<T, S>, ID, 1> {\
-			static ANVIL_STRONG_INLINE Vector<T, S> ANVIL_VECTOR_CALL implementation(const Vector<T, S> a) {\
-				Vector<T, S> tmp;\
-				for (size_t i = 0; i < S; ++i) tmp.elements[i] = FN(a.elements[i]);\
-				return tmp;\
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_FMA> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b, const T c) {
+				return (a * b) + c;
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_FMS> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b, const T c) {
+				return (a * b) - c;
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_SQRT> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::sqrt(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_CBRT> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::cbrt(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_NOT> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return ~a;
+			}
+		};
+
+		template<>
+		struct PrimativeVectorOperation<float, VEC_NOT> {
+			static ANVIL_STRONG_INLINE float ANVIL_VECTOR_CALL implementation(const float a) {
+				union {
+					float f;
+					uint32_t u;
+				} a2;
+				a2.f = a;
+				a2.u = ~a2.u;
+				return a2.f;
+			}
+		};
+
+		template<>
+		struct PrimativeVectorOperation<double, VEC_NOT> {
+			static ANVIL_STRONG_INLINE double ANVIL_VECTOR_CALL implementation(const double a) {
+				union {
+					double f;
+					uint64_t u;
+				} a2;
+				a2.f = a;
+				a2.u = ~a2.u;
+				return a2.f;
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_COS> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::cos(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_SIN> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::sin(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_TAN> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::tan(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_ACOS> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::acos(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_ASIN> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::asin(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_ATAN> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::atan(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_COSH> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::cosh(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_SINH> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::sinh(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_TANH> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::tanh(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_ACOSH> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::acosh(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_ASINH> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::asinh(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_ATANH> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::atanh(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_MIN> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return std::min<T>(a,b);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_MAX> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return std::max<T>(a, b);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_LOG> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::log(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_LOG2> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::log2(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_LOG10> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::log10(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_ABS> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return std::abs(a);
+			}
+		};
+
+		template<>
+		struct PrimativeVectorOperation<uint8_t, VEC_ABS> {
+			static ANVIL_STRONG_INLINE uint8_t ANVIL_VECTOR_CALL implementation(const uint8_t a) {
+				return a;
+			}
+		};
+
+		template<>
+		struct PrimativeVectorOperation<uint16_t, VEC_ABS> {
+			static ANVIL_STRONG_INLINE uint16_t ANVIL_VECTOR_CALL implementation(const uint16_t a) {
+				return a;
+			}
+		};
+
+		template<>
+		struct PrimativeVectorOperation<uint32_t, VEC_ABS> {
+			static ANVIL_STRONG_INLINE uint32_t ANVIL_VECTOR_CALL implementation(const uint32_t a) {
+				return a;
+			}
+		};
+
+		template<>
+		struct PrimativeVectorOperation<uint64_t, VEC_ABS> {
+			static ANVIL_STRONG_INLINE uint64_t ANVIL_VECTOR_CALL implementation(const uint64_t a) {
+				return a;
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_FLOOR> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return a;
+			}
+		};
+
+		template<>
+		struct PrimativeVectorOperation<uint8_t, VEC_FLOOR> {
+			static ANVIL_STRONG_INLINE float ANVIL_VECTOR_CALL implementation(const float a) {
+				return std::floor(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_CEIL> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return a;
+			}
+		};
+
+		template<>
+		struct PrimativeVectorOperation<uint8_t, VEC_CEIL> {
+			static ANVIL_STRONG_INLINE float ANVIL_VECTOR_CALL implementation(const float a) {
+				return std::ceil(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_ROUND> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a) {
+				return a;
+			}
+		};
+
+		template<>
+		struct PrimativeVectorOperation<uint8_t, VEC_ROUND> {
+			static ANVIL_STRONG_INLINE float ANVIL_VECTOR_CALL implementation(const float a) {
+				return std::round(a);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_CMPEQ> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return a == b ? 
+					PrimativeVectorOperation<T,VEC_NOT>::implementation(static_cast<T>(0)) : 
+					static_cast<T>(0);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_CMPNE> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return a != b ?
+					PrimativeVectorOperation<T, VEC_NOT>::implementation(static_cast<T>(0)) :
+					static_cast<T>(0);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_CMPLT> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return a < b ?
+					PrimativeVectorOperation<T, VEC_NOT>::implementation(static_cast<T>(0)) :
+					static_cast<T>(0);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_CMPGT> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return a > b ?
+					PrimativeVectorOperation<T, VEC_NOT>::implementation(static_cast<T>(0)) :
+					static_cast<T>(0);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_CMPLE> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return a <= b ?
+					PrimativeVectorOperation<T, VEC_NOT>::implementation(static_cast<T>(0)) :
+					static_cast<T>(0);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_CMPGE> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return a >= b ?
+					PrimativeVectorOperation<T, VEC_NOT>::implementation(static_cast<T>(0)) :
+					static_cast<T>(0);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_MOD> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return a % b;
+			}
+		};
+
+		template<>
+		struct PrimativeVectorOperation<float, VEC_MOD> {
+			static ANVIL_STRONG_INLINE float ANVIL_VECTOR_CALL implementation(const float a, const float b) {
+				return std::fmod(a, b);
+			}
+		};
+
+		template<>
+		struct PrimativeVectorOperation<double, VEC_MOD> {
+			static ANVIL_STRONG_INLINE double ANVIL_VECTOR_CALL implementation(const double a, const double b) {
+				return std::fmod(a, b);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_ATAN2> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return std::atan2(a,b);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_POW> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return std::pow(a, b);
+			}
+		};
+
+		template<class T>
+		struct PrimativeVectorOperation<T, VEC_HYPOT> {
+			static ANVIL_STRONG_INLINE T ANVIL_VECTOR_CALL implementation(const T a, const T b) {
+				return std::hypot(a, b);
+			}
+		};
+
+#define ANVIL_VECTOR_OP(ID)\
+		template<class T, size_t S, class T2, size_t S2>\
+		struct PrimativeVectorOperation<std::array<T,S>, ID, T2, S2> {\
+			static std::array<T, S> ANVIL_VECTOR_CALL implementation(std::array<T, S> a) {\
+				for(size_t i = 0; i < S; ++i) a[i] = PrimativeVectorOperation<T, ID>::implementation(a[i]);\
+				return a;\
 			}\
 		};
 
-		ANVIL_VECTOR_OPERATOR(VEC_CBRT, std::cbrt)
-		ANVIL_VECTOR_OPERATOR(VEC_COS, std::cos)
-		ANVIL_VECTOR_OPERATOR(VEC_SIN, std::sin)
-		ANVIL_VECTOR_OPERATOR(VEC_TAN, std::tan)
-		ANVIL_VECTOR_OPERATOR(VEC_ACOS, std::acos)
-		ANVIL_VECTOR_OPERATOR(VEC_ASIN, std::asin)
-		ANVIL_VECTOR_OPERATOR(VEC_ATAN, std::atan)
-		ANVIL_VECTOR_OPERATOR(VEC_COSH, std::cosh)
-		ANVIL_VECTOR_OPERATOR(VEC_SINH, std::sinh)
-		ANVIL_VECTOR_OPERATOR(VEC_TANH, std::tanh)
-		ANVIL_VECTOR_OPERATOR(VEC_ACOSH, std::acosh)
-		ANVIL_VECTOR_OPERATOR(VEC_ASINH, std::asinh)
-		ANVIL_VECTOR_OPERATOR(VEC_ATANH, std::atanh)
-		#define ANVIL_VECTOR_NOT(X) ~X
-		ANVIL_VECTOR_OPERATOR(VEC_NOT, ANVIL_VECTOR_NOT)
-		#undef ANVIL_VECTOR_NOT
+		ANVIL_VECTOR_OP(VEC_SQRT)
+		ANVIL_VECTOR_OP(VEC_CBRT)
+		ANVIL_VECTOR_OP(VEC_NOT)
+		ANVIL_VECTOR_OP(VEC_COS)
+		ANVIL_VECTOR_OP(VEC_SIN)
+		ANVIL_VECTOR_OP(VEC_TAN)
+		ANVIL_VECTOR_OP(VEC_ACOS)
+		ANVIL_VECTOR_OP(VEC_ASIN)
+		ANVIL_VECTOR_OP(VEC_ATAN)
+		ANVIL_VECTOR_OP(VEC_COSH)
+		ANVIL_VECTOR_OP(VEC_SINH)
+		ANVIL_VECTOR_OP(VEC_TANH)
+		ANVIL_VECTOR_OP(VEC_ACOSH)
+		ANVIL_VECTOR_OP(VEC_ASINH)
+		ANVIL_VECTOR_OP(VEC_ATANH)
+		ANVIL_VECTOR_OP(VEC_LOG)
+		ANVIL_VECTOR_OP(VEC_LOG2)
+		ANVIL_VECTOR_OP(VEC_LOG10)
+		ANVIL_VECTOR_OP(VEC_ABS)
+		ANVIL_VECTOR_OP(VEC_EXP)
+		ANVIL_VECTOR_OP(VEC_FLOOR)
+		ANVIL_VECTOR_OP(VEC_CEIL)
+		ANVIL_VECTOR_OP(VEC_ROUND)
 
-#undef ANVIL_VECTOR_OPERATOR
+#undef ANVIL_VECTOR_OP
 
-#ifdef ANVIL_SSE
-		template<>
-		struct VectorOperation<__m128, VEC_ADD, 2> {
-			static ANVIL_STRONG_INLINE __m128 ANVIL_VECTOR_CALL implementation(const __m128 a, const __m128 b) {
-				return _mm_add_ps(a, b);
-			}
-		};
-
-		template<>
-		struct VectorOperation<__m128, VEC_SUB, 2> {
-			static ANVIL_STRONG_INLINE __m128 ANVIL_VECTOR_CALL implementation(const __m128 a, const __m128 b) {
-				return _mm_sub_ps(a, b);
-			}
-		};
-
-		template<>
-		struct VectorOperation<__m128, VEC_MUL, 2> {
-			static ANVIL_STRONG_INLINE __m128 ANVIL_VECTOR_CALL implementation(const __m128 a, const __m128 b) {
-				return _mm_mul_ps(a, b);
-			}
-		};
-
-		template<>
-		struct VectorOperation<__m128, VEC_DIV, 2> {
-			static ANVIL_STRONG_INLINE __m128 ANVIL_VECTOR_CALL implementation(const __m128 a, const __m128 b) {
-				return _mm_div_ps(a, b);
-			}
-		};
-
-		template<>
-		struct VectorOperation<__m128, VEC_AND, 2> {
-			static ANVIL_STRONG_INLINE __m128 ANVIL_VECTOR_CALL implementation(const __m128 a, const __m128 b) {
-				return _mm_and_ps(a, b);
-			}
-		};
-
-		template<>
-		struct VectorOperation<__m128, VEC_OR, 2> {
-			static ANVIL_STRONG_INLINE __m128 ANVIL_VECTOR_CALL implementation(const __m128 a, const __m128 b) {
-				return _mm_or_ps(a, b);
-			}
-		};
-
-		template<>
-		struct VectorOperation<__m128, VEC_XOR, 2> {
-			static ANVIL_STRONG_INLINE __m128 ANVIL_VECTOR_CALL implementation(const __m128 a, const __m128 b) {
-				return _mm_xor_ps(a, b);
-			}
-		};
-
-		template<>
-		struct VectorOperation<__m128, VEC_FMA, 3> {
-			static ANVIL_STRONG_INLINE __m128 ANVIL_VECTOR_CALL implementation(const __m128 a, const __m128 b, const __m128 c) {
-#ifdef ANVIL_FMA
-				return _mm_fmadd_ps(a, b, c);
-#else
-				return _mm_add_ps(_mm_mul_ps(a, b), c);
-#endif
-			}
-		};
-
-		template<>
-		struct VectorOperation<__m128, VEC_FMS, 3> {
-			static ANVIL_STRONG_INLINE __m128 ANVIL_VECTOR_CALL implementation(const __m128 a, const __m128 b, const __m128 c) {
-#ifdef ANVIL_FMA
-				return _mm_fmsub_ps(a, b, c);
-#else
-				return _mm_sub_ps(_mm_mul_ps(a, b), c);
-#endif
-			}
-		};
-
-		template<>
-		struct VectorOperation<__m128, VEC_SQRT, 1> {
-			static ANVIL_STRONG_INLINE __m128 ANVIL_VECTOR_CALL implementation(const __m128 a) {
-				return _mm_sqrt_ps(a);
-			}
-		};
-
-		template<>
-		struct VectorOperation<__m128, VEC_NOT, 1> {
-			static ANVIL_STRONG_INLINE __m128 ANVIL_VECTOR_CALL implementation(const __m128 a) {
-				return _mm_xor_ps(a, _mm_cmpeq_ps(a, a));
-			}
-		};
-
-#define ANVIL_VECTOR_OPERATOR(ID, FN)\
-		template<>\
-		struct VectorOperation<__m128, ID, 1> {\
-			static ANVIL_STRONG_INLINE __m128 ANVIL_VECTOR_CALL implementation(const __m128 a) {\
-				ANVIL_ALIGN(16) float buffer[4];\
-				_mm_store_ps(buffer, a);\
-				buffer[0] = FN(buffer[0]);\
-				buffer[1] = FN(buffer[1]);\
-				buffer[2] = FN(buffer[2]);\
-				buffer[3] = FN(buffer[3]);\
-				return _mm_load_ps(buffer);\
+#define ANVIL_VECTOR_OP(ID)\
+		template<class T, size_t S, class T2, size_t S2>\
+		struct PrimativeVectorOperation<std::array<T,S>, ID, T2, S2> {\
+			static std::array<T, S> ANVIL_VECTOR_CALL implementation(std::array<T, S> a, const std::array<T, S> b) {\
+				for(size_t i = 0; i < S; ++i) a[i] = PrimativeVectorOperation<T, ID>::implementation(a[i], b[i]);\
+				return a;\
 			}\
 		};
 
-		ANVIL_VECTOR_OPERATOR(VEC_CBRT, std::cbrt)
-		ANVIL_VECTOR_OPERATOR(VEC_COS, std::cos)
-		ANVIL_VECTOR_OPERATOR(VEC_SIN, std::sin)
-		ANVIL_VECTOR_OPERATOR(VEC_TAN, std::tan)
-		ANVIL_VECTOR_OPERATOR(VEC_ACOS, std::acos)
-		ANVIL_VECTOR_OPERATOR(VEC_ASIN, std::asin)
-		ANVIL_VECTOR_OPERATOR(VEC_ATAN, std::atan)
-		ANVIL_VECTOR_OPERATOR(VEC_COSH, std::cosh)
-		ANVIL_VECTOR_OPERATOR(VEC_SINH, std::sinh)
-		ANVIL_VECTOR_OPERATOR(VEC_TANH, std::tanh)
-		ANVIL_VECTOR_OPERATOR(VEC_ACOSH, std::acosh)
-		ANVIL_VECTOR_OPERATOR(VEC_ASINH, std::asinh)
-		ANVIL_VECTOR_OPERATOR(VEC_ATANH, std::atanh)
+		ANVIL_VECTOR_OP(VEC_ADD)
+		ANVIL_VECTOR_OP(VEC_SUB)
+		ANVIL_VECTOR_OP(VEC_MUL)
+		ANVIL_VECTOR_OP(VEC_DIV)
+		ANVIL_VECTOR_OP(VEC_AND)
+		ANVIL_VECTOR_OP(VEC_OR)
+		ANVIL_VECTOR_OP(VEC_XOR)
+		ANVIL_VECTOR_OP(VEC_MIN)
+		ANVIL_VECTOR_OP(VEC_MAX)
+		ANVIL_VECTOR_OP(VEC_CMPEQ)
+		ANVIL_VECTOR_OP(VEC_CMPNE)
+		ANVIL_VECTOR_OP(VEC_CMPLT)
+		ANVIL_VECTOR_OP(VEC_CMPGT)
+		ANVIL_VECTOR_OP(VEC_CMPLE)
+		ANVIL_VECTOR_OP(VEC_CMPGE)
+		ANVIL_VECTOR_OP(VEC_MOD)
+		ANVIL_VECTOR_OP(VEC_ATAN2)
+		ANVIL_VECTOR_OP(VEC_POW)
+		ANVIL_VECTOR_OP(VEC_HYPOT)
 
-#undef ANVIL_VECTOR_OPERATOR
-#endif
+#undef ANVIL_VECTOR_OP
 
-#ifdef ANVIL_AVX
-		template<>
-		struct VectorOperation<__m256, VEC_ADD, 2> {
-			static ANVIL_STRONG_INLINE __m128 ANVIL_VECTOR_CALL implementation(const __m256 a, const __m256 b) {
-				return _mm256_add_ps(a, b);
-			}
-		};
-
-		template<>
-		struct VectorOperation<__m256, VEC_FMA, 3> {
-			static ANVIL_STRONG_INLINE __m256 ANVIL_VECTOR_CALL implementation(const __m256 a, const __m256 b, const __m256 c) {
-#ifdef ANVIL_FMA
-				return _mm256_fmadd_ps(a, b, c);
-#else
-				return _mm256_add_ps(_mm256_mul_ps(a, b), c);
-#endif
-			}
-		};
-
-		template<>
-		struct VectorOperation<__m256, VEC_FMS, 3> {
-			static ANVIL_STRONG_INLINE __m256 ANVIL_VECTOR_CALL implementation(const __m256 a, const __m256 b, const __m256 c) {
-#ifdef ANVIL_FMA
-				return _mm256_fmsub_ps(a, b, c);
-#else
-				return _mm256_sub_ps(_mm256_mul_ps(a, b), c);
-#endif
-			}
-		};
-
-		template<>
-		struct VectorOperation<__m256, VEC_SQRT, 1> {
-			static ANVIL_STRONG_INLINE __m256 ANVIL_VECTOR_CALL implementation(const __m256 a) {
-				return _mm256_sqrt_ps(a);
-			}
-		};
-
-		template<>
-		struct VectorOperation<__m256, VEC_NOT, 1> {
-			static ANVIL_STRONG_INLINE __m256 ANVIL_VECTOR_CALL implementation(const __m256 a) {
-				return _mm256_xor_ps(a, _mm256_cmpeq_ps(a, a));
-			}
-		};
-
-#define ANVIL_VECTOR_OPERATOR(ID, FN)\
-		template<>\
-		struct VectorOperation<__m256, ID, 1> {\
-			static ANVIL_STRONG_INLINE __m256 ANVIL_VECTOR_CALL implementation(const __m256 a) {\
-				ANVIL_ALIGN(16) float buffer[8];\
-				_mm256_store_ps(buffer, a);\
-				buffer[0] = FN(buffer[0]);\
-				buffer[1] = FN(buffer[1]);\
-				buffer[2] = FN(buffer[2]);\
-				buffer[3] = FN(buffer[3]);\
-				buffer[4] = FN(buffer[4]);\
-				buffer[5] = FN(buffer[5]);\
-				buffer[6] = FN(buffer[6]);\
-				buffer[7] = FN(buffer[7]);\
-				return _mm256_load_ps(buffer);\
+#define ANVIL_VECTOR_OP(ID)\
+		template<class T, size_t S, class T2, size_t S2>\
+		struct PrimativeVectorOperation<std::array<T,S>, ID, T2, S2> {\
+			static std::array<T, S> ANVIL_VECTOR_CALL implementation(std::array<T, S> a, const std::array<T, S> b, const std::array<T, S> c) {\
+				for(size_t i = 0; i < S; ++i) a[i] = PrimativeVectorOperation<T, ID>::implementation(a[i], b[i], c[i]);\
+				return a;\
 			}\
 		};
 
-	ANVIL_VECTOR_OPERATOR(VEC_CBRT, std::cbrt)
-	ANVIL_VECTOR_OPERATOR(VEC_COS, std::cos)
-	ANVIL_VECTOR_OPERATOR(VEC_SIN, std::sin)
-	ANVIL_VECTOR_OPERATOR(VEC_TAN, std::tan)
-	ANVIL_VECTOR_OPERATOR(VEC_ACOS, std::acos)
-	ANVIL_VECTOR_OPERATOR(VEC_ASIN, std::asin)
-	ANVIL_VECTOR_OPERATOR(VEC_ATAN, std::atan)
-	ANVIL_VECTOR_OPERATOR(VEC_COSH, std::cosh)
-	ANVIL_VECTOR_OPERATOR(VEC_SINH, std::sinh)
-	ANVIL_VECTOR_OPERATOR(VEC_TANH, std::tanh)
-	ANVIL_VECTOR_OPERATOR(VEC_ACOSH, std::acosh)
-	ANVIL_VECTOR_OPERATOR(VEC_ASINH, std::asinh)
-	ANVIL_VECTOR_OPERATOR(VEC_ATANH, std::atanh)
+		ANVIL_VECTOR_OP(VEC_FMA)
+		ANVIL_VECTOR_OP(VEC_FMS)
 
-#undef ANVIL_VECTOR_OPERATOR
-#endif
-	}
-
-	template<class T, size_t S>
-	ANVIL_STRONG_INLINE anvil::Vector<T, S> fma(const anvil::Vector<T, S> a, const anvil::Vector<T, S> b, const anvil::Vector<T, S> c) {
-		typedef anvil::detail::OptimisedVector<T, S> OpVec;
-		typedef typename OpVec::type type;
-
-		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_FMA, 3>::implementation(OpVec::load(a), OpVec::load(b), OpVec::load(c)));
-	}
-
-	template<class T, size_t S>
-	ANVIL_STRONG_INLINE anvil::Vector<T, S> fms(const anvil::Vector<T, S> a, const anvil::Vector<T, S> b, const anvil::Vector<T, S> c) {
-		typedef anvil::detail::OptimisedVector<T, S> OpVec;
-		typedef typename OpVec::type type;
-
-		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_FMS, 3>::implementation(OpVec::load(a), OpVec::load(b), OpVec::load(c)));
-	}
-
-	template<class T, size_t S>
-	ANVIL_STRONG_INLINE anvil::Vector<T, S> sqrt(const anvil::Vector<T, S> a) {
-		typedef anvil::detail::OptimisedVector<T, S> OpVec;
-		typedef typename OpVec::type type;
-
-		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_SQRT, 1>::implementation(OpVec::load(a)));
-	}
-
-	template<class T, size_t S>
-	ANVIL_STRONG_INLINE anvil::Vector<T, S> cbrt(const anvil::Vector<T, S> a) {
-		typedef anvil::detail::OptimisedVector<T, S> OpVec;
-		typedef typename OpVec::type type;
-
-		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_CBRT, 1>::implementation(OpVec::load(a)));
-	}
-
-	template<class T, size_t S>
-	ANVIL_STRONG_INLINE anvil::Vector<T, S> not(const anvil::Vector<T, S> a) {
-		typedef anvil::detail::OptimisedVector<T, S> OpVec;
-		typedef typename OpVec::type type;
-
-		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_NOT, 1>::implementation(OpVec::load(a)));
-	}
-
-	template<class T, size_t S>
-	ANVIL_STRONG_INLINE anvil::Vector<T, S> cos(const anvil::Vector<T, S> a) {
-		typedef anvil::detail::OptimisedVector<T, S> OpVec;
-		typedef typename OpVec::type type;
-
-		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_COS, 1>::implementation(OpVec::load(a)));
-	}
-
-	template<class T, size_t S>
-	ANVIL_STRONG_INLINE anvil::Vector<T, S> sin(const anvil::Vector<T, S> a) {
-		typedef anvil::detail::OptimisedVector<T, S> OpVec;
-		typedef typename OpVec::type type;
-
-		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_SIN, 1>::implementation(OpVec::load(a)));
-	}
-
-	template<class T, size_t S>
-	ANVIL_STRONG_INLINE anvil::Vector<T, S> tan(const anvil::Vector<T, S> a) {
-		typedef anvil::detail::OptimisedVector<T, S> OpVec;
-		typedef typename OpVec::type type;
-
-		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_TAN, 1>::implementation(OpVec::load(a)));
-	}
-
-	template<class T, size_t S>
-	ANVIL_STRONG_INLINE anvil::Vector<T, S> acos(const anvil::Vector<T, S> a) {
-		typedef anvil::detail::OptimisedVector<T, S> OpVec;
-		typedef typename OpVec::type type;
-
-		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_ACOS, 1>::implementation(OpVec::load(a)));
-	}
-
-	template<class T, size_t S>
-	ANVIL_STRONG_INLINE anvil::Vector<T, S> asin(const anvil::Vector<T, S> a) {
-		typedef anvil::detail::OptimisedVector<T, S> OpVec;
-		typedef typename OpVec::type type;
-
-		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_ASIN, 1>::implementation(OpVec::load(a)));
-	}
-
-	template<class T, size_t S>
-	ANVIL_STRONG_INLINE anvil::Vector<T, S> atan(const anvil::Vector<T, S> a) {
-		typedef anvil::detail::OptimisedVector<T, S> OpVec;
-		typedef typename OpVec::type type;
-
-		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_ATAN, 1>::implementation(OpVec::load(a)));
-	}
-
-	template<class T, size_t S>
-	ANVIL_STRONG_INLINE anvil::Vector<T, S> cosh(const anvil::Vector<T, S> a) {
-		typedef anvil::detail::OptimisedVector<T, S> OpVec;
-		typedef typename OpVec::type type;
-
-		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_COSH, 1>::implementation(OpVec::load(a)));
-	}
-
-	template<class T, size_t S>
-	ANVIL_STRONG_INLINE anvil::Vector<T, S> sinh(const anvil::Vector<T, S> a) {
-		typedef anvil::detail::OptimisedVector<T, S> OpVec;
-		typedef typename OpVec::type type;
-
-		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_SINH, 1>::implementation(OpVec::load(a)));
-	}
-
-	template<class T, size_t S>
-	ANVIL_STRONG_INLINE anvil::Vector<T, S> tanh(const anvil::Vector<T, S> a) {
-		typedef anvil::detail::OptimisedVector<T, S> OpVec;
-		typedef typename OpVec::type type;
-
-		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_TANH, 1>::implementation(OpVec::load(a)));
-	}
-
-	template<class T, size_t S>
-	ANVIL_STRONG_INLINE anvil::Vector<T, S> acosh(const anvil::Vector<T, S> a) {
-		typedef anvil::detail::OptimisedVector<T, S> OpVec;
-		typedef typename OpVec::type type;
-
-		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_ACOSH, 1>::implementation(OpVec::load(a)));
-	}
-
-	template<class T, size_t S>
-	ANVIL_STRONG_INLINE anvil::Vector<T, S> asinh(const anvil::Vector<T, S> a) {
-		typedef anvil::detail::OptimisedVector<T, S> OpVec;
-		typedef typename OpVec::type type;
-
-		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_ASINH, 1>::implementation(OpVec::load(a)));
-	}
-
-	template<class T, size_t S>
-	ANVIL_STRONG_INLINE anvil::Vector<T, S> atanh(const anvil::Vector<T, S> a) {
-		typedef anvil::detail::OptimisedVector<T, S> OpVec;
-		typedef typename OpVec::type type;
-
-		return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_ATANH, 1>::implementation(OpVec::load(a)));
+#undef ANVIL_VECTOR_OP
 	}
 }
 
@@ -1136,131 +1115,155 @@ std::istream& operator>>(std::istream& aStream, const anvil::Vector<T, S> aVecto
 	return aStream;
 }
 
-template<class T, size_t S>
-ANVIL_STRONG_INLINE anvil::Vector<T, S> operator+(const anvil::Vector<T, S> a, const anvil::Vector<T, S> b) {
-	typedef anvil::detail::OptimisedVector<T, S> OpVec;
-	typedef typename OpVec::type type;
-
-	return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_ADD, 2>::implementation(OpVec::load(a), OpVec::load(b)));
+#define ANVIL_VECTOR_OP(ID, OP)\
+template<class T, size_t S>\
+ANVIL_STRONG_INLINE anvil::Vector<T, S> operator ## OP ## =(anvil::Vector<T, S>& a, const anvil::Vector<T, S> b) {\
+	using namespace anvil::detail;\
+	a = OptimisedVector<T, S>::store(\
+		PrimativeVectorOperation<OptimisedVector<T, S>::type, ID, T, S>::implementation(\
+			OptimisedVector<T,S>::load(a),\
+			OptimisedVector<T, S>::load(b)\
+		)\
+	);\
+	return a;\
+}\
+template<class T, size_t S>\
+ANVIL_STRONG_INLINE typename anvil::Vector<T, S> operator ## OP (anvil::Vector<T, S> a, const anvil::Vector<T, S> b) {\
+	a OP ## = b;\
+	return a;\
 }
 
-template<class T, size_t S>
-ANVIL_STRONG_INLINE anvil::Vector<T, S>& operator+=(anvil::Vector<T, S>& a, const anvil::Vector<T, S> b) {
-	typedef anvil::detail::OptimisedVector<T, S> OpVec;
-	typedef typename OpVec::type type;
+ANVIL_VECTOR_OP(VEC_ADD, +)
+ANVIL_VECTOR_OP(VEC_SUB, -)
+ANVIL_VECTOR_OP(VEC_MUL, *)
+ANVIL_VECTOR_OP(VEC_DIV, /)
+ANVIL_VECTOR_OP(VEC_AND, &)
+ANVIL_VECTOR_OP(VEC_OR, |)
+ANVIL_VECTOR_OP(VEC_XOR, ^)
+ANVIL_VECTOR_OP(VEC_MOD, %)
 
-	a = OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_ADD, 2>::implementation(OpVec::load(a), OpVec::load(b)));
-	return a;
+#undef ANVIL_VECTOR_OP
+
+#define ANVIL_VECTOR_OP(ID, OP)\
+template<class T, size_t S>\
+ANVIL_STRONG_INLINE anvil::Vector<T, S> operator ## OP (anvil::Vector<T, S> a, const anvil::Vector<T, S> b) {\
+	using namespace anvil::detail;\
+	a = OptimisedVector<T, S>::store(\
+		PrimativeVectorOperation<OptimisedVector<T, S>::type, ID, T, S>::implementation(\
+			OptimisedVector<T,S>::load(a),\
+			OptimisedVector<T, S>::load(b)\
+		)\
+	);\
+	return a;\
+}\
+
+ANVIL_VECTOR_OP(VEC_CMPEQ, ==)
+ANVIL_VECTOR_OP(VEC_CMPNE, !=)
+ANVIL_VECTOR_OP(VEC_CMPLT, <)
+ANVIL_VECTOR_OP(VEC_CMPGT, >)
+ANVIL_VECTOR_OP(VEC_CMPLE, <=)
+ANVIL_VECTOR_OP(VEC_CMPGT, >=)
+
+#undef ANVIL_VECTOR_OP
+
+#define ANVIL_VECTOR_OP(ID, OP)\
+template<class T, size_t S>\
+ANVIL_STRONG_INLINE anvil::Vector<T, S> operator ## OP (anvil::Vector<T, S> a) {\
+	using namespace anvil::detail;\
+	a = OptimisedVector<T, S>::store(\
+		PrimativeVectorOperation<OptimisedVector<T, S>::type, ID, T, S>::implementation(\
+			OptimisedVector<T,S>::load(a)\
+		)\
+	);\
+	return a;\
+}\
+
+ANVIL_VECTOR_OP(VEC_NOT, ~)
+
+#undef ANVIL_VECTOR_OP
+
+namespace anvil {
+
+#define ANVIL_VECTOR_OP(ID, NAME)\
+	template<class T, size_t S>\
+	ANVIL_STRONG_INLINE anvil::Vector<T, S> NAME(anvil::Vector<T, S> a) {\
+		using namespace anvil::detail;\
+		a = OptimisedVector<T, S>::store(\
+			PrimativeVectorOperation<OptimisedVector<T, S>::type, ID, T, S>::implementation(\
+				OptimisedVector<T,S>::load(a)\
+			)\
+		);\
+		return a;\
+	}\
+
+	ANVIL_VECTOR_OP(VEC_SQRT, sqrt)
+	ANVIL_VECTOR_OP(VEC_CBRT, cbrt)
+	ANVIL_VECTOR_OP(VEC_COS, cos)
+	ANVIL_VECTOR_OP(VEC_SIN, sin)
+	ANVIL_VECTOR_OP(VEC_TAN, tan)
+	ANVIL_VECTOR_OP(VEC_ACOS, acos)
+	ANVIL_VECTOR_OP(VEC_ASIN, asin)
+	ANVIL_VECTOR_OP(VEC_ATAN, atan)
+	ANVIL_VECTOR_OP(VEC_COSH, cosh)
+	ANVIL_VECTOR_OP(VEC_SINH, sinh)
+	ANVIL_VECTOR_OP(VEC_TANH, tanh)
+	ANVIL_VECTOR_OP(VEC_ACOSH, acosh)
+	ANVIL_VECTOR_OP(VEC_ASINH, asinh)
+	ANVIL_VECTOR_OP(VEC_ATANH, atanh)
+	ANVIL_VECTOR_OP(VEC_LOG, log)
+	ANVIL_VECTOR_OP(VEC_LOG2, log2)
+	ANVIL_VECTOR_OP(VEC_LOG10, log10)
+	ANVIL_VECTOR_OP(VEC_ABS, abs)
+	ANVIL_VECTOR_OP(VEC_EXP, exp)
+	ANVIL_VECTOR_OP(VEC_FLOOR, floor)
+	ANVIL_VECTOR_OP(VEC_CEIL, ceil)
+	ANVIL_VECTOR_OP(VEC_ROUND, round)
+
+#undef ANVIL_VECTOR_OP
+
+	#define ANVIL_VECTOR_OP(ID, NAME)\
+	template<class T, size_t S>\
+	ANVIL_STRONG_INLINE anvil::Vector<T, S> NAME(anvil::Vector<T, S> a, const anvil::Vector<T, S> b) {\
+		using namespace anvil::detail;\
+		a = OptimisedVector<T, S>::store(\
+			PrimativeVectorOperation<OptimisedVector<T, S>::type, ID, T, S>::implementation(\
+				OptimisedVector<T,S>::load(a),\
+				OptimisedVector<T, S>::load(b)\
+			)\
+		);\
+		return a;\
+	}\
+
+	ANVIL_VECTOR_OP(VEC_MIN, min)
+	ANVIL_VECTOR_OP(VEC_MAX, max)
+	ANVIL_VECTOR_OP(VEC_ATAN2, atan2)
+	ANVIL_VECTOR_OP(VEC_POW, pow)
+	ANVIL_VECTOR_OP(VEC_HYPOT, hypot2)
+
+#undef ANVIL_VECTOR_OP
+
+#define ANVIL_VECTOR_OP(ID, NAME)\
+	template<class T, size_t S>\
+	ANVIL_STRONG_INLINE anvil::Vector<T, S> NAME(anvil::Vector<T, S> a, const anvil::Vector<T, S> b, const anvil::Vector<T, S> c) {\
+		using namespace anvil::detail;\
+		a = OptimisedVector<T, S>::store(\
+			PrimativeVectorOperation<OptimisedVector<T, S>::type, ID, T, S>::implementation(\
+				OptimisedVector<T,S>::load(a),\
+				OptimisedVector<T, S>::load(b),\
+				OptimisedVector<T, S>::load(c)\
+			)\
+		);\
+		return a;\
+	}\
+
+	ANVIL_VECTOR_OP(VEC_FMA, fma)
+	ANVIL_VECTOR_OP(VEC_FMS, fms)
+
+#undef ANVIL_VECTOR_OP
 }
 
-template<class T, size_t S>
-ANVIL_STRONG_INLINE anvil::Vector<T, S> operator-(const anvil::Vector<T, S> a, const anvil::Vector<T, S> b) {
-	typedef anvil::detail::OptimisedVector<T, S> OpVec;
-	typedef typename OpVec::type type;
-
-	return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_SUB, 2>::implementation(OpVec::load(a), OpVec::load(b)));
-}
-
-template<class T, size_t S>
-ANVIL_STRONG_INLINE anvil::Vector<T, S>& operator-=(anvil::Vector<T, S>& a, const anvil::Vector<T, S> b) {
-	typedef anvil::detail::OptimisedVector<T, S> OpVec;
-	typedef typename OpVec::type type;
-
-	a = OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_SUB, 2>::implementation(OpVec::load(a), OpVec::load(b)));
-	return a;
-}
-
-template<class T, size_t S>
-ANVIL_STRONG_INLINE anvil::Vector<T, S> operator*(const anvil::Vector<T, S> a, const anvil::Vector<T, S> b) {
-	typedef anvil::detail::OptimisedVector<T, S> OpVec;
-	typedef typename OpVec::type type;
-
-	return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_MUL, 2>::implementation(OpVec::load(a), OpVec::load(b)));
-}
-
-template<class T, size_t S>
-ANVIL_STRONG_INLINE anvil::Vector<T, S>& operator*=(anvil::Vector<T, S>& a, const anvil::Vector<T, S> b) {
-	typedef anvil::detail::OptimisedVector<T, S> OpVec;
-	typedef typename OpVec::type type;
-
-	a = OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_MUL, 2>::implementation(OpVec::load(a), OpVec::load(b)));
-	return a;
-}
-
-template<class T, size_t S>
-ANVIL_STRONG_INLINE anvil::Vector<T, S> operator/(const anvil::Vector<T, S> a, const anvil::Vector<T, S> b) {
-	typedef anvil::detail::OptimisedVector<T, S> OpVec;
-	typedef typename OpVec::type type;
-
-	return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_DIV, 2>::implementation(OpVec::load(a), OpVec::load(b)));
-}
-
-template<class T, size_t S>
-ANVIL_STRONG_INLINE anvil::Vector<T, S>& operator/=(anvil::Vector<T, S>& a, const anvil::Vector<T, S> b) {
-	typedef anvil::detail::OptimisedVector<T, S> OpVec;
-	typedef typename OpVec::type type;
-
-	a = OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_DIV, 2>::implementation(OpVec::load(a), OpVec::load(b)));
-	return a;
-}
-
-template<class T, size_t S>
-ANVIL_STRONG_INLINE anvil::Vector<T, S> operator&(const anvil::Vector<T, S> a, const anvil::Vector<T, S> b) {
-	typedef anvil::detail::OptimisedVector<T, S> OpVec;
-	typedef typename OpVec::type type;
-
-	return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_AND, 2>::implementation(OpVec::load(a), OpVec::load(b)));
-}
-
-template<class T, size_t S>
-ANVIL_STRONG_INLINE anvil::Vector<T, S>& operator&=(anvil::Vector<T, S>& a, const anvil::Vector<T, S> b) {
-	typedef anvil::detail::OptimisedVector<T, S> OpVec;
-	typedef typename OpVec::type type;
-
-	a = OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_AND, 2>::implementation(OpVec::load(a), OpVec::load(b)));
-	return a;
-}
-
-template<class T, size_t S>
-ANVIL_STRONG_INLINE anvil::Vector<T, S> operator|(const anvil::Vector<T, S> a, const anvil::Vector<T, S> b) {
-	typedef anvil::detail::OptimisedVector<T, S> OpVec;
-	typedef typename OpVec::type type;
-
-	return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_OR, 2>::implementation(OpVec::load(a), OpVec::load(b)));
-}
-
-template<class T, size_t S>
-ANVIL_STRONG_INLINE anvil::Vector<T, S>& operator|=(anvil::Vector<T, S>& a, const anvil::Vector<T, S> b) {
-	typedef anvil::detail::OptimisedVector<T, S> OpVec;
-	typedef typename OpVec::type type;
-
-	a = OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_OR, 2>::implementation(OpVec::load(a), OpVec::load(b)));
-	return a;
-}
-
-template<class T, size_t S>
-ANVIL_STRONG_INLINE anvil::Vector<T, S> operator^(const anvil::Vector<T, S> a, const anvil::Vector<T, S> b) {
-	typedef anvil::detail::OptimisedVector<T, S> OpVec;
-	typedef typename OpVec::type type;
-
-	return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_XOR, 2>::implementation(OpVec::load(a), OpVec::load(b)));
-}
-
-template<class T, size_t S>
-ANVIL_STRONG_INLINE anvil::Vector<T, S>& operator^=(anvil::Vector<T, S>& a, const anvil::Vector<T, S> b) {
-	typedef anvil::detail::OptimisedVector<T, S> OpVec;
-	typedef typename OpVec::type type;
-
-	a = OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_XOR, 2>::implementation(OpVec::load(a), OpVec::load(b)));
-	return a;
-}
-
-template<class T, size_t S>
-ANVIL_STRONG_INLINE anvil::Vector<T, S>& operator~(const anvil::Vector<T, S> a) {
-	typedef anvil::detail::OptimisedVector<T, S> OpVec;
-	typedef typename OpVec::type type;
-
-	return OpVec::store(anvil::detail::VectorOperation<type, anvil::detail::VEC_NOT, 1>::implementation(OpVec::load(a)));
-}
+//#ifdef ANVIL_SSE
+//#include "anvil/maths/vector/SSE_float32x4.hpp"
+//#endif
 
 #endif
