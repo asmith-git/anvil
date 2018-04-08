@@ -15,7 +15,11 @@
 #ifndef ANVIL_MATHS_VECTOR_SSE_INT32x4_HPP
 #define ANVIL_MATHS_VECTOR_SSE_INT32x4_HPP
 
+#ifdef ANVIL_SSE_4_1
+#include <smmintrin.h>
+#else
 #include <emmintrin.h>
+#endif
 
 namespace anvil { namespace detail {
 
