@@ -12,10 +12,16 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
+#include "anvil/lutils/LibDetect.hpp"
+
 #ifndef ANVIL_LUTILS_ASSERT_HPP
 #define ANVIL_LUTILS_ASSERT_HPP
 
-#define ANVIL_ASSUME(CONDITION) __assume(CONDITION)
+#if ANVIL_GSL_SUPPORT
+	#define ANVIL_ASSUME(CONDITION) GSL_ASSUME(CONDITION)
+#else 
+	#define ANVIL_ASSUME(CONDITION) __assume(CONDITION)
+#endif
 #define ANVIL_ASSUME_IMPOSSIBLE __assume(0)
 
 #define ANVIL_CONTRACT_IGNORE 0
