@@ -57,12 +57,16 @@ namespace anvil { namespace lutils {
 				head = static_cast<int8_t*>(_data) + bytes;
 			}
 
-			void operator=(PODVectorCoreDynamic<BYTES>&& other) throw() {
+			void swap(PODVectorCoreDynamic<BYTES>& other) throw() {
 				enum { bytes = sizeof(PODVectorCoreDynamic<BYTES>) };
 				uint8_t buffer[bytes];
 				std::memcpy(buffer, this, bytes);
 				std::memcpy(this, &other, bytes);
 				std::memcpy(&other, buffer, bytes);
+			}
+
+			inline void operator=(PODVectorCoreDynamic<BYTES>&& other) throw() {
+				swap(other);
 			}
 
 			void operator=(const PODVectorCoreDynamic<BYTES>& other) throw() {
@@ -145,6 +149,20 @@ namespace anvil { namespace lutils {
 				head = static_cast<int8_t*>(head) + bytes;
 			}
 
+			void swap(PODVectorCoreStatic<BYTES, CAPACITY>& other) throw() {
+				if (size_bytes() == 0u) {
+					*this = std::move(other);
+					other.head = other._data;
+				} else if (other.size_bytes() == 0u) {
+					other = std::move(*this);
+					head = _data;
+				} else {
+					PODVectorCoreStatic<BYTES, CAPACITY> tmp = std::move(other);
+					other = std::move(*this);
+					*this = std::move(tmp);
+				}
+			}
+
 			constexpr inline uint32_t size_bytes() const throw() {
 				return static_cast<const uint8_t*>(head) - _data;
 			}
@@ -188,6 +206,10 @@ namespace anvil { namespace lutils {
 			PODVector_(const PODVector_<BYTES, CORE>& other) throw() :
 				_core(other._core)
 			{}
+
+			inline void swap(PODVector_<BYTES, CORE>& other) throw() {
+				_core.swap(other._core);
+			}
 
 			inline PODVector_<BYTES, CORE>& operator=(PODVector_<BYTES, CORE>&& other) throw() {
 				_core = std::move(other._core);
@@ -349,7 +371,9 @@ namespace anvil { namespace lutils {
 	template<class T, class IMPLEMENTATION>
 	class PODVector {
 	private:
-		static_assert(std::is_pod<T>::value, "type must be POD");
+		//static_assert(std::is_pod<T>::value, "type must be POD");
+		static_assert(std::is_trivially_destructible<T>::value, "T must be trivially destructable");
+		static_assert(std::is_trivially_copyable<T>::value, "T must be trivially copyable");
 
 		IMPLEMENTATION _vector;
 	public:
@@ -368,6 +392,10 @@ namespace anvil { namespace lutils {
 		PODVector(const PODVector<T, IMPLEMENTATION>& other) :
 			_vector(other._vector)
 		{}
+
+		inline void swap(PODVector<T, IMPLEMENTATION>& other) throw() {
+			_vector.swap(other._vector);
+		}
 
 		inline PODVector<T, IMPLEMENTATION>& operator=(PODVector<T, IMPLEMENTATION>&& other) {
 			_vector = std::move(other._vector);
