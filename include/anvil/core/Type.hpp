@@ -12,8 +12,8 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#ifndef ANVIL_MATHS_TYPE_HPP
-#define ANVIL_MATHS_TYPE_HPP
+#ifndef ANVIL_CORE_TYPE_HPP
+#define ANVIL_CORE_TYPE_HPP
 
 #include <cstdint>
 #include <type_traits>

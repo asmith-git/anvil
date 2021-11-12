@@ -12,11 +12,10 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#ifndef ANVIL_MATHS_REFLECTION_HPP
-#define ANVIL_MATHS_REFLECTION_HPP
+#ifndef ANVIL_CORE_REFLECTION_HPP
+#define ANVIL_CORE_REFLECTION_HPP
 
 #include <cstring>
-#include <cstdint>
 #include "anvil/core/Keywords.hpp"
 
 namespace anvil {

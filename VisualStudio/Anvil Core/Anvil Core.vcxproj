@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\anvil\Core.hpp" />
+    <ClInclude Include="..\..\include\anvil\core\Common.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Compiler.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Constants.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Cpu.hpp" />
@@ -27,8 +28,11 @@
     <ClInclude Include="..\..\include\anvil\core\LeadingZeros.hpp" />
     <ClInclude Include="..\..\include\anvil\core\OperatingSystem.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Popcount.hpp" />
+    <ClInclude Include="..\..\include\anvil\core\Reflection.hpp" />
+    <ClInclude Include="..\..\include\anvil\core\Type.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\anvil\core\Reflection.cpp" />
     <ClCompile Include="CoreVisualStudio.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
