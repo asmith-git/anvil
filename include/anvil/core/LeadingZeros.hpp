@@ -38,7 +38,7 @@ namespace anvil {
 		return __lzcnt(a_value);
 	}
 
-	#if ANVIL_ARCHITECTURE_BITS >= 64
+	#if ANVIL_CPU_ARCHITECTURE_BITS >= 64
 		static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const uint64_t a_value) throw() {
 			return __lzcnt64(a_value);
 		}
@@ -118,7 +118,7 @@ namespace anvil {
 	#ifdef ANVIL_NO_LZ_64 // Leading zero count was not implemented for 64-bit
 		#undef ANVIL_NO_LZ_64
 		static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const uint64_t a_value) throw() {
-	#if ANVIL_ARCHITECTURE_BITS >= 64
+	#if ANVIL_CPU_ARCHITECTURE_BITS >= 64
 			const uint32_t low = static_cast<uint32_t>(a_value & static_cast<uint64_t>(UINT32_MAX));
 			const uint32_t high = static_cast<uint32_t>(a_value >> 32ull);
 	#else

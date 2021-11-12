@@ -12,24 +12,11 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#ifndef ANVIL_LUTILS_CPU_HPP
-#define ANVIL_LUTILS_CPU_HPP
+#ifndef ANVIL_CORE_CPU_RUNTIME_HPP
+#define ANVIL_CORE_CPU_RUNTIME_HPP
 
 #include <cstdint>
-
-#define ANVIL_CPU_UNKNOWN 0u
-#define ANVIL_CPU_X86 1u
-#define ANVIL_CPU_X86_64 2u
-
-#ifndef ANVIL_CPU_ARCHITECUTE
-	#if defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64)
-		#define ANVIL_CPU_ARCHITECUTE ANVIL_CPU_X86_64
-	#elif defined(i386) ||  defined(__i386) ||  defined(__i386__) ||  defined(__i486__) ||  defined(__i586__) ||  defined(__i686__) ||  defined(__IA32__) ||  defined(_M_I86) ||  defined(_M_IX86) ||  defined(__X86__) ||  defined(_X86_) ||  defined(__THW_INTEL__) ||   defined(__INTEL__) ||   defined(__THW_INTEL__) ||   defined(__386)
-		#define ANVIL_CPU_ARCHITECUTE ANVIL_CPU_X86
-	#else
-		#define ANVIL_CPU_ARCHITECUTE ANVIL_CPU_UNKNOWN
-	#endif
-#endif
+#include "anvil/core/Cpu.hpp"
 
 namespace anvil {
 	enum CpuArchitecture : uint8_t {
@@ -38,9 +25,9 @@ namespace anvil {
 		CPU_X86_64 = ANVIL_CPU_X86_64
 	};
 
-	static const constexpr CpuArchitecture CPU_ARCHITECUTE = static_cast<CpuArchitecture>(ANVIL_CPU_ARCHITECUTE);
+	static const constexpr CpuArchitecture CPU_ARCHITECUTE = static_cast<CpuArchitecture>(ANVIL_CPU_ARCHITECTURE);
 
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 	#ifndef ANVIL_MIN_INSTRUCTION_SET
 		#define ANVIL_MIN_INSTRUCTION_SET (ASM_MMX | ASM_SSE | ASM_SSE2)
 	#endif

@@ -80,16 +80,16 @@ namespace anvil {
 	typedef double float64_t;
 
 	// Define CPU native words
-#if ANVIL_ARCHITECTURE_BITS == 8
+#if ANVIL_CPU_ARCHITECTURE_BITS == 8
 	typedef int8_t NativeSigned;
 	typedef uint8_t NativeUnsigned;
-#elif ANVIL_ARCHITECTURE_BITS == 16
+#elif ANVIL_CPU_ARCHITECTURE_BITS == 16
 	typedef int16_t NativeSigned;
 	typedef uint16_t NativeUnsigned;
-#elif ANVIL_ARCHITECTURE_BITS == 32
+#elif ANVIL_CPU_ARCHITECTURE_BITS == 32
 	typedef int32_t NativeSigned;
 	typedef uint32_t NativeUnsigned;
-#elif ANVIL_ARCHITECTURE_BITS >= 64
+#elif ANVIL_CPU_ARCHITECTURE_BITS >= 64
 	typedef int64_t NativeSigned;
 	typedef uint64_t NativeUnsigned;
 #endif

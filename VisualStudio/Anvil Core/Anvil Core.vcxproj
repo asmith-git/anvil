@@ -25,6 +25,7 @@
     <ClInclude Include="..\..\include\anvil\core\Compiler.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Constants.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Cpu.hpp" />
+    <ClInclude Include="..\..\include\anvil\core\CpuRuntime.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Keywords.hpp" />
     <ClInclude Include="..\..\include\anvil\core\LeadingZeros.hpp" />
     <ClInclude Include="..\..\include\anvil\core\OperatingSystem.hpp" />

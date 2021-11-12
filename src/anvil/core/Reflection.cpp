@@ -89,7 +89,7 @@ namespace anvil {
 		}
 
 		uint64_t ANVIL_CALL reflect8(const uint64_t aValue) throw() {
-			#if ANVIL_ARCHITECTURE_BITS >= 64
+			#if ANVIL_CPU_ARCHITECTURE_BITS >= 64
 				uint64_t low = aValue & static_cast<uint64_t>(UINT32_MAX);
 				uint64_t high = aValue >> 32ull;
 
