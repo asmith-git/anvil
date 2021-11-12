@@ -15,7 +15,7 @@
 #ifndef ANVIL_CORE_CONSTANTS_HPP
 #define ANVIL_CORE_CONSTANTS_HPP
 
-#include <stdint>
+#include <cstdint>
 #include <type_traits>
 
 namespace anvil {
@@ -41,9 +41,9 @@ namespace anvil {
 			sub = A - B,    		//!< B subtracted from A.
 			mul = A * B,    		//!< A multiplied by B.
 			div = A / B,    		//!< A divided by B.
-			and = A & B,    		//!< Bitwise A AND B.
-			or = A | B,    		    //!< Bitwise A OR B.
-			xor = A ^ B,    		//!< Bitwise A XOR B.
+			bit_and = A & B,    	//!< Bitwise A AND B.
+			bit_or = A | B,    		//!< Bitwise A OR B.
+			bit_xor = A ^ B,    	//!< Bitwise A XOR B.
 			rshift = A >> B,    	//!< A right shifted by B.
 			lshift = A << B    		//!< A left shifted by B.
 		};
@@ -69,9 +69,9 @@ namespace anvil {
 			sub = A,
 			mul = 0,
 			div = 0,
-			and = 0,
-			or = A,
-			xor = A,
+			bit_and = 0,
+			bit_or = A,
+			bit_xor = A,
 			rshift = A,
 			lshift = A
 		};

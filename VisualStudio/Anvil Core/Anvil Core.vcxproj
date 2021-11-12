@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\anvil\Core.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Compiler.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Constants.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Cpu.hpp" />
