@@ -40,6 +40,7 @@
     <ClInclude Include="..\..\include\anvil\core\Type.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\anvil\core\CpuRuntime.cpp" />
     <ClCompile Include="..\..\src\anvil\core\Reflection.cpp" />
     <ClCompile Include="CoreVisualStudio.cpp" />
   </ItemGroup>

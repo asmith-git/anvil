@@ -17,19 +17,26 @@
 
 #include <cstdint>
 #include "anvil/core/Cpu.hpp"
+#include "anvil/core/Keywords.hpp"
 
 namespace anvil {
 	enum CpuArchitecture : uint8_t {
 		CPU_UNKNOWN = ANVIL_CPU_UNKNOWN,
 		CPU_X86 = ANVIL_CPU_X86,
-		CPU_X86_64 = ANVIL_CPU_X86_64
+		CPU_X86_64 = ANVIL_CPU_X86_64,
+		CPU_ARM = ANVIL_CPU_ARM,
+		CPU_ARM_64 = ANVIL_CPU_ARM_64
 	};
 
 	static const constexpr CpuArchitecture CPU_ARCHITECUTE = static_cast<CpuArchitecture>(ANVIL_CPU_ARCHITECTURE);
 
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 	#ifndef ANVIL_MIN_INSTRUCTION_SET
-		#define ANVIL_MIN_INSTRUCTION_SET (ASM_MMX | ASM_SSE | ASM_SSE2)
+		#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+			#define ANVIL_MIN_INSTRUCTION_SET (ASM_MMX | ASM_SSE | ASM_SSE2 | ASM_SSE3 | ASM_SSSE3 | ASM_SSE41 | ASM_POPCNT)
+		#else
+			#define ANVIL_MIN_INSTRUCTION_SET (ASM_MMX | ASM_SSE | ASM_SSE2)
+		#endif
 	#endif
 
 	enum InstructionSets : uint64_t {
@@ -55,11 +62,16 @@ namespace anvil {
 		ASM_LZCNT =		ASM_BMI1
 	};
 
-	static constexpr const uint64_t ASM_MINIMUM = ANVIL_MIN_INSTRUCTION_SET;
+	static constexpr const uint64_t ASM_MINIMUM = ANVIL_MIN_INSTRUCTION_SET; // Placeholder
 
-	static uint64_t CheckSupportedInstructionSets() throw() {
-		//! \todo Implement
-		return ASM_MINIMUM;
+	namespace detail {
+		InstructionSets CheckSupportedInstructionSets_Implement() throw();
+	}
+
+	static const InstructionSets SupportedInstructionSets = detail::CheckSupportedInstructionSets_Implement();
+
+	static ANVIL_STRONG_INLINE bool AreInstructionSetSupported(const InstructionSets instruction_sets) throw() {
+		return (SupportedInstructionSets & instruction_sets) == instruction_sets;
 	}
 
 #endif

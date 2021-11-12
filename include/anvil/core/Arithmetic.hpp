@@ -438,7 +438,7 @@ namespace anvil {
 #if ANVIL_CPU_ARCHITECTURE_BITS >= 64
 	#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 			// Technically POPCNT flag on Intel and ABM flag on AMD CPUs, but SSE 4.2 is a close approximation
-			if constexpr ((ASM_MINIMUM & ASM_POPCNT) != 0ull) {
+			if AreInstructionSetSupported(ASM_POPCNT)) {
 				return detail::PopulationCount64_X86(value);
 			} 
 	#endif
@@ -460,7 +460,7 @@ namespace anvil {
 	static size_t PopulationCount(const uint32_t value) throw() {
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		// Technically POPCNT flag on Intel and ABM flag on AMD CPUs, but SSE 4.2 is a close approximation
-		if constexpr ((ASM_MINIMUM & ASM_POPCNT) != 0ull) {
+		if (AreInstructionSetSupported(ASM_POPCNT)) {
 			return detail::PopulationCount32_X86(value);
 		}
 #endif
@@ -1063,7 +1063,7 @@ namespace anvil {
 
 	static size_t CountLeadingZeros(const uint32_t value) throw() {
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-		if constexpr ((ASM_MINIMUM & ASM_LZCNT) != 0ull) {
+		if (AreInstructionSetSupported(ASM_LZCNT)) {
 			return detail::CountLeadingZeros_LZCNT(value);
 		}
 #endif
@@ -1083,7 +1083,7 @@ namespace anvil {
 	static size_t CountLeadingZeros(const uint64_t value) throw() {
 		size_t count;
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-		if constexpr ((ASM_MINIMUM & ASM_LZCNT) != 0ull) {
+		if (AreInstructionSetSupported(ASM_LZCNT)) {
 			return detail::CountLeadingZeros_LZCNT(value);
 		}
 #endif
@@ -1179,7 +1179,7 @@ namespace anvil {
 
 	static size_t CountTrailingZeros(const uint32_t value) throw() {
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-		if constexpr ((ASM_MINIMUM & ASM_BMI1) != 0ull) {
+		if (AreInstructionSetSupported(ASM_BMI1)) {
 			return detail::CountTrailingZeros_BMI(value);
 		}
 #endif
@@ -1198,7 +1198,7 @@ namespace anvil {
 
 	static size_t CountTrailingZeros(const uint64_t value) throw() {
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-		if constexpr ((ASM_MINIMUM & ASM_BMI1) != 0ull) {
+		if (AreInstructionSetSupported(ASM_BMI1)) {
 			return detail::CountTrailingZeros_BMI(value);
 		}
 #endif
