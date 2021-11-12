@@ -7,8 +7,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Anvil Core", "Anvil Core\An
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestApplication", "TestApplication\TestApplication.vcxproj", "{EDF3130F-BC60-4DD1-918E-C277321D14E3}"
 	ProjectSection(ProjectDependencies) = postProject
+		{62DF001E-60C2-47BA-9168-F58D4E18DFAE} = {62DF001E-60C2-47BA-9168-F58D4E18DFAE}
 		{26C297CD-CDAB-4B13-9864-335A1AC7A1D9} = {26C297CD-CDAB-4B13-9864-335A1AC7A1D9}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Anvil Utils", "Anvil Utils\Anvil Utils.vcxproj", "{62DF001E-60C2-47BA-9168-F58D4E18DFAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +37,14 @@ Global
 		{EDF3130F-BC60-4DD1-918E-C277321D14E3}.Release|x64.Build.0 = Release|x64
 		{EDF3130F-BC60-4DD1-918E-C277321D14E3}.Release|x86.ActiveCfg = Release|Win32
 		{EDF3130F-BC60-4DD1-918E-C277321D14E3}.Release|x86.Build.0 = Release|Win32
+		{62DF001E-60C2-47BA-9168-F58D4E18DFAE}.Debug|x64.ActiveCfg = Debug|x64
+		{62DF001E-60C2-47BA-9168-F58D4E18DFAE}.Debug|x64.Build.0 = Debug|x64
+		{62DF001E-60C2-47BA-9168-F58D4E18DFAE}.Debug|x86.ActiveCfg = Debug|Win32
+		{62DF001E-60C2-47BA-9168-F58D4E18DFAE}.Debug|x86.Build.0 = Debug|Win32
+		{62DF001E-60C2-47BA-9168-F58D4E18DFAE}.Release|x64.ActiveCfg = Release|x64
+		{62DF001E-60C2-47BA-9168-F58D4E18DFAE}.Release|x64.Build.0 = Release|x64
+		{62DF001E-60C2-47BA-9168-F58D4E18DFAE}.Release|x86.ActiveCfg = Release|Win32
+		{62DF001E-60C2-47BA-9168-F58D4E18DFAE}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -19,8 +19,8 @@
 #include <vector>
 #include <mutex>
 #include <atomic>
-#include "anvil/lutils/PODVector.hpp"
-#include "anvil/lutils/IDGenerator.hpp"
+#include "anvil/core/PODVector.hpp"
+#include "anvil/core/IDGenerator.hpp"
 
 namespace anvil { namespace lutils { namespace msg {
 
