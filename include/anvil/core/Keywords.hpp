@@ -18,6 +18,7 @@
 #include "anvil/core/Compiler.hpp"
 #include "anvil/core/Cpu.hpp"
 #include <cstdint>
+#include <stdexcept>
 
 // Strongest inlining hint available in the compiler
 #if ANVIL_COMPILER == ANVIL_MSVC

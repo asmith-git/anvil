@@ -16,306 +16,256 @@
 #define ANVIL_CORE_TYPE_HPP
 
 #include <cstdint>
-#include <type_traits>
+#include <cmath>
 #include "anvil/core/Keywords.hpp"
 
 // Primative Types
 
-#ifdef ANVIL_OCV_COMPATIBILITY
-	#define ANVIL_8U  static_cast<anvil::Type>(0)
-	#define ANVIL_8S  static_cast<anvil::Type>(1)
-	#define ANVIL_16U static_cast<anvil::Type>(2)
-	#define ANVIL_16S static_cast<anvil::Type>(3)
-	#define ANVIL_32S static_cast<anvil::Type>(4)
-	#define ANVIL_32F static_cast<anvil::Type>(5)
-	#define ANVIL_64F static_cast<anvil::Type>(6)
-	#define ANVIL_32U static_cast<anvil::Type>(7)
-	#define ANVIL_64U static_cast<anvil::Type>(7)
-	#define ANVIL_64S static_cast<anvil::Type>(7)
-	#define ANVIL_8B  static_cast<anvil::Type>(7)
-	#define ANVIL_TYPES 7
-#else
-	#define ANVIL_8U  static_cast<anvil::Type>(0)
-	#define ANVIL_8S  static_cast<anvil::Type>(1)
-	#define ANVIL_16U static_cast<anvil::Type>(2)
-	#define ANVIL_16S static_cast<anvil::Type>(3)
-	#define ANVIL_32U static_cast<anvil::Type>(4)
-	#define ANVIL_32S static_cast<anvil::Type>(5)
-	#define ANVIL_64U static_cast<anvil::Type>(6)
-	#define ANVIL_64S static_cast<anvil::Type>(7)
-	#define ANVIL_32F static_cast<anvil::Type>(8)
-	#define ANVIL_64F static_cast<anvil::Type>(9)
-	#define ANVIL_8B  static_cast<anvil::Type>(10)
-	#define ANVIL_TYPES 11
-#endif
-// Base Types
-
-#define ANVIL_MAKETYPE(T,C) anvil::CreateType(T,C)
-
-#define ANVIL_8UC1  ANVIL_MAKETYPE(ANVIL_8U,  1)
-#define ANVIL_8UC2  ANVIL_MAKETYPE(ANVIL_8U,  2)
-#define ANVIL_8UC3  ANVIL_MAKETYPE(ANVIL_8U,  3)
-#define ANVIL_8UC4  ANVIL_MAKETYPE(ANVIL_8U,  4)
-#define ANVIL_8SC1  ANVIL_MAKETYPE(ANVIL_8S,  1)
-#define ANVIL_8SC2  ANVIL_MAKETYPE(ANVIL_8S,  2)
-#define ANVIL_8SC3  ANVIL_MAKETYPE(ANVIL_8S,  3)
-#define ANVIL_8SC4  ANVIL_MAKETYPE(ANVIL_8S,  4)
-#define ANVIL_16UC1 ANVIL_MAKETYPE(ANVIL_16U, 1)
-#define ANVIL_16UC2 ANVIL_MAKETYPE(ANVIL_16U, 2)
-#define ANVIL_16UC3 ANVIL_MAKETYPE(ANVIL_16U, 3)
-#define ANVIL_16UC4 ANVIL_MAKETYPE(ANVIL_16U, 4)
-#define ANVIL_16SC1 ANVIL_MAKETYPE(ANVIL_16S, 1)
-#define ANVIL_16SC2 ANVIL_MAKETYPE(ANVIL_16S, 2)
-#define ANVIL_16SC3 ANVIL_MAKETYPE(ANVIL_16S, 3)
-#define ANVIL_16SC4 ANVIL_MAKETYPE(ANVIL_16S, 4)
-#define ANVIL_32UC1 ANVIL_MAKETYPE(ANVIL_32U, 1)
-#define ANVIL_32UC2 ANVIL_MAKETYPE(ANVIL_32U, 2)
-#define ANVIL_32UC3 ANVIL_MAKETYPE(ANVIL_32U, 3)
-#define ANVIL_32UC4 ANVIL_MAKETYPE(ANVIL_32U, 4)
-#define ANVIL_32SC1 ANVIL_MAKETYPE(ANVIL_32S, 1)
-#define ANVIL_32SC2 ANVIL_MAKETYPE(ANVIL_32S, 2)
-#define ANVIL_32SC3 ANVIL_MAKETYPE(ANVIL_32S, 3)
-#define ANVIL_32SC4 ANVIL_MAKETYPE(ANVIL_32S, 4)
-#define ANVIL_64UC1 ANVIL_MAKETYPE(ANVIL_64U, 1)
-#define ANVIL_64UC2 ANVIL_MAKETYPE(ANVIL_64U, 2)
-#define ANVIL_64UC3 ANVIL_MAKETYPE(ANVIL_64U, 3)
-#define ANVIL_64UC4 ANVIL_MAKETYPE(ANVIL_64U, 4)
-#define ANVIL_64SC1 ANVIL_MAKETYPE(ANVIL_64S, 1)
-#define ANVIL_64SC2 ANVIL_MAKETYPE(ANVIL_64S, 2)
-#define ANVIL_64SC3 ANVIL_MAKETYPE(ANVIL_64S, 3)
-#define ANVIL_64SC4 ANVIL_MAKETYPE(ANVIL_64S, 4)
-#define ANVIL_32FC1 ANVIL_MAKETYPE(ANVIL_32F, 1)
-#define ANVIL_32FC2 ANVIL_MAKETYPE(ANVIL_32F, 2)
-#define ANVIL_32FC3 ANVIL_MAKETYPE(ANVIL_32F, 3)
-#define ANVIL_32FC4 ANVIL_MAKETYPE(ANVIL_32F, 4)
-#define ANVIL_64FC1 ANVIL_MAKETYPE(ANVIL_64F, 1)
-#define ANVIL_64FC2 ANVIL_MAKETYPE(ANVIL_64F, 2)
-#define ANVIL_64FC3 ANVIL_MAKETYPE(ANVIL_64F, 3)
-#define ANVIL_64FC4 ANVIL_MAKETYPE(ANVIL_64F, 4)
-#define ANVIL_8BC1  ANVIL_MAKETYPE(ANVIL_8B,  1)
-#define ANVIL_8BC2  ANVIL_MAKETYPE(ANVIL_8B,  2)
-#define ANVIL_8BC3  ANVIL_MAKETYPE(ANVIL_8B,  3)
-#define ANVIL_8BC4  ANVIL_MAKETYPE(ANVIL_8B,  4)
-
-// SSE Types
-
-#define ANVIL_8SC16 ANVIL_MAKETYPE(ANVIL_8S,  16)
-#define ANVIL_8SC8  ANVIL_MAKETYPE(ANVIL_8S,  8)
-#define ANVIL_16SC8 ANVIL_MAKETYPE(ANVIL_16S, 8)
-
 namespace anvil {
-	enum Type :
-#ifdef ANVIL_OCV_COMPATIBILITY
-		int32_t
-#else
-		int16_t 
-#endif
-	{};
 
-	namespace detail {
-		enum {
-#ifdef ANVIL_OCV_COMPATIBILITY
-			CHANNEL_SHIFT = 3,
-			MAX_DEPTH = 1 << CHANNEL_SHIFT,
-			DEPTH_MASK = MAX_DEPTH - 1
-#else
-			CHANNEL_SHIFT = 4,
-			DEPTH_MASK = 15
-#endif
+#define ANVIL_HELPER(TY, BY, CH) (TY | (BY << 3u) | (CH << 5u))
+
+	enum EnumeratedType : uint8_t {
+		ANVIL_8UX1 =	ANVIL_HELPER(0, 0, 0),
+		ANVIL_8UX2 =	ANVIL_HELPER(0, 0, 1),
+		ANVIL_8UX3 =	ANVIL_HELPER(0, 0, 2),
+		ANVIL_8UX4 =	ANVIL_HELPER(0, 0, 3),
+		ANVIL_8UX5 =	ANVIL_HELPER(0, 0, 4),
+		ANVIL_8UX6 =	ANVIL_HELPER(0, 0, 5),
+		ANVIL_8UX7 =	ANVIL_HELPER(0, 0, 6),
+		ANVIL_8UX8 =	ANVIL_HELPER(0, 0, 7),
+		ANVIL_16UX1 =	ANVIL_HELPER(0, 1, 0),
+		ANVIL_16UX2 =	ANVIL_HELPER(0, 1, 1),
+		ANVIL_16UX3 =	ANVIL_HELPER(0, 1, 2),
+		ANVIL_16UX4 =	ANVIL_HELPER(0, 1, 3),
+		ANVIL_16UX5 =	ANVIL_HELPER(0, 1, 4),
+		ANVIL_16UX6 =	ANVIL_HELPER(0, 1, 5),
+		ANVIL_16UX7 =	ANVIL_HELPER(0, 1, 6),
+		ANVIL_16UX8 =	ANVIL_HELPER(0, 1, 7),
+		ANVIL_32UX1 =	ANVIL_HELPER(0, 2, 0),
+		ANVIL_32UX2 =	ANVIL_HELPER(0, 2, 1),
+		ANVIL_32UX3 =	ANVIL_HELPER(0, 2, 2),
+		ANVIL_32UX4 =	ANVIL_HELPER(0, 2, 3),
+		ANVIL_32UX5 =	ANVIL_HELPER(0, 2, 4),
+		ANVIL_32UX6 =	ANVIL_HELPER(0, 2, 5),
+		ANVIL_32UX7 =	ANVIL_HELPER(0, 2, 6),
+		ANVIL_32UX8 =	ANVIL_HELPER(0, 2, 7),
+		ANVIL_64UX1 =	ANVIL_HELPER(0, 3, 0),
+		ANVIL_64UX2 =	ANVIL_HELPER(0, 3, 1),
+		ANVIL_64UX3 =	ANVIL_HELPER(0, 3, 2),
+		ANVIL_64UX4 =	ANVIL_HELPER(0, 3, 3),
+		ANVIL_64UX5 =	ANVIL_HELPER(0, 3, 4),
+		ANVIL_64UX6 =	ANVIL_HELPER(0, 3, 5),
+		ANVIL_64UX7 =	ANVIL_HELPER(0, 3, 6),
+		ANVIL_64UX8 =	ANVIL_HELPER(0, 3, 7),
+		ANVIL_8SX1 =	ANVIL_HELPER(1, 0, 0),
+		ANVIL_8SX2 =	ANVIL_HELPER(1, 0, 1),
+		ANVIL_8SX3 =	ANVIL_HELPER(1, 0, 2),
+		ANVIL_8SX4 =	ANVIL_HELPER(1, 0, 3),
+		ANVIL_8SX5 =	ANVIL_HELPER(1, 0, 4),
+		ANVIL_8SX6 =	ANVIL_HELPER(1, 0, 5),
+		ANVIL_8SX7 =	ANVIL_HELPER(1, 0, 6),
+		ANVIL_8SX8 =	ANVIL_HELPER(1, 0, 7),
+		ANVIL_16SX1 =	ANVIL_HELPER(1, 1, 0),
+		ANVIL_16SX2 =	ANVIL_HELPER(1, 1, 1),
+		ANVIL_16SX3 =	ANVIL_HELPER(1, 1, 2),
+		ANVIL_16SX4 =	ANVIL_HELPER(1, 1, 3),
+		ANVIL_16SX5 =	ANVIL_HELPER(1, 1, 4),
+		ANVIL_16SX6 =	ANVIL_HELPER(1, 1, 5),
+		ANVIL_16SX7 =	ANVIL_HELPER(1, 1, 6),
+		ANVIL_16SX8 =	ANVIL_HELPER(1, 1, 7),
+		ANVIL_32SX1 =	ANVIL_HELPER(1, 2, 0),
+		ANVIL_32SX2 =	ANVIL_HELPER(1, 2, 1),
+		ANVIL_32SX3 =	ANVIL_HELPER(1, 2, 2),
+		ANVIL_32SX4 =	ANVIL_HELPER(1, 2, 3),
+		ANVIL_32SX5 =	ANVIL_HELPER(1, 2, 4),
+		ANVIL_32SX6 =	ANVIL_HELPER(1, 2, 5),
+		ANVIL_32SX7 =	ANVIL_HELPER(1, 2, 6),
+		ANVIL_32SX8 =	ANVIL_HELPER(1, 2, 7),
+		ANVIL_64SX1 =	ANVIL_HELPER(1, 3, 0),
+		ANVIL_64SX2 =	ANVIL_HELPER(1, 3, 1),
+		ANVIL_64SX3 =	ANVIL_HELPER(1, 3, 2),
+		ANVIL_64SX4 =	ANVIL_HELPER(1, 3, 3),
+		ANVIL_64SX5 =	ANVIL_HELPER(1, 3, 4),
+		ANVIL_64SX6 =	ANVIL_HELPER(1, 3, 5),
+		ANVIL_64SX7 =	ANVIL_HELPER(1, 3, 6),
+		ANVIL_64SX8 =	ANVIL_HELPER(1, 3, 7),
+		ANVIL_8FX1 =	ANVIL_HELPER(2, 0, 0),
+		ANVIL_8FX2 =	ANVIL_HELPER(2, 0, 1),
+		ANVIL_8FX3 =	ANVIL_HELPER(2, 0, 2),
+		ANVIL_8FX4 =	ANVIL_HELPER(2, 0, 3),
+		ANVIL_8FX5 =	ANVIL_HELPER(2, 0, 4),
+		ANVIL_8FX6 =	ANVIL_HELPER(2, 0, 5),
+		ANVIL_8FX7 =	ANVIL_HELPER(2, 0, 6),
+		ANVIL_8FX8 =	ANVIL_HELPER(2, 0, 7),
+		ANVIL_16FX1 =	ANVIL_HELPER(2, 1, 0),
+		ANVIL_16FX2 =	ANVIL_HELPER(2, 1, 1),
+		ANVIL_16FX3 =	ANVIL_HELPER(2, 1, 2),
+		ANVIL_16FX4 =	ANVIL_HELPER(2, 1, 3),
+		ANVIL_16FX5 =	ANVIL_HELPER(2, 1, 4),
+		ANVIL_16FX6 =	ANVIL_HELPER(2, 1, 5),
+		ANVIL_16FX7 =	ANVIL_HELPER(2, 1, 6),
+		ANVIL_16FX8 =	ANVIL_HELPER(2, 1, 7),
+		ANVIL_32FX1 =	ANVIL_HELPER(2, 2, 0),
+		ANVIL_32FX2 =	ANVIL_HELPER(2, 2, 1),
+		ANVIL_32FX3 =	ANVIL_HELPER(2, 2, 2),
+		ANVIL_32FX4 =	ANVIL_HELPER(2, 2, 3),
+		ANVIL_32FX5 =	ANVIL_HELPER(2, 2, 4),
+		ANVIL_32FX6 =	ANVIL_HELPER(2, 2, 5),
+		ANVIL_32FX7 =	ANVIL_HELPER(2, 2, 6),
+		ANVIL_32FX8 =	ANVIL_HELPER(2, 2, 7),
+		ANVIL_64FX1 =	ANVIL_HELPER(2, 3, 0),
+		ANVIL_64FX2 =	ANVIL_HELPER(2, 3, 1),
+		ANVIL_64FX3 =	ANVIL_HELPER(2, 3, 2),
+		ANVIL_64FX4 =	ANVIL_HELPER(2, 3, 3),
+		ANVIL_64FX5 =	ANVIL_HELPER(2, 3, 4),
+		ANVIL_64FX6 =	ANVIL_HELPER(2, 3, 5),
+		ANVIL_64FX7 =	ANVIL_HELPER(2, 3, 6),
+		ANVIL_64FX8 =	ANVIL_HELPER(2, 3, 7)
+	};
+
+#undef ANVIL_HELPER
+
+	class Type {
+	private:
+		union {
+			struct {
+				uint8_t _type : 2;		// { unsigned, signed, floating point}
+				uint8_t _bytes : 3;		// { 1, 2, 4, 8 }
+				uint8_t _channels : 3;	// channels - 1
+			};
+			uint8_t _numeric_value;
 		};
-	}
+	public:
+		enum Interpretation {
+			TYPE_UNSIGNED,
+			TYPE_SIGNED,
+			TYPE_FLOATING_POINT
+		};
 
-	static ANVIL_CONSTEXPR_FN Type CreateType(Type aType, int aChannels) throw() {
-		return static_cast<Type>(((aChannels - 1) << detail::CHANNEL_SHIFT) | aType);
-	}
+		ANVIL_CONSTEXPR_FN Type() :
+			_numeric_value(ANVIL_8UX1)
+		{}
 
-	static ANVIL_CONSTEXPR_FN Type GetPrimativeType(Type aType) throw() {
-		return static_cast<Type>(aType & detail::DEPTH_MASK);
-	}
+		ANVIL_CONSTEXPR_FN Type(const EnumeratedType type) :
+			_numeric_value(type)
+		{}
 
-	static ANVIL_CONSTEXPR_FN int GetChannels(Type aType) throw() {
-		return (aType >> detail::CHANNEL_SHIFT) + 1;
-	}
-
-	static ANVIL_CONSTEXPR_FN Type GetWidePrimativeType(Type aType) throw() {
-			return 
-				aType == ANVIL_8U || aType == ANVIL_8S ? ANVIL_16S :
-				aType == ANVIL_16U || aType == ANVIL_16S ? ANVIL_32S :
-				aType == ANVIL_32U ? ANVIL_64S :
-				aType;
-	}
-
-	static ANVIL_CONSTEXPR_FN Type GetWideType(Type aType) throw() {
-		return CreateType(
-			GetWidePrimativeType(GetPrimativeType(aType)),
-			GetChannels(aType));
-	}
-
-	namespace detail {
-		static ANVIL_CONSTEXPR_FN size_t SizeOfPrimative(Type aType) throw() {
-			return
-				aType == ANVIL_8U || aType == ANVIL_8S || aType == ANVIL_8B ? 1 :
-				aType == ANVIL_16U || aType == ANVIL_16S ? 2 :
-				aType == ANVIL_32U || aType == ANVIL_32S || aType == ANVIL_32F ? 4 :
-				aType == ANVIL_64U || aType == ANVIL_64S || aType == ANVIL_64F ? 8 :
-				0;
+		Type(const Interpretation type, const size_t bytes, const size_t channels = 1u) {
+			SetInterpretation(type);
+			SetSizeInBytes(bytes);
+			SetNumberOfChannels(channels);
 		}
 
-		static ANVIL_CONSTEXPR_FN int TypeWidthRank(Type aType) throw() {
-			return
-				aType == ANVIL_8U	? 0 :
-				aType == ANVIL_16U ? 1 :
-#ifndef ANVIL_OCV_COMPATIBILITY
-				aType == ANVIL_32U	? 2 :
-				aType == ANVIL_64U	? 3 :
-#endif
-				aType == ANVIL_8S	? 1 :
-				aType == ANVIL_16S	? 2 :
-				aType == ANVIL_32S ? 3 :
-#ifndef ANVIL_OCV_COMPATIBILITY
-				aType == ANVIL_64S	? 4 :
-#endif
-				aType == ANVIL_32F	? 5 :
-				aType == ANVIL_64F	? 6 :
-#ifndef ANVIL_OCV_COMPATIBILITY
-				aType == ANVIL_8B	? -1 :
-#endif
-				0;
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN EnumeratedType GetEnumeratedType() const throw() {
+			return static_cast<EnumeratedType>(_numeric_value);
 		}
 
-		static ANVIL_CONSTEXPR_FN Type WidestTypePrimative(Type a, Type b) throw() {
-			return TypeWidthRank(a) < TypeWidthRank(b) ? b : a;
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN Interpretation GetInterpretation() const throw() {
+			return static_cast<Interpretation>(_type);
 		}
-	}
 
-	static ANVIL_CONSTEXPR_FN size_t SizeOf(Type aType) throw() {
-		return detail::SizeOfPrimative(GetPrimativeType(aType)) * GetChannels(aType);
-	}
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN bool IsUnsigned() const throw() {
+			return _type == TYPE_UNSIGNED;
+		}
 
-	static ANVIL_CONSTEXPR_FN size_t WidthOf(Type aType) throw() {
-		return detail::SizeOfPrimative(GetPrimativeType(aType)) << 3;
-	}
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN bool IsSigned() const throw() {
+			return _type == TYPE_SIGNED;
+		}
 
-	static ANVIL_CONSTEXPR_FN Type WidestType(anvil::Type a, anvil::Type b) throw() {
-		return anvil::CreateType(
-			detail::WidestTypePrimative(GetPrimativeType(a), GetPrimativeType(b)), 
-			GetChannels(a) < GetChannels(b) ? GetChannels(b) : GetChannels(a));
-	}
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN bool IsFloatingPoint() const throw() {
+			return _type == TYPE_FLOATING_POINT;
+		}
 
-	template<Type TYPE> struct TypeFromEnum;
-	template<> struct TypeFromEnum<ANVIL_8U>  { typedef uint8_t type; };
-	template<> struct TypeFromEnum<ANVIL_8S>  { typedef int8_t type; };
-	template<> struct TypeFromEnum<ANVIL_16U> { typedef uint16_t type; };
-	template<> struct TypeFromEnum<ANVIL_16S> { typedef int16_t type; };
-	template<> struct TypeFromEnum<ANVIL_32S> { typedef int32_t type; };
-	template<> struct TypeFromEnum<ANVIL_32F> { typedef float type; };
-	template<> struct TypeFromEnum<ANVIL_64F> { typedef double type; };
-#ifndef ANVIL_OCV_COMPATIBILITY
-	template<> struct TypeFromEnum<ANVIL_32U> { typedef uint32_t type; };
-	template<> struct TypeFromEnum<ANVIL_64U> { typedef uint64_t type; };
-	template<> struct TypeFromEnum<ANVIL_64S> { typedef int64_t type; };
-	template<> struct TypeFromEnum<ANVIL_8B>  { typedef bool type; };
-#endif
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN size_t GetNumberOfChannels() const throw() {
+			return _channels + 1u;
+		}
+
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN size_t GetPrimativeSizeInBytes() const throw() {
+			//return std::pow(2u, _bytes);
+			return 1u << _bytes;
+		}
+
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN size_t GetPrimativeSizeInBits() const throw() {
+			return GetPrimativeSizeInBytes() * 8u;
+		}
+
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN size_t GetSizeInBytes() const throw() {
+			return GetPrimativeSizeInBytes() * GetNumberOfChannels();
+		}
+
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN size_t GetSizeInBits() const throw() {
+			return GetPrimativeSizeInBytes() * GetNumberOfChannels() * 8u;
+		}
+
+		ANVIL_STRONG_INLINE void SetSizeInBytes(const size_t size) {
+			ANVIL_RUNTIME_ASSERT(size == 1u || size == 2u || size == 4u || size == 8u, "anvil::Type::SetSizeInBytes : Invalid size (must be 1, 2, 4 or 8 bytes)");
+			switch (size) {
+			case 1u:
+				_bytes = 0u;
+				break;
+			case 2u:
+				_bytes = 1u;
+				break;
+			case 3u:
+				_bytes = 2u;
+				break;
+			case 4u:
+				_bytes = 4u;
+				break;
+			};
+		}
+
+		ANVIL_STRONG_INLINE void SetInterpretation(const Interpretation type) {
+			_type = type;
+		}
+
+		ANVIL_STRONG_INLINE void SetSizeInBits(const size_t size) {
+			SetSizeInBytes(size / 8u);
+		}
+
+		ANVIL_STRONG_INLINE void SetNumberOfChannels(const size_t channels) {
+			ANVIL_RUNTIME_ASSERT(channels > 0u && channels <= 8u, "anvil::Type::SetNumberOfChannels : Invalid number of channels (must be 1-8)");
+			_channels = channels - 1u;
+		}
+	};
+
+	static_assert(sizeof(Type) == 1, "Excpected size of anvil::Type to be 1 byte");
 
 	template<class T> struct EnumFromType;
-	template<> struct EnumFromType<uint8_t>  { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_8U; };
-	template<> struct EnumFromType<int8_t>   { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_8S; };
-	template<> struct EnumFromType<uint16_t> { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_16U; };
-	template<> struct EnumFromType<int16_t>  { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_16S; };
-	template<> struct EnumFromType<int32_t>  { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_32S; };
-	template<> struct EnumFromType<float>    { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_32F; };
-	template<> struct EnumFromType<double>   { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_64F; };
-#ifndef ANVIL_OCV_COMPATIBILITY
-	template<> struct EnumFromType<uint32_t> { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_32U; };
-	template<> struct EnumFromType<uint64_t> { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_64U; };
-	template<> struct EnumFromType<int64_t>  { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_64S; };
-	template<> struct EnumFromType<bool>     { static ANVIL_CONSTEXPR_VAR const Type value = ANVIL_8B; };
-#endif
-	
-	template<Type TYPE>
-	struct TypeInfo {
-		typedef TypeFromEnum<TYPE> type;
-		enum {
-			channels = GetChannels(TYPE),
-			size = sizeof(type),
-			is_unsigned = std::is_unsigned<type>::value,
-			is_signed = std::is_signed<type>::value,
-			is_float = std::is_floating_point<type>::value
-		};
-	};
+	template<> struct EnumFromType<uint8_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_8UX1; };
+	template<> struct EnumFromType<uint16_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_16UX1; };
+	template<> struct EnumFromType<uint32_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_32UX1; };
+	template<> struct EnumFromType<uint64_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_64UX1; };
+	template<> struct EnumFromType<int8_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_8SX1; };
+	template<> struct EnumFromType<int16_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_16SX1; };
+	template<> struct EnumFromType<int32_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_32SX1; };
+	template<> struct EnumFromType<int64_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_64SX1; };
+	//template<> struct EnumFromType<float8_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_8FX1; };
+	//template<> struct EnumFromType<float16_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_16FX1; };
+	template<> struct EnumFromType<float32_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_32FX1; };
+	template<> struct EnumFromType<float64_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_64FX1; };
 
-	struct TypeInfoRuntime {
-		uint16_t channels : 8;
-		uint16_t size : 3;
-		uint16_t is_unsigned : 1;
-		uint16_t is_signed : 1;
-		uint16_t is_float : 1;
+	namespace detail {
+		template<class T>
+		struct _WideType;
 
-		TypeInfoRuntime() throw() :
-			channels(0),
-			size(0),
-			is_unsigned(0),
-			is_signed(0),
-			is_float(0)
-		{}
-
-		TypeInfoRuntime(int aChannels, int aSize, int aUnsigned, int aSigned, int aFloat) throw() :
-			channels(aChannels),
-			size(aSize),
-			is_unsigned(aUnsigned),
-			is_signed(aSigned),
-			is_float(aFloat)
-		{}
-	};
-
-	static TypeInfoRuntime GetTypeInfo(Type aType) throw() {
-		switch (GetPrimativeType(aType)) {
-			case ANVIL_8U :
-				return { GetChannels(aType), 1, 1, 0, 0 };
-			case ANVIL_8S :
-				return { GetChannels(aType), 1, 0, 1, 0 };
-			case ANVIL_16U :
-				return { GetChannels(aType), 2, 1, 0, 0 };
-			case ANVIL_16S :
-				return{ GetChannels(aType), 2, 0, 1, 0 };
-#ifndef ANVIL_OCV_COMPATIBILITY
-			case ANVIL_32U :
-				return { GetChannels(aType), 4, 1, 0, 0 };
-#endif
-			case ANVIL_32S :
-				return { GetChannels(aType), 4, 0, 1, 0 };
-#ifndef ANVIL_OCV_COMPATIBILITY
-			case ANVIL_64U :
-				return { GetChannels(aType), 8, 1, 0, 0 };
-			case ANVIL_64S :
-				return { GetChannels(aType), 8, 0, 1, 0 };
-#endif
-			case ANVIL_32F :
-				return { GetChannels(aType), 4, 0, 0, 1 };
-			case ANVIL_64F :
-				return { GetChannels(aType), 8, 0, 0, 1 };
-#ifndef ANVIL_OCV_COMPATIBILITY
-			case ANVIL_8B :
-				return { GetChannels(aType), 8, 0, 0, 0 };
-#endif
-			default:
-				return TypeInfoRuntime();
-		}
+		template<> struct _WideType<uint8_t> { typedef int16_t type; };
+		template<> struct _WideType<int8_t> { typedef int16_t type; };
+		template<> struct _WideType<uint16_t> { typedef int32_t type; };
+		template<> struct _WideType<int16_t> { typedef int32_t type; };
+		template<> struct _WideType<uint32_t> { typedef int64_t type; };
+		template<> struct _WideType<int32_t> { typedef int32_t type; };
+		template<> struct _WideType<uint64_t> { typedef int64_t type; };
+		template<> struct _WideType<int64_t> { typedef int64_t type; };
+		//template<> struct _WideType<float8_t> { typedef float32_t type; };
+		//template<> struct _WideType<float16_t> { typedef float32_t type; };
+		template<> struct _WideType<float32_t> { typedef float32_t type; };
+		template<> struct _WideType<float64_t> { typedef float64_t type; };
 	}
 
 	template<class T>
-	struct Widen;
-
-	template<> struct Widen<uint8_t> { typedef int16_t type; };
-	template<> struct Widen<int8_t> { typedef int16_t type; };
-	template<> struct Widen<uint16_t> { typedef int32_t type; };
-	template<> struct Widen<int16_t> { typedef int32_t type; };
-	template<> struct Widen<uint32_t> { typedef int64_t type; };
-	template<> struct Widen<int32_t> { typedef int32_t type; };
-	template<> struct Widen<uint64_t> { typedef int64_t type; };
-	template<> struct Widen<int64_t> { typedef int64_t type; };
-	template<> struct Widen<float> { typedef float type; };
-	template<> struct Widen<double> { typedef double type; };
+	using WideType = typename detail::_WideType<T>::type;
 }
 
 #endif
