@@ -41,3 +41,5 @@
 *.log
 *.tlog
 *.idb
+*.db-shm
+*.db-wal
