@@ -45,9 +45,6 @@
     <ClInclude Include="..\..\include\anvil\core\OperatingSystem.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\anvil\core\Common.hpp">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\anvil\core\Reflection.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
@@ -58,6 +55,27 @@
       <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\anvil\core\CpuRuntime.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\core\Alignment.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\core\Assert.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\core\FastSharedPtr.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\core\IDGenerator.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\core\LibDetect.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\core\PODAlgorithm.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\core\PODVector.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
   </ItemGroup>

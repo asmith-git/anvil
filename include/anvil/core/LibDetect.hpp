@@ -12,8 +12,8 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#ifndef ANVIL_LUTILS_LIBDETECT_HPP
-#define ANVIL_LUTILS_LIBDETECT_HPP
+#ifndef ANVIL_CORE_LIBDETECT_HPP
+#define ANVIL_CORE_LIBDETECT_HPP
 
 // GSL
 #if defined(GSL_GSL_H) || defined(GSL_UTIL_H) || defined(GSL_BYTE_H) || defined(GSL_ALGORITHM_H) || defined(GSL_STRING_SPAN_H) || defined(GSL_SPAN_H) || defined(GSL_POINTERS_H) || defined(GSL_MULTI_SPAN_H) || defined(GSL_CONTRACTS_H)

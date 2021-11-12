@@ -12,12 +12,12 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#ifndef ANVIL_LUTILS_POD_VECTOR_HPP
-#define ANVIL_LUTILS_POD_VECTOR_HPP
+#ifndef ANVIL_CORE_POD_VECTOR_HPP
+#define ANVIL_CORE_POD_VECTOR_HPP
 
 #include <cstdint>
 #include <type_traits>
-#include "anvil/lutils/Assert.hpp"
+#include "anvil/core/Assert.hpp"
 
 namespace anvil { namespace lutils {
 	namespace detail {

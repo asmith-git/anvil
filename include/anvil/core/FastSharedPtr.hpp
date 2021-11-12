@@ -12,8 +12,8 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#ifndef ANVIL_LUTILS_FAST_SHARED_PTR_HPP
-#define ANVIL_LUTILS_FAST_SHARED_PTR_HPP
+#ifndef ANVIL_CORE_FAST_SHARED_PTR_HPP
+#define ANVIL_CORE_FAST_SHARED_PTR_HPP
 
 #include <cstdint>
 #include <atomic>

@@ -12,11 +12,11 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#ifndef ANVIL_LUTILS_ID_GENERATOR_HPP
-#define ANVIL_LUTILS_ID_GENERATOR_HPP
+#ifndef ANVIL_CORE_ID_GENERATOR_HPP
+#define ANVIL_CORE_ID_GENERATOR_HPP
 
 #include <mutex>
-#include "anvil/lutils/PODVector.hpp"
+#include "anvil/core/PODVector.hpp"
 
 namespace anvil { namespace lutils {
 

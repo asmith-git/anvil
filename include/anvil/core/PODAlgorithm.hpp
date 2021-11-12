@@ -12,18 +12,19 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#ifndef ANVIL_LUTILS_POD_ALGORITHM_HPP
-#define ANVIL_LUTILS_POD_ALGORITHM_HPP
+#ifndef ANVIL_CORE_POD_ALGORITHM_HPP
+#define ANVIL_CORE_POD_ALGORITHM_HPP
 
 #include <type_traits>
-#include "anvil/lutils/Alignment.hpp"
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+#include "anvil/core/Alignment.hpp"
+#include "anvil/core/Cpu.hpp"
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 #include <immintrin.h>
 #endif
 
 namespace anvil { namespace lutils {
 
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 	template<size_t BYTES>
 	static inline void FastMemcpy_avx512(void* const dst, const void* src) throw() {
 		static_assert((BYTES % 64u) == 0, "Memory block must be a multiple of 64u bytes");
@@ -57,7 +58,7 @@ namespace anvil { namespace lutils {
 
 	template<size_t BYTES>
 	static inline void FastMemcpy(void* const dst, const void* src) throw() {
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		if constexpr ((BYTES % 64u) == 0) {
 			if constexpr ((ASM_MINIMUM & ASM_AVX512F) != 0ull) {
 				FastMemcpy_avx512<BYTES>(dst, src);

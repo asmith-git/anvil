@@ -12,8 +12,8 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#ifndef ANVIL_LUTILS_ALIGNMENT_HPP
-#define ANVIL_LUTILS_ALIGNMENT_HPP
+#ifndef ANVIL_CORE_ALIGNMENT_HPP
+#define ANVIL_CORE_ALIGNMENT_HPP
 
 #ifndef ANVIL_CACHE_LINE
 #define ANVIL_CACHE_LINE 64

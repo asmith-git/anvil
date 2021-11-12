@@ -12,7 +12,7 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#include "anvil/lutils/LibDetect.hpp"
+#include "anvil/core/LibDetect.hpp"
 
 #ifndef ANVIL_LUTILS_ASSERT_HPP
 #define ANVIL_LUTILS_ASSERT_HPP
