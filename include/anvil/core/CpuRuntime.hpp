@@ -46,7 +46,8 @@ namespace anvil {
 		ASM_AVX512F =	1ull << 10ull,
 		ASM_AVX512VL =	1ull << 11ull,
 		ASM_AVX512BW =	1ull << 12ull,
-
+		
+		ASM_FMA =		ASM_AVX2,
 		ASM_POPCNT =	ASM_SSE42,
 		ASM_ABM =		ASM_POPCNT,
 		ASM_BMI2 =		ASM_AVX2,

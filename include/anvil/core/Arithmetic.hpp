@@ -846,7 +846,6 @@ namespace anvil {
 			uint64_t u;
 			float64_t f;
 		};
-		__mmask8
 		f = _mm_cvtsd_f64(_mm_mask_blend_pd(
 			static_cast<__mmask8>(mask),
 			_mm_load_sd(reinterpret_cast<const float64_t*>(&ifZero)),
@@ -1572,6 +1571,53 @@ namespace anvil {
 		u = ExtractBitField(u, start_bit, bit_count);
 		return f;
 	}
+
+	// Mad
+
+	template<class T>
+	static ANVIL_STRONG_INLINE T MultiplyAdd(const T a, const T b, const T c) throw() {
+		return (a * b) + c;
+	}
+
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+
+	static ANVIL_STRONG_INLINE float32_t MultiplyAdd_FMA(const float32_t a, const float32_t b, const float32_t c) throw() {
+		return _mm_cvtss_f32(_mm_fmadd_ps(
+			_mm_load_ss(&a),
+			_mm_load_ss(&b),
+			_mm_load_ss(&c)
+		));
+	}
+
+	static ANVIL_STRONG_INLINE float64_t MultiplyAdd_FMA(const float64_t a, const float64_t b, const float64_t c) throw() {
+		return _mm_cvtsd_f64(_mm_fmadd_pd(
+			_mm_load_sd(&a),
+			_mm_load_sd(&b),
+			_mm_load_sd(&c)
+		));
+	}
+
+	template<>
+	static ANVIL_STRONG_INLINE float32_t MultiplyAdd<float32_t>(const float32_t a, const float32_t b, const float32_t c) throw() {
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+		if constexpr ((ASM_MINIMUM & ASM_FMA) != 0u) {
+			return MultiplyAdd_FMA(a, b, c);
+		}
+#endif
+		return (a * b) + c;
+	}
+
+	template<>
+	static ANVIL_STRONG_INLINE float64_t MultiplyAdd<float64_t>(const float64_t a, const float64_t b, const float64_t c) throw() {
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+		if constexpr ((ASM_MINIMUM & ASM_FMA) != 0u) {
+			return MultiplyAdd_FMA(a, b, c);
+		}
+#endif
+		return (a * b) + c;
+	}
+
+#endif
 }
 
 #endif
