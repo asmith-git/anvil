@@ -371,25 +371,49 @@ namespace anvil {
 	template<class T>
 	static size_t PopulationCount(const T) throw() = delete;
 
-	template<>
-	static size_t PopulationCount<uint64_t>(const uint64_t value) throw() {
+	namespace detail {
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-		// Technically POPCNT flag on Intel and ABM flag on AMD CPUs, but SSE 4.2 is a close approximation
-		if constexpr ((ASM_MINIMUM & ASM_SSE42) != 0ull) {
+		static ANVIL_STRONG_INLINE size_t PopulationCount64_X86(const uint64_t value) throw() {
 			int64_t count = _mm_popcnt_u64(value);
 			ANVIL_ASSUME(count >= 0);
 			ANVIL_ASSUME(count <= 64);
 			return static_cast<size_t>(count);
-		} 
+		}
 #endif
-		uint64_t b = value;
-		// Based on implementation : https://rosettacode.org/wiki/Population_count#C
-		b -= (b >> 1) & 0x5555555555555555ull;
-		b = (b & 0x3333333333333333ull) + ((b >> 2ull) & 0x3333333333333333ull);
-		b = (b + (b >> 4ull)) & 0x0f0f0f0f0f0f0f0full;
-		b = (b * 0x0101010101010101ull) >> 56ull;
-		ANVIL_ASSUME(b <= 64ull);
-		return static_cast<size_t>(b);
+
+
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+		static ANVIL_STRONG_INLINE size_t PopulationCount32_X86(const uint32_t value) throw() {
+			int count = _mm_popcnt_u32(value);
+			ANVIL_ASSUME(count >= 0);
+			ANVIL_ASSUME(count <= 32);
+			return static_cast<size_t>(count);
+		}
+#endif
+	}
+
+	template<>
+	static size_t PopulationCount<uint64_t>(const uint64_t value) throw() {
+#if ANVIL_CPU_ARCHITECTURE_BITS >= 64
+	#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+			// Technically POPCNT flag on Intel and ABM flag on AMD CPUs, but SSE 4.2 is a close approximation
+			if constexpr ((ASM_MINIMUM & ASM_SSE42) != 0ull) {
+				return detail::PopulationCount64_X86(value);
+			} 
+	#endif
+			uint64_t b = value;
+			// Based on implementation : https://rosettacode.org/wiki/Population_count#C
+			b -= (b >> 1) & 0x5555555555555555ull;
+			b = (b & 0x3333333333333333ull) + ((b >> 2ull) & 0x3333333333333333ull);
+			b = (b + (b >> 4ull)) & 0x0f0f0f0f0f0f0f0full;
+			b = (b * 0x0101010101010101ull) >> 56ull;
+			ANVIL_ASSUME(b <= 64ull);
+			return static_cast<size_t>(b);
+#else
+		const uint32_t low = reinterpret_cast<const uint32_t*>(&value)[0u];
+		const uint32_t high = reinterpret_cast<const uint32_t*>(&value)[1u];
+		return PopulationCount<uint32_t>(static_cast<uint32_t>(low)) + PopulationCount<uint32_t>(static_cast<uint32_t>(high));
+#endif
 	}
 
 	template<>
@@ -397,10 +421,7 @@ namespace anvil {
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		// Technically POPCNT flag on Intel and ABM flag on AMD CPUs, but SSE 4.2 is a close approximation
 		if constexpr ((ASM_MINIMUM & ASM_SSE42) != 0ull) {
-			int count = _mm_popcnt_u32(value);
-			ANVIL_ASSUME(count >= 0);
-			ANVIL_ASSUME(count <= 32);
-			return static_cast<size_t>(count);
+			return detail::PopulationCount32_X86(value);
 		}
 #endif
 		// Based on implementation : https://rosettacode.org/wiki/Population_count#C
