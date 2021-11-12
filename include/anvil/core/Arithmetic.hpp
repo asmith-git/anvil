@@ -99,7 +99,7 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T BitXor(const T lhs, const T rhs) throw() {
-		return lhs | rhs;
+		return lhs ^ rhs;
 	}
 
 	template<>
@@ -839,9 +839,138 @@ namespace anvil {
 
 	// Blend
 
-	template<class T>
-	static ANVIL_STRONG_INLINE T Blend(const T ifOne, const T ifZero, const T mask) throw() {
-		return BitOr<T>(BitAnd<T>(mask, ifOne),  BitAndN<T>(mask, ifZero));
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+	
+	static ANVIL_STRONG_INLINE uint64_t Blend_AVX512VL(const uint64_t ifOne, const uint64_t ifZero, const uint64_t mask) throw() {
+		union {
+			uint64_t u;
+			float64_t f;
+		};
+		__mmask8
+		f = _mm_cvtsd_f64(_mm_mask_blend_pd(
+			static_cast<__mmask8>(mask),
+			_mm_load_sd(reinterpret_cast<const float64_t*>(&ifZero)),
+			_mm_load_sd(reinterpret_cast<const float64_t*>(&ifOne))
+		));
+		return u;
+	}
+
+	static ANVIL_STRONG_INLINE uint32_t Blend_AVX512VL(const uint32_t ifOne, const uint32_t ifZero, const uint32_t mask) throw() {
+		union {
+			uint32_t u;
+			float32_t f;
+		};
+		f = _mm_cvtss_f32(_mm_mask_blend_ps(
+			static_cast<__mmask8>(mask),
+			_mm_load_ss(reinterpret_cast<const float32_t*>(&ifZero)),
+			_mm_load_ss(reinterpret_cast<const float32_t*>(&ifOne))
+		));
+		return u;
+	}
+#endif
+
+	static ANVIL_STRONG_INLINE uint64_t Blend(uint64_t ifOne, uint64_t ifZero, const uint64_t mask) throw() {
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+		if constexpr ((ASM_MINIMUM & ASM_AVX512VL) != 0u) {
+			return Blend_AVX512VL(ifOne, ifZero, mask);
+		}
+#endif
+
+		ifOne &= mask;
+		ifZero &= ~mask;
+		return ifOne | ifZero;
+	}
+
+	static ANVIL_STRONG_INLINE uint32_t Blend(uint32_t ifOne, uint32_t ifZero, const uint32_t mask) throw() {
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+		if constexpr ((ASM_MINIMUM & ASM_AVX512VL) != 0u) {
+			return Blend_AVX512VL(ifOne, ifZero, mask);
+		}
+#endif
+
+		ifOne &= mask;
+		ifZero &= ~mask;
+		return ifOne | ifZero;
+	}
+
+	static ANVIL_STRONG_INLINE uint16_t Blend(uint16_t ifOne, uint16_t ifZero, const uint16_t mask) throw() {
+		return static_cast<uint16_t>(Blend(static_cast<uint32_t>(ifOne), static_cast<uint32_t>(ifZero), static_cast<uint32_t>(mask)));
+	}
+
+	static ANVIL_STRONG_INLINE uint8_t Blend(uint16_t ifOne, uint8_t ifZero, const uint8_t mask) throw() {
+		return static_cast<uint8_t>(Blend(static_cast<uint32_t>(ifOne), static_cast<uint32_t>(ifZero), static_cast<uint32_t>(mask)));
+	}
+
+	static ANVIL_STRONG_INLINE int64_t Blend(const int64_t ifOne, const int64_t ifZero, const uint64_t mask) throw() {
+		union {
+			uint64_t au;
+			int64_t as;
+		};
+		union {
+			uint64_t bu;
+			int64_t bs;
+		};
+
+		as = ifOne;
+		bs = ifZero;
+		au = Blend(au, bu, mask);
+		return as;
+	}
+
+	static ANVIL_STRONG_INLINE int32_t Blend(const int32_t ifOne, const int32_t ifZero, const uint32_t mask) throw() {
+		union {
+			uint32_t au;
+			int32_t as;
+		};
+		union {
+			uint32_t bu;
+			int32_t bs;
+		};
+
+		as = ifOne;
+		bs = ifZero;
+		au = Blend(au, bu, mask);
+		return as;
+	}
+
+	static ANVIL_STRONG_INLINE int16_t Blend(int16_t ifOne, int16_t ifZero, const uint16_t mask) throw() {
+		return static_cast<uint16_t>(Blend(static_cast<int32_t>(ifOne), static_cast<int32_t>(ifZero), static_cast<uint32_t>(mask)));
+	}
+
+	static ANVIL_STRONG_INLINE int8_t Blend(int16_t ifOne, int8_t ifZero, const uint8_t mask) throw() {
+		return static_cast<uint8_t>(Blend(static_cast<int32_t>(ifOne), static_cast<int32_t>(ifZero), static_cast<uint32_t>(mask)));
+	}
+
+	static ANVIL_STRONG_INLINE float32_t Blend(const float32_t ifOne, const float32_t ifZero, const uint32_t mask) throw() {
+		union {
+			uint32_t au;
+			float32_t af;
+		};
+		union {
+			uint32_t bu;
+			float32_t bf;
+		};
+
+		af = ifOne;
+		bf = ifZero;
+		au = Blend(au, bu, mask);
+		return af;
+	}
+
+	static ANVIL_STRONG_INLINE float64_t Blend(const float64_t ifOne, const float64_t ifZero, const uint64_t mask) throw() {
+		union {
+			uint64_t au;
+			float64_t af;
+		};
+		union {
+			uint64_t bu;
+			float64_t bf;
+		};
+
+		af = ifOne;
+		bf = ifZero;
+		au = Blend(au, bu, mask);
+		return af;
 	}
 
 	// BitTest
