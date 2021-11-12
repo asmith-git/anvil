@@ -15,13 +15,14 @@
 #ifndef ANVIL_CORE_POPCOUNT_HPP
 #define ANVIL_CORE_POPCOUNT_HPP
 
+/*
+	Popcount returns the number of bits in an integer that are set to 1
+*/
+
 #include <cstdint>
 #include "anvil/core/Cpu.hpp"
 #include "anvil/core/Compiler.hpp"
 #include "anvil/core/Keywords.hpp"
-
-#undef ANVIL_COMPILER
-#define ANVIL_COMPILER 9999
 
 #if ANVIL_COMPILER == ANVIL_MSVC
 #include  <intrin.h>
@@ -94,7 +95,7 @@ namespace anvil {
 	#define ANVIL_NO_POPCOUNT64
 #endif
 
-	#ifdef ANVIL_NO_POPCOUNT16 // If popcount isn't implemented for 32-bit
+	#ifdef ANVIL_NO_POPCOUNT16 // If popcount isn't implemented for 16-bit
 		#undef ANVIL_NO_POPCOUNT16
 		static ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount(uint16_t a_value) throw() {
 			// Calculating the popcount for each byte can potentially be done in parallel
@@ -105,7 +106,7 @@ namespace anvil {
 
 	#ifdef ANVIL_NO_POPCOUNT32 // If popcount isn't implemented for 32-bit
 		#undef ANVIL_NO_POPCOUNT32
-		static ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount(uint32_t a_value) throw() {
+		static inline size_t ANVIL_CALL popcount(uint32_t a_value) throw() {
 			// Split the 32-bit word into 8-bit bytes
 			const uint8_t a = static_cast<uint8_t>(a_value & 255u);
 			a_value <<= 8u;
@@ -125,7 +126,7 @@ namespace anvil {
 
 	#ifdef ANVIL_NO_POPCOUNT64 // If popcount isn't implemented for 64-bit
 		#undef ANVIL_NO_POPCOUNT64
-		static ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount(const uint64_t a_value) throw() {
+		static inline size_t ANVIL_CALL popcount(const uint64_t a_value) throw() {
 			#if ANVIL_ARCHITECTURE_BITS >= 64
 				const uint64_t low = a_value & static_cast<uint64_t>(UINT32_MAX);
 				const uint64_t high = a_value << 32ull;
@@ -173,6 +174,50 @@ namespace anvil {
 		};
 		signed_ = a_value;
 		return popcount(unsigned_);
+	}
+
+	// Runtime size
+	static size_t ANVIL_CALL popcount(const void* src, size_t bytes) throw() {
+		union {
+			const uint64_t* u64;
+			const uint32_t* u32;
+			const uint16_t* u16;
+			const uint8_t* u8;
+		};
+
+		u32 = static_cast<const uint32_t*>(src);
+		size_t count = 0u;
+
+
+	#if ANVIL_ARCHITECTURE_BITS >= 64
+		while (bytes >= 8u) {
+			count += popcount(*u64);
+			++u64;
+			bytes -= 8u;
+		}
+
+		if (bytes >= 4u) {
+	#else
+		while (bytes >= 4u) {
+	#endif
+			count += popcount(*u32);
+			++u32;
+			bytes -= 4u;
+		}
+
+		if (bytes >= 2) {
+			count += popcount(*u16);
+			++u16;
+			bytes -= 2u;
+		}
+
+		if (bytes/* >= 1*/) {
+			count += popcount(*u8);
+			//++u8;
+			//--bytes;
+		}
+
+		return count;
 	}
 }
 
