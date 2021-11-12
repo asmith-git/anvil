@@ -17,19 +17,25 @@
 
 #include "anvil/core/Compiler.hpp"
 
-// Define keywords
-
+// Strongest inlining hint available in the compiler
 #if ANVIL_COMPILER == ANVIL_MSVC
 	#define ANVIL_STRONG_INLINE __forceinline
-	#define ANVIL_RESTRICT __restrict
 #elif ANVIL_COMPILER == ANVIL_GCC || ANVIL_COMPILER == ANVIL_CLANG
 	#define ANVIL_STRONG_INLINE __attribute__((always_inline))
-	#define ANVIL_RESTRICT __restrict__
 #else
 	#define ANVIL_STRONG_INLINE inline
+#endif
+
+// Pointer overlap restriction
+#if ANVIL_COMPILER == ANVIL_MSVC
+	#define ANVIL_RESTRICT __restrict
+#elif ANVIL_COMPILER == ANVIL_GCC || ANVIL_COMPILER == ANVIL_CLANG
+	#define ANVIL_RESTRICT __restrict__
+#else
 	#define ANVIL_RESTRICT
 #endif
 
+// Support for C++ standards older than C++11
 #if ANVIL_CPP_VER >= 2011
 	#define ANVIL_CONSTEXPR_VAR constexpr
 	#define ANVIL_CONSTEXPR_FN constexpr
@@ -50,20 +56,22 @@
 	#endif
 #endif
 
+// Default calling convention
 #ifndef ANVIL_CALL
 	#define ANVIL_CALL
 #endif
 
+// If a different compile-time assert hasn't already been specified then use C++'s static_assert
 #ifndef ANVIL_COMPILETIME_ASSERT
 	#define ANVIL_COMPILETIME_ASSERT(predicate, message) static_assert(predicate, message)
 #endif
 
+// If a different run-time assert hasn't already been specified then throw an exception
 #ifndef ANVIL_RUNTIME_ASSERT
 	#define ANVIL_RUNTIME_ASSERT(predicate, message) if(! (predicate)) throw std::runtime_error(message);
 #endif
 
-// Define types
-
+// Define helper types
 namespace anvil {
 	typedef float float32_t;
 	typedef double float64_t;

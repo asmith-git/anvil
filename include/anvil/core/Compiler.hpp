@@ -15,13 +15,14 @@
 #ifndef ANVIL_CORE_COMPILER_HPP
 #define ANVIL_CORE_COMPILER_HPP
 
-// Detect compiler vendor
 
+// Define a compiler here
 #define ANVIL_MSVC 0
 #define ANVIL_GCC 1
 #define ANVIL_CLANG 2
 #define ANVIL_INTEL 3
 
+// Detect which compiler is running
 #if defined(_MSC_VER)
 	#define ANVIL_COMPILER ANVIL_MSVC
 	#define ANVIL_COMPILER_VER _MSC_VER 
@@ -42,8 +43,7 @@
 	#error Could not determine C++ compiler vendor
 #endif
 
-// Detect C++ version
-
+// Detect which C++ standard is being compiled
 #if ANVIL_COMPILER == ANVIL_MSVC
 	#if ANVIL_COMPILER_VER >= 1910 
 		#define ANVIL_CPP_VER 2014

@@ -15,13 +15,13 @@
 #ifndef ANVIL_CORE_OPERATING_SYSTEM_HPP
 #define ANVIL_CORE_OPERATING_SYSTEM_HPP
 
-// Detect operating system
-
+// Define operating systems here
 #define ANVIL_WINDOWS 0
 #define ANVIL_LINUX 1
 #define ANVIL_APPLE 2
 #define ANVIL_BSD 3
 
+// Detect which operating system this library is being compiled for
 #if defined(_WIN32) || defined (_WIN64)
 	#define ANVIL_OS ANVIL_WINDOWS
 	#define ANVIL_OS_NAME "Windows" 
