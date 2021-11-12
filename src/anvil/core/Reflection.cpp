@@ -47,10 +47,10 @@ namespace anvil {
 			uint32_t c = value & 4u;
 			uint32_t d = value & 8u;
 
-			a >>= 3u;
-			b >>= 1u;
-			c <<= 1u;
-			d <<= 3u;
+			a <<= 3u;
+			b <<= 1u;
+			c >>= 1u;
+			d >>= 3u;
 
 			a |= b;
 			c |= d;
@@ -65,7 +65,7 @@ namespace anvil {
 			low = reflectNybble(low);
 			high = reflectNybble(high);
 
-			return (low << 8u) | high;
+			return (low << 4u) | high;
 		}
 
 		uint32_t ANVIL_CALL reflect2(const uint32_t aValue) throw() {
