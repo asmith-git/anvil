@@ -15,13 +15,13 @@
 #ifndef ANVIL_CORE_CPU_HPP
 #define ANVIL_CORE_CPU_HPP
 
-// Detect CPU architecture
-
+// Define CPU instruction set families here
 #define ANVIL_X86 0
 #define ANVIL_X64 1
 #define ANVIL_ARM 2
 #define ANVIL_ARM_64 3
 
+// Detect which CPU is being compiled for and define it's general purpose register size
 #if defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64)
 	#define ANVIL_ARCHITECTURE ANVIL_X64
 	#define ANVIL_ARCHITECTURE_BITS 64
@@ -37,22 +37,5 @@
 #else
 	#error Could not determine CPU architecture
 #endif
-
-#include <cstdint>
-namespace anvil {
-#if ANVIL_ARCHITECTURE_BITS == 8
-	typedef int8_t NativeSigned;
-	typedef uint8_t NativeUnsigned;
-#elif ANVIL_ARCHITECTURE_BITS == 16
-	typedef int16_t NativeSigned;
-	typedef uint16_t NativeUnsigned;
-#elif ANVIL_ARCHITECTURE_BITS == 32
-	typedef int32_t NativeSigned;
-	typedef uint32_t NativeUnsigned;
-#elif ANVIL_ARCHITECTURE_BITS >= 64
-	typedef int64_t NativeSigned;
-	typedef uint64_t NativeUnsigned;
-#endif
-}
 
 #endif

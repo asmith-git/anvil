@@ -16,6 +16,8 @@
 #define ANVIL_CORE_KEYWORDS_HPP
 
 #include "anvil/core/Compiler.hpp"
+#include "anvil/core/Cpu.hpp"
+#include <cstdint>
 
 // Strongest inlining hint available in the compiler
 #if ANVIL_COMPILER == ANVIL_MSVC
@@ -71,10 +73,25 @@
 	#define ANVIL_RUNTIME_ASSERT(predicate, message) if(! (predicate)) throw std::runtime_error(message);
 #endif
 
-// Define helper types
 namespace anvil {
+	// Define floating point types in the same style as stdint.h
 	typedef float float32_t;
 	typedef double float64_t;
+
+	// Define CPU native words
+#if ANVIL_ARCHITECTURE_BITS == 8
+	typedef int8_t NativeSigned;
+	typedef uint8_t NativeUnsigned;
+#elif ANVIL_ARCHITECTURE_BITS == 16
+	typedef int16_t NativeSigned;
+	typedef uint16_t NativeUnsigned;
+#elif ANVIL_ARCHITECTURE_BITS == 32
+	typedef int32_t NativeSigned;
+	typedef uint32_t NativeUnsigned;
+#elif ANVIL_ARCHITECTURE_BITS >= 64
+	typedef int64_t NativeSigned;
+	typedef uint64_t NativeUnsigned;
+#endif
 }
 
 #endif

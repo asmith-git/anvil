@@ -15,6 +15,7 @@
 #ifndef ANVIL_CORE_CONSTANTS_HPP
 #define ANVIL_CORE_CONSTANTS_HPP
 
+#include <stdint>
 #include <type_traits>
 
 namespace anvil {
