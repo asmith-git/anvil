@@ -32,3 +32,8 @@
 *.app
 /.vs
 /anvil
+
+# Visual Studio
+*.db
+*.opendb
+*.ipch
