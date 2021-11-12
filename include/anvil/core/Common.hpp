@@ -17,6 +17,7 @@
 
 #include <cmath>
 #include <algorithm>
+#include "anvil/core/Keywords.hpp"
 
 namespace anvil {
 
@@ -53,12 +54,12 @@ namespace anvil {
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL abs<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL abs<float32_t>(const float32_t a) {
 		return std::fabs(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL abs<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL abs<float64_t>(const float64_t a) {
 		return std::fabs(a);
 	}
 
@@ -75,12 +76,12 @@ namespace anvil {
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL mod<float>(const float a, const float b) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL mod<float32_t>(const float32_t a, const float32_t b) {
 		return std::fmod(a,b);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL mod<double>(const double a, const double b) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL mod<float64_t>(const float64_t a, const float64_t b) {
 		return std::fmod(a,b);
 	}
 
@@ -92,12 +93,12 @@ namespace anvil {
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL fma<float>(const float a, const float b, const float c) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL fma<float32_t>(const float32_t a, const float32_t b, const float32_t c) {
 		return std::fma(a, b, c);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL fma<double>(const double a, const double b, const double c) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL fma<float64_t>(const float64_t a, const float64_t b, const float64_t c) {
 		return std::fma(a, b, c);
 	}
 
@@ -145,12 +146,12 @@ namespace anvil {
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL dim<float>(const float a, const float b) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL dim<float32_t>(const float32_t a, const float32_t b) {
 		return std::fdim(a, b);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL dim<double>(const double a, const double b) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL dim<float64_t>(const float64_t a, const float64_t b) {
 		return std::fdim(a, b);
 	}
 
@@ -158,16 +159,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL exp(T a) {
-		return static_cast<T>(std::exp(static_cast<float>(a)));
+		return static_cast<T>(std::exp(static_cast<float32_t>(a)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL exp<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL exp<float32_t>(const float32_t a) {
 		return std::exp(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL exp<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL exp<float64_t>(const float64_t a) {
 		return std::exp(a);
 	}
 
@@ -175,16 +176,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL log(T a) {
-		return static_cast<T>(std::log(static_cast<float>(a)));
+		return static_cast<T>(std::log(static_cast<float32_t>(a)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL log<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL log<float32_t>(const float32_t a) {
 		return std::log(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL log<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL log<float64_t>(const float64_t a) {
 		return std::log(a);
 	}
 
@@ -192,16 +193,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL log2(T a) {
-		return static_cast<T>(std::log2(static_cast<float>(a)));
+		return static_cast<T>(std::log2(static_cast<float32_t>(a)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL log2<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL log2<float32_t>(const float32_t a) {
 		return std::log2(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL log2<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL log2<float64_t>(const float64_t a) {
 		return std::log2(a);
 	}
 
@@ -209,16 +210,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL log10(T a) {
-		return static_cast<T>(std::log10(static_cast<float>(a)));
+		return static_cast<T>(std::log10(static_cast<float32_t>(a)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL log10<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL log10<float32_t>(const float32_t a) {
 		return std::log10(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL log10<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL log10<float64_t>(const float64_t a) {
 		return std::log10(a);
 	}
 
@@ -226,16 +227,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL pow(T a, T b) {
-		return static_cast<T>(std::pow(static_cast<float>(a), static_cast<float>(b)));
+		return static_cast<T>(std::pow(static_cast<float32_t>(a), static_cast<float32_t>(b)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL pow<float>(const float a, const float b) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL pow<float32_t>(const float32_t a, const float32_t b) {
 		return std::pow(a, b);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL pow<double>(const double a, const double b) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL pow<float64_t>(const float64_t a, const float64_t b) {
 		return std::pow(a, b);
 	}
 
@@ -243,16 +244,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL sqrt(T a) {
-		return static_cast<T>(std::sqrt(static_cast<float>(a)));
+		return static_cast<T>(std::sqrt(static_cast<float32_t>(a)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL sqrt<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL sqrt<float32_t>(const float32_t a) {
 		return std::sqrt(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL sqrt<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL sqrt<float64_t>(const float64_t a) {
 		return std::sqrt(a);
 	}
 
@@ -260,16 +261,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL cbrt(T a) {
-		return static_cast<T>(std::cbrt(static_cast<float>(a)));
+		return static_cast<T>(std::cbrt(static_cast<float32_t>(a)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL cbrt<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL cbrt<float32_t>(const float32_t a) {
 		return std::cbrt(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL cbrt<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL cbrt<float64_t>(const float64_t a) {
 		return std::cbrt(a);
 	}
 
@@ -277,16 +278,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL hypot(T a, T b) {
-		return static_cast<T>(std::hypot(static_cast<float>(a), static_cast<float>(b)));
+		return static_cast<T>(std::hypot(static_cast<float32_t>(a), static_cast<float32_t>(b)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL hypot<float>(const float a, const float b) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL hypot<float32_t>(const float32_t a, const float32_t b) {
 		return std::hypot(a, b);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL hypot<double>(const double a, const double b) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL hypot<float64_t>(const float64_t a, const float64_t b) {
 		return std::hypot(a, b);
 	}
 
@@ -294,16 +295,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL sin(T a) {
-		return static_cast<T>(std::sin(static_cast<float>(a)));
+		return static_cast<T>(std::sin(static_cast<float32_t>(a)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL sin<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL sin<float32_t>(const float32_t a) {
 		return std::sin(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL sin<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL sin<float64_t>(const float64_t a) {
 		return std::sin(a);
 	}
 
@@ -311,16 +312,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL cos(T a) {
-		return static_cast<T>(std::cos(static_cast<float>(a)));
+		return static_cast<T>(std::cos(static_cast<float32_t>(a)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL cos<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL cos<float32_t>(const float32_t a) {
 		return std::cos(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL cos<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL cos<float64_t>(const float64_t a) {
 		return std::cos(a);
 	}
 
@@ -328,16 +329,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL tan(T a) {
-		return static_cast<T>(std::tan(static_cast<float>(a)));
+		return static_cast<T>(std::tan(static_cast<float32_t>(a)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL tan<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL tan<float32_t>(const float32_t a) {
 		return std::tan(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL tan<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL tan<float64_t>(const float64_t a) {
 		return std::tan(a);
 	}
 
@@ -345,16 +346,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL asin(T a) {
-		return static_cast<T>(std::asin(static_cast<float>(a)));
+		return static_cast<T>(std::asin(static_cast<float32_t>(a)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL asin<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL asin<float32_t>(const float32_t a) {
 		return std::asin(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL asin<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL asin<float64_t>(const float64_t a) {
 		return std::asin(a);
 	}
 
@@ -362,16 +363,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL acos(T a) {
-		return static_cast<T>(std::acos(static_cast<float>(a)));
+		return static_cast<T>(std::acos(static_cast<float32_t>(a)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL acos<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL acos<float32_t>(const float32_t a) {
 		return std::acos(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL acos<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL acos<float64_t>(const float64_t a) {
 		return std::acos(a);
 	}
 
@@ -379,16 +380,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL atan(T a) {
-		return static_cast<T>(std::atan(static_cast<float>(a)));
+		return static_cast<T>(std::atan(static_cast<float32_t>(a)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL atan<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL atan<float32_t>(const float32_t a) {
 		return std::atan(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL atan<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL atan<float64_t>(const float64_t a) {
 		return std::atan(a);
 	}
 
@@ -396,16 +397,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL atan2(T a, T b) {
-		return static_cast<T>(std::atan2(static_cast<float>(a), static_cast<float>(b)));
+		return static_cast<T>(std::atan2(static_cast<float32_t>(a), static_cast<float32_t>(b)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL atan2<float>(const float a, const float b) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL atan2<float32_t>(const float32_t a, const float32_t b) {
 		return std::atan2(a, b);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL atan2<double>(const double a, const double b) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL atan2<float64_t>(const float64_t a, const float64_t b) {
 		return std::atan2(a, b);
 	}
 
@@ -413,16 +414,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL sinh(T a) {
-		return static_cast<T>(std::sinh(static_cast<float>(a)));
+		return static_cast<T>(std::sinh(static_cast<float32_t>(a)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL sinh<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL sinh<float32_t>(const float32_t a) {
 		return std::sinh(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL sinh<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL sinh<float64_t>(const float64_t a) {
 		return std::sinh(a);
 	}
 
@@ -430,16 +431,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL cosh(T a) {
-		return static_cast<T>(std::cosh(static_cast<float>(a)));
+		return static_cast<T>(std::cosh(static_cast<float32_t>(a)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL cosh<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL cosh<float32_t>(const float32_t a) {
 		return std::cosh(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL cosh<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL cosh<float64_t>(const float64_t a) {
 		return std::cosh(a);
 	}
 
@@ -447,16 +448,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL tanh(T a) {
-		return static_cast<T>(std::tanh(static_cast<float>(a)));
+		return static_cast<T>(std::tanh(static_cast<float32_t>(a)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL tanh<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL tanh<float32_t>(const float32_t a) {
 		return std::tanh(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL tanh<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL tanh<float64_t>(const float64_t a) {
 		return std::tanh(a);
 	}
 
@@ -464,16 +465,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL asinh(T a) {
-		return static_cast<T>(std::asinh(static_cast<float>(a)));
+		return static_cast<T>(std::asinh(static_cast<float32_t>(a)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL asinh<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL asinh<float32_t>(const float32_t a) {
 		return std::asinh(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL asinh<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL asinh<float64_t>(const float64_t a) {
 		return std::asinh(a);
 	}
 
@@ -481,16 +482,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL acosh(T a) {
-		return static_cast<T>(std::acosh(static_cast<float>(a)));
+		return static_cast<T>(std::acosh(static_cast<float32_t>(a)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL acosh<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL acosh<float32_t>(const float32_t a) {
 		return std::acosh(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL acosh<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL acosh<float64_t>(const float64_t a) {
 		return std::acosh(a);
 	}
 
@@ -498,16 +499,16 @@ namespace anvil {
 
 	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL atanh(T a) {
-		return static_cast<T>(std::atanh(static_cast<float>(a)));
+		return static_cast<T>(std::atanh(static_cast<float32_t>(a)));
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL atanh<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL atanh<float32_t>(const float32_t a) {
 		return std::atanh(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL atanh<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL atanh<float64_t>(const float64_t a) {
 		return std::atanh(a);
 	}
 
@@ -519,12 +520,12 @@ namespace anvil {
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL ceil<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL ceil<float32_t>(const float32_t a) {
 		return std::ceil(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL ceil<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL ceil<float64_t>(const float64_t a) {
 		return std::ceil(a);
 	}
 
@@ -536,12 +537,12 @@ namespace anvil {
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL floor<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL floor<float32_t>(const float32_t a) {
 		return std::floor(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL floor<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL floor<float64_t>(const float64_t a) {
 		return std::floor(a);
 	}
 
@@ -553,12 +554,12 @@ namespace anvil {
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL trunc<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL trunc<float32_t>(const float32_t a) {
 		return std::trunc(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL trunc<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL trunc<float64_t>(const float64_t a) {
 		return std::trunc(a);
 	}
 
@@ -570,12 +571,12 @@ namespace anvil {
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE float ANVIL_CALL round<float>(const float a) {
+	static ANVIL_STRONG_INLINE float32_t ANVIL_CALL round<float32_t>(const float32_t a) {
 		return std::round(a);
 	}
 
 	template<>
-	static ANVIL_STRONG_INLINE double ANVIL_CALL round<double>(const double a) {
+	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL round<float64_t>(const float64_t a) {
 		return std::round(a);
 	}
 }

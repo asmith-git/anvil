@@ -24,9 +24,6 @@
     <ClInclude Include="..\..\include\anvil\Core.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\anvil\core\Popcount.hpp">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\anvil\core\Compiler.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
@@ -37,9 +34,6 @@
       <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\anvil\core\Keywords.hpp">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\anvil\core\LeadingZeros.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\anvil\core\OperatingSystem.hpp">
@@ -76,6 +70,12 @@
       <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\anvil\core\PODVector.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\core\Arithmetic.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\core\Common.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
   </ItemGroup>

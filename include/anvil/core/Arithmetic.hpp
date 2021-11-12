@@ -16,10 +16,11 @@
 #define ANVIL_LUTILS_ARITHMETIC_HPP
 
 #include <cstdint>
-#include "anvil/lutils/Assert.hpp"
-#include "anvil/lutils/CPU.hpp"
+#include "anvil/core/Assert.hpp"
+#include "anvil/core/CpuRuntime.hpp"
+#include "anvil/core/Keywords.hpp"
 
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 #include <nmmintrin.h>
 #include <immintrin.h>
 #include <ammintrin.h>
@@ -30,349 +31,349 @@ namespace anvil {
 
 	// IsOdd
 	template<class T>
-	static bool IsOdd(const T) throw();
+	static bool IsOdd(const T) throw() = delete;
 
 	template<>
-	static inline bool IsOdd<uint64_t>(const uint64_t value) throw() {
+	static ANVIL_STRONG_INLINE bool IsOdd<uint64_t>(const uint64_t value) throw() {
 		return (value & 1ull) == 1ull;
 	}
 
 	template<>
-	static inline bool IsOdd<uint32_t>(const uint32_t value) throw() {
+	static ANVIL_STRONG_INLINE bool IsOdd<uint32_t>(const uint32_t value) throw() {
 		return (value & 1u) == 1u;
 	}
 
 	template<>
-	static inline bool IsOdd<uint16_t>(const uint16_t value) throw() {
+	static ANVIL_STRONG_INLINE bool IsOdd<uint16_t>(const uint16_t value) throw() {
 		return (value & 1u) == 1u;
 	}
 
 	template<>
-	static inline bool IsOdd<uint8_t>(const uint8_t value) throw() {
+	static ANVIL_STRONG_INLINE bool IsOdd<uint8_t>(const uint8_t value) throw() {
 		return (value & 1u) == 1u;
 	}
 
 	template<>
-	static inline bool IsOdd<int64_t>(const int64_t value) throw() {
+	static ANVIL_STRONG_INLINE bool IsOdd<int64_t>(const int64_t value) throw() {
 		return (value & 1ll) == 1ll;
 	}
 
 	template<>
-	static inline bool IsOdd<int32_t>(const int32_t value) throw() {
+	static ANVIL_STRONG_INLINE bool IsOdd<int32_t>(const int32_t value) throw() {
 		return (value & 1) == 1;
 	}
 
 	template<>
-	static inline bool IsOdd<int16_t>(const int16_t value) throw() {
+	static ANVIL_STRONG_INLINE bool IsOdd<int16_t>(const int16_t value) throw() {
 		return (value & 1) == 1;
 	}
 
 	template<>
-	static inline bool IsOdd<int8_t>(const int8_t value) throw() {
+	static ANVIL_STRONG_INLINE bool IsOdd<int8_t>(const int8_t value) throw() {
 		return (value & 1) == 1;
 	}
 
 	template<>
-	static inline bool IsOdd<float>(const float value) throw() {
+	static ANVIL_STRONG_INLINE bool IsOdd<float>(const float value) throw() {
 		return IsOdd<int64_t>(static_cast<int64_t>(value));
 	}
 
 	template<>
-	static inline bool IsOdd<double>(const double value) throw() {
+	static ANVIL_STRONG_INLINE bool IsOdd<double>(const double value) throw() {
 		return IsOdd<int64_t>(static_cast<int64_t>(value));
 	}
 
 	// IsEven
 
 	template<class T>
-	static bool IsEven(const T) throw();
+	static bool IsEven(const T) throw() = delete;
 
 	template<>
-	static inline bool IsEven<uint64_t>(const uint64_t value) throw() {
+	static ANVIL_STRONG_INLINE bool IsEven<uint64_t>(const uint64_t value) throw() {
 		return (value & 1ull) == 0ull;
 	}
 
 	template<>
-	static inline bool IsEven<uint32_t>(const uint32_t value) throw() {
+	static ANVIL_STRONG_INLINE bool IsEven<uint32_t>(const uint32_t value) throw() {
 		return (value & 1u) == 0u;
 	}
 
 	template<>
-	static inline bool IsEven<uint16_t>(const uint16_t value) throw() {
+	static ANVIL_STRONG_INLINE bool IsEven<uint16_t>(const uint16_t value) throw() {
 		return (value & 1u) == 0u;
 	}
 
 	template<>
-	static inline bool IsEven<uint8_t>(const uint8_t value) throw() {
+	static ANVIL_STRONG_INLINE bool IsEven<uint8_t>(const uint8_t value) throw() {
 		return (value & 1u) == 0u;
 	}
 
 	template<>
-	static inline bool IsEven<int64_t>(const int64_t value) throw() {
+	static ANVIL_STRONG_INLINE bool IsEven<int64_t>(const int64_t value) throw() {
 		return (value & 1ll) == 0ll;
 	}
 
 	template<>
-	static inline bool IsEven<int32_t>(const int32_t value) throw() {
+	static ANVIL_STRONG_INLINE bool IsEven<int32_t>(const int32_t value) throw() {
 		return (value & 1) == 0;
 	}
 
 	template<>
-	static inline bool IsEven<int16_t>(const int16_t value) throw() {
+	static ANVIL_STRONG_INLINE bool IsEven<int16_t>(const int16_t value) throw() {
 		return (value & 1) == 0;
 	}
 
 	template<>
-	static inline bool IsEven<int8_t>(const int8_t value) throw() {
+	static ANVIL_STRONG_INLINE bool IsEven<int8_t>(const int8_t value) throw() {
 		return (value & 1) == 0;
 	}
 
 	template<>
-	static inline bool IsEven<float>(const float value) throw() {
+	static ANVIL_STRONG_INLINE bool IsEven<float>(const float value) throw() {
 		return IsEven<int64_t>(static_cast<int64_t>(value));
 	}
 
 	template<>
-	static inline bool IsEven<double>(const double value) throw() {
+	static ANVIL_STRONG_INLINE bool IsEven<double>(const double value) throw() {
 		return IsEven<int64_t>(static_cast<int64_t>(value));
 	}
 
 	// RoundUpOdd
 
 	template<class T>
-	static T RoundUpOdd(const T) throw();
+	static T RoundUpOdd(const T) throw() = delete;
 
 	template<>
-	static inline uint64_t RoundUpOdd<uint64_t>(const uint64_t value) throw() {
+	static ANVIL_STRONG_INLINE uint64_t RoundUpOdd<uint64_t>(const uint64_t value) throw() {
 		return value | 1ull;
 	}
 
 	template<>
-	static inline uint32_t RoundUpOdd<uint32_t>(const uint32_t value) throw() {
+	static ANVIL_STRONG_INLINE uint32_t RoundUpOdd<uint32_t>(const uint32_t value) throw() {
 		return value | 1u;
 	}
 
 	template<>
-	static inline uint16_t RoundUpOdd<uint16_t>(const uint16_t value) throw() {
+	static ANVIL_STRONG_INLINE uint16_t RoundUpOdd<uint16_t>(const uint16_t value) throw() {
 		return value | 1u;
 	}
 
 	template<>
-	static inline uint8_t RoundUpOdd<uint8_t>(const uint8_t value) throw() {
+	static ANVIL_STRONG_INLINE uint8_t RoundUpOdd<uint8_t>(const uint8_t value) throw() {
 		return value | 1u;
 	}
 
 	template<>
-	static inline int64_t RoundUpOdd<int64_t>(const int64_t value) throw() {
+	static ANVIL_STRONG_INLINE int64_t RoundUpOdd<int64_t>(const int64_t value) throw() {
 		return value | 1ll;
 	}
 
 	template<>
-	static inline int32_t RoundUpOdd<int32_t>(const int32_t value) throw() {
+	static ANVIL_STRONG_INLINE int32_t RoundUpOdd<int32_t>(const int32_t value) throw() {
 		return value | 1;
 	}
 
 	template<>
-	static inline int16_t RoundUpOdd<int16_t>(const int16_t value) throw() {
+	static ANVIL_STRONG_INLINE int16_t RoundUpOdd<int16_t>(const int16_t value) throw() {
 		return value | 1;
 	}
 
 	template<>
-	static inline int8_t RoundUpOdd<int8_t>(const int8_t value) throw() {
+	static ANVIL_STRONG_INLINE int8_t RoundUpOdd<int8_t>(const int8_t value) throw() {
 		return value | 1;
 	}
 
 	template<>
-	static inline float RoundUpOdd<float>(const float value) throw() {
+	static ANVIL_STRONG_INLINE float RoundUpOdd<float>(const float value) throw() {
 		return static_cast<float>(RoundUpOdd(static_cast<int64_t>(value)));
 	}
 
 	template<>
-	static inline double RoundUpOdd<double>(const double value) throw() {
+	static ANVIL_STRONG_INLINE double RoundUpOdd<double>(const double value) throw() {
 		return static_cast<double>(RoundUpOdd(static_cast<int64_t>(value)));
 	}
 
 	// RoundDownOdd
 
 	template<class T>
-	static T RoundDownOdd(const T) throw();
+	static T RoundDownOdd(const T) throw() = delete;
 
 	template<>
-	static inline uint64_t RoundDownOdd<uint64_t>(const uint64_t value) throw() {
+	static ANVIL_STRONG_INLINE uint64_t RoundDownOdd<uint64_t>(const uint64_t value) throw() {
 		enum : uint64_t { MASK = ~1ull };
 		return value & MASK;
 	}
 
 	template<>
-	static inline uint32_t RoundDownOdd<uint32_t>(const uint32_t value) throw() {
+	static ANVIL_STRONG_INLINE uint32_t RoundDownOdd<uint32_t>(const uint32_t value) throw() {
 		enum : uint32_t { MASK = ~1u };
 		return value & MASK;
 	}
 
 	template<>
-	static inline uint16_t RoundDownOdd<uint16_t>(const uint16_t value) throw() {
+	static ANVIL_STRONG_INLINE uint16_t RoundDownOdd<uint16_t>(const uint16_t value) throw() {
 		enum : uint16_t { MASK = static_cast<uint16_t>(~1u) };
 		return value & MASK;
 	}
 
 	template<>
-	static inline uint8_t RoundDownOdd<uint8_t>(const uint8_t value) throw() {
+	static ANVIL_STRONG_INLINE uint8_t RoundDownOdd<uint8_t>(const uint8_t value) throw() {
 		enum : uint8_t { MASK = static_cast<uint8_t>(~1u) };
 		return value & MASK;
 	}
 
 	template<>
-	static inline int64_t RoundDownOdd<int64_t>(const int64_t value) throw() {
+	static ANVIL_STRONG_INLINE int64_t RoundDownOdd<int64_t>(const int64_t value) throw() {
 		enum : int64_t { MASK = ~1ll };
 		return value & MASK;
 	}
 
 	template<>
-	static inline int32_t RoundDownOdd<int32_t>(const int32_t value) throw() {
+	static ANVIL_STRONG_INLINE int32_t RoundDownOdd<int32_t>(const int32_t value) throw() {
 		enum : int32_t { MASK = ~1 };
 		return value & MASK;
 	}
 
 	template<>
-	static inline int16_t RoundDownOdd<int16_t>(const int16_t value) throw() {
+	static ANVIL_STRONG_INLINE int16_t RoundDownOdd<int16_t>(const int16_t value) throw() {
 		enum : int16_t { MASK = ~1 };
 		return value & MASK;
 	}
 
 	template<>
-	static inline int8_t RoundDownOdd<int8_t>(const int8_t value) throw() {
+	static ANVIL_STRONG_INLINE int8_t RoundDownOdd<int8_t>(const int8_t value) throw() {
 		enum : int8_t { MASK = ~1 };
 		return value & MASK;
 	}
 
 	template<>
-	static inline float RoundDownOdd<float>(const float value) throw() {
+	static ANVIL_STRONG_INLINE float RoundDownOdd<float>(const float value) throw() {
 		return static_cast<float>(RoundDownOdd(static_cast<int64_t>(value)));
 	}
 
 	template<>
-	static inline double RoundDownOdd<double>(const double value) throw() {
+	static ANVIL_STRONG_INLINE double RoundDownOdd<double>(const double value) throw() {
 		return static_cast<double>(RoundDownOdd(static_cast<int64_t>(value)));
 	}
 
 	// RoundUpEven
 
 	template<class T>
-	static T RoundUpEven(const T) throw();
+	static T RoundUpEven(const T) throw() = delete;
 
 	template<>
-	static inline uint64_t RoundUpEven<uint64_t>(const uint64_t value) throw() {
+	static ANVIL_STRONG_INLINE uint64_t RoundUpEven<uint64_t>(const uint64_t value) throw() {
 		return value + (value & 1ull);
 	}
 
 	template<>
-	static inline uint32_t RoundUpEven<uint32_t>(const uint32_t value) throw() {
+	static ANVIL_STRONG_INLINE uint32_t RoundUpEven<uint32_t>(const uint32_t value) throw() {
 		return value + (value & 1u);
 	}
 
 	template<>
-	static inline uint16_t RoundUpEven<uint16_t>(const uint16_t value) throw() {
+	static ANVIL_STRONG_INLINE uint16_t RoundUpEven<uint16_t>(const uint16_t value) throw() {
 		return value + (value & 1u);
 	}
 
 	template<>
-	static inline uint8_t RoundUpEven<uint8_t>(const uint8_t value) throw() {
+	static ANVIL_STRONG_INLINE uint8_t RoundUpEven<uint8_t>(const uint8_t value) throw() {
 		return value + (value & 1u);
 	}
 
 	template<>
-	static inline int64_t RoundUpEven<int64_t>(const int64_t value) throw() {
+	static ANVIL_STRONG_INLINE int64_t RoundUpEven<int64_t>(const int64_t value) throw() {
 		return value + (value & 1ll);
 	}
 
 	template<>
-	static inline int32_t RoundUpEven<int32_t>(const int32_t value) throw() {
+	static ANVIL_STRONG_INLINE int32_t RoundUpEven<int32_t>(const int32_t value) throw() {
 		return value + (value & 1);
 	}
 
 	template<>
-	static inline int16_t RoundUpEven<int16_t>(const int16_t value) throw() {
+	static ANVIL_STRONG_INLINE int16_t RoundUpEven<int16_t>(const int16_t value) throw() {
 		return value + (value & 1);
 	}
 
 	template<>
-	static inline int8_t RoundUpEven<int8_t>(const int8_t value) throw() {
+	static ANVIL_STRONG_INLINE int8_t RoundUpEven<int8_t>(const int8_t value) throw() {
 		return value + (value & 1);
 	}
 
 	template<>
-	static inline float RoundUpEven<float>(const float value) throw() {
+	static ANVIL_STRONG_INLINE float RoundUpEven<float>(const float value) throw() {
 		return static_cast<float>(RoundUpEven(static_cast<int64_t>(value)));
 	}
 
 	template<>
-	static inline double RoundUpEven<double>(const double value) throw() {
+	static ANVIL_STRONG_INLINE double RoundUpEven<double>(const double value) throw() {
 		return static_cast<double>(RoundUpEven(static_cast<int64_t>(value)));
 	}
 
 	// RoundDownEven
 
 	template<class T>
-	static T RoundDownEven(const T) throw();
+	static T RoundDownEven(const T) throw() = delete;
 
 	template<>
-	static inline uint64_t RoundDownEven<uint64_t>(const uint64_t value) throw() {
+	static ANVIL_STRONG_INLINE uint64_t RoundDownEven<uint64_t>(const uint64_t value) throw() {
 		return value - (value & 1ull);
 	}
 
 	template<>
-	static inline uint32_t RoundDownEven<uint32_t>(const uint32_t value) throw() {
+	static ANVIL_STRONG_INLINE uint32_t RoundDownEven<uint32_t>(const uint32_t value) throw() {
 		return value - (value & 1u);
 	}
 
 	template<>
-	static inline uint16_t RoundDownEven<uint16_t>(const uint16_t value) throw() {
+	static ANVIL_STRONG_INLINE uint16_t RoundDownEven<uint16_t>(const uint16_t value) throw() {
 		return value - (value & 1u);
 	}
 
 	template<>
-	static inline uint8_t RoundDownEven<uint8_t>(const uint8_t value) throw() {
+	static ANVIL_STRONG_INLINE uint8_t RoundDownEven<uint8_t>(const uint8_t value) throw() {
 		return value - (value & 1u);
 	}
 
 	template<>
-	static inline int64_t RoundDownEven<int64_t>(const int64_t value) throw() {
+	static ANVIL_STRONG_INLINE int64_t RoundDownEven<int64_t>(const int64_t value) throw() {
 		return value - (value & 1ll);
 	}
 
 	template<>
-	static inline int32_t RoundDownEven<int32_t>(const int32_t value) throw() {
+	static ANVIL_STRONG_INLINE int32_t RoundDownEven<int32_t>(const int32_t value) throw() {
 		return value - (value & 1);
 	}
 
 	template<>
-	static inline int16_t RoundDownEven<int16_t>(const int16_t value) throw() {
+	static ANVIL_STRONG_INLINE int16_t RoundDownEven<int16_t>(const int16_t value) throw() {
 		return value - (value & 1);
 	}
 
 	template<>
-	static inline int8_t RoundDownEven<int8_t>(const int8_t value) throw() {
+	static ANVIL_STRONG_INLINE int8_t RoundDownEven<int8_t>(const int8_t value) throw() {
 		return value - (value & 1);
 	}
 
 	template<>
-	static inline float RoundDownEven<float>(const float value) throw() {
+	static ANVIL_STRONG_INLINE float RoundDownEven<float>(const float value) throw() {
 		return static_cast<float>(RoundDownEven(static_cast<int64_t>(value)));
 	}
 
 	template<>
-	static inline double RoundDownEven<double>(const double value) throw() {
+	static ANVIL_STRONG_INLINE double RoundDownEven<double>(const double value) throw() {
 		return static_cast<double>(RoundDownEven(static_cast<int64_t>(value)));
 	}
 
 	// PopulationCount
 
 	template<class T>
-	static size_t PopulationCount(const T) throw();
+	static size_t PopulationCount(const T) throw() = delete;
 
 	template<>
 	static size_t PopulationCount<uint64_t>(const uint64_t value) throw() {
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		// Technically POPCNT flag on Intel and ABM flag on AMD CPUs, but SSE 4.2 is a close approximation
 		if constexpr ((ASM_MINIMUM & ASM_SSE42) != 0ull) {
 			int64_t count = _mm_popcnt_u64(value);
@@ -393,7 +394,7 @@ namespace anvil {
 
 	template<>
 	static size_t PopulationCount<uint32_t>(const uint32_t value) throw() {
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		// Technically POPCNT flag on Intel and ABM flag on AMD CPUs, but SSE 4.2 is a close approximation
 		if constexpr ((ASM_MINIMUM & ASM_SSE42) != 0ull) {
 			int count = _mm_popcnt_u32(value);
@@ -413,21 +414,21 @@ namespace anvil {
 	}
 
 	template<>
-	static inline size_t PopulationCount<uint16_t>(const uint16_t value) throw() {
+	static ANVIL_STRONG_INLINE size_t PopulationCount<uint16_t>(const uint16_t value) throw() {
 		const size_t tmp = PopulationCount<uint32_t>(value);
 		ANVIL_ASSUME(tmp <= 16u);
 		return tmp;
 	}
 
 	template<>
-	static inline size_t PopulationCount<uint8_t>(const uint8_t value) throw() {
+	static ANVIL_STRONG_INLINE size_t PopulationCount<uint8_t>(const uint8_t value) throw() {
 		const size_t tmp = PopulationCount<uint32_t>(value);
 		ANVIL_ASSUME(tmp <= 8u);
 		return tmp;
 	}
 
 	template<>
-	static inline size_t PopulationCount<int64_t>(const int64_t value) throw() {
+	static ANVIL_STRONG_INLINE size_t PopulationCount<int64_t>(const int64_t value) throw() {
 		union {
 			uint64_t u;
 			int64_t s;
@@ -437,7 +438,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline size_t PopulationCount<int32_t>(const int32_t value) throw() {
+	static ANVIL_STRONG_INLINE size_t PopulationCount<int32_t>(const int32_t value) throw() {
 		union {
 			uint32_t u;
 			int32_t s;
@@ -457,7 +458,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline size_t PopulationCount<int8_t>(const int8_t value) throw() {
+	static ANVIL_STRONG_INLINE size_t PopulationCount<int8_t>(const int8_t value) throw() {
 		union {
 			uint8_t u;
 			int8_t s;
@@ -467,7 +468,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline size_t PopulationCount<float>(const float value) throw() {
+	static ANVIL_STRONG_INLINE size_t PopulationCount<float>(const float value) throw() {
 		union {
 			uint32_t u;
 			float f;
@@ -477,7 +478,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline size_t PopulationCount<double>(const double value) throw() {
+	static ANVIL_STRONG_INLINE size_t PopulationCount<double>(const double value) throw() {
 		union {
 			uint64_t u;
 			double f;
@@ -514,7 +515,7 @@ namespace anvil {
 	// CountOnes
 
 	template<class T>
-	static inline size_t CountOnes(const T value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountOnes(const T value) throw() {
 		return PopulationCount<T>(value);
 	}
 
@@ -525,12 +526,12 @@ namespace anvil {
 	// CountZeros
 
 	template<class T>
-	static inline size_t CountZeros(const T value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountZeros(const T value) throw() {
 		return PopulationCount<T>(~ value);
 	}
 
 	template<>
-	static inline size_t CountZeros<float>(const float value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountZeros<float>(const float value) throw() {
 		union {
 			uint32_t u;
 			float f;
@@ -540,7 +541,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline size_t CountZeros<double>(const double value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountZeros<double>(const double value) throw() {
 		union {
 			uint64_t u;
 			double f;
@@ -596,52 +597,52 @@ namespace anvil {
 	}
 
 	template<>
-	static inline bool AllZeros<uint64_t>(const uint64_t value) throw() {
+	static ANVIL_STRONG_INLINE bool AllZeros<uint64_t>(const uint64_t value) throw() {
 		return value == 0u;
 	}
 
 	template<>
-	static inline bool AllZeros<uint32_t>(const uint32_t value) throw() {
+	static ANVIL_STRONG_INLINE bool AllZeros<uint32_t>(const uint32_t value) throw() {
 		return value == 0u;
 	}
 
 	template<>
-	static inline bool AllZeros<uint16_t>(const uint16_t value) throw() {
+	static ANVIL_STRONG_INLINE bool AllZeros<uint16_t>(const uint16_t value) throw() {
 		return value == 0u;
 	}
 
 	template<>
-	static inline bool AllZeros<uint8_t>(const uint8_t value) throw() {
+	static ANVIL_STRONG_INLINE bool AllZeros<uint8_t>(const uint8_t value) throw() {
 		return value == 0u;
 	}
 
 	template<>
-	static inline bool AllZeros<int64_t>(const int64_t value) throw() {
+	static ANVIL_STRONG_INLINE bool AllZeros<int64_t>(const int64_t value) throw() {
 		return value == 0;
 	}
 
 	template<>
-	static inline bool AllZeros<int32_t>(const int32_t value) throw() {
+	static ANVIL_STRONG_INLINE bool AllZeros<int32_t>(const int32_t value) throw() {
 		return value == 0;
 	}
 
 	template<>
-	static inline bool AllZeros<int16_t>(const int16_t value) throw() {
+	static ANVIL_STRONG_INLINE bool AllZeros<int16_t>(const int16_t value) throw() {
 		return value == 0;
 	}
 
 	template<>
-	static inline bool AllZeros<int8_t>(const int8_t value) throw() {
+	static ANVIL_STRONG_INLINE bool AllZeros<int8_t>(const int8_t value) throw() {
 		return value == 0;
 	}
 
 	template<>
-	static inline bool AllZeros<float>(const float value) throw() {
+	static ANVIL_STRONG_INLINE bool AllZeros<float>(const float value) throw() {
 		return value == 0.f;
 	}
 
 	template<>
-	static inline bool AllZeros<double>(const double value) throw() {
+	static ANVIL_STRONG_INLINE bool AllZeros<double>(const double value) throw() {
 		return value == 0.0;
 	}
 
@@ -690,47 +691,47 @@ namespace anvil {
 	}
 
 	template<>
-	static inline bool AllOnes<uint64_t>(const uint64_t value) throw() {
+	static ANVIL_STRONG_INLINE bool AllOnes<uint64_t>(const uint64_t value) throw() {
 		return value == UINT64_MAX;
 	}
 
 	template<>
-	static inline bool AllOnes<uint32_t>(const uint32_t value) throw() {
+	static ANVIL_STRONG_INLINE bool AllOnes<uint32_t>(const uint32_t value) throw() {
 		return value == UINT32_MAX;
 	}
 
 	template<>
-	static inline bool AllOnes<uint16_t>(const uint16_t value) throw() {
+	static ANVIL_STRONG_INLINE bool AllOnes<uint16_t>(const uint16_t value) throw() {
 		return value == UINT16_MAX;
 	}
 
 	template<>
-	static inline bool AllOnes<uint8_t>(const uint8_t value) throw() {
+	static ANVIL_STRONG_INLINE bool AllOnes<uint8_t>(const uint8_t value) throw() {
 		return value == UINT8_MAX;
 	}
 
 	template<>
-	static inline bool AllOnes<int64_t>(const int64_t value) throw() {
+	static ANVIL_STRONG_INLINE bool AllOnes<int64_t>(const int64_t value) throw() {
 		return value == -1;
 	}
 
 	template<>
-	static inline bool AllOnes<int32_t>(const int32_t value) throw() {
+	static ANVIL_STRONG_INLINE bool AllOnes<int32_t>(const int32_t value) throw() {
 		return value == -1;
 	}
 
 	template<>
-	static inline bool AllOnes<int16_t>(const int16_t value) throw() {
+	static ANVIL_STRONG_INLINE bool AllOnes<int16_t>(const int16_t value) throw() {
 		return value == -1;
 	}
 
 	template<>
-	static inline bool AllOnes<int8_t>(const int8_t value) throw() {
+	static ANVIL_STRONG_INLINE bool AllOnes<int8_t>(const int8_t value) throw() {
 		return value == -1;
 	}
 
 	template<>
-	static inline bool AllOnes<float>(const float value) throw() {
+	static ANVIL_STRONG_INLINE bool AllOnes<float>(const float value) throw() {
 		union {
 			uint32_t u;
 			float f;
@@ -740,7 +741,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline bool AllOnes<double>(const double value) throw() {
+	static ANVIL_STRONG_INLINE bool AllOnes<double>(const double value) throw() {
 		union {
 			uint64_t u;
 			double f;
@@ -775,12 +776,12 @@ namespace anvil {
 	// BitAnd
 
 	template<class T>
-	static inline T BitAnd(const T lhs, const T rhs) throw() {
+	static ANVIL_STRONG_INLINE T BitAnd(const T lhs, const T rhs) throw() {
 		return lhs & rhs;
 	}
 
 	template<>
-	static inline float BitAnd(const float lhs, const float rhs) throw() {
+	static ANVIL_STRONG_INLINE float BitAnd(const float lhs, const float rhs) throw() {
 		union Union {
 			uint32_t u;
 			float f;
@@ -793,7 +794,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline double BitAnd(const double lhs, const double rhs) throw() {
+	static ANVIL_STRONG_INLINE double BitAnd(const double lhs, const double rhs) throw() {
 		union Union {
 			uint64_t u;
 			double f;
@@ -808,12 +809,12 @@ namespace anvil {
 	// BitOr
 
 	template<class T>
-	static inline T BitOr(const T lhs, const T rhs) throw() {
+	static ANVIL_STRONG_INLINE T BitOr(const T lhs, const T rhs) throw() {
 		return lhs | rhs;
 	}
 
 	template<>
-	static inline float BitOr(const float lhs, const float rhs) throw() {
+	static ANVIL_STRONG_INLINE float BitOr(const float lhs, const float rhs) throw() {
 		union Union {
 			uint32_t u;
 			float f;
@@ -826,7 +827,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline double BitOr(const double lhs, const double rhs) throw() {
+	static ANVIL_STRONG_INLINE double BitOr(const double lhs, const double rhs) throw() {
 		union Union {
 			uint64_t u;
 			double f;
@@ -841,12 +842,12 @@ namespace anvil {
 	// BitXor
 
 	template<class T>
-	static inline T BitXor(const T lhs, const T rhs) throw() {
+	static ANVIL_STRONG_INLINE T BitXor(const T lhs, const T rhs) throw() {
 		return lhs | rhs;
 	}
 
 	template<>
-	static inline float BitXor(const float lhs, const float rhs) throw() {
+	static ANVIL_STRONG_INLINE float BitXor(const float lhs, const float rhs) throw() {
 		union Union {
 			uint32_t u;
 			float f;
@@ -859,7 +860,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline double BitXor(const double lhs, const double rhs) throw() {
+	static ANVIL_STRONG_INLINE double BitXor(const double lhs, const double rhs) throw() {
 		union Union {
 			uint64_t u;
 			double f;
@@ -874,12 +875,12 @@ namespace anvil {
 	// BitNot
 
 	template<class T>
-	static inline T BitNot(const T value) throw() {
+	static ANVIL_STRONG_INLINE T BitNot(const T value) throw() {
 		return ~value;
 	}
 
 	template<>
-	static inline float BitNot(const float value) throw() {
+	static ANVIL_STRONG_INLINE float BitNot(const float value) throw() {
 		union {
 			uint32_t u;
 			float f;
@@ -890,7 +891,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline double BitNot(const double value) throw() {
+	static ANVIL_STRONG_INLINE double BitNot(const double value) throw() {
 		union {
 			uint64_t u;
 			double f;
@@ -903,28 +904,28 @@ namespace anvil {
 	// BitOrN
 
 	template<class T>
-	static inline T BitOrN(const T lhs, const T rhs) throw() {
+	static ANVIL_STRONG_INLINE T BitOrN(const T lhs, const T rhs) throw() {
 		return BitOr<T>(BitNot<T>(lhs), rhs);
 	}
 
 	// BitXorN
 
 	template<class T>
-	static inline T BitXorN(const T lhs, const T rhs) throw() {
+	static ANVIL_STRONG_INLINE T BitXorN(const T lhs, const T rhs) throw() {
 		return BitXor<T>(BitNot<T>(lhs), rhs);
 	}
 
 	// BitAndN
 
 	template<class T>
-	static inline T BitAndN(const T lhs, const T rhs) throw() {
+	static ANVIL_STRONG_INLINE T BitAndN(const T lhs, const T rhs) throw() {
 		return BitAnd<T>(BitNot<T>(lhs), rhs);
 	}
 	
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 
 	template<>
-	static inline uint64_t BitAndN(const uint64_t lhs, const uint64_t rhs) throw() {
+	static ANVIL_STRONG_INLINE uint64_t BitAndN(const uint64_t lhs, const uint64_t rhs) throw() {
 		//! \bug Should check for BMI1
 		if constexpr ((ASM_MINIMUM & ASM_AVX2) != 0u) {
 			return _andn_u64(lhs, rhs);
@@ -934,7 +935,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline int64_t BitAndN(const int64_t lhs, const int64_t rhs) throw() {
+	static ANVIL_STRONG_INLINE int64_t BitAndN(const int64_t lhs, const int64_t rhs) throw() {
 		//! \bug Should check for BMI1
 		if constexpr ((ASM_MINIMUM & ASM_AVX2) != 0u) {
 			union Union {
@@ -951,10 +952,10 @@ namespace anvil {
 
 #endif
 
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 
 	template<>
-	static inline uint32_t BitAndN(const uint32_t lhs, const uint32_t rhs) throw() {
+	static ANVIL_STRONG_INLINE uint32_t BitAndN(const uint32_t lhs, const uint32_t rhs) throw() {
 		//! \bug Should check for BMI1
 		if constexpr ((ASM_MINIMUM & ASM_AVX2) != 0u) {
 			return _andn_u32(lhs, rhs);
@@ -964,7 +965,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline int32_t BitAndN(const int32_t lhs, const int32_t rhs) throw() {
+	static ANVIL_STRONG_INLINE int32_t BitAndN(const int32_t lhs, const int32_t rhs) throw() {
 		//! \bug Should check for BMI1
 		if constexpr ((ASM_MINIMUM & ASM_AVX2) != 0u) {
 			union Union {
@@ -984,13 +985,13 @@ namespace anvil {
 	// Blend
 
 	template<class T>
-	static inline T Blend(const T ifOne, const T ifZero, const T mask) throw() {
+	static ANVIL_STRONG_INLINE T Blend(const T ifOne, const T ifZero, const T mask) throw() {
 		return BitOr<T>(BitAnd<T>(mask, ifOne),  BitAndN<T>(mask, ifZero));
 	}
 
 	template<>
-	static inline float Blend<float>(const float ifOne, const float ifZero, const float mask) throw() {
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+	static ANVIL_STRONG_INLINE float Blend<float>(const float ifOne, const float ifZero, const float mask) throw() {
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		if constexpr ((ASM_MINIMUM & ASM_SSE41) != 0ull) {
 			return _mm_cvtss_f32 (_mm_blendv_ps(_mm_load_ss(&ifZero), _mm_load_ss(&ifOne), _mm_load_ss(&mask)));
 		} else if constexpr ((ASM_MINIMUM & ASM_SSE) != 0ull) {
@@ -1013,8 +1014,8 @@ namespace anvil {
 	}
 
 	template<>
-	static inline double Blend<double>(const double ifOne, const double ifZero, const double mask) throw() {
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+	static ANVIL_STRONG_INLINE double Blend<double>(const double ifOne, const double ifZero, const double mask) throw() {
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		if constexpr ((ASM_MINIMUM & ASM_SSE41) != 0ull) {
 			return _mm_cvtsd_f64(_mm_blendv_pd(_mm_load_sd(&ifZero), _mm_load_sd(&ifOne), _mm_load_sd(&mask)));
 		} else if constexpr ((ASM_MINIMUM & ASM_SSE2) != 0ull) {
@@ -1040,11 +1041,11 @@ namespace anvil {
 	// BitTest
 
 	template<class T>
-	static bool BitTest(const T value, const size_t index) throw();
+	static bool BitTest(const T value, const size_t index) throw() = delete;
 
 	template<>
-	static inline bool BitTest<uint64_t>(const uint64_t value, const size_t index) throw() {
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+	static ANVIL_STRONG_INLINE bool BitTest<uint64_t>(const uint64_t value, const size_t index) throw() {
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		static_assert(sizeof(long long) == sizeof(int64_t), "Expected sizeof(long) == sizeof(int32_t)");
 		static_cast<bool>(_bittest64(reinterpret_cast<const long long*>(&value), static_cast<long long>(index)));
 #else
@@ -1053,8 +1054,8 @@ namespace anvil {
 	}
 
 	template<>
-	static inline bool BitTest<uint32_t>(const uint32_t value, const size_t index) throw() {
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+	static ANVIL_STRONG_INLINE bool BitTest<uint32_t>(const uint32_t value, const size_t index) throw() {
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		static_assert(sizeof(long) == sizeof(int32_t), "Expected sizeof(long) == sizeof(int32_t)");
 		static_cast<bool>(_bittest(reinterpret_cast<const long*>(&value), static_cast<int32_t>(index)));
 #else
@@ -1063,18 +1064,18 @@ namespace anvil {
 	}
 
 	template<>
-	static inline bool BitTest<uint16_t>(const uint16_t value, const size_t index) throw() {
+	static ANVIL_STRONG_INLINE bool BitTest<uint16_t>(const uint16_t value, const size_t index) throw() {
 		return BitTest<uint32_t>(value, index);
 	}
 
 	template<>
-	static inline bool BitTest<uint8_t>(const uint8_t value, const size_t index) throw() {
+	static ANVIL_STRONG_INLINE bool BitTest<uint8_t>(const uint8_t value, const size_t index) throw() {
 		return BitTest<uint32_t>(value, index);
 	}
 
 	template<>
-	static inline bool BitTest<int64_t>(const int64_t value, const size_t index) throw() {
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+	static ANVIL_STRONG_INLINE bool BitTest<int64_t>(const int64_t value, const size_t index) throw() {
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		static_assert(sizeof(long long) == sizeof(int64_t), "Expected sizeof(long) == sizeof(int32_t)");
 		static_cast<bool>(_bittest64(reinterpret_cast<const long long*>(&value), static_cast<long long>(index)));
 #else
@@ -1083,8 +1084,8 @@ namespace anvil {
 	}
 
 	template<>
-	static inline bool BitTest<int32_t>(const int32_t value, const size_t index) throw() {
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+	static ANVIL_STRONG_INLINE bool BitTest<int32_t>(const int32_t value, const size_t index) throw() {
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		static_assert(sizeof(long) == sizeof(int32_t), "Expected sizeof(long) == sizeof(int32_t)");
 		static_cast<bool>(_bittest(reinterpret_cast<const long*>(&value), static_cast<int32_t>(index)));
 #else
@@ -1093,17 +1094,17 @@ namespace anvil {
 	}
 
 	template<>
-	static inline bool BitTest<int16_t>(const int16_t value, const size_t index) throw() {
+	static ANVIL_STRONG_INLINE bool BitTest<int16_t>(const int16_t value, const size_t index) throw() {
 		return BitTest<int32_t>(value, index);
 	}
 
 	template<>
-	static inline bool BitTest<int8_t>(const int8_t value, const size_t index) throw() {
+	static ANVIL_STRONG_INLINE bool BitTest<int8_t>(const int8_t value, const size_t index) throw() {
 		return BitTest<int32_t>(value, index);
 	}
 
 	template<>
-	static inline bool BitTest<float>(const float value, const size_t index) throw() {
+	static ANVIL_STRONG_INLINE bool BitTest<float>(const float value, const size_t index) throw() {
 		union {
 			int32_t s;
 			float f;
@@ -1113,7 +1114,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline bool BitTest<double>(const double value, const size_t index) throw() {
+	static ANVIL_STRONG_INLINE bool BitTest<double>(const double value, const size_t index) throw() {
 		union {
 			int64_t s;
 			double f;
@@ -1123,12 +1124,12 @@ namespace anvil {
 	}
 
 	template<class T>
-	static size_t CountLeadingZeros(const T value) throw();
+	static size_t CountLeadingZeros(const T value) throw() = delete;
 
 	template<>
 	static size_t CountLeadingZeros<uint32_t>(const uint32_t value) throw() {
 		uint32_t n = 0u;
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		//! \bug Should check for LZCNT, BMI1 or ABM flags
 		if constexpr ((ASM_MINIMUM & ASM_SSE42) != 0ull) {
 			n = _lzcnt_u32(value);
@@ -1150,7 +1151,7 @@ namespace anvil {
 	template<>
 	static size_t CountLeadingZeros<uint64_t>(const uint64_t value) throw() {
 		size_t count;
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		//! \bug Should check for LZCNT, BMI1 or ABM flags
 		if constexpr ((ASM_MINIMUM & ASM_SSE42) != 0ull) {
 			count = _lzcnt_u64(value);
@@ -1170,21 +1171,21 @@ namespace anvil {
 	}
 
 	template<>
-	static inline size_t CountLeadingZeros<uint16_t>(const uint16_t value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountLeadingZeros<uint16_t>(const uint16_t value) throw() {
 		const size_t count = CountLeadingZeros<uint32_t>(value);
 		ANVIL_ASSUME(count <= 16u);
 		return count;
 	}
 
 	template<>
-	static inline size_t CountLeadingZeros<uint8_t>(const uint8_t value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountLeadingZeros<uint8_t>(const uint8_t value) throw() {
 		const size_t count = CountLeadingZeros<uint32_t>(value);
 		ANVIL_ASSUME(count <= 8u);
 		return count;
 	}
 
 	template<>
-	static inline size_t CountLeadingZeros<int64_t>(const int64_t value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountLeadingZeros<int64_t>(const int64_t value) throw() {
 		union {
 			uint64_t u;
 			int64_t s;
@@ -1194,7 +1195,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline size_t CountLeadingZeros<int32_t>(const int32_t value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountLeadingZeros<int32_t>(const int32_t value) throw() {
 		union {
 			uint32_t u;
 			int32_t s;
@@ -1204,7 +1205,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline size_t CountLeadingZeros<int16_t>(const int16_t value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountLeadingZeros<int16_t>(const int16_t value) throw() {
 		union {
 			uint16_t u;
 			int16_t s;
@@ -1214,7 +1215,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline size_t CountLeadingZeros<int8_t>(const int8_t value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountLeadingZeros<int8_t>(const int8_t value) throw() {
 		union {
 			uint8_t u;
 			int8_t s;
@@ -1224,7 +1225,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline size_t CountLeadingZeros<float>(const float value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountLeadingZeros<float>(const float value) throw() {
 		union {
 			float f;
 			uint32_t u;
@@ -1234,7 +1235,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline size_t CountLeadingZeros<double>(const double value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountLeadingZeros<double>(const double value) throw() {
 		union {
 			double f;
 			uint64_t u;
@@ -1246,12 +1247,12 @@ namespace anvil {
 	// CountTrailingZeros
 
 	template<class T>
-	static size_t CountTrailingZeros(const T value) throw();
+	static size_t CountTrailingZeros(const T value) throw() = delete;
 
 	template<>
 	static size_t CountTrailingZeros<uint32_t>(const uint32_t value) throw() {
 		uint32_t n = 0u;
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		//! \bug Should check for BMI1 flag
 		if constexpr ((ASM_MINIMUM & ASM_AVX2) != 0ull) {
 			n = _tzcnt_u32(value);
@@ -1273,7 +1274,7 @@ namespace anvil {
 	template<>
 	static size_t CountTrailingZeros<uint64_t>(const uint64_t value) throw() {
 		size_t count;
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		//! \bug Should check for BMI1 flag
 		if constexpr ((ASM_MINIMUM & ASM_AVX2) != 0ull) {
 			count = _tzcnt_u64(value);
@@ -1293,21 +1294,21 @@ namespace anvil {
 	}
 
 	template<>
-	static inline size_t CountTrailingZeros<uint16_t>(const uint16_t value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountTrailingZeros<uint16_t>(const uint16_t value) throw() {
 		const size_t count = CountTrailingZeros<uint32_t>(value);
 		ANVIL_ASSUME(count <= 16u);
 		return count;
 	}
 
 	template<>
-	static inline size_t CountTrailingZeros<uint8_t>(const uint8_t value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountTrailingZeros<uint8_t>(const uint8_t value) throw() {
 		const size_t count = CountTrailingZeros<uint32_t>(value);
 		ANVIL_ASSUME(count <= 8u);
 		return count;
 	}
 
 	template<>
-	static inline size_t CountTrailingZeros<int64_t>(const int64_t value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountTrailingZeros<int64_t>(const int64_t value) throw() {
 		union {
 			uint64_t u;
 			int64_t s;
@@ -1317,7 +1318,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline size_t CountTrailingZeros<int32_t>(const int32_t value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountTrailingZeros<int32_t>(const int32_t value) throw() {
 		union {
 			uint32_t u;
 			int32_t s;
@@ -1327,7 +1328,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline size_t CountTrailingZeros<int16_t>(const int16_t value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountTrailingZeros<int16_t>(const int16_t value) throw() {
 		union {
 			uint16_t u;
 			int16_t s;
@@ -1337,7 +1338,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline size_t CountTrailingZeros<int8_t>(const int8_t value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountTrailingZeros<int8_t>(const int8_t value) throw() {
 		union {
 			uint8_t u;
 			int8_t s;
@@ -1347,7 +1348,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline size_t CountTrailingZeros<float>(const float value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountTrailingZeros<float>(const float value) throw() {
 		union {
 			float f;
 			uint32_t u;
@@ -1357,7 +1358,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline size_t CountTrailingZeros<double>(const double value) throw() {
+	static ANVIL_STRONG_INLINE size_t CountTrailingZeros<double>(const double value) throw() {
 		union {
 			double f;
 			uint64_t u;
@@ -1369,11 +1370,11 @@ namespace anvil {
 	// MaskUpToLowestBit
 
 	template<class T>
-	static T MaskUpToLowestBit(const T value) throw();
+	static T MaskUpToLowestBit(const T value) throw() = delete;
 
 	template<>
-	static inline uint64_t MaskUpToLowestBit<uint64_t>(const uint64_t value) throw() {
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+	static ANVIL_STRONG_INLINE uint64_t MaskUpToLowestBit<uint64_t>(const uint64_t value) throw() {
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		//! \bug Should check for BMI1 flag
 		if constexpr ((ASM_MINIMUM & ASM_AVX2) != 0ull) {
 			return _blsmsk_u64(value);
@@ -1384,7 +1385,7 @@ namespace anvil {
 
 	template<>
 	static uint32_t MaskUpToLowestBit<uint32_t>(const uint32_t value) throw() {
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		//! \bug Should check for BMI1 flag
 		if constexpr ((ASM_MINIMUM & ASM_AVX2) != 0ull) {
 			return _blsmsk_u32(value);
@@ -1394,17 +1395,17 @@ namespace anvil {
 	}
 
 	template<>
-	static inline uint16_t MaskUpToLowestBit<uint16_t>(const uint16_t value) throw() {
+	static ANVIL_STRONG_INLINE uint16_t MaskUpToLowestBit<uint16_t>(const uint16_t value) throw() {
 		return static_cast<uint16_t>(MaskUpToLowestBit<uint32_t>(value));
 	}
 
 	template<>
-	static inline uint8_t MaskUpToLowestBit<uint8_t>(const uint8_t value) throw() {
+	static ANVIL_STRONG_INLINE uint8_t MaskUpToLowestBit<uint8_t>(const uint8_t value) throw() {
 		return static_cast<uint8_t>(MaskUpToLowestBit<uint32_t>(value));
 	}
 
 	template<>
-	static inline int64_t MaskUpToLowestBit<int64_t>(const int64_t value) throw() {
+	static ANVIL_STRONG_INLINE int64_t MaskUpToLowestBit<int64_t>(const int64_t value) throw() {
 		union {
 			uint64_t u;
 			int64_t s;
@@ -1415,7 +1416,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline int32_t MaskUpToLowestBit<int32_t>(const int32_t value) throw() {
+	static ANVIL_STRONG_INLINE int32_t MaskUpToLowestBit<int32_t>(const int32_t value) throw() {
 		union {
 			uint32_t u;
 			int32_t s;
@@ -1426,7 +1427,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline int16_t MaskUpToLowestBit<int16_t>(const int16_t value) throw() {
+	static ANVIL_STRONG_INLINE int16_t MaskUpToLowestBit<int16_t>(const int16_t value) throw() {
 		union {
 			uint16_t u;
 			int16_t s;
@@ -1437,7 +1438,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline int8_t MaskUpToLowestBit<int8_t>(const int8_t value) throw() {
+	static ANVIL_STRONG_INLINE int8_t MaskUpToLowestBit<int8_t>(const int8_t value) throw() {
 		union {
 			uint8_t u;
 			int8_t s;
@@ -1448,7 +1449,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline float MaskUpToLowestBit<float>(const float value) throw() {
+	static ANVIL_STRONG_INLINE float MaskUpToLowestBit<float>(const float value) throw() {
 		union {
 			float f;
 			uint32_t u;
@@ -1459,7 +1460,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline double MaskUpToLowestBit<double>(const double value) throw() {
+	static ANVIL_STRONG_INLINE double MaskUpToLowestBit<double>(const double value) throw() {
 		union {
 			double f;
 			uint64_t u;
@@ -1472,10 +1473,10 @@ namespace anvil {
 	// MaskBits
 
 	template<class T>
-	static T MaskBits(const size_t count) throw();
+	static T MaskBits(const size_t count) throw() = delete;
 
 	template<>
-	static inline uint64_t MaskBits<uint64_t>(const size_t count) throw() {
+	static ANVIL_STRONG_INLINE uint64_t MaskBits<uint64_t>(const size_t count) throw() {
 		return MaskUpToLowestBit<uint64_t>(1ull << static_cast<uint64_t>(count));
 	}
 
@@ -1485,27 +1486,27 @@ namespace anvil {
 	}
 
 	template<>
-	static inline uint16_t MaskBits<uint16_t>(const size_t count) throw() {
+	static ANVIL_STRONG_INLINE uint16_t MaskBits<uint16_t>(const size_t count) throw() {
 		return static_cast<uint16_t>(MaskBits<uint32_t>(count));
 	}
 
 	template<>
-	static inline uint8_t MaskBits<uint8_t>(const size_t count) throw() {
+	static ANVIL_STRONG_INLINE uint8_t MaskBits<uint8_t>(const size_t count) throw() {
 		return static_cast<uint8_t>(MaskBits<uint32_t>(count));
 	}
 
 	template<>
-	static inline int64_t MaskBits<int64_t>(const size_t count) throw() {
+	static ANVIL_STRONG_INLINE int64_t MaskBits<int64_t>(const size_t count) throw() {
 		return MaskUpToLowestBit<int64_t>(1ll << static_cast<int64_t>(count));
 	}
 
 	template<>
-	static inline int32_t MaskBits<int32_t>(const size_t count) throw() {
+	static ANVIL_STRONG_INLINE int32_t MaskBits<int32_t>(const size_t count) throw() {
 		return MaskUpToLowestBit<int32_t>(1 << static_cast<int32_t>(count));
 	}
 
 	template<>
-	static inline int16_t MaskBits<int16_t>(const size_t count) throw() {
+	static ANVIL_STRONG_INLINE int16_t MaskBits<int16_t>(const size_t count) throw() {
 		union {
 			uint16_t u;
 			int16_t s;
@@ -1515,7 +1516,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline int8_t MaskBits<int8_t>(const size_t count) throw() {
+	static ANVIL_STRONG_INLINE int8_t MaskBits<int8_t>(const size_t count) throw() {
 		union {
 			uint8_t u;
 			int8_t s;
@@ -1525,7 +1526,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline float MaskBits<float>(const size_t count) throw() {
+	static ANVIL_STRONG_INLINE float MaskBits<float>(const size_t count) throw() {
 		union {
 			float f;
 			uint32_t u;
@@ -1535,7 +1536,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline double MaskBits<double>(const size_t count) throw() {
+	static ANVIL_STRONG_INLINE double MaskBits<double>(const size_t count) throw() {
 		union {
 			double f;
 			uint64_t u;
@@ -1547,14 +1548,14 @@ namespace anvil {
 	// ExtractBitField
 
 	template<class T>
-	static T ExtractBitField(const T src, const size_t start_bit, const size_t bit_count) throw();
+	static T ExtractBitField(const T src, const size_t start_bit, const size_t bit_count) throw() = delete;
 
 	template<>
-	static inline uint64_t ExtractBitField<uint64_t>(const uint64_t src, const size_t start_bit, const size_t bit_count) throw() {
+	static ANVIL_STRONG_INLINE uint64_t ExtractBitField<uint64_t>(const uint64_t src, const size_t start_bit, const size_t bit_count) throw() {
 		ANVIL_ASSUME(start_bit <= 64u);
 		ANVIL_ASSUME(bit_count <= 64u);
 
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		//! \bug Should check for BMI1 flag
 		if constexpr ((ASM_MINIMUM & ASM_AVX2) != 0ull) {
 			return _bextr_u64(src, static_cast<uint64_t>(start_bit), static_cast<uint64_t>(bit_count));
@@ -1568,7 +1569,7 @@ namespace anvil {
 		ANVIL_ASSUME(start_bit <= 32u);
 		ANVIL_ASSUME(bit_count <= 32u);
 
-#if ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECUTE == ANVIL_CPU_X86_64
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		//! \bug Should check for BMI1 flag
 		if constexpr ((ASM_MINIMUM & ASM_AVX2) != 0ull) {
 			return _bextr_u32(src, static_cast<uint32_t>(start_bit), static_cast<uint32_t>(bit_count));
@@ -1578,7 +1579,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline uint16_t ExtractBitField<uint16_t>(const uint16_t src, const size_t start_bit, const size_t bit_count) throw() {
+	static ANVIL_STRONG_INLINE uint16_t ExtractBitField<uint16_t>(const uint16_t src, const size_t start_bit, const size_t bit_count) throw() {
 		ANVIL_ASSUME(start_bit <= 16u);
 		ANVIL_ASSUME(bit_count <= 16u);
 
@@ -1586,7 +1587,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline uint8_t ExtractBitField<uint8_t>(const uint8_t src, const size_t start_bit, const size_t bit_count) throw() {
+	static ANVIL_STRONG_INLINE uint8_t ExtractBitField<uint8_t>(const uint8_t src, const size_t start_bit, const size_t bit_count) throw() {
 		ANVIL_ASSUME(start_bit <= 8u);
 		ANVIL_ASSUME(bit_count <= 8u);
 
@@ -1594,7 +1595,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline int64_t ExtractBitField<int64_t>(const int64_t src, const size_t start_bit, const size_t bit_count) throw() {
+	static ANVIL_STRONG_INLINE int64_t ExtractBitField<int64_t>(const int64_t src, const size_t start_bit, const size_t bit_count) throw() {
 		union {
 			uint64_t u;
 			int64_t s;
@@ -1605,7 +1606,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline int32_t ExtractBitField<int32_t>(const int32_t src, const size_t start_bit, const size_t bit_count) throw() {
+	static ANVIL_STRONG_INLINE int32_t ExtractBitField<int32_t>(const int32_t src, const size_t start_bit, const size_t bit_count) throw() {
 		union {
 			uint32_t u;
 			int32_t s;
@@ -1616,7 +1617,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline int16_t ExtractBitField<int16_t>(const int16_t src, const size_t start_bit, const size_t bit_count) throw() {
+	static ANVIL_STRONG_INLINE int16_t ExtractBitField<int16_t>(const int16_t src, const size_t start_bit, const size_t bit_count) throw() {
 		union {
 			uint16_t u;
 			int16_t s;
@@ -1627,7 +1628,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline int8_t ExtractBitField<int8_t>(const int8_t src, const size_t start_bit, const size_t bit_count) throw() {
+	static ANVIL_STRONG_INLINE int8_t ExtractBitField<int8_t>(const int8_t src, const size_t start_bit, const size_t bit_count) throw() {
 		union {
 			uint8_t u;
 			int8_t s;
@@ -1638,7 +1639,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline float ExtractBitField<float>(const float src, const size_t start_bit, const size_t bit_count) throw() {
+	static ANVIL_STRONG_INLINE float ExtractBitField<float>(const float src, const size_t start_bit, const size_t bit_count) throw() {
 		union {
 			float f;
 			uint32_t u;
@@ -1649,7 +1650,7 @@ namespace anvil {
 	}
 
 	template<>
-	static inline double ExtractBitField<double>(const double src, const size_t start_bit, const size_t bit_count) throw() {
+	static ANVIL_STRONG_INLINE double ExtractBitField<double>(const double src, const size_t start_bit, const size_t bit_count) throw() {
 		union {
 			double f;
 			uint64_t u;
