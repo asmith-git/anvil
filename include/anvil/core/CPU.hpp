@@ -23,19 +23,19 @@
 
 // Detect which CPU is being compiled for and define it's general purpose register size
 #if defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64)
-	#define ANVIL_ARCHITECTURE ANVIL_X64
-	#define ANVIL_ARCHITECTURE_BITS 64
+#define ANVIL_ARCHITECTURE ANVIL_X64
+#define ANVIL_ARCHITECTURE_BITS 64
 #elif defined(i386) || defined(__i386) || defined(__i386__) || defined(__i386__) || defined(_M_I86) || defined(_M_IX86) || defined(_X86_)
-	#define ANVIL_ARCHITECTURE ANVIL_X86
-	#define ANVIL_ARCHITECTURE_BITS 32
+#define ANVIL_ARCHITECTURE ANVIL_X86
+#define ANVIL_ARCHITECTURE_BITS 32
 #elif defined(__aarch64__)
-	#define ANVIL_ARCHITECTURE ANVIL_ARM
-	#define ANVIL_ARCHITECTURE_BITS 64
+#define ANVIL_ARCHITECTURE ANVIL_ARM
+#define ANVIL_ARCHITECTURE_BITS 64
 #elif defined(__arm__) || defined(__thumb__) || defined(_M_ARM) || defined(_M_ARMT)
-	#define ANVIL_ARCHITECTURE ANVIL_ARM
-	#define ANVIL_ARCHITECTURE_BITS 32
+#define ANVIL_ARCHITECTURE ANVIL_ARM
+#define ANVIL_ARCHITECTURE_BITS 32
 #else
-	#error Could not determine CPU architecture
+#error Could not determine CPU architecture
 #endif
 
 #endif
