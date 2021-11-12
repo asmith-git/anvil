@@ -128,8 +128,8 @@ namespace anvil {
 		#undef ANVIL_NO_POPCOUNT64
 		static inline size_t ANVIL_CALL popcount(const uint64_t a_value) throw() {
 			#if ANVIL_ARCHITECTURE_BITS >= 64
-				const uint64_t low = a_value & static_cast<uint64_t>(UINT32_MAX);
-				const uint64_t high = a_value << 32ull;
+				const uint64_t low = static_cast<uint32_t>(a_value & static_cast<uint64_t>(UINT32_MAX));
+				const uint64_t high = static_cast<uint32_t>(a_value << 32ull);
 			#else
 				const uint32_t low = reinterpret_cast<const uint32_t*>(&a_value)[0u];
 				const uint32_t high = reinterpret_cast<const uint32_t*>(&a_value)[1u];

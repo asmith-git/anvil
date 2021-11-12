@@ -38,21 +38,13 @@ namespace anvil {
 		return __lzcnt(a_value);
 	}
 
-#if ANVIL_ARCHITECTURE_BITS == 64
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const uint64_t a_value) throw() {
-		return __lzcnt64(a_value);
-	}
-#else
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const uint64_t a_value) throw() {
-		union {
-			uint64_t value;
-			uint32_t split[2];
-		};
-		value = a_value;
-		const size_t tmp = __lzcnt(split[0]);
-		return tmp == 32 ? 32 + __lzcnt(split[1]) : tmp;
-	}
-#endif
+	#if ANVIL_ARCHITECTURE_BITS == 64
+		static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const uint64_t a_value) throw() {
+			return __lzcnt64(a_value);
+		}
+	#else
+		#define ANVIL_NO_LZ_64
+	#endif
 #elif ANVIL_COMPILER == ANVIL_GCC || ANVIL_COMPILER == ANVIL_CLANG
 	static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const uint8_t a_value) throw() {
 		return __builtin_clz(a_value) - 24;
@@ -66,16 +58,9 @@ namespace anvil {
 		return __builtin_clz(a_value);
 	}
 
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const uint64_t a_value) throw() {
-		union {
-			uint64_t value;
-			uint32_t split[2];
-		};
-		value = a_value;
-		const size_t tmp = __builtin_clz(split[0]);
-		return tmp == 32 ? 32 + __builtin_clz(split[1]) : tmp;
-	}
+	#define ANVIL_NO_LZ_64
 #else
+	// Default implementation, using a lookup table to save on processing
 	namespace detail {
 		static ANVIL_CONSTEXPR_VAR const uint8_t g_leading_zeros_lookup[256] = { 
 			8, 7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4,
@@ -101,56 +86,53 @@ namespace anvil {
 		return detail::g_leading_zeros_lookup[a_value];
 	}
 
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const uint16_t a_value) throw() {
-		union {
-			uint16_t value;
-			uint8_t split[2];
-		};
-		value = a_value;
-		const size_t tmp = detail::g_leading_zeros_lookup[split[0]];
-		return tmp == 8 ? 8 + detail::g_leading_zeros_lookup[split[1]] : tmp;
-	}
-
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const uint32_t a_value) throw() {
-		union {
-			uint32_t value;
-			uint8_t split[4];
-		};
-		value = a_value;
-		size_t tmp = detail::g_leading_zeros_lookup[split[0]];
-		if (tmp != 8) return tmp;
-		tmp = detail::g_leading_zeros_lookup[split[1]];
-		if (tmp != 8) return 8 + tmp;
-		tmp = detail::g_leading_zeros_lookup[split[2]];
-		if (tmp != 8) return 16 + tmp;
-		tmp = detail::g_leading_zeros_lookup[split[3]];
-		return 24 + tmp;
-	}
-
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const uint64_t a_value) throw() {
-		union {
-			uint64_t value;
-			uint8_t split[8];
-		};
-		value = a_value;
-		size_t tmp = detail::g_leading_zeros_lookup[split[0]];
-		if (tmp != 8) return tmp;
-		tmp = detail::g_leading_zeros_lookup[split[1]];
-		if (tmp != 8) return 8 + tmp;
-		tmp = detail::g_leading_zeros_lookup[split[2]];
-		if (tmp != 8) return 16 + tmp;
-		tmp = detail::g_leading_zeros_lookup[split[3]];
-		if (tmp != 8) return 24 + tmp;
-		tmp = detail::g_leading_zeros_lookup[split[4]];
-		if (tmp != 8) return 32 + tmp;
-		tmp = detail::g_leading_zeros_lookup[split[5]];
-		if (tmp != 8) return 40 + tmp;
-		tmp = detail::g_leading_zeros_lookup[split[6]];
-		if (tmp != 8) return 48 + tmp;
-		tmp = detail::g_leading_zeros_lookup[split[7]];
-		return 56 + tmp;
-	}
+	#define ANVIL_NO_LZ_16
+	#define ANVIL_NO_LZ_32
+	#define ANVIL_NO_LZ_64
 #endif
+
+	#ifdef ANVIL_NO_LZ_16 // Leading zero count was not implemented for 16-bit
+		#undef ANVIL_NO_LZ_16
+		static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const uint16_t a_value) throw() {
+			const uint8_t low = static_cast<uint8_t>(a_value & static_cast<uint16_t>(UINT8_MAX));
+			const uint8_t high = static_cast<uint8_t>(a_value << 8u);
+			const size_t tmp = leading_zeros(low);
+			if (tmp == 8u) return 8u;
+
+			return 8u + leading_zeros(high);
+		}
+	#endif
+
+	#ifdef ANVIL_NO_LZ_32 // Leading zero count was not implemented for 32-bit
+		#undef ANVIL_NO_LZ_32
+		static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const uint32_t a_value) throw() {
+			const uint16_t low = static_cast<uint16_t>(a_value & static_cast<uint32_t>(UINT16_MAX));
+			const uint16_t high = static_cast<uint16_t>(a_value << 16u);
+			const size_t tmp = leading_zeros(low);
+			if (tmp == 16u) return 16u;
+
+			return 16u + leading_zeros(high);
+		}
+	#endif
+
+	#ifdef ANVIL_NO_LZ_64 // Leading zero count was not implemented for 64-bit
+		#undef ANVIL_NO_LZ_64
+		static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const uint64_t a_value) throw() {
+	#if ANVIL_ARCHITECTURE_BITS >= 64
+			const uint32_t low = static_cast<uint32_t>(a_value & static_cast<uint64_t>(UINT32_MAX));
+			const uint32_t high = static_cast<uint32_t>(a_value << 32ull);
+	#else
+			const uint32_t low = reinterpret_cast<const uint32_t*>(&a_value)[0u];
+			const uint32_t high = reinterpret_cast<const uint32_t*>(&a_value)[1u];
+	#endif
+			const size_t tmp = leading_zeros(low);
+			if (tmp == 32u) return 32u;
+
+			return 32u + leading_zeros(high);
+		}
+	#endif
+
+	// For signed integers reinterpret the binary data as unsigned and call that implementation instead
 
 	static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const int8_t a_value) throw() {
 		union {
@@ -185,24 +167,6 @@ namespace anvil {
 			uint64_t unsigned_;
 		};
 		signed_ = a_value;
-		return leading_zeros(unsigned_);
-	}
-
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const float a_value) throw() {
-		union {
-			float float_;
-			uint32_t unsigned_;
-		};
-		float_ = a_value;
-		return leading_zeros(unsigned_);
-	}
-
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const double a_value) throw() {
-		union {
-			double float_;
-			uint64_t unsigned_;
-		};
-		float_ = a_value;
 		return leading_zeros(unsigned_);
 	}
 }
