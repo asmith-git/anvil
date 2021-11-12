@@ -38,7 +38,7 @@ namespace anvil {
 		return __lzcnt(a_value);
 	}
 
-	#if ANVIL_ARCHITECTURE_BITS == 64
+	#if ANVIL_ARCHITECTURE_BITS >= 64
 		static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const uint64_t a_value) throw() {
 			return __lzcnt64(a_value);
 		}

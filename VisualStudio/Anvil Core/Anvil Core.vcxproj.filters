@@ -54,6 +54,9 @@
     <ClInclude Include="..\..\include\anvil\core\Type.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\anvil\core\ByteSwap.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CoreVisualStudio.cpp">
