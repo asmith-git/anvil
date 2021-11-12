@@ -93,6 +93,9 @@ namespace anvil {
 	typedef int64_t NativeSigned;
 	typedef uint64_t NativeUnsigned;
 #endif
+
+	static_assert(sizeof(intptr_t) == sizeof(NativeSigned), "Definition of intptr_t does not match the detected native word size");
+	static_assert(sizeof(uintptr_t) == sizeof(NativeUnsigned), "Definition of intptr_t does not match the detected native word size");
 }
 
 #endif

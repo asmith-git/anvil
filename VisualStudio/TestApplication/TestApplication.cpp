@@ -8,7 +8,7 @@ int main()
 	std::cin >> val;
 
 	std::bitset<32> a = val;
-	std::bitset<32> b = anvil::reflect(val);
+	std::bitset<32> b = anvil::CountOnes(&val, 1);
 
 
 	std::cout << a << std::endl;

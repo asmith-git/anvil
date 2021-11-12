@@ -26,6 +26,7 @@
 #include "anvil/core/CpuRuntime.hpp"
 #include "anvil/core/Alignment.hpp"
 #include "anvil/core/Common.hpp"
+#include "anvil/core/Arithmetic.hpp"
 #include "anvil/core/ByteSwap.hpp"
 #include "anvil/core/Reflection.hpp"
 #include "anvil/core/Type.hpp"
