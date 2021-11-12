@@ -23,6 +23,7 @@
 #include "anvil/core/Popcount.hpp"
 #include "anvil/core/LeadingZeros.hpp"
 
+#include "anvil/core/ByteSwap.hpp"
 #include "anvil/core/Reflection.hpp"
 #include "anvil/core/Type.hpp"
 
