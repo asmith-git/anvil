@@ -13,6 +13,7 @@
 //limitations under the License.
 
 #include "anvil/core/LibDetect.hpp"
+#include "anvil/core/Compiler.hpp"
 
 #ifndef ANVIL_LUTILS_ASSERT_HPP
 #define ANVIL_LUTILS_ASSERT_HPP
@@ -20,9 +21,18 @@
 #if ANVIL_GSL_SUPPORT
 	#define ANVIL_ASSUME(CONDITION) GSL_ASSUME(CONDITION)
 #else 
-	#define ANVIL_ASSUME(CONDITION) __assume(CONDITION)
+	#if ANVIL_COMPILER == ANVIL_MSVC
+		#define ANVIL_ASSUME(CONDITION) __assume(CONDITION)
+	#else
+		#define ANVIL_ASSUME(CONDITION)
+	#endif
 #endif
-#define ANVIL_ASSUME_IMPOSSIBLE __assume(0)
+
+#if ANVIL_COMPILER == ANVIL_MSVC
+	#define ANVIL_ASSUME_IMPOSSIBLE __assume(0)
+#else
+	#define ANVIL_ASSUME_IMPOSSIBLE
+#endif
 
 #define ANVIL_CONTRACT_IGNORE 0
 #define ANVIL_CONTRACT_ASSUME 1
