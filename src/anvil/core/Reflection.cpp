@@ -60,7 +60,7 @@ namespace anvil {
 		uint32_t ANVIL_CALL reflect1(const uint32_t aValue) throw() {
 			//return reflectByteLookup(aValue);
 			uint32_t low = aValue & 15u;
-			uint32_t high = aValue << 4u;
+			uint32_t high = aValue >> 4u;
 
 			low = reflectNybble(low);
 			high = reflectNybble(high);
@@ -70,7 +70,7 @@ namespace anvil {
 
 		uint32_t ANVIL_CALL reflect2(const uint32_t aValue) throw() {
 			uint32_t low = aValue & 255u;
-			uint32_t high = aValue << 8u;
+			uint32_t high = aValue >> 8u;
 
 			low = reflect1(low);
 			high = reflect1(high);
@@ -80,7 +80,7 @@ namespace anvil {
 
 		uint32_t ANVIL_CALL reflect4(const uint32_t aValue) throw() {
 			uint32_t low = aValue & static_cast<uint32_t>(UINT16_MAX);
-			uint32_t high = aValue << 16u;
+			uint32_t high = aValue >> 16u;
 
 			low = reflect2(low);
 			high = reflect2(high);
@@ -91,7 +91,7 @@ namespace anvil {
 		uint64_t ANVIL_CALL reflect8(const uint64_t aValue) throw() {
 			#if ANVIL_ARCHITECTURE_BITS >= 64
 				uint64_t low = aValue & static_cast<uint64_t>(UINT32_MAX);
-				uint64_t high = aValue << 32ull;
+				uint64_t high = aValue >> 32ull;
 
 				low = reflect4(static_cast<uint32_t>(low));
 				high = reflect4(static_cast<uint32_t>(high));

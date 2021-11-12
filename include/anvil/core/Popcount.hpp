@@ -100,7 +100,7 @@ namespace anvil {
 		static ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount(uint16_t a_value) throw() {
 			// Calculating the popcount for each byte can potentially be done in parallel
 			// depending on the CPU architecutre
-			return popcount(static_cast<uint8_t>(a_value & 255u)) + popcount(static_cast<uint8_t>(a_value << 8u));
+			return popcount(static_cast<uint8_t>(a_value & 255u)) + popcount(static_cast<uint8_t>(a_value >> 8u));
 		}
 	#endif
 
@@ -109,11 +109,11 @@ namespace anvil {
 		static inline size_t ANVIL_CALL popcount(uint32_t a_value) throw() {
 			// Split the 32-bit word into 8-bit bytes
 			const uint8_t a = static_cast<uint8_t>(a_value & 255u);
-			a_value <<= 8u;
+			a_value >>= 8u;
 			const uint8_t b = static_cast<uint8_t>(a_value & 255u);
-			a_value <<= 8u;
+			a_value >>= 8u;
 			const uint8_t c = static_cast<uint8_t>(a_value & 255u);
-			a_value <<= 8u;
+			a_value >>= 8u;
 			const uint32_t d = static_cast<uint8_t>(a_value);
 
 			// Calculating the popcount for each byte can potentially be done in parallel
@@ -129,7 +129,7 @@ namespace anvil {
 		static inline size_t ANVIL_CALL popcount(const uint64_t a_value) throw() {
 			#if ANVIL_ARCHITECTURE_BITS >= 64
 				const uint64_t low = static_cast<uint32_t>(a_value & static_cast<uint64_t>(UINT32_MAX));
-				const uint64_t high = static_cast<uint32_t>(a_value << 32ull);
+				const uint64_t high = static_cast<uint32_t>(a_value >> 32ull);
 			#else
 				const uint32_t low = reinterpret_cast<const uint32_t*>(&a_value)[0u];
 				const uint32_t high = reinterpret_cast<const uint32_t*>(&a_value)[1u];

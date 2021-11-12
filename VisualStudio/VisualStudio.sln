@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Anvil Core", "Anvil Core\Anvil Core.vcxproj", "{26C297CD-CDAB-4B13-9864-335A1AC7A1D9}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestApplication", "TestApplication\TestApplication.vcxproj", "{EDF3130F-BC60-4DD1-918E-C277321D14E3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{26C297CD-CDAB-4B13-9864-335A1AC7A1D9} = {26C297CD-CDAB-4B13-9864-335A1AC7A1D9}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

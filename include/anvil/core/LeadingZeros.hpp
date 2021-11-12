@@ -95,7 +95,7 @@ namespace anvil {
 		#undef ANVIL_NO_LZ_16
 		static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const uint16_t a_value) throw() {
 			const uint8_t low = static_cast<uint8_t>(a_value & static_cast<uint16_t>(UINT8_MAX));
-			const uint8_t high = static_cast<uint8_t>(a_value << 8u);
+			const uint8_t high = static_cast<uint8_t>(a_value >> 8u);
 			const size_t tmp = leading_zeros(low);
 			if (tmp == 8u) return 8u;
 
@@ -107,7 +107,7 @@ namespace anvil {
 		#undef ANVIL_NO_LZ_32
 		static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const uint32_t a_value) throw() {
 			const uint16_t low = static_cast<uint16_t>(a_value & static_cast<uint32_t>(UINT16_MAX));
-			const uint16_t high = static_cast<uint16_t>(a_value << 16u);
+			const uint16_t high = static_cast<uint16_t>(a_value >> 16u);
 			const size_t tmp = leading_zeros(low);
 			if (tmp == 16u) return 16u;
 
@@ -120,7 +120,7 @@ namespace anvil {
 		static ANVIL_STRONG_INLINE size_t ANVIL_CALL leading_zeros(const uint64_t a_value) throw() {
 	#if ANVIL_ARCHITECTURE_BITS >= 64
 			const uint32_t low = static_cast<uint32_t>(a_value & static_cast<uint64_t>(UINT32_MAX));
-			const uint32_t high = static_cast<uint32_t>(a_value << 32ull);
+			const uint32_t high = static_cast<uint32_t>(a_value >> 32ull);
 	#else
 			const uint32_t low = reinterpret_cast<const uint32_t*>(&a_value)[0u];
 			const uint32_t high = reinterpret_cast<const uint32_t*>(&a_value)[1u];

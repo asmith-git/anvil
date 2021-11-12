@@ -31,13 +31,13 @@ namespace anvil {
 
 	ANVIL_STRONG_INLINE uint16_t ANVIL_CALL bswap(uint16_t aValue) throw() {
 		const uint16_t low = aValue & 255u;
-		const uint8_t high = aValue << 8u;
+		const uint8_t high = aValue >> 8u;
 		return (low << 8u) | high;
 	}
 
 	ANVIL_STRONG_INLINE uint32_t ANVIL_CALL bswap(uint32_t aValue) throw() {
 		uint32_t low = aValue & static_cast<uint32_t>(UINT16_MAX);
-		uint32_t high = aValue << 16u;
+		uint32_t high = aValue >> 16u;
 
 		low = bswap(static_cast<uint16_t>(low));
 		high = bswap(static_cast<uint16_t>(high));
@@ -47,7 +47,7 @@ namespace anvil {
 
 	ANVIL_STRONG_INLINE uint64_t ANVIL_CALL bswap(uint64_t aValue) throw() {
 		uint64_t low = aValue & static_cast<uint64_t>(UINT32_MAX);
-		uint64_t high = aValue << 32ull;
+		uint64_t high = aValue >> 32ull;
 
 		low = bswap(static_cast<uint32_t>(low));
 		high = bswap(static_cast<uint32_t>(high));
