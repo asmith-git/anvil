@@ -21,6 +21,21 @@
 namespace anvil {
 
 	template<class T, size_t SIZE>
+	class Vector;
+
+	namespace detail {
+		template<class T, size_t SIZE>
+		struct VectorHalfType {
+			typedef Vector<T, SIZE> type;
+		};
+
+		template<class T>
+		struct VectorHalfType<T, 1u> {
+			typedef T type;
+		};
+	}
+
+	template<class T, size_t SIZE>
 	class Vector {
 	public:
 		typedef T type;
@@ -30,65 +45,43 @@ namespace anvil {
 			lower_size = size - upper_size
 		};
 
-		typedef Vector<T, lower_size> lower_t;
-		typedef Vector<T, upper_size> upper_t;
+		typedef typename detail::VectorHalfType<T, lower_size>::type lower_t;
+		typedef typename detail::VectorHalfType<T, upper_size>::type upper_t;
 
-	private:
-		T _data[size];
+		union {
+			struct {
+				lower_t lower_half;
+				upper_t upper_half;
+			};
+			T data[size];
+		};
 
-	public:
 		Vector() = default;
 		~Vector() = default;
 
-		Vector(const lower_t& low, const upper_t& upper) {
-			SetLowerHalf(low);
-			SetUpperHalf(upper);
-		}
+		Vector(const lower_t& low, const upper_t& upper) :
+			lower_half(low),
+			upper_half(upper)
+		{}
 
 		ANVIL_STRONG_INLINE T& operator[](const size_t i) throw() {
-			return _data[i];
+			return data[i];
 		}
 
 		ANVIL_STRONG_INLINE T operator[](const size_t i) const throw() {
-			return _data[i];
-		}
-
-		ANVIL_STRONG_INLINE lower_t& GetLowerHalf() throw() {
-			return *reinterpret_cast<lower_t*>(_data);
-		}
-
-		ANVIL_STRONG_INLINE const lower_t& GetLowerHalf() const throw() {
-			return *reinterpret_cast<const lower_t*>(_data);
-		}
-
-		ANVIL_STRONG_INLINE upper_t& GetUpperHalf() throw() {
-			return *reinterpret_cast<upper_t*>(_data + lower_size);
-		}
-
-		ANVIL_STRONG_INLINE const upper_t& GetUpperHalf() const throw() {
-			return *reinterpret_cast<const upper_t*>(_data + lower_size);
-		}
-
-		ANVIL_STRONG_INLINE void SetLowerHalf(const lower_t& x) {
-			lower_t& dst = GetLowerHalf();
-			dst = x;
-		}
-
-		ANVIL_STRONG_INLINE void SetUpperHalf(const upper_t& x) {
-			upper_t& dst = GetUpperHalf();
-			dst = x;
+			return data[i];
 		}
 
 		template<size_t SIZE2>
 		ANVIL_STRONG_INLINE Vector<type, SIZE2>& GetSubVector(size_t offset) throw() {
 			ANVIL_ASSUME(SIZE2 + offset <= size);
-			return *reinterpret_cast<Vector<type, SIZE2>*>(_data + offset);
+			return *reinterpret_cast<Vector<type, SIZE2>*>(data + offset);
 		}
 
 		template<size_t SIZE2>
 		ANVIL_STRONG_INLINE const Vector<type, SIZE2>& GetSubVector(size_t offset) const throw() {
 			ANVIL_ASSUME(SIZE2 + offset <= size);
-			return *reinterpret_cast<const Vector<type, SIZE2>*>(_data + offset);
+			return *reinterpret_cast<const Vector<type, SIZE2>*>(data + offset);
 		}
 
 		template<size_t SIZE2>
@@ -97,64 +90,45 @@ namespace anvil {
 			Vector<type, SIZE2>& dst = GetSubVector(offset);
 			dst = x;
 		}
-	};
 
-	template<class T>
-	class Vector<T, 1u> {
-	public:
-		typedef T type;
-		enum {
-			size = 1u,
-			upper_size = 0u,
-			lower_size = 1u
-		};
-
-		typedef Vector<T, 1u> lower_t;
-		typedef Vector<T, 1u> upper_t;
-
-	private:
-		T _data[size];
-
-	public:
-		Vector() = default;
-		~Vector() = default;
-
-		Vector(const lower_t& low) {
-			SetLowerHalf(low);
+		ANVIL_STRONG_INLINE Vector<T, size>& operator+=(const Vector<T, size>& other) throw() {
+			lower_half += other.lower_half;
+			upper_half += other.upper_half;
+			return *this;
 		}
 
-		ANVIL_STRONG_INLINE T& operator[](const size_t i) throw() {
-			return _data[i];
+		ANVIL_STRONG_INLINE Vector<T, size>& operator-=(const Vector<T, size>& other) throw() {
+			lower_half -= other.lower_half;
+			upper_half -= other.upper_half;
+			return *this;
 		}
 
-		ANVIL_STRONG_INLINE T operator[](const size_t i) const throw() {
-			return _data[i];
+		ANVIL_STRONG_INLINE Vector<T, size>& operator*=(const Vector<T, size>& other) throw() {
+			lower_half *= other.lower_half;
+			upper_half *= other.upper_half;
+			return *this;
 		}
 
-		ANVIL_STRONG_INLINE lower_t& GetLowerHalf() throw() {
-			return *reinterpret_cast<lower_t*>(_data);
+		ANVIL_STRONG_INLINE Vector<T, size>& operator/=(const Vector<T, size>& other) throw() {
+			lower_half /= other.lower_half;
+			upper_half /= other.upper_half;
+			return *this;
 		}
 
-		ANVIL_STRONG_INLINE const lower_t& GetLowerHalf() const throw() {
-			return *reinterpret_cast<const lower_t*>(_data);
+		ANVIL_STRONG_INLINE Vector<T, size> operator+(const Vector<T, size>& other) const throw() {
+			return Vector<T, size>(lower_half + other.lower_half, upper_half + other.upper_half);
 		}
 
-		ANVIL_STRONG_INLINE upper_t& GetUpperHalf() throw() {
-			return GetLowerHalf();
+		ANVIL_STRONG_INLINE Vector<T, size> operator-(const Vector<T, size>& other) const throw() {
+			return Vector<T, size>(lower_half - other.lower_half, upper_half - other.upper_half);
 		}
 
-		ANVIL_STRONG_INLINE const upper_t& GetUpperHalf() const throw() {
-			return GetLowerHalf();
+		ANVIL_STRONG_INLINE Vector<T, size> operator*(const Vector<T, size>& other) const throw() {
+			return Vector<T, size>(lower_half * other.lower_half, upper_half * other.upper_half);
 		}
 
-		ANVIL_STRONG_INLINE void SetLowerHalf(const lower_t& x) {
-			lower_t& dst = GetLowerHalf();
-			dst = x;
-		}
-
-		ANVIL_STRONG_INLINE void SetUpperHalf(const upper_t& x) {
-			upper_t& dst = GetUpperHalf();
-			dst = x;
+		ANVIL_STRONG_INLINE Vector<T, size> operator/(const Vector<T, size>& other) const throw() {
+			return Vector<T, size>(lower_half / other.lower_half, upper_half / other.upper_half);
 		}
 	};
 

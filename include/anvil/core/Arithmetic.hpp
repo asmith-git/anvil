@@ -19,6 +19,7 @@
 #include "anvil/core/Assert.hpp"
 #include "anvil/core/CpuRuntime.hpp"
 #include "anvil/core/Keywords.hpp"
+#include "anvil/core/Vector.hpp"
 
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 #include <nmmintrin.h>
@@ -62,6 +63,14 @@ namespace anvil {
 		return a.f;
 	}
 
+	template<class T, size_t SIZE>
+	static Vector<T, SIZE> BitAnd(const Vector<T, SIZE>& lhs, const Vector<T, SIZE>& rhs) throw() {
+		return Vector<T, SIZE>(
+			BitAnd(lhs.lower_half, rhs.lower_half),
+			BitAnd(lhs.upper_half, rhs.upper_half)
+		);
+	}
+
 	// BitOr
 
 	template<class T>
@@ -93,6 +102,14 @@ namespace anvil {
 		b.f = rhs;
 		a.u |= b.u;
 		return a.f;
+	}
+
+	template<class T, size_t SIZE>
+	static Vector<T, SIZE> BitOr(const Vector<T, SIZE>& lhs, const Vector<T, SIZE>& rhs) throw() {
+		return Vector<T, SIZE>(
+			BitOr(lhs.lower_half, rhs.lower_half),
+			BitOr(lhs.upper_half, rhs.upper_half)
+		);
 	}
 
 	// BitXor
@@ -128,6 +145,14 @@ namespace anvil {
 		return a.f;
 	}
 
+	template<class T, size_t SIZE>
+	static Vector<T, SIZE> BitXor(const Vector<T, SIZE>& lhs, const Vector<T, SIZE>& rhs) throw() {
+		return Vector<T, SIZE>(
+			BitXor(lhs.lower_half, rhs.lower_half),
+			BitXor(lhs.upper_half, rhs.upper_half)
+		);
+	}
+
 	// BitNot
 
 	template<class T>
@@ -155,6 +180,14 @@ namespace anvil {
 		f = value;
 		u = ~u;
 		return f;
+	}
+
+	template<class T, size_t SIZE>
+	static Vector<T, SIZE> BitNot(const Vector<T, SIZE>& lhs) throw() {
+		return Vector<T, SIZE>(
+			BitNot(lhs.lower_half),
+			BitNot(lhs.upper_half)
+		);
 	}
 
 	// IsOdd
@@ -199,6 +232,14 @@ namespace anvil {
 		return IsOdd(static_cast<NativeSigned>(value));
 	}
 
+	template<class T, size_t SIZE>
+	static Vector<bool, SIZE> IsOdd(const Vector<T, SIZE>& lhs) throw() {
+		return Vector<bool, SIZE>(
+			IsOdd(lhs.lower_half),
+			IsOdd(lhs.upper_half)
+		);
+	}
+
 	// IsEven
 
 	static ANVIL_STRONG_INLINE bool IsEvent(const uint64_t value) throw() {
@@ -241,6 +282,14 @@ namespace anvil {
 		return IsEven(static_cast<NativeSigned>(value));
 	}
 
+	template<class T, size_t SIZE>
+	static Vector<bool, SIZE> IsEven(const Vector<T, SIZE>& lhs) throw() {
+		return Vector<bool, SIZE>(
+			IsEven(lhs.lower_half),
+			IsEven(lhs.upper_half)
+		);
+	}
+
 	// RoundUpOdd
 
 	static ANVIL_STRONG_INLINE uint64_t RoundUpOdd(const uint64_t value) throw() {
@@ -281,6 +330,14 @@ namespace anvil {
 
 	static ANVIL_STRONG_INLINE double RoundUpOdd(const double value) throw() {
 		return static_cast<double>(RoundUpOdd(static_cast<NativeSigned>(value)));
+	}
+
+	template<class T, size_t SIZE>
+	static Vector<T, SIZE> RoundUpOdd(Vector<T, SIZE> lhs) throw() {
+		return Vector<T, SIZE>(
+			RoundUpOdd(lhs.lower_half),
+			RoundUpOdd(lhs.upper_half)
+		);
 	}
 
 	// RoundDownOdd
@@ -333,6 +390,14 @@ namespace anvil {
 		return static_cast<double>(RoundDownOdd(static_cast<NativeSigned>(value)));
 	}
 
+	template<class T, size_t SIZE>
+	static Vector<T, SIZE> RoundDownOdd(Vector<T, SIZE> lhs) throw() {
+		return Vector<T, SIZE>(
+			RoundDownOdd(lhs.lower_half),
+			RoundDownOdd(lhs.upper_half)
+		);
+	}
+
 	// RoundUpEven
 
 	static ANVIL_STRONG_INLINE uint64_t RoundUpEven(const uint64_t value) throw() {
@@ -375,6 +440,14 @@ namespace anvil {
 		return static_cast<double>(RoundUpEven(static_cast<NativeSigned>(value)));
 	}
 
+	template<class T, size_t SIZE>
+	static Vector<T, SIZE> RoundUpEven(Vector<T, SIZE> lhs) throw() {
+		return Vector<T, SIZE>(
+			RoundUpEven(lhs.lower_half),
+			RoundUpEven(lhs.upper_half)
+		);
+	}
+
 	// RoundDownEven
 
 	static ANVIL_STRONG_INLINE uint64_t RoundDownEven(const uint64_t value) throw() {
@@ -415,6 +488,14 @@ namespace anvil {
 
 	static ANVIL_STRONG_INLINE double RoundDownEven(const double value) throw() {
 		return static_cast<double>(RoundDownEven(static_cast<NativeSigned>(value)));
+	}
+
+	template<class T, size_t SIZE>
+	static Vector<T, SIZE> RoundDownEven(Vector<T, SIZE> lhs) throw() {
+		return Vector<T, SIZE>(
+			RoundDownEven(lhs.lower_half),
+			RoundDownEven(lhs.upper_half)
+		);
 	}
 
 	// PopulationCount
@@ -565,6 +646,14 @@ namespace anvil {
 		return count;
 	}
 
+	template<class T, size_t SIZE>
+	static Vector<size_t, SIZE> PopulationCount(const Vector<T, SIZE>& lhs) throw() {
+		return Vector<size_t, SIZE>(
+			PopulationCount(lhs.lower_half),
+			PopulationCount(lhs.upper_half)
+		);
+	}
+
 	// CountOnes
 
 	template<class T>
@@ -673,6 +762,14 @@ namespace anvil {
 		return true;
 	}
 
+	template<class T, size_t SIZE>
+	static Vector<bool, SIZE> AllZeros(const Vector<T, SIZE>& lhs) throw() {
+		return Vector<bool, SIZE>(
+			AllZeros(lhs.lower_half),
+			AllZeros(lhs.upper_half)
+		);
+	}
+
 	// AllOnes
 
 	static ANVIL_STRONG_INLINE bool AllOnes(const uint64_t value) throw() {
@@ -746,6 +843,14 @@ namespace anvil {
 		}
 
 		return true;
+	}
+
+	template<class T, size_t SIZE>
+	static Vector<bool, SIZE> AllOnes(const Vector<T, SIZE>& lhs) throw() {
+		return Vector<bool, SIZE>(
+			AllOnes(lhs.lower_half),
+			AllOnes(lhs.upper_half)
+		);
 	}
 
 	// BitOrN
@@ -972,6 +1077,18 @@ namespace anvil {
 		return af;
 	}
 
+	template<class T, size_t SIZE>
+	static Vector<T, SIZE> Blend(const Vector<T, SIZE>& ifOne, Vector<T, SIZE> ifZero, const uint64_t mask) throw() {
+		static_assert(SIZE <= 64, "anvil::Blend : Only supports vectors with up to 64 elements");
+
+		uint64_t flag = 1ull;
+		for(size_t i = 0u; i < SIZE; ++i) {
+			if (mask & flag) ifZero[i] = ifOne[i];
+			flag <<= 1ull;
+		}
+		return ifZero;
+	}
+
 	// BitTest
 
 	static ANVIL_STRONG_INLINE bool BitTest(const uint64_t value, const size_t index) throw() {
@@ -1042,6 +1159,14 @@ namespace anvil {
 		};
 		f = value;
 		return BitTest(s, index);
+	}
+
+	template<class T, size_t SIZE>
+	static Vector<bool, SIZE> BitTest(const Vector<T, SIZE>& lhs, const size_t index) throw() {
+		return Vector<bool, SIZE>(
+			BitTest(lhs.lower_half, index),
+			BitTest(lhs.upper_half, index)
+		);
 	}
 
 	// Leading zero count
@@ -1162,6 +1287,14 @@ namespace anvil {
 		return CountLeadingZeros(u);
 	}
 
+	template<class T, size_t SIZE>
+	static Vector<size_t, SIZE> CountLeadingZeros(const Vector<T, SIZE>& lhs) throw() {
+		return Vector<size_t, SIZE>(
+			CountLeadingZeros(lhs.lower_half),
+			CountLeadingZeros(lhs.upper_half)
+		);
+	}
+
 	// CountTrailingZeros
 
 	namespace detail {
@@ -1278,6 +1411,14 @@ namespace anvil {
 		};
 		f = value;
 		return CountTrailingZeros(u);
+	}
+
+	template<class T, size_t SIZE>
+	static Vector<size_t, SIZE> CountTrailingZeros(const Vector<T, SIZE>& lhs) throw() {
+		return Vector<size_t, SIZE>(
+			CountTrailingZeros(lhs.lower_half),
+			CountTrailingZeros(lhs.upper_half)
+		);
 	}
 
 	// MaskUpToLowestBit
