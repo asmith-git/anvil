@@ -27,12 +27,16 @@ namespace anvil {
 	TypedScalar::TypedScalar(const Type type) :
 		_scalar(0u),
 		_type(type)
-	{}
+	{
+		_type.SetNumberOfChannels(1u);
+	}
 
 	TypedScalar::TypedScalar(const Type type, const UntypedScalar& scalar) :
 		_scalar(scalar.u64),
 		_type(type)
-	{}
+	{
+		_type.SetNumberOfChannels(1u);
+	}
 
 	TypedScalar::TypedScalar(const uint8_t value) :
 		_scalar(value),
@@ -88,7 +92,9 @@ namespace anvil {
 		return _type;
 	}
 
-	void TypedScalar::SetType(const Type type) throw() {
+	void TypedScalar::SetType(Type type) throw() {
+		type.SetNumberOfChannels(1u);
+
 		if (type == _type) return;
 
 		const TypedScalar tmp = *this;

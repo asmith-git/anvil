@@ -174,7 +174,7 @@ namespace anvil {
 		TypedScalar(const float64_t value);
 
 		Type GetType() const throw();
-		void SetType(const Type type) throw();
+		void SetType(Type type) throw();
 
 		operator uint8_t() const throw();
 		operator uint16_t() const throw();
@@ -198,6 +198,42 @@ namespace anvil {
 		bool operator>=(const TypedScalar& other) const throw();
 		bool operator<=(const TypedScalar& other) const throw();
 	};
+
+	ANVIL_STRONG_INLINE TypedScalar operator+(const TypedScalar& a, const TypedScalar& b) throw() {
+		return static_cast<float64_t>(a) + static_cast<float64_t>(b);
+	}
+
+	ANVIL_STRONG_INLINE TypedScalar operator-(const TypedScalar& a, const TypedScalar& b) throw() {
+		return static_cast<float64_t>(a) - static_cast<float64_t>(b);
+	}
+
+	ANVIL_STRONG_INLINE TypedScalar operator*(const TypedScalar& a, const TypedScalar& b) throw() {
+		return static_cast<float64_t>(a) * static_cast<float64_t>(b);
+	}
+
+	ANVIL_STRONG_INLINE TypedScalar operator/(const TypedScalar& a, const TypedScalar& b) throw() {
+		return static_cast<float64_t>(a) / static_cast<float64_t>(b);
+	}
+
+	ANVIL_STRONG_INLINE TypedScalar& operator+=(TypedScalar& a, const TypedScalar& b) throw() {
+		a = a + b;
+		return a;
+	}
+
+	ANVIL_STRONG_INLINE TypedScalar& operator-=(TypedScalar& a, const TypedScalar& b) throw() {
+		a = a - b;
+		return a;
+	}
+
+	ANVIL_STRONG_INLINE TypedScalar& operator*=(TypedScalar& a, const TypedScalar& b) throw() {
+		a = a * b;
+		return a;
+	}
+
+	ANVIL_STRONG_INLINE TypedScalar& operator/=(TypedScalar& a, const TypedScalar& b) throw() {
+		a = a / b;
+		return a;
+	}
 }
 
 #endif
