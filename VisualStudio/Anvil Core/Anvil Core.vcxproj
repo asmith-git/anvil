@@ -43,6 +43,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\anvil\core\CpuRuntime.cpp" />
     <ClCompile Include="..\..\src\anvil\core\Reflection.cpp" />
+    <ClCompile Include="..\..\src\anvil\core\Scalar.cpp" />
     <ClCompile Include="CoreVisualStudio.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

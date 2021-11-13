@@ -228,6 +228,14 @@ namespace anvil {
 			ANVIL_RUNTIME_ASSERT(channels > 0u && channels <= 8u, "anvil::Type::SetNumberOfChannels : Invalid number of channels (must be 1-8)");
 			_channels = channels - 1u;
 		}
+
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN bool operator==(const Type other) const throw() {
+			return _numeric_value == other._numeric_value;
+		}
+
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN bool operator!=(const Type other) const throw() {
+			return _numeric_value != other._numeric_value;
+		}
 	};
 
 	static_assert(sizeof(Type) == 1, "Excpected size of anvil::Type to be 1 byte");

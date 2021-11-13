@@ -140,6 +140,63 @@ namespace anvil {
 		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN operator float64_t() const throw() {
 			return f64;
 		}
+
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN bool operator==(const UntypedScalar& other) const throw() {
+			return u64 == other.u64;
+		}
+
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN bool operator!=(const UntypedScalar& other) const throw() {
+			return u64 != other.u64;
+		}
+	};
+
+	class TypedScalar {
+	private:
+		UntypedScalar _scalar;
+		Type _type;
+	public:
+		TypedScalar();
+		~TypedScalar() = default;
+
+		TypedScalar(const Type type);
+		TypedScalar(const Type type, const UntypedScalar& scalar);
+		TypedScalar(const uint8_t value);
+		TypedScalar(const uint16_t value);
+		TypedScalar(const uint32_t value);
+		TypedScalar(const uint64_t value);
+		TypedScalar(const int8_t value);
+		TypedScalar(const int16_t value);
+		TypedScalar(const int32_t value);
+		TypedScalar(const int64_t value);
+		//UntypedScalar(const float8_t value);
+		//UntypedScalar(const float16_t value);
+		TypedScalar(const float32_t value);
+		TypedScalar(const float64_t value);
+
+		Type GetType() const throw();
+		void SetType(const Type type) throw();
+
+		operator uint8_t() const throw();
+		operator uint16_t() const throw();
+		operator uint32_t() const throw();
+		operator uint64_t() const throw();
+		operator int8_t() const throw();
+		operator int16_t() const throw();
+		operator int32_t() const throw();
+		operator int64_t() const throw();
+		//operator float8_t() const throw();
+		//operator float16_t() const throw();
+		operator float32_t() const throw();
+		operator float64_t() const throw();
+		operator UntypedScalar() const throw();
+
+		bool operator==(const TypedScalar& other) const throw();
+		bool operator!=(const TypedScalar& other) const throw();
+
+		bool operator>(const TypedScalar& other) const throw();
+		bool operator<(const TypedScalar& other) const throw();
+		bool operator>=(const TypedScalar& other) const throw();
+		bool operator<=(const TypedScalar& other) const throw();
 	};
 }
 

@@ -92,5 +92,8 @@
     <ClCompile Include="..\..\src\anvil\core\CpuRuntime.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\anvil\core\Scalar.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
