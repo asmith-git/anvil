@@ -17,33 +17,196 @@
 
 #include "anvil/core/Keywords.hpp"
 #include "anvil/core/Assert.hpp"
+#include <array>
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+#include <intrin.h>
+#endif
 
 namespace anvil {
 
 	namespace detail {
 
 		template<class T, size_t SIZE>
-		class BasicVector;
+		struct BasicVector;
 
 		template<class T, size_t SIZE>
-		struct VectorHalfType {
+		struct VectorTypeSelector {
 			typedef BasicVector<T, SIZE> type;
 		};
 
 		template<class T>
-		struct VectorHalfType<T, 1u> {
+		struct VectorTypeSelector<T, 1u> {
 			typedef T type;
 		};
+
+		template<class T, size_t SIZE>
+		struct NativeVectorSelector {
+			typedef std::array<T, SIZE> type;
+		};
+
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+
+		template<>
+		struct NativeVectorSelector<float, 4u> {
+			typedef __m128 type;
+		};
+
+		template<>
+		struct NativeVectorSelector<double, 2u> {
+			typedef __m128d type;
+		};
+
+		template<>
+		struct NativeVectorSelector<uint8_t, 16u> {
+			typedef __m128i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<uint16_t, 8u> {
+			typedef __m128i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<uint32_t, 4u> {
+			typedef __m128i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<uint64_t, 2u> {
+			typedef __m128i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<int8_t, 16u> {
+			typedef __m128i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<int16_t, 8u> {
+			typedef __m128i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<int32_t, 4u> {
+			typedef __m128i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<int64_t, 2u> {
+			typedef __m128i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<float, 8u> {
+			typedef __m256 type;
+		};
+
+		template<>
+		struct NativeVectorSelector<double, 4u> {
+			typedef __m256d type;
+		};
+
+		template<>
+		struct NativeVectorSelector<uint8_t, 32u> {
+			typedef __m256i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<uint16_t, 16u> {
+			typedef __m256i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<uint32_t, 8u> {
+			typedef __m256i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<uint64_t, 4u> {
+			typedef __m256i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<int8_t, 32u> {
+			typedef __m256i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<int16_t, 16u> {
+			typedef __m256i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<int32_t, 8u> {
+			typedef __m256i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<int64_t, 4u> {
+			typedef __m256i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<float, 16u> {
+			typedef __m512 type;
+		};
+
+		template<>
+		struct NativeVectorSelector<double, 8u> {
+			typedef __m512d type;
+		};
+
+		template<>
+		struct NativeVectorSelector<uint8_t, 64u> {
+			typedef __m512i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<uint16_t, 32u> {
+			typedef __m512i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<uint32_t, 16u> {
+			typedef __m512i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<uint64_t, 8u> {
+			typedef __m512i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<int8_t, 64u> {
+			typedef __m512i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<int16_t, 32u> {
+			typedef __m512i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<int32_t, 16u> {
+			typedef __m512i type;
+		};
+
+		template<>
+		struct NativeVectorSelector<int64_t, 8u> {
+			typedef __m512i type;
+		};
+#endif
 	}
 
 	template<class T, size_t SIZE>
-	using Vector = typename detail::VectorHalfType<T, SIZE>::type;
+	using Vector = typename detail::VectorTypeSelector<T, SIZE>::type;
 
 	namespace detail {
+		
 
+		#pragma pack(push, 1)
 		template<class T, size_t SIZE>
-		class BasicVector {
-		public:
+		struct BasicVector {
 			typedef T type;
 			enum { 
 				size = SIZE,
@@ -53,12 +216,14 @@ namespace anvil {
 
 			typedef Vector<T, lower_size> lower_t;
 			typedef Vector<T, upper_size> upper_t;
+			typedef typename detail::NativeVectorSelector<type, size>::type native_t;
 
 			union {
 				struct {
 					lower_t lower_half;
 					upper_t upper_half;
 				};
+				native_t native;
 				T data[size];
 			};
 
@@ -209,9 +374,14 @@ namespace anvil {
 				return Vector<T, size>(lower_half / other.lower_half, upper_half / other.upper_half);
 			}
 		};
+		#pragma pack(pop)
 	}
 
-
+	// Check that the union inside of BasicVector is the correct size
+	static_assert(sizeof(Vector<float32_t, 4u>) == sizeof(float32_t) * 4u, "Size of anvil::Vector<float32_t, 4u> is different than expected");
+	//static_assert(sizeof(Vector<float32_t, 7u>) == sizeof(float32_t) * 7u, "Size of anvil::Vector<float32_t, 7u> is different than expected");
+	static_assert(sizeof(Vector<float32_t, 8u>) == sizeof(float32_t) * 8u, "Size of anvil::Vector<float32_t, 8u> is different than expected");
+	static_assert(sizeof(Vector<float32_t, 16u>) == sizeof(float32_t) * 16u, "Size of anvil::Vector<float32_t, 16u> is different than expected");
 
 }
 
