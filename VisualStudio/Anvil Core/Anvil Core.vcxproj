@@ -37,6 +37,7 @@
     <ClInclude Include="..\..\include\anvil\core\PODAlgorithm.hpp" />
     <ClInclude Include="..\..\include\anvil\core\PODVector.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Reflection.hpp" />
+    <ClInclude Include="..\..\include\anvil\core\Scalar.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Type.hpp" />
   </ItemGroup>
   <ItemGroup>

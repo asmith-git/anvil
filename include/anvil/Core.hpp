@@ -30,5 +30,6 @@
 #include "anvil/core/ByteSwap.hpp"
 #include "anvil/core/Reflection.hpp"
 #include "anvil/core/Type.hpp"
+#include "anvil/core/Scalar.hpp"
 
 #endif
