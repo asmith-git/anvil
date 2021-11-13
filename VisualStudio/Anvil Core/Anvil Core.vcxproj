@@ -39,6 +39,7 @@
     <ClInclude Include="..\..\include\anvil\core\Reflection.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Scalar.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Type.hpp" />
+    <ClInclude Include="..\..\include\anvil\core\Vector.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\anvil\core\CpuRuntime.cpp" />

@@ -31,5 +31,6 @@
 #include "anvil/core/Reflection.hpp"
 #include "anvil/core/Type.hpp"
 #include "anvil/core/Scalar.hpp"
+#include "anvil/core/Vector.hpp"
 
 #endif
