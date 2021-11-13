@@ -16,6 +16,7 @@
 #define ANVIL_CORE_VECTOR_HPP
 
 #include "anvil/core/Keywords.hpp"
+#include "anvil/core/Assert.hpp"
 
 namespace anvil {
 
@@ -75,6 +76,25 @@ namespace anvil {
 
 		ANVIL_STRONG_INLINE void SetUpperHalf(const upper_t& x) {
 			upper_t& dst = GetUpperHalf();
+			dst = x;
+		}
+
+		template<size_t SIZE2>
+		ANVIL_STRONG_INLINE Vector<type, SIZE2>& GetSubVector(size_t offset) throw() {
+			ANVIL_ASSUME(SIZE2 + offset <= size);
+			return *reinterpret_cast<Vector<type, SIZE2>*>(_data + offset);
+		}
+
+		template<size_t SIZE2>
+		ANVIL_STRONG_INLINE const Vector<type, SIZE2>& GetSubVector(size_t offset) const throw() {
+			ANVIL_ASSUME(SIZE2 + offset <= size);
+			return *reinterpret_cast<const Vector<type, SIZE2>*>(_data + offset);
+		}
+
+		template<size_t SIZE2>
+		ANVIL_STRONG_INLINE void SetSubVector(const Vector<type, SIZE2>& x, size_t offset) {
+			ANVIL_ASSUME(SIZE2 + offset <= size);
+			Vector<type, SIZE2>& dst = GetSubVector(offset);
 			dst = x;
 		}
 	};
