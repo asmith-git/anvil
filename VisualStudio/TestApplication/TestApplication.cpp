@@ -7,16 +7,20 @@ int main()
 {
 	anvil::Vector<float, 16> a;
 	anvil::Vector<float, 16> b;
+	anvil::Vector<float, 16> c;
 
 	std::cin >> a[0u];
 	std::cin >> b[0u];
+	std::cin >> c[0u];
 
 	for (size_t i = 1u; i < 16; ++i) {
 		a[i] = a[0u];
 		b[i] = b[0u];
+		c[i] = c[0u];
 	}
 
-	a += b;
+	//a += b;
+	a = anvil::VectorMultiplyAdd(a, b, c);
 
 	std::cout << a[0u] << std::endl;
 
