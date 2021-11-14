@@ -335,44 +335,20 @@ namespace anvil {
 			}
 
 			inline Vector<T, size>& operator+=(const Vector<T, size>& other) throw() {
-				lower_half += other.lower_half;
-				upper_half += other.upper_half;
-				return *this;
+				return *this = *this + other;
 			}
 
-			inline Vector<T, size>& operator-=(const Vector<T, size>& other) throw() {
-				lower_half -= other.lower_half;
-				upper_half -= other.upper_half;
-				return *this;
-			}
+			//inline Vector<T, size>& operator-=(const Vector<T, size>& other) throw() {
+			//	return *this = *this - other;
+			//}
 
-			inline Vector<T, size>& operator*=(const Vector<T, size>& other) throw() {
-				lower_half *= other.lower_half;
-				upper_half *= other.upper_half;
-				return *this;
-			}
+			//inline Vector<T, size>& operator*=(const Vector<T, size>& other) throw() {
+			//	return *this = *this * other;
+			//}
 
-			inline Vector<T, size>& operator/=(const Vector<T, size>& other) throw() {
-				lower_half /= other.lower_half;
-				upper_half /= other.upper_half;
-				return *this;
-			}
-
-			inline Vector<T, size> operator+(const Vector<T, size>& other) const throw() {
-				return Vector<T, size>(lower_half + other.lower_half, upper_half + other.upper_half);
-			}
-
-			inline Vector<T, size> operator-(const Vector<T, size>& other) const throw() {
-				return Vector<T, size>(lower_half - other.lower_half, upper_half - other.upper_half);
-			}
-
-			inline Vector<T, size> operator*(const Vector<T, size>& other) const throw() {
-				return Vector<T, size>(lower_half * other.lower_half, upper_half * other.upper_half);
-			}
-
-			inline Vector<T, size> operator/(const Vector<T, size>& other) const throw() {
-				return Vector<T, size>(lower_half / other.lower_half, upper_half / other.upper_half);
-			}
+			//inline Vector<T, size>& operator/=(const Vector<T, size>& other) throw() {
+			//	return *this = *this / other;
+			//}
 		};
 		#pragma pack(pop)
 	}

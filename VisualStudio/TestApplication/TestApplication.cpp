@@ -9,7 +9,7 @@ int main()
 	anvil::Vector<float, 64> b;
 
 	a.lower_half += b.lower_half;
-	a.upper_half -= b.upper_half;
+	//a.upper_half -= b.upper_half;
 
 	//uint32_t val;
 	//std::cin >> val;

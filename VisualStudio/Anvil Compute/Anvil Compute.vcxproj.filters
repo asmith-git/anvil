@@ -19,6 +19,9 @@
     <Filter Include="Source Files\Compute">
       <UniqueIdentifier>{fdebf8fa-a858-4afb-9275-15e986008c25}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Utils\SIMD">
+      <UniqueIdentifier>{d4e69d3c-e4fe-4483-81df-24967fa49177}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ComputeVisualStudio.cpp">
@@ -43,6 +46,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\anvil\Compute.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\compute\simd\add.hpp">
+      <Filter>Header Files\Utils\SIMD</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
