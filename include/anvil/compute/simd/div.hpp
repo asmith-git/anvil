@@ -296,12 +296,12 @@ namespace anvil {
 	static inline T VectorDiv(const T& a, const T& b) throw() {
 		return detail::VectorDiv<T>::Execute<instruction_set>(a, b);
 	}
+}
 
 
-	template<class T, size_t size>
-	ANVIL_STRONG_INLINE detail::BasicVector<T, size> operator/(const detail::BasicVector<T, size>& a, const detail::BasicVector<T, size>& b) throw() {
-		return anvil::VectorDiv<ASM_MINIMUM, detail::BasicVector<T, size>>(a, b);
-	}
+template<class T, size_t size>
+ANVIL_STRONG_INLINE anvil::detail::BasicVector<T, size> operator/(const anvil::detail::BasicVector<T, size>& a, const anvil::detail::BasicVector<T, size>& b) throw() {
+	return anvil::VectorDiv<anvil::ASM_MINIMUM, anvil::detail::BasicVector<T, size>>(a, b);
 }
 
 #endif

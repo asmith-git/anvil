@@ -17,7 +17,6 @@
 
 #include "anvil/core/Keywords.hpp"
 #include "anvil/core/Assert.hpp"
-#include <array>
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 #include <intrin.h>
 #endif
@@ -40,8 +39,13 @@ namespace anvil {
 		};
 
 		template<class T, size_t SIZE>
+		struct UnoptimisedNativeType {
+			T data[SIZE];
+		};
+
+		template<class T, size_t SIZE>
 		struct NativeVectorSelector {
-			typedef std::array<T, SIZE> type;
+			typedef UnoptimisedNativeType<T, SIZE> type;
 		};
 
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
@@ -353,6 +357,10 @@ namespace anvil {
 
 			ANVIL_STRONG_INLINE Vector<T, size>& operator/=(const Vector<T, size>& other) throw() {
 				return *this = *this / other;
+			}
+
+			ANVIL_STRONG_INLINE Vector<T, size>& operator&=(const Vector<T, size>& other) throw() {
+				return *this = *this & other;
 			}
 		};
 		#pragma pack(pop)

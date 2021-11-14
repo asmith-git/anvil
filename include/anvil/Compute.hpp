@@ -25,5 +25,6 @@
 #include "anvil/compute/simd/Mul.hpp"
 #include "anvil/compute/simd/Div.hpp"
 #include "anvil/compute/simd/Fma.hpp"
+#include "anvil/compute/simd/And.hpp"
 
 #endif

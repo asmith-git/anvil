@@ -27,6 +27,7 @@
     <ClInclude Include="..\..\include\anvil\compute\Arithmetic.hpp" />
     <ClInclude Include="..\..\include\anvil\compute\Scalar.hpp" />
     <ClInclude Include="..\..\include\anvil\compute\simd\add.hpp" />
+    <ClInclude Include="..\..\include\anvil\compute\simd\and.hpp" />
     <ClInclude Include="..\..\include\anvil\compute\simd\div.hpp" />
     <ClInclude Include="..\..\include\anvil\compute\simd\fma.hpp" />
     <ClInclude Include="..\..\include\anvil\compute\simd\mul.hpp" />

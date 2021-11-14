@@ -20,7 +20,9 @@ int main()
 	}
 
 	//a += b;
-	a = anvil::VectorMultiplyAdd(a, b, c);
+	//a = anvil::VectorMultiplyAdd(a, b, c);
+	//a = anvil::VectorAnd(a, b);
+	a = a & b;
 
 	std::cout << a[0u] << std::endl;
 
