@@ -1,6 +1,7 @@
 #include <iostream>
 #include <bitset>
 #include "anvil/Core.hpp"
+#include "anvil/Compute.hpp"
 
 int main()
 {

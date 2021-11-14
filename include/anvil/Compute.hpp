@@ -12,21 +12,12 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#ifndef ANVIL_CORE_INC_HPP
-#define ANVIL_CORE_INC_HPP
+#ifndef ANVIL_COMPUTE_INC_HPP
+#define ANVIL_COMPUTE_INC_HPP
 
-#include "anvil/core/Compiler.hpp"
-#include "anvil/core/OperatingSystem.hpp"
-#include "anvil/core/Cpu.hpp"
-#include "anvil/core/Keywords.hpp"
-#include "anvil/core/LibDetect.hpp"
-#include "anvil/core/Assert.hpp"
-#include "anvil/core/Keywords.hpp"
-#include "anvil/core/Constants.hpp"
-#include "anvil/core/CpuRuntime.hpp"
-#include "anvil/core/Alignment.hpp"
-#include "anvil/core/Common.hpp"
-#include "anvil/core/ByteSwap.hpp"
-#include "anvil/core/Reflection.hpp"
+#include "anvil/compute/Arithmetic.hpp"
+#include "anvil/compute/Type.hpp"
+#include "anvil/compute/Scalar.hpp"
+#include "anvil/compute/Vector.hpp"
 
 #endif
