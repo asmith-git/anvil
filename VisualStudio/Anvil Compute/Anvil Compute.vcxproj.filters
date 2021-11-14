@@ -13,27 +13,36 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\Utils">
-      <UniqueIdentifier>{fdebf8fa-a858-4afb-9275-15e986008c25}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Utils">
       <UniqueIdentifier>{ce1536f1-d341-4952-bebf-206a86eb25bb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Compute">
+      <UniqueIdentifier>{fdebf8fa-a858-4afb-9275-15e986008c25}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="UtilsVisualStudio.cpp">
+    <ClCompile Include="ComputeVisualStudio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\anvil\lutils\Message.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="..\..\src\anvil\compute\Scalar.cpp">
+      <Filter>Source Files\Compute</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\anvil\Utils.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\anvil\lutils\Message.hpp">
+    <ClInclude Include="..\..\include\anvil\compute\Arithmetic.hpp">
       <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\compute\Scalar.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\compute\Type.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\compute\Vector.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\Compute.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

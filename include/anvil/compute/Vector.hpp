@@ -12,8 +12,8 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#ifndef ANVIL_CORE_VECTOR_HPP
-#define ANVIL_CORE_VECTOR_HPP
+#ifndef ANVIL_COMPUTE_VECTOR_HPP
+#define ANVIL_COMPUTE_VECTOR_HPP
 
 #include "anvil/core/Keywords.hpp"
 #include "anvil/core/Assert.hpp"

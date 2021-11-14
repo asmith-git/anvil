@@ -12,14 +12,14 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#ifndef ANVIL_CORE_ARITHMETIC_HPP
-#define ANVIL_CORE_ARITHMETIC_HPP
+#ifndef ANVIL_COMPUTE_ARITHMETIC_HPP
+#define ANVIL_COMPUTE_ARITHMETIC_HPP
 
 #include <cstdint>
 #include "anvil/core/Assert.hpp"
 #include "anvil/core/CpuRuntime.hpp"
 #include "anvil/core/Keywords.hpp"
-#include "anvil/core/Vector.hpp"
+#include "anvil/compute/Vector.hpp"
 
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 #include <nmmintrin.h>

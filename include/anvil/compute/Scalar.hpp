@@ -12,11 +12,11 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#ifndef ANVIL_CORE_SCALAR_HPP
-#define ANVIL_CORE_SCALAR_HPP
+#ifndef ANVIL_COMPUTE_SCALAR_HPP
+#define ANVIL_COMPUTE_SCALAR_HPP
 
 #include "anvil/core/Keywords.hpp"
-#include "anvil/core/Type.hpp"
+#include "anvil/compute/Type.hpp"
 
 namespace anvil {
 

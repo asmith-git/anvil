@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\anvil\Core.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Alignment.hpp" />
-    <ClInclude Include="..\..\include\anvil\core\Arithmetic.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Assert.hpp" />
     <ClInclude Include="..\..\include\anvil\core\ByteSwap.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Common.hpp" />
@@ -37,14 +36,10 @@
     <ClInclude Include="..\..\include\anvil\core\PODAlgorithm.hpp" />
     <ClInclude Include="..\..\include\anvil\core\PODVector.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Reflection.hpp" />
-    <ClInclude Include="..\..\include\anvil\core\Scalar.hpp" />
-    <ClInclude Include="..\..\include\anvil\core\Type.hpp" />
-    <ClInclude Include="..\..\include\anvil\core\Vector.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\anvil\core\CpuRuntime.cpp" />
     <ClCompile Include="..\..\src\anvil\core\Reflection.cpp" />
-    <ClCompile Include="..\..\src\anvil\core\Scalar.cpp" />
     <ClCompile Include="CoreVisualStudio.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

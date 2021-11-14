@@ -19,16 +19,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\anvil\lutils\Message.cpp" />
-    <ClCompile Include="UtilsVisualStudio.cpp" />
+    <ClCompile Include="..\..\src\anvil\compute\Scalar.cpp" />
+    <ClCompile Include="ComputeVisualStudio.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\anvil\lutils\Message.hpp" />
-    <ClInclude Include="..\..\include\anvil\Utils.hpp" />
+    <ClInclude Include="..\..\include\anvil\Compute.hpp" />
+    <ClInclude Include="..\..\include\anvil\compute\Arithmetic.hpp" />
+    <ClInclude Include="..\..\include\anvil\compute\Scalar.hpp" />
+    <ClInclude Include="..\..\include\anvil\compute\Type.hpp" />
+    <ClInclude Include="..\..\include\anvil\compute\Vector.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{62DF001E-60C2-47BA-9168-F58D4E18DFAE}</ProjectGuid>
+    <ProjectGuid>{E73261AD-201B-471C-87E0-2DBCAB454683}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>AnvilCore</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
