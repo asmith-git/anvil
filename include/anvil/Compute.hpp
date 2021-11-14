@@ -21,5 +21,8 @@
 #include "anvil/compute/Vector.hpp"
 
 #include "anvil/compute/simd/Add.hpp"
+#include "anvil/compute/simd/Sub.hpp"
+#include "anvil/compute/simd/Mul.hpp"
+#include "anvil/compute/simd/Div.hpp"
 
 #endif

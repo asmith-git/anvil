@@ -50,5 +50,14 @@
     <ClInclude Include="..\..\include\anvil\compute\simd\add.hpp">
       <Filter>Header Files\Utils\SIMD</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\anvil\compute\simd\sub.hpp">
+      <Filter>Header Files\Utils\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\compute\simd\mul.hpp">
+      <Filter>Header Files\Utils\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\compute\simd\div.hpp">
+      <Filter>Header Files\Utils\SIMD</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

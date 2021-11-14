@@ -334,21 +334,21 @@ namespace anvil {
 				dst = x;
 			}
 
-			inline Vector<T, size>& operator+=(const Vector<T, size>& other) throw() {
+			ANVIL_STRONG_INLINE Vector<T, size>& operator+=(const Vector<T, size>& other) throw() {
 				return *this = *this + other;
 			}
 
-			//inline Vector<T, size>& operator-=(const Vector<T, size>& other) throw() {
-			//	return *this = *this - other;
-			//}
+			ANVIL_STRONG_INLINE Vector<T, size>& operator-=(const Vector<T, size>& other) throw() {
+				return *this = *this - other;
+			}
 
-			//inline Vector<T, size>& operator*=(const Vector<T, size>& other) throw() {
-			//	return *this = *this * other;
-			//}
+			ANVIL_STRONG_INLINE Vector<T, size>& operator*=(const Vector<T, size>& other) throw() {
+				return *this = *this * other;
+			}
 
-			//inline Vector<T, size>& operator/=(const Vector<T, size>& other) throw() {
-			//	return *this = *this / other;
-			//}
+			ANVIL_STRONG_INLINE Vector<T, size>& operator/=(const Vector<T, size>& other) throw() {
+				return *this = *this / other;
+			}
 		};
 		#pragma pack(pop)
 	}
