@@ -28,6 +28,7 @@ namespace anvil { namespace detail {
 	struct VectorAdd<uint8_t> {
 		typedef uint8_t type;
 
+		template<uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
 			return a + b;
 		}
@@ -37,6 +38,7 @@ namespace anvil { namespace detail {
 	struct VectorAdd<uint16_t> {
 		typedef uint16_t type;
 
+		template<uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
 			return a + b;
 		}
@@ -46,6 +48,7 @@ namespace anvil { namespace detail {
 	struct VectorAdd<uint32_t> {
 		typedef uint32_t type;
 
+		template<uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
 			return a + b;
 		}
@@ -55,6 +58,7 @@ namespace anvil { namespace detail {
 	struct VectorAdd<uint64_t> {
 		typedef uint64_t type;
 
+		template<uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
 			return a + b;
 		}
@@ -64,6 +68,7 @@ namespace anvil { namespace detail {
 	struct VectorAdd<int8_t> {
 		typedef int8_t type;
 
+		template<uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
 			return a + b;
 		}
@@ -73,6 +78,7 @@ namespace anvil { namespace detail {
 	struct VectorAdd<int16_t> {
 		typedef int16_t type;
 
+		template<uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
 			return a + b;
 		}
@@ -82,6 +88,7 @@ namespace anvil { namespace detail {
 	struct VectorAdd<int32_t> {
 		typedef int32_t type;
 
+		template<uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
 			return a + b;
 		}
@@ -91,6 +98,7 @@ namespace anvil { namespace detail {
 	struct VectorAdd<int64_t> {
 		typedef int64_t type;
 
+		template<uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
 			return a + b;
 		}
@@ -100,6 +108,7 @@ namespace anvil { namespace detail {
 	struct VectorAdd<float32_t> {
 		typedef float32_t type;
 
+		template<uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
 			return a + b;
 		}
@@ -109,6 +118,7 @@ namespace anvil { namespace detail {
 	struct VectorAdd<float64_t> {
 		typedef float64_t type;
 
+		template<uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
 			return a + b;
 		}
@@ -116,15 +126,93 @@ namespace anvil { namespace detail {
 
 	// Optimised vectors
 
+
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+
+	template<>
+	struct VectorAdd<detail::BasicVector<float32_t, 4u>> {
+		typedef detail::BasicVector<float32_t, 4u> type;
+
+		static ANVIL_STRONG_INLINE type Execute_SSE(type a, const type& b) throw() {
+			a.native = _mm_add_ps(a.native, b.native);
+			return a;
+		}
+
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b) throw() {
+			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
+			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
+			// that will be inlined together
+			if constexpr ((instruction_set & ASM_SSE) != 0ull) {
+				return Execute_SSE(a, b);
+			} else {
+				a.lower_half = VectorAdd<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half);
+				a.upper_half = VectorAdd<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half);
+				return a;
+			}
+		}
+	};
+
+	template<>
+	struct VectorAdd<detail::BasicVector<float32_t, 8u>> {
+		typedef detail::BasicVector<float32_t, 8u> type;
+
+		static ANVIL_STRONG_INLINE type Execute_AVX(type a, const type& b) throw() {
+			a.native = _mm256_add_ps(a.native, b.native);
+			return a;
+		}
+
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type Execute(type a, const type& b) throw() {
+			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
+			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
+			// that will be inlined together
+			if constexpr ((instruction_set & ASM_AVX) != 0ull) {
+				return Execute_AVX(a, b);
+			} else {
+				a.lower_half = VectorAdd<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half);
+				a.upper_half = VectorAdd<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half);
+				return a;
+			}
+		}
+	};
+
+	template<>
+	struct VectorAdd<detail::BasicVector<float32_t, 16u>> {
+		typedef detail::BasicVector<float32_t, 16u> type;
+
+		static ANVIL_STRONG_INLINE type Execute_AVX512F(type a, const type& b) throw() {
+			a.native = _mm512_add_ps(a.native, b.native);
+			return a;
+		}
+
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type Execute(type a, const type& b) throw() {
+			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
+			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
+			// that will be inlined together
+			if constexpr ((instruction_set & ASM_AVX512F) != 0ull) {
+				return Execute_AVX512F(a, b);
+			} else {
+				a.lower_half = VectorAdd<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half);
+				a.upper_half = VectorAdd<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half);
+				return a;
+			}
+		}
+	};
+
+#endif
+
 	// Unoptimised vectors
 
 	template<class T, size_t size>
 	struct VectorAdd<detail::BasicVector<T, size>> {
 		typedef detail::BasicVector<T, size> type;
 
-		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
-			a.lower_half = VectorAdd<type::lower_t>::Execute(a.lower_half, b.lower_half);
-			a.upper_half = VectorAdd<type::upper_t>::Execute(a.upper_half, b.upper_half);
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type Execute(type a, const type& b) throw() {
+			a.lower_half = VectorAdd<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half);
+			a.upper_half = VectorAdd<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half);
 			return a;
 		}
 	};
@@ -132,15 +220,15 @@ namespace anvil { namespace detail {
 
 namespace anvil {
 
-
-	template<class T, size_t size>
-	inline detail::BasicVector<T, size> operator+(const detail::BasicVector<T, size>& a, const detail::BasicVector<T, size>& b) throw() {
-		return detail::VectorAdd<detail::BasicVector<T, size>>::Execute(a, b);
+	template<uint64_t instruction_set = ASM_MINIMUM, class T>
+	static inline T VectorAdd(const T& a, const T& b) throw() {
+		return detail::VectorAdd<T>::Execute<instruction_set>(a, b);
 	}
 
-	template<class T>
-	static inline T VectorAdd(const T& a, const T& b) throw() {
-		return a = detail::VectorAdd<T>::Execute(a, b);
+
+	template<class T, size_t size>
+	ANVIL_STRONG_INLINE detail::BasicVector<T, size> operator+(const detail::BasicVector<T, size>& a, const detail::BasicVector<T, size>& b) throw() {
+		return anvil::VectorAdd<ASM_MINIMUM, detail::BasicVector<T, size>>(a, b);
 	}
 }
 

@@ -5,11 +5,20 @@
 
 int main()
 {
-	anvil::Vector<float, 64> a;
-	anvil::Vector<float, 64> b;
+	anvil::Vector<float, 16> a;
+	anvil::Vector<float, 16> b;
 
-	a.lower_half += b.lower_half;
-	//a.upper_half -= b.upper_half;
+	std::cin >> a[0u];
+	std::cin >> b[0u];
+
+	for (size_t i = 1u; i < 16; ++i) {
+		a[i] = a[0u];
+		b[i] = b[0u];
+	}
+
+	a += b;
+
+	std::cout << a[0u] << std::endl;
 
 	//uint32_t val;
 	//std::cin >> val;

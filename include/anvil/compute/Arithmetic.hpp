@@ -519,7 +519,7 @@ namespace anvil {
 #if ANVIL_CPU_ARCHITECTURE_BITS >= 64
 	#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 			// Technically POPCNT flag on Intel and ABM flag on AMD CPUs, but SSE 4.2 is a close approximation
-			if AreInstructionSetSupported(ASM_POPCNT)) {
+			if (AreInstructionSetSupported(ASM_POPCNT)) {
 				return detail::PopulationCount64_X86(value);
 			} 
 	#endif
