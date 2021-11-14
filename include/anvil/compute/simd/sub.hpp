@@ -275,6 +275,78 @@ namespace anvil { namespace detail {
 	};
 
 	template<>
+	struct VectorSub<detail::BasicVector<int8_t, 16u>> {
+		typedef detail::BasicVector<int8_t, 16u> type;
+
+		static ANVIL_STRONG_INLINE type Execute_SSE2(type a, const type& b) throw() {
+			a.native = _mm_subs_epi8(a.native, b.native);
+			return a;
+		}
+
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b) throw() {
+			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
+			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
+			// that will be inlined together
+			if constexpr ((instruction_set & ASM_SSE2) != 0ull) {
+				return Execute_SSE2(a, b);
+			} else {
+				a.lower_half = VectorSub<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half);
+				a.upper_half = VectorSub<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half);
+				return a;
+			}
+		}
+	};
+
+	template<>
+	struct VectorSub<detail::BasicVector<int8_t, 32u>> {
+		typedef detail::BasicVector<int8_t, 32u> type;
+
+		static ANVIL_STRONG_INLINE type Execute_AVX2(type a, const type& b) throw() {
+			a.native = _mm256_subs_epi8(a.native, b.native);
+			return a;
+		}
+
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b) throw() {
+			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
+			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
+			// that will be inlined together
+			if constexpr ((instruction_set & ASM_AVX2) != 0ull) {
+				return Execute_AVX2(a, b);
+			} else {
+				a.lower_half = VectorSub<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half);
+				a.upper_half = VectorSub<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half);
+				return a;
+			}
+		}
+	};
+
+	template<>
+	struct VectorSub<detail::BasicVector<int8_t, 64u>> {
+		typedef detail::BasicVector<int8_t, 64u> type;
+
+		static ANVIL_STRONG_INLINE type Execute_AVX512BW(type a, const type& b) throw() {
+			a.native = _mm512_subs_epi8(a.native, b.native);
+			return a;
+		}
+
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b) throw() {
+			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
+			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
+			// that will be inlined together
+			if constexpr ((instruction_set & ASM_AVX512BW) != 0ull) {
+				return Execute_AVX512BW(a, b);
+			} else {
+				a.lower_half = VectorSub<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half);
+				a.upper_half = VectorSub<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half);
+				return a;
+			}
+		}
+	};
+
+	template<>
 	struct VectorSub<detail::BasicVector<int16_t, 8u>> {
 		typedef detail::BasicVector<int16_t, 8u> type;
 
@@ -328,6 +400,78 @@ namespace anvil { namespace detail {
 
 		static ANVIL_STRONG_INLINE type Execute_AVX512BW(type a, const type& b) throw() {
 			a.native = _mm512_subs_epi16(a.native, b.native);
+			return a;
+		}
+
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b) throw() {
+			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
+			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
+			// that will be inlined together
+			if constexpr ((instruction_set & ASM_AVX512BW) != 0ull) {
+				return Execute_AVX512BW(a, b);
+			} else {
+				a.lower_half = VectorSub<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half);
+				a.upper_half = VectorSub<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half);
+				return a;
+			}
+		}
+	};
+
+	template<>
+	struct VectorSub<detail::BasicVector<int32_t, 4u>> {
+		typedef detail::BasicVector<int32_t, 4u> type;
+
+		static ANVIL_STRONG_INLINE type Execute_SSE2(type a, const type& b) throw() {
+			a.native = _mm_sub_epi32(a.native, b.native);
+			return a;
+		}
+
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b) throw() {
+			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
+			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
+			// that will be inlined together
+			if constexpr ((instruction_set & ASM_SSE2) != 0ull) {
+				return Execute_SSE2(a, b);
+			} else {
+				a.lower_half = VectorSub<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half);
+				a.upper_half = VectorSub<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half);
+				return a;
+			}
+		}
+	};
+
+	template<>
+	struct VectorSub<detail::BasicVector<int32_t, 8u>> {
+		typedef detail::BasicVector<int32_t, 8u> type;
+
+		static ANVIL_STRONG_INLINE type Execute_AVX2(type a, const type& b) throw() {
+			a.native = _mm256_sub_epi32(a.native, b.native);
+			return a;
+		}
+
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b) throw() {
+			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
+			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
+			// that will be inlined together
+			if constexpr ((instruction_set & ASM_AVX2) != 0ull) {
+				return Execute_AVX2(a, b);
+			} else {
+				a.lower_half = VectorSub<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half);
+				a.upper_half = VectorSub<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half);
+				return a;
+			}
+		}
+	};
+
+	template<>
+	struct VectorSub<detail::BasicVector<int32_t, 16u>> {
+		typedef detail::BasicVector<int32_t, 16u> type;
+
+		static ANVIL_STRONG_INLINE type Execute_AVX512BW(type a, const type& b) throw() {
+			a.native = _mm512_sub_epi32(a.native, b.native);
 			return a;
 		}
 
