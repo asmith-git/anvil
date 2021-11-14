@@ -31,7 +31,9 @@
     <ClInclude Include="..\..\include\anvil\compute\simd\div.hpp" />
     <ClInclude Include="..\..\include\anvil\compute\simd\fma.hpp" />
     <ClInclude Include="..\..\include\anvil\compute\simd\mul.hpp" />
+    <ClInclude Include="..\..\include\anvil\compute\simd\or.hpp" />
     <ClInclude Include="..\..\include\anvil\compute\simd\sub.hpp" />
+    <ClInclude Include="..\..\include\anvil\compute\simd\xor.hpp" />
     <ClInclude Include="..\..\include\anvil\compute\Type.hpp" />
     <ClInclude Include="..\..\include\anvil\compute\Vector.hpp" />
   </ItemGroup>

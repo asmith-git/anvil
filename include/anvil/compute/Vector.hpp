@@ -362,6 +362,14 @@ namespace anvil {
 			ANVIL_STRONG_INLINE Vector<T, size>& operator&=(const Vector<T, size>& other) throw() {
 				return *this = *this & other;
 			}
+
+			ANVIL_STRONG_INLINE Vector<T, size>& operator|=(const Vector<T, size>& other) throw() {
+				return *this = *this | other;
+			}
+
+			ANVIL_STRONG_INLINE Vector<T, size>& operator^=(const Vector<T, size>& other) throw() {
+				return *this = *this ^ other;
+			}
 		};
 		#pragma pack(pop)
 	}
