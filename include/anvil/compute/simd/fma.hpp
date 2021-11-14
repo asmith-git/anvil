@@ -146,18 +146,19 @@ namespace anvil { namespace detail {
 		}
 
 		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b) throw() {
+		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b, const type& c) throw() {
 			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
 			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
 			// that will be inlined together
 			if constexpr ((instruction_set & ASM_FMA) != 0ull) {
-				return Execute_FMA(a, b);
+				return Execute_FMA(a, b, c);
 			} else if constexpr ((instruction_set & ASM_SSE) != 0ull) {
-				return Execute_SSE(a, b);
+				return Execute_SSE(a, b, c);
 			} else {
-				a.lower_half = VectorMultiplyAdd<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half);
-				a.upper_half = VectorMultiplyAdd<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half);
-				return a;
+				return type(
+					VectorMultiplyAdd<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half, c.lower_half),
+					VectorMultiplyAdd<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half, c.upper_half)
+				);
 			}
 		}
 	};
@@ -177,18 +178,19 @@ namespace anvil { namespace detail {
 		}
 
 		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b) throw() {
+		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b, const type& c) throw() {
 			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
 			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
 			// that will be inlined together
 			if constexpr ((instruction_set & ASM_FMA) != 0ull) {
-				return Execute_FMA(a, b);
+				return Execute_FMA(a, b, c);
 			} else if constexpr ((instruction_set & ASM_AVX) != 0ull) {
-				return Execute_AVX(a, b);
+				return Execute_AVX(a, b, c);
 			} else {
-				a.lower_half = VectorMultiplyAdd<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half);
-				a.upper_half = VectorMultiplyAdd<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half);
-				return a;
+				return type(
+					VectorMultiplyAdd<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half, c.lower_half),
+					VectorMultiplyAdd<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half, c.upper_half)
+				);
 			}
 		}
 	};
@@ -203,16 +205,17 @@ namespace anvil { namespace detail {
 		}
 
 		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b) throw() {
+		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b, const type& c) throw() {
 			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
 			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
 			// that will be inlined together
 			if constexpr ((instruction_set & ASM_AVX512F) != 0ull) {
-				return Execute_AVX512F(a, b);
+				return Execute_AVX512F(a, b, c);
 			} else {
-				a.lower_half = VectorMultiplyAdd<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half);
-				a.upper_half = VectorMultiplyAdd<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half);
-				return a;
+				return type(
+					VectorMultiplyAdd<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half, c.lower_half),
+					VectorMultiplyAdd<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half, c.upper_half)
+				);
 			}
 		}
 	};
@@ -232,18 +235,19 @@ namespace anvil { namespace detail {
 		}
 
 		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b) throw() {
+		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b, const type& c) throw() {
 			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
 			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
 			// that will be inlined together
 			if constexpr ((instruction_set & ASM_FMA) != 0ull) {
-				return Execute_FMA(a, b);
+				return Execute_FMA(a, b, c);
 			} else if constexpr ((instruction_set & ASM_SSE2) != 0ull) {
-				return Execute_SSE2(a, b);
+				return Execute_SSE2(a, b, c);
 			} else {
-				a.lower_half = VectorMultiplyAdd<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half);
-				a.upper_half = VectorMultiplyAdd<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half);
-				return a;
+				return type(
+					VectorMultiplyAdd<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half, c.lower_half),
+					VectorMultiplyAdd<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half, c.upper_half)
+				);
 			}
 		}
 	};
@@ -263,18 +267,19 @@ namespace anvil { namespace detail {
 		}
 
 		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b) throw() {
+		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b, const type& c) throw() {
 			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
 			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
 			// that will be inlined together
 			if constexpr ((instruction_set & ASM_FMA) != 0ull) {
-				return Execute_FMA(a, b);
+				return Execute_FMA(a, b, c);
 			} else if constexpr ((instruction_set & ASM_AVX) != 0ull) {
-				return Execute_AVX(a, b);
+				return Execute_AVX(a, b, c);
 			} else {
-				a.lower_half = VectorMultiplyAdd<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half);
-				a.upper_half = VectorMultiplyAdd<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half);
-				return a;
+				return type(
+					VectorMultiplyAdd<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half, c.lower_half),
+					VectorMultiplyAdd<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half, c.upper_half)
+				);
 			}
 		}
 	};
@@ -289,16 +294,17 @@ namespace anvil { namespace detail {
 		}
 
 		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b) throw() {
+		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b, const type& c) throw() {
 			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
 			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
 			// that will be inlined together
 			if constexpr ((instruction_set & ASM_AVX512F) != 0ull) {
-				return Execute_AVX512F(a, b);
+				return Execute_AVX512F(a, b, c);
 			} else {
-				a.lower_half = VectorMultiplyAdd<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half);
-				a.upper_half = VectorMultiplyAdd<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half);
-				return a;
+				return type(
+					VectorMultiplyAdd<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half, c.lower_half),
+					VectorMultiplyAdd<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half, c.upper_half)
+				);
 			}
 		}
 	};
@@ -313,9 +319,21 @@ namespace anvil { namespace detail {
 
 		template<uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type Execute(type a, const type& b, const type& c) throw() {
-			a.lower_half = VectorMultiplyAdd<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half, c.lower_half);
-			a.upper_half = VectorMultiplyAdd<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half, c.upper_half);
-			return a;
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+			// If the vector fits into an SSE / AVX register then break the calculation down
+			// into smaller operations that are likely to have optimised implementations
+			if constexpr (
+				(sizeof(T) * size == 64 && (instruction_set & ASM_AVX512BW) != 0ull) ||
+				(sizeof(T) * size == 32 && (instruction_set & ASM_AVX2) != 0ull) || 
+				(sizeof(T) * size == 16 && (instruction_set & ASM_SSE2) != 0ull)
+			) {
+				return  anvil::VectorAdd<instruction_set>(anvil::VectorMul<instruction_set>(a, b), c);
+			}
+#endif
+			return type(
+				VectorMultiplyAdd<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half, c.lower_half),
+				VectorMultiplyAdd<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half, c.upper_half)
+			);
 		}
 	};
 }}

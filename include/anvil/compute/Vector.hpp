@@ -230,6 +230,11 @@ namespace anvil {
 			BasicVector() = default;
 			~BasicVector() = default;
 
+			BasicVector(const Vector<T, lower_size>& a, const Vector<T, upper_size>& b) :
+				lower_half(a),
+				upper_half(b)
+			{}
+
 			template<size_t S1, size_t S2>
 			BasicVector(const Vector<T,S1>& a, const Vector<T, S2>& b) {
 				static_assert((S1 + S2) == size, "anvil::BasicVector : Vector sizes must add upp");
