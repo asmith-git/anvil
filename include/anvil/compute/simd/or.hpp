@@ -15,7 +15,7 @@
 #ifndef ANVIL_COMPUTE_SIMD_OR_HPP
 #define ANVIL_COMPUTE_SIMD_OR_HPP
 
-#include "anvil/compute/simd/And.hpp"
+#include "anvil/compute/simd/Or.hpp"
 
 namespace anvil { namespace detail {
 
@@ -27,6 +27,16 @@ namespace anvil { namespace detail {
 		static ANVIL_STRONG_INLINE type Execute(type a, const type& b) throw() {
 			VectorBitOp<type>::Execute<instruction_set, VECTOR_BIT_OP_OR>(a, b);
 			return a;
+		}
+
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type ExecuteRuntimeMask(type a, const type& b, const type& src, const uint64_t mask) throw() {
+			return anvil::VectorBlendRuntimeMask<instruction_set>(Execute<instruction_set>(a, b), src, mask);
+		}
+
+		template<uint64_t mask, uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type ExecuteCompiletimeMask(type a, const type& b, const type& src) throw() {
+			return anvil::VectorBlendRuntimeMask<mask, instruction_set>(Execute<instruction_set>(a, b), src);
 		}
 	};
 
@@ -45,6 +55,29 @@ namespace anvil { namespace detail {
 
 			return a;
 		}
+
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type ExecuteRuntimeMask(type a, const type& b, const type& src, const uint64_t mask) throw() {
+			if constexpr (VectorBitOp<type::native_t>::optimised) {
+				return anvil::VectorBlendRuntimeMask<instruction_set>(Execute<instruction_set>(a, b), src, mask);
+			} else {
+				a.lower_half = VectorOr<type::lower_t>::ExecuteRuntimeMask<instruction_set>(a.lower_half, b.lower_half, src.lower_half, mask);
+				a.upper_half = VectorOr<type::upper_t>::ExecuteRuntimeMask<instruction_set>(a.upper_half, b.upper_half, src.upper_half, mask >> type::lower_size);
+				return a;
+			}
+		}
+
+		template<uint64_t mask, uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type ExecuteCompiletimeMask(type a, const type& b, const type& src) throw() {
+			if constexpr (VectorBitOp<type::native_t>::optimised) {
+				return anvil::VectorBlendCompiletimeMask<mask, instruction_set>(Execute<instruction_set>(a, b), src);
+			} else {
+				enum : uint64_t { mask1 = mask >> type::lower_size };
+				a.lower_half = VectorOr<type::lower_t>::ExecuteCompiletimeMask<mask, instruction_set>(a.lower_half, b.lower_half, src.lower_half);
+				a.upper_half = VectorOr<type::upper_t>::ExecuteCompiletimeMask<mask1, instruction_set>(a.upper_half, b.upper_half, src.upper_half);
+				return a;
+			}
+		}
 	};
 }}
 
@@ -53,6 +86,18 @@ namespace anvil {
 	template<uint64_t instruction_set = ASM_MINIMUM, class T>
 	static inline T VectorOr(const T& a, const T& b) throw() {
 		return detail::VectorOr<T>::Execute<instruction_set>(a, b);
+	}
+
+	// Run-time blend mask
+	template<uint64_t instruction_set = ASM_MINIMUM, class T>
+	static inline T VectorOr(const T& a, const T& b, const T& src, const uint64_t mask) throw() {
+		return detail::VectorOr<T>::ExecuteRuntimeMask<instruction_set>(a, b, src, mask);
+	}
+
+	// Compile-time blend mask
+	template<uint64_t mask, uint64_t instruction_set = ASM_MINIMUM, class T>
+	static inline T VectorOr(const T& a, const T& b, const T& src, const uint64_t mask) throw() {
+		return detail::VectorOr<T>::CompiletimeMask<mask, instruction_set>(a, b, src);
 	}
 }
 

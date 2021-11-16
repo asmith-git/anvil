@@ -17,6 +17,7 @@
 
 #include "anvil/core/CpuRuntime.hpp"
 #include "anvil/compute/Vector.hpp"
+#include "anvil/compute/simd/Blend.hpp"
 
 namespace anvil { namespace detail {
 
@@ -580,6 +581,16 @@ namespace anvil { namespace detail {
 			VectorBitOp<type>::Execute<instruction_set, VECTOR_BIT_OP_AND>(a, b);
 			return a;
 		}
+
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type ExecuteRuntimeMask(type a, const type& b, const type& src, const uint64_t mask) throw() {
+			return anvil::VectorBlendRuntimeMask<instruction_set>(Execute<instruction_set>(a, b), src, mask);
+		}
+
+		template<uint64_t mask, uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type ExecuteCompiletimeMask(type a, const type& b, const type& src) throw() {
+			return anvil::VectorBlendRuntimeMask<mask, instruction_set>(Execute<instruction_set>(a, b), src);
+		}
 	};
 
 	template<class T, size_t size>
@@ -597,6 +608,29 @@ namespace anvil { namespace detail {
 
 			return a;
 		}
+
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type ExecuteRuntimeMask(type a, const type& b, const type& src, const uint64_t mask) throw() {
+			if constexpr (VectorBitOp<type::native_t>::optimised) {
+				return anvil::VectorBlendRuntimeMask<instruction_set>(Execute<instruction_set>(a, b), src, mask);
+			} else {
+				a.lower_half = VectorAnd<type::lower_t>::ExecuteRuntimeMask<instruction_set>(a.lower_half, b.lower_half, src.lower_half, mask);
+				a.upper_half = VectorAnd<type::upper_t>::ExecuteRuntimeMask<instruction_set>(a.upper_half, b.upper_half, src.upper_half, mask >> type::lower_size);
+				return a;
+			}
+		}
+
+		template<uint64_t mask, uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type ExecuteCompiletimeMask(type a, const type& b, const type& src) throw() {
+			if constexpr (VectorBitOp<type::native_t>::optimised) {
+				return anvil::VectorBlendCompiletimeMask<mask, instruction_set>(Execute<instruction_set>(a, b), src);
+			} else {
+				enum : uint64_t { mask1 = mask >> type::lower_size };
+				a.lower_half = VectorAnd<type::lower_t>::ExecuteCompiletimeMask<mask, instruction_set>(a.lower_half, b.lower_half, src.lower_half);
+				a.upper_half = VectorAnd<type::upper_t>::ExecuteCompiletimeMask<mask1, instruction_set>(a.upper_half, b.upper_half, src.upper_half);
+				return a;
+			}
+		}
 	};
 }}
 
@@ -605,6 +639,18 @@ namespace anvil {
 	template<uint64_t instruction_set = ASM_MINIMUM, class T>
 	static inline T VectorAnd(const T& a, const T& b) throw() {
 		return detail::VectorAnd<T>::Execute<instruction_set>(a, b);
+	}
+
+	// Run-time blend mask
+	template<uint64_t instruction_set = ASM_MINIMUM, class T>
+	static inline T VectorAnd(const T& a, const T& b, const T& src, const uint64_t mask) throw() {
+		return detail::VectorAnd<T>::ExecuteRuntimeMask<instruction_set>(a, b, src, mask);
+	}
+
+	// Compile-time blend mask
+	template<uint64_t mask, uint64_t instruction_set = ASM_MINIMUM, class T>
+	static inline T VectorAnd(const T& a, const T& b, const T& src, const uint64_t mask) throw() {
+		return detail::VectorAnd<T>::CompiletimeMask<mask, instruction_set>(a, b, src);
 	}
 }
 
