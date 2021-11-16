@@ -266,6 +266,22 @@ namespace anvil { namespace detail {
 		}
 
 		template<uint64_t mask>
+		static ANVIL_STRONG_INLINE void CompileTimeSSE(__m128& ifOne, const __m128 ifZero) {
+			enum : uint64_t { mask1 = mask & max_mask };
+
+			if constexpr (mask1 == 1ull) {
+				ifOne = _mm_move_ss(ifZero, ifOne);
+			} else if constexpr (mask1 == 3ull) {
+				ifOne = _mm_shuffle_ps(ifOne, ifZero, _MM_SHUFFLE(3, 2, 1, 0));
+			} else if constexpr (mask1 == (3ull << 2ull)) {
+				ifOne = _mm_shuffle_ps(ifZero, ifOne, _MM_SHUFFLE(3, 2, 1, 0));
+			} else {
+				DefaultMasksC<element_t, size>::CompiletimeMask<mask1>(reinterpret_cast<element_t*>(&ifOne), reinterpret_cast<const element_t*>(&ifZero));
+			}
+
+		}
+
+		template<uint64_t mask>
 		static ANVIL_STRONG_INLINE void CompileTimeSSE41(__m128& ifOne, const __m128 ifZero) {
 			enum : uint64_t { mask1 = mask & max_mask };
 			ifOne = _mm_blend_ps(ifZero, ifOne, static_cast<int>(mask1));
@@ -283,6 +299,8 @@ namespace anvil { namespace detail {
 		template<uint64_t mask, uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE void CompiletimeMask(type& ifOne, const type& ifZero) {
 			if constexpr ((instruction_set & ASM_SSE41) != 0ull) {
+				CompileTimeSSE41<mask>(ifOne, ifZero);
+			} else if constexpr ((instruction_set & ASM_SSE) != 0ull) {
 				CompileTimeSSE41<mask>(ifOne, ifZero);
 			} else {
 				DefaultMasksC<element_t, size>::CompiletimeMask<mask>(reinterpret_cast<element_t*>(&ifOne), reinterpret_cast<const element_t*>(&ifZero));
