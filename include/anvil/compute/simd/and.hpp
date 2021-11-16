@@ -79,6 +79,7 @@ namespace anvil { namespace detail {
 	struct VectorBitOp {
 		typedef T type;
 		enum { optimised = 0 };
+		enum : uint64_t { recommended_instruction_set = 0ull };
 
 		template<uint64_t instruction_sets, NativeUnsigned OP>
 		static ANVIL_STRONG_INLINE void Execute(type& a, const type& b) {
@@ -92,22 +93,23 @@ namespace anvil { namespace detail {
 	struct VectorBitOp<__m128> {
 		typedef __m128 type;
 		enum { optimised = 1 };
+		enum : uint64_t { recommended_instruction_set = ASM_SSE };
 
 		template<NativeUnsigned OP>
 		static ANVIL_STRONG_INLINE void Execute_SSE(type& a, const type& b) {
 			if constexpr (OP == VECTOR_BIT_OP_AND) {
-				a = _mm_and_ps(a);
+				a = _mm_and_ps(a, b);
 			} else if constexpr (OP == VECTOR_BIT_OP_OR) {
-				a = _mm_or_ps(a);
+				a = _mm_or_ps(a, b);
 			} else if constexpr (OP == VECTOR_BIT_OP_XOR) {
-				a = _mm_xor_ps(a);
+				a = _mm_xor_ps(a, b);
 			}
 		}
 
 		template<uint64_t instruction_sets, NativeUnsigned OP>
 		static ANVIL_STRONG_INLINE void Execute(type& a, const type& b) {
 			if constexpr ((instruction_sets & ASM_SSE) != 0u) {
-				Execute_SSE(a, b);
+				Execute_SSE<OP>(a, b);
 			} else {
 				VectorBitOpC<OP, sizeof(type)>(&a, &b);
 			}
@@ -118,6 +120,7 @@ namespace anvil { namespace detail {
 	struct VectorBitOp<__m128i> {
 		typedef __m128i type;
 		enum { optimised = 1 };
+		enum : uint64_t { recommended_instruction_set = ASM_SSE2 };
 
 		template<NativeUnsigned OP>
 		static ANVIL_STRONG_INLINE void Execute_SSE2(type& a, const type& b) {
@@ -144,6 +147,7 @@ namespace anvil { namespace detail {
 	struct VectorBitOp<__m128d> {
 		typedef __m128d type;
 		enum { optimised = 1 };
+		enum : uint64_t { recommended_instruction_set = ASM_SSE2 };
 
 		template<NativeUnsigned OP>
 		static ANVIL_STRONG_INLINE void Execute_SSE2(type& a, const type& b) {
@@ -170,6 +174,7 @@ namespace anvil { namespace detail {
 	struct VectorBitOp<__m256> {
 		typedef __m256 type;
 		enum { optimised = 1 };
+		enum : uint64_t { recommended_instruction_set = ASM_AVX };
 
 		template<NativeUnsigned OP>
 		static ANVIL_STRONG_INLINE void Execute_SSE(void* a, const void* b) {
@@ -219,6 +224,7 @@ namespace anvil { namespace detail {
 	struct VectorBitOp<__m256d> {
 		typedef __m256d type;
 		enum { optimised = 1 };
+		enum : uint64_t { recommended_instruction_set = ASM_AVX };
 
 		template<NativeUnsigned OP>
 		static ANVIL_STRONG_INLINE void Execute_SSE2(void* a, const void* b) {
@@ -268,6 +274,7 @@ namespace anvil { namespace detail {
 	struct VectorBitOp<__m256i> {
 		typedef __m256i type;
 		enum { optimised = 1 };
+		enum : uint64_t { recommended_instruction_set = ASM_AVX };
 
 		template<NativeUnsigned OP>
 		static ANVIL_STRONG_INLINE void Execute_SSE2(void* a, const void* b) {
@@ -319,6 +326,7 @@ namespace anvil { namespace detail {
 	struct VectorBitOp<__m512> {
 		typedef __m512 type;
 		enum { optimised = 1 };
+		enum : uint64_t { recommended_instruction_set = ASM_AVX512F };
 
 		template<NativeUnsigned OP>
 		static ANVIL_STRONG_INLINE void Execute_SSE(void* a, const void* b) {
@@ -403,6 +411,7 @@ namespace anvil { namespace detail {
 	struct VectorBitOp<__m512d> {
 		typedef __m512d type;
 		enum { optimised = 1 };
+		enum : uint64_t { recommended_instruction_set = ASM_AVX512F };
 
 		template<NativeUnsigned OP>
 		static ANVIL_STRONG_INLINE void Execute_SSE2(void* a, const void* b) {
@@ -487,6 +496,7 @@ namespace anvil { namespace detail {
 	struct VectorBitOp<__m512i> {
 		typedef __m512i type;
 		enum { optimised = 1 };
+		enum : uint64_t { recommended_instruction_set = ASM_AVX512F };
 
 		template<NativeUnsigned OP>
 		static ANVIL_STRONG_INLINE void Execute_SSE2(void* a, const void* b) {
@@ -611,7 +621,7 @@ namespace anvil { namespace detail {
 
 		template<uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type ExecuteRuntimeMask(type a, const type& b, const type& src, const uint64_t mask) throw() {
-			if constexpr (VectorBitOp<type::native_t>::optimised) {
+			if constexpr (VectorBitOp<type::native_t>::optimised && (instruction_set & VectorBitOp<type::native_t>::recommended_instruction_set) != 0ull) {
 				return anvil::VectorBlendRuntimeMask<instruction_set>(Execute<instruction_set>(a, b), src, mask);
 			} else {
 				a.lower_half = VectorAnd<type::lower_t>::ExecuteRuntimeMask<instruction_set>(a.lower_half, b.lower_half, src.lower_half, mask);
@@ -622,7 +632,7 @@ namespace anvil { namespace detail {
 
 		template<uint64_t mask, uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type ExecuteCompiletimeMask(type a, const type& b, const type& src) throw() {
-			if constexpr (VectorBitOp<type::native_t>::optimised) {
+			if constexpr (VectorBitOp<type::native_t>::optimised && (instruction_set & VectorBitOp<type::native_t>::recommended_instruction_set) != 0ull) {
 				return anvil::VectorBlendCompiletimeMask<mask, instruction_set>(Execute<instruction_set>(a, b), src);
 			} else {
 				enum : uint64_t { mask1 = mask >> type::lower_size };
@@ -649,8 +659,8 @@ namespace anvil {
 
 	// Compile-time blend mask
 	template<uint64_t mask, uint64_t instruction_set = ASM_MINIMUM, class T>
-	static inline T VectorAnd(const T& a, const T& b, const T& src, const uint64_t mask) throw() {
-		return detail::VectorAnd<T>::CompiletimeMask<mask, instruction_set>(a, b, src);
+	static inline T VectorAnd(const T& a, const T& b, const T& src) throw() {
+		return detail::VectorAnd<T>::ExecuteCompiletimeMask<mask, instruction_set>(a, b, src);
 	}
 }
 

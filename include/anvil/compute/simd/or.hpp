@@ -58,7 +58,7 @@ namespace anvil { namespace detail {
 
 		template<uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type ExecuteRuntimeMask(type a, const type& b, const type& src, const uint64_t mask) throw() {
-			if constexpr (VectorBitOp<type::native_t>::optimised) {
+			if constexpr (VectorBitOp<type::native_t>::optimised && (instruction_set & VectorBitOp<type::native_t>::recommended_instruction_set) != 0ull) {
 				return anvil::VectorBlendRuntimeMask<instruction_set>(Execute<instruction_set>(a, b), src, mask);
 			} else {
 				a.lower_half = VectorOr<type::lower_t>::ExecuteRuntimeMask<instruction_set>(a.lower_half, b.lower_half, src.lower_half, mask);
@@ -69,7 +69,7 @@ namespace anvil { namespace detail {
 
 		template<uint64_t mask, uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type ExecuteCompiletimeMask(type a, const type& b, const type& src) throw() {
-			if constexpr (VectorBitOp<type::native_t>::optimised) {
+			if constexpr (VectorBitOp<type::native_t>::optimised && (instruction_set & VectorBitOp<type::native_t>::recommended_instruction_set) != 0ull) {
 				return anvil::VectorBlendCompiletimeMask<mask, instruction_set>(Execute<instruction_set>(a, b), src);
 			} else {
 				enum : uint64_t { mask1 = mask >> type::lower_size };
@@ -96,8 +96,8 @@ namespace anvil {
 
 	// Compile-time blend mask
 	template<uint64_t mask, uint64_t instruction_set = ASM_MINIMUM, class T>
-	static inline T VectorOr(const T& a, const T& b, const T& src, const uint64_t mask) throw() {
-		return detail::VectorOr<T>::CompiletimeMask<mask, instruction_set>(a, b, src);
+	static inline T VectorOr(const T& a, const T& b, const T& src) throw() {
+		return detail::VectorOr<T>::ExecuteCompiletimeMask<mask, instruction_set>(a, b, src);
 	}
 }
 
