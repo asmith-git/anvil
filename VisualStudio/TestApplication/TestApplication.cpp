@@ -24,6 +24,9 @@ int main()
 	//a = anvil::VectorAnd(a, b);
 	a = (a & b) | c;
 
+	a = anvil::VectorBlendRuntimeMask(b, c, 123456);
+	a = anvil::VectorBlendCompiletimeMask<123456>(b, c);
+
 	std::cout << a[0u] << std::endl;
 
 	//uint32_t val;

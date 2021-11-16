@@ -274,6 +274,48 @@ namespace anvil {
 
 	template<class T>
 	using WideType = typename detail::_WideType<T>::type;
+
+	namespace detail {
+		template<size_t BYTES>
+		struct ReinterpretType_;
+
+		template<>
+		struct ReinterpretType_<1u> {
+			typedef uint8_t unsigned_t;
+			typedef int8_t signed_t;
+			//typedef float8_t float_t;
+		};
+
+		template<>
+		struct ReinterpretType_<2u> {
+			typedef uint16_t unsigned_t;
+			typedef int16_t signed_t;
+			//typedef float16_t float_t;
+		};
+
+		template<>
+		struct ReinterpretType_<4u> {
+			typedef uint32_t unsigned_t;
+			typedef int32_t signed_t;
+			typedef float32_t float_t;
+		};
+
+		template<>
+		struct ReinterpretType_<8u> {
+			typedef uint64_t unsigned_t;
+			typedef int64_t signed_t;
+			typedef float64_t float_t;
+		};
+	}
+
+	template<class T>
+	using UnsignedType = typename detail::ReinterpretType_<sizeof(T)>::unsigned_t;
+
+	template<class T>
+	using SignedType = typename detail::ReinterpretType_<sizeof(T)>::signed_t;
+
+	template<class T>
+	using FloatType = typename detail::ReinterpretType_<sizeof(T)>::float_t;
 }
 
 #endif

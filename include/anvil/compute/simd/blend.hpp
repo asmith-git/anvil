@@ -111,19 +111,20 @@ namespace anvil { namespace detail {
 	template<class NATIVE, class T>
 	struct VectorBlendNative {
 		typedef NATIVE type;
+		typedef UnsignedType<T> element_t;
 		enum { 
-			size = sizeof(NATIVE) / sizeof(T)
+			size = sizeof(NATIVE) / sizeof(T),
 			optimised = 0 
 		};
 
 		template<uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE void RuntimeMask(type& ifOne, const type& ifZero, const uint64_t mask) {
-			DefaultMasksC<T, size>::RuntimeMask(&ifOne, &ifZero, mask);
+			DefaultMasksC<element_t, size>::RuntimeMask(reinterpret_cast<element_t*>(&ifOne), reinterpret_cast<const element_t*>(&ifZero), mask);
 		}
 
 		template<uint64_t instruction_set, uint64_t mask>
 		static ANVIL_STRONG_INLINE void CompiletimeMask(type& ifOne, const type& ifZero) {
-			DefaultMasksC<T, size>::CompiletimeMask<mask>(&ifOne, &ifZero, mask);
+			DefaultMasksC<element_t, size>::CompiletimeMask<mask>(reinterpret_cast<element_t*>(&ifOne), reinterpret_cast<const element_t*>(&ifZero), mask);
 		}
 	};
 
@@ -132,6 +133,7 @@ namespace anvil { namespace detail {
 	template<>
 	struct VectorBlendNative<__m128, float32_t> {
 		typedef __m128 type;
+		typedef UnsignedType<float32_t> element_t;
 		enum { optimised = 1 };
 
 		static ANVIL_STRONG_INLINE void RuntimeMaskAVX512VL(type& ifOne, const type ifZero, const uint64_t mask) {
@@ -148,7 +150,7 @@ namespace anvil { namespace detail {
 			if constexpr ((instruction_set & ASM_AVX512VL) != 0ull) {
 				RuntimeMaskAVX512VL(ifOne, ifZero, mask);
 			} else {
-				DefaultMasksC<float32_t, 4u>::RuntimeMask(&ifOne, &ifZero, mask);
+				DefaultMasksC<element_t, 4u>::RuntimeMask(reinterpret_cast<element_t*>(&ifOne), reinterpret_cast<const element_t*>(&ifZero), mask);
 			}
 		}
 
@@ -157,7 +159,7 @@ namespace anvil { namespace detail {
 			if constexpr ((instruction_set & ASM_SSE41) != 0ull) {
 				CompileTimeSSE41<mask>(ifOne, ifZero);
 			} else {
-				DefaultMasksC<float32_t, 4u>::CompiletimeMask<mask>(&ifOne, &ifZero);
+				DefaultMasksC<element_t, 4u>::CompiletimeMask<mask>(reinterpret_cast<element_t*>(&ifOne), reinterpret_cast<const element_t*>(&ifZero));
 			}
 		}
 	};
@@ -189,7 +191,7 @@ namespace anvil { namespace detail {
 		template<uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type RuntimeMask(type ifOne, const type& ifZero, uint64_t mask) throw() {
 			if constexpr (NativeBlend::optimised) {
-				NativeBlend::RuntimeMask<instruction_set>(ifOne, ifZero, mask);
+				NativeBlend::RuntimeMask<instruction_set>(ifOne.native, ifZero.native, mask);
 			} else {
 				ifOne.lower_half = VectorBlend<type::lower_t>::RuntimeMask<instruction_set>(ifOne.lower_half, ifOne.lower_half, mask);
 				ifOne.upper_half = VectorBlend<type::upper_t>::RuntimeMask<instruction_set>(ifOne.upper_half, ifOne.upper_half, mask >> type::lower_size);
@@ -201,7 +203,7 @@ namespace anvil { namespace detail {
 		template<uint64_t mask, uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type CompiletimeMask(type ifOne, const type& ifZero) throw() {
 			if constexpr (NativeBlend::optimised) {
-				NativeBlend::CompiletimeMask<mask, instruction_set>(ifOne, ifZero);
+				NativeBlend::CompiletimeMask<mask, instruction_set>(ifOne.native, ifZero.native);
 			} else {
 				enum : uint64_t { mask2 = mask >> type::lower_size };
 				ifOne.lower_half = VectorBlend<type::lower_t>::CompiletimeMask<mask, instruction_set>(ifOne.lower_half, ifOne.lower_half);
@@ -220,12 +222,12 @@ namespace anvil {
 
 	template<uint64_t instruction_set = ASM_MINIMUM, class T>
 	static ANVIL_STRONG_INLINE T VectorBlendRuntimeMask(const T& a, const T& b, const uint64_t mask) throw() {
-		return detail::VectorBlend<T>::RuntimeMask<instruction_set>::RuntimeMask(a, b, mask);
+		return detail::VectorBlend<T>::RuntimeMask<instruction_set>(a, b, mask);
 	}
 
 	template<uint64_t mask, uint64_t instruction_set = ASM_MINIMUM, class T>
 	static ANVIL_STRONG_INLINE T VectorBlendCompiletimeMask(const T& a, const T& b) throw() {
-		return detail::VectorBlend<T>::CompiletimeMask<mask, instruction_set>::RuntimeMask(a, b);
+		return detail::VectorBlend<T>::CompiletimeMask<mask, instruction_set>(a, b);
 	}
 }
 #endif
