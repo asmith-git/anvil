@@ -22,7 +22,7 @@ int main()
 	//a += b;
 	//a = anvil::VectorMultiplyAdd(a, b, c);
 	//a = anvil::VectorAnd(a, b);
-	a = a & b;
+	a = (a & b) | c;
 
 	std::cout << a[0u] << std::endl;
 

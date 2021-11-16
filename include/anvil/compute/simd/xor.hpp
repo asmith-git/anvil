@@ -15,287 +15,41 @@
 #ifndef ANVIL_COMPUTE_SIMD_XOR_HPP
 #define ANVIL_COMPUTE_SIMD_XOR_HPP
 
-#include "anvil/core/CpuRuntime.hpp"
-#include "anvil/compute/Vector.hpp"
+#include "anvil/compute/simd/And.hpp"
 
-namespace anvil { namespace detail {
+namespace anvil {
+	namespace detail {
 
-	template<class T>
-	struct OptimisedVectorXor {
-		typedef T type;
+		template<class T>
+		struct VectorXor {
+			typedef T type;
 
-		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(const type a, const type b) throw() {
-			return a ^ b;
-		}
-	};
-
-	template<class T>
-	struct VectorXor {
-		typedef T type;
-
-		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b) throw() {
-			return OptimisedVectorXor<T>::Execute< instruction_set>(a, b);
-		}
-	};
-
-	// Optimised types
-
-	template<>
-	struct OptimisedVectorXor<float32_t> {
-		typedef float32_t type;
-		typedef uint32_t utype;
-
-		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
-			union {
-				type fa;
-				utype ua;
-			};
-			union {
-				type fb;
-				utype ub;
-			};
-			fa = a;
-			fb = b;
-			ua ^= ub;
-			return fa;
-		}
-	};
-
-	template<>
-	struct OptimisedVectorXor<float64_t> {
-		typedef float64_t type;
-		typedef uint64_t utype;
-
-		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
-			union {
-				type fa;
-				utype ua;
-			};
-			union {
-				type fb;
-				utype ub;
-			};
-			fa = a;
-			fb = b;
-			ua ^= ub;
-			return fa;
-		}
-	};
-
-	template<class T, size_t S>
-	struct OptimisedVectorXor<UnoptimisedNativeType<T,S>> {
-		typedef UnoptimisedNativeType<T, S> type;
-
-		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(type a, const type& b) throw() {
-			for (size_t i = 0u; i < S; ++i) a[i] = OptimisedVectorXor<T>::Execute<instruction_set>(a[i], b[i]);
-		}
-	};
-
-
-#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-
-	template<uint64_t instruction_set>
-	static ANVIL_STRONG_INLINE void OptimisedXor128(const void* a, const void* b, void* dst) {
-		if constexpr ((instruction_set & ASM_SSE) != 0ull) {
-			_mm_storeu_ps(static_cast<float*>(dst), _mm_and_ps(
-				_mm_loadu_ps(static_cast<const float*>(a)),
-				_mm_loadu_ps(static_cast<const float*>(b))
-			));
-		} else {
-			const NativeUnsigned* ua = static_cast<const NativeUnsigned*>(a);
-			const NativeUnsigned* ub = static_cast<const NativeUnsigned*>(b);
-			NativeUnsigned* udst = static_cast<NativeUnsigned*>(dst);
-
-			udst[0u] = ua[0u] ^ ub[0u];
-			udst[1u] = ua[1u] ^ ub[1u];
-			if constexpr (sizeof(NativeUnsigned) == 4u) {
-				udst[2u] = ua[2u] ^ ub[2u];
-				udst[3u] = ua[3u] ^ ub[3u];
+			template<uint64_t instruction_set>
+			static ANVIL_STRONG_INLINE type Execute(type a, const type& b) throw() {
+				VectorBitOp<type>::Execute<instruction_set, VECTOR_BIT_OP_XOR>(a, b);
+				return a;
 			}
-		}
+		};
+
+		template<class T, size_t size>
+		struct VectorXor<detail::BasicVector<T, size>> {
+			typedef detail::BasicVector<T, size> type;
+
+			template<uint64_t instruction_set>
+			static ANVIL_STRONG_INLINE type Execute(type a, const type& b) throw() {
+				if constexpr (VectorBitOp<type::native_t>::optimised) {
+					VectorBitOp<type::native_t>::Execute<instruction_set, VECTOR_BIT_OP_XOR>(a.native, b.native);
+				}
+				else {
+					a.lower_half = VectorXor<type::lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half);
+					a.upper_half = VectorXor<type::upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half);
+				}
+
+				return a;
+			}
+		};
 	}
-
-	template<uint64_t instruction_set>
-	static ANVIL_STRONG_INLINE void OptimisedXor256(const void* a, const void* b, void* dst) {
-		if constexpr ((instruction_set & ASM_AVX) != 0ull) {
-			_mm256_storeu_ps(static_cast<float*>(dst), _mm_and_ps(
-				_mm256_loadu_ps(static_cast<const float*>(a)),
-				_mm256_loadu_ps(static_cast<const float*>(b))
-			));
-		} else {
-			OptimisedXor128<instruction_set>(a, b, dst);
-			OptimisedXor128<instruction_set>(static_cast<const uint8_t*>(a) + 16u, static_cast<const uint8_t*>(b) + 16u, static_cast<uint8_t*>(dst) + 16u);
-		}
-	}
-
-	template<uint64_t instruction_set>
-	static ANVIL_STRONG_INLINE void OptimisedXor512(const void* a, const void* b, void* dst) {
-		if constexpr ((instruction_set & ASM_AVX512F) != 0ull) {
-			_mm512_storeu_ps(static_cast<float*>(dst), _mm_and_ps(
-				_mm512_loadu_ps(static_cast<const float*>(a)),
-				_mm512_loadu_ps(static_cast<const float*>(b))
-			));
-		} else {
-			OptimisedXor256<instruction_set>(a, b, dst);
-			OptimisedXor256<instruction_set>(static_cast<const uint8_t*>(a) + 32u, static_cast<const uint8_t*>(b) + 32u, static_cast<uint8_t*>(dst) + 32u);
-		}
-	}
-
-	template<>
-	struct OptimisedVectorXor<__m128> {
-		typedef __m128 type;
-
-		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
-			if constexpr ((instruction_set & ASM_SSE) != 0ull) {
-				return _mm_and_ps(a, b);
-			} else {
-				OptimisedXor128<instruction_set>(&a, &b, &a);
-				return a;
-			}
-		}
-	};
-
-	template<>
-	struct OptimisedVectorXor<__m128i> {
-		typedef __m128i type;
-
-		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
-			if constexpr ((instruction_set & ASM_SSE2) != 0ull) {
-				return _mm_and_si128(a, b);
-			} else {
-				OptimisedXor128<instruction_set>(&a, &b, &a);
-				return a;
-			}
-		}
-	};
-
-	template<>
-	struct OptimisedVectorXor<__m128d> {
-		typedef __m128d type;
-
-		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
-			if constexpr ((instruction_set & ASM_SSE2) != 0ull) {
-				return _mm_and_pd(a, b);
-			} else {
-				OptimisedXor128<instruction_set>(&a, &b, &a);
-				return a;
-			}
-		}
-	};
-
-	template<>
-	struct OptimisedVectorXor<__m256> {
-		typedef __m256 type;
-
-		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
-			if constexpr ((instruction_set & ASM_AVX) != 0ull) {
-				return _mm256_and_ps(a, b);
-			} else {
-				OptimisedXor256<instruction_set>(&a, &b, &a);
-				return a;
-			}
-		}
-	};
-
-	template<>
-	struct OptimisedVectorXor<__m256i> {
-		typedef __m256i type;
-
-		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
-			if constexpr ((instruction_set & ASM_AVX2) != 0ull) {
-				return _mm256_and_si256(a, b);
-			} else {
-				OptimisedXor256<instruction_set>(&a, &b, &a);
-				return a;
-			}
-		}
-	};
-
-	template<>
-	struct OptimisedVectorXor<__m256d> {
-		typedef __m256d type;
-
-		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
-			if constexpr ((instruction_set & ASM_AVX) != 0ull) {
-				return _mm256_and_pd(a, b);
-			} else {
-				OptimisedXor256<instruction_set>(&a, &b, &a);
-				return a;
-			}
-		}
-	};
-
-	template<>
-	struct OptimisedVectorXor<__m512> {
-		typedef __m512 type;
-
-		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
-			if constexpr ((instruction_set & ASM_AVX512F) != 0ull) {
-				return _mm512_and_ps(a, b);
-			} else {
-				OptimisedXor512<instruction_set>(&a, &b, &a);
-				return a;
-			}
-		}
-	};
-
-	template<>
-	struct OptimisedVectorXor<__m512i> {
-		typedef __m512i type;
-
-		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
-			if constexpr ((instruction_set & ASM_AVX512BW) != 0ull) {
-				return _mm512_and_si512(a, b);
-			} else {
-				OptimisedXor512<instruction_set>(&a, &b, &a);
-				return a;
-			}
-		}
-	};
-
-	template<>
-	struct OptimisedVectorXor<__m512d> {
-		typedef __m512d type;
-
-		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(type a, type b) throw() {
-			if constexpr ((instruction_set & ASM_AVX512F) != 0ull) {
-				return _mm512_and_pd(a, b);
-			} else {
-				OptimisedXor512<instruction_set>(&a, &b, &a);
-				return a;
-			}
-		}
-	};
-
-#endif
-
-	// Unoptimised vectors
-
-	template<class T, size_t size>
-	struct VectorXor<detail::BasicVector<T, size>> {
-		typedef detail::BasicVector<T, size> type;
-
-		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(type a, const type& b) throw() {
-			a.native = OptimisedVectorXor<type::native_t>::Execute<instruction_set>(a.native, b.native);
-			return a;
-		}
-	};
-}}
+}
 
 namespace anvil {
 
