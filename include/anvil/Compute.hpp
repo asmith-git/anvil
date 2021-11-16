@@ -20,6 +20,7 @@
 #include "anvil/compute/Scalar.hpp"
 #include "anvil/compute/Vector.hpp"
 
+#include "anvil/compute/simd/Blend.hpp"
 #include "anvil/compute/simd/Add.hpp"
 #include "anvil/compute/simd/Sub.hpp"
 #include "anvil/compute/simd/Mul.hpp"

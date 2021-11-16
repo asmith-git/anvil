@@ -71,5 +71,8 @@
     <ClInclude Include="..\..\include\anvil\compute\simd\xor.hpp">
       <Filter>Header Files\Utils\SIMD</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\anvil\compute\simd\blend.hpp">
+      <Filter>Header Files\Utils\SIMD</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
