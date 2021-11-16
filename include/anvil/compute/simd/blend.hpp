@@ -15,6 +15,7 @@
 #ifndef ANVIL_COMPUTE_SIMD_BLEND_HPP
 #define ANVIL_COMPUTE_SIMD_BLEND_HPP
 
+#include <type_traits>
 #include "anvil/compute/simd/And.hpp"
 #include "anvil/compute/simd/Or.hpp"
 #include "anvil/compute/simd/Xor.hpp"
@@ -50,7 +51,10 @@ namespace anvil { namespace detail {
 
 	template<class T>
 	struct DefaultMasksC<T, 1u> {
+		enum : uint64_t { max_mask = 1ull };
+
 		static ANVIL_STRONG_INLINE void RuntimeMask(T* ifOne, const T* ifZero, uint64_t mask) {
+			ANVIL_ASSUME(mask <= max_mask);
 			if ((mask & 1ull) == 0ull) *ifOne = *ifZero;
 		}
 
@@ -62,7 +66,10 @@ namespace anvil { namespace detail {
 
 	template<class T>
 	struct DefaultMasksC<T, 2u> {
+		enum : uint64_t { max_mask = (1ull << 2u) - 1ull };
+
 		static ANVIL_STRONG_INLINE void RuntimeMask(T* ifOne, const T* ifZero, uint64_t mask) {
+			ANVIL_ASSUME(mask <= max_mask);
 			if ((mask & 1ull) == 0ull) ifOne[0u] = ifZero[0u];
 			if ((mask & 2ull) == 0ull) ifOne[1u] = ifZero[1u];
 		}
@@ -76,8 +83,10 @@ namespace anvil { namespace detail {
 
 	template<class T>
 	struct DefaultMasksC<T, 3u> {
+		enum : uint64_t { max_mask = (1ull << 3u) - 1ull };
 
 		static ANVIL_STRONG_INLINE void RuntimeMask(T* ifOne, const T* ifZero, uint64_t mask) {
+			ANVIL_ASSUME(mask <= max_mask);
 			if ((mask & 1ull) == 0ull) ifOne[0u] = ifZero[0u];
 			if ((mask & 2ull) == 0ull) ifOne[1u] = ifZero[1u];
 			if ((mask & 4ull) == 0ull) ifOne[2u] = ifZero[2u];
@@ -93,12 +102,10 @@ namespace anvil { namespace detail {
 
 	template<class T>
 	struct DefaultMasksC<T, 4u> {
-		enum : uint64_t { max_mask = 15ull };
+		enum : uint64_t { max_mask = (1ull << 4u) - 1ull };
 
 		static ANVIL_STRONG_INLINE void RuntimeMask(T* ifOne, const T* ifZero, uint64_t mask) {
-			mask &= max_mask;
-			if (mask == max_mask) return;
-
+			ANVIL_ASSUME(mask <= max_mask);
 			if ((mask & 1ull) == 0ull) ifOne[0u] = ifZero[0u];
 			if ((mask & 2ull) == 0ull) ifOne[1u] = ifZero[1u];
 			if ((mask & 4ull) == 0ull) ifOne[2u] = ifZero[2u];
@@ -116,21 +123,15 @@ namespace anvil { namespace detail {
 
 	template<class T>
 	struct DefaultMasksC<T, 5u> {
-		enum : uint64_t { max_mask = 255ull >> 3ull };
+		enum : uint64_t { max_mask = (1ull << 5u) - 1ull };
 
 		static ANVIL_STRONG_INLINE void RuntimeMask(T* ifOne, const T* ifZero, uint64_t mask) {
-			mask &= max_mask;
-			if (mask == max_mask) return;
-
-			if (mask == 0ull) {
-				memcpy(ifOne, ifZero, sizeof(T) * 5u);
-			} else {
-				if ((mask & 1ull) == 0ull) ifOne[0u] = ifZero[0u];
-				if ((mask & 2ull) == 0ull) ifOne[1u] = ifZero[1u];
-				if ((mask & 4ull) == 0ull) ifOne[2u] = ifZero[2u];
-				if ((mask & 8ull) == 0ull) ifOne[3u] = ifZero[3u];
-				if ((mask & 16ull) == 0ull) ifOne[4u] = ifZero[4u];
-			}
+			ANVIL_ASSUME(mask <= max_mask);
+			if ((mask & 1ull) == 0ull) ifOne[0u] = ifZero[0u];
+			if ((mask & 2ull) == 0ull) ifOne[1u] = ifZero[1u];
+			if ((mask & 4ull) == 0ull) ifOne[2u] = ifZero[2u];
+			if ((mask & 8ull) == 0ull) ifOne[3u] = ifZero[3u];
+			if ((mask & 16ull) == 0ull) ifOne[4u] = ifZero[4u];
 		}
 
 		template<uint64_t mask>
@@ -145,22 +146,16 @@ namespace anvil { namespace detail {
 
 	template<class T>
 	struct DefaultMasksC<T, 6u> {
-		enum : uint64_t { max_mask = 255ull >> 2ull };
+		enum : uint64_t { max_mask = (1ull << 6u) - 1ull };
 
 		static ANVIL_STRONG_INLINE void RuntimeMask(T* ifOne, const T* ifZero, uint64_t mask) {
-			mask &= max_mask;
-			if (mask == max_mask) return;
-
-			if (mask == 0ull) {
-				memcpy(ifOne, ifZero, sizeof(T) * 6u);
-			} else {
-				if ((mask & 1ull) == 0ull) ifOne[0u] = ifZero[0u];
-				if ((mask & 2ull) == 0ull) ifOne[1u] = ifZero[1u];
-				if ((mask & 4ull) == 0ull) ifOne[2u] = ifZero[2u];
-				if ((mask & 8ull) == 0ull) ifOne[3u] = ifZero[3u];
-				if ((mask & 16ull) == 0ull) ifOne[4u] = ifZero[4u];
-				if ((mask & 32ull) == 0ull) ifOne[5u] = ifZero[5u];
-			}
+			ANVIL_ASSUME(mask <= max_mask);
+			if ((mask & 1ull) == 0ull) ifOne[0u] = ifZero[0u];
+			if ((mask & 2ull) == 0ull) ifOne[1u] = ifZero[1u];
+			if ((mask & 4ull) == 0ull) ifOne[2u] = ifZero[2u];
+			if ((mask & 8ull) == 0ull) ifOne[3u] = ifZero[3u];
+			if ((mask & 16ull) == 0ull) ifOne[4u] = ifZero[4u];
+			if ((mask & 32ull) == 0ull) ifOne[5u] = ifZero[5u];
 		}
 
 		template<uint64_t mask>
@@ -176,23 +171,17 @@ namespace anvil { namespace detail {
 
 	template<class T>
 	struct DefaultMasksC<T, 7u> {
-		enum : uint64_t { max_mask = 255ull >> 1ull };
+		enum : uint64_t { max_mask = (1ull << 7u) - 1ull };
 
 		static ANVIL_STRONG_INLINE void RuntimeMask(T* ifOne, const T* ifZero, uint64_t mask) {
-			mask &= max_mask;
-			if (mask == max_mask) return;
-
-			if (mask == 0ull) {
-				memcpy(ifOne, ifZero, sizeof(T) * 7u);
-			} else {
-				if ((mask & 1ull) == 0ull) ifOne[0u] = ifZero[0u];
-				if ((mask & 2ull) == 0ull) ifOne[1u] = ifZero[1u];
-				if ((mask & 4ull) == 0ull) ifOne[2u] = ifZero[2u];
-				if ((mask & 8ull) == 0ull) ifOne[3u] = ifZero[3u];
-				if ((mask & 16ull) == 0ull) ifOne[4u] = ifZero[4u];
-				if ((mask & 32ull) == 0ull) ifOne[5u] = ifZero[5u];
-				if ((mask & 64ull) == 0ull) ifOne[6u] = ifZero[6u];
-			}
+			ANVIL_ASSUME(mask <= max_mask);
+			if ((mask & 1ull) == 0ull) ifOne[0u] = ifZero[0u];
+			if ((mask & 2ull) == 0ull) ifOne[1u] = ifZero[1u];
+			if ((mask & 4ull) == 0ull) ifOne[2u] = ifZero[2u];
+			if ((mask & 8ull) == 0ull) ifOne[3u] = ifZero[3u];
+			if ((mask & 16ull) == 0ull) ifOne[4u] = ifZero[4u];
+			if ((mask & 32ull) == 0ull) ifOne[5u] = ifZero[5u];
+			if ((mask & 64ull) == 0ull) ifOne[6u] = ifZero[6u];
 		}
 
 		template<uint64_t mask>
@@ -209,24 +198,18 @@ namespace anvil { namespace detail {
 
 	template<class T>
 	struct DefaultMasksC<T, 8u> {
-		enum : uint64_t { max_mask = 255ull };
+		enum : uint64_t { max_mask = (1ull << 8u) - 1ull };
 
 		static ANVIL_STRONG_INLINE void RuntimeMask(T* ifOne, const T* ifZero, uint64_t mask) {
-			mask &= max_mask;
-			if (mask == max_mask) return;
-
-			if (mask == 0ull) {
-				memcpy(ifOne, ifZero, sizeof(T) * 8u);
-			} else {
-				if ((mask & 1ull) == 0ull) ifOne[0u] = ifZero[0u];
-				if ((mask & 2ull) == 0ull) ifOne[1u] = ifZero[1u];
-				if ((mask & 4ull) == 0ull) ifOne[2u] = ifZero[2u];
-				if ((mask & 8ull) == 0ull) ifOne[3u] = ifZero[3u];
-				if ((mask & 16ull) == 0ull) ifOne[4u] = ifZero[4u];
-				if ((mask & 32ull) == 0ull) ifOne[5u] = ifZero[5u];
-				if ((mask & 64ull) == 0ull) ifOne[6u] = ifZero[6u];
-				if ((mask & 128ull) == 0ull) ifOne[7u] = ifZero[7u];
-			}
+			ANVIL_ASSUME(mask <= max_mask);
+			if ((mask & 1ull) == 0ull) ifOne[0u] = ifZero[0u];
+			if ((mask & 2ull) == 0ull) ifOne[1u] = ifZero[1u];
+			if ((mask & 4ull) == 0ull) ifOne[2u] = ifZero[2u];
+			if ((mask & 8ull) == 0ull) ifOne[3u] = ifZero[3u];
+			if ((mask & 16ull) == 0ull) ifOne[4u] = ifZero[4u];
+			if ((mask & 32ull) == 0ull) ifOne[5u] = ifZero[5u];
+			if ((mask & 64ull) == 0ull) ifOne[6u] = ifZero[6u];
+			if ((mask & 128ull) == 0ull) ifOne[7u] = ifZero[7u];
 		}
 
 		template<uint64_t mask>
@@ -248,7 +231,7 @@ namespace anvil { namespace detail {
 		typedef UnsignedType<T> element_t;
 		enum { 
 			size = sizeof(NATIVE) / sizeof(T),
-			optimised = 0 
+			optimised = std::is_fundamental<type>::value ? 1u : 0u
 		};
 
 		template<uint64_t instruction_set>
@@ -274,16 +257,18 @@ namespace anvil { namespace detail {
 		};
 
 		enum : uint64_t {
-			max_mask = 15u
+			max_mask = (1ull << size) - 1ull
 		};
 
 		static ANVIL_STRONG_INLINE void RuntimeMaskAVX512VL(type& ifOne, const type ifZero, const uint64_t mask) {
+			ANVIL_ASSUME(mask <= max_mask);
 			ifOne = _mm_mask_blend_ps(static_cast<__mmask8>(mask), ifZero, ifOne);
 		}
 
 		template<uint64_t mask>
 		static ANVIL_STRONG_INLINE void CompileTimeSSE41(__m128& ifOne, const __m128 ifZero) {
-			ifOne = _mm_blend_ps(ifZero, ifOne, static_cast<int>(mask));
+			enum : uint64_t { mask1 = mask & max_mask };
+			ifOne = _mm_blend_ps(ifZero, ifOne, static_cast<int>(mask1));
 		}
 
 		template<uint64_t instruction_set>
@@ -297,14 +282,10 @@ namespace anvil { namespace detail {
 
 		template<uint64_t mask, uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE void CompiletimeMask(type& ifOne, const type& ifZero) {
-			if constexpr ((mask & max_mask) == max_mask) {
-				ifOne = ifZero;
-			} else if constexpr ((mask & max_mask) != 0ull) {
-				if constexpr ((instruction_set & ASM_SSE41) != 0ull) {
-					CompileTimeSSE41<mask>(ifOne, ifZero);
-				} else {
-					DefaultMasksC<element_t, size>::CompiletimeMask<mask>(reinterpret_cast<element_t*>(&ifOne), reinterpret_cast<const element_t*>(&ifZero));
-				}
+			if constexpr ((instruction_set & ASM_SSE41) != 0ull) {
+				CompileTimeSSE41<mask>(ifOne, ifZero);
+			} else {
+				DefaultMasksC<element_t, size>::CompiletimeMask<mask>(reinterpret_cast<element_t*>(&ifOne), reinterpret_cast<const element_t*>(&ifZero));
 			}
 		}
 	};
@@ -333,13 +314,24 @@ namespace anvil { namespace detail {
 		typedef detail::BasicVector<T, size> type;
 		typedef VectorBlendNative<typename type::native_t, typename type::type> NativeBlend;
 
+		enum : uint64_t {
+			max_mask = size >= 64ull ? UINT64_MAX : (1ull << static_cast<uint64_t>(size)) - 1ull,
+			lower_max_mask = (1ull << static_cast<uint64_t>(type::lower_size)) - 1ull,
+			upper_max_mask = (1ull << static_cast<uint64_t>(type::upper_size)) - 1ull
+		};
+
 		template<uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type RuntimeMask(type ifOne, const type& ifZero, uint64_t mask) throw() {
+
 			if constexpr (NativeBlend::optimised) {
+				if constexpr (max_mask != UINT64_MAX) mask &= max_mask;
 				NativeBlend::RuntimeMask<instruction_set>(ifOne.native, ifZero.native, mask);
 			} else {
-				ifOne.lower_half = VectorBlend<type::lower_t>::RuntimeMask<instruction_set>(ifOne.lower_half, ifOne.lower_half, mask);
-				ifOne.upper_half = VectorBlend<type::upper_t>::RuntimeMask<instruction_set>(ifOne.upper_half, ifOne.upper_half, mask >> type::lower_size);
+				const uint64_t lower_mask = mask; // & lower_max_mask;
+				const uint64_t upper_mask = (mask >> static_cast<uint64_t>(type::lower_size)); // & upper_max_mask;
+
+				ifOne.lower_half = VectorBlend<type::lower_t>::RuntimeMask<instruction_set>(ifOne.lower_half, ifOne.lower_half, lower_mask);
+				ifOne.upper_half = VectorBlend<type::upper_t>::RuntimeMask<instruction_set>(ifOne.upper_half, ifOne.upper_half, upper_mask);
 			}
 
 			return ifOne;
@@ -347,15 +339,41 @@ namespace anvil { namespace detail {
 
 		template<uint64_t mask, uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type CompiletimeMask(type ifOne, const type& ifZero) throw() {
-			if constexpr (NativeBlend::optimised) {
-				NativeBlend::CompiletimeMask<mask, instruction_set>(ifOne.native, ifZero.native);
-			} else {
-				enum : uint64_t { mask2 = mask >> type::lower_size };
-				ifOne.lower_half = VectorBlend<type::lower_t>::CompiletimeMask<mask, instruction_set>(ifOne.lower_half, ifOne.lower_half);
-				ifOne.upper_half = VectorBlend<type::upper_t>::CompiletimeMask<mask2, instruction_set>(ifOne.upper_half, ifOne.upper_half);
-			}
+			enum : uint64_t {
+				mask1 = mask & max_mask,
+				lower_mask = mask1 & lower_max_mask,
+				upper_mask = (mask1 >> type::lower_size) & upper_max_mask
+			};
 
-			return ifOne;
+			if constexpr (mask1 == max_mask) {
+				return ifOne;
+
+			} else if constexpr (mask1 == 0ull) {
+				return ifZero;
+
+			} else {
+				if constexpr (NativeBlend::optimised) {
+					NativeBlend::CompiletimeMask<mask1, instruction_set>(ifOne.native, ifZero.native);
+				} else {
+					if constexpr (lower_mask == lower_max_mask) {
+						// Do nothing
+					} else if constexpr (lower_mask == 0ull) {
+						ifOne.lower_half = ifZero.lower_half;
+					} else {
+						ifOne.lower_half = VectorBlend<type::lower_t>::CompiletimeMask<lower_mask, instruction_set>(ifOne.lower_half, ifOne.lower_half);
+					}
+
+					if constexpr (upper_mask == upper_max_mask) {
+						// Do nothing
+					} else if constexpr (upper_mask == 0ull) {
+						ifOne.upper_half = ifZero.upper_half;
+					} else {
+						ifOne.upper_half = VectorBlend<type::upper_t>::CompiletimeMask<upper_mask, instruction_set>(ifOne.upper_half, ifOne.upper_half);
+					}
+				}
+
+				return ifOne;
+			}
 		}
 	};
 
@@ -366,12 +384,12 @@ namespace anvil { namespace detail {
 namespace anvil {
 
 	template<uint64_t instruction_set = ASM_MINIMUM, class T>
-	static ANVIL_STRONG_INLINE T VectorBlendRuntimeMask(const T& a, const T& b, const uint64_t mask) throw() {
+	static inline T VectorBlendRuntimeMask(const T& a, const T& b, const uint64_t mask) throw() {
 		return detail::VectorBlend<T>::RuntimeMask<instruction_set>(a, b, mask);
 	}
 
 	template<uint64_t mask, uint64_t instruction_set = ASM_MINIMUM, class T>
-	static ANVIL_STRONG_INLINE T VectorBlendCompiletimeMask(const T& a, const T& b) throw() {
+	static inline T VectorBlendCompiletimeMask(const T& a, const T& b) throw() {
 		return detail::VectorBlend<T>::CompiletimeMask<mask, instruction_set>(a, b);
 	}
 }
