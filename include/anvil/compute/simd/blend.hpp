@@ -256,7 +256,7 @@ namespace anvil { namespace detail {
 			DefaultMasksC<element_t, size>::RuntimeMask(reinterpret_cast<element_t*>(&ifOne), reinterpret_cast<const element_t*>(&ifZero), mask);
 		}
 
-		template<uint64_t instruction_set, uint64_t mask>
+		template<uint64_t mask, uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE void CompiletimeMask(type& ifOne, const type& ifZero) {
 			DefaultMasksC<element_t, size>::CompiletimeMask<mask>(reinterpret_cast<element_t*>(&ifOne), reinterpret_cast<const element_t*>(&ifZero), mask);
 		}
@@ -295,7 +295,7 @@ namespace anvil { namespace detail {
 			}
 		}
 
-		template<uint64_t instruction_set, uint64_t mask>
+		template<uint64_t mask, uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE void CompiletimeMask(type& ifOne, const type& ifZero) {
 			if constexpr ((mask & max_mask) == max_mask) {
 				ifOne = ifZero;
