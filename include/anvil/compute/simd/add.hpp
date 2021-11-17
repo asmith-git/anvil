@@ -19,6 +19,345 @@
 #include "anvil/compute/Vector.hpp"
 
 namespace anvil { namespace detail {
+
+	enum {
+		ANVIL_VECTOR_ARITH_ADD,
+		ANVIL_VECTOR_ARITH_ADDS,
+		ANVIL_VECTOR_ARITH_SUB,
+		ANVIL_VECTOR_ARITH_SUBS,
+		ANVIL_VECTOR_ARITH_MUL,
+		ANVIL_VECTOR_ARITH_DIV,
+		ANVIL_VECTOR_ARITH_LSH,
+		ANVIL_VECTOR_ARITH_RSH,
+		ANVIL_VECTOR_ARITH_CMPEQ,
+		ANVIL_VECTOR_ARITH_CMPNE,
+		ANVIL_VECTOR_ARITH_CMPLT,
+		ANVIL_VECTOR_ARITH_CMPGT,
+		ANVIL_VECTOR_ARITH_CMPLE,
+		ANVIL_VECTOR_ARITH_CMPGE
+	};
+
+	template<class native_t, class T>
+	struct VectorArithNative {
+		typedef WideType<T> WT;
+		typedef UnsignedType<T> UT;
+
+		enum {
+			size = sizeof(native_t) / sizeof(T),
+			optimised = (size == 1u && std::is_fundemental<T>::value) ? 1u : 0u
+		};
+
+		template<uint64_t instruction_set, NativeUnsigned OP>
+		static ANVIL_STRONG_INLINE void Execute(const native_t a, const native_t b, native_t& out) {
+			static ANVIL_CONSTEXPR_VAR const WT gMin = static_cast<WT>(std::numeric_limits<T>::min());
+			static ANVIL_CONSTEXPR_VAR const WT gMax = static_cast<WT>(std::numeric_limits<T>::max());
+			static ANVIL_CONSTEXPR_VAR const UT gOnes = static_cast<UT>(std::numeric_limits<UT>::max());
+
+			if constexpr (OP == ANVIL_VECTOR_ARITH_ADD) {
+				out = a + b;
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_ADDS) {
+				WT aw = static_cast<WT>(a);
+				WT bw = static_cast<WT>(b);
+				aw += bw;
+				if (aw < gMin) aw = gMin;
+				else if (aw > gMax) aw = gMax;
+				out = static_cast<T>(aw);
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_SUB) {
+				out = a - b;
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_SUBS) {
+				WT aw = static_cast<WT>(a);
+				WT bw = static_cast<WT>(b);
+				aw -= bw;
+				if (aw < gMin) aw = gMin;
+				else if (aw > gMax) aw = gMax;
+				out = static_cast<T>(aw);
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_MUL) {
+				out = a * b;
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_DIV) {
+				out = a / b;
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPLE) {
+				VectorArithNative<native_t, T>::Execute<instruction_set, ANVIL_VECTOR_ARITH_CMPLT>(b, a, out);
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPGE) {
+				VectorArithNative<native_t, T>::Execute<instruction_set, ANVIL_VECTOR_ARITH_CMPGT>(b, a, out);
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPLT) {
+				union { UT u; T t; };
+				u = a < b ? gOnes : 0u;
+				out = t;
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPGT) {
+				union { UT u; T t; };
+				u = a > b ? gOnes : 0u;
+				out = t;
+
+			} else {
+				if constexpr (std::is_unsigned<T>::value) {
+
+					if constexpr (OP == ANVIL_VECTOR_ARITH_LSH) {
+						out = a << b;
+
+					} else if constexpr (OP == ANVIL_VECTOR_ARITH_RSH) {
+						out = a >> b;
+
+					} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPEQ) {
+						out = a == b ? gOnes : 0u;
+
+					} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPNE) {
+						out = a != b ? gOnes : 0u;
+					}
+
+				} else {
+					union { UT au; T at; };
+					union { UT bu; T bt; };
+					at = a;
+					bt = b;
+
+					VectorArithNative<native_t, UT>::Execute<instruction_set, OP>(au, bu, au);
+					out = at;
+				}
+			}
+		}
+	};
+
+	template<class T, size_t S>
+	struct VectorArithNative<detail::UnoptimisedNativeType<T, S>, T> {
+		typedef detail::UnoptimisedNativeType<T, S> native_t;
+		typedef WideType<T> WT;
+		typedef UnsignedType<T> UT;
+
+		enum {
+			size = S,
+			optimised = 0
+		};
+
+		template<uint64_t instruction_set, NativeUnsigned OP>
+		static inline void Execute(native_t a, const native_t b, native_t& out) {
+			for (size_t i = 0u; i < S; ++i) VectorArithNative<T, T>::Execute<instruction_set, OP>(a.data[i], b.data[i], out.data[i]);
+		}
+	};
+
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+
+	template<>
+	struct VectorArithNative<__m128, float> {
+		typedef __m128 native_t;
+		typedef float T;
+		typedef WideType<T> WT;
+		typedef UnsignedType<T> UT;
+
+		enum {
+			size = sizeof(native_t) / sizeof(T),
+			optimised = 1u
+		};
+
+		template<NativeUnsigned OP>
+		static inline void ExecuteC(const native_t& a, const native_t& b, native_t& out) {
+			const T* const at = reinterpret_cast<const T*>(&a);
+			const T* const bt = reinterpret_cast<const T*>(&b);
+			const T* const outT = reinterpret_cast<const T*>(&out);
+
+			for (size_t i = 0u; i < S; ++i) VectorArithNative<T, T>::Execute<0u, OP>(at[i], bt[i], outT[i]);
+		}
+
+		template<NativeUnsigned OP>
+		static ANVIL_STRONG_INLINE void ExecuteSSE(const native_t& a, const native_t& b, native_t& out) {
+			if constexpr (OP == ANVIL_VECTOR_ARITH_ADD || OP == ANVIL_VECTOR_ARITH_ADDS) {
+				out = _mm_add_ps(a, b);
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_SUB || OP == ANVIL_VECTOR_ARITH_SUBS) {
+				out = _mm_sub_ps(a, b);
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_MUL) {
+				out = _mm_mul_ps(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_DIV) {
+				out = _mm_div_ps(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPEQ) {
+				out = _mm_cmpeq_ps(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPNE) {
+				out = _mm_cmpneq_ps(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPLT) {
+				out = _mm_cmplt_ps(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPGT) {
+				out = _mm_cmpgt_ps(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPLE) {
+				out = _mm_cmple_ps(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPGE) {
+				out = _mm_cmpge_ps(a, b);
+
+			} else {
+				ExecuteC<OP>(a, b, out);
+
+			}
+		}
+
+		template<uint64_t instruction_set, NativeUnsigned OP>
+		static ANVIL_STRONG_INLINE T Execute(const native_t& a, const native_t& b, native_t& out) {
+			if constexpr ((instruction_set & ASM_SSE) != 0ull) {
+				ExecuteSSE<OP>(a, b, out);
+			} else {
+				ExecuteC<OP>(a, b, out);
+			}
+		}
+	};
+
+	template<>
+	struct VectorArithNative<__m128d, double> {
+		typedef __m128d native_t;
+		typedef double T;
+		typedef WideType<T> WT;
+		typedef UnsignedType<T> UT;
+
+		enum {
+			size = sizeof(native_t) / sizeof(T),
+			optimised = 1u
+		};
+
+		template<NativeUnsigned OP>
+		static inline void ExecuteC(const native_t& a, const native_t& b, native_t& out) {
+			const T* const at = reinterpret_cast<const T*>(&a);
+			const T* const bt = reinterpret_cast<const T*>(&b);
+			const T* const outT = reinterpret_cast<const T*>(&out);
+
+			for (size_t i = 0u; i < S; ++i) VectorArithNative<T, T>::Execute<0u, OP>(at[i], bt[i], outT[i]);
+		}
+
+		template<NativeUnsigned OP>
+		static ANVIL_STRONG_INLINE void ExecuteSSE2(const native_t& a, const native_t& b, native_t& out) {
+			if constexpr (OP == ANVIL_VECTOR_ARITH_ADD || OP == ANVIL_VECTOR_ARITH_ADDS) {
+				out = _mm_add_pd(a, b);
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_SUB || OP == ANVIL_VECTOR_ARITH_SUBS) {
+				out = _mm_sub_pd(a, b);
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_MUL) {
+				out = _mm_mul_pd(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_DIV) {
+				out = _mm_div_pd(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPEQ) {
+				out = _mm_cmpeq_pd(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPNE) {
+				out = _mm_cmpneq_pd(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPLT) {
+				out = _mm_cmplt_pd(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPGT) {
+				out = _mm_cmpgt_pd(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPLE) {
+				out = _mm_cmple_pd(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPGE) {
+				out = _mm_cmpge_pd(a, b);
+
+			} else {
+				ExecuteC<OP>(a, b, out);
+
+			}
+		}
+
+		template<uint64_t instruction_set, NativeUnsigned OP>
+		static ANVIL_STRONG_INLINE void Execute(const native_t& a, const native_t& b, native_t& out) {
+			if constexpr ((instruction_set & ASM_SSE2) != 0ull) {
+				ExecuteSSE2<OP>(a, b, out);
+			} else {
+				ExecuteC<OP>(a, b, out);
+			}
+		}
+	};
+
+	
+
+	template<>
+	struct VectorArithNative<__m128i, int16_t> {
+		typedef __m128i native_t;
+		typedef int16_t T;
+		typedef WideType<T> WT;
+		typedef UnsignedType<T> UT;
+
+		enum {
+			size = sizeof(native_t) / sizeof(T),
+			optimised = 1u
+		};
+
+		template<NativeUnsigned OP>
+		static inline void ExecuteC(const native_t& a, const native_t& b, native_t& out) {
+			const T* const at = reinterpret_cast<const T*>(&a);
+			const T* const bt = reinterpret_cast<const T*>(&b);
+			const T* const outT = reinterpret_cast<const T*>(&out);
+
+			for (size_t i = 0u; i < S; ++i) VectorArithNative<T, T>::Execute<0u, OP>(at[i], bt[i], outT[i]);
+		}
+
+		template<NativeUnsigned OP>
+		static ANVIL_STRONG_INLINE void ExecuteSSE2(const native_t& a, const native_t& b, native_t& out) {
+			if constexpr (OP == ANVIL_VECTOR_ARITH_ADD) {
+				out = _mm_add_epi16(a, b);
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_ADDS) {
+				out = _mm_adds_epi16(a, b);
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_SUB) {
+				out = _mm_sub_epi16(a, b);
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_SUBS) {
+				out = _mm_subs_epi16(a, b);
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_MUL) {
+				out = _mm_mullo_epi16(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPEQ) {
+				out = _mm_cmpeq_epi32(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPNE) {
+				out = _mm_cmpneq_epi32(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPLT) {
+				out = _mm_cmplt_epi32(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPGT) {
+				out = _mm_cmpgt_epi32(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPLE) {
+				out = _mm_cmpgt_epi32(b, a);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPGE) {
+				out = _mm_cmplt_epi32(b, a);
+
+			} else {
+				ExecuteC<OP>(a, b, out);
+
+			}
+		}
+
+		template<uint64_t instruction_set, NativeUnsigned OP>
+		static ANVIL_STRONG_INLINE void Execute(const native_t& a, const native_t& b, native_t& out) {
+			if constexpr ((instruction_set & ASM_SSE2) != 0ull) {
+				ExecuteSSE2<OP>(a, b, out);
+			} else {
+				ExecuteC<OP>(a, b, out);
+			}
+		}
+	};
+#endif
+
 	template<class T>
 	struct VectorAdd;
 
