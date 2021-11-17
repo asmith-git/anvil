@@ -15,6 +15,7 @@
 #ifndef ANVIL_COMPUTE_SIMD_ADD_HPP
 #define ANVIL_COMPUTE_SIMD_ADD_HPP
 
+#include <type_traits>
 #include "anvil/core/CpuRuntime.hpp"
 #include "anvil/compute/Vector.hpp"
 
@@ -44,7 +45,7 @@ namespace anvil { namespace detail {
 
 		enum {
 			size = sizeof(native_t) / sizeof(T),
-			optimised = (size == 1u && std::is_fundemental<T>::value) ? 1u : 0u
+			optimised = (size == 1u && std::is_fundamental<T>::value) ? 1u : 0u
 		};
 
 		template<uint64_t instruction_set, NativeUnsigned OP>
@@ -163,7 +164,7 @@ namespace anvil { namespace detail {
 			const T* const bt = reinterpret_cast<const T*>(&b);
 			const T* const outT = reinterpret_cast<const T*>(&out);
 
-			for (size_t i = 0u; i < S; ++i) VectorArithNative<T, T>::Execute<0u, OP>(at[i], bt[i], outT[i]);
+			for (size_t i = 0u; i < size; ++i) VectorArithNative<T, T>::Execute<0u, OP>(at[i], bt[i], outT[i]);
 		}
 
 		template<NativeUnsigned OP>
@@ -232,7 +233,7 @@ namespace anvil { namespace detail {
 			const T* const bt = reinterpret_cast<const T*>(&b);
 			const T* const outT = reinterpret_cast<const T*>(&out);
 
-			for (size_t i = 0u; i < S; ++i) VectorArithNative<T, T>::Execute<0u, OP>(at[i], bt[i], outT[i]);
+			for (size_t i = 0u; i < size; ++i) VectorArithNative<T, T>::Execute<0u, OP>(at[i], bt[i], outT[i]);
 		}
 
 		template<NativeUnsigned OP>
@@ -283,8 +284,6 @@ namespace anvil { namespace detail {
 		}
 	};
 
-	
-
 	template<>
 	struct VectorArithNative<__m128i, int16_t> {
 		typedef __m128i native_t;
@@ -303,7 +302,7 @@ namespace anvil { namespace detail {
 			const T* const bt = reinterpret_cast<const T*>(&b);
 			const T* const outT = reinterpret_cast<const T*>(&out);
 
-			for (size_t i = 0u; i < S; ++i) VectorArithNative<T, T>::Execute<0u, OP>(at[i], bt[i], outT[i]);
+			for (size_t i = 0u; i < size; ++i) VectorArithNative<T, T>::Execute<0u, OP>(at[i], bt[i], outT[i]);
 		}
 
 		template<NativeUnsigned OP>
@@ -327,7 +326,7 @@ namespace anvil { namespace detail {
 				out = _mm_cmpeq_epi32(a, b);
 				
 			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPNE) {
-				out = _mm_cmpneq_epi32(a, b);
+				out = _mm_castps_si128(_mm_cmpneq_ps(_mm_castsi128_ps(a), _mm_castsi128_ps(b)));
 				
 			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPLT) {
 				out = _mm_cmplt_epi32(a, b);
@@ -350,6 +349,76 @@ namespace anvil { namespace detail {
 		template<uint64_t instruction_set, NativeUnsigned OP>
 		static ANVIL_STRONG_INLINE void Execute(const native_t& a, const native_t& b, native_t& out) {
 			if constexpr ((instruction_set & ASM_SSE2) != 0ull) {
+				ExecuteSSE2<OP>(a, b, out);
+			} else {
+				ExecuteC<OP>(a, b, out);
+			}
+		}
+	};
+
+	template<>
+	struct VectorArithNative<__m128i, uint16_t> {
+		typedef __m128i native_t;
+		typedef uint16_t T;
+		typedef WideType<T> WT;
+		typedef UnsignedType<T> UT;
+
+		enum {
+			size = sizeof(native_t) / sizeof(T),
+			optimised = 1u
+		};
+
+		template<NativeUnsigned OP>
+		static inline void ExecuteC(const native_t& a, const native_t& b, native_t& out) {
+			const T* const at = reinterpret_cast<const T*>(&a);
+			const T* const bt = reinterpret_cast<const T*>(&b);
+			const T* const outT = reinterpret_cast<const T*>(&out);
+
+			for (size_t i = 0u; i < size; ++i) VectorArithNative<T, T>::Execute<0u, OP>(at[i], bt[i], outT[i]);
+		}
+
+		template<NativeUnsigned OP>
+		static ANVIL_STRONG_INLINE void ExecuteSSE2(const native_t& a, const native_t& b, native_t& out) {
+			if constexpr (OP == ANVIL_VECTOR_ARITH_ADDS) {
+				out = _mm_adds_epu16(a, b);
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_SUB || OP == ANVIL_VECTOR_ARITH_SUBS) {
+				out = _mm_subs_epu16(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_ADD || OP == ANVIL_VECTOR_ARITH_CMPEQ || OP == ANVIL_VECTOR_ARITH_CMPNE) {
+				VectorArithNative<native_t, int16_t>::ExecuteSSE2(a, b, out);
+
+			} else {
+				ExecuteC<OP>(a, b, out);
+
+			}
+		}
+
+		template<NativeUnsigned OP>
+		static ANVIL_STRONG_INLINE void ExecuteAVX512BW(const native_t& a, const native_t& b, native_t& out) {
+			if constexpr (OP == ANVIL_VECTOR_ARITH_CMPLT) {
+				return _mm_mask_blend_epi16(_mm_cmplt_epu16_mask(a, b), b, a);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPGT) {
+				return _mm_mask_blend_epi16(_mm_cmpgt_epu16_mask(a, b), b, a);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPLE) {
+				return _mm_mask_blend_epi16(_mm_cmple_epu16_mask(a, b), b, a);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPGE) {
+				return _mm_mask_blend_epi16(_mm_cmpge_epu16_mask(a, b), b, a);
+
+			} else {
+				ExecuteSSE2<OP>(a, b, out);
+
+			}
+		}
+
+		template<uint64_t instruction_set, NativeUnsigned OP>
+		static ANVIL_STRONG_INLINE void Execute(const native_t& a, const native_t& b, native_t& out) {
+			if constexpr ((instruction_set & ASM_AVX512BW) != 0ull && (instruction_set & ASM_AVX512VL) != 0ull) {
+				ExecuteAVX512BW<OP>(a, b, out);
+			}  else if constexpr ((instruction_set & ASM_SSE2) != 0ull) {
 				ExecuteSSE2<OP>(a, b, out);
 			} else {
 				ExecuteC<OP>(a, b, out);
