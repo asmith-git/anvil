@@ -5,18 +5,25 @@
 
 int main()
 {
-	anvil::Vector<float, 16> a;
-	anvil::Vector<float, 16> b;
-	anvil::Vector<float, 16> c;
+	enum { size = 16 };
+	anvil::Vector<float, size> a;
+	anvil::Vector<float, size> b;
+	anvil::Vector<float, size> c;
 
-	std::cin >> a[0u];
-	std::cin >> b[0u];
-	std::cin >> c[0u];
+	//std::cin >> a[0u];
+	//std::cin >> b[0u];
+	//std::cin >> c[0u];
 
-	for (size_t i = 1u; i < 16; ++i) {
-		a[i] = a[0u];
-		b[i] = b[0u];
-		c[i] = c[0u];
+	//for (size_t i = 1u; i < size; ++i) {
+	//	a[i] = a[0u];
+	//	b[i] = b[0u];
+	//	c[i] = c[0u];
+	//}
+
+	for (size_t i = 0u; i < size; ++i) {
+		a[i] = rand();
+		b[i] = rand();
+		c[i] = rand();
 	}
 
 	//a += b;
@@ -24,16 +31,19 @@ int main()
 	//a = anvil::VectorAnd(a, b);
 	//a = (a & b) | c;
 
-	//a = anvil::VectorBlendRuntimeMask(b, c, 123456);
-	a = anvil::VectorBlendCompiletimeMask<123456>(b, c);
+	enum : uint64_t { mask = 12345 };
+	//int mask = rand() & ((1 << size) - 1);
+	//a = anvil::VectorAnd(b, c, a, mask);
+	//a = anvil::VectorAnd<mask>(b, c, a);
+	a = anvil::VectorAdd(b, c, b, mask);
 
 	std::cout << a[0u] << std::endl;
 
 	//uint32_t val;
 	//std::cin >> val;
 
-	//std::bitset<32> a = val;
-	//std::bitset<32> b = anvil::CountOnes(&val, 1);
+	//std::bitset<size> a = val;
+	//std::bitset<size> b = anvil::CountOnes(&val, 1);
 
 
 	//std::cout << a << std::endl;
