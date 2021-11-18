@@ -149,6 +149,8 @@ namespace anvil { namespace detail {
 
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 
+	// 128-bit SSE registers
+
 	template<>
 	struct VectorArithNative<__m128, float> {
 		typedef __m128 native_t;
@@ -610,6 +612,171 @@ namespace anvil { namespace detail {
 			}
 		}
 	};
+
+	template<>
+	struct VectorArithNative<__m128i, int8_t> {
+		typedef __m128i native_t;
+		typedef int8_t T;
+		typedef WideType<T> WT;
+		typedef UnsignedType<T> UT;
+
+		enum {
+			size = sizeof(native_t) / sizeof(T),
+			optimised = 1u
+		};
+
+		enum : uint64_t { recommended_instruction_set = ASM_SSE2 };
+
+		template<NativeUnsigned OP>
+		static inline void ExecuteC(const native_t& a, const native_t& b, native_t& out) {
+			const T* const at = reinterpret_cast<const T*>(&a);
+			const T* const bt = reinterpret_cast<const T*>(&b);
+			const T* const outT = reinterpret_cast<const T*>(&out);
+
+			for (size_t i = 0u; i < size; ++i) VectorArithNative<T, T>::Execute<0u, OP>(at[i], bt[i], outT[i]);
+		}
+
+		template<NativeUnsigned OP>
+		static ANVIL_STRONG_INLINE void ExecuteSSE2(const native_t& a, const native_t& b, native_t& out) {
+			if constexpr (OP == ANVIL_VECTOR_ARITH_ADD) {
+				out = _mm_add_epi8(a, b);
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_ADDS) {
+				out = _mm_adds_epi8(a, b);
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_SUB) {
+				out = _mm_sub_epi8(a, b);
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_SUBS) {
+				out = _mm_subs_epi8(a, b);
+
+			//} else if constexpr (OP == ANVIL_VECTOR_ARITH_MUL) {
+				//! \todo Convert to int16 and multiply
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPEQ) {
+				out = _mm_cmpeq_epi8(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPNE) {
+				out = _mm_cmpeq_epi8(a, b);
+
+				// bitwise not
+				out = _mm_xor_si128(out, _mm_cmpeq_epi8(a, a));
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPLT) {
+				out = _mm_cmplt_epi8(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPGT) {
+				out = _mm_cmpgt_epi8(a, b);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPLE) {
+				out = _mm_cmpgt_epi8(b, a);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPGE) {
+				out = _mm_cmplt_epi8(b, a);
+
+			} else {
+				ExecuteC<OP>(a, b, out);
+
+			}
+		}
+
+		template<uint64_t instruction_set, NativeUnsigned OP>
+		static ANVIL_STRONG_INLINE void Execute(const native_t& a, const native_t& b, native_t& out) {
+			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
+			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
+			// that will be inlined together
+
+			if constexpr ((instruction_set & ASM_SSE2) != 0ull) {
+				ExecuteSSE2<OP>(a, b, out);
+			} else {
+				ExecuteC<OP>(a, b, out);
+			}
+		}
+	};
+
+	template<>
+	struct VectorArithNative<__m128i, uint8_t> {
+		typedef __m128i native_t;
+		typedef uint8_t T;
+		typedef WideType<T> WT;
+		typedef UnsignedType<T> UT;
+
+		enum {
+			size = sizeof(native_t) / sizeof(T),
+			optimised = 1u
+		};
+
+		enum : uint64_t { recommended_instruction_set = ASM_SSE2 };
+
+		template<NativeUnsigned OP>
+		static inline void ExecuteC(const native_t& a, const native_t& b, native_t& out) {
+			const T* const at = reinterpret_cast<const T*>(&a);
+			const T* const bt = reinterpret_cast<const T*>(&b);
+			const T* const outT = reinterpret_cast<const T*>(&out);
+
+			for (size_t i = 0u; i < size; ++i) VectorArithNative<T, T>::Execute<0u, OP>(at[i], bt[i], outT[i]);
+		}
+
+		template<NativeUnsigned OP>
+		static ANVIL_STRONG_INLINE void ExecuteSSE2(const native_t& a, const native_t& b, native_t& out) {
+			if constexpr (OP == ANVIL_VECTOR_ARITH_ADDS) {
+				out = _mm_adds_epu8(a, b);
+
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_SUB || OP == ANVIL_VECTOR_ARITH_SUBS) {
+				out = _mm_subs_epu8(a, b);
+
+			//} else if constexpr (OP == ANVIL_VECTOR_ARITH_MUL) {
+				//! \todo Convert to int16 and multiply
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_ADD || OP == ANVIL_VECTOR_ARITH_CMPEQ || OP == ANVIL_VECTOR_ARITH_CMPNE) {
+				VectorArithNative<native_t, int8_t>::ExecuteSSE2(a, b, out);
+
+			} else {
+				ExecuteC<OP>(a, b, out);
+
+			}
+		}
+
+		template<NativeUnsigned OP>
+		static ANVIL_STRONG_INLINE void ExecuteAVX512BW(const native_t& a, const native_t& b, native_t& out) {
+			if constexpr (OP == ANVIL_VECTOR_ARITH_CMPLT) {
+				return _mm_mask_blend_epi8(_mm_cmplt_epu8_mask(a, b), b, a);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPGT) {
+				return _mm_mask_blend_epi8(_mm_cmpgt_epu8_mask(a, b), b, a);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPLE) {
+				return _mm_mask_blend_epi8(_mm_cmple_epu8_mask(a, b), b, a);
+				
+			} else if constexpr (OP == ANVIL_VECTOR_ARITH_CMPGE) {
+				return _mm_mask_blend_epi8(_mm_cmpge_epu8_mask(a, b), b, a);
+
+			} else {
+				ExecuteSSE2<OP>(a, b, out);
+
+			}
+		}
+
+		template<uint64_t instruction_set, NativeUnsigned OP>
+		static ANVIL_STRONG_INLINE void Execute(const native_t& a, const native_t& b, native_t& out) {
+			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
+			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
+			// that will be inlined together
+
+			if constexpr ((instruction_set & ASM_AVX512BW) != 0ull && (instruction_set & ASM_AVX512VL) != 0ull) {
+				ExecuteAVX512BW<OP>(a, b, out);
+			}  else if constexpr ((instruction_set & ASM_SSE2) != 0ull) {
+				ExecuteSSE2<OP>(a, b, out);
+			} else {
+				ExecuteC<OP>(a, b, out);
+			}
+		}
+	};
+
+	// 256-bit AVX registers
+
+	// 512-bit AVX 512 registers
+
 #endif
 
 	template<NativeUnsigned OP, class T>
