@@ -74,5 +74,29 @@
     <ClInclude Include="..\..\include\anvil\compute\simd\blend.hpp">
       <Filter>Header Files\Utils\SIMD</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\anvil\compute\simd\cmpeq.hpp">
+      <Filter>Header Files\Utils\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\compute\simd\cmpge.hpp">
+      <Filter>Header Files\Utils\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\compute\simd\cmpgt.hpp">
+      <Filter>Header Files\Utils\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\compute\simd\cmple.hpp">
+      <Filter>Header Files\Utils\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\compute\simd\cmplt.hpp">
+      <Filter>Header Files\Utils\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\compute\simd\cmpne.hpp">
+      <Filter>Header Files\Utils\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\compute\simd\lshift.hpp">
+      <Filter>Header Files\Utils\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\compute\simd\rshift.hpp">
+      <Filter>Header Files\Utils\SIMD</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

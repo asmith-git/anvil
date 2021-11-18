@@ -12,7 +12,6 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-
 #ifndef ANVIL_COMPUTE_SIMD_MUL_HPP
 #define ANVIL_COMPUTE_SIMD_MUL_HPP
 
