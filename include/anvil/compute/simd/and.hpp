@@ -298,13 +298,24 @@ namespace anvil { namespace detail {
 		}
 
 		template<NativeUnsigned OP>
+		static ANVIL_STRONG_INLINE void Execute_AVX(type& a, const type& b) {
+			if constexpr (OP == VECTOR_BIT_OP_AND) {
+				a = _mm256_castps_si256(_mm256_and_si256(_mm256_castsi256_ps(a), _mm256_castsi256_ps(b)));
+			} else if constexpr (OP == VECTOR_BIT_OP_OR) {
+				a = _mm256_castps_si256(_mm256_or_si256(_mm256_castsi256_ps(a), _mm256_castsi256_ps(b)));
+			} else if constexpr (OP == VECTOR_BIT_OP_XOR) {
+				a = _mm256_castps_si256(_mm256_xor_si256(_mm256_castsi256_ps(a), _mm256_castsi256_ps(b)));
+			}
+		}
+
+		template<NativeUnsigned OP>
 		static ANVIL_STRONG_INLINE void Execute_AVX2(type& a, const type& b) {
 			if constexpr (OP == VECTOR_BIT_OP_AND) {
-				a = _mm256_and_si256(a);
+				a = _mm256_and_si256(a, b);
 			} else if constexpr (OP == VECTOR_BIT_OP_OR) {
-				a = _mm256_or_si256(a);
+				a = _mm256_or_si256(a, b);
 			} else if constexpr (OP == VECTOR_BIT_OP_XOR) {
-				a = _mm256_xor_si256(a);
+				a = _mm256_xor_si256(a, b);
 			}
 		}
 
@@ -312,6 +323,8 @@ namespace anvil { namespace detail {
 		static ANVIL_STRONG_INLINE void Execute(type& a, const type& b) {
 			if constexpr ((instruction_sets & ASM_AVX2) != 0u) {
 				Execute_AVX2<OP>(a, b);
+			} else if constexpr ((instruction_sets & ASM_AVX) != 0u) {
+				Execute_AVX<OP>(a, b);
 			} else if constexpr ((instruction_sets & ASM_AVX) != 0u) {
 				VectorBitOp<__m256>::Execute_AVX(reinterpret_cast<__m256&>(a), reinterpret_cast<const __m256&>(b));
 			} else if constexpr ((instruction_sets & ASM_SSE2) != 0u) {
