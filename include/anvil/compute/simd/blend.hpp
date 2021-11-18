@@ -247,6 +247,31 @@ namespace anvil { namespace detail {
 
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 
+	template<class T, size_t BYTES>
+	struct VectorBlendMaskNative;
+
+	template<>
+	struct VectorBlendMaskNative<__m128i, 4u> {
+		typedef __m128i type;
+
+		static ANVIL_STRONG_INLINE type Execute(uint64_t mask) {
+			const int32_t a = mask & 1u ? -1 : 0;
+			const int32_t b = mask & 2u ? -1 : 0;
+			const int32_t c = mask & 4u ? -1 : 0;
+			const int32_t d = mask & 8u ? -1 : 0;
+			return _mm_set_epi32(d, c, b, a);
+		}
+	};
+
+	template<>
+	struct VectorBlendMaskNative<__m128, 4u> {
+		typedef __m128 type;
+
+		static ANVIL_STRONG_INLINE type Execute(uint64_t mask) {
+			return _mm_castsi128_ps(VectorBlendMaskNative<__m128i, 4u>::Execute(mask));
+		}
+	};
+
 	template<>
 	struct VectorBlendNative<__m128, float32_t> {
 		typedef __m128 type;
@@ -263,6 +288,19 @@ namespace anvil { namespace detail {
 		static ANVIL_STRONG_INLINE void RuntimeMaskAVX512VL(type& ifOne, const type ifZero, const uint64_t mask) {
 			ANVIL_ASSUME(mask <= max_mask);
 			ifOne = _mm_mask_blend_ps(static_cast<__mmask8>(mask), ifZero, ifOne);
+		}
+
+		static ANVIL_STRONG_INLINE void RuntimeMaskSSE2(type& ifOne, type ifZero, const uint64_t mask) {
+			ANVIL_ASSUME(mask <= max_mask);
+			const type m = VectorBlendMaskNative<type, size>::Execute(mask);
+			ifOne = _mm_and_ps(ifOne, m);
+			ifZero = _mm_andnot_ps(m, ifZero);
+			ifOne = _mm_or_ps(ifOne, ifZero);
+		}
+
+		static ANVIL_STRONG_INLINE void RuntimeMaskSSE41(type& ifOne, const type ifZero, const uint64_t mask) {
+			ANVIL_ASSUME(mask <= max_mask);
+			ifOne = _mm_blendv_ps(ifZero, ifOne, VectorBlendMaskNative<type, size>::Execute(mask));
 		}
 
 		template<uint64_t mask>
@@ -291,6 +329,10 @@ namespace anvil { namespace detail {
 		static ANVIL_STRONG_INLINE void RuntimeMask(type& ifOne, const type& ifZero, const uint64_t mask) {
 			if constexpr ((instruction_set & ASM_AVX512VL) != 0ull) {
 				RuntimeMaskAVX512VL(ifOne, ifZero, mask);
+			} else if constexpr ((instruction_set & ASM_SSE41) != 0ull) {
+				RuntimeMaskSSE41(ifOne, ifZero, mask);
+			} else if constexpr ((instruction_set & ASM_SSE2) != 0ull) {
+				RuntimeMaskSSE2(ifOne, ifZero, mask);
 			} else {
 				DefaultMasksC<element_t, size>::RuntimeMask(reinterpret_cast<element_t*>(&ifOne), reinterpret_cast<const element_t*>(&ifZero), mask);
 			}
@@ -303,8 +345,53 @@ namespace anvil { namespace detail {
 			} else if constexpr ((instruction_set & ASM_SSE) != 0ull) {
 				CompileTimeSSE41<mask>(ifOne, ifZero);
 			} else {
-				DefaultMasksC<element_t, size>::CompiletimeMask<mask>(reinterpret_cast<element_t*>(&ifOne), reinterpret_cast<const element_t*>(&ifZero));
+				//DefaultMasksC<element_t, size>::CompiletimeMask<mask>(reinterpret_cast<element_t*>(&ifOne), reinterpret_cast<const element_t*>(&ifZero));
+				RuntimeMask<instruction_set>(ifOne, ifZero, mask);
 			}
+		}
+	};
+
+	template<>
+	struct VectorBlendNative<__m128i, int32_t> {
+		typedef __m128i type;
+
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE void RuntimeMask(type& ifOne, const type& ifZero, const uint64_t mask) {
+			VectorBlendNative<__m128, float32_t>::RuntimeMask<instruction_set>(
+				reinterpret_cast<__m128&>(ifOne),
+				reinterpret_cast<const __m128&>(ifZero),
+				mask
+			);
+		}
+
+		template<uint64_t mask, uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE void CompiletimeMask(type& ifOne, const type& ifZero) {
+			VectorBlendNative<__m128, float32_t>::CompiletimeMask<mask, instruction_set>(
+				reinterpret_cast<__m128&>(ifOne),
+				reinterpret_cast<const __m128&>(ifZero)
+			);
+		}
+	};
+
+	template<>
+	struct VectorBlendNative<__m128i, uint32_t> {
+		typedef __m128i type;
+
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE void RuntimeMask(type& ifOne, const type& ifZero, const uint64_t mask) {
+			VectorBlendNative<__m128, float32_t>::RuntimeMask<instruction_set>(
+				reinterpret_cast<__m128&>(ifOne),
+				reinterpret_cast<const __m128&>(ifZero),
+				mask
+			);
+		}
+
+		template<uint64_t mask, uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE void CompiletimeMask(type& ifOne, const type& ifZero) {
+			VectorBlendNative<__m128, float32_t>::CompiletimeMask<mask, instruction_set>(
+				reinterpret_cast<__m128&>(ifOne),
+				reinterpret_cast<const __m128&>(ifZero)
+			);
 		}
 	};
 
