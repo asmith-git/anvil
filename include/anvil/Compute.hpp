@@ -37,5 +37,6 @@
 #include "anvil/compute/simd/cmplt.hpp"
 #include "anvil/compute/simd/cmpge.hpp"
 #include "anvil/compute/simd/cmple.hpp"
+#include "anvil/compute/simd/not.hpp"
 
 #endif
