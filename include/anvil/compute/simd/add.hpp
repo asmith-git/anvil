@@ -464,7 +464,7 @@ namespace anvil { namespace detail {
 		}
 
 		template<uint64_t mask, uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type ExecuteCompiletimeMaskMask(const type& a, const type& b, const type& src) throw() {
+		static ANVIL_STRONG_INLINE type ExecuteCompiletimeMask(const type& a, const type& b, const type& src) throw() {
 			type tmp;
 			Implementation::Execute<instruction_set, OP>(a.native, b.native, tmp.native);
 			return anvil::VectorBlendCompiletimeMask<mask, instruction_set>(tmp, src);
@@ -511,7 +511,7 @@ namespace anvil { namespace detail {
 		}
 
 		template<uint64_t mask, uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type ExecuteCompiletimeMaskMask(const type& a, const type& b, const type& src) throw() {
+		static ANVIL_STRONG_INLINE type ExecuteCompiletimeMask(const type& a, const type& b, const type& src) throw() {
 			if constexpr (Implementation::optimised && (instruction_set & Implementation::recommended_instruction_set) == Implementation::recommended_instruction_set) {
 				type tmp;
 				Implementation::Execute<instruction_set, OP>(a.native, b.native, tmp.native);
@@ -519,8 +519,8 @@ namespace anvil { namespace detail {
 			} else {
 				enum : uint64_t { mask1 = mask >> type::lower_size };
 				return type(
-					VectorArith<OP, lower_t>::ExecuteCompiletimeMaskMask<mask, instruction_set>(a.lower_half, b.lower_half, src.lower_half),
-					VectorArith<OP, upper_t>::ExecuteCompiletimeMaskMask<mask1, instruction_set>(a.upper_half, b.upper_half, src.upper_half)
+					VectorArith<OP, lower_t>::ExecuteCompiletimeMask<mask, instruction_set>(a.lower_half, b.lower_half, src.lower_half),
+					VectorArith<OP, upper_t>::ExecuteCompiletimeMask<mask1, instruction_set>(a.upper_half, b.upper_half, src.upper_half)
 				);
 			}
 		}
