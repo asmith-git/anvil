@@ -21,11 +21,9 @@
 
 namespace anvil {
 
-	class Bitfield128 {
-	public:
+	struct Bitfield128 {
 		uint64_t low;
 		uint64_t high;
-	public:
 
 		ANVIL_CONSTEXPR_FN Bitfield128() throw() :
 			low(0ull),
@@ -120,6 +118,42 @@ namespace anvil {
 				static_cast<bool>(low & (1ull << static_cast<uint64_t>(bit))) :
 				static_cast<bool>(high & (1ull << static_cast<uint64_t>(bit - 64u))
 			);
+		}
+
+		ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE Bitfield128 operator>>(size_t bits) const throw() {
+			uint64_t l = low >> bits;
+			uint64_t h = high;
+
+			if (bits >= 64u) {
+				bits -= 64u;
+				uint64_t tmp = h & ((1ull << bits) - 1ull);
+				l |= tmp << (64u - bits);
+				h >>= bits;
+			}
+
+			return Bitfield128(l, h);
+		}
+
+		ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE Bitfield128 operator<<(size_t bits) const throw() {
+			uint64_t h = high << bits;
+			uint64_t l = low;
+
+			if (bits >= 64u) {
+				bits -= 64u;
+				uint64_t tmp = l & ~((1ull << bits) - 1ull);
+				h |= tmp >> (64u - bits);
+				l <<= bits;
+			}
+
+			return Bitfield128(l, h);
+		}
+
+		ANVIL_STRONG_INLINE Bitfield128& operator>>=(size_t bits) throw() {
+			return *this = *this >> bits;
+		}
+
+		ANVIL_STRONG_INLINE Bitfield128& operator<<=(size_t bits) throw() {
+			return *this = *this << bits;
 		}
 	};
 

@@ -21,11 +21,9 @@
 
 namespace anvil {
 
-	class Bitfield256 {
-	public:
+	struct Bitfield256 {
 		Bitfield128 low;
 		Bitfield128 high;
-	public:
 
 		ANVIL_CONSTEXPR_FN Bitfield256() throw() :
 			low(),
