@@ -99,28 +99,27 @@ namespace anvil {
 			return *this;
 		}
 
-		ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE Bitfield128 operator==(const uint64_t aLow) const throw() {
+		ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE bool operator==(const uint64_t aLow) const throw() {
 			return low == aLow && high == 0ull;
 		}
 
-		ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE Bitfield128 operator!=(const uint64_t aLow) const throw() {
+		ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE bool operator!=(const uint64_t aLow) const throw() {
 			return low != aLow || high != 0ull;
 		}
 
-		ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE Bitfield128 operator==(const Bitfield128 other) const throw() {
+		ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE bool operator==(const Bitfield128 other) const throw() {
 			return low == other.low && high == other.high;
 		}
 
-		ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE Bitfield128 operator!=(const Bitfield128 other) const throw() {
+		ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE bool operator!=(const Bitfield128 other) const throw() {
 			return low != other.low || high != other.high;
 		}
 
 		ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE bool CheckBit(const size_t bit) const throw() {
-			if (bit < 64u) {
-				return static_cast<bool>(low & (1ull << static_cast<uint64_t>(bit)));
-			} else {
-				return static_cast<bool>(high & (1ull << static_cast<uint64_t>(bit - 64u)));
-			}
+			return bit < 64u ?
+				static_cast<bool>(low & (1ull << static_cast<uint64_t>(bit))) :
+				static_cast<bool>(high & (1ull << static_cast<uint64_t>(bit - 64u))
+			);
 		}
 	};
 
