@@ -525,8 +525,6 @@ namespace anvil {
 		}
 	}
 
-	
-
 	template<uint64_t instruction_set = ASM_MINIMUM, class T, size_t S>
 	static inline detail::BasicVector<T, S> VectorBlendRuntimeMask(const detail::BasicVector<T, S>& a, const detail::BasicVector<T, S>& b, const Bitfield256 mask) throw() {
 		if constexpr (S <= 128u) {

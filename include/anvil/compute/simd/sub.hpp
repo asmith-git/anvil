@@ -38,6 +38,16 @@ namespace anvil {
 		return detail::VectorSub<T>::ExecuteRuntimeMask<instruction_set>(a, b, src, mask);
 	}
 
+	template<uint64_t instruction_set = ASM_MINIMUM, class T>
+	static inline T VectorSub(const T& a, const T& b, const T& src, const Bitfield128 mask) throw() {
+		return detail::VectorSub<T>::ExecuteRuntimeMask<instruction_set>(a, b, src, mask);
+	}
+
+	template<uint64_t instruction_set = ASM_MINIMUM, class T>
+	static inline T VectorSub(const T& a, const T& b, const T& src, const Bitfield256 mask) throw() {
+		return detail::VectorSub<T>::ExecuteRuntimeMask<instruction_set>(a, b, src, mask);
+	}
+
 	template<uint64_t mask, uint64_t instruction_set = ASM_MINIMUM, class T>
 	static inline T VectorSub(const T& a, const T& b, const T& src) throw() {
 		return detail::VectorSubs<T>::ExecuteCompiletimeMask<mask, instruction_set>(a, b, src);
@@ -50,6 +60,16 @@ namespace anvil {
 
 	template<uint64_t instruction_set = ASM_MINIMUM, class T>
 	static inline T VectorSubs(const T& a, const T& b, const T& src, const uint64_t mask) throw() {
+		return detail::VectorSubs<T>::ExecuteRuntimeMask<instruction_set>(a, b, src, mask);
+	}
+
+	template<uint64_t instruction_set = ASM_MINIMUM, class T>
+	static inline T VectorSubs(const T& a, const T& b, const T& src, const Bitfield128 mask) throw() {
+		return detail::VectorSubs<T>::ExecuteRuntimeMask<instruction_set>(a, b, src, mask);
+	}
+
+	template<uint64_t instruction_set = ASM_MINIMUM, class T>
+	static inline T VectorSubs(const T& a, const T& b, const T& src, const Bitfield256 mask) throw() {
 		return detail::VectorSubs<T>::ExecuteRuntimeMask<instruction_set>(a, b, src, mask);
 	}
 

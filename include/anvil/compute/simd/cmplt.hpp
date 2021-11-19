@@ -36,6 +36,16 @@ namespace anvil {
 		return detail::VectorCmpLt<T>::ExecuteRuntimeMask<instruction_set>(a, b, src, mask);
 	}
 
+	template<uint64_t instruction_set = ASM_MINIMUM, class T>
+	static inline T VectorCmpLt(const T& a, const T& b, const T& src, const Bitfield128 mask) throw() {
+		return detail::VectorCmpLt<T>::ExecuteRuntimeMask<instruction_set>(a, b, src, mask);
+	}
+
+	template<uint64_t instruction_set = ASM_MINIMUM, class T>
+	static inline T VectorCmpLt(const T& a, const T& b, const T& src, const Bitfield256 mask) throw() {
+		return detail::VectorCmpLt<T>::ExecuteRuntimeMask<instruction_set>(a, b, src, mask);
+	}
+
 	template<uint64_t mask, uint64_t instruction_set = ASM_MINIMUM, class T>
 	static inline T VectorCmpLt(const T& a, const T& b, const T& src) throw() {
 		return detail::VectorCmpLts<T>::ExecuteCompiletimeMask<mask, instruction_set>(a, b, src);
