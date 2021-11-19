@@ -800,6 +800,16 @@ namespace anvil { namespace detail {
 			return anvil::VectorBlendRuntimeMask<instruction_set>(tmp, src, mask);
 		}
 
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type ExecuteRuntimeMask(const type& a, const type& b, const type& src, const Bitfield128 mask) throw() {
+			return ExecuteRuntimeMask<instruction_set>(a, b, src, mask.low);
+		}
+
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type ExecuteRuntimeMask(const type& a, const type& b, const type& src, const Bitfield256 mask) throw() {
+			return ExecuteRuntimeMask<instruction_set>(a, b, src, mask.low);
+		}
+
 		template<uint64_t mask, uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type ExecuteCompiletimeMask(const type& a, const type& b, const type& src) throw() {
 			type tmp;
@@ -847,6 +857,62 @@ namespace anvil { namespace detail {
 			}
 		}
 
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type ExecuteRuntimeMask(const type& a, const type& b, const type& src, const Bitfield128 mask) throw() {
+			if constexpr (S <= 64u) {
+				return ExecuteRuntimeMask<instruction_set>(a, b, src, mask.low);
+			} else if constexpr (S == 128u) {
+				return  detail::BasicVector<T, S>(
+					VectorArith<OP, type::lower_t>::ExecuteRuntimeMask<instruction_set>(a.lower_half, b.lower_half, src.lower_half, mask.low),
+					VectorArith<OP, type::upper_t>::ExecuteRuntimeMask<instruction_set>(a.upper_half, b.upper_half, src.upper_half, mask.high)
+				);
+			} else {
+				enum { S2 = S - 64u };
+
+				detail::BasicVector<T, S> tmp;
+				const detail::BasicVector<T, 64u>& aLow = *reinterpret_cast<const detail::BasicVector<T, 64u>*>(a.data);
+				const detail::BasicVector<T, 64u>& bLow = *reinterpret_cast<const detail::BasicVector<T, 64u>*>(b.data);
+				const detail::BasicVector<T, 64u>& srcLow = *reinterpret_cast<const detail::BasicVector<T, 64u>*>(src.data);
+				detail::BasicVector<T, 64u>& tmpLow = *reinterpret_cast<detail::BasicVector<T, 64u>*>(tmp.data);
+				const detail::BasicVector<T, S2>& aHigh = *reinterpret_cast<const detail::BasicVector<T, S2>*>(a.data + 64u);
+				const detail::BasicVector<T, S2>& bHigh = *reinterpret_cast<const detail::BasicVector<T, S2>*>(b.data + 64u);
+				const detail::BasicVector<T, S2>& srcHigh = *reinterpret_cast<const detail::BasicVector<T, S2>*>(src.data + 64u);
+				detail::BasicVector<T, S2>& tmpHigh = *reinterpret_cast<detail::BasicVector<T, S2>*>(tmp.data + 64u);
+
+				tmpLow = VectorArith<OP, detail::BasicVector<T, 64u>>::ExecuteRuntimeMask<instruction_set>(aLow, bLow, srcLow, mask.low);
+				tmpHigh = VectorArith<OP, detail::BasicVector<T, S2>>::ExecuteRuntimeMask<instruction_set>(aHigh, bHigh, srcHigh, mask.high);
+				return tmp;
+			}
+		}
+
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type ExecuteRuntimeMask(const type& a, const type& b, const type& src, const Bitfield256 mask) throw() {
+			if constexpr (S <= 128u) {
+				return ExecuteRuntimeMask<instruction_set>(a, b, src, mask.low);
+			} else if constexpr (S == 256u) {
+				return  detail::BasicVector<T, S>(
+					VectorArith<OP, type::lower_t>::ExecuteRuntimeMask<instruction_set>(a.lower_half, b.lower_half, src.lower_half, mask.low),
+					VectorArith<OP, type::upper_t>::ExecuteRuntimeMask<instruction_set>(a.upper_half, b.upper_half, src.upper_half, mask.high)
+				);
+			} else {
+				enum { S2 = S - 128u };
+
+				detail::BasicVector<T, S> tmp;
+				const detail::BasicVector<T, 128u>& aLow = *reinterpret_cast<const detail::BasicVector<T, 128u>*>(a.data);
+				const detail::BasicVector<T, 128u>& bLow = *reinterpret_cast<const detail::BasicVector<T, 128u>*>(b.data);
+				const detail::BasicVector<T, 128u>& srcLow = *reinterpret_cast<const detail::BasicVector<T, 128u>*>(src.data);
+				detail::BasicVector<T, 128u>& tmpLow = *reinterpret_cast<detail::BasicVector<T, 128u>*>(tmp.data);
+				const detail::BasicVector<T, S2>& aHigh = *reinterpret_cast<const detail::BasicVector<T, S2>*>(a.data + 128u);
+				const detail::BasicVector<T, S2>& bHigh = *reinterpret_cast<const detail::BasicVector<T, S2>*>(b.data + 128u);
+				const detail::BasicVector<T, S2>& srcHigh = *reinterpret_cast<const detail::BasicVector<T, S2>*>(src.data + 128u);
+				detail::BasicVector<T, S2>& tmpHigh = *reinterpret_cast<detail::BasicVector<T, S2>*>(tmp.data + 128u);
+
+				tmpLow = VectorArith<OP, detail::BasicVector<T, 128u>>::ExecuteRuntimeMask<instruction_set>(aLow, bLow, srcLow, mask.low);
+				tmpHigh = VectorArith<OP, detail::BasicVector<T, S2>>::ExecuteRuntimeMask<instruction_set>(aHigh, bHigh, srcHigh, mask.high);
+				return tmp;
+			}
+		}
+
 		template<uint64_t mask, uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type ExecuteCompiletimeMask(const type& a, const type& b, const type& src) throw() {
 			if constexpr (Implementation::optimised && (instruction_set & Implementation::recommended_instruction_set) == Implementation::recommended_instruction_set) {
@@ -882,6 +948,16 @@ namespace anvil {
 		return detail::VectorAdd<T>::ExecuteRuntimeMask<instruction_set>(a, b, src, mask);
 	}
 
+	template<uint64_t instruction_set = ASM_MINIMUM, class T>
+	static inline T VectorAdd(const T& a, const T& b, const T& src, const Bitfield128 mask) throw() {
+		return detail::VectorAdd<T>::ExecuteRuntimeMask<instruction_set>(a, b, src, mask);
+	}
+
+	template<uint64_t instruction_set = ASM_MINIMUM, class T>
+	static inline T VectorAdd(const T& a, const T& b, const T& src, const Bitfield256 mask) throw() {
+		return detail::VectorAdd<T>::ExecuteRuntimeMask<instruction_set>(a, b, src, mask);
+	}
+
 	template<uint64_t mask, uint64_t instruction_set = ASM_MINIMUM, class T>
 	static inline T VectorAdd(const T& a, const T& b, const T& src) throw() {
 		return detail::VectorAdds<T>::ExecuteCompiletimeMask<mask, instruction_set>(a, b, src);
@@ -894,6 +970,16 @@ namespace anvil {
 
 	template<uint64_t instruction_set = ASM_MINIMUM, class T>
 	static inline T VectorAdds(const T& a, const T& b, const T& src, const uint64_t mask) throw() {
+		return detail::VectorAdds<T>::ExecuteRuntimeMask<instruction_set>(a, b, src, mask);
+	}
+
+	template<uint64_t instruction_set = ASM_MINIMUM, class T>
+	static inline T VectorAdds(const T& a, const T& b, const T& src, const Bitfield128 mask) throw() {
+		return detail::VectorAdds<T>::ExecuteRuntimeMask<instruction_set>(a, b, src, mask);
+	}
+
+	template<uint64_t instruction_set = ASM_MINIMUM, class T>
+	static inline T VectorAdds(const T& a, const T& b, const T& src, const Bitfield256 mask) throw() {
 		return detail::VectorAdds<T>::ExecuteRuntimeMask<instruction_set>(a, b, src, mask);
 	}
 

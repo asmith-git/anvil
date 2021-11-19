@@ -11,7 +11,7 @@ int main()
 		Vector a, b, c;
 		anvil::Bitfield256 mask;
 
-		a = anvil::VectorBlendRuntimeMask(b, c, mask);
+		a = anvil::VectorAdd(b, c, a, mask);
 
 	}
 	system("pause");
