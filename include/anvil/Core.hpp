@@ -28,5 +28,6 @@
 #include "anvil/core/Common.hpp"
 #include "anvil/core/ByteSwap.hpp"
 #include "anvil/core/Reflection.hpp"
+#include "anvil/core/Bitset128.hpp"
 
 #endif

@@ -98,5 +98,8 @@
     <ClInclude Include="..\..\include\anvil\compute\simd\rshift.hpp">
       <Filter>Header Files\Utils\SIMD</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\anvil\compute\simd\not.hpp">
+      <Filter>Header Files\Utils\SIMD</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

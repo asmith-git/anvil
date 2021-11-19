@@ -39,6 +39,7 @@
     <ClInclude Include="..\..\include\anvil\compute\simd\fma.hpp" />
     <ClInclude Include="..\..\include\anvil\compute\simd\lshift.hpp" />
     <ClInclude Include="..\..\include\anvil\compute\simd\mul.hpp" />
+    <ClInclude Include="..\..\include\anvil\compute\simd\not.hpp" />
     <ClInclude Include="..\..\include\anvil\compute\simd\or.hpp" />
     <ClInclude Include="..\..\include\anvil\compute\simd\rshift.hpp" />
     <ClInclude Include="..\..\include\anvil\compute\simd\sub.hpp" />
