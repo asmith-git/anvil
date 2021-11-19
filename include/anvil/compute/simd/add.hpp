@@ -785,33 +785,37 @@ namespace anvil { namespace detail {
 		typedef T native_t;
 		typedef VectorArithNative<native_t, T> Implementation;
 
+		template<uint64_t instruction_set>
+		static constexpr inline size_t GetOptimisedSize() throw() {
+			return 1u;
+		}
 
 		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b) throw() {
+		static inline type Execute(const type& a, const type& b) throw() {
 			type tmp;
 			Implementation::Execute<instruction_set, OP>(a.native, b.native, tmp.native);
 			return tmp;
 		}
 
 		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type ExecuteRuntimeMask(const type& a, const type& b, const type& src, const uint64_t mask) throw() {
+		static inline type ExecuteRuntimeMask(const type& a, const type& b, const type& src, const uint64_t mask) throw() {
 			type tmp;
 			Implementation::Execute<instruction_set, OP>(a.native, b.native, tmp.native);
 			return anvil::VectorBlendRuntimeMask<instruction_set>(tmp, src, mask);
 		}
 
 		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type ExecuteRuntimeMask(const type& a, const type& b, const type& src, const Bitfield128 mask) throw() {
+		static inline type ExecuteRuntimeMask(const type& a, const type& b, const type& src, const Bitfield128 mask) throw() {
 			return ExecuteRuntimeMask<instruction_set>(a, b, src, mask.low);
 		}
 
 		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type ExecuteRuntimeMask(const type& a, const type& b, const type& src, const Bitfield256 mask) throw() {
+		static inline type ExecuteRuntimeMask(const type& a, const type& b, const type& src, const Bitfield256 mask) throw() {
 			return ExecuteRuntimeMask<instruction_set>(a, b, src, mask.low);
 		}
 
 		template<uint64_t mask, uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type ExecuteCompiletimeMask(const type& a, const type& b, const type& src) throw() {
+		static inline type ExecuteCompiletimeMask(const type& a, const type& b, const type& src) throw() {
 			type tmp;
 			Implementation::Execute<instruction_set, OP>(a.native, b.native, tmp.native);
 			return anvil::VectorBlendCompiletimeMask<mask, instruction_set>(tmp, src);
@@ -828,37 +832,129 @@ namespace anvil { namespace detail {
 		typedef typename type::lower_t lower_t;
 		typedef typename type::upper_t upper_t;
 
+		template<uint64_t instruction_set>
+		static constexpr inline size_t GetOptimisedSize() throw() {
+			if constexpr (Implementation::optimised && (instruction_set & Implementation::recommended_instruction_set) == Implementation::recommended_instruction_set) {
+				return S;
+			} else {
+
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+				return 
+					(instruction_set & ASM_AVX512F) ? 64u / sizeof(T) :
+					(instruction_set & ASM_AVX2) ? 32u / sizeof(T) :
+					(instruction_set & ASM_SSE2) ? 16u / sizeof(T) :
+					1u;
+#else
+				return 4u;
+#endif
+			}
+		}
 
 		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type Execute(const type& a, const type& b) throw() {
+		static inline type Execute(const type& a, const type& b) throw() {
 			if constexpr (Implementation::optimised && (instruction_set & Implementation::recommended_instruction_set) == Implementation::recommended_instruction_set) {
 				type tmp;
 				Implementation::Execute<instruction_set, OP>(a.native, b.native, tmp.native);
 				return tmp;
 			} else {
-				return type(
-					VectorArith<OP, lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half),
-					VectorArith<OP, upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half)
-				);
+				//return type(
+				//	VectorArith<OP, lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half),
+				//	VectorArith<OP, upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half)
+				//);
+
+				type tmp;
+
+				enum {
+					optimised_size = GetOptimisedSize<instruction_set>(),
+					loop_size = S / optimised_size,
+					remainder_size = S - (optimised_size * loop_size)
+				};
+
+				typedef Vector<T, optimised_size> OptimisedType;
+				typedef Vector<T, remainder_size> RemainderType;
+
+				union Ptr {
+					T* element;
+					OptimisedType* optimised;
+					RemainderType* remainder;
+				};
+
+				Ptr aPtr, bPtr, tmpPtr;
+
+				aPtr.element = const_cast<T*>(a.data);
+				bPtr.element = const_cast<T*>(b.data);
+				tmpPtr.element = tmp.data;
+
+				for (size_t i = 0u; i < loop_size; ++i) tmpPtr.optimised[i] = VectorArith<OP, OptimisedType>::Execute<instruction_set>(aPtr.optimised[i], bPtr.optimised[i]);
+
+				if constexpr (remainder_size > 0u) {
+					aPtr.optimised += loop_size;
+					bPtr.optimised += loop_size;
+					tmpPtr.optimised += loop_size;
+
+					*tmpPtr.remainder = VectorArith<OP, RemainderType>::Execute<instruction_set>(*aPtr.remainder, *bPtr.remainder);
+				}
+
+				return tmp;
 			}
 		}
 
 		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type ExecuteRuntimeMask(const type& a, const type& b, const type& src, const uint64_t mask) throw() {
+		static inline type ExecuteRuntimeMask(const type& a, const type& b, const type& src, uint64_t mask) throw() {
 			if constexpr (Implementation::optimised && (instruction_set & Implementation::recommended_instruction_set) == Implementation::recommended_instruction_set) {
 				type tmp;
 				Implementation::Execute<instruction_set, OP>(a.native, b.native, tmp.native);
 				return anvil::VectorBlendRuntimeMask<instruction_set>(tmp, src, mask);
 			} else {
-				return type(
-					VectorArith<OP, lower_t>::ExecuteRuntimeMask<instruction_set>(a.lower_half, b.lower_half, src.lower_half, mask),
-					VectorArith<OP, upper_t>::ExecuteRuntimeMask<instruction_set>(a.upper_half, b.upper_half, src.upper_half, mask >> type::lower_size)
-				);
+				//return type(
+				//	VectorArith<OP, lower_t>::ExecuteRuntimeMask<instruction_set>(a.lower_half, b.lower_half, src.lower_half, mask),
+				//	VectorArith<OP, upper_t>::ExecuteRuntimeMask<instruction_set>(a.upper_half, b.upper_half, src.upper_half, mask >> type::lower_size)
+				//);
+
+				type tmp;
+
+				enum {
+					optimised_size = GetOptimisedSize<instruction_set>(),
+					loop_size = S / optimised_size,
+					remainder_size = S - (optimised_size * loop_size)
+				};
+
+				typedef Vector<T, optimised_size> OptimisedType;
+				typedef Vector<T, remainder_size> RemainderType;
+
+				union Ptr {
+					T* element;
+					OptimisedType* optimised;
+					RemainderType* remainder;
+				};
+
+				Ptr aPtr, bPtr, srcPtr, tmpPtr;
+
+				aPtr.element = const_cast<T*>(a.data);
+				bPtr.element = const_cast<T*>(b.data);
+				srcPtr.element = const_cast<T*>(src.data);
+				tmpPtr.element = tmp.data;
+
+				for (size_t i = 0u; i < loop_size; ++i) {
+					tmpPtr.optimised[i] = VectorArith<OP, OptimisedType>::ExecuteRuntimeMask<instruction_set>(aPtr.optimised[i], bPtr.optimised[i], srcPtr.optimised[i], mask);
+					mask >>= optimised_size;
+				}
+
+				if constexpr (remainder_size > 0u) {
+					aPtr.optimised += loop_size;
+					bPtr.optimised += loop_size;
+					srcPtr.optimised += loop_size;
+					tmpPtr.optimised += loop_size;
+
+					*tmpPtr.remainder = VectorArith<OP, RemainderType>::ExecuteRuntimeMask<instruction_set>(*aPtr.remainder, *bPtr.remainder, *srcPtr.remainder, mask);
+				}
+
+				return tmp;
 			}
 		}
 
 		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type ExecuteRuntimeMask(const type& a, const type& b, const type& src, const Bitfield128 mask) throw() {
+		static inline type ExecuteRuntimeMask(const type& a, const type& b, const type& src, const Bitfield128 mask) throw() {
 			if constexpr (S <= 64u) {
 				return ExecuteRuntimeMask<instruction_set>(a, b, src, mask.low);
 			} else if constexpr (S == 128u) {
@@ -886,7 +982,7 @@ namespace anvil { namespace detail {
 		}
 
 		template<uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type ExecuteRuntimeMask(const type& a, const type& b, const type& src, const Bitfield256 mask) throw() {
+		static inline type ExecuteRuntimeMask(const type& a, const type& b, const type& src, const Bitfield256 mask) throw() {
 			if constexpr (S <= 128u) {
 				return ExecuteRuntimeMask<instruction_set>(a, b, src, mask.low);
 			} else if constexpr (S == 256u) {
@@ -914,7 +1010,7 @@ namespace anvil { namespace detail {
 		}
 
 		template<uint64_t mask, uint64_t instruction_set>
-		static ANVIL_STRONG_INLINE type ExecuteCompiletimeMask(const type& a, const type& b, const type& src) throw() {
+		static inline type ExecuteCompiletimeMask(const type& a, const type& b, const type& src) throw() {
 			if constexpr (Implementation::optimised && (instruction_set & Implementation::recommended_instruction_set) == Implementation::recommended_instruction_set) {
 				type tmp;
 				Implementation::Execute<instruction_set, OP>(a.native, b.native, tmp.native);

@@ -34,6 +34,11 @@ namespace anvil {
 		};
 
 		template<class T>
+		struct VectorTypeSelector<T, 0u> {
+			typedef T type;
+		};
+
+		template<class T>
 		struct VectorTypeSelector<T, 1u> {
 			typedef T type;
 		};
