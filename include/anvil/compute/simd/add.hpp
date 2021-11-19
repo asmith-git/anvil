@@ -856,46 +856,49 @@ namespace anvil { namespace detail {
 				type tmp;
 				Implementation::Execute<instruction_set, OP>(a.native, b.native, tmp.native);
 				return tmp;
+
 			} else {
-				//return type(
-				//	VectorArith<OP, lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half),
-				//	VectorArith<OP, upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half)
-				//);
-
-				type tmp;
-
 				enum {
 					optimised_size = GetOptimisedSize<instruction_set>(),
 					loop_size = S / optimised_size,
 					remainder_size = S - (optimised_size * loop_size)
 				};
 
-				typedef Vector<T, optimised_size> OptimisedType;
-				typedef Vector<T, remainder_size> RemainderType;
+				if constexpr (loop_size == 2 && remainder_size == 0u) {
+					return type(
+						VectorArith<OP, lower_t>::Execute<instruction_set>(a.lower_half, b.lower_half),
+						VectorArith<OP, upper_t>::Execute<instruction_set>(a.upper_half, b.upper_half)
+					);
+				} else {
+					type tmp;
 
-				union Ptr {
-					T* element;
-					OptimisedType* optimised;
-					RemainderType* remainder;
-				};
+					typedef Vector<T, optimised_size> OptimisedType;
+					typedef Vector<T, remainder_size> RemainderType;
 
-				Ptr aPtr, bPtr, tmpPtr;
+					union Ptr {
+						T* element;
+						OptimisedType* optimised;
+						RemainderType* remainder;
+					};
 
-				aPtr.element = const_cast<T*>(a.data);
-				bPtr.element = const_cast<T*>(b.data);
-				tmpPtr.element = tmp.data;
+					Ptr aPtr, bPtr, tmpPtr;
 
-				for (size_t i = 0u; i < loop_size; ++i) tmpPtr.optimised[i] = VectorArith<OP, OptimisedType>::Execute<instruction_set>(aPtr.optimised[i], bPtr.optimised[i]);
+					aPtr.element = const_cast<T*>(a.data);
+					bPtr.element = const_cast<T*>(b.data);
+					tmpPtr.element = tmp.data;
 
-				if constexpr (remainder_size > 0u) {
-					aPtr.optimised += loop_size;
-					bPtr.optimised += loop_size;
-					tmpPtr.optimised += loop_size;
+					for (size_t i = 0u; i < loop_size; ++i) tmpPtr.optimised[i] = VectorArith<OP, OptimisedType>::Execute<instruction_set>(aPtr.optimised[i], bPtr.optimised[i]);
 
-					*tmpPtr.remainder = VectorArith<OP, RemainderType>::Execute<instruction_set>(*aPtr.remainder, *bPtr.remainder);
+					if constexpr (remainder_size > 0u) {
+						aPtr.optimised += loop_size;
+						bPtr.optimised += loop_size;
+						tmpPtr.optimised += loop_size;
+
+						*tmpPtr.remainder = VectorArith<OP, RemainderType>::Execute<instruction_set>(*aPtr.remainder, *bPtr.remainder);
+					}
+
+					return tmp;
 				}
-
-				return tmp;
 			}
 		}
 
@@ -906,10 +909,6 @@ namespace anvil { namespace detail {
 				Implementation::Execute<instruction_set, OP>(a.native, b.native, tmp.native);
 				return anvil::VectorBlendRuntimeMask<instruction_set>(tmp, src, mask);
 			} else {
-				//return type(
-				//	VectorArith<OP, lower_t>::ExecuteRuntimeMask<instruction_set>(a.lower_half, b.lower_half, src.lower_half, mask),
-				//	VectorArith<OP, upper_t>::ExecuteRuntimeMask<instruction_set>(a.upper_half, b.upper_half, src.upper_half, mask >> type::lower_size)
-				//);
 
 				type tmp;
 
@@ -919,37 +918,45 @@ namespace anvil { namespace detail {
 					remainder_size = S - (optimised_size * loop_size)
 				};
 
-				typedef Vector<T, optimised_size> OptimisedType;
-				typedef Vector<T, remainder_size> RemainderType;
+				if constexpr (loop_size == 2 && remainder_size == 0u) {
+					return type(
+						VectorArith<OP, lower_t>::ExecuteRuntimeMask<instruction_set>(a.lower_half, b.lower_half, src.lower_half, mask),
+						VectorArith<OP, upper_t>::ExecuteRuntimeMask<instruction_set>(a.upper_half, b.upper_half, src.upper_half, mask >> type::lower_size)
+					);
+				} else {
 
-				union Ptr {
-					T* element;
-					OptimisedType* optimised;
-					RemainderType* remainder;
-				};
+					typedef Vector<T, optimised_size> OptimisedType;
+					typedef Vector<T, remainder_size> RemainderType;
 
-				Ptr aPtr, bPtr, srcPtr, tmpPtr;
+					union Ptr {
+						T* element;
+						OptimisedType* optimised;
+						RemainderType* remainder;
+					};
 
-				aPtr.element = const_cast<T*>(a.data);
-				bPtr.element = const_cast<T*>(b.data);
-				srcPtr.element = const_cast<T*>(src.data);
-				tmpPtr.element = tmp.data;
+					Ptr aPtr, bPtr, srcPtr, tmpPtr;
 
-				for (size_t i = 0u; i < loop_size; ++i) {
-					tmpPtr.optimised[i] = VectorArith<OP, OptimisedType>::ExecuteRuntimeMask<instruction_set>(aPtr.optimised[i], bPtr.optimised[i], srcPtr.optimised[i], mask);
-					mask >>= optimised_size;
+					aPtr.element = const_cast<T*>(a.data);
+					bPtr.element = const_cast<T*>(b.data);
+					srcPtr.element = const_cast<T*>(src.data);
+					tmpPtr.element = tmp.data;
+
+					for (size_t i = 0u; i < loop_size; ++i) {
+						tmpPtr.optimised[i] = VectorArith<OP, OptimisedType>::ExecuteRuntimeMask<instruction_set>(aPtr.optimised[i], bPtr.optimised[i], srcPtr.optimised[i], mask);
+						mask >>= optimised_size;
+					}
+
+					if constexpr (remainder_size > 0u) {
+						aPtr.optimised += loop_size;
+						bPtr.optimised += loop_size;
+						srcPtr.optimised += loop_size;
+						tmpPtr.optimised += loop_size;
+
+						*tmpPtr.remainder = VectorArith<OP, RemainderType>::ExecuteRuntimeMask<instruction_set>(*aPtr.remainder, *bPtr.remainder, *srcPtr.remainder, mask);
+					}
+
+					return tmp;
 				}
-
-				if constexpr (remainder_size > 0u) {
-					aPtr.optimised += loop_size;
-					bPtr.optimised += loop_size;
-					srcPtr.optimised += loop_size;
-					tmpPtr.optimised += loop_size;
-
-					*tmpPtr.remainder = VectorArith<OP, RemainderType>::ExecuteRuntimeMask<instruction_set>(*aPtr.remainder, *bPtr.remainder, *srcPtr.remainder, mask);
-				}
-
-				return tmp;
 			}
 		}
 
