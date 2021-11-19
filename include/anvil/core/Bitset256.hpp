@@ -191,13 +191,13 @@ namespace anvil {
 			uint64_t remainder = 0ull;
 
 			d <<= bits;
-			c = BitShiftRightWithRemainder(c, bits, remainder);
+			c = BitShiftLeftWithRemainder(c, bits, remainder);
 			d |= remainder;
 
-			b = BitShiftRightWithRemainder(b, bits, remainder);
+			b = BitShiftLeftWithRemainder(b, bits, remainder);
 			c |= remainder;
 
-			a = BitShiftRightWithRemainder(a, bits, remainder);
+			a = BitShiftLeftWithRemainder(a, bits, remainder);
 			b |= remainder;
 
 			return Bitfield256(Bitfield128(a, b), Bitfield128(c, d));
