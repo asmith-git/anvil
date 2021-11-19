@@ -610,6 +610,16 @@ namespace anvil { namespace detail {
 			return anvil::VectorBlendRuntimeMask<instruction_set>(Execute<instruction_set>(a, b), src, mask);
 		}
 
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type ExecuteRuntimeMask(type a, const type& b, const type& src, const Bitfield128 mask) throw() {
+			return ExecuteRuntimeMask<instruction_set>(a, b, src, mask.low);
+		}
+
+		template<uint64_t instruction_set>
+		static ANVIL_STRONG_INLINE type ExecuteRuntimeMask(type a, const type& b, const type& src, const Bitfield256 mask) throw() {
+			return ExecuteRuntimeMask<instruction_set>(a, b, src, mask.low);
+		}
+
 		template<uint64_t mask, uint64_t instruction_set>
 		static ANVIL_STRONG_INLINE type ExecuteCompiletimeMask(type a, const type& b, const type& src) throw() {
 			return anvil::VectorBlendRuntimeMask<mask, instruction_set>(Execute<instruction_set>(a, b), src);
