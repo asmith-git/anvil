@@ -161,6 +161,55 @@ namespace anvil {
 		ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE bool CheckBit(const size_t bit) const throw() {
 			return bit < 128u ? low.CheckBit(bit) : high.CheckBit(bit - 64u);
 		}
+
+
+		ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE Bitfield256 operator>>(uint64_t bits) const throw() {
+			uint64_t a = low.low;
+			uint64_t b = low.high;
+			uint64_t c = high.low;
+			uint64_t d = high.high;
+			uint64_t remainder = 0ull;
+
+			a >>= bits;
+			b = BitShiftRightWithRemainder(b, bits, remainder);
+			a |= remainder << (64ull - bits);
+
+			c = BitShiftRightWithRemainder(c, bits, remainder);
+			b |= remainder << (64ull - bits);
+
+			d = BitShiftRightWithRemainder(d, bits, remainder);
+			c |= remainder << (64ull - bits);
+
+			return Bitfield256(Bitfield128(a, b), Bitfield128(c, d));
+		}
+
+		ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE Bitfield256 operator<<(uint64_t bits) const throw() {
+			uint64_t a = low.low;
+			uint64_t b = low.high;
+			uint64_t c = high.low;
+			uint64_t d = high.high;
+			uint64_t remainder = 0ull;
+
+			d <<= bits;
+			c = BitShiftRightWithRemainder(c, bits, remainder);
+			d |= remainder;
+
+			b = BitShiftRightWithRemainder(b, bits, remainder);
+			c |= remainder;
+
+			a = BitShiftRightWithRemainder(a, bits, remainder);
+			b |= remainder;
+
+			return Bitfield256(Bitfield128(a, b), Bitfield128(c, d));
+		}
+
+		ANVIL_STRONG_INLINE Bitfield256& operator>>=(uint64_t bits) throw() {
+			return *this = *this >> bits;
+		}
+
+		ANVIL_STRONG_INLINE Bitfield256& operator<<=(uint64_t bits) throw() {
+			return *this = *this << bits;
+		}
 	};
 
 }

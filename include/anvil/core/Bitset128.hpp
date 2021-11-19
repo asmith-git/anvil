@@ -21,6 +21,19 @@
 
 namespace anvil {
 
+	static ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE uint64_t BitShiftRightWithRemainder(uint64_t value, uint64_t bits, uint64_t& remainder) throw() {
+		const uint64_t mask = (1ull << bits) - 1ull;
+		remainder = value & mask;
+		return value >> bits;
+	}
+
+	static ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE uint64_t BitShiftLeftWithRemainder(uint64_t value, uint64_t bits, uint64_t& remainder) throw() {
+		const uint64_t mask = ~(1ull << bits) - 1ull;
+		uint64_t tmp = value & mask;
+		remainder = tmp >> (64ull - bits);
+		return value << bits;
+	}
+
 	struct Bitfield128 {
 		uint64_t low;
 		uint64_t high;
@@ -120,39 +133,29 @@ namespace anvil {
 			);
 		}
 
-		ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE Bitfield128 operator>>(size_t bits) const throw() {
+		ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE Bitfield128 operator>>(uint64_t bits) const throw() {
 			uint64_t l = low >> bits;
-			uint64_t h = high;
-
-			if (bits >= 64u) {
-				bits -= 64u;
-				uint64_t tmp = h & ((1ull << bits) - 1ull);
-				l |= tmp << (64u - bits);
-				h >>= bits;
-			}
+			uint64_t remainder = 0ull;
+			uint64_t h = BitShiftRightWithRemainder(high, bits, remainder);
+			l |= remainder << (64ull - bits);
 
 			return Bitfield128(l, h);
 		}
 
-		ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE Bitfield128 operator<<(size_t bits) const throw() {
+		ANVIL_CONSTEXPR_FN ANVIL_STRONG_INLINE Bitfield128 operator<<(uint64_t bits) const throw() {
 			uint64_t h = high << bits;
-			uint64_t l = low;
-
-			if (bits >= 64u) {
-				bits -= 64u;
-				uint64_t tmp = l & ~((1ull << bits) - 1ull);
-				h |= tmp >> (64u - bits);
-				l <<= bits;
-			}
+			uint64_t remainder = 0ull;
+			uint64_t l = BitShiftLeftWithRemainder(low, bits, remainder);
+			h |= remainder;
 
 			return Bitfield128(l, h);
 		}
 
-		ANVIL_STRONG_INLINE Bitfield128& operator>>=(size_t bits) throw() {
+		ANVIL_STRONG_INLINE Bitfield128& operator>>=(uint64_t bits) throw() {
 			return *this = *this >> bits;
 		}
 
-		ANVIL_STRONG_INLINE Bitfield128& operator<<=(size_t bits) throw() {
+		ANVIL_STRONG_INLINE Bitfield128& operator<<=(uint64_t bits) throw() {
 			return *this = *this << bits;
 		}
 	};
