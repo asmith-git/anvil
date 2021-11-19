@@ -5,6 +5,18 @@
 
 int main()
 {
+	{
+		typedef anvil::Vector<float, 192> Vector;
+
+		Vector a, b, c;
+		anvil::Bitfield256 mask;
+
+		a = anvil::VectorBlendRuntimeMask(b, c, mask);
+
+	}
+	system("pause");
+
+
 	enum { size = 16 };
 	anvil::Vector<float, size> a;
 	anvil::Vector<float, size> b;
@@ -27,15 +39,16 @@ int main()
 	}
 
 	//a += b;
-	//a = anvil::VectorMultiplyAdd(a, b, c);
+	//a = anvil::VectorCmpEqtiplyAdd(a, b, c);
 	//a = anvil::VectorAnd(a, b);
 	//a = (a & b) | c;
 
-	enum : uint64_t { mask = 12345 };
-	//int mask = rand() & ((1 << size) - 1);
-	//a = anvil::VectorAnd(b, c, a, mask);
+	//enum : uint64_t { mask = 12345 };
+	int mask = rand() & ((1 << size) - 1);
+	a = anvil::VectorAnd(b, c, a, mask);
 	//a = anvil::VectorAnd<mask>(b, c, a);
-	a = anvil::VectorAdd(b, c, b, mask);
+	//a = anvil::VectorAdd<mask>(b, c, b);
+	//a = anvil::VectorNot(a,a, mask);
 
 	std::cout << a[0u] << std::endl;
 

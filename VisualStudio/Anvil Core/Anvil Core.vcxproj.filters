@@ -72,6 +72,12 @@
     <ClInclude Include="..\..\include\anvil\core\Common.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\anvil\core\Bitset128.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\core\Bitset256.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CoreVisualStudio.cpp">

@@ -19,6 +19,7 @@
 #include "anvil/compute/simd/And.hpp"
 #include "anvil/compute/simd/Or.hpp"
 #include "anvil/compute/simd/Xor.hpp"
+#include "anvil/core/Bitset256.hpp"
 
 namespace anvil { namespace detail {
 
@@ -496,6 +497,60 @@ namespace anvil {
 	template<uint64_t mask, uint64_t instruction_set = ASM_MINIMUM, class T>
 	static inline T VectorBlendCompiletimeMask(const T& a, const T& b) throw() {
 		return detail::VectorBlend<T>::CompiletimeMask<mask, instruction_set>(a, b);
+	}
+
+	template<uint64_t instruction_set = ASM_MINIMUM, class T, size_t S>
+	static inline detail::BasicVector<T, S> VectorBlendRuntimeMask(const detail::BasicVector<T, S>& a, const detail::BasicVector<T, S>& b, const Bitfield128 mask) throw() {
+		if constexpr (S <= 64u) {
+			return VectorBlendRuntimeMask<instruction_set>(a, b, mask.low);
+		} else if constexpr (S == 128u) {
+			return  detail::BasicVector<T, S>(
+				VectorBlendRuntimeMask<instruction_set>(a.lower_half, b.lower_half, mask.low),
+				VectorBlendRuntimeMask<instruction_set>(a.upper_half, b.upper_half, mask.high)
+			);
+		} else {
+			enum { S2 = S - 64u };
+
+			detail::BasicVector<T, S> tmp;
+			const detail::BasicVector<T, 64u>& aLow = *reinterpret_cast<const detail::BasicVector<T, 64u>*>(a.data);
+			const detail::BasicVector<T, 64u>& bLow = *reinterpret_cast<const detail::BasicVector<T, 64u>*>(b.data);
+			detail::BasicVector<T, 64u>& tmpLow = *reinterpret_cast<detail::BasicVector<T, 64u>*>(tmp.data);
+			const detail::BasicVector<T, S2>& aHigh = *reinterpret_cast<const detail::BasicVector<T, S2>*>(a.data + 64u);
+			const detail::BasicVector<T, S2>& bHigh = *reinterpret_cast<const detail::BasicVector<T, S2>*>(b.data + 64u);
+			detail::BasicVector<T, S2>& tmpHigh = *reinterpret_cast<detail::BasicVector<T, S2>*>(tmp.data + 64u);
+
+			tmpLow = VectorBlendRuntimeMask<instruction_set>(aLow, bLow, mask.low);
+			tmpHigh = VectorBlendRuntimeMask<instruction_set>(aHigh, bHigh, mask.high);
+			return tmp;
+		}
+	}
+
+	
+
+	template<uint64_t instruction_set = ASM_MINIMUM, class T, size_t S>
+	static inline detail::BasicVector<T, S> VectorBlendRuntimeMask(const detail::BasicVector<T, S>& a, const detail::BasicVector<T, S>& b, const Bitfield256 mask) throw() {
+		if constexpr (S <= 128u) {
+			return VectorBlendRuntimeMask<instruction_set>(a, b, mask.low);
+		} else if constexpr (S == 256u) {
+			return  detail::BasicVector<T, S>(
+				VectorBlendRuntimeMask<instruction_set>(a.lower_half, b.lower_half, mask.low),
+				VectorBlendRuntimeMask<instruction_set>(a.upper_half, b.upper_half, mask.high)
+			);
+		} else {
+			enum { S2 = S - 128u };
+
+			detail::BasicVector<T, S> tmp;
+			const detail::BasicVector<T, 128u>& aLow = *reinterpret_cast<const detail::BasicVector<T, 128u>*>(a.data);
+			const detail::BasicVector<T, 128u>& bLow = *reinterpret_cast<const detail::BasicVector<T, 128u>*>(b.data);
+			detail::BasicVector<T, 128u>& tmpLow = *reinterpret_cast<detail::BasicVector<T, 128u>*>(tmp.data);
+			const detail::BasicVector<T, S2>& aHigh = *reinterpret_cast<const detail::BasicVector<T, S2>*>(a.data + 128u);
+			const detail::BasicVector<T, S2>& bHigh = *reinterpret_cast<const detail::BasicVector<T, S2>*>(b.data + 128u);
+			detail::BasicVector<T, S2>& tmpHigh = *reinterpret_cast<detail::BasicVector<T, S2>*>(tmp.data + 128u);
+
+			tmpLow = VectorBlendRuntimeMask<instruction_set>(aLow, bLow, mask.low);
+			tmpHigh = VectorBlendRuntimeMask<instruction_set>(aHigh, bHigh, mask.high);
+			return tmp;
+		}
 	}
 }
 #endif

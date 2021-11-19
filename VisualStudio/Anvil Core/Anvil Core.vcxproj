@@ -22,6 +22,8 @@
     <ClInclude Include="..\..\include\anvil\Core.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Alignment.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Assert.hpp" />
+    <ClInclude Include="..\..\include\anvil\core\Bitset128.hpp" />
+    <ClInclude Include="..\..\include\anvil\core\Bitset256.hpp" />
     <ClInclude Include="..\..\include\anvil\core\ByteSwap.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Common.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Compiler.hpp" />
