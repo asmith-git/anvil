@@ -19,6 +19,7 @@
 #include <array>
 #include <deque>
 #include <list>
+#include <map>
 #include "anvil/byte-pipe/BytePipeCore.hpp"
 #include "anvil/byte-pipe/BytePipeEndian.hpp"
 #include "anvil/byte-pipe/BytePipeObjects.hpp"
@@ -680,6 +681,20 @@ namespace anvil { namespace BytePipe {
 		inline void operator()(const std::deque<T>& value) {
 			OnArrayBegin();
 			for (const T& val : value) operator()(val);
+			OnArrayEnd();
+		}
+
+		template<class K, class T>
+		inline void operator()(const std::map<K, T>& value) {
+			OnArrayBegin(static_cast<uint32_t>(value.size()));
+			for (const auto& v : value) {
+				OnObjectBegin(2);
+				OnComponentID(0);
+				operator()(v.first);
+				OnComponentID(1);
+				operator()(v.second);
+				OnObjectEnd();
+			}
 			OnArrayEnd();
 		}
 	};
