@@ -15,6 +15,7 @@
 #ifndef ANVIL_LUTILS_BYTEPIPE_HAMMING_HPP
 #define ANVIL_LUTILS_BYTEPIPE_HAMMING_HPP
 
+#include <cstdint>
 #include "anvil/byte-pipe/BytePipePacket.hpp"
 #include "anvil/byte-pipe/BytePipeBits.hpp"
 

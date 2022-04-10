@@ -12,14 +12,8 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-<<<<<<< HEAD:include/anvil/Utils.hpp
 #ifndef ANVIL_UTILS_INC_HPP
 #define ANVIL_UTILS_INC_HPP
-
-#include "anvil/lutils/Message.hpp"
-=======
-#ifndef ANVIL_BYTEPIPE_HPP
-#define ANVIL_BYTEPIPE_HPP
 
 #include "anvil/byte-pipe/BytePipeCore.hpp"
 #include "anvil/byte-pipe/BytePipeObjects.hpp"
@@ -29,6 +23,5 @@
 #include "anvil/byte-pipe/BytePipeRLE.hpp"
 #include "anvil/byte-pipe/BytePipePacket.hpp"
 #include "anvil/byte-pipe/BytePipeBits.hpp"
->>>>>>> anvil-byte-pipe/master:include/anvil/byte-pipe/BytePipe.hpp
 
 #endif

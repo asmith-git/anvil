@@ -12,35 +12,16 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-<<<<<<< HEAD:src/anvil/core/CpuRuntime.cpp
-#include "anvil/core/CpuRuntime.hpp"
-=======
 #ifndef ANVIL_BYTEPIPE_CORE_HPP
 #define ANVIL_BYTEPIPE_CORE_HPP
->>>>>>> anvil-byte-pipe/master:include/anvil/byte-pipe/BytePipeCore.hpp
 
-namespace anvil {
+#include "anvil/Core.hpp"
 
-<<<<<<< HEAD:src/anvil/core/CpuRuntime.cpp
-	namespace detail {
-		InstructionSets CheckSupportedInstructionSets_Implement() throw() {
-			//! \todo Implement
-			return static_cast<InstructionSets>(ANVIL_MIN_INSTRUCTION_SET);
-		}
-	}
-=======
 namespace anvil { namespace BytePipe {
 	enum Version : uint8_t {
 		VERSION_1 = 1,
 		VERSION_2 = 2	// Endianness
 	};
-
-#ifdef ANVIL_LEGACY_COMPILER_SUPPORT
-	#define ANVIL_CONSTEXPR
-#else
-	#define ANVIL_CONSTEXPR constexpr
-#endif
 }}
->>>>>>> anvil-byte-pipe/master:include/anvil/byte-pipe/BytePipeCore.hpp
 
-}
+#endif

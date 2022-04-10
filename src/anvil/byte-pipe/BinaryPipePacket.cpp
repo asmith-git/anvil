@@ -26,7 +26,7 @@ namespace anvil { namespace BytePipe {
 		}
 	}
 
-	static ANVIL_CONSTEXPR const uint8_t g_header_sizes[] = {
+	static ANVIL_CONSTEXPR_VAR const uint8_t g_header_sizes[] = {
 		sizeof(PacketHeaderVersion1),
 		sizeof(PacketHeaderVersion2),
 		sizeof(PacketHeaderVersion3)

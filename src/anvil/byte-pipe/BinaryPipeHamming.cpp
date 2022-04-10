@@ -16,7 +16,7 @@
 #include "anvil/byte-pipe/BytePipeHamming.hpp"
 
 // Constexpr popcount for compile time tests and CPUs that dont have a popcount instruction
-static ANVIL_CONSTEXPR uint32_t SlowPopcount(uint32_t val) {
+static ANVIL_CONSTEXPR_FN uint32_t SlowPopcount(uint32_t val) {
 	uint32_t ones = 0u;
 	while (val != 0u) {
 		ones += val & 1u;
@@ -33,7 +33,7 @@ namespace anvil { namespace BytePipe {
 	// Hamming(7,4)
 
 	// Encode Hamming74 bits for 4 input bits, output is 7 bits
-	static ANVIL_CONSTEXPR uint32_t EncodeHamming74_4(uint32_t input) {
+	static ANVIL_CONSTEXPR_FN uint32_t EncodeHamming74_4(uint32_t input) {
 		//! \todo Optimise
 		uint32_t bit0 = input & 1u;
 		uint32_t bit1 = (input & 2u) >> 1u;
@@ -48,21 +48,21 @@ namespace anvil { namespace BytePipe {
 	}
 
 	// Encode Hamming74 bits for 8 input bits, output is 14 bits
-	static ANVIL_CONSTEXPR uint32_t EncodeHamming74_8(uint32_t input) {
+	static ANVIL_CONSTEXPR_FN uint32_t EncodeHamming74_8(uint32_t input) {
 		uint32_t lo = EncodeHamming74_4(input & 15u);
 		uint32_t hi = EncodeHamming74_4((input >> 4u) & 15u);
 		return lo | (hi << 7u);
 	}
 
 	// Encode Hamming74 bits for 16 input bits, output is 24 bits
-	static ANVIL_CONSTEXPR uint32_t EncodeHamming74_16(uint32_t input) {
+	static ANVIL_CONSTEXPR_FN uint32_t EncodeHamming74_16(uint32_t input) {
 		uint32_t lo = EncodeHamming74_8(input & 255u);
 		uint32_t hi = EncodeHamming74_8((input >> 8u) & 255u);
 		return lo | (hi << 14u);
 	}
 
 	// Decode Hamming74 bits for 7 input bits, output is 4 bits
-	static ANVIL_CONSTEXPR uint32_t DecodeHamming74_4(uint32_t input) {
+	static ANVIL_CONSTEXPR_FN uint32_t DecodeHamming74_4(uint32_t input) {
 		//! \todo Optimise
 		const uint32_t bit0 = input & 1u;
 		const uint32_t bit1 = (input & 2u) >> 1u;
@@ -98,14 +98,14 @@ namespace anvil { namespace BytePipe {
 	}
 
 	// Decode Hamming74 bits for 14 input bits, output is 8 bits
-	static ANVIL_CONSTEXPR uint32_t DecodeHamming74_8(uint32_t input) {
+	static ANVIL_CONSTEXPR_FN uint32_t DecodeHamming74_8(uint32_t input) {
 		uint32_t lo = DecodeHamming74_4(input & 127u);
 		uint32_t hi = DecodeHamming74_4((input >> 7u) & 127u);
 		return lo | (hi << 4u);
 	}
 
 	// Decode Hamming74 bits for 24 input bits, output is 16 bits
-	static ANVIL_CONSTEXPR uint32_t DecodeHamming74_16(uint32_t input) {
+	static ANVIL_CONSTEXPR_FN uint32_t DecodeHamming74_16(uint32_t input) {
 		uint32_t lo = DecodeHamming74_8(input & 16383u);
 		uint32_t hi = DecodeHamming74_8((input >> 14u) & 16383u);
 		return lo | (hi << 8u);
