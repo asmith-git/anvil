@@ -15,6 +15,10 @@
 #ifndef ANVIL_BYTEPIPE_READER_HPP
 #define ANVIL_BYTEPIPE_READER_HPP
 
+#include <vector>
+#include <array>
+#include <deque>
+#include <list>
 #include "anvil/byte-pipe/BytePipeCore.hpp"
 #include "anvil/byte-pipe/BytePipeEndian.hpp"
 #include "anvil/byte-pipe/BytePipeObjects.hpp"
@@ -606,6 +610,78 @@ namespace anvil { namespace BytePipe {
 			OnPrimativeArray<T>(values, size);
 		}
 
+		// General helper
+
+		inline void operator()(const char*& value) { OnPrimativeString(value, static_cast<uint32_t>(strlen(value))); }
+
+		template<class T>
+		inline void operator()(const T& value) = delete;
+
+		template<> inline void operator()<uint8_t>(const uint8_t& value) { OnPrimative<uint8_t>(value); }
+		template<> inline void operator()<uint16_t>(const uint16_t& value) { OnPrimative<uint16_t>(value); }
+		template<> inline void operator()<uint32_t>(const uint32_t& value) { OnPrimative<uint32_t>(value); }
+		template<> inline void operator()<uint64_t>(const uint64_t& value) { OnPrimative<uint64_t>(value); }
+		template<> inline void operator()<int8_t>(const int8_t& value) { OnPrimative<int8_t>(value); }
+		template<> inline void operator()<int16_t>(const int16_t& value) { OnPrimative<int16_t>(value); }
+		template<> inline void operator()<int32_t>(const int32_t& value) { OnPrimative<int32_t>(value); }
+		template<> inline void operator()<int64_t>(const int64_t& value) { OnPrimative<int64_t>(value); }
+		template<> inline void operator()<half>(const half& value) { OnPrimative<half>(value); }
+		template<> inline void operator()<float>(const float& value) { OnPrimative<float>(value); }
+		template<> inline void operator()<double>(const double& value) { OnPrimative<double>(value); }
+		template<> inline void operator()<bool>(const bool& value) { OnPrimative<bool>(value); }
+		template<> inline void operator()<std::string>(const std::string& value) { OnPrimativeString(value.c_str(), static_cast<uint32_t>(value.size())); }
+
+		template<class T>
+		inline void operator()(const std::vector<T>& value) {
+			OnArrayBegin();
+			for(const T& val : value) operator()(val);
+			OnArrayEnd();
+		}
+
+		template<> inline void operator()(const std::vector<uint8_t>& value) { OnPrimativeArray<uint8_t>(value.data(), static_cast<uint32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<uint16_t>& value) { OnPrimativeArray<uint16_t>(value.data(), static_cast<uint32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<uint32_t>& value) { OnPrimativeArray<uint32_t>(value.data(), static_cast<uint32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<uint64_t>& value) { OnPrimativeArray<uint64_t>(value.data(), static_cast<uint32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<int8_t>& value) { OnPrimativeArray<int8_t>(value.data(), static_cast<int32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<int16_t>& value) { OnPrimativeArray<int16_t>(value.data(), static_cast<int32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<int32_t>& value) { OnPrimativeArray<int32_t>(value.data(), static_cast<int32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<int64_t>& value) { OnPrimativeArray<int64_t>(value.data(), static_cast<int32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<half>& value) { OnPrimativeArray<half>(value.data(), static_cast<half>(value.size())); }
+		template<> inline void operator()(const std::vector<float>& value) { OnPrimativeArray<float>(value.data(), static_cast<float>(value.size())); }
+		template<> inline void operator()(const std::vector<double>& value) { OnPrimativeArray<double>(value.data(), static_cast<double>(value.size())); }
+
+		template<class T, uint32_t S>
+		inline void operator()(const std::array<T, S>& value) {
+			OnArrayBegin();
+			for (const T& val : value) operator()(val);
+			OnArrayEnd();
+		}
+
+		template<uint32_t S> inline void operator()(const std::array<uint8_t, S>& value) { OnPrimativeArray<uint8_t>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<uint16_t, S>& value) { OnPrimativeArray<uint16_t>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<uint32_t, S>& value) { OnPrimativeArray<uint32_t>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<uint64_t, S>& value) { OnPrimativeArray<uint64_t>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<int8_t, S>& value) { OnPrimativeArray<int8_t>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<int16_t, S>& value) { OnPrimativeArray<int16_t>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<int32_t, S>& value) { OnPrimativeArray<int32_t>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<int64_t, S>& value) { OnPrimativeArray<int64_t>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<half, S>& value) { OnPrimativeArray<half>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<float, S>& value) { OnPrimativeArray<float>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<double, S>& value) { OnPrimativeArray<double>(value.data(), S); }
+
+		template<class T>
+		inline void operator()(const std::list<T>& value) {
+			OnArrayBegin();
+			for (const T& val : value) operator()(val);
+			OnArrayEnd();
+		}
+
+		template<class T>
+		inline void operator()(const std::deque<T>& value) {
+			OnArrayBegin();
+			for (const T& val : value) operator()(val);
+			OnArrayEnd();
+		}
 	};
 
 	/*!
