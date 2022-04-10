@@ -57,8 +57,8 @@ namespace anvil { namespace BytePipe {
 		read = _downstream_pipe.ReadBytes(reinterpret_cast<uint8_t*>(&header) + 1u, g_header_sizes[header.v1.packet_version] - 1u);
 
 		// Allocate a temporary buffer for the data
-		uint32_t used_bytes;
-		uint32_t packet_size;
+		uint64_t used_bytes;
+		uint64_t packet_size;
 		//! \bug Packets larger than UINT32_MAX will cause an integer overflow on the byte count
 
 		if (version == 1u) {
@@ -76,9 +76,9 @@ namespace anvil { namespace BytePipe {
 		packet_size += 1u;
 
 		// Read the data into the buffer
-		const uint32_t unused_bytes = (packet_size - g_header_sizes[version]) - used_bytes;
+		const uint64_t unused_bytes = (packet_size - g_header_sizes[version]) - used_bytes;
 		uint8_t* tmp = static_cast<uint8_t*>(_alloca(used_bytes + unused_bytes));
-		read = _downstream_pipe.ReadBytes(tmp, used_bytes + unused_bytes);
+		read = _downstream_pipe.ReadBytes(tmp, static_cast<uint32_t>(used_bytes + unused_bytes));
 		if (read != used_bytes + unused_bytes) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Failed reading used packet data");
 
 		// Copy the used data into the main buffer
@@ -136,7 +136,7 @@ namespace anvil { namespace BytePipe {
 
 		while (b != 0u) {
 			// Copy to the packet buffer
-			uint32_t bytes_to_buffer = _max_packet_size - _current_packet_size;
+			uint32_t bytes_to_buffer = static_cast<uint32_t>(_max_packet_size - _current_packet_size);
 			if (b < bytes_to_buffer) bytes_to_buffer = b;
 
 			memcpy(payload + _current_packet_size, data, bytes_to_buffer);
@@ -185,7 +185,7 @@ namespace anvil { namespace BytePipe {
 
 		// Write the packet to the downstream pipe
 		//! \bug Packets larger than UINT32_MAX will cause an integer overflow on the byte count
-		_downstream_pipe.WriteBytes(_buffer, _max_packet_size + header_size);
+		_downstream_pipe.WriteBytes(_buffer, static_cast<uint32_t>(_max_packet_size + header_size));
 
 		// Reset the state of this pipe
 		_current_packet_size = 0u;
