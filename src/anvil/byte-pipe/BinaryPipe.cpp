@@ -343,7 +343,7 @@ namespace anvil { namespace BytePipe {
 	}
 
 	Endianness Writer::GetEndianness() const {
-		const Endianness e = GetEndianness();
+		const Endianness e = BytePipe::GetEndianness();
 		return _swap_byte_order ? (e == ENDIAN_LITTLE ? ENDIAN_BIG : ENDIAN_LITTLE) : e;
 	}
 

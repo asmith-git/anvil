@@ -765,38 +765,6 @@ namespace anvil { namespace BytePipe {
 		void OnPrimativeF16(const half value) final;
 	};
 
-	/*!
-		\author Adam Smtih
-		\date 28/05/2022
-		\brief 
-		\see Reader
-	*/
-	class AutoReader final : public Reader {
-	private:
-	public:
-		AutoReader(InputPipe& pipe) :
-			Reader(pipe)
-		{}
-
-		virtual ~AutoReader() {
-
-		}
-
-		template<class T>
-		inline void Read(T& value) {
-			Value tmp;
-			Read(tmp);
-			value = static_cast<T>(tmp);
-		}
-
-		template<>
-		inline void Read<Value>(Value& value) {
-			ValueParser parser;
-			Reader::Read(parser);
-			value = std::move(parser.GetValue());
-		}
-	};
-
 }}
 
 #endif
