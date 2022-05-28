@@ -317,7 +317,8 @@ namespace anvil { namespace BytePipe {
 		_pipe(pipe),
 		_default_state(STATE_CLOSED),
 		_version(version),
-		_swap_byte_order(swap_byte_order)
+		_swap_byte_order(swap_byte_order),
+		_buffer_size(0)
 	{
 		// Check for invalid settings
 		if (_version == VERSION_1 && GetEndianness() == ENDIAN_BIG) throw std::runtime_error("Writer::Writer : Writing to big endian requires version 2 or higher");
@@ -337,6 +338,7 @@ namespace anvil { namespace BytePipe {
 	{}
 
 	Writer::~Writer() {
+		Write(nullptr, 0u); // Flush internal buffer
 		_pipe.Flush();
 	}
 
@@ -346,8 +348,30 @@ namespace anvil { namespace BytePipe {
 	}
 
 	void Writer::Write(const void* src, const uint32_t bytes) {
-		const uint32_t bytesWritten = _pipe.WriteBytes(src, bytes);
-		ANVIL_CONTRACT(bytesWritten == bytes, "Failed to write to pipe");
+		const auto WriteToPipe = [this](const void* src, const uint32_t bytes) {
+			const uint32_t bytesWritten = _pipe.WriteBytes(src, bytes);
+			ANVIL_CONTRACT(bytesWritten == bytes, "Failed to write to pipe");
+		};
+
+		const auto FlushBuffer = [this, &WriteToPipe]() {
+			if (_buffer_size > 0u) {
+				WriteToPipe(_buffer, _buffer_size);
+				_buffer_size = 0u;
+			}
+		};
+
+		if (src == nullptr) {
+			FlushBuffer();
+
+		} else if (bytes > BUFFER_SIZE) {
+			FlushBuffer();
+			WriteToPipe(src, bytes);
+
+		} else {
+			if (_buffer_size + bytes > BUFFER_SIZE) FlushBuffer();
+			memcpy(_buffer + _buffer_size, src, bytes);
+			_buffer_size += bytes;
+		}
 	}
 
 	Writer::State Writer::GetCurrentState() const {

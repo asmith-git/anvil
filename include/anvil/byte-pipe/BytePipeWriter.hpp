@@ -53,6 +53,9 @@ namespace anvil { namespace BytePipe {
 			STATE_OBJECT
 		};
 
+		enum { BUFFER_SIZE = 128 };
+		uint8_t _buffer[BUFFER_SIZE];
+		uint8_t _buffer_size;
 		OutputPipe& _pipe;
 		std::vector<State> _state_stack;
 		State _default_state;
