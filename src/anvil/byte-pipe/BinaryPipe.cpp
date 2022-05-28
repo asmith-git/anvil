@@ -417,12 +417,12 @@ namespace anvil { namespace BytePipe {
 	}
 
 	void Writer::OnObjectEnd() {
-		ANVIL_CONTRACT(GetCurrentState() == PID_OBJECT, "BytePipe was not in object mode");
+		ANVIL_CONTRACT(GetCurrentState() == STATE_OBJECT, "BytePipe was not in object mode");
 		_state_stack.pop_back();
 	}
 
 	void Writer::OnComponentID(const uint16_t id) {
-		ANVIL_CONTRACT(GetCurrentState() == PID_OBJECT, "BytePipe was not in object mode");
+		ANVIL_CONTRACT(GetCurrentState() == STATE_OBJECT, "BytePipe was not in object mode");
 		Write(&id, 2u);
 	}
 
