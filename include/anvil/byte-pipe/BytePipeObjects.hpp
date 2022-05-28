@@ -17,7 +17,9 @@
 
 #include "anvil/byte-pipe/BytePipeCore.hpp"
 #include <vector>
+#include <array>
 #include <map>
+#include <sstream>
 
 namespace anvil { namespace BytePipe {
 
@@ -325,6 +327,112 @@ namespace anvil { namespace BytePipe {
 			\brief Casts the value to the smallest type that can represent it without losing precision.
 		*/
 		void Optimise();
+
+		// Helpers
+
+		inline Value& operator[] (const size_t i) {
+			return GetValue(i);
+		}
+
+		inline const Value& operator[] (const size_t i) const{
+			return const_cast<Value*>(this)->GetValue(i);
+		}
+
+		explicit inline operator bool() const {
+			return GetBool();
+		}
+
+		explicit inline operator char() const {
+			return GetC8();
+		}
+
+		explicit inline operator uint8_t() const {
+			return GetU8();
+		}
+
+		explicit inline operator uint16_t() const {
+			return GetU16();
+		}
+
+		explicit inline operator uint32_t() const {
+			return GetU32();
+		}
+
+		explicit inline operator uint64_t() const {
+			return GetU64();
+		}
+
+		explicit inline operator int8_t() const {
+			return GetS8();
+		}
+
+		explicit inline operator int16_t() const {
+			return GetS16();
+		}
+
+		explicit inline operator int32_t() const {
+			return GetS32();
+		}
+
+		explicit inline operator int64_t() const {
+			return GetS64();
+		}
+
+		explicit inline operator half() const {
+			return GetF16();
+		}
+
+		explicit inline operator float() const {
+			return GetF32();
+		}
+
+		explicit inline operator double() const {
+			return GetF64();
+		}
+
+		explicit inline operator std::string() {
+			return GetString();
+		}
+
+		template<class T>
+		explicit inline operator std::vector<T>() {
+			const size_t s = GetSize();
+			std::vector<T> tmp(s);
+			for (size_t i = 0u; i < s; ++i) tmp[i] = static_cast<T>(operator[](i));
+			return tmp;
+		}
+
+		template<class T, size_t S>
+		explicit inline operator std::array<T, S>() {
+			std::array<T,S> tmp;
+			for (size_t i = 0u; i < S; ++i) tmp[i] = static_cast<T>(operator[](i));
+			return tmp;
+		}
+
+		template<class K, class V>
+		explicit inline operator std::map<K, V>() {
+			std::map<K, V> tmp;
+			const size_t s = GetSize(); 
+			for (size_t i = 0u; i < s; ++i) {
+				const auto id = GetComponentID(i);
+
+				if constexpr (std::is_same<K, std::string>::value) {
+					std::stringstream ss;
+					ss << id;
+					tmp.emplace(
+						static_cast<K>(ss.str()),
+						static_cast<V>(GetValue(id))
+					);
+
+				} else {
+					tmp.emplace(
+						static_cast<K>(id),
+						static_cast<V>(GetValue(id))
+					);
+				}
+			}
+			return tmp;
+		}
 	};
 
 }}
