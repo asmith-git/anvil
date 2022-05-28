@@ -20,6 +20,7 @@
 #include <array>
 #include <map>
 #include <sstream>
+#include <deque>
 
 namespace anvil { namespace BytePipe {
 
@@ -402,6 +403,14 @@ namespace anvil { namespace BytePipe {
 			return tmp;
 		}
 
+		template<class T>
+		explicit inline operator std::deque<T>() {
+			const size_t s = GetSize();
+			std::deque<T> tmp(s);
+			for (size_t i = 0u; i < s; ++i) tmp[i] = static_cast<T>(operator[](i));
+			return tmp;
+		}
+
 		template<class T, size_t S>
 		explicit inline operator std::array<T, S>() {
 			std::array<T,S> tmp;
@@ -414,22 +423,12 @@ namespace anvil { namespace BytePipe {
 			std::map<K, V> tmp;
 			const size_t s = GetSize(); 
 			for (size_t i = 0u; i < s; ++i) {
-				const auto id = GetComponentID(i);
+				Value& v = GetValue(i);
 
-				if constexpr (std::is_same<K, std::string>::value) {
-					std::stringstream ss;
-					ss << id;
-					tmp.emplace(
-						static_cast<K>(ss.str()),
-						static_cast<V>(GetValue(id))
-					);
-
-				} else {
-					tmp.emplace(
-						static_cast<K>(id),
-						static_cast<V>(GetValue(id))
-					);
-				}
+				tmp.emplace(
+					static_cast<K>(v.GetValue(0)),
+					static_cast<V>(v.GetValue(1))
+				);
 			}
 			return tmp;
 		}
