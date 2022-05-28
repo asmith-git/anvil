@@ -791,9 +791,9 @@ namespace anvil { namespace BytePipe {
 
 		template<>
 		inline void Read<Value>(Value& value) {
-			Value tmp;
-			Read(tmp);
-			value = tmp;
+			ValueParser parser;
+			Reader::Read(parser);
+			value = std::move(parser.GetValue());
 		}
 	};
 
