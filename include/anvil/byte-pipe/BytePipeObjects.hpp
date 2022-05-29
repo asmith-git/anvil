@@ -22,6 +22,7 @@
 #include <list>
 #include <sstream>
 #include <deque>
+#include <memory>
 
 namespace anvil { namespace BytePipe {
 
@@ -48,6 +49,30 @@ namespace anvil { namespace BytePipe {
 	typedef uint16_t ComponentID;
 
 	enum half : uint16_t {};
+
+	static size_t GetSizeOfPrimativeType(const Type t) {
+		static const uint8_t g_sizes[TYPE_BOOL + 1] = {
+			0u,					//TYPE_NULL
+			sizeof(char),		//TYPE_C8
+			sizeof(uint8_t),	//TYPE_U8
+			sizeof(uint16_t),	//TYPE_U16
+			sizeof(uint32_t),	//TYPE_U32
+			sizeof(uint64_t),	//TYPE_U64
+			sizeof(int8_t),		//TYPE_S8
+			sizeof(int16_t),	//TYPE_S16
+			sizeof(int32_t),	//TYPE_S32
+			sizeof(int64_t),	//TYPE_S64
+			sizeof(half),		//TYPE_F16
+			sizeof(float),		//TYPE_F32
+			sizeof(double),		//TYPE_F64
+			0u,					//TYPE_STRING
+			0u,					//TYPE_ARRAY
+			0u,					//TYPE_OBJECT
+			sizeof(bool)	//TYPE_BOOL
+		};
+
+		return g_sizes[t];
+	}
 
 
 	template<class T>
@@ -135,8 +160,10 @@ namespace anvil { namespace BytePipe {
 	class Value {
 	private:
 		typedef std::vector<Value> Array;
+		typedef std::vector<uint8_t> PrimativeArray;
 		typedef std::map<ComponentID, Value> Object;
 		PrimativeValue _primative;
+		Type _primative_array_type;
 	public:
 		Value();
 		Value(Value&&);
@@ -259,6 +286,10 @@ namespace anvil { namespace BytePipe {
 			\details Previous value will be lost.
 		*/
 		void SetArray();
+		/*!
+			\brief Same as SetArray but the array can only contain one primative type
+		*/
+		void SetPrimativeArray(Type type);
 
 		/*!
 			\brief Append a value to the end of the array.
@@ -306,6 +337,12 @@ namespace anvil { namespace BytePipe {
 		Value& GetValue(const uint32_t index);
 
 		/*!
+			\brief Return the base address of an array of primative values
+			\details Returns null if the value isn't a promative array
+		*/
+		void* GetPrimativeArray();
+
+		/*!
 			\brief Get component ID at a specific index.
 			\details Throws an exception if the index is out of bounds.
 			\param index The index of the member (eg. 0 = First member, 1 = second member, ect).
@@ -331,6 +368,10 @@ namespace anvil { namespace BytePipe {
 		void Optimise();
 
 		// Helpers
+
+		inline bool IsPrimativeArray() const {
+			return _primative_array_type != TYPE_BOOL && GetType() == TYPE_ARRAY;
+		}
 
 		inline Value& operator[] (const size_t i) {
 			return GetValue(i);

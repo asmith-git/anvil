@@ -342,7 +342,9 @@ FLOATING_POINT:
 
 	// Value
 
-	Value::Value() {
+	Value::Value() :
+		_primative_array_type(TYPE_NULL)
+	{
 		_primative.u64 = 0u;
 		_primative.type = TYPE_NULL;
 	}
@@ -375,10 +377,15 @@ FLOATING_POINT:
 			SetString(static_cast<std::string*>(other._primative.ptr)->c_str());
 			break;
 		case TYPE_ARRAY:
-			{
+			if(_primative_array_type == TYPE_NULL) {
 				SetArray();
 				Array& myArray = *static_cast<Array*>(_primative.ptr);
 				const Array& otherArray = *static_cast<Array*>(other._primative.ptr);
+				myArray = otherArray;
+			} else {
+				SetPrimativeArray(other._primative_array_type);
+				PrimativeArray& myArray = *static_cast<PrimativeArray*>(_primative.ptr);
+				const PrimativeArray& otherArray = *static_cast<PrimativeArray*>(other._primative.ptr);
 				myArray = otherArray;
 			}
 			break;
@@ -401,6 +408,7 @@ FLOATING_POINT:
 
 	void Value::Swap(Value& other) {
 		std::swap(_primative, other._primative);
+		std::swap(_primative_array_type, other._primative_array_type);
 	}
 
 	Type Value::GetType() const {
@@ -413,7 +421,11 @@ FLOATING_POINT:
 			delete static_cast<std::string*>(_primative.ptr);
 			break;
 		case TYPE_ARRAY:
-			delete static_cast<Array*>(_primative.ptr);
+			if (_primative_array_type == TYPE_NULL) {
+				delete static_cast<Array*>(_primative.ptr);
+			} else {
+				delete static_cast<PrimativeArray*>(_primative.ptr);
+			}
 			break;
 		case TYPE_OBJECT:
 			delete static_cast<Object*>(_primative.ptr);
@@ -520,18 +532,144 @@ FLOATING_POINT:
 	}
 
 	void Value::SetArray() {
-		if (_primative.type == TYPE_ARRAY) {
+		if (_primative.type == TYPE_ARRAY && !_primative_array_type == TYPE_NULL) {
 			static_cast<Array*>(_primative.ptr)->clear();
 		} else {
 			SetNull();
 			_primative.ptr = new Array();
 			_primative.type = TYPE_ARRAY;
+			_primative_array_type = TYPE_NULL;
+		}
+	}
+
+	void Value::SetPrimativeArray(Type type) {
+		if (_primative.type == TYPE_ARRAY && !_primative_array_type != TYPE_NULL) {
+			static_cast<PrimativeArray*>(_primative.ptr)->clear();
+		} else {
+			SetNull();
+			_primative.ptr = new PrimativeArray();
+			_primative.type = TYPE_ARRAY;
+			_primative_array_type = type;
+		}
+	}
+
+	template<class T>
+	static void AddValueTemplate(std::vector<uint8_t>& dst, const T value) {
+		const uint8_t* bytes = reinterpret_cast<const uint8_t*>(&value);
+		for(size_t i = 0u; i < sizeof(T); ++i) dst.push_back(bytes[i]);
+	}
+
+	template<class T>
+	static void ConvertToValueVector(std::vector<Value>& dst, const std::vector<uint8_t>& src) {
+		size_t s = src.size() / sizeof(T);
+		const T* src_ptr = reinterpret_cast<const T*>(src.data());
+		for (size_t i = 0u; i < s; ++i) {
+			dst.push_back(src_ptr[i]);
 		}
 	}
 
 	void Value::AddValue(Value&& value) {
 		if (_primative.type != TYPE_ARRAY) throw std::runtime_error("Value::AddValue : Value is not an array");
-		static_cast<Array*>(_primative.ptr)->push_back(std::move(value));
+
+		if (_primative_array_type == TYPE_NULL) {
+			static_cast<Array*>(_primative.ptr)->push_back(std::move(value));
+
+		} else {
+			// If value is a primative
+			const Type t = value.GetType();
+			if (t >= TYPE_C8 && t <= TYPE_F64 || t == TYPE_BOOL) {
+				PrimativeValue v = value.GetPrimativeValue();
+
+				switch (_primative_array_type) {
+				case TYPE_C8:
+					AddValueTemplate<char>(*static_cast<PrimativeArray*>(_primative.ptr), v);
+					break;
+				case TYPE_U8:
+					AddValueTemplate<uint8_t>(*static_cast<PrimativeArray*>(_primative.ptr), v);
+					break;
+				case TYPE_U16:
+					AddValueTemplate<uint16_t>(*static_cast<PrimativeArray*>(_primative.ptr), v);
+					break;
+				case TYPE_U32:
+					AddValueTemplate<uint32_t>(*static_cast<PrimativeArray*>(_primative.ptr), v);
+					break;
+				case TYPE_U64:
+					AddValueTemplate<uint64_t>(*static_cast<PrimativeArray*>(_primative.ptr), v);
+					break;
+				case TYPE_S8:
+					AddValueTemplate<int8_t>(*static_cast<PrimativeArray*>(_primative.ptr), v);
+					break;
+				case TYPE_S16:
+					AddValueTemplate<int16_t>(*static_cast<PrimativeArray*>(_primative.ptr), v);
+					break;
+				case TYPE_S32:
+					AddValueTemplate<int32_t>(*static_cast<PrimativeArray*>(_primative.ptr), v);
+					break;
+				case TYPE_S64:
+					AddValueTemplate<int64_t>(*static_cast<PrimativeArray*>(_primative.ptr), v);
+					break;
+				case TYPE_F16:
+					AddValueTemplate<half>(*static_cast<PrimativeArray*>(_primative.ptr), v);
+					break;
+				case TYPE_F32:
+					AddValueTemplate<float>(*static_cast<PrimativeArray*>(_primative.ptr), v);
+					break;
+				case TYPE_F64:
+					AddValueTemplate<double>(*static_cast<PrimativeArray*>(_primative.ptr), v);
+					break;
+				case TYPE_BOOL:
+					AddValueTemplate<bool>(*static_cast<PrimativeArray*>(_primative.ptr), v);
+					break;
+				}
+
+			// Otherwise convert to a regular array
+			} else {
+				PrimativeArray tmp = std::move(*static_cast<PrimativeArray*>(_primative.ptr));
+				SetArray();
+
+				switch (_primative_array_type) {
+				case TYPE_C8:
+					ConvertToValueVector<char>(*static_cast<Array*>(_primative.ptr), tmp);
+					break;
+				case TYPE_U8:
+					ConvertToValueVector<uint8_t>(*static_cast<Array*>(_primative.ptr), tmp);
+					break;
+				case TYPE_U16:
+					ConvertToValueVector<uint16_t>(*static_cast<Array*>(_primative.ptr), tmp);
+					break;
+				case TYPE_U32:
+					ConvertToValueVector<uint32_t>(*static_cast<Array*>(_primative.ptr), tmp);
+					break;
+				case TYPE_U64:
+					ConvertToValueVector<uint64_t>(*static_cast<Array*>(_primative.ptr), tmp);
+					break;
+				case TYPE_S8:
+					ConvertToValueVector<int8_t>(*static_cast<Array*>(_primative.ptr), tmp);
+					break;
+				case TYPE_S16:
+					ConvertToValueVector<int16_t>(*static_cast<Array*>(_primative.ptr), tmp);
+					break;
+				case TYPE_S32:
+					ConvertToValueVector<int32_t>(*static_cast<Array*>(_primative.ptr), tmp);
+					break;
+				case TYPE_S64:
+					ConvertToValueVector<int64_t>(*static_cast<Array*>(_primative.ptr), tmp);
+					break;
+				case TYPE_F16:
+					ConvertToValueVector<half>(*static_cast<Array*>(_primative.ptr), tmp);
+					break;
+				case TYPE_F32:
+					ConvertToValueVector<float>(*static_cast<Array*>(_primative.ptr), tmp);
+					break;
+				case TYPE_F64:
+					ConvertToValueVector<double>(*static_cast<Array*>(_primative.ptr), tmp);
+					break;
+				case TYPE_BOOL:
+					ConvertToValueVector<bool>(*static_cast<Array*>(_primative.ptr), tmp);
+					break;
+				}
+			}
+		}
 	}
 
 	void Value::SetObject() {
@@ -633,9 +771,60 @@ FLOATING_POINT:
 		switch (_primative.type) {
 		case TYPE_ARRAY:
 			{
-				Array& myArray = *static_cast<Array*>(_primative.ptr);
-				if (index >= myArray.size()) throw std::runtime_error("Value::GetValue : Index out of bounds");
-				return myArray[index];
+				if (_primative_array_type == TYPE_NULL) {
+					Array& myArray = *static_cast<Array*>(_primative.ptr);
+					if (index >= myArray.size()) throw std::runtime_error("Value::GetValue : Index out of bounds");
+					return myArray[index];
+				} else {
+					PrimativeArray& myArray = *static_cast<PrimativeArray*>(_primative.ptr);
+					if (index >= GetSize()) throw std::runtime_error("Value::GetValue : Index out of bounds");
+
+					thread_local Value g_tmp_value;
+
+					switch (_primative_array_type) {
+					case TYPE_C8:
+						g_tmp_value.SetC8(reinterpret_cast<const char*>(myArray.data())[index]);
+						break;
+					case TYPE_U8:
+						g_tmp_value.SetU8(reinterpret_cast<const uint8_t*>(myArray.data())[index]);
+						break;
+					case TYPE_U16:
+						g_tmp_value.SetU16(reinterpret_cast<const uint16_t*>(myArray.data())[index]);
+						break;
+					case TYPE_U32:
+						g_tmp_value.SetU32(reinterpret_cast<const uint32_t*>(myArray.data())[index]);
+						break;
+					case TYPE_U64:
+						g_tmp_value.SetU64(reinterpret_cast<const uint64_t*>(myArray.data())[index]);
+						break;
+					case TYPE_S8:
+						g_tmp_value.SetS8(reinterpret_cast<const int8_t*>(myArray.data())[index]);
+						break;
+					case TYPE_S16:
+						g_tmp_value.SetS16(reinterpret_cast<const int16_t*>(myArray.data())[index]);
+						break;
+					case TYPE_S32:
+						g_tmp_value.SetS32(reinterpret_cast<const int32_t*>(myArray.data())[index]);
+						break;
+					case TYPE_S64:
+						g_tmp_value.SetS64(reinterpret_cast<const int64_t*>(myArray.data())[index]);
+						break;
+					case TYPE_F16:
+						g_tmp_value.SetF16(reinterpret_cast<const half*>(myArray.data())[index]);
+						break;
+					case TYPE_F32:
+						g_tmp_value.SetF32(reinterpret_cast<const float*>(myArray.data())[index]);
+						break;
+					case TYPE_F64:
+						g_tmp_value.SetF64(reinterpret_cast<const double*>(myArray.data())[index]);
+						break;
+					case TYPE_BOOL:
+						g_tmp_value.SetBool(reinterpret_cast<const bool*>(myArray.data())[index]);
+						break;
+					}
+
+					return g_tmp_value;
+				}
 			}
 		case TYPE_OBJECT:
 			{
@@ -648,6 +837,15 @@ FLOATING_POINT:
 		default:
 			throw std::runtime_error("Value::GetValue : Value is not an array or object");
 		}
+	}
+
+
+	void* Value::GetPrimativeArray() {
+		return _primative.type == TYPE_ARRAY ? (
+				_primative_array_type == TYPE_NULL ? 
+					static_cast<void*>(static_cast<Array*>(_primative.ptr)->data()) :
+					static_cast<void*>(static_cast<PrimativeArray*>(_primative.ptr)->data())
+			) : nullptr;
 	}
 
 	ComponentID Value::GetComponentID(const uint32_t index) const {
@@ -682,7 +880,11 @@ FLOATING_POINT:
 	}
 
 	size_t Value::GetSize() const {
-		return _primative.type == TYPE_ARRAY ? static_cast<Array*>(_primative.ptr)->size() :
+		return _primative.type == TYPE_ARRAY ? (
+			_primative_array_type == TYPE_NULL ? 
+				static_cast<Array*>(_primative.ptr)->size() : 
+				(static_cast<PrimativeArray*>(_primative.ptr)->size() / GetSizeOfPrimativeType(_primative_array_type))
+			) :
 			_primative.type == TYPE_OBJECT ? static_cast<Object*>(_primative.ptr)->size() :
 			0u;
 	}
@@ -707,8 +909,10 @@ FLOATING_POINT:
 		case TYPE_ARRAY:
 			{
 				// Optimise the child values
-				Array& myArray = *static_cast<Array*>(_primative.ptr);
-				for (Value& i : myArray) i.Optimise();
+				if (_primative_array_type == TYPE_NULL) {
+					Array& myArray = *static_cast<Array*>(_primative.ptr);
+					for (Value& i : myArray) i.Optimise();
+				}
 
 				//! \todo If all of the values are primatives try to make them the same type
 			}
