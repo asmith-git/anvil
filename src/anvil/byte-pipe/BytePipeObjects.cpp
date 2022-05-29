@@ -377,7 +377,7 @@ FLOATING_POINT:
 			SetString(static_cast<std::string*>(other._primative.ptr)->c_str());
 			break;
 		case TYPE_ARRAY:
-			if(_primative_array_type == TYPE_NULL) {
+			if(other._primative_array_type == TYPE_NULL) {
 				SetArray();
 				Array& myArray = *static_cast<Array*>(_primative.ptr);
 				const Array& otherArray = *static_cast<Array*>(other._primative.ptr);
@@ -564,7 +564,21 @@ FLOATING_POINT:
 		size_t s = src.size() / sizeof(T);
 		const T* src_ptr = reinterpret_cast<const T*>(src.data());
 		for (size_t i = 0u; i < s; ++i) {
-			dst.push_back(src_ptr[i]);
+			Value v;
+			if ANVIL_CONSTEXPR_FN(std::is_same<T, char>::value) v.SetC8(src_ptr[i]);
+			else if ANVIL_CONSTEXPR_FN (std::is_same<T, uint8_t>::value) v.SetU8(src_ptr[i]);
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, uint16_t>::value) v.SetU16(src_ptr[i]);
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, uint32_t>::value) v.SetU32(src_ptr[i]);
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, uint64_t>::value) v.SetU64(src_ptr[i]);
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, int8_t>::value) v.SetS8(src_ptr[i]);
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, int16_t>::value) v.SetS16(src_ptr[i]);
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, int32_t>::value) v.SetS32(src_ptr[i]);
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, int64_t>::value) v.SetS64(src_ptr[i]);
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, half>::value) v.SetF16(src_ptr[i]);
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, float>::value) v.SetS32(src_ptr[i]);
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, double>::value) v.SetS64(src_ptr[i]);
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, bool>::value) v.SetBool(src_ptr[i]);
+			dst.push_back(std::move(v));
 		}
 	}
 

@@ -1070,6 +1070,163 @@ READ_FROM_BUFFER:
 		NextValue().SetBool(value);
 	}
 
+	void ValueParser::OnPrimativeArrayC8(const char* src, const uint32_t size) {
+		Value& v = NextValue();
+		v.SetPrimativeArray(TYPE_C8);
+
+		//! \todo optimise
+		for (uint32_t i = 0u; i < size; ++i) {
+			Value tmp;
+			tmp.SetC8(src[i]);
+			v.AddValue(std::move(tmp));
+		}
+	}
+
+	void ValueParser::OnPrimativeArrayBool(const bool* src, const uint32_t size) {
+		Value& v = NextValue();
+		v.SetPrimativeArray(TYPE_BOOL);
+
+		//! \todo optimise
+		for (uint32_t i = 0u; i < size; ++i) {
+			Value tmp;
+			tmp.SetBool(src[i]);
+			v.AddValue(std::move(tmp));
+		}
+	}
+
+	void ValueParser::OnPrimativeArrayU8(const uint8_t* src, const uint32_t size) {
+		Value& v = NextValue();
+		v.SetPrimativeArray(TYPE_U8);
+
+		//! \todo optimise
+		for (uint32_t i = 0u; i < size; ++i) {
+			Value tmp;
+			tmp.SetU8(src[i]);
+			v.AddValue(std::move(tmp));
+		}
+	}
+
+	void ValueParser::OnPrimativeArrayU16(const uint16_t* src, const uint32_t size) {
+		Value& v = NextValue();
+		v.SetPrimativeArray(TYPE_U16);
+
+		//! \todo optimise
+		for (uint32_t i = 0u; i < size; ++i) {
+			Value tmp;
+			tmp.SetU16(src[i]);
+			v.AddValue(std::move(tmp));
+		}
+	}
+
+	void ValueParser::OnPrimativeArrayU32(const uint32_t* src, const uint32_t size) {
+		Value& v = NextValue();
+		v.SetPrimativeArray(TYPE_U32);
+
+		//! \todo optimise
+		for (uint32_t i = 0u; i < size; ++i) {
+			Value tmp;
+			tmp.SetU32(src[i]);
+			v.AddValue(std::move(tmp));
+		}
+	}
+
+	void ValueParser::OnPrimativeArrayU64(const uint64_t* src, const uint32_t size) {
+		Value& v = NextValue();
+		v.SetPrimativeArray(TYPE_U64);
+
+		//! \todo optimise
+		for (uint32_t i = 0u; i < size; ++i) {
+			Value tmp;
+			tmp.SetU64(src[i]);
+			v.AddValue(std::move(tmp));
+		}
+	}
+
+	void ValueParser::OnPrimativeArrayS8(const int8_t* src, const uint32_t size) {
+		Value& v = NextValue();
+		v.SetPrimativeArray(TYPE_S8);
+
+		//! \todo optimise
+		for (uint32_t i = 0u; i < size; ++i) {
+			Value tmp;
+			tmp.SetS8(src[i]);
+			v.AddValue(std::move(tmp));
+		}
+	}
+
+	void ValueParser::OnPrimativeArrayS16(const int16_t* src, const uint32_t size) {
+		Value& v = NextValue();
+		v.SetPrimativeArray(TYPE_S16);
+
+		//! \todo optimise
+		for (uint32_t i = 0u; i < size; ++i) {
+			Value tmp;
+			tmp.SetS16(src[i]);
+			v.AddValue(std::move(tmp));
+		}
+	}
+
+	void ValueParser::OnPrimativeArrayS32(const int32_t* src, const uint32_t size) {
+		Value& v = NextValue();
+		v.SetPrimativeArray(TYPE_S32);
+
+		//! \todo optimise
+		for (uint32_t i = 0u; i < size; ++i) {
+			Value tmp;
+			tmp.SetS32(src[i]);
+			v.AddValue(std::move(tmp));
+		}
+	}
+
+	void ValueParser::OnPrimativeArrayS64(const int64_t* src, const uint32_t size) {
+		Value& v = NextValue();
+		v.SetPrimativeArray(TYPE_S64);
+
+		//! \todo optimise
+		for (uint32_t i = 0u; i < size; ++i) {
+			Value tmp;
+			tmp.SetS64(src[i]);
+			v.AddValue(std::move(tmp));
+		}
+	}
+
+	void ValueParser::OnPrimativeArrayF16(const half* src, const uint32_t size) {
+		Value& v = NextValue();
+		v.SetPrimativeArray(TYPE_F16);
+
+		//! \todo optimise
+		for (uint32_t i = 0u; i < size; ++i) {
+			Value tmp;
+			tmp.SetF16(src[i]);
+			v.AddValue(std::move(tmp));
+		}
+	}
+
+	void ValueParser::OnPrimativeArrayF32(const float* src, const uint32_t size) {
+		Value& v = NextValue();
+		v.SetPrimativeArray(TYPE_F32);
+
+		//! \todo optimise
+		for (uint32_t i = 0u; i < size; ++i) {
+			Value tmp;
+			tmp.SetF32(src[i]);
+			v.AddValue(std::move(tmp));
+		}
+	}
+
+	void ValueParser::OnPrimativeArrayF64(const double* src, const uint32_t size) {
+		Value& v = NextValue();
+		v.SetPrimativeArray(TYPE_F64);
+
+		//! \todo optimise
+		for (uint32_t i = 0u; i < size; ++i) {
+			Value tmp;
+			tmp.SetF64(src[i]);
+			v.AddValue(std::move(tmp));
+		}
+	}
+
+
 	Value& ValueParser::CurrentValue() {
 		return _value_stack.empty() ? _root : *_value_stack.back();
 	}
@@ -1109,11 +1266,55 @@ READ_FROM_BUFFER:
 		case TYPE_ARRAY:
 			{
 				const size_t size = value.GetSize();
-				OnArrayBegin(size);
-				for (size_t i = 0u; i < size; ++i) {
-					OnValue(const_cast<Value&>(value).GetValue(i));
+				if (value.IsPrimativeArray()) {
+					switch (value.GetPrimativeArrayType()) {
+					case TYPE_C8:
+						OnPrimativeArrayC8(static_cast<const char*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						break;
+					case TYPE_U8:
+						OnPrimativeArrayU8(static_cast<const uint8_t*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						break;
+					case TYPE_U16:
+						OnPrimativeArrayU16(static_cast<const uint16_t*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						break;
+					case TYPE_U32:
+						OnPrimativeArrayU32(static_cast<const uint32_t*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						break;
+					case TYPE_U64:
+						OnPrimativeArrayU64(static_cast<const uint64_t*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						break;
+					case TYPE_S8:
+						OnPrimativeArrayS8(static_cast<const int8_t*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						break;
+					case TYPE_S16:
+						OnPrimativeArrayS16(static_cast<const int16_t*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						break;
+					case TYPE_S32:
+						OnPrimativeArrayS32(static_cast<const int32_t*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						break;
+					case TYPE_S64:
+						OnPrimativeArrayS64(static_cast<const int64_t*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						break;
+					case TYPE_F16:
+						OnPrimativeArrayF16(static_cast<const half*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						break;
+					case TYPE_F32:
+						OnPrimativeArrayF32(static_cast<const float*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						break;
+					case TYPE_F64:
+						OnPrimativeArrayF64(static_cast<const double*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						break;
+					case TYPE_BOOL:
+						OnPrimativeArrayBool(static_cast<const bool*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						break;
+					}
+				} else {
+					OnArrayBegin(size);
+					for (size_t i = 0u; i < size; ++i) {
+						OnValue(const_cast<Value&>(value).GetValue(i));
+					}
+					OnArrayEnd();
 				}
-				OnArrayEnd();
 			}
 			break;
 		case TYPE_OBJECT:

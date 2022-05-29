@@ -373,6 +373,10 @@ namespace anvil { namespace BytePipe {
 			return _primative_array_type != TYPE_BOOL && GetType() == TYPE_ARRAY;
 		}
 
+		inline Type GetPrimativeArrayType() const {
+			return _primative_array_type;
+		}
+
 		inline Value& operator[] (const size_t i) {
 			return GetValue(i);
 		}
