@@ -31,6 +31,8 @@ namespace anvil { namespace BytePipe {
 		virtual ~OutputPipe() {}
 		virtual uint32_t WriteBytes(const void* src, const uint32_t bytes) = 0;
 		virtual void Flush() = 0;
+
+		virtual void WriteBytesFast(const void* src, const uint32_t bytes) { WriteBytes(src, bytes); }
 	};
 
 	/*!

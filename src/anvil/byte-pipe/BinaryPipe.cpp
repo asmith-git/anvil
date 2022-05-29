@@ -349,8 +349,14 @@ namespace anvil { namespace BytePipe {
 
 	void Writer::Write(const void* src, const uint32_t bytes) {
 		const auto WriteToPipe = [this](const void* src, const uint32_t bytes) {
+#if ANVIL_CONTRACT_MODE == ANVIL_CONTRACT_IGNORE || ANVIL_CONTRACT_MODE == ANVIL_CONTRACT_ASSUME
+			// Benchmarks showed it's about twice as fast to write to a std::ofstream without checking the number of bytes written
+			// So if contracts are disabled then we wont check because the value isn't used
+			_pipe.WriteBytesFast(src, bytes);
+#else
 			const uint32_t bytesWritten = _pipe.WriteBytes(src, bytes);
 			ANVIL_CONTRACT(bytesWritten == bytes, "Failed to write to pipe");
+#endif
 		};
 
 		const auto FlushBuffer = [this, &WriteToPipe]() {

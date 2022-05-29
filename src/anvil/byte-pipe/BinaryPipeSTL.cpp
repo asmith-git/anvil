@@ -47,6 +47,10 @@ namespace anvil { namespace BytePipe {
 		return static_cast<uint32_t>(_stream.tellp() - pos);
 	}
 
+	void OStreamPipe::WriteBytesFast(const void* src, const uint32_t bytes) {
+		_stream.write(static_cast<const char*>(src), bytes);
+	}
+
 	void OStreamPipe::Flush() {
 		_stream.flush();
 	}
