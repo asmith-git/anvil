@@ -36,6 +36,7 @@ namespace anvil { namespace BytePipe {
 	public:
 		virtual ~InputPipe() {}
 		virtual uint32_t ReadBytes(void* dst, const uint32_t bytes) = 0;
+		virtual void ReadBytesFast(void* dst, const uint32_t bytes) { ReadBytes(dst, bytes); }
 	};
 
 

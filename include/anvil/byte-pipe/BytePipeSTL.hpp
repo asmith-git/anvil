@@ -28,6 +28,7 @@ namespace anvil { namespace BytePipe {
 		IStreamPipe(std::istream& stream);
 		virtual ~IStreamPipe();
 		uint32_t ReadBytes(void* dst, const uint32_t bytes) final;
+		void ReadBytesFast(void* dst, const uint32_t bytes) final;
 	};
 
 	class OStreamPipe final : public OutputPipe {

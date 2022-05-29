@@ -693,18 +693,57 @@ namespace anvil { namespace BytePipe {
 
 	// Reader
 
-	static inline void ReadFromPipe(InputPipe& pipe, void* dst, const uint32_t bytes) {
-		const uint32_t bytesRead = pipe.ReadBytes(dst, bytes);
-		ANVIL_CONTRACT(bytesRead == bytes, "Failed to read from pipe");
-	}
-
 	class ReadHelper {
 	private:
+		enum { BUFFER_SIZE = 1024 * 8 };
+		uint8_t _buffer[BUFFER_SIZE];
+		uint8_t* _buffer_head;
 		InputPipe& _pipe;
 		Parser& _parser;
 		void* _mem;
 		uint32_t _mem_bytes;
+		uint32_t _buffer_size;
 		bool _swap_byte_order;
+
+		inline void ReadFromPipeRaw(void* dst, const uint32_t bytes) {
+#if ANVIL_CONTRACT_MODE == ANVIL_CONTRACT_IGNORE || ANVIL_CONTRACT_MODE == ANVIL_CONTRACT_ASSUME
+			_pipe.ReadBytesFast(dst, bytes);
+#else
+			const uint32_t bytesRead = _pipe.ReadBytes(dst, bytes);
+			ANVIL_CONTRACT(bytesRead == bytes, "Failed to read from pipe");
+#endif
+		}
+
+		inline void ReadFromPipeBuffered(void* dst, uint32_t bytes) {
+			// If there is no data in the buffer
+			if (_buffer_size == 0u) {
+READ_FROM_PIPE:
+
+				if(bytes >= BUFFER_SIZE) {
+					// Read directly into the output
+					ReadFromPipeRaw(dst, bytes);
+				} else {
+					// Read from the pipe into the buffer
+					_buffer_size = _pipe.ReadBytes(_buffer, BUFFER_SIZE);
+					_buffer_head = _buffer;
+					goto READ_FROM_BUFFER;
+				}
+			} else {
+READ_FROM_BUFFER:
+				// Read any bytes that are in the buffer
+				uint32_t bytes_to_read = bytes;
+				if (bytes > _buffer_size) bytes_to_read = _buffer_size;
+
+				memcpy(dst, _buffer_head, bytes_to_read);
+
+				bytes -= bytes_to_read;
+				_buffer_head += bytes_to_read;
+				_buffer_size -= bytes_to_read;
+
+				dst = static_cast<uint8_t*>(dst) + bytes_to_read;
+				if (bytes > 0u) goto READ_FROM_PIPE;
+			}
+		}
 
 		void* AllocateMemory(const uint32_t bytes) {
 			if (_mem_bytes < bytes) {
@@ -720,9 +759,9 @@ namespace anvil { namespace BytePipe {
 			_parser.OnObjectBegin(size);
 			uint16_t component_id;
 			for (uint32_t i = 0u; i < size; ++i) {
-				ReadFromPipe(_pipe, &component_id, sizeof(component_id));
+				ReadFromPipeBuffered(&component_id, sizeof(component_id));
 				_parser.OnComponentID(component_id);
-				ReadFromPipe(_pipe, &header, 1u);
+				ReadFromPipeBuffered(&header, 1u);
 				ReadGeneric();
 			}
 			_parser.OnObjectEnd();
@@ -733,7 +772,7 @@ namespace anvil { namespace BytePipe {
 
 			// Read primative value
 			const uint32_t bytes = g_secondary_type_sizes[id];
-			if(bytes > 0u) ReadFromPipe(_pipe, &header.primative_v1, g_secondary_type_sizes[id]);
+			if(bytes > 0u) ReadFromPipeBuffered(&header.primative_v1, g_secondary_type_sizes[id]);
 
 			if (_swap_byte_order && bytes > 1u) {
 				if (bytes == 2u) {
@@ -759,21 +798,21 @@ namespace anvil { namespace BytePipe {
 				break;
 			case PID_STRING:
 				ANVIL_CONTRACT(header.secondary_id == SID_C8, "String subtype was not char");
-				ReadFromPipe(_pipe, &header.string_v1, sizeof(header.string_v1));
+				ReadFromPipeBuffered(&header.string_v1, sizeof(header.string_v1));
 				{
 					const uint32_t len = header.string_v1.length;
 					char* const buffer = static_cast<char*>(AllocateMemory(len + 1u));
-					ReadFromPipe(_pipe, buffer, len);
+					ReadFromPipeBuffered(buffer, len);
 					buffer[len] = '\0';
 					_parser.OnPrimativeString(buffer, len);
 				}
 				break;
 			case PID_ARRAY:
-				ReadFromPipe(_pipe, &header.array_v1, sizeof(header.array_v1));
+				ReadFromPipeBuffered(&header.array_v1, sizeof(header.array_v1));
 				ReadArray();
 				break;
 			case PID_OBJECT:
-				ReadFromPipe(_pipe, &header.object_v1, sizeof(header.object_v1));
+				ReadFromPipeBuffered(&header.object_v1, sizeof(header.object_v1));
 				ReadObject();
 				break;
 			case PID_USER_POD:
@@ -785,7 +824,7 @@ namespace anvil { namespace BytePipe {
 
 					// Read the POD from the input pipe
 					void* mem = AllocateMemory(header.user_pod.bytes);
-					ReadFromPipe(_pipe, mem, header.user_pod.bytes);
+					ReadFromPipeBuffered(mem, header.user_pod.bytes);
 					//! \bug Doesn't know how to swap the byte order of a POD
 
 					// Output the POD
@@ -805,7 +844,7 @@ namespace anvil { namespace BytePipe {
 				const uint32_t size = header.array_v1.size;
 				_parser.OnArrayBegin(size);
 				for (uint32_t i = 0u; i < size; ++i) {
-					ReadFromPipe(_pipe, &header, 1u);
+					ReadFromPipeBuffered(&header, 1u);
 					ReadGeneric();
 				}
 				_parser.OnArrayEnd();
@@ -818,7 +857,7 @@ namespace anvil { namespace BytePipe {
 				const uint32_t element_bytes = g_secondary_type_sizes[id];
 				const uint32_t bytes = element_bytes * size;
 				void* buffer = buffer = AllocateMemory(bytes);
-				ReadFromPipe(_pipe, buffer, bytes);
+				ReadFromPipeBuffered(buffer, bytes);
 				if (_swap_byte_order && element_bytes > 1u) {
 					if (bytes == 2u) {
 						typedef uint16_t T;
@@ -847,7 +886,8 @@ namespace anvil { namespace BytePipe {
 			_parser(parser),
 			_mem(nullptr),
 			_mem_bytes(0u),
-			_swap_byte_order(swap_byte_order)
+			_swap_byte_order(swap_byte_order),
+			_buffer_size(0u)
 		{}
 
 		~ReadHelper() {
@@ -856,10 +896,10 @@ namespace anvil { namespace BytePipe {
 
 		void Read() {
 			// Continue with read
-			ReadFromPipe(_pipe, &header.id_union, 1u);
+			ReadFromPipeBuffered(&header.id_union, 1u);
 			while (header.id_union != PID_NULL) {
 				ReadGeneric();
-				ReadFromPipe(_pipe, &header.id_union, 1u);
+				ReadFromPipeBuffered(&header.id_union, 1u);
 			}
 		}
 	};
@@ -878,7 +918,7 @@ namespace anvil { namespace BytePipe {
 			PipeHeaderV1 header_v1;
 			PipeHeaderV2 header_v2;
 		};
-		ReadFromPipe(_pipe, &header_v1, sizeof(PipeHeaderV1));
+		_pipe.ReadBytesFast(&header_v1, sizeof(PipeHeaderV1));
 
 		// Check for unsupported version
 		if (header_v1.version > VERSION_2) throw std::runtime_error("Reader::Read : BytePipe version not supported");
@@ -891,7 +931,7 @@ namespace anvil { namespace BytePipe {
 			swap_byte_order = e != ENDIAN_LITTLE;
 		} else {
 			// Read the version 2 header info
-			ReadFromPipe(_pipe, reinterpret_cast<uint8_t*>(&header_v2) + sizeof(PipeHeaderV1), sizeof(PipeHeaderV2) - sizeof(PipeHeaderV1));
+			_pipe.ReadBytesFast(reinterpret_cast<uint8_t*>(&header_v2) + sizeof(PipeHeaderV1), sizeof(PipeHeaderV2) - sizeof(PipeHeaderV1));
 			swap_byte_order = e != (header_v2.little_endian ? ENDIAN_LITTLE : ENDIAN_BIG);
 
 			// These header options are not defined yet
