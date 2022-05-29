@@ -19,6 +19,7 @@
 #include <vector>
 #include <array>
 #include <map>
+#include <list>
 #include <sstream>
 #include <deque>
 
@@ -400,6 +401,14 @@ namespace anvil { namespace BytePipe {
 			const size_t s = GetSize();
 			std::vector<T> tmp(s);
 			for (size_t i = 0u; i < s; ++i) tmp[i] = static_cast<T>(operator[](i));
+			return tmp;
+		}
+
+		template<class T>
+		explicit inline operator std::list<T>() {
+			const size_t s = GetSize();
+			std::list<T> tmp;
+			for (size_t i = 0u; i < s; ++i) tmp.push_back(static_cast<T>(operator[](i)));
 			return tmp;
 		}
 

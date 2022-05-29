@@ -634,7 +634,7 @@ namespace anvil { namespace BytePipe {
 
 		template<class T>
 		inline void operator()(const std::vector<T>& value) {
-			OnArrayBegin();
+			OnArrayBegin(value.size());
 			for(const T& val : value) operator()(val);
 			OnArrayEnd();
 		}
@@ -653,7 +653,7 @@ namespace anvil { namespace BytePipe {
 
 		template<class T, uint32_t S>
 		inline void operator()(const std::array<T, S>& value) {
-			OnArrayBegin();
+			OnArrayBegin(S);
 			for (const T& val : value) operator()(val);
 			OnArrayEnd();
 		}
@@ -672,14 +672,14 @@ namespace anvil { namespace BytePipe {
 
 		template<class T>
 		inline void operator()(const std::list<T>& value) {
-			OnArrayBegin();
+			OnArrayBegin(value.size());
 			for (const T& val : value) operator()(val);
 			OnArrayEnd();
 		}
 
 		template<class T>
 		inline void operator()(const std::deque<T>& value) {
-			OnArrayBegin();
+			OnArrayBegin(value.size());
 			for (const T& val : value) operator()(val);
 			OnArrayEnd();
 		}
