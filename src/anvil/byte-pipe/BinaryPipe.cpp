@@ -85,7 +85,7 @@ namespace anvil { namespace BytePipe {
 				uint32_t length;
 			} string_v1;
 
-			union ValueHeaderPrimative {
+			union ValueHeaderPrimitive {
 				bool b;
 				uint8_t u8;
 				uint16_t u16;
@@ -99,7 +99,7 @@ namespace anvil { namespace BytePipe {
 				double f64;
 				char c8;
 				half f16;
-			} primative_v1;
+			} primitive_v1;
 
 			struct {
 				uint16_t extended_secondary_id;
@@ -115,65 +115,65 @@ namespace anvil { namespace BytePipe {
 	static_assert(sizeof(PipeHeaderV2) == 2u, "PipeHeaderV2 was not packed correctly by compiler");
 	static_assert(sizeof(ValueHeader) == 9u, "ValueHeader was not packed correctly by compiler");
 	static_assert(sizeof(ValueHeader::user_pod) == 6u, "ValueHeader was not packed correctly by compiler");
-	static_assert(offsetof(ValueHeader, primative_v1.u8) == 1u, "ValueHeader was not packed correctly by compiler");
+	static_assert(offsetof(ValueHeader, primitive_v1.u8) == 1u, "ValueHeader was not packed correctly by compiler");
 
 	// Helper functions
 
 	namespace detail {
-		static void CallOnPrimativeU8(Parser& parser, const PrimativeValue& header) {
-			parser.OnPrimativeU8(header.u8);
+		static void CallOnPrimitiveU8(Parser& parser, const PrimitiveValue& header) {
+			parser.OnPrimitiveU8(header.u8);
 		}
 
-		static void CallOnPrimativeU16(Parser& parser, const PrimativeValue& header) {
-			parser.OnPrimativeU16(header.u16);
+		static void CallOnPrimitiveU16(Parser& parser, const PrimitiveValue& header) {
+			parser.OnPrimitiveU16(header.u16);
 		}
 
-		static void CallOnPrimativeU32(Parser& parser, const PrimativeValue& header) {
-			parser.OnPrimativeU32(header.u32);
+		static void CallOnPrimitiveU32(Parser& parser, const PrimitiveValue& header) {
+			parser.OnPrimitiveU32(header.u32);
 		}
 
-		static void CallOnPrimativeU64(Parser& parser, const PrimativeValue& header) {
-			parser.OnPrimativeU64(header.u64);
+		static void CallOnPrimitiveU64(Parser& parser, const PrimitiveValue& header) {
+			parser.OnPrimitiveU64(header.u64);
 		}
 
-		static void CallOnPrimativeS8(Parser& parser, const PrimativeValue& header) {
-			parser.OnPrimativeS8(header.s8);
+		static void CallOnPrimitiveS8(Parser& parser, const PrimitiveValue& header) {
+			parser.OnPrimitiveS8(header.s8);
 		}
 
-		static void CallOnPrimativeS16(Parser& parser, const PrimativeValue& header) {
-			parser.OnPrimativeS16(header.s16);
+		static void CallOnPrimitiveS16(Parser& parser, const PrimitiveValue& header) {
+			parser.OnPrimitiveS16(header.s16);
 		}
 
-		static void CallOnPrimativeS32(Parser& parser, const PrimativeValue& header) {
-			parser.OnPrimativeS32(header.s32);
+		static void CallOnPrimitiveS32(Parser& parser, const PrimitiveValue& header) {
+			parser.OnPrimitiveS32(header.s32);
 		}
 
-		static void CallOnPrimativeS64(Parser& parser, const PrimativeValue& header) {
-			parser.OnPrimativeS64(header.s64);
+		static void CallOnPrimitiveS64(Parser& parser, const PrimitiveValue& header) {
+			parser.OnPrimitiveS64(header.s64);
 		}
 
-		static void CallOnPrimativeF16(Parser& parser, const PrimativeValue& header) {
-			parser.OnPrimativeF16(header.f16);
+		static void CallOnPrimitiveF16(Parser& parser, const PrimitiveValue& header) {
+			parser.OnPrimitiveF16(header.f16);
 		}
 
-		static void CallOnPrimativeF32(Parser& parser, const PrimativeValue& header) {
-			parser.OnPrimativeF32(header.f32);
+		static void CallOnPrimitiveF32(Parser& parser, const PrimitiveValue& header) {
+			parser.OnPrimitiveF32(header.f32);
 		}
 
-		static void CallOnPrimativeF64(Parser& parser, const PrimativeValue& header) {
-			parser.OnPrimativeF64(header.f64);
+		static void CallOnPrimitiveF64(Parser& parser, const PrimitiveValue& header) {
+			parser.OnPrimitiveF64(header.f64);
 		}
 
-		static void CallOnPrimativeC8(Parser& parser, const PrimativeValue& header) {
-			parser.OnPrimativeC8(header.c8);
+		static void CallOnPrimitiveC8(Parser& parser, const PrimitiveValue& header) {
+			parser.OnPrimitiveC8(header.c8);
 		}
 
-		static void CallOnNull(Parser& parser, const PrimativeValue& header) {
+		static void CallOnNull(Parser& parser, const PrimitiveValue& header) {
 			parser.OnNull();
 		}
 
-		static void CallOnPrimativeB(Parser& parser, const PrimativeValue& header) {
-			parser.OnPrimativeBool(header.b);
+		static void CallOnPrimitiveB(Parser& parser, const PrimitiveValue& header) {
+			parser.OnPrimitiveBool(header.b);
 		}
 	}
 
@@ -217,7 +217,7 @@ namespace anvil { namespace BytePipe {
 		1u // SID_B
 	};
 
-	// Convert binary primative type ID to value type
+	// Convert binary primitive type ID to value type
 	static ANVIL_CONSTEXPR_VAR const Type g_sid_2_object_type[] = {
 		TYPE_NULL, // SID_NULL
 		TYPE_U8, // SID_U8
@@ -235,7 +235,7 @@ namespace anvil { namespace BytePipe {
 		TYPE_BOOL // SID_B
 	};
 
-	// Convert Value type to binary primative type ID
+	// Convert Value type to binary primitive type ID
 	static ANVIL_CONSTEXPR_VAR const SecondaryID g_object_type_2_sid[] = {
 		SID_NULL, // TYPE_NULL
 		SID_C8, // TYPE_C8
@@ -256,41 +256,41 @@ namespace anvil { namespace BytePipe {
 		SID_B, // TYPE_BOOL
 	};
 
-	typedef void(Parser::*PrimativeArrayCallback)(const void* ptr, const uint32_t size);
-	static ANVIL_CONSTEXPR_VAR const PrimativeArrayCallback g_primative_array_callbacks[] = {
+	typedef void(Parser::*PrimitiveArrayCallback)(const void* ptr, const uint32_t size);
+	static ANVIL_CONSTEXPR_VAR const PrimitiveArrayCallback g_primitive_array_callbacks[] = {
 		nullptr,														// SID_NULL
-		reinterpret_cast<PrimativeArrayCallback>(&Parser::OnPrimativeArrayU8),	// SID_U8
-		reinterpret_cast<PrimativeArrayCallback>(&Parser::OnPrimativeArrayU16),	// SID_U16
-		reinterpret_cast<PrimativeArrayCallback>(&Parser::OnPrimativeArrayU32),	// SID_U32
-		reinterpret_cast<PrimativeArrayCallback>(&Parser::OnPrimativeArrayU64),	// SID_U64
-		reinterpret_cast<PrimativeArrayCallback>(&Parser::OnPrimativeArrayS8),	// SID_S8
-		reinterpret_cast<PrimativeArrayCallback>(&Parser::OnPrimativeArrayS16),	// SID_S16
-		reinterpret_cast<PrimativeArrayCallback>(&Parser::OnPrimativeArrayS32),	// SID_S32
-		reinterpret_cast<PrimativeArrayCallback>(&Parser::OnPrimativeArrayS64),	// SID_S64
-		reinterpret_cast<PrimativeArrayCallback>(&Parser::OnPrimativeArrayF32),	// SID_F32
-		reinterpret_cast<PrimativeArrayCallback>(&Parser::OnPrimativeArrayF64),	// SID_F64
-		reinterpret_cast<PrimativeArrayCallback>(&Parser::OnPrimativeArrayC8),	// SID_C8
-		reinterpret_cast<PrimativeArrayCallback>(&Parser::OnPrimativeArrayF16),	// SID_F16
-		reinterpret_cast<PrimativeArrayCallback>(&Parser::OnPrimativeArrayBool)	// SID_B
+		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU8),	// SID_U8
+		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU16),	// SID_U16
+		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU32),	// SID_U32
+		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU64),	// SID_U64
+		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS8),	// SID_S8
+		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS16),	// SID_S16
+		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS32),	// SID_S32
+		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS64),	// SID_S64
+		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayF32),	// SID_F32
+		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayF64),	// SID_F64
+		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayC8),	// SID_C8
+		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayF16),	// SID_F16
+		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayBool)	// SID_B
 	};
 
 
-	typedef void(*PrimativeCallback)(Parser& parser, const PrimativeValue& header);
-	static ANVIL_CONSTEXPR_VAR const PrimativeCallback g_primative_callbacks[] = {
+	typedef void(*PrimitiveCallback)(Parser& parser, const PrimitiveValue& header);
+	static ANVIL_CONSTEXPR_VAR const PrimitiveCallback g_primitive_callbacks[] = {
 		detail::CallOnNull,			// SID_NULL
-		detail::CallOnPrimativeU8,	// SID_U8
-		detail::CallOnPrimativeU16,	// SID_U16
-		detail::CallOnPrimativeU32,	// SID_U32
-		detail::CallOnPrimativeU64,	// SID_U64
-		detail::CallOnPrimativeS8,	// SID_S8
-		detail::CallOnPrimativeS16,	// SID_S16
-		detail::CallOnPrimativeS32,	// SID_S32
-		detail::CallOnPrimativeS64,	// SID_S64
-		detail::CallOnPrimativeF32,	// SID_F32
-		detail::CallOnPrimativeF64,	// SID_F64
-		detail::CallOnPrimativeC8,	// SID_C8
-		detail::CallOnPrimativeF16,	// SID_F16
-		detail::CallOnPrimativeB	// SID_B
+		detail::CallOnPrimitiveU8,	// SID_U8
+		detail::CallOnPrimitiveU16,	// SID_U16
+		detail::CallOnPrimitiveU32,	// SID_U32
+		detail::CallOnPrimitiveU64,	// SID_U64
+		detail::CallOnPrimitiveS8,	// SID_S8
+		detail::CallOnPrimitiveS16,	// SID_S16
+		detail::CallOnPrimitiveS32,	// SID_S32
+		detail::CallOnPrimitiveS64,	// SID_S64
+		detail::CallOnPrimitiveF32,	// SID_F32
+		detail::CallOnPrimitiveF64,	// SID_F64
+		detail::CallOnPrimitiveC8,	// SID_C8
+		detail::CallOnPrimitiveF16,	// SID_F16
+		detail::CallOnPrimitiveB	// SID_B
 	};
 
 	template<class T>
@@ -463,114 +463,114 @@ namespace anvil { namespace BytePipe {
 		Write(&header, 1u);
 	}
 
-	void Writer::_OnPrimative32(uint32_t value, const uint8_t id) {
+	void Writer::_OnPrimitive32(uint32_t value, const uint8_t id) {
 		const uint32_t bytes = g_secondary_type_sizes[id];
 		ANVIL_ASSUME(bytes <= 4u);
 
 		ValueHeader header;
 		header.primary_id = PID_PRIMATIVE;
 		header.secondary_id = id;
-		header.primative_v1.u32 = value;
+		header.primitive_v1.u32 = value;
 		if (_swap_byte_order && bytes > 1u) {
 			if (bytes == 2u) {
-				header.primative_v1.u16 = SwapByteOrder(header.primative_v1.u16);
+				header.primitive_v1.u16 = SwapByteOrder(header.primitive_v1.u16);
 			} else if (bytes == 4u) {
-				header.primative_v1.u32 = SwapByteOrder(header.primative_v1.u32);
+				header.primitive_v1.u32 = SwapByteOrder(header.primitive_v1.u32);
 			} else {
-				throw std::runtime_error("Writer::_OnPrimative32 : Cannot swap byte order");
+				throw std::runtime_error("Writer::_OnPrimitive32 : Cannot swap byte order");
 			}
 		}
 		Write(&header, bytes + 1u);
 	}
 
-	void Writer::_OnPrimative64(uint64_t value, const uint8_t id) {
+	void Writer::_OnPrimitive64(uint64_t value, const uint8_t id) {
 		const uint32_t bytes = g_secondary_type_sizes[id];
 		ANVIL_ASSUME(bytes <= 8u);
 
 		ValueHeader header;
 		header.primary_id = PID_PRIMATIVE;
 		header.secondary_id = id;
-		header.primative_v1.u64 = value;
+		header.primitive_v1.u64 = value;
 		if (_swap_byte_order && bytes > 1u) {
 			if (bytes == 2u) {
-				header.primative_v1.u16 = SwapByteOrder(header.primative_v1.u16);
+				header.primitive_v1.u16 = SwapByteOrder(header.primitive_v1.u16);
 			} else if (bytes == 4u) {
-				header.primative_v1.u32 = SwapByteOrder(header.primative_v1.u32);
+				header.primitive_v1.u32 = SwapByteOrder(header.primitive_v1.u32);
 			} else if (bytes == 8u) {
-				header.primative_v1.u64 = SwapByteOrder(header.primative_v1.u64);
+				header.primitive_v1.u64 = SwapByteOrder(header.primitive_v1.u64);
 			} else {
-				throw std::runtime_error("Writer::_OnPrimative64 : Cannot swap byte order");
+				throw std::runtime_error("Writer::_OnPrimitive64 : Cannot swap byte order");
 			}
 		}
 		Write(&header, bytes + 1u);
 	}
 
-	void Writer::OnPrimativeBool(const bool value) {
+	void Writer::OnPrimitiveBool(const bool value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimative32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeU8(const uint8_t value) {
+	void Writer::OnPrimitiveU8(const uint8_t value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimative32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeU16(const uint16_t value) {
+	void Writer::OnPrimitiveU16(const uint16_t value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimative32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeU32(const uint32_t value) {
+	void Writer::OnPrimitiveU32(const uint32_t value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimative32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeU64(const uint64_t value) {
+	void Writer::OnPrimitiveU64(const uint64_t value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimative64(GetRaw<T, uint64_t>(value), GetSecondaryID<T>());
+		_OnPrimitive64(GetRaw<T, uint64_t>(value), GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeS8(const int8_t value) {
+	void Writer::OnPrimitiveS8(const int8_t value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimative32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeS16(const int16_t value) {
+	void Writer::OnPrimitiveS16(const int16_t value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimative32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeS32(const int32_t value) {
+	void Writer::OnPrimitiveS32(const int32_t value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimative32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeS64(const int64_t value) {
+	void Writer::OnPrimitiveS64(const int64_t value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimative64(GetRaw<T, uint64_t>(value), GetSecondaryID<T>());
+		_OnPrimitive64(GetRaw<T, uint64_t>(value), GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeF32(const float value) {
+	void Writer::OnPrimitiveF32(const float value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimative32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeF64(const double value) {
+	void Writer::OnPrimitiveF64(const double value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimative64(GetRaw<T, uint64_t>(value), GetSecondaryID<T>());
+		_OnPrimitive64(GetRaw<T, uint64_t>(value), GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeC8(const char value) {
+	void Writer::OnPrimitiveC8(const char value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimative32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeF16(const half value) {
+	void Writer::OnPrimitiveF16(const half value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimative32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeString(const char* value, const uint32_t length) {
+	void Writer::OnPrimitiveString(const char* value, const uint32_t length) {
 		ValueHeader header;
 		header.primary_id = PID_STRING;
 		header.secondary_id = SID_C8;
@@ -579,7 +579,7 @@ namespace anvil { namespace BytePipe {
 		Write(value, length);
 	}
 
-	void Writer::_OnPrimativeArray(const void* ptr, const uint32_t size, const uint8_t id) {
+	void Writer::_OnPrimitiveArray(const void* ptr, const uint32_t size, const uint8_t id) {
 		ValueHeader header;
 		header.primary_id = PID_ARRAY;
 		header.secondary_id = id;
@@ -605,7 +605,7 @@ namespace anvil { namespace BytePipe {
 				T* buffer2 = static_cast<T*>(buffer);
 				for (uint32_t i = 0u; i < size; ++i) buffer2[i] = SwapByteOrder(static_cast<const T*>(ptr)[i]);
 			} else {
-				throw std::runtime_error("Writer::_OnPrimativeArray : Cannot swap byte order");
+				throw std::runtime_error("Writer::_OnPrimitiveArray : Cannot swap byte order");
 			}
 
 			// Write the swapped bytes
@@ -615,69 +615,69 @@ namespace anvil { namespace BytePipe {
 		}
 	}
 
-	void Writer::OnPrimativeArrayBool(const bool* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayBool(const bool* ptr, const uint32_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
-		_OnPrimativeArray(ptr, size, GetSecondaryID<T>());
+		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeArrayU8(const uint8_t* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayU8(const uint8_t* ptr, const uint32_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
-		_OnPrimativeArray(ptr, size, GetSecondaryID<T>());
+		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeArrayU16(const uint16_t* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayU16(const uint16_t* ptr, const uint32_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
-		_OnPrimativeArray(ptr, size, GetSecondaryID<T>());
+		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeArrayU32(const uint32_t* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayU32(const uint32_t* ptr, const uint32_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
-		_OnPrimativeArray(ptr, size, GetSecondaryID<T>());
+		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeArrayU64(const uint64_t* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayU64(const uint64_t* ptr, const uint32_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
-		_OnPrimativeArray(ptr, size, GetSecondaryID<T>());
+		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeArrayS8(const int8_t* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayS8(const int8_t* ptr, const uint32_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
-		_OnPrimativeArray(ptr, size, GetSecondaryID<T>());
+		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeArrayS16(const int16_t* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayS16(const int16_t* ptr, const uint32_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
-		_OnPrimativeArray(ptr, size, GetSecondaryID<T>());
+		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeArrayS32(const int32_t* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayS32(const int32_t* ptr, const uint32_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
-		_OnPrimativeArray(ptr, size, GetSecondaryID<T>());
+		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeArrayS64(const int64_t* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayS64(const int64_t* ptr, const uint32_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
-		_OnPrimativeArray(ptr, size, GetSecondaryID<T>());
+		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeArrayF32(const float* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayF32(const float* ptr, const uint32_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
-		_OnPrimativeArray(ptr, size, GetSecondaryID<T>());
+		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeArrayF64(const double* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayF64(const double* ptr, const uint32_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
-		_OnPrimativeArray(ptr, size, GetSecondaryID<T>());
+		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeArrayC8(const char* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayC8(const char* ptr, const uint32_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
-		_OnPrimativeArray(ptr, size, GetSecondaryID<T>());
+		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimativeArrayF16(const half* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayF16(const half* ptr, const uint32_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
-		_OnPrimativeArray(ptr, size, GetSecondaryID<T>());
+		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
 	void Writer::OnUserPOD(const uint32_t type, const uint32_t bytes, const void* data) {
@@ -767,27 +767,27 @@ READ_FROM_BUFFER:
 			_parser.OnObjectEnd();
 		}
 
-		inline void ReadPrimative() {
+		inline void ReadPrimitive() {
 			const uint32_t id = header.primary_id;
 
-			// Read primative value
+			// Read primitive value
 			const uint32_t bytes = g_secondary_type_sizes[id];
-			if(bytes > 0u) ReadFromPipeBuffered(&header.primative_v1, g_secondary_type_sizes[id]);
+			if(bytes > 0u) ReadFromPipeBuffered(&header.primitive_v1, g_secondary_type_sizes[id]);
 
 			if (_swap_byte_order && bytes > 1u) {
 				if (bytes == 2u) {
-					header.primative_v1.u16 = SwapByteOrder(header.primative_v1.u16);
+					header.primitive_v1.u16 = SwapByteOrder(header.primitive_v1.u16);
 				} else if (bytes == 4u) {
-					header.primative_v1.u32 = SwapByteOrder(header.primative_v1.u32);
+					header.primitive_v1.u32 = SwapByteOrder(header.primitive_v1.u32);
 				} else if (bytes == 8u) {
-					header.primative_v1.u64 = SwapByteOrder(header.primative_v1.u64);
+					header.primitive_v1.u64 = SwapByteOrder(header.primitive_v1.u64);
 				} else {
-					throw std::runtime_error("ReadHelper::ReadPrimative : Cannot swap byte order");
+					throw std::runtime_error("ReadHelper::ReadPrimitive : Cannot swap byte order");
 				}
 			}
 
 			// Output the value
-			PrimativeValue tmp(g_sid_2_object_type[id], header.primative_v1.u64);
+			PrimitiveValue tmp(g_sid_2_object_type[id], header.primitive_v1.u64);
 			_parser.OnValue(tmp);
 		}
 
@@ -804,7 +804,7 @@ READ_FROM_BUFFER:
 					char* const buffer = static_cast<char*>(AllocateMemory(len + 1u));
 					ReadFromPipeBuffered(buffer, len);
 					buffer[len] = '\0';
-					_parser.OnPrimativeString(buffer, len);
+					_parser.OnPrimitiveString(buffer, len);
 				}
 				break;
 			case PID_ARRAY:
@@ -832,7 +832,7 @@ READ_FROM_BUFFER:
 				}
 				break;
 			default:
-				ReadPrimative();
+				ReadPrimitive();
 				break;
 			}
 		}
@@ -849,7 +849,7 @@ READ_FROM_BUFFER:
 				}
 				_parser.OnArrayEnd();
 
-			// The array contains primatives of the same type
+			// The array contains primitives of the same type
 			} else {
 				ANVIL_CONTRACT(id <= SID_B, "Unknown secondary type ID");
 
@@ -875,7 +875,7 @@ READ_FROM_BUFFER:
 						throw std::runtime_error("ReadHelper::ReadArray : Cannot swap byte order");
 					}
 				}
-				(_parser.*g_primative_array_callbacks[id])(buffer, size);
+				(_parser.*g_primitive_array_callbacks[id])(buffer, size);
 			}
 		}
 	public:
@@ -1002,11 +1002,11 @@ READ_FROM_BUFFER:
 		NextValue().SetNull();
 	}
 
-	void ValueParser::OnPrimativeF64(const double value) {
+	void ValueParser::OnPrimitiveF64(const double value) {
 		NextValue().SetF64(value);
 	}
 
-	void ValueParser::OnPrimativeString(const char* value, const uint32_t length) {
+	void ValueParser::OnPrimitiveString(const char* value, const uint32_t length) {
 		// Zero terminate string
 		char* str = static_cast<char*>(operator new(length + 1));
 		memcpy(str, value, length);
@@ -1022,57 +1022,57 @@ READ_FROM_BUFFER:
 		operator delete(str);
 	}
 
-	void ValueParser::OnPrimativeC8(const char value) {
+	void ValueParser::OnPrimitiveC8(const char value) {
 		NextValue().SetC8(value);
 	}
 
-	void ValueParser::OnPrimativeU64(const uint64_t value) {
+	void ValueParser::OnPrimitiveU64(const uint64_t value) {
 		NextValue().SetU64(value);
 	}
 
-	void ValueParser::OnPrimativeS64(const int64_t value) {
+	void ValueParser::OnPrimitiveS64(const int64_t value) {
 		NextValue().SetS64(value);
 	}
 
-	void ValueParser::OnPrimativeF32(const float value) {
+	void ValueParser::OnPrimitiveF32(const float value) {
 		NextValue().SetF32(value);
 	}
 
-	void ValueParser::OnPrimativeU8(const uint8_t value) {
+	void ValueParser::OnPrimitiveU8(const uint8_t value) {
 		NextValue().SetU8(value);
 	}
 
-	void ValueParser::OnPrimativeU16(const uint16_t value) {
+	void ValueParser::OnPrimitiveU16(const uint16_t value) {
 		NextValue().SetU16(value);
 	}
 
-	void ValueParser::OnPrimativeU32(const uint32_t value) {
+	void ValueParser::OnPrimitiveU32(const uint32_t value) {
 		NextValue().SetU32(value);
 	}
 
-	void ValueParser::OnPrimativeS8(const int8_t value) {
+	void ValueParser::OnPrimitiveS8(const int8_t value) {
 		NextValue().SetS8(value);
 	}
 
-	void ValueParser::OnPrimativeS16(const int16_t value) {
+	void ValueParser::OnPrimitiveS16(const int16_t value) {
 		NextValue().SetS16(value);
 	}
 
-	void ValueParser::OnPrimativeS32(const int32_t value) {
+	void ValueParser::OnPrimitiveS32(const int32_t value) {
 		NextValue().SetS32(value);
 	}
 
-	void ValueParser::OnPrimativeF16(const half value) {
+	void ValueParser::OnPrimitiveF16(const half value) {
 		NextValue().SetF16(value);
 	}
 
-	void ValueParser::OnPrimativeBool(const bool value) {
+	void ValueParser::OnPrimitiveBool(const bool value) {
 		NextValue().SetBool(value);
 	}
 
-	void ValueParser::OnPrimativeArrayC8(const char* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayC8(const char* src, const uint32_t size) {
 		Value& v = NextValue();
-		v.SetPrimativeArray(TYPE_C8);
+		v.SetPrimitiveArray(TYPE_C8);
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
@@ -1080,9 +1080,9 @@ READ_FROM_BUFFER:
 		}
 	}
 
-	void ValueParser::OnPrimativeArrayBool(const bool* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayBool(const bool* src, const uint32_t size) {
 		Value& v = NextValue();
-		v.SetPrimativeArray(TYPE_BOOL);
+		v.SetPrimitiveArray(TYPE_BOOL);
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
@@ -1090,9 +1090,9 @@ READ_FROM_BUFFER:
 		}
 	}
 
-	void ValueParser::OnPrimativeArrayU8(const uint8_t* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayU8(const uint8_t* src, const uint32_t size) {
 		Value& v = NextValue();
-		v.SetPrimativeArray(TYPE_U8);
+		v.SetPrimitiveArray(TYPE_U8);
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
@@ -1100,9 +1100,9 @@ READ_FROM_BUFFER:
 		}
 	}
 
-	void ValueParser::OnPrimativeArrayU16(const uint16_t* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayU16(const uint16_t* src, const uint32_t size) {
 		Value& v = NextValue();
-		v.SetPrimativeArray(TYPE_U16);
+		v.SetPrimitiveArray(TYPE_U16);
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
@@ -1110,9 +1110,9 @@ READ_FROM_BUFFER:
 		}
 	}
 
-	void ValueParser::OnPrimativeArrayU32(const uint32_t* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayU32(const uint32_t* src, const uint32_t size) {
 		Value& v = NextValue();
-		v.SetPrimativeArray(TYPE_U32);
+		v.SetPrimitiveArray(TYPE_U32);
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
@@ -1120,9 +1120,9 @@ READ_FROM_BUFFER:
 		}
 	}
 
-	void ValueParser::OnPrimativeArrayU64(const uint64_t* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayU64(const uint64_t* src, const uint32_t size) {
 		Value& v = NextValue();
-		v.SetPrimativeArray(TYPE_U64);
+		v.SetPrimitiveArray(TYPE_U64);
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
@@ -1130,9 +1130,9 @@ READ_FROM_BUFFER:
 		}
 	}
 
-	void ValueParser::OnPrimativeArrayS8(const int8_t* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayS8(const int8_t* src, const uint32_t size) {
 		Value& v = NextValue();
-		v.SetPrimativeArray(TYPE_S8);
+		v.SetPrimitiveArray(TYPE_S8);
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
@@ -1140,9 +1140,9 @@ READ_FROM_BUFFER:
 		}
 	}
 
-	void ValueParser::OnPrimativeArrayS16(const int16_t* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayS16(const int16_t* src, const uint32_t size) {
 		Value& v = NextValue();
-		v.SetPrimativeArray(TYPE_S16);
+		v.SetPrimitiveArray(TYPE_S16);
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
@@ -1150,9 +1150,9 @@ READ_FROM_BUFFER:
 		}
 	}
 
-	void ValueParser::OnPrimativeArrayS32(const int32_t* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayS32(const int32_t* src, const uint32_t size) {
 		Value& v = NextValue();
-		v.SetPrimativeArray(TYPE_S32);
+		v.SetPrimitiveArray(TYPE_S32);
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
@@ -1160,9 +1160,9 @@ READ_FROM_BUFFER:
 		}
 	}
 
-	void ValueParser::OnPrimativeArrayS64(const int64_t* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayS64(const int64_t* src, const uint32_t size) {
 		Value& v = NextValue();
-		v.SetPrimativeArray(TYPE_S64);
+		v.SetPrimitiveArray(TYPE_S64);
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
@@ -1170,9 +1170,9 @@ READ_FROM_BUFFER:
 		}
 	}
 
-	void ValueParser::OnPrimativeArrayF16(const half* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayF16(const half* src, const uint32_t size) {
 		Value& v = NextValue();
-		v.SetPrimativeArray(TYPE_F16);
+		v.SetPrimitiveArray(TYPE_F16);
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
@@ -1180,9 +1180,9 @@ READ_FROM_BUFFER:
 		}
 	}
 
-	void ValueParser::OnPrimativeArrayF32(const float* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayF32(const float* src, const uint32_t size) {
 		Value& v = NextValue();
-		v.SetPrimativeArray(TYPE_F32);
+		v.SetPrimitiveArray(TYPE_F32);
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
@@ -1190,9 +1190,9 @@ READ_FROM_BUFFER:
 		}
 	}
 
-	void ValueParser::OnPrimativeArrayF64(const double* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayF64(const double* src, const uint32_t size) {
 		Value& v = NextValue();
-		v.SetPrimativeArray(TYPE_F64);
+		v.SetPrimitiveArray(TYPE_F64);
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
@@ -1234,52 +1234,52 @@ READ_FROM_BUFFER:
 		case TYPE_STRING:
 			{
 				const char* str = const_cast<Value&>(value).GetString();
-				OnPrimativeString(str, strlen(str));
+				OnPrimitiveString(str, strlen(str));
 			}
 			break;
 		case TYPE_ARRAY:
 			{
 				const size_t size = value.GetSize();
-				if (value.IsPrimativeArray()) {
-					switch (value.GetPrimativeArrayType()) {
+				if (value.IsPrimitiveArray()) {
+					switch (value.GetPrimitiveArrayType()) {
 					case TYPE_C8:
-						OnPrimativeArrayC8(static_cast<const char*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						OnPrimitiveArrayC8(static_cast<const char*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
 						break;
 					case TYPE_U8:
-						OnPrimativeArrayU8(static_cast<const uint8_t*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						OnPrimitiveArrayU8(static_cast<const uint8_t*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
 						break;
 					case TYPE_U16:
-						OnPrimativeArrayU16(static_cast<const uint16_t*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						OnPrimitiveArrayU16(static_cast<const uint16_t*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
 						break;
 					case TYPE_U32:
-						OnPrimativeArrayU32(static_cast<const uint32_t*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						OnPrimitiveArrayU32(static_cast<const uint32_t*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
 						break;
 					case TYPE_U64:
-						OnPrimativeArrayU64(static_cast<const uint64_t*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						OnPrimitiveArrayU64(static_cast<const uint64_t*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
 						break;
 					case TYPE_S8:
-						OnPrimativeArrayS8(static_cast<const int8_t*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						OnPrimitiveArrayS8(static_cast<const int8_t*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
 						break;
 					case TYPE_S16:
-						OnPrimativeArrayS16(static_cast<const int16_t*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						OnPrimitiveArrayS16(static_cast<const int16_t*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
 						break;
 					case TYPE_S32:
-						OnPrimativeArrayS32(static_cast<const int32_t*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						OnPrimitiveArrayS32(static_cast<const int32_t*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
 						break;
 					case TYPE_S64:
-						OnPrimativeArrayS64(static_cast<const int64_t*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						OnPrimitiveArrayS64(static_cast<const int64_t*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
 						break;
 					case TYPE_F16:
-						OnPrimativeArrayF16(static_cast<const half*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						OnPrimitiveArrayF16(static_cast<const half*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
 						break;
 					case TYPE_F32:
-						OnPrimativeArrayF32(static_cast<const float*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						OnPrimitiveArrayF32(static_cast<const float*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
 						break;
 					case TYPE_F64:
-						OnPrimativeArrayF64(static_cast<const double*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						OnPrimitiveArrayF64(static_cast<const double*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
 						break;
 					case TYPE_BOOL:
-						OnPrimativeArrayBool(static_cast<const bool*>(const_cast<Value&>(value).GetPrimativeArray()), size);
+						OnPrimitiveArrayBool(static_cast<const bool*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
 						break;
 					}
 				} else {
@@ -1304,15 +1304,15 @@ READ_FROM_BUFFER:
 			}
 			break;
 		default:
-			OnValue(value.GetPrimativeValue());
+			OnValue(value.GetPrimitiveValue());
 			break;
 		}
 	}
 
-	void Parser::OnValue(const PrimativeValue& value) {
+	void Parser::OnValue(const PrimitiveValue& value) {
 		const SecondaryID id = g_object_type_2_sid[value.type];
-		ANVIL_CONTRACT(id <= SID_B, "PrimativeCallbackHelper : Unknown primative type");
-		g_primative_callbacks[id](*this, value);
+		ANVIL_CONTRACT(id <= SID_B, "PrimitiveCallbackHelper : Unknown primitive type");
+		g_primitive_callbacks[id](*this, value);
 	}
 
 }}

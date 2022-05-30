@@ -50,7 +50,7 @@ namespace anvil { namespace BytePipe {
 
 	enum half : uint16_t {};
 
-	static size_t GetSizeOfPrimativeType(const Type t) {
+	static size_t GetSizeOfPrimitiveType(const Type t) {
 		static const uint8_t g_sizes[TYPE_BOOL + 1] = {
 			0u,					//TYPE_NULL
 			sizeof(char),		//TYPE_C8
@@ -93,7 +93,7 @@ namespace anvil { namespace BytePipe {
 	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<float>() { return TYPE_F32; }
 	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<double>() { return TYPE_F64; }
 
-	struct PrimativeValue {
+	struct PrimitiveValue {
 		union {
 			void* ptr;
 			bool b;
@@ -113,29 +113,29 @@ namespace anvil { namespace BytePipe {
 
 		Type type;
 
-		bool operator==(const PrimativeValue& other) const;
-		bool operator!=(const PrimativeValue& other) const;
+		bool operator==(const PrimitiveValue& other) const;
+		bool operator!=(const PrimitiveValue& other) const;
 
-		PrimativeValue();
-		PrimativeValue(bool value);
-		PrimativeValue(char value);
-		PrimativeValue(uint8_t value);
-		PrimativeValue(uint16_t value);
-		PrimativeValue(uint32_t value);
-		PrimativeValue(uint64_t value);
-		PrimativeValue(int8_t value);
-		PrimativeValue(int16_t value);
-		PrimativeValue(int32_t value);
-		PrimativeValue(int64_t value);
-		PrimativeValue(half value);
-		PrimativeValue(float value);
-		PrimativeValue(double value);
+		PrimitiveValue();
+		PrimitiveValue(bool value);
+		PrimitiveValue(char value);
+		PrimitiveValue(uint8_t value);
+		PrimitiveValue(uint16_t value);
+		PrimitiveValue(uint32_t value);
+		PrimitiveValue(uint64_t value);
+		PrimitiveValue(int8_t value);
+		PrimitiveValue(int16_t value);
+		PrimitiveValue(int32_t value);
+		PrimitiveValue(int64_t value);
+		PrimitiveValue(half value);
+		PrimitiveValue(float value);
+		PrimitiveValue(double value);
 
 		/*!
 			\param type The type of \a raw
 			\param The value
 		*/
-		PrimativeValue(Type type, uint64_t raw);
+		PrimitiveValue(Type type, uint64_t raw);
 
 		operator bool() const;
 		operator char() const;
@@ -160,10 +160,10 @@ namespace anvil { namespace BytePipe {
 	class Value {
 	private:
 		typedef std::vector<Value> Array;
-		typedef std::vector<uint8_t> PrimativeArray;
+		typedef std::vector<uint8_t> PrimitiveArray;
 		typedef std::map<ComponentID, Value> Object;
-		PrimativeValue _primative;
-		Type _primative_array_type;
+		PrimitiveValue _primitive;
+		Type _primitive_array_type;
 	public:
 		Value();
 		Value(Value&&);
@@ -183,7 +183,7 @@ namespace anvil { namespace BytePipe {
 		explicit Value(half value);
 		explicit Value(float value);
 		explicit Value(double value);
-		explicit Value(const PrimativeValue& value);
+		explicit Value(const PrimitiveValue& value);
 
 		Value& operator=(Value&&);
 		Value& operator=(const Value&);
@@ -302,9 +302,9 @@ namespace anvil { namespace BytePipe {
 		*/
 		void SetArray();
 		/*!
-			\brief Same as SetArray but the array can only contain one primative type
+			\brief Same as SetArray but the array can only contain one primitive type
 		*/
-		void SetPrimativeArray(Type type);
+		void SetPrimitiveArray(Type type);
 
 		/*!
 			\brief Append a value to the end of the array.
@@ -318,7 +318,7 @@ namespace anvil { namespace BytePipe {
 			\details Throws exception is value is not an array.
 			\param value The value to add.
 		*/
-		void AddValue(const PrimativeValue& value);
+		void AddValue(const PrimitiveValue& value);
 
 		/*!
 			\brief Set the value to be an object.
@@ -359,10 +359,10 @@ namespace anvil { namespace BytePipe {
 		Value& GetValue(const uint32_t index);
 
 		/*!
-			\brief Return the base address of an array of primative values
+			\brief Return the base address of an array of primitive values
 			\details Returns null if the value isn't a promative array
 		*/
-		void* GetPrimativeArray();
+		void* GetPrimitiveArray();
 
 		/*!
 			\brief Get component ID at a specific index.
@@ -373,10 +373,10 @@ namespace anvil { namespace BytePipe {
 		ComponentID GetComponentID(const uint32_t index) const;
 
 		/*!
-			\brief Return the value as a primative
+			\brief Return the value as a primitive
 			\detail Throws an exception if the type is not numerical.
 		*/
-		PrimativeValue GetPrimativeValue() const;
+		PrimitiveValue GetPrimitiveValue() const;
 
 		/*!
 			\brief Get the number of child values in an array or object.
@@ -391,17 +391,17 @@ namespace anvil { namespace BytePipe {
 
 		// Helpers
 
-		inline bool IsPrimativeType() const {
-			const Type t = _primative.type;
+		inline bool IsPrimitiveType() const {
+			const Type t = _primitive.type;
 			return (t >= TYPE_C8 && t <= TYPE_F64) || t == TYPE_BOOL;
 		}
 
-		inline bool IsPrimativeArray() const {
-			return _primative_array_type != TYPE_BOOL && GetType() == TYPE_ARRAY;
+		inline bool IsPrimitiveArray() const {
+			return _primitive_array_type != TYPE_BOOL && GetType() == TYPE_ARRAY;
 		}
 
-		inline Type GetPrimativeArrayType() const {
-			return _primative_array_type;
+		inline Type GetPrimitiveArrayType() const {
+			return _primitive_array_type;
 		}
 
 		inline Value& operator[] (const size_t i) {

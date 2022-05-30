@@ -66,9 +66,9 @@ namespace anvil { namespace BytePipe {
 
 		State GetCurrentState() const;
 		void Write(const void* src, const uint32_t bytes);
-		void _OnPrimative32(uint32_t value, const uint8_t id);
-		void _OnPrimative64(uint64_t value, const uint8_t id);
-		void _OnPrimativeArray(const void* ptr, const uint32_t size, const uint8_t id);
+		void _OnPrimitive32(uint32_t value, const uint8_t id);
+		void _OnPrimitive64(uint64_t value, const uint8_t id);
+		void _OnPrimitiveArray(const void* ptr, const uint32_t size, const uint8_t id);
 
 		Writer(OutputPipe& pipe, Version version, bool swap_byte_order);
 	public:
@@ -89,34 +89,34 @@ namespace anvil { namespace BytePipe {
 		void OnObjectEnd() final;
 		void OnComponentID(const uint16_t id) final;
 		void OnNull() final;
-		void OnPrimativeF64(const double value) final;
-		void OnPrimativeString(const char* value, const uint32_t length) final;
-		void OnPrimativeU64(const uint64_t value) final;
-		void OnPrimativeS64(const int64_t value) final;
-		void OnPrimativeF32(const float value) final;
-		void OnPrimativeU8(const uint8_t value) final;
-		void OnPrimativeU16(const uint16_t value) final;
-		void OnPrimativeU32(const uint32_t value) final;
-		void OnPrimativeS8(const int8_t value) final;
-		void OnPrimativeS16(const int16_t value) final;
-		void OnPrimativeS32(const int32_t value) final;
-		void OnPrimativeC8(const char value) final;
-		void OnPrimativeF16(const half value) final;
-		void OnPrimativeBool(const bool value) final;
+		void OnPrimitiveF64(const double value) final;
+		void OnPrimitiveString(const char* value, const uint32_t length) final;
+		void OnPrimitiveU64(const uint64_t value) final;
+		void OnPrimitiveS64(const int64_t value) final;
+		void OnPrimitiveF32(const float value) final;
+		void OnPrimitiveU8(const uint8_t value) final;
+		void OnPrimitiveU16(const uint16_t value) final;
+		void OnPrimitiveU32(const uint32_t value) final;
+		void OnPrimitiveS8(const int8_t value) final;
+		void OnPrimitiveS16(const int16_t value) final;
+		void OnPrimitiveS32(const int32_t value) final;
+		void OnPrimitiveC8(const char value) final;
+		void OnPrimitiveF16(const half value) final;
+		void OnPrimitiveBool(const bool value) final;
 
-		void OnPrimativeArrayU8(const uint8_t* src, const uint32_t size) final;
-		void OnPrimativeArrayU16(const uint16_t* src, const uint32_t size) final;
-		void OnPrimativeArrayU32(const uint32_t* src, const uint32_t size) final;
-		void OnPrimativeArrayU64(const uint64_t* src, const uint32_t size) final;
-		void OnPrimativeArrayS8(const int8_t* src, const uint32_t size) final;
-		void OnPrimativeArrayS16(const int16_t* src, const uint32_t size) final;
-		void OnPrimativeArrayS32(const int32_t* src, const uint32_t size) final;
-		void OnPrimativeArrayS64(const int64_t* src, const uint32_t size) final;
-		void OnPrimativeArrayF32(const float* src, const uint32_t size) final;
-		void OnPrimativeArrayF64(const double* src, const uint32_t size) final;
-		void OnPrimativeArrayC8(const char* src, const uint32_t size) final;
-		void OnPrimativeArrayF16(const half* src, const uint32_t size) final;
-		void OnPrimativeArrayBool(const bool* src, const uint32_t size) final;
+		void OnPrimitiveArrayU8(const uint8_t* src, const uint32_t size) final;
+		void OnPrimitiveArrayU16(const uint16_t* src, const uint32_t size) final;
+		void OnPrimitiveArrayU32(const uint32_t* src, const uint32_t size) final;
+		void OnPrimitiveArrayU64(const uint64_t* src, const uint32_t size) final;
+		void OnPrimitiveArrayS8(const int8_t* src, const uint32_t size) final;
+		void OnPrimitiveArrayS16(const int16_t* src, const uint32_t size) final;
+		void OnPrimitiveArrayS32(const int32_t* src, const uint32_t size) final;
+		void OnPrimitiveArrayS64(const int64_t* src, const uint32_t size) final;
+		void OnPrimitiveArrayF32(const float* src, const uint32_t size) final;
+		void OnPrimitiveArrayF64(const double* src, const uint32_t size) final;
+		void OnPrimitiveArrayC8(const char* src, const uint32_t size) final;
+		void OnPrimitiveArrayF16(const half* src, const uint32_t size) final;
+		void OnPrimitiveArrayBool(const bool* src, const uint32_t size) final;
 
 		void OnUserPOD(const uint32_t type, const uint32_t bytes, const void* data) final;
 	};
