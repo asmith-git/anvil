@@ -238,105 +238,7 @@ FLOATING_POINT:
 
 	// Value
 
-	Value::Value() :
-		_primitive_array_type(TYPE_NULL)
-	{
-		_primitive.u64 = 0u;
-		_primitive.type = TYPE_NULL;
-	}
 
-	Value::~Value() {
-		SetNull();
-	}
-
-
-	Value::Value(Value&& other) :
-		Value()
-	{
-		Swap(other);
-	}
-
-	Value::Value(const Value& other) :
-		Value() 
-	{
-		*this = other;
-	}
-
-	Value::Value(bool value) :
-		_primitive(value),
-		_primitive_array_type(TYPE_NULL)
-	{}
-
-	Value::Value(char value) :
-		_primitive(value),
-		_primitive_array_type(TYPE_NULL)
-	{}
-
-	Value::Value(uint8_t value) :
-		_primitive(value),
-		_primitive_array_type(TYPE_NULL)
-	{}
-
-	Value::Value(uint16_t value) :
-		_primitive(value),
-		_primitive_array_type(TYPE_NULL)
-	{}
-
-	Value::Value(uint32_t value) :
-		_primitive(value),
-		_primitive_array_type(TYPE_NULL)
-	{}
-
-	Value::Value(uint64_t value) :
-		_primitive(value),
-		_primitive_array_type(TYPE_NULL)
-	{}
-
-	Value::Value(int8_t value) :
-		_primitive(value),
-		_primitive_array_type(TYPE_NULL)
-	{}
-
-	Value::Value(int16_t value) :
-		_primitive(value),
-		_primitive_array_type(TYPE_NULL)
-	{}
-
-	Value::Value(int32_t value) :
-		_primitive(value),
-		_primitive_array_type(TYPE_NULL)
-	{}
-
-	Value::Value(int64_t value) :
-		_primitive(value),
-		_primitive_array_type(TYPE_NULL)
-	{}
-
-	Value::Value(half value) :
-		_primitive(value),
-		_primitive_array_type(TYPE_NULL)
-	{}
-
-	Value::Value(float value) :
-		_primitive(value),
-		_primitive_array_type(TYPE_NULL)
-	{}
-
-	Value::Value(double value) :
-		_primitive(value),
-		_primitive_array_type(TYPE_NULL)
-	{}
-
-	Value::Value(const PrimitiveValue& value) :
-		_primitive(value),
-		_primitive_array_type(TYPE_NULL)
-	{}
-
-
-	Value& Value::operator=(Value&& other) {
-		Swap(other);
-		return *this;
-	}
 
 	Value& Value::operator=(const Value& other) {
 		switch (other._primitive.type) {
@@ -378,10 +280,6 @@ FLOATING_POINT:
 		std::swap(_primitive_array_type, other._primitive_array_type);
 	}
 
-	Type Value::GetType() const {
-		return _primitive.type;
-	}
-
 	void Value::SetNull() {
 		switch (_primitive.type) {
 		case TYPE_STRING:
@@ -400,84 +298,6 @@ FLOATING_POINT:
 		}
 		_primitive.u64 = 0u;
 		_primitive.type = TYPE_NULL;
-	}
-
-	void Value::SetBool(const bool value) {
-		SetNull();
-		_primitive.b = value;
-		_primitive.type = TYPE_BOOL;
-	}
-
-	void Value::SetC8(const char value) {
-		SetNull();
-		_primitive.c8 = value;
-		_primitive.type = TYPE_C8;
-	}
-
-	void Value::SetU8(const uint8_t value) {
-		SetNull();
-		_primitive.u8 = value;
-		_primitive.type = TYPE_U8;
-	}
-
-	void Value::SetU16(const uint16_t value) {
-		SetNull();
-		_primitive.u16 = value;
-		_primitive.type = TYPE_U16;
-	}
-
-	void Value::SetU32(const uint32_t value) {
-		SetNull();
-		_primitive.u32 = value;
-		_primitive.type = TYPE_U32;
-	}
-
-	void Value::SetU64(const uint64_t value) {
-		SetNull();
-		_primitive.u64 = value;
-		_primitive.type = TYPE_U64;
-	}
-
-	void Value::SetS8(const int8_t value) {
-		SetNull();
-		_primitive.s8 = value;
-		_primitive.type = TYPE_S8;
-	}
-
-	void Value::SetS16(const int16_t value) {
-		SetNull();
-		_primitive.s16 = value;
-		_primitive.type = TYPE_S16;
-	}
-
-	void Value::SetS32(const int32_t value) {
-		SetNull();
-		_primitive.s32 = value;
-		_primitive.type = TYPE_S32;
-	}
-
-	void Value::SetS64(const int64_t value) {
-		SetNull();
-		_primitive.s64 = value;
-		_primitive.type = TYPE_S64;
-	}
-
-	void Value::SetF16(const half value) {
-		SetNull();
-		_primitive.f16 = value;
-		_primitive.type = TYPE_F16;
-	}
-
-	void Value::SetF32(const float value) {
-		SetNull();
-		_primitive.f32 = value;
-		_primitive.type = TYPE_F32;
-	}
-
-	void Value::SetF64(const double value) {
-		SetNull();
-		_primitive.f64 = value;
-		_primitive.type = TYPE_F64;
 	}
 
 	void Value::SetString(const char* value) {
@@ -600,6 +420,53 @@ FLOATING_POINT:
 		}
 	}
 
+	void Value::ConvertFromPrimitveArray() {
+		PrimitiveArray tmp = std::move(*static_cast<PrimitiveArray*>(_primitive.ptr));
+		SetArray();
+
+		switch (_primitive_array_type) {
+		case TYPE_C8:
+			ConvertToValueVector<char>(*static_cast<Array*>(_primitive.ptr), tmp);
+			break;
+		case TYPE_U8:
+			ConvertToValueVector<uint8_t>(*static_cast<Array*>(_primitive.ptr), tmp);
+			break;
+		case TYPE_U16:
+			ConvertToValueVector<uint16_t>(*static_cast<Array*>(_primitive.ptr), tmp);
+			break;
+		case TYPE_U32:
+			ConvertToValueVector<uint32_t>(*static_cast<Array*>(_primitive.ptr), tmp);
+			break;
+		case TYPE_U64:
+			ConvertToValueVector<uint64_t>(*static_cast<Array*>(_primitive.ptr), tmp);
+			break;
+		case TYPE_S8:
+			ConvertToValueVector<int8_t>(*static_cast<Array*>(_primitive.ptr), tmp);
+			break;
+		case TYPE_S16:
+			ConvertToValueVector<int16_t>(*static_cast<Array*>(_primitive.ptr), tmp);
+			break;
+		case TYPE_S32:
+			ConvertToValueVector<int32_t>(*static_cast<Array*>(_primitive.ptr), tmp);
+			break;
+		case TYPE_S64:
+			ConvertToValueVector<int64_t>(*static_cast<Array*>(_primitive.ptr), tmp);
+			break;
+		case TYPE_F16:
+			ConvertToValueVector<half>(*static_cast<Array*>(_primitive.ptr), tmp);
+			break;
+		case TYPE_F32:
+			ConvertToValueVector<float>(*static_cast<Array*>(_primitive.ptr), tmp);
+			break;
+		case TYPE_F64:
+			ConvertToValueVector<double>(*static_cast<Array*>(_primitive.ptr), tmp);
+			break;
+		case TYPE_BOOL:
+			ConvertToValueVector<bool>(*static_cast<Array*>(_primitive.ptr), tmp);
+			break;
+		}
+	}
+
 	void Value::AddValue(Value&& value) {
 		// Handle primitive data types in a way that is optimised for them
 		if (value.IsPrimitive()) {
@@ -610,141 +477,22 @@ FLOATING_POINT:
 
 			if (_primitive.type != TYPE_ARRAY) throw std::runtime_error("Value::AddValue : Value is not an array");
 
-			if (_primitive_array_type == TYPE_NULL) {
-ADD_VALUE_NORMAL:
-				static_cast<Array*>(_primitive.ptr)->push_back(std::move(value));
-
-			} else {
-				// Convert to a regular array
-				PrimitiveArray tmp = std::move(*static_cast<PrimitiveArray*>(_primitive.ptr));
-				SetArray();
-
-				switch (_primitive_array_type) {
-				case TYPE_C8:
-					ConvertToValueVector<char>(*static_cast<Array*>(_primitive.ptr), tmp);
-					break;
-				case TYPE_U8:
-					ConvertToValueVector<uint8_t>(*static_cast<Array*>(_primitive.ptr), tmp);
-					break;
-				case TYPE_U16:
-					ConvertToValueVector<uint16_t>(*static_cast<Array*>(_primitive.ptr), tmp);
-					break;
-				case TYPE_U32:
-					ConvertToValueVector<uint32_t>(*static_cast<Array*>(_primitive.ptr), tmp);
-					break;
-				case TYPE_U64:
-					ConvertToValueVector<uint64_t>(*static_cast<Array*>(_primitive.ptr), tmp);
-					break;
-				case TYPE_S8:
-					ConvertToValueVector<int8_t>(*static_cast<Array*>(_primitive.ptr), tmp);
-					break;
-				case TYPE_S16:
-					ConvertToValueVector<int16_t>(*static_cast<Array*>(_primitive.ptr), tmp);
-					break;
-				case TYPE_S32:
-					ConvertToValueVector<int32_t>(*static_cast<Array*>(_primitive.ptr), tmp);
-					break;
-				case TYPE_S64:
-					ConvertToValueVector<int64_t>(*static_cast<Array*>(_primitive.ptr), tmp);
-					break;
-				case TYPE_F16:
-					ConvertToValueVector<half>(*static_cast<Array*>(_primitive.ptr), tmp);
-					break;
-				case TYPE_F32:
-					ConvertToValueVector<float>(*static_cast<Array*>(_primitive.ptr), tmp);
-					break;
-				case TYPE_F64:
-					ConvertToValueVector<double>(*static_cast<Array*>(_primitive.ptr), tmp);
-					break;
-				case TYPE_BOOL:
-					ConvertToValueVector<bool>(*static_cast<Array*>(_primitive.ptr), tmp);
-					break;
-				}
-
-				// Add the value
-				goto ADD_VALUE_NORMAL;
-			}
+			if (_primitive_array_type != TYPE_NULL) ConvertFromPrimitveArray();
+			static_cast<Array*>(_primitive.ptr)->push_back(std::move(value));
 		}
 	}
 
 	void Value::SetObject() {
+		// If the value is already an object then clear it
 		if (_primitive.type == TYPE_OBJECT) {
 			static_cast<Object*>(_primitive.ptr)->clear();
+
+		// Otherwise allocate a new object
 		} else {
 			SetNull();
 			_primitive.ptr = new Object();
 			_primitive.type = TYPE_OBJECT;
 		}
-	}
-
-	void Value::AddValue(const ComponentID id, Value&& value) {
-		if (_primitive.type != TYPE_OBJECT) throw std::runtime_error("Value::AddValue : Value is not an object");
-		static_cast<Object*>(_primitive.ptr)->emplace(id, std::move(value));
-	}
-
-	bool Value::GetBool() const {
-		if (IsPrimitive()) return _primitive;
-		throw std::runtime_error("Value::GetBool : Value cannot be converted to boolean");
-	}
-
-	char Value::GetC8() const {
-		if (IsPrimitive()) return _primitive;
-		throw std::runtime_error("Value::GetC8 : Value cannot be converted to character");
-	}
-
-	uint8_t Value::GetU8() const {
-		if (IsPrimitive()) return _primitive;
-		throw std::runtime_error("Value::GetU8 : Value cannot be converted to 8-bit unsigned integer");
-	}
-
-	uint16_t Value::GetU16() const {
-		if (IsPrimitive()) return _primitive;
-		throw std::runtime_error("Value::GetU16 : Value cannot be converted to 16-bit unsigned integer");
-	}
-
-	uint32_t Value::GetU32() const {
-		if (IsPrimitive()) return _primitive;
-		throw std::runtime_error("Value::GetU32 : Value cannot be converted to 32-bit unsigned integer");
-	}
-
-	uint64_t Value::GetU64() const {
-		if (IsPrimitive()) return _primitive;
-		throw std::runtime_error("Value::GetU64 : Value cannot be converted to 64-bit unsigned integer");
-	}
-
-	int8_t Value::GetS8() const {
-		if (IsPrimitive()) return _primitive;
-		throw std::runtime_error("Value::GetS8 : Value cannot be converted to 8-bit signed integer");
-	}
-
-	int16_t Value::GetS16() const {
-		if (IsPrimitive()) return _primitive;
-		throw std::runtime_error("Value::GetS16 : Value cannot be converted to 16-bit signed integer");
-	}
-
-	int32_t Value::GetS32() const {
-		if (IsPrimitive()) return _primitive;
-		throw std::runtime_error("Value::GetS32 : Value cannot be converted to 32-bit signed integer");
-	}
-
-	int64_t Value::GetS64() const {
-		if (IsPrimitive()) return _primitive;
-		throw std::runtime_error("Value::GetS64 : Value cannot be converted to 64-bit signed integer");
-	}
-
-	half Value::GetF16() const {
-		if (IsPrimitive()) return _primitive;
-		throw std::runtime_error("Value::GetF16 : Value cannot be converted to 16-bit floating point");
-	}
-
-	float Value::GetF32() const {
-		if (IsPrimitive()) return _primitive;
-		throw std::runtime_error("Value::GetF32 : Value cannot be converted to 32-bit floating point");
-	}
-
-	double Value::GetF64() const {
-		if (IsPrimitive()) return _primitive;
-		throw std::runtime_error("Value::GetF64 : Value cannot be converted to 64-bit floating point");
 	}
 
 	const char* Value::GetString() {

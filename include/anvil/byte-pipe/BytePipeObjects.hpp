@@ -274,33 +274,115 @@ namespace anvil { namespace BytePipe {
 		typedef std::map<ComponentID, Value> Object;
 		PrimitiveValue _primitive;
 		Type _primitive_array_type;
+
+		void ConvertFromPrimitveArray();
 	public:
-		Value();
-		Value(Value&&);
-		Value(const Value&);
-		~Value();
 
-		explicit Value(bool value);
-		explicit Value(char value);
-		explicit Value(uint8_t value);
-		explicit Value(uint16_t value);
-		explicit Value(uint32_t value);
-		explicit Value(uint64_t value);
-		explicit Value(int8_t value);
-		explicit Value(int16_t value);
-		explicit Value(int32_t value);
-		explicit Value(int64_t value);
-		explicit Value(half value);
-		explicit Value(float value);
-		explicit Value(double value);
-		explicit Value(const PrimitiveValue& value);
+		Value(Value&& other) :
+			Value()
+		{
+			Swap(other);
+		}
 
-		Value& operator=(Value&&);
+		Value(const Value& other) :
+			Value()
+		{
+			*this = other;
+		}
+
+		Value() :
+			_primitive(),
+			_primitive_array_type(TYPE_NULL)
+		{
+			_primitive.u64 = 0u;
+		}
+
+		explicit Value(bool value) :
+			_primitive(value),
+			_primitive_array_type(TYPE_NULL)
+		{}
+
+		explicit Value(char value) :
+			_primitive(value),
+			_primitive_array_type(TYPE_NULL)
+		{}
+
+		explicit Value(uint8_t value) :
+			_primitive(value),
+			_primitive_array_type(TYPE_NULL)
+		{}
+
+		explicit Value(uint16_t value) :
+			_primitive(value),
+			_primitive_array_type(TYPE_NULL)
+		{}
+
+		explicit Value(uint32_t value) :
+			_primitive(value),
+			_primitive_array_type(TYPE_NULL)
+		{}
+
+		explicit Value(uint64_t value) :
+			_primitive(value),
+			_primitive_array_type(TYPE_NULL)
+		{}
+
+		explicit Value(int8_t value) :
+			_primitive(value),
+			_primitive_array_type(TYPE_NULL)
+		{}
+
+		explicit Value(int16_t value) :
+			_primitive(value),
+			_primitive_array_type(TYPE_NULL)
+		{}
+
+		explicit Value(int32_t value) :
+			_primitive(value),
+			_primitive_array_type(TYPE_NULL)
+		{}
+
+		explicit Value(int64_t value) :
+			_primitive(value),
+			_primitive_array_type(TYPE_NULL)
+		{}
+
+		explicit Value(half value) :
+			_primitive(value),
+			_primitive_array_type(TYPE_NULL)
+		{}
+
+		explicit Value(float value) :
+			_primitive(value),
+			_primitive_array_type(TYPE_NULL)
+		{}
+
+		explicit Value(double value) :
+			_primitive(value),
+			_primitive_array_type(TYPE_NULL)
+		{}
+
+		explicit Value(const PrimitiveValue& value) :
+			_primitive(value),
+			_primitive_array_type(TYPE_NULL)
+		{}
+
+		~Value() {
+			SetNull();
+		}
+
+		inline Value& operator=(Value&& other) {
+			Swap(other);
+			return *this;
+		}
+
 		Value& operator=(const Value&);
 
 		void Swap(Value&);
 
-		Type GetType() const;
+		inline Type GetType() const {
+			return _primitive.type;
+		}
 
 		/*!
 			\brief Set the value to be a null value.
@@ -313,91 +395,130 @@ namespace anvil { namespace BytePipe {
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		void SetBool(const bool value = false);
+		inline void SetBool(const bool value = false) {
+			SetNull();
+			_primitive = value;
+		}
 
 		/*!
 			\brief Set the value to be a character.
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		void SetC8(const char value = ' ');
+		inline void SetC8(const char value = ' ') {
+			SetNull();
+			_primitive = value;
+		}
 
 		/*!
 			\brief Set the value to be a 8-bit unsigned integer.
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		void SetU8(const uint8_t value = 0u);
+		inline void SetU8(const uint8_t value = 0u) {
+			SetNull();
+			_primitive = value;
+		}
 
 		/*!
 			\brief Set the value to be a 16-bit unsigned integer.
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		void SetU16(const uint16_t value = 0u);
+		inline void SetU16(const uint16_t value = 0u) {
+			SetNull();
+			_primitive = value;
+		}
 
 		/*!
 			\brief Set the value to be a 32-bit unsigned integer.
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		void SetU32(const uint32_t value = 0u);
+		inline void SetU32(const uint32_t value = 0u) {
+			SetNull();
+			_primitive = value;
+		}
 
 		/*!
 			\brief Set the value to be a 64-bit unsigned integer.
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		void SetU64(const uint64_t value = 0u);
+		inline void SetU64(const uint64_t value = 0u) {
+			SetNull();
+			_primitive = value;
+		}
 
 		/*!
 			\brief Set the value to be a 8-bit signed integer.
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		void SetS8(const int8_t value = 0);
+		inline void SetS8(const int8_t value = 0) {
+			SetNull();
+			_primitive = value;
+		}
 
 		/*!
 			\brief Set the value to be a 16-bit signed integer.
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		void SetS16(const int16_t value = 0);
+		inline void SetS16(const int16_t value = 0) {
+			SetNull();
+			_primitive = value;
+		}
 
 		/*!
 			\brief Set the value to be a 32-bit signed integer.
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		void SetS32(const int32_t value = 0);
+		inline void SetS32(const int32_t value = 0) {
+			SetNull();
+			_primitive = value;
+		}
 
 		/*!
 			\brief Set the value to be a 64-bit signed integer.
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		void SetS64(const int64_t value = 0);
+		inline void SetS64(const int64_t value = 0) {
+			SetNull();
+			_primitive = value;
+		}
 
 		/*!
 			\brief Set the value to be a 16-bit floating point.
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		void SetF16(const half value = static_cast<half>(0));
+		inline void SetF16(const half value = static_cast<half>(0)) {
+			SetNull();
+			_primitive = value;
+		}
 
 		/*!
 			\brief Set the value to be a 32-bit floating point.
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		void SetF32(const float value = 0.f);
+		inline void SetF32(const float value = 0.f) {
+			SetNull();
+			_primitive = value;
+		}
 
 		/*!
 			\brief Set the value to be a 64-bit floating point.
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		void SetF64(const double value = 0.0);
+		inline void SetF64(const double value = 0.0) {
+			SetNull();
+			_primitive = value;
+		}
 
 		/*!
 			\brief Set the value to be a string.
@@ -443,21 +564,76 @@ namespace anvil { namespace BytePipe {
 			\param id The component ID of the value.
 			\param value The value to add.
 		*/
-		void AddValue(const ComponentID id, Value&& value);
+		inline void AddValue(const ComponentID id, Value&& value) {
+			if (_primitive.type != TYPE_OBJECT) throw std::runtime_error("Value::AddValue : Value is not an object");
+			static_cast<Object*>(_primitive.ptr)->emplace(id, std::move(value));
+		}
 
-		bool GetBool() const;
-		char GetC8() const;
-		uint8_t GetU8() const;
-		uint16_t GetU16() const;
-		uint32_t GetU32() const;
-		uint64_t GetU64() const;
-		int8_t GetS8() const;
-		int16_t GetS16() const;
-		int32_t GetS32() const;
-		int64_t GetS64() const;
-		half GetF16() const;
-		float GetF32() const;
-		double GetF64() const;
+		inline bool GetBool() const {
+			if (IsPrimitive()) return _primitive;
+			throw std::runtime_error("Value::GetBool : Value cannot be converted to boolean");
+		}
+
+		inline char GetC8() const {
+			if (IsPrimitive()) return _primitive;
+			throw std::runtime_error("Value::GetC8 : Value cannot be converted to character");
+		}
+
+		inline uint8_t GetU8() const {
+			if (IsPrimitive()) return _primitive;
+			throw std::runtime_error("Value::GetU8 : Value cannot be converted to 8-bit unsigned integer");
+		}
+
+		inline uint16_t GetU16() const {
+			if (IsPrimitive()) return _primitive;
+			throw std::runtime_error("Value::GetU16 : Value cannot be converted to 16-bit unsigned integer");
+		}
+
+		inline uint32_t GetU32() const {
+			if (IsPrimitive()) return _primitive;
+			throw std::runtime_error("Value::GetU32 : Value cannot be converted to 32-bit unsigned integer");
+		}
+
+		inline uint64_t GetU64() const {
+			if (IsPrimitive()) return _primitive;
+			throw std::runtime_error("Value::GetU64 : Value cannot be converted to 64-bit unsigned integer");
+		}
+
+		inline int8_t GetS8() const {
+			if (IsPrimitive()) return _primitive;
+			throw std::runtime_error("Value::GetS8 : Value cannot be converted to 8-bit signed integer");
+		}
+
+		inline int16_t GetS16() const {
+			if (IsPrimitive()) return _primitive;
+			throw std::runtime_error("Value::GetS16 : Value cannot be converted to 16-bit signed integer");
+		}
+
+		inline int32_t GetS32() const {
+			if (IsPrimitive()) return _primitive;
+			throw std::runtime_error("Value::GetS32 : Value cannot be converted to 32-bit signed integer");
+		}
+
+		inline int64_t GetS64() const {
+			if (IsPrimitive()) return _primitive;
+			throw std::runtime_error("Value::GetS64 : Value cannot be converted to 64-bit signed integer");
+		}
+
+		inline half GetF16() const {
+			if (IsPrimitive()) return _primitive;
+			throw std::runtime_error("Value::GetF16 : Value cannot be converted to 16-bit floating point");
+		}
+
+		inline float GetF32() const {
+			if (IsPrimitive()) return _primitive;
+			throw std::runtime_error("Value::GetF32 : Value cannot be converted to 32-bit floating point");
+		}
+
+		inline double GetF64() const {
+			if (IsPrimitive()) return _primitive;
+			throw std::runtime_error("Value::GetF64 : Value cannot be converted to 64-bit floating point");
+		}
+
 		const char* GetString();
 
 		/*!
@@ -580,12 +756,26 @@ namespace anvil { namespace BytePipe {
 			return GetString();
 		}
 
+		explicit Value(const std::string& value) :
+			Value()
+		{
+			SetString(value.c_str());
+		}
+
 		template<class T>
 		explicit inline operator std::vector<T>() {
 			const size_t s = GetSize();
 			std::vector<T> tmp(s);
 			for (size_t i = 0u; i < s; ++i) tmp[i] = static_cast<T>(operator[](i));
 			return tmp;
+		}
+
+		template<class T>
+		Value(const std::vector<T>& value) :
+			Value()
+		{
+			SetArray();
+			for (T& tmp : value) AddValue(tmp);
 		}
 
 		template<class T>
@@ -597,6 +787,14 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<class T>
+		explicit Value(const std::list<T>& value) :
+			Value()
+		{
+			SetArray();
+			for (T& tmp : value) AddValue(tmp);
+		}
+
+		template<class T>
 		explicit inline operator std::deque<T>() {
 			const size_t s = GetSize();
 			std::deque<T> tmp(s);
@@ -604,11 +802,27 @@ namespace anvil { namespace BytePipe {
 			return tmp;
 		}
 
+		template<class T>
+		explicit Value(const std::deque<T>& value) :
+			Value()
+		{
+			SetArray();
+			for (T& tmp : value) AddValue(tmp);
+		}
+
 		template<class T, size_t S>
 		explicit inline operator std::array<T, S>() {
 			std::array<T,S> tmp;
 			for (size_t i = 0u; i < S; ++i) tmp[i] = static_cast<T>(operator[](i));
 			return tmp;
+		}
+
+		template<class T, size_t S>
+		explicit Value(const std::array<T, S>& value) :
+			Value()
+		{
+			SetArray();
+			for (T& tmp : value) AddValue(tmp);
 		}
 
 		template<class K, class V>
@@ -624,6 +838,21 @@ namespace anvil { namespace BytePipe {
 				);
 			}
 			return tmp;
+		}
+
+		template<class K, class V>
+		explicit Value(const std::map<K, V >& value) :
+			Value()
+		{
+			SetArray();
+			for (const std::pair<K, V>& tmp : value) {
+				Value v;
+				v.SetArray();
+				v.AddValue(tmp.first);
+				v.AddValue(tmp.second);
+
+				AddValue(std::move(v));
+			}
 		}
 	};
 
