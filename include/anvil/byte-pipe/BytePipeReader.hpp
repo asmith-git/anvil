@@ -128,510 +128,510 @@ namespace anvil { namespace BytePipe {
 		virtual void OnNull() = 0;
 
 		/*!
-			\brief Handle a primative value (64-bit floating point)
+			\brief Handle a primitive value (64-bit floating point)
 			\param value The value
 		*/
-		virtual void OnPrimativeF64(const double value) = 0;
+		virtual void OnPrimitiveF64(const double value) = 0;
 
 		/*!
 			\brief Handle a string value
 			\param value The string data, this may not zero-terminated
 		*/
-		virtual void OnPrimativeString(const char* value, const uint32_t length) = 0;
+		virtual void OnPrimitiveString(const char* value, const uint32_t length) = 0;
 
 		/*!
-			\brief Handle a primative value (boolean)
+			\brief Handle a primitive value (boolean)
 			\param value The value
 		*/
-		virtual void OnPrimativeBool(const bool value) = 0;
+		virtual void OnPrimitiveBool(const bool value) = 0;
 
 		/*!
-			\brief Handle a primative value (character)
+			\brief Handle a primitive value (character)
 			\param value The value
 		*/
-		virtual void OnPrimativeC8(const char value) = 0;
+		virtual void OnPrimitiveC8(const char value) = 0;
 
 		/*!
-			\brief Handle a primative value (64-bit unsigned integer)
+			\brief Handle a primitive value (64-bit unsigned integer)
 			\param value The value
 		*/
-		virtual void OnPrimativeU64(const uint64_t value) { 
-			OnPrimativeF64(static_cast<double>(value));
+		virtual void OnPrimitiveU64(const uint64_t value) { 
+			OnPrimitiveF64(static_cast<double>(value));
 		}
 
 		/*!
-			\brief Handle a primative value (64-bit signed integer)
+			\brief Handle a primitive value (64-bit signed integer)
 			\param value The value
 		*/
-		virtual void OnPrimativeS64(const int64_t value) { 
-			OnPrimativeF64(static_cast<double>(value));
+		virtual void OnPrimitiveS64(const int64_t value) { 
+			OnPrimitiveF64(static_cast<double>(value));
 		}
 
 		/*!
-			\brief Handle a primative value (32-bit floating point)
+			\brief Handle a primitive value (32-bit floating point)
 			\param value The value
 		*/
-		virtual void OnPrimativeF32(const float value) { 
-			OnPrimativeF64(value);
+		virtual void OnPrimitiveF32(const float value) { 
+			OnPrimitiveF64(value);
 		}
 
 		/*!
-			\brief Handle a primative value (8-bit unsigned integer)
+			\brief Handle a primitive value (8-bit unsigned integer)
 			\param value The value
 		*/
-		virtual void OnPrimativeU8(const uint8_t value) { 
-			OnPrimativeU64(value);
+		virtual void OnPrimitiveU8(const uint8_t value) { 
+			OnPrimitiveU64(value);
 		}
 
 		/*!
-			\brief Handle a primative value (16-bit unsigned integer)
+			\brief Handle a primitive value (16-bit unsigned integer)
 			\param value The value
 		*/
-		virtual void OnPrimativeU16(const uint16_t value) { 
-			OnPrimativeU64(value);
+		virtual void OnPrimitiveU16(const uint16_t value) { 
+			OnPrimitiveU64(value);
 		}
 
 		/*!
-			\brief Handle a primative value (32-bit unsigned integer)
+			\brief Handle a primitive value (32-bit unsigned integer)
 			\param value The value
 		*/
-		virtual void OnPrimativeU32(const uint32_t value) { 
-			OnPrimativeU64(value);
+		virtual void OnPrimitiveU32(const uint32_t value) { 
+			OnPrimitiveU64(value);
 		}
 
 		/*!
-			\brief Handle a primative value (8-bit signed integer)
+			\brief Handle a primitive value (8-bit signed integer)
 			\param value The value
 		*/
-		virtual void OnPrimativeS8(const int8_t value) { 
-			OnPrimativeS64(value);
+		virtual void OnPrimitiveS8(const int8_t value) { 
+			OnPrimitiveS64(value);
 		}
 
 		/*!
-			\brief Handle a primative value (16-bit signed integer)
+			\brief Handle a primitive value (16-bit signed integer)
 			\param value The value
 		*/
-		virtual void OnPrimativeS16(const int16_t value) { 
-			OnPrimativeS64(value);
+		virtual void OnPrimitiveS16(const int16_t value) { 
+			OnPrimitiveS64(value);
 		}
 
 		/*!
-			\brief Handle a primative value (32-bit signed integer)
+			\brief Handle a primitive value (32-bit signed integer)
 			\param value The value
 		*/
-		virtual void OnPrimativeS32(const int32_t value) { 
-			OnPrimativeS64(value); 
+		virtual void OnPrimitiveS32(const int32_t value) { 
+			OnPrimitiveS64(value); 
 		}
 
 		/*!
-			\brief Handle a primative value (16-bit floating point)
+			\brief Handle a primitive value (16-bit floating point)
 			\param value The value
 		*/
-		virtual void OnPrimativeF16(const half value) { 
-			OnPrimativeF32(static_cast<float>(value));  //! \bug half to float conversion not implemented
+		virtual void OnPrimitiveF16(const half value) { 
+			OnPrimitiveF32(static_cast<float>(value));  //! \bug half to float conversion not implemented
 		}
 
 		// Object Support
 
 		void OnValue(const Value& value);
-		void OnValue(const PrimativeValue& value);
+		void OnValue(const PrimitiveValue& value);
 
 		// Array Optimisations
 
 		/*!
-			\brief Handle an array of primative values (8-bit unsigned integers)
+			\brief Handle an array of primitive values (8-bit unsigned integers)
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeU8(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveU8(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimativeArrayU8(const uint8_t* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayU8(const uint8_t* src, const uint32_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeU8(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveU8(src[i]);
 			OnArrayEnd();
 		}
 
 		/*!
-			\brief Handle an array of primative values (16-bit unsigned integers)
+			\brief Handle an array of primitive values (16-bit unsigned integers)
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeU16(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveU16(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimativeArrayU16(const uint16_t* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayU16(const uint16_t* src, const uint32_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeU16(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveU16(src[i]);
 			OnArrayEnd();
 		}
 
 		/*!
-			\brief Handle an array of primative values (32-bit unsigned integers)
+			\brief Handle an array of primitive values (32-bit unsigned integers)
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeU32(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveU32(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimativeArrayU32(const uint32_t* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayU32(const uint32_t* src, const uint32_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeU32(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveU32(src[i]);
 			OnArrayEnd();
 		}
 
 		/*!
-			\brief Handle an array of primative values (64-bit unsigned integers)
+			\brief Handle an array of primitive values (64-bit unsigned integers)
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeU64(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveU64(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimativeArrayU64(const uint64_t* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayU64(const uint64_t* src, const uint32_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeU64(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveU64(src[i]);
 			OnArrayEnd();
 		}
 
 		/*!
-			\brief Handle an array of primative values (8-bit signed integers)
+			\brief Handle an array of primitive values (8-bit signed integers)
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeS8(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveS8(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimativeArrayS8(const int8_t* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayS8(const int8_t* src, const uint32_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeS8(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveS8(src[i]);
 			OnArrayEnd();
 		}
 
 		/*!
-			\brief Handle an array of primative values (16-bit signed integers)
+			\brief Handle an array of primitive values (16-bit signed integers)
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeS16(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveS16(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimativeArrayS16(const int16_t* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayS16(const int16_t* src, const uint32_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeS16(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveS16(src[i]);
 			OnArrayEnd();
 		}
 
 		/*!
-			\brief Handle an array of primative values (32-bit signed integers)
+			\brief Handle an array of primitive values (32-bit signed integers)
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeS32(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveS32(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimativeArrayS32(const int32_t* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayS32(const int32_t* src, const uint32_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeS32(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveS32(src[i]);
 			OnArrayEnd();
 		}
 
 		/*!
-			\brief Handle an array of primative values (64-bit signed integers)
+			\brief Handle an array of primitive values (64-bit signed integers)
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeS64(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveS64(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimativeArrayS64(const int64_t* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayS64(const int64_t* src, const uint32_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeS64(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveS64(src[i]);
 			OnArrayEnd();
 		}
 
 		/*!
-			\brief Handle an array of primative values (32-bit floating point)
+			\brief Handle an array of primitive values (32-bit floating point)
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeF32(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveF32(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimativeArrayF32(const float* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayF32(const float* src, const uint32_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeF32(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveF32(src[i]);
 			OnArrayEnd();
 		}
 
 		/*!
-			\brief Handle an array of primative values (64-bit floating point)
+			\brief Handle an array of primitive values (64-bit floating point)
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeF64(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveF64(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimativeArrayF64(const double* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayF64(const double* src, const uint32_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeF64(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveF64(src[i]);
 			OnArrayEnd();
 		}
 
 		/*!
-			\brief Handle an array of primative values (character)
+			\brief Handle an array of primitive values (character)
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeC8(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveC8(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimativeArrayC8(const char* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayC8(const char* src, const uint32_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeC8(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveC8(src[i]);
 			OnArrayEnd();
 		}
 
 		/*!
-			\brief Handle an array of primative values (16-bit floating point)
+			\brief Handle an array of primitive values (16-bit floating point)
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeF16(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveF16(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimativeArrayF16(const half* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayF16(const half* src, const uint32_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeF16(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveF16(src[i]);
 			OnArrayEnd();
 		}
 
 		/*!
-			\brief Handle an array of primative values (bool)
+			\brief Handle an array of primitive values (bool)
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeBool(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveBool(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimativeArrayBool(const bool* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayBool(const bool* src, const uint32_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimativeBool(src[i]);
+			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveBool(src[i]);
 			OnArrayEnd();
 		}
 
 		// Template helpers
 
 		template<class T>
-		inline void OnPrimative(const T value);
+		inline void OnPrimitive(const T value);
 
 		template<class T>
-		inline void OnPrimativeArray(const T* values, const uint32_t size);
+		inline void OnPrimitiveArray(const T* values, const uint32_t size);
 
 		template<>
-		inline void OnPrimative<bool>(const bool value) {
-			OnPrimativeBool(value);
+		inline void OnPrimitive<bool>(const bool value) {
+			OnPrimitiveBool(value);
 		}
 
 		template<>
-		inline void OnPrimativeArray<bool>(const bool* values, const uint32_t size) {
-			OnPrimativeArrayBool(values, size);
+		inline void OnPrimitiveArray<bool>(const bool* values, const uint32_t size) {
+			OnPrimitiveArrayBool(values, size);
 		}
 
 
 		template<>
-		inline void OnPrimative<char>(const char value) {
-			OnPrimativeC8(value);
+		inline void OnPrimitive<char>(const char value) {
+			OnPrimitiveC8(value);
 		}
 
 		template<>
-		inline void OnPrimativeArray<char>(const char* values, const uint32_t size) {
-			OnPrimativeArrayC8(values, size);
+		inline void OnPrimitiveArray<char>(const char* values, const uint32_t size) {
+			OnPrimitiveArrayC8(values, size);
 		}
 
 		template<>
-		inline void OnPrimative<uint8_t>(const uint8_t value) {
-			OnPrimativeU8(value);
+		inline void OnPrimitive<uint8_t>(const uint8_t value) {
+			OnPrimitiveU8(value);
 		}
 
 		template<>
-		inline void OnPrimativeArray<uint8_t>(const uint8_t* values, const uint32_t size) {
-			OnPrimativeArrayU8(values, size);
+		inline void OnPrimitiveArray<uint8_t>(const uint8_t* values, const uint32_t size) {
+			OnPrimitiveArrayU8(values, size);
 		}
 
 		template<>
-		inline void OnPrimative<uint16_t>(const uint16_t value) {
-			OnPrimativeU16(value);
+		inline void OnPrimitive<uint16_t>(const uint16_t value) {
+			OnPrimitiveU16(value);
 		}
 
 		template<>
-		inline void OnPrimativeArray<uint16_t>(const uint16_t* values, const uint32_t size) {
-			OnPrimativeArrayU16(values, size);
+		inline void OnPrimitiveArray<uint16_t>(const uint16_t* values, const uint32_t size) {
+			OnPrimitiveArrayU16(values, size);
 		}
 
 		template<>
-		inline void OnPrimative<uint32_t>(const uint32_t value) {
-			OnPrimativeU32(value);
+		inline void OnPrimitive<uint32_t>(const uint32_t value) {
+			OnPrimitiveU32(value);
 		}
 
 		template<>
-		inline void OnPrimativeArray<uint32_t>(const uint32_t* values, const uint32_t size) {
-			OnPrimativeArrayU32(values, size);
+		inline void OnPrimitiveArray<uint32_t>(const uint32_t* values, const uint32_t size) {
+			OnPrimitiveArrayU32(values, size);
 		}
 
 		template<>
-		inline void OnPrimative<uint64_t>(const uint64_t value) {
-			OnPrimativeU64(value);
+		inline void OnPrimitive<uint64_t>(const uint64_t value) {
+			OnPrimitiveU64(value);
 		}
 
 		template<>
-		inline void OnPrimativeArray<uint64_t>(const uint64_t* values, const uint32_t size) {
-			OnPrimativeArrayU64(values, size);
+		inline void OnPrimitiveArray<uint64_t>(const uint64_t* values, const uint32_t size) {
+			OnPrimitiveArrayU64(values, size);
 		}
 
 		template<>
-		inline void OnPrimative<int8_t>(const int8_t value) {
-			OnPrimativeS8(value);
+		inline void OnPrimitive<int8_t>(const int8_t value) {
+			OnPrimitiveS8(value);
 		}
 
 		template<>
-		inline void OnPrimativeArray<int8_t>(const int8_t* values, const uint32_t size) {
-			OnPrimativeArrayS8(values, size);
+		inline void OnPrimitiveArray<int8_t>(const int8_t* values, const uint32_t size) {
+			OnPrimitiveArrayS8(values, size);
 		}
 
 		template<>
-		inline void OnPrimative<int16_t>(const int16_t value) {
-			OnPrimativeS16(value);
+		inline void OnPrimitive<int16_t>(const int16_t value) {
+			OnPrimitiveS16(value);
 		}
 
 		template<>
-		inline void OnPrimativeArray<int16_t>(const int16_t* values, const uint32_t size) {
-			OnPrimativeArrayS16(values, size);
+		inline void OnPrimitiveArray<int16_t>(const int16_t* values, const uint32_t size) {
+			OnPrimitiveArrayS16(values, size);
 		}
 
 		template<>
-		inline void OnPrimative<int32_t>(const int32_t value) {
-			OnPrimativeS32(value);
+		inline void OnPrimitive<int32_t>(const int32_t value) {
+			OnPrimitiveS32(value);
 		}
 
 		template<>
-		inline void OnPrimativeArray<int32_t>(const int32_t* values, const uint32_t size) {
-			OnPrimativeArrayS32(values, size);
+		inline void OnPrimitiveArray<int32_t>(const int32_t* values, const uint32_t size) {
+			OnPrimitiveArrayS32(values, size);
 		}
 
 		template<>
-		inline void OnPrimative<int64_t>(const int64_t value) {
-			OnPrimativeS64(value);
+		inline void OnPrimitive<int64_t>(const int64_t value) {
+			OnPrimitiveS64(value);
 		}
 
 		template<>
-		inline void OnPrimativeArray<int64_t>(const int64_t* values, const uint32_t size) {
-			OnPrimativeArrayS64(values, size);
+		inline void OnPrimitiveArray<int64_t>(const int64_t* values, const uint32_t size) {
+			OnPrimitiveArrayS64(values, size);
 		}
 
 		template<>
-		inline void OnPrimative<half>(const half value) {
-			OnPrimativeF16(value);
+		inline void OnPrimitive<half>(const half value) {
+			OnPrimitiveF16(value);
 		}
 
 		template<>
-		inline void OnPrimativeArray<half>(const half* values, const uint32_t size) {
-			OnPrimativeArrayF16(values, size);
+		inline void OnPrimitiveArray<half>(const half* values, const uint32_t size) {
+			OnPrimitiveArrayF16(values, size);
 		}
 
 		template<>
-		inline void OnPrimative<float>(const float value) {
-			OnPrimativeF32(value);
+		inline void OnPrimitive<float>(const float value) {
+			OnPrimitiveF32(value);
 		}
 
 		template<>
-		inline void OnPrimativeArray<float>(const float* values, const uint32_t size) {
-			OnPrimativeArrayF32(values, size);
+		inline void OnPrimitiveArray<float>(const float* values, const uint32_t size) {
+			OnPrimitiveArrayF32(values, size);
 		}
 
 		template<>
-		inline void OnPrimative<double>(const double value) {
-			OnPrimativeF64(value);
+		inline void OnPrimitive<double>(const double value) {
+			OnPrimitiveF64(value);
 		}
 
 		template<>
-		inline void OnPrimativeArray<double>(const double* values, const uint32_t size) {
-			OnPrimativeArrayF64(values, size);
+		inline void OnPrimitiveArray<double>(const double* values, const uint32_t size) {
+			OnPrimitiveArrayF64(values, size);
 		}
 
 		// Object helper functions
 
 		template<class T>
-		inline void OnPrimative(const ComponentID component_id, const T value) {
+		inline void OnPrimitive(const ComponentID component_id, const T value) {
 			OnComponentID(component_id);
-			OnPrimative<T>(value);
+			OnPrimitive<T>(value);
 		}
 
 		template<class T>
-		inline void OnPrimativeArray(const ComponentID component_id, const T* values, const uint32_t size) {
+		inline void OnPrimitiveArray(const ComponentID component_id, const T* values, const uint32_t size) {
 			OnComponentID(component_id);
-			OnPrimativeArray<T>(values, size);
+			OnPrimitiveArray<T>(values, size);
 		}
 
 		// General helper
 
-		inline void operator()(const char*& value) { OnPrimativeString(value, static_cast<uint32_t>(strlen(value))); }
+		inline void operator()(const char*& value) { OnPrimitiveString(value, static_cast<uint32_t>(strlen(value))); }
 
 		template<class T>
 		inline void operator()(const T& value) = delete;
 
-		template<> inline void operator()<uint8_t>(const uint8_t& value) { OnPrimative<uint8_t>(value); }
-		template<> inline void operator()<uint16_t>(const uint16_t& value) { OnPrimative<uint16_t>(value); }
-		template<> inline void operator()<uint32_t>(const uint32_t& value) { OnPrimative<uint32_t>(value); }
-		template<> inline void operator()<uint64_t>(const uint64_t& value) { OnPrimative<uint64_t>(value); }
-		template<> inline void operator()<int8_t>(const int8_t& value) { OnPrimative<int8_t>(value); }
-		template<> inline void operator()<int16_t>(const int16_t& value) { OnPrimative<int16_t>(value); }
-		template<> inline void operator()<int32_t>(const int32_t& value) { OnPrimative<int32_t>(value); }
-		template<> inline void operator()<int64_t>(const int64_t& value) { OnPrimative<int64_t>(value); }
-		template<> inline void operator()<half>(const half& value) { OnPrimative<half>(value); }
-		template<> inline void operator()<float>(const float& value) { OnPrimative<float>(value); }
-		template<> inline void operator()<double>(const double& value) { OnPrimative<double>(value); }
-		template<> inline void operator()<bool>(const bool& value) { OnPrimative<bool>(value); }
-		template<> inline void operator()<std::string>(const std::string& value) { OnPrimativeString(value.c_str(), static_cast<uint32_t>(value.size())); }
+		template<> inline void operator()<uint8_t>(const uint8_t& value) { OnPrimitive<uint8_t>(value); }
+		template<> inline void operator()<uint16_t>(const uint16_t& value) { OnPrimitive<uint16_t>(value); }
+		template<> inline void operator()<uint32_t>(const uint32_t& value) { OnPrimitive<uint32_t>(value); }
+		template<> inline void operator()<uint64_t>(const uint64_t& value) { OnPrimitive<uint64_t>(value); }
+		template<> inline void operator()<int8_t>(const int8_t& value) { OnPrimitive<int8_t>(value); }
+		template<> inline void operator()<int16_t>(const int16_t& value) { OnPrimitive<int16_t>(value); }
+		template<> inline void operator()<int32_t>(const int32_t& value) { OnPrimitive<int32_t>(value); }
+		template<> inline void operator()<int64_t>(const int64_t& value) { OnPrimitive<int64_t>(value); }
+		template<> inline void operator()<half>(const half& value) { OnPrimitive<half>(value); }
+		template<> inline void operator()<float>(const float& value) { OnPrimitive<float>(value); }
+		template<> inline void operator()<double>(const double& value) { OnPrimitive<double>(value); }
+		template<> inline void operator()<bool>(const bool& value) { OnPrimitive<bool>(value); }
+		template<> inline void operator()<std::string>(const std::string& value) { OnPrimitiveString(value.c_str(), static_cast<uint32_t>(value.size())); }
 
 		template<class T>
 		inline void operator()(const std::vector<T>& value) {
@@ -640,17 +640,17 @@ namespace anvil { namespace BytePipe {
 			OnArrayEnd();
 		}
 
-		template<> inline void operator()(const std::vector<uint8_t>& value) { OnPrimativeArray<uint8_t>(value.data(), static_cast<uint32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<uint16_t>& value) { OnPrimativeArray<uint16_t>(value.data(), static_cast<uint32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<uint32_t>& value) { OnPrimativeArray<uint32_t>(value.data(), static_cast<uint32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<uint64_t>& value) { OnPrimativeArray<uint64_t>(value.data(), static_cast<uint32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<int8_t>& value) { OnPrimativeArray<int8_t>(value.data(), static_cast<int32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<int16_t>& value) { OnPrimativeArray<int16_t>(value.data(), static_cast<int32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<int32_t>& value) { OnPrimativeArray<int32_t>(value.data(), static_cast<int32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<int64_t>& value) { OnPrimativeArray<int64_t>(value.data(), static_cast<int32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<half>& value) { OnPrimativeArray<half>(value.data(), static_cast<half>(value.size())); }
-		template<> inline void operator()(const std::vector<float>& value) { OnPrimativeArray<float>(value.data(), static_cast<float>(value.size())); }
-		template<> inline void operator()(const std::vector<double>& value) { OnPrimativeArray<double>(value.data(), static_cast<double>(value.size())); }
+		template<> inline void operator()(const std::vector<uint8_t>& value) { OnPrimitiveArray<uint8_t>(value.data(), static_cast<uint32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<uint16_t>& value) { OnPrimitiveArray<uint16_t>(value.data(), static_cast<uint32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<uint32_t>& value) { OnPrimitiveArray<uint32_t>(value.data(), static_cast<uint32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<uint64_t>& value) { OnPrimitiveArray<uint64_t>(value.data(), static_cast<uint32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<int8_t>& value) { OnPrimitiveArray<int8_t>(value.data(), static_cast<int32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<int16_t>& value) { OnPrimitiveArray<int16_t>(value.data(), static_cast<int32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<int32_t>& value) { OnPrimitiveArray<int32_t>(value.data(), static_cast<int32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<int64_t>& value) { OnPrimitiveArray<int64_t>(value.data(), static_cast<int32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<half>& value) { OnPrimitiveArray<half>(value.data(), static_cast<half>(value.size())); }
+		template<> inline void operator()(const std::vector<float>& value) { OnPrimitiveArray<float>(value.data(), static_cast<float>(value.size())); }
+		template<> inline void operator()(const std::vector<double>& value) { OnPrimitiveArray<double>(value.data(), static_cast<double>(value.size())); }
 
 		template<class T, uint32_t S>
 		inline void operator()(const std::array<T, S>& value) {
@@ -659,17 +659,17 @@ namespace anvil { namespace BytePipe {
 			OnArrayEnd();
 		}
 
-		template<uint32_t S> inline void operator()(const std::array<uint8_t, S>& value) { OnPrimativeArray<uint8_t>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<uint16_t, S>& value) { OnPrimativeArray<uint16_t>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<uint32_t, S>& value) { OnPrimativeArray<uint32_t>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<uint64_t, S>& value) { OnPrimativeArray<uint64_t>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<int8_t, S>& value) { OnPrimativeArray<int8_t>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<int16_t, S>& value) { OnPrimativeArray<int16_t>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<int32_t, S>& value) { OnPrimativeArray<int32_t>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<int64_t, S>& value) { OnPrimativeArray<int64_t>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<half, S>& value) { OnPrimativeArray<half>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<float, S>& value) { OnPrimativeArray<float>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<double, S>& value) { OnPrimativeArray<double>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<uint8_t, S>& value) { OnPrimitiveArray<uint8_t>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<uint16_t, S>& value) { OnPrimitiveArray<uint16_t>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<uint32_t, S>& value) { OnPrimitiveArray<uint32_t>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<uint64_t, S>& value) { OnPrimitiveArray<uint64_t>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<int8_t, S>& value) { OnPrimitiveArray<int8_t>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<int16_t, S>& value) { OnPrimitiveArray<int16_t>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<int32_t, S>& value) { OnPrimitiveArray<int32_t>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<int64_t, S>& value) { OnPrimitiveArray<int64_t>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<half, S>& value) { OnPrimitiveArray<half>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<float, S>& value) { OnPrimitiveArray<float>(value.data(), S); }
+		template<uint32_t S> inline void operator()(const std::array<double, S>& value) { OnPrimitiveArray<double>(value.data(), S); }
 
 		template<class T>
 		inline void operator()(const std::list<T>& value) {
@@ -750,34 +750,34 @@ namespace anvil { namespace BytePipe {
 		void OnComponentID(const ComponentID id)  final;
 		void OnUserPOD(const uint32_t type, const uint32_t bytes, const void* data) final;
 		void OnNull() final;
-		void OnPrimativeF64(const double value) final; 
-		void OnPrimativeString(const char* value, const uint32_t length) final;
-		void OnPrimativeBool(const bool value) final;
-		void OnPrimativeC8(const char value) final;
-		void OnPrimativeU64(const uint64_t value) final;
-		void OnPrimativeS64(const int64_t value) final;
-		void OnPrimativeF32(const float value) final;
-		void OnPrimativeU8(const uint8_t value) final;
-		void OnPrimativeU16(const uint16_t value) final;
-		void OnPrimativeU32(const uint32_t value) final;
-		void OnPrimativeS8(const int8_t value) final;
-		void OnPrimativeS16(const int16_t value) final;
-		void OnPrimativeS32(const int32_t value) final;
-		void OnPrimativeF16(const half value) final;
+		void OnPrimitiveF64(const double value) final; 
+		void OnPrimitiveString(const char* value, const uint32_t length) final;
+		void OnPrimitiveBool(const bool value) final;
+		void OnPrimitiveC8(const char value) final;
+		void OnPrimitiveU64(const uint64_t value) final;
+		void OnPrimitiveS64(const int64_t value) final;
+		void OnPrimitiveF32(const float value) final;
+		void OnPrimitiveU8(const uint8_t value) final;
+		void OnPrimitiveU16(const uint16_t value) final;
+		void OnPrimitiveU32(const uint32_t value) final;
+		void OnPrimitiveS8(const int8_t value) final;
+		void OnPrimitiveS16(const int16_t value) final;
+		void OnPrimitiveS32(const int32_t value) final;
+		void OnPrimitiveF16(const half value) final;
 
-		void OnPrimativeArrayC8(const char* src, const uint32_t size) final;
-		void OnPrimativeArrayBool (const bool* src, const uint32_t size) final;
-		void OnPrimativeArrayU8(const uint8_t* src, const uint32_t size) final;
-		void OnPrimativeArrayU16(const uint16_t* src, const uint32_t size) final;
-		void OnPrimativeArrayU32(const uint32_t* src, const uint32_t size) final;
-		void OnPrimativeArrayU64(const uint64_t* src, const uint32_t size) final;
-		void OnPrimativeArrayS8(const int8_t* src, const uint32_t size) final;
-		void OnPrimativeArrayS16(const int16_t* src, const uint32_t size) final;
-		void OnPrimativeArrayS32(const int32_t* src, const uint32_t size) final;
-		void OnPrimativeArrayS64(const int64_t* src, const uint32_t size) final;
-		void OnPrimativeArrayF16(const half* src, const uint32_t size) final;
-		void OnPrimativeArrayF32(const float* src, const uint32_t size) final;
-		void OnPrimativeArrayF64(const double* src, const uint32_t size) final;
+		void OnPrimitiveArrayC8(const char* src, const uint32_t size) final;
+		void OnPrimitiveArrayBool (const bool* src, const uint32_t size) final;
+		void OnPrimitiveArrayU8(const uint8_t* src, const uint32_t size) final;
+		void OnPrimitiveArrayU16(const uint16_t* src, const uint32_t size) final;
+		void OnPrimitiveArrayU32(const uint32_t* src, const uint32_t size) final;
+		void OnPrimitiveArrayU64(const uint64_t* src, const uint32_t size) final;
+		void OnPrimitiveArrayS8(const int8_t* src, const uint32_t size) final;
+		void OnPrimitiveArrayS16(const int16_t* src, const uint32_t size) final;
+		void OnPrimitiveArrayS32(const int32_t* src, const uint32_t size) final;
+		void OnPrimitiveArrayS64(const int64_t* src, const uint32_t size) final;
+		void OnPrimitiveArrayF16(const half* src, const uint32_t size) final;
+		void OnPrimitiveArrayF32(const float* src, const uint32_t size) final;
+		void OnPrimitiveArrayF64(const double* src, const uint32_t size) final;
 	};
 
 }}

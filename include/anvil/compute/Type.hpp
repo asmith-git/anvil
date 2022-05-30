@@ -19,7 +19,7 @@
 #include <cmath>
 #include "anvil/core/Keywords.hpp"
 
-// Primative Types
+// Primitive Types
 
 namespace anvil {
 
@@ -181,21 +181,21 @@ namespace anvil {
 			return _channels + 1u;
 		}
 
-		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN size_t GetPrimativeSizeInBytes() const throw() {
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN size_t GetPrimitiveSizeInBytes() const throw() {
 			//return std::pow(2u, _bytes);
 			return 1u << _bytes;
 		}
 
-		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN size_t GetPrimativeSizeInBits() const throw() {
-			return GetPrimativeSizeInBytes() * 8u;
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN size_t GetPrimitiveSizeInBits() const throw() {
+			return GetPrimitiveSizeInBytes() * 8u;
 		}
 
 		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN size_t GetSizeInBytes() const throw() {
-			return GetPrimativeSizeInBytes() * GetNumberOfChannels();
+			return GetPrimitiveSizeInBytes() * GetNumberOfChannels();
 		}
 
 		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN size_t GetSizeInBits() const throw() {
-			return GetPrimativeSizeInBytes() * GetNumberOfChannels() * 8u;
+			return GetPrimitiveSizeInBytes() * GetNumberOfChannels() * 8u;
 		}
 
 		ANVIL_STRONG_INLINE void SetSizeInBytes(const size_t size) {

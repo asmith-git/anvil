@@ -103,55 +103,55 @@ namespace anvil { namespace BytePipe {
 		AddValueC("null");
 	}
 
-	void JsonWriter::OnPrimativeF64(const double value) {
+	void JsonWriter::OnPrimitiveF64(const double value) {
 		AddValue(std::to_string(value));
 	}
 
-	void JsonWriter::OnPrimativeString(const char* value, const uint32_t length) {
+	void JsonWriter::OnPrimitiveString(const char* value, const uint32_t length) {
 		AddValue(std::string(value, value + length));
 	}
 
-	void JsonWriter::OnPrimativeBool(const bool value) {
+	void JsonWriter::OnPrimitiveBool(const bool value) {
 		AddValueC(value ? "true" : "false");
 	}
 
-	void JsonWriter::OnPrimativeC8(const char value) {
-		OnPrimativeString(&value, 1u);
+	void JsonWriter::OnPrimitiveC8(const char value) {
+		OnPrimitiveString(&value, 1u);
 	}
 
-	void JsonWriter::OnPrimativeU64(const uint64_t value) {
+	void JsonWriter::OnPrimitiveU64(const uint64_t value) {
 		AddValue(std::to_string(value));
 	}
 
-	void JsonWriter::OnPrimativeS64(const int64_t value) {
+	void JsonWriter::OnPrimitiveS64(const int64_t value) {
 		AddValue(std::to_string(value));
 	}
 
-	void JsonWriter::OnPrimativeF32(const float value) {
+	void JsonWriter::OnPrimitiveF32(const float value) {
 		AddValue(std::to_string(value));
 	}
 
-	void JsonWriter::OnPrimativeU8(const uint8_t value) {
+	void JsonWriter::OnPrimitiveU8(const uint8_t value) {
 		AddValue(std::to_string(value));
 	}
 
-	void JsonWriter::OnPrimativeU16(const uint16_t value) {
+	void JsonWriter::OnPrimitiveU16(const uint16_t value) {
 		AddValue(std::to_string(value));
 	}
 
-	void JsonWriter::OnPrimativeU32(const uint32_t value) {
+	void JsonWriter::OnPrimitiveU32(const uint32_t value) {
 		AddValue(std::to_string(value));
 	}
 
-	void JsonWriter::OnPrimativeS8(const int8_t value) {
+	void JsonWriter::OnPrimitiveS8(const int8_t value) {
 		AddValue(std::to_string(value));
 	}
 
-	void JsonWriter::OnPrimativeS16(const int16_t value) {
+	void JsonWriter::OnPrimitiveS16(const int16_t value) {
 		AddValue(std::to_string(value));
 	}
 
-	void JsonWriter::OnPrimativeS32(const int32_t value) {
+	void JsonWriter::OnPrimitiveS32(const int32_t value) {
 		AddValue(std::to_string(value));
 	}
 

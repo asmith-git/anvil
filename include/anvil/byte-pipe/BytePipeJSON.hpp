@@ -49,19 +49,19 @@ namespace anvil { namespace BytePipe {
 		void OnComponentID(const ComponentID id)  final;
 		void OnUserPOD(const uint32_t type, const uint32_t bytes, const void* data) final;
 		void OnNull() final;
-		void OnPrimativeF64(const double value) final;
-		void OnPrimativeString(const char* value, const uint32_t length) final;
-		void OnPrimativeBool(const bool value) final;
-		void OnPrimativeC8(const char value) final;
-		void OnPrimativeU64(const uint64_t value) final;
-		void OnPrimativeS64(const int64_t value) final;
-		void OnPrimativeF32(const float value) final;
-		void OnPrimativeU8(const uint8_t value) final;
-		void OnPrimativeU16(const uint16_t value) final;
-		void OnPrimativeU32(const uint32_t value) final;
-		void OnPrimativeS8(const int8_t value) final;
-		void OnPrimativeS16(const int16_t value) final;
-		void OnPrimativeS32(const int32_t value) final;
+		void OnPrimitiveF64(const double value) final;
+		void OnPrimitiveString(const char* value, const uint32_t length) final;
+		void OnPrimitiveBool(const bool value) final;
+		void OnPrimitiveC8(const char value) final;
+		void OnPrimitiveU64(const uint64_t value) final;
+		void OnPrimitiveS64(const int64_t value) final;
+		void OnPrimitiveF32(const float value) final;
+		void OnPrimitiveU8(const uint8_t value) final;
+		void OnPrimitiveU16(const uint16_t value) final;
+		void OnPrimitiveU32(const uint32_t value) final;
+		void OnPrimitiveS8(const int8_t value) final;
+		void OnPrimitiveS16(const int16_t value) final;
+		void OnPrimitiveS32(const int32_t value) final;
 	};
 
 }}
