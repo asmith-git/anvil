@@ -46,6 +46,13 @@ namespace anvil { namespace BytePipe {
 		TYPE_BOOL
 	};
 
+	static ANVIL_STRONG_INLINE bool IsUnsigned(const Type t) { return t >= TYPE_U8 && t <= TYPE_U64; }
+	static ANVIL_STRONG_INLINE bool IsSigned(const Type t) { return t >= TYPE_S8 && t <= TYPE_S64; }
+	static ANVIL_STRONG_INLINE bool IsIntegral(const Type t) { return t >= TYPE_U8 && t <= TYPE_S64; }
+	static ANVIL_STRONG_INLINE bool IsFloatingPoint(const Type t) { return t >= TYPE_F16 && t <= TYPE_F64; }
+	static ANVIL_STRONG_INLINE bool IsNumeric(const Type t) { return t >= TYPE_U8 && t <= TYPE_F64; }
+	static ANVIL_STRONG_INLINE bool IsPrimative(const Type t) { return (t >= TYPE_C8 && t <= TYPE_F64) || t == TYPE_BOOL; }
+
 	typedef uint16_t ComponentID;
 
 	enum half : uint16_t {};
@@ -68,7 +75,7 @@ namespace anvil { namespace BytePipe {
 			0u,					//TYPE_STRING
 			0u,					//TYPE_ARRAY
 			0u,					//TYPE_OBJECT
-			sizeof(bool)	//TYPE_BOOL
+			sizeof(bool)		//TYPE_BOOL
 		};
 
 		return g_sizes[t];
@@ -155,6 +162,13 @@ namespace anvil { namespace BytePipe {
 			\brief Casts the value to the smallest type that can represent it without losing precision.
 		*/
 		void Optimise();
+
+		inline bool IsUnsigned() const { return BytePipe::IsUnsigned(type); }
+		inline bool IsSigned() const { return BytePipe::IsSigned(type); }
+		inline bool IsIntegral() const { return BytePipe::IsIntegral(type); }
+		inline bool IsFloatingPoint() const { return BytePipe::IsFloatingPoint(type); }
+		inline bool IsNumeric() const { return BytePipe::IsNumeric(type); }
+		inline bool IsPrimative() const { return BytePipe::IsPrimative(type); }
 	};
 
 	class Value {
@@ -391,10 +405,12 @@ namespace anvil { namespace BytePipe {
 
 		// Helpers
 
-		inline bool IsPrimitiveType() const {
-			const Type t = _primitive.type;
-			return (t >= TYPE_C8 && t <= TYPE_F64) || t == TYPE_BOOL;
-		}
+		inline bool IsUnsigned() const { return _primitive.IsUnsigned(); }
+		inline bool IsSigned() const { return _primitive.IsSigned(); }
+		inline bool IsIntegral() const { return _primitive.IsIntegral(); }
+		inline bool IsFloatingPoint() const { return _primitive.IsFloatingPoint(); }
+		inline bool IsNumeric() const { return _primitive.IsNumeric(); }
+		inline bool IsPrimative() const { return _primitive.IsPrimative(); }
 
 		inline bool IsPrimitiveArray() const {
 			return _primitive_array_type != TYPE_BOOL && GetType() == TYPE_ARRAY;

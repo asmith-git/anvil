@@ -160,7 +160,7 @@ namespace anvil { namespace BytePipe {
 
 	PrimitiveValue::operator uint32_t() const {
 		if (type == TYPE_U32) {
-			return u8;
+			return u32;
 		} else {
 			const uint64_t tmp = operator uint64_t();
 			return tmp > UINT32_MAX ? UINT32_MAX : static_cast<uint32_t>(tmp);
