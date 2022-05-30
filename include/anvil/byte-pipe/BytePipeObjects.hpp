@@ -754,8 +754,8 @@ namespace anvil { namespace BytePipe {
 			return GetF64();
 		}
 
-		explicit inline operator std::string() {
-			return GetString();
+		explicit inline operator std::string() const {
+			return const_cast<Value*>(this)->GetString();
 		}
 
 		explicit Value(const std::string& value) :
@@ -765,7 +765,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<class T>
-		explicit inline operator std::vector<T>() {
+		explicit inline operator std::vector<T>() const {
 			const size_t s = GetSize();
 			std::vector<T> tmp(s);
 			for (size_t i = 0u; i < s; ++i) tmp[i] = static_cast<T>(operator[](i));
@@ -776,8 +776,8 @@ namespace anvil { namespace BytePipe {
 		Value(const std::vector<T>& value) :
 			Value()
 		{
-			if ANVIL_CONSTEXPR_FN (IsPrimitive(GetTypeID<T>())) {
-				SetPrimitiveArray(GetTypeID<T>());
+			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<T>())) {
+				SetPrimitiveArray(BytePipe::GetTypeID<T>());
 			} else {
 				SetArray();
 			}
@@ -785,7 +785,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<class T>
-		explicit inline operator std::list<T>() {
+		explicit inline operator std::list<T>() const {
 			const size_t s = GetSize();
 			std::list<T> tmp;
 			for (size_t i = 0u; i < s; ++i) tmp.push_back(static_cast<T>(operator[](i)));
@@ -796,8 +796,8 @@ namespace anvil { namespace BytePipe {
 		explicit Value(const std::list<T>& value) :
 			Value()
 		{
-			if ANVIL_CONSTEXPR_FN (IsPrimitive(GetTypeID<T>())) {
-				SetPrimitiveArray(GetTypeID<T>());
+			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<T>())) {
+				SetPrimitiveArray(BytePipe::GetTypeID<T>());
 			} else {
 				SetArray();
 			}
@@ -805,7 +805,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<class T>
-		explicit inline operator std::deque<T>() {
+		explicit inline operator std::deque<T>() const {
 			const size_t s = GetSize();
 			std::deque<T> tmp(s);
 			for (size_t i = 0u; i < s; ++i) tmp[i] = static_cast<T>(operator[](i));
@@ -816,8 +816,8 @@ namespace anvil { namespace BytePipe {
 		explicit Value(const std::deque<T>& value) :
 			Value()
 		{
-			if ANVIL_CONSTEXPR_FN (IsPrimitive(GetTypeID<T>())) {
-				SetPrimitiveArray(GetTypeID<T>());
+			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<T>())) {
+				SetPrimitiveArray(BytePipe::GetTypeID<T>());
 			} else {
 				SetArray();
 			}
@@ -825,7 +825,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<class T, size_t S>
-		explicit inline operator std::array<T, S>() {
+		explicit inline operator std::array<T, S>() const {
 			std::array<T,S> tmp;
 			for (size_t i = 0u; i < S; ++i) tmp[i] = static_cast<T>(operator[](i));
 			return tmp;
@@ -835,8 +835,8 @@ namespace anvil { namespace BytePipe {
 		explicit Value(const std::array<T, S>& value) :
 			Value()
 		{
-			if ANVIL_CONSTEXPR_FN (IsPrimitive(GetTypeID<T>())) {
-				SetPrimitiveArray(GetTypeID<T>());
+			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<T>())) {
+				SetPrimitiveArray(BytePipe::GetTypeID<T>());
 			} else {
 				SetArray();
 			}
@@ -844,15 +844,17 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<class K, class V>
-		explicit inline operator std::map<K, V>() {
-			std::map<K, V> tmp;
-			const size_t s = GetSize(); 
-			for (size_t i = 0u; i < s; ++i) {
-				Value& v = GetValue(i);
+		explicit inline operator std::map<K, V>() const {
+			const Value& keys = operator[](0);
+			const Value& values = operator[](1);
 
+			std::map<K, V> tmp;
+
+			const size_t s = keys.GetSize();
+			for (size_t i = 0u; i < s; ++i) {
 				tmp.emplace(
-					static_cast<K>(v.GetValue(0)),
-					static_cast<V>(v.GetValue(1))
+					static_cast<K>(keys[i]),
+					static_cast<V>(values[i])
 				);
 			}
 			return tmp;
@@ -862,15 +864,29 @@ namespace anvil { namespace BytePipe {
 		explicit Value(const std::map<K, V >& value) :
 			Value()
 		{
-			SetArray();
-			for (const std::pair<K, V>& tmp : value) {
-				Value v;
-				v.SetArray();
-				v.AddValue(tmp.first);
-				v.AddValue(tmp.second);
-
-				AddValue(std::move(v));
+			Value keys;
+			Value values;
+			
+			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<K>())) {
+				keys.SetPrimitiveArray(BytePipe::GetTypeID<K>());
+			} else {
+				keys.SetArray();
 			}
+			
+			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<V>())) {
+				values.SetPrimitiveArray(BytePipe::GetTypeID<V>());
+			} else {
+				values.SetArray();
+			}
+
+			for (const std::pair<K, V>& tmp : value) {
+				keys.AddValue(tmp.first);
+				values.AddValue(tmp.second);
+			}
+
+			SetArray();
+			AddValue(std::move(keys));
+			AddValue(std::move(values));
 		}
 	};
 
