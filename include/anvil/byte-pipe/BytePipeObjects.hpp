@@ -46,12 +46,12 @@ namespace anvil { namespace BytePipe {
 		TYPE_BOOL
 	};
 
-	static ANVIL_STRONG_INLINE bool IsUnsigned(const Type t) { return t >= TYPE_U8 && t <= TYPE_U64; }
-	static ANVIL_STRONG_INLINE bool IsSigned(const Type t) { return t >= TYPE_S8 && t <= TYPE_S64; }
-	static ANVIL_STRONG_INLINE bool IsIntegral(const Type t) { return t >= TYPE_U8 && t <= TYPE_S64; }
-	static ANVIL_STRONG_INLINE bool IsFloatingPoint(const Type t) { return t >= TYPE_F16 && t <= TYPE_F64; }
-	static ANVIL_STRONG_INLINE bool IsNumeric(const Type t) { return t >= TYPE_U8 && t <= TYPE_F64; }
-	static ANVIL_STRONG_INLINE bool IsPrimitive(const Type t) { return (t >= TYPE_C8 && t <= TYPE_F64) || t == TYPE_BOOL; }
+	static ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN bool IsUnsigned(const Type t) { return t >= TYPE_U8 && t <= TYPE_U64; }
+	static ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN bool IsSigned(const Type t) { return t >= TYPE_S8 && t <= TYPE_S64; }
+	static ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN bool IsIntegral(const Type t) { return t >= TYPE_U8 && t <= TYPE_S64; }
+	static ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN bool IsFloatingPoint(const Type t) { return t >= TYPE_F16 && t <= TYPE_F64; }
+	static ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN bool IsNumeric(const Type t) { return t >= TYPE_U8 && t <= TYPE_F64; }
+	static ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN bool IsPrimitive(const Type t) { return (t >= TYPE_C8 && t <= TYPE_F64) || t == TYPE_BOOL; }
 
 	typedef uint16_t ComponentID;
 
@@ -83,7 +83,9 @@ namespace anvil { namespace BytePipe {
 
 
 	template<class T>
-	static ANVIL_CONSTEXPR_FN Type GetTypeID();
+	static ANVIL_CONSTEXPR_FN Type GetTypeID() {
+		return TYPE_OBJECT; // Default
+	}
 
 	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<void>() { return TYPE_NULL; }
 	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<char>() { return TYPE_C8; }
@@ -774,7 +776,11 @@ namespace anvil { namespace BytePipe {
 		Value(const std::vector<T>& value) :
 			Value()
 		{
-			SetArray();
+			if ANVIL_CONSTEXPR_FN (IsPrimitive(GetTypeID<T>())) {
+				SetPrimitiveArray(GetTypeID<T>());
+			} else {
+				SetArray();
+			}
 			for (T& tmp : value) AddValue(tmp);
 		}
 
@@ -790,7 +796,11 @@ namespace anvil { namespace BytePipe {
 		explicit Value(const std::list<T>& value) :
 			Value()
 		{
-			SetArray();
+			if ANVIL_CONSTEXPR_FN (IsPrimitive(GetTypeID<T>())) {
+				SetPrimitiveArray(GetTypeID<T>());
+			} else {
+				SetArray();
+			}
 			for (T& tmp : value) AddValue(tmp);
 		}
 
@@ -806,7 +816,11 @@ namespace anvil { namespace BytePipe {
 		explicit Value(const std::deque<T>& value) :
 			Value()
 		{
-			SetArray();
+			if ANVIL_CONSTEXPR_FN (IsPrimitive(GetTypeID<T>())) {
+				SetPrimitiveArray(GetTypeID<T>());
+			} else {
+				SetArray();
+			}
 			for (T& tmp : value) AddValue(tmp);
 		}
 
@@ -821,7 +835,11 @@ namespace anvil { namespace BytePipe {
 		explicit Value(const std::array<T, S>& value) :
 			Value()
 		{
-			SetArray();
+			if ANVIL_CONSTEXPR_FN (IsPrimitive(GetTypeID<T>())) {
+				SetPrimitiveArray(GetTypeID<T>());
+			} else {
+				SetArray();
+			}
 			for (T& tmp : value) AddValue(tmp);
 		}
 
