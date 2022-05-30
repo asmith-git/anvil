@@ -36,22 +36,6 @@ namespace anvil { namespace BytePipe {
 		1u,	// TYPE_BOOL
 	};
 
-	template<class T>
-	static inline uint64_t GetRaw(const T value) {
-		union {
-			uint64_t raw;
-			T val;
-		};
-		if ANVIL_CONSTEXPR_VAR(sizeof(T) < sizeof(uint64_t)) raw = 0u;
-		val = value;
-		return raw;
-	}
-
-	template<>
-	static inline uint64_t GetRaw< uint64_t>(const uint64_t value) {
-		return value;
-	}
-
 	// PrimitiveValue
 
 	bool PrimitiveValue::operator==(const PrimitiveValue& other) const {
@@ -62,71 +46,6 @@ namespace anvil { namespace BytePipe {
 
 	bool PrimitiveValue::operator!=(const PrimitiveValue& other) const {
 		return ! operator==(other);
-	}
-
-	PrimitiveValue::PrimitiveValue(Type type, uint64_t raw) :
-		u64(raw),
-		type(type)
-	{}
-
-	PrimitiveValue::PrimitiveValue() :
-		PrimitiveValue(TYPE_NULL, 0u)
-	{}
-
-	PrimitiveValue::PrimitiveValue(bool value) :
-		PrimitiveValue(GetTypeID<decltype(value)>(), GetRaw<decltype(value)>(value))
-	{}
-
-	PrimitiveValue::PrimitiveValue(char value) :
-		PrimitiveValue(GetTypeID<decltype(value)>(), GetRaw<decltype(value)>(value))
-	{}
-
-	PrimitiveValue::PrimitiveValue(uint8_t value) :
-		PrimitiveValue(GetTypeID<decltype(value)>(), GetRaw<decltype(value)>(value))
-	{}
-
-	PrimitiveValue::PrimitiveValue(uint16_t value) :
-		PrimitiveValue(GetTypeID<decltype(value)>(), GetRaw<decltype(value)>(value))
-	{}
-
-	PrimitiveValue::PrimitiveValue(uint32_t value) :
-		PrimitiveValue(GetTypeID<decltype(value)>(), GetRaw<decltype(value)>(value))
-	{}
-
-	PrimitiveValue::PrimitiveValue(uint64_t value) :
-		PrimitiveValue(GetTypeID<decltype(value)>(), GetRaw<decltype(value)>(value))
-	{}
-
-	PrimitiveValue::PrimitiveValue(int8_t value) :
-		PrimitiveValue(GetTypeID<decltype(value)>(), GetRaw<decltype(value)>(value))
-	{}
-
-	PrimitiveValue::PrimitiveValue(int16_t value) :
-		PrimitiveValue(GetTypeID<decltype(value)>(), GetRaw<decltype(value)>(value))
-	{}
-
-	PrimitiveValue::PrimitiveValue(int32_t value) :
-		PrimitiveValue(GetTypeID<decltype(value)>(), GetRaw<decltype(value)>(value))
-	{}
-
-	PrimitiveValue::PrimitiveValue(int64_t value) :
-		PrimitiveValue(GetTypeID<decltype(value)>(), GetRaw<decltype(value)>(value))
-	{}
-
-	PrimitiveValue::PrimitiveValue(half value) :
-		PrimitiveValue(GetTypeID<decltype(value)>(), GetRaw<decltype(value)>(value))
-	{}
-
-	PrimitiveValue::PrimitiveValue(float value) :
-		PrimitiveValue(GetTypeID<decltype(value)>(), GetRaw<decltype(value)>(value))
-	{}
-
-	PrimitiveValue::PrimitiveValue(double value) :
-		PrimitiveValue(GetTypeID<decltype(value)>(), GetRaw<decltype(value)>(value))
-	{}
-
-	PrimitiveValue::operator bool() const {
-		return operator double() > 0.0;
 	}
 
 	PrimitiveValue::operator char() const {
@@ -140,75 +59,63 @@ namespace anvil { namespace BytePipe {
 		}
 	}
 
-	PrimitiveValue::operator uint8_t() const {
-		if (type == TYPE_U8) {
-			return u8;
-		} else {
-			const uintptr_t tmp = operator uintptr_t();
-			return tmp > UINT8_MAX ? UINT8_MAX : static_cast<uint8_t>(tmp);
-		}
-	}
-
-	PrimitiveValue::operator uint16_t() const {
-		if (type == TYPE_U16) {
-			return u16;
-		} else {
-			const uintptr_t tmp = operator uintptr_t();
-			return tmp > UINT16_MAX ? UINT16_MAX : static_cast<uint16_t>(tmp);
-		}
-	}
-
-	PrimitiveValue::operator uint32_t() const {
-		if (type == TYPE_U32) {
-			return u32;
-		} else {
-			const uint64_t tmp = operator uint64_t();
-			return tmp > UINT32_MAX ? UINT32_MAX : static_cast<uint32_t>(tmp);
-		}
-	}
-
 	PrimitiveValue::operator uint64_t() const {
-		if (type == TYPE_U64) {
-			return u64;
-		} else {
-			const double tmp = operator double();
-			return static_cast<uint64_t>(std::round(tmp));
-		}
-	}
-
-	PrimitiveValue::operator int8_t() const {
-		if (type == TYPE_S8) {
-			return s8;
-		} else {
-			const intptr_t tmp = operator intptr_t();
-			return tmp > INT8_MAX ? INT8_MAX : tmp < INT8_MIN ? INT8_MIN : static_cast<int8_t>(tmp);
-		}
-	}
-
-	PrimitiveValue::operator int16_t() const {
-		if (type == TYPE_S16) {
-			return s16;
-		} else {
-			const intptr_t tmp = operator intptr_t();
-			return tmp > INT16_MAX ? INT16_MAX : tmp < INT16_MIN ? INT16_MIN : static_cast<int16_t>(tmp);
-		}
-	}
-
-	PrimitiveValue::operator int32_t() const {
-		if (type == TYPE_S32) {
-			return s32;
-		} else {
-			const int64_t tmp = operator int64_t();
-			return tmp > INT32_MAX ? INT32_MAX : tmp < INT32_MIN ? INT32_MIN : static_cast<int32_t>(tmp);
+		switch (type) {
+		case TYPE_C8:
+			if (c8 >= '0' && c8 <= '9') return static_cast<uint64_t>(c8 - '0');
+			throw std::runtime_error("PrimitiveValue::operator uint64_t : Character cannot be converted to number");
+		case TYPE_U8:
+			return u8;
+		case TYPE_U16:
+			return u16;
+		case TYPE_U32:
+			return u32;
+		case TYPE_S8:
+			return s8 < 0 ? 0 : static_cast<uint64_t>(s8);
+		case TYPE_S16:
+			return s16 < 0 ? 0 : static_cast<uint64_t>(s16);
+		case TYPE_S32:
+			return s32 < 0 ? 0 : static_cast<uint64_t>(s32);
+		case TYPE_S64:
+			return s64 < 0 ? 0 : static_cast<uint64_t>(s64);
+		case TYPE_F32:
+			return f32 < 0.f ? 0.f : static_cast<uint64_t>(std::round(f32));
+		case TYPE_F64:
+			return f64 < 0.0 ? 0.0 : static_cast<uint64_t>(std::round(f64));
+		case TYPE_BOOL:
+			return b ? 1 : 0;
+		default:
+			return static_cast<uint64_t>(std::round(operator double()));
 		}
 	}
 
 	PrimitiveValue::operator int64_t() const {
-		if (type == TYPE_S64) {
-			return s64;
-		} else {
-			const double tmp = operator double();
-			return static_cast<uint64_t>(std::round(tmp));
+		switch (type) {
+		case TYPE_C8:
+			if (c8 >= '0' && c8 <= '9') return static_cast<int64_t>(c8 - '0');
+			throw std::runtime_error("PrimitiveValue::operator int64_t : Value cannot be converted to number");
+		case TYPE_U8:
+			return u8;
+		case TYPE_U16:
+			return u16;
+		case TYPE_U32:
+			return u32;
+		case TYPE_U64:
+			return u64;
+		case TYPE_S8:
+			return s8 < 0 ? 0 : static_cast<uint64_t>(s8);
+		case TYPE_S16:
+			return s16 < 0 ? 0 : static_cast<uint64_t>(s16);
+		case TYPE_S32:
+			return s32 < 0 ? 0 : static_cast<uint64_t>(s32);
+		case TYPE_F32:
+			return f32 < 0.f ? 0.f : static_cast<uint64_t>(std::round(f32));
+		case TYPE_F64:
+			return f64 < 0.0 ? 0.0 : static_cast<uint64_t>(std::round(f64));
+		case TYPE_BOOL:
+			return b ? 1 : 0;
+		default:
+			return static_cast<uint64_t>(std::round(operator double()));
 		}
 	}
 
@@ -221,21 +128,13 @@ namespace anvil { namespace BytePipe {
 		}
 	}
 
-	PrimitiveValue::operator float() const {
-		if (type == TYPE_F32) {
-			return f32;
-		} else {
-			return static_cast<float>(operator double());
-		}
-	}
-
 	PrimitiveValue::operator double() const {
 		switch (type) {
 		case TYPE_NULL:
 			return 0.f;
 		case TYPE_C8:
 			if(c8 >= '0' && c8 <= '9') return static_cast<double>(c8 - '0');
-			goto ON_ERROR;
+			break;
 		case TYPE_U8:
 			return static_cast<double>(u8);
 		case TYPE_U16:
@@ -260,10 +159,9 @@ namespace anvil { namespace BytePipe {
 			return static_cast<double>(f64);
 		case TYPE_BOOL:
 			return b ? 1.0 : 0.0;
-		default:
-ON_ERROR:
-			throw std::runtime_error("PrimitiveValue::operator double : Type cannot be converted to double");
 		}
+
+		throw std::runtime_error("PrimitiveValue::operator double : Type cannot be converted to double");
 	}
 
 	void PrimitiveValue::Optimise() {
@@ -277,13 +175,13 @@ ON_ERROR:
 
 		// If the value is a boolean
 		if (val == 1.0) {
-			b = true;
-			type = TYPE_BOOL;
+			u8 = 1;
+			type = TYPE_U8;
 		
 		// If the value is a boolean
 		} else if (val == 0.0) {
-			b = false;
-			type = TYPE_BOOL;
+			u8 = 0;
+			type = TYPE_U8;
 
 		} else if (std::round(val) == val) {
 			// If value is unsigned
@@ -704,7 +602,7 @@ FLOATING_POINT:
 
 	void Value::AddValue(Value&& value) {
 		// Handle primitive data types in a way that is optimised for them
-		if (value.IsPrimitiveType()) {
+		if (value.IsPrimitive()) {
 			AddValue(value._primitive);
 
 		// Complex values
@@ -785,67 +683,67 @@ ADD_VALUE_NORMAL:
 	}
 
 	bool Value::GetBool() const {
-		if (IsPrimitiveType()) return _primitive;
+		if (IsPrimitive()) return _primitive;
 		throw std::runtime_error("Value::GetBool : Value cannot be converted to boolean");
 	}
 
 	char Value::GetC8() const {
-		if (IsPrimitiveType()) return _primitive;
+		if (IsPrimitive()) return _primitive;
 		throw std::runtime_error("Value::GetC8 : Value cannot be converted to character");
 	}
 
 	uint8_t Value::GetU8() const {
-		if (IsPrimitiveType()) return _primitive;
+		if (IsPrimitive()) return _primitive;
 		throw std::runtime_error("Value::GetU8 : Value cannot be converted to 8-bit unsigned integer");
 	}
 
 	uint16_t Value::GetU16() const {
-		if (IsPrimitiveType()) return _primitive;
+		if (IsPrimitive()) return _primitive;
 		throw std::runtime_error("Value::GetU16 : Value cannot be converted to 16-bit unsigned integer");
 	}
 
 	uint32_t Value::GetU32() const {
-		if (IsPrimitiveType()) return _primitive;
+		if (IsPrimitive()) return _primitive;
 		throw std::runtime_error("Value::GetU32 : Value cannot be converted to 32-bit unsigned integer");
 	}
 
 	uint64_t Value::GetU64() const {
-		if (IsPrimitiveType()) return _primitive;
+		if (IsPrimitive()) return _primitive;
 		throw std::runtime_error("Value::GetU64 : Value cannot be converted to 64-bit unsigned integer");
 	}
 
 	int8_t Value::GetS8() const {
-		if (IsPrimitiveType()) return _primitive;
+		if (IsPrimitive()) return _primitive;
 		throw std::runtime_error("Value::GetS8 : Value cannot be converted to 8-bit signed integer");
 	}
 
 	int16_t Value::GetS16() const {
-		if (IsPrimitiveType()) return _primitive;
+		if (IsPrimitive()) return _primitive;
 		throw std::runtime_error("Value::GetS16 : Value cannot be converted to 16-bit signed integer");
 	}
 
 	int32_t Value::GetS32() const {
-		if (IsPrimitiveType()) return _primitive;
+		if (IsPrimitive()) return _primitive;
 		throw std::runtime_error("Value::GetS32 : Value cannot be converted to 32-bit signed integer");
 	}
 
 	int64_t Value::GetS64() const {
-		if (IsPrimitiveType()) return _primitive;
+		if (IsPrimitive()) return _primitive;
 		throw std::runtime_error("Value::GetS64 : Value cannot be converted to 64-bit signed integer");
 	}
 
 	half Value::GetF16() const {
-		if (IsPrimitiveType()) return _primitive;
+		if (IsPrimitive()) return _primitive;
 		throw std::runtime_error("Value::GetF16 : Value cannot be converted to 16-bit floating point");
 	}
 
 	float Value::GetF32() const {
-		if (IsPrimitiveType()) return _primitive;
+		if (IsPrimitive()) return _primitive;
 		throw std::runtime_error("Value::GetF32 : Value cannot be converted to 32-bit floating point");
 	}
 
 	double Value::GetF64() const {
-		if (IsPrimitiveType()) return _primitive;
+		if (IsPrimitive()) return _primitive;
 		throw std::runtime_error("Value::GetF64 : Value cannot be converted to 64-bit floating point");
 	}
 

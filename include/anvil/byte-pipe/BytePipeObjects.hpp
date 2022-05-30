@@ -51,7 +51,7 @@ namespace anvil { namespace BytePipe {
 	static ANVIL_STRONG_INLINE bool IsIntegral(const Type t) { return t >= TYPE_U8 && t <= TYPE_S64; }
 	static ANVIL_STRONG_INLINE bool IsFloatingPoint(const Type t) { return t >= TYPE_F16 && t <= TYPE_F64; }
 	static ANVIL_STRONG_INLINE bool IsNumeric(const Type t) { return t >= TYPE_U8 && t <= TYPE_F64; }
-	static ANVIL_STRONG_INLINE bool IsPrimative(const Type t) { return (t >= TYPE_C8 && t <= TYPE_F64) || t == TYPE_BOOL; }
+	static ANVIL_STRONG_INLINE bool IsPrimitive(const Type t) { return (t >= TYPE_C8 && t <= TYPE_F64) || t == TYPE_BOOL; }
 
 	typedef uint16_t ComponentID;
 
@@ -100,6 +100,19 @@ namespace anvil { namespace BytePipe {
 	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<float>() { return TYPE_F32; }
 	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<double>() { return TYPE_F64; }
 
+	namespace details {
+		template<class T>
+		static inline uint64_t PrimitiveValueGetRaw(const T value) {
+			union {
+				uint64_t raw;
+				T val;
+			};
+			if ANVIL_CONSTEXPR_VAR(sizeof(T) < sizeof(uint64_t)) raw = 0u;
+			val = value;
+			return raw;
+		}
+	}
+
 	struct PrimitiveValue {
 		union {
 			void* ptr;
@@ -123,52 +136,135 @@ namespace anvil { namespace BytePipe {
 		bool operator==(const PrimitiveValue& other) const;
 		bool operator!=(const PrimitiveValue& other) const;
 
-		PrimitiveValue();
-		PrimitiveValue(bool value);
-		PrimitiveValue(char value);
-		PrimitiveValue(uint8_t value);
-		PrimitiveValue(uint16_t value);
-		PrimitiveValue(uint32_t value);
-		PrimitiveValue(uint64_t value);
-		PrimitiveValue(int8_t value);
-		PrimitiveValue(int16_t value);
-		PrimitiveValue(int32_t value);
-		PrimitiveValue(int64_t value);
-		PrimitiveValue(half value);
-		PrimitiveValue(float value);
-		PrimitiveValue(double value);
-
 		/*!
-			\param type The type of \a raw
-			\param The value
+			\param a_type The type of \a raw
+			\param value The value
 		*/
-		PrimitiveValue(Type type, uint64_t raw);
+		PrimitiveValue(Type a_type, uint64_t value) :
+			u64(value),
+			type(a_type)
+		{}
 
-		operator bool() const;
-		operator char() const;
-		operator uint8_t() const;
-		operator uint16_t() const;
-		operator uint32_t() const;
-		operator uint64_t() const;
-		operator int8_t() const;
-		operator int16_t() const;
-		operator int32_t() const;
-		operator int64_t() const;
-		operator half() const;
-		operator float() const;
-		operator double() const;
+		PrimitiveValue() :
+			PrimitiveValue(TYPE_NULL, 0u)
+		{}
 
-		/*!
-			\brief Casts the value to the smallest type that can represent it without losing precision.
-		*/
-		void Optimise();
+		PrimitiveValue(bool value) :
+			PrimitiveValue(TYPE_BOOL, details::PrimitiveValueGetRaw<bool>(value))
+		{}
+
+		PrimitiveValue(char value) :
+			PrimitiveValue(TYPE_C8, details::PrimitiveValueGetRaw<char>(value))
+		{}
+
+		PrimitiveValue(uint8_t value) :
+			PrimitiveValue(TYPE_U8, details::PrimitiveValueGetRaw<uint8_t>(value))
+		{}
+
+		PrimitiveValue(uint16_t value) :
+			PrimitiveValue(TYPE_U16, details::PrimitiveValueGetRaw<uint16_t>(value))
+		{}
+
+		PrimitiveValue(uint32_t value) :
+			PrimitiveValue(TYPE_U32, details::PrimitiveValueGetRaw<uint32_t>(value))
+		{}
+
+		PrimitiveValue(uint64_t value) :
+			PrimitiveValue(TYPE_U64, details::PrimitiveValueGetRaw<uint64_t>(value))
+		{}
+
+		PrimitiveValue(int8_t value) :
+			PrimitiveValue(TYPE_S8, details::PrimitiveValueGetRaw<int8_t>(value))
+		{}
+
+		PrimitiveValue(int16_t value) :
+			PrimitiveValue(TYPE_S16, details::PrimitiveValueGetRaw<int16_t>(value))
+		{}
+
+		PrimitiveValue(int32_t value) :
+			PrimitiveValue(TYPE_S32, details::PrimitiveValueGetRaw<int32_t>(value))
+		{}
+
+		PrimitiveValue(int64_t value) :
+			PrimitiveValue(TYPE_U64, details::PrimitiveValueGetRaw<int64_t>(value))
+		{}
+
+		PrimitiveValue(half value) :
+			PrimitiveValue(TYPE_F16, details::PrimitiveValueGetRaw<half>(value))
+		{}
+
+		PrimitiveValue(float value) :
+			PrimitiveValue(TYPE_F32, details::PrimitiveValueGetRaw<float>(value))
+		{}
+
+		PrimitiveValue(double value) :
+			PrimitiveValue(TYPE_F64, details::PrimitiveValueGetRaw<double>(value))
+		{}
 
 		inline bool IsUnsigned() const { return BytePipe::IsUnsigned(type); }
 		inline bool IsSigned() const { return BytePipe::IsSigned(type); }
 		inline bool IsIntegral() const { return BytePipe::IsIntegral(type); }
 		inline bool IsFloatingPoint() const { return BytePipe::IsFloatingPoint(type); }
 		inline bool IsNumeric() const { return BytePipe::IsNumeric(type); }
-		inline bool IsPrimative() const { return BytePipe::IsPrimative(type); }
+		inline bool IsPrimitive() const { return BytePipe::IsPrimitive(type); }
+
+		operator char() const;
+		operator uint64_t() const;
+		operator int64_t() const;
+		operator half() const;
+		operator double() const;
+
+		inline operator bool() const {
+			return type == TYPE_BOOL ? b : (operator uintptr_t() > 0u);
+		}
+
+		inline operator uint32_t() const {
+			uint64_t tmp = type == TYPE_U32 ? u32 : operator uint64_t();
+			if (tmp > UINT32_MAX) tmp = UINT32_MAX;
+			return static_cast<uint32_t>(tmp);
+		}
+
+		inline operator int32_t() const {
+			int64_t tmp = type == TYPE_S32 ? s16 : operator int64_t();
+			if (tmp > INT32_MAX) tmp = INT32_MAX;
+			else if (tmp < INT32_MIN) tmp = INT32_MIN;
+			return static_cast<int32_t>(tmp);
+		}
+
+		inline operator uint8_t() const {
+			uintptr_t tmp = type == TYPE_U8 ? u8 : operator uintptr_t();
+			if (tmp > UINT8_MAX) tmp = UINT8_MAX;
+			return static_cast<uint8_t>(tmp);
+		}
+
+		inline operator uint16_t() const {
+			uintptr_t tmp = type == TYPE_U16 ? u16 : operator uintptr_t();
+			if (tmp > UINT16_MAX) tmp = UINT16_MAX;
+			return static_cast<uint16_t>(tmp);
+		}
+
+		inline operator int8_t() const {
+			intptr_t tmp = type == TYPE_S8 ? s8 : operator intptr_t();
+			if (tmp > INT8_MAX) tmp = INT8_MAX;
+			else if (tmp < INT8_MIN) tmp = INT8_MIN;
+			return static_cast<int8_t>(tmp);
+		}
+
+		inline operator int16_t() const {
+			intptr_t tmp = type == TYPE_S16 ? s16 : operator intptr_t();
+			if (tmp > INT16_MAX) tmp = INT16_MAX;
+			else if (tmp < INT16_MIN) tmp = INT16_MIN;
+			return static_cast<int16_t>(tmp);
+		}
+
+		inline operator float() const {
+			return type == TYPE_F32 ? f32 : static_cast<float>(operator double());
+		}
+
+		/*!
+			\brief Casts the value to the smallest type that can represent it without losing precision.
+		*/
+		void Optimise();
 	};
 
 	class Value {
@@ -410,7 +506,7 @@ namespace anvil { namespace BytePipe {
 		inline bool IsIntegral() const { return _primitive.IsIntegral(); }
 		inline bool IsFloatingPoint() const { return _primitive.IsFloatingPoint(); }
 		inline bool IsNumeric() const { return _primitive.IsNumeric(); }
-		inline bool IsPrimative() const { return _primitive.IsPrimative(); }
+		inline bool IsPrimitive() const { return _primitive.IsPrimitive(); }
 
 		inline bool IsPrimitiveArray() const {
 			return _primitive_array_type != TYPE_BOOL && GetType() == TYPE_ARRAY;
