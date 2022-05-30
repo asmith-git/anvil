@@ -1076,9 +1076,7 @@ READ_FROM_BUFFER:
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
-			Value tmp;
-			tmp.SetC8(src[i]);
-			v.AddValue(std::move(tmp));
+			v.AddValue(src[i]);
 		}
 	}
 
@@ -1088,9 +1086,7 @@ READ_FROM_BUFFER:
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
-			Value tmp;
-			tmp.SetBool(src[i]);
-			v.AddValue(std::move(tmp));
+			v.AddValue(src[i]);
 		}
 	}
 
@@ -1100,9 +1096,7 @@ READ_FROM_BUFFER:
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
-			Value tmp;
-			tmp.SetU8(src[i]);
-			v.AddValue(std::move(tmp));
+			v.AddValue(src[i]);
 		}
 	}
 
@@ -1112,9 +1106,7 @@ READ_FROM_BUFFER:
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
-			Value tmp;
-			tmp.SetU16(src[i]);
-			v.AddValue(std::move(tmp));
+			v.AddValue(src[i]);
 		}
 	}
 
@@ -1124,9 +1116,7 @@ READ_FROM_BUFFER:
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
-			Value tmp;
-			tmp.SetU32(src[i]);
-			v.AddValue(std::move(tmp));
+			v.AddValue(src[i]);
 		}
 	}
 
@@ -1136,9 +1126,7 @@ READ_FROM_BUFFER:
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
-			Value tmp;
-			tmp.SetU64(src[i]);
-			v.AddValue(std::move(tmp));
+			v.AddValue(src[i]);
 		}
 	}
 
@@ -1148,9 +1136,7 @@ READ_FROM_BUFFER:
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
-			Value tmp;
-			tmp.SetS8(src[i]);
-			v.AddValue(std::move(tmp));
+			v.AddValue(src[i]);
 		}
 	}
 
@@ -1160,9 +1146,7 @@ READ_FROM_BUFFER:
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
-			Value tmp;
-			tmp.SetS16(src[i]);
-			v.AddValue(std::move(tmp));
+			v.AddValue(src[i]);
 		}
 	}
 
@@ -1172,9 +1156,7 @@ READ_FROM_BUFFER:
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
-			Value tmp;
-			tmp.SetS32(src[i]);
-			v.AddValue(std::move(tmp));
+			v.AddValue(src[i]);
 		}
 	}
 
@@ -1184,9 +1166,7 @@ READ_FROM_BUFFER:
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
-			Value tmp;
-			tmp.SetS64(src[i]);
-			v.AddValue(std::move(tmp));
+			v.AddValue(src[i]);
 		}
 	}
 
@@ -1196,9 +1176,7 @@ READ_FROM_BUFFER:
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
-			Value tmp;
-			tmp.SetF16(src[i]);
-			v.AddValue(std::move(tmp));
+			v.AddValue(src[i]);
 		}
 	}
 
@@ -1208,9 +1186,7 @@ READ_FROM_BUFFER:
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
-			Value tmp;
-			tmp.SetF32(src[i]);
-			v.AddValue(std::move(tmp));
+			v.AddValue(src[i]);
 		}
 	}
 
@@ -1220,9 +1196,7 @@ READ_FROM_BUFFER:
 
 		//! \todo optimise
 		for (uint32_t i = 0u; i < size; ++i) {
-			Value tmp;
-			tmp.SetF64(src[i]);
-			v.AddValue(std::move(tmp));
+			v.AddValue(src[i]);
 		}
 	}
 
