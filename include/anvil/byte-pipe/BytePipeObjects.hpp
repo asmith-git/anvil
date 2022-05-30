@@ -382,6 +382,9 @@ namespace anvil { namespace BytePipe {
 
 		void Swap(Value&);
 
+		void Resize(const size_t size);
+		void Reserve(const size_t size);
+
 		inline Type GetType() const {
 			return _primitive.type;
 		}
@@ -768,7 +771,12 @@ namespace anvil { namespace BytePipe {
 		explicit inline operator std::vector<T>() const {
 			const size_t s = GetSize();
 			std::vector<T> tmp(s);
-			for (size_t i = 0u; i < s; ++i) tmp[i] = static_cast<T>(operator[](i));
+			if (IsPrimitiveArray() && GetPrimitiveArrayType() == BytePipe::GetTypeID<T>()) {
+				const void* src = const_cast<Value*>(this)->GetPrimitiveArray();
+				memcpy(tmp.data(), src, sizeof(T) * s);
+			} else {
+				for (size_t i = 0u; i < s; ++i) tmp[i] = static_cast<T>(operator[](i));
+			}
 			return tmp;
 		}
 
@@ -778,10 +786,13 @@ namespace anvil { namespace BytePipe {
 		{
 			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<T>())) {
 				SetPrimitiveArray(BytePipe::GetTypeID<T>());
+				const size_t s = value.size();
+				Resize(s);
+				memcpy(GetPrimitiveArray(), value.data(), sizeof(T) * s);
 			} else {
 				SetArray();
+				for (T& tmp : value) AddValue(tmp);
 			}
-			for (T& tmp : value) AddValue(tmp);
 		}
 
 		template<class T>
@@ -826,8 +837,14 @@ namespace anvil { namespace BytePipe {
 
 		template<class T, size_t S>
 		explicit inline operator std::array<T, S>() const {
-			std::array<T,S> tmp;
-			for (size_t i = 0u; i < S; ++i) tmp[i] = static_cast<T>(operator[](i));
+			std::array<T,S> tmp;			
+			
+			if (IsPrimitiveArray() && GetPrimitiveArrayType() == BytePipe::GetTypeID<T>()) {
+				const void* src = const_cast<Value*>(this)->GetPrimitiveArray();
+				memcpy(tmp.data(), src, sizeof(T) * S);
+			} else {
+				for (size_t i = 0u; i < S; ++i) tmp[i] = static_cast<T>(operator[](i));
+			}
 			return tmp;
 		}
 
@@ -837,10 +854,13 @@ namespace anvil { namespace BytePipe {
 		{
 			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<T>())) {
 				SetPrimitiveArray(BytePipe::GetTypeID<T>());
+				const size_t s = value.size();
+				Resize(s);
+				memcpy(GetPrimitiveArray(), value.data(), sizeof(T) * s);
 			} else {
 				SetArray();
+				for (T& tmp : value) AddValue(tmp);
 			}
-			for (T& tmp : value) AddValue(tmp);
 		}
 
 		template<class K, class V>

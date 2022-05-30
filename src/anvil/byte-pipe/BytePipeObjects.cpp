@@ -673,4 +673,24 @@ FLOATING_POINT:
 		}
 	}
 
+	void Value::Resize(const size_t size) {
+		if(_primitive.type != TYPE_ARRAY) throw std::runtime_error("Value::Resize : Value is not an array");
+
+		if (_primitive_array_type == TYPE_NULL) {
+			static_cast<Array*>(_primitive.ptr)->resize(size);
+		} else {
+			static_cast<PrimitiveArray*>(_primitive.ptr)->resize(size * GetSizeOfPrimitiveType(_primitive_array_type));
+		}
+	}
+
+	void Value::Reserve(const size_t size) {
+		if(_primitive.type != TYPE_ARRAY) throw std::runtime_error("Value::Reserve : Value is not an array");
+
+		if (_primitive_array_type == TYPE_NULL) {
+			static_cast<Array*>(_primitive.ptr)->reserve(size);
+		} else {
+			static_cast<PrimitiveArray*>(_primitive.ptr)->reserve(size * GetSizeOfPrimitiveType(_primitive_array_type));
+		}
+	}
+
 }}
