@@ -687,15 +687,20 @@ namespace anvil { namespace BytePipe {
 
 		template<class K, class T>
 		inline void operator()(const std::map<K, T>& value) {
-			OnArrayBegin(static_cast<uint32_t>(value.size()));
-			for (const auto& v : value) {
-				OnObjectBegin(2);
-				OnComponentID(0);
-				operator()(v.first);
-				OnComponentID(1);
-				operator()(v.second);
-				OnObjectEnd();
-			}
+			const size_t s = value.size();
+
+			OnArrayBegin(2);
+
+			// Keys
+			OnArrayBegin(s);
+			for (const auto& v : value) operator()(v.first);
+			OnArrayEnd();
+
+			// Values
+			OnArrayBegin(s);
+			for (const auto& v : value) operator()(v.second);
+			OnArrayEnd();
+
 			OnArrayEnd();
 		}
 	};
