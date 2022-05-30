@@ -170,6 +170,21 @@ namespace anvil { namespace BytePipe {
 		Value(const Value&);
 		~Value();
 
+		explicit Value(bool value);
+		explicit Value(char value);
+		explicit Value(uint8_t value);
+		explicit Value(uint16_t value);
+		explicit Value(uint32_t value);
+		explicit Value(uint64_t value);
+		explicit Value(int8_t value);
+		explicit Value(int16_t value);
+		explicit Value(int32_t value);
+		explicit Value(int64_t value);
+		explicit Value(half value);
+		explicit Value(float value);
+		explicit Value(double value);
+		explicit Value(const PrimativeValue& value);
+
 		Value& operator=(Value&&);
 		Value& operator=(const Value&);
 
@@ -299,6 +314,13 @@ namespace anvil { namespace BytePipe {
 		void AddValue(Value&& value);
 
 		/*!
+			\brief Append a value to the end of the array.
+			\details Throws exception is value is not an array.
+			\param value The value to add.
+		*/
+		void AddValue(const PrimativeValue& value);
+
+		/*!
 			\brief Set the value to be an object.
 			\details Previous value will be lost.
 		*/
@@ -368,6 +390,11 @@ namespace anvil { namespace BytePipe {
 		void Optimise();
 
 		// Helpers
+
+		inline bool IsPrimativeType() const {
+			const Type t = _primative.type;
+			return (t >= TYPE_C8 && t <= TYPE_F64) || t == TYPE_BOOL;
+		}
 
 		inline bool IsPrimativeArray() const {
 			return _primative_array_type != TYPE_BOOL && GetType() == TYPE_ARRAY;
