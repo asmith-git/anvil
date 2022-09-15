@@ -105,6 +105,16 @@ namespace anvil {
 		return numeric_reinterpret_cast<int64_t>(bswap(numeric_reinterpret_cast<uint64_t>(aValue)));
 	}
 
+	// other types
+
+	ANVIL_STRONG_INLINE float ANVIL_CALL bswap(float aValue) throw() {
+		return numeric_reinterpret_cast<float>(bswap(numeric_reinterpret_cast<uint32_t>(aValue)));
+	}
+
+	ANVIL_STRONG_INLINE double ANVIL_CALL bswap(double aValue) throw() {
+		return numeric_reinterpret_cast<double>(bswap(numeric_reinterpret_cast<uint64_t>(aValue)));
+	}
+
 }
 
 #endif
