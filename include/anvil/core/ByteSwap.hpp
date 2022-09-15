@@ -19,74 +19,90 @@
 	bswap reverses the order of bytes
 */
 
-//! \todo CPU acceleration
-
 #include "anvil/core/Keywords.hpp"
+#if (ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64) && ANVIL_COMPILER != ANVIL_MSVC
+	#include <immintrin.h>
+#endif
 
 namespace anvil {
+
+	// 8-bit (unsigned)
 
 	ANVIL_STRONG_INLINE uint8_t ANVIL_CALL bswap(uint8_t aValue) throw() {
 		return aValue;
 	}
+	
+	// 16-bit (unsigned)
 
 	ANVIL_STRONG_INLINE uint16_t ANVIL_CALL bswap(uint16_t aValue) throw() {
-		const uint16_t low = aValue & 255u;
-		const uint8_t high = aValue >> 8u;
-		return (low << 8u) | high;
+		#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+			#if ANVIL_COMPILER == ANVIL_MSVC
+				return _byteswap_ushort(aValue);
+			#else
+				return numeric_reinterpret_cast<uint16_t>(_bswap(numeric_reinterpret_cast<int16_t>(aValue)));
+			#endif
+		#else
+			const uint16_t low = aValue & 255u;
+			const uint8_t high = aValue >> 8u;
+			return (low << 8u) | high;
+		#endif
 	}
+
+	// 32-bit (unsigned)
 
 	ANVIL_STRONG_INLINE uint32_t ANVIL_CALL bswap(uint32_t aValue) throw() {
-		uint32_t low = aValue & static_cast<uint32_t>(UINT16_MAX);
-		uint32_t high = aValue >> 16u;
+		#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+			#if ANVIL_COMPILER == ANVIL_MSVC
+				return _byteswap_ulong(aValue);
+			#else
+				return numeric_reinterpret_cast<uint32_t>(_bswap(numeric_reinterpret_cast<int32_t>(aValue)));
+			#endif
+		#else
+			const uint32_t a = (aValue & 255u) << 24u;
+			const uint32_t b = (aValue & 65280u) << 8u;
+			const uint32_t c = (aValue & 16711680u) >> 8u;
+			const uint32_t d = (aValue & 4278190080u) >> 24u;
 
-		low = bswap(static_cast<uint16_t>(low));
-		high = bswap(static_cast<uint16_t>(high));
-
-		return (low << 16u) | high;
+			return (a | b) | (c | d);
+		#endif
 	}
+
+	// 64-bit (unsigned)
 
 	ANVIL_STRONG_INLINE uint64_t ANVIL_CALL bswap(uint64_t aValue) throw() {
-		uint64_t low = aValue & static_cast<uint64_t>(UINT32_MAX);
-		uint64_t high = aValue >> 32ull;
+		#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+			#if ANVIL_COMPILER == ANVIL_MSVC
+				return _byteswap_uint64(aValue);
+			#else
+				return numeric_reinterpret_cast<uint64_t>(_bswap64(numeric_reinterpret_cast<int64_t>(aValue)));
+			#endif
+		#else
+			uint64_t a = aValue & static_cast<uint64_t>(UINT32_MAX);
+			uint64_t b = aValue >>= 32ull;
 
-		low = bswap(static_cast<uint32_t>(low));
-		high = bswap(static_cast<uint32_t>(high));
+			a = bswap(static_cast<uint32_t>(a));
+			b = bswap(static_cast<uint32_t>(b));
 
-		return (low << 32ull) | high;
+			return (a << 32ull) | b;
+		#endif
 	}
+
+	// signed
 
 	ANVIL_STRONG_INLINE int8_t ANVIL_CALL bswap(int8_t aValue) throw() {
 		return aValue;
 	}
 
 	ANVIL_STRONG_INLINE int16_t ANVIL_CALL bswap(int16_t aValue) throw() {
-		union {
-			uint16_t u;
-			int16_t s;
-		};
-		s = aValue;
-		u = bswap(u);
-		return s;
+		return numeric_reinterpret_cast<int16_t>(bswap(numeric_reinterpret_cast<uint16_t>(aValue)));
 	}
 
 	ANVIL_STRONG_INLINE int32_t ANVIL_CALL bswap(int32_t aValue) throw() {
-		union {
-			uint32_t u;
-			int32_t s;
-		};
-		s = aValue;
-		u = bswap(u);
-		return s;
+		return numeric_reinterpret_cast<int32_t>(bswap(numeric_reinterpret_cast<uint32_t>(aValue)));
 	}
 
 	ANVIL_STRONG_INLINE int64_t ANVIL_CALL bswap(int64_t aValue) throw() {
-		union {
-			uint64_t u;
-			int64_t s;
-		};
-		s = aValue;
-		u = bswap(u);
-		return s;
+		return numeric_reinterpret_cast<int64_t>(bswap(numeric_reinterpret_cast<uint64_t>(aValue)));
 	}
 
 }

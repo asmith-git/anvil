@@ -96,6 +96,12 @@ namespace anvil {
 
 	static_assert(sizeof(intptr_t) == sizeof(NativeSigned), "Definition of intptr_t does not match the detected native word size");
 	static_assert(sizeof(uintptr_t) == sizeof(NativeUnsigned), "Definition of intptr_t does not match the detected native word size");
+
+	template<class T_OUT, class T_IN>
+	static ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN T_OUT ANVIL_CALL numeric_reinterpret_cast(const T_IN value) {
+		ANVIL_COMPILETIME_ASSERT(sizeof(T_OUT) == sizeof(T_IN), "anvil::numeric_reinterpret_cast : Types must be the same size");
+		return *reinterpret_cast<const T_OUT*>(&value);
+	}
 }
 
 #endif
