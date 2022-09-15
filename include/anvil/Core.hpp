@@ -31,5 +31,6 @@
 #include "anvil/core/Bitset128.hpp"
 #include "anvil/core/Bitset256.hpp"
 #include "anvil/core/LeadingZeroCount.hpp"
+#include "anvil/core/TrailingZeroCount.hpp"
 
 #endif

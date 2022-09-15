@@ -306,6 +306,7 @@ namespace anvil {
 
 	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount(uint8_t aValue) throw() {
 #if ANVIL_USE_HARDWARE_LZCOUNT && (ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64)
+		if (aValue == 0u) return 8u;
 		return _lzcnt_u32(aValue);
 #else
 		return detail::g_lzcount_lut[aValue];
@@ -314,6 +315,7 @@ namespace anvil {
 
 	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount(uint16_t aValue) throw() {
 #if ANVIL_USE_HARDWARE_LZCOUNT && (ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64)
+		if (aValue == 0u) return 16u;
 		return _lzcnt_u32(aValue);
 #else
 		 size_t count = detail::g_lzcount_lut[aValue & 255u];
@@ -324,6 +326,7 @@ namespace anvil {
 
 	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount(uint32_t aValue) throw() {
 #if ANVIL_USE_HARDWARE_LZCOUNT && (ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64)
+		if (aValue == 0u) return 32u;
 		return _lzcnt_u32(aValue);
 #else
 		size_t count = lzcount(static_cast<uint16_t>(aValue & static_cast<uint32_t>(UINT16_MAX)));
@@ -334,6 +337,7 @@ namespace anvil {
 
 	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount(uint64_t aValue) throw() {
 #if ANVIL_USE_HARDWARE_LZCOUNT && ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+		if (aValue == 0ull) return 64u;
 		return _lzcnt_u64(aValue);
 #else
 		size_t count = lzcount(static_cast<uint32_t>(aValue & static_cast<uint64_t>(UINT32_MAX)));
