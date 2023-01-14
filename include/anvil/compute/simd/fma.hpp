@@ -150,7 +150,7 @@ namespace anvil { namespace detail {
 			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
 			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
 			// that will be inlined together
-			if constexpr ((instruction_set & ASM_FMA) != 0ull) {
+			if constexpr ((instruction_set & ASM_FMA3) != 0ull) {
 				return Execute_FMA(a, b, c);
 			} else if constexpr ((instruction_set & ASM_SSE) != 0ull) {
 				return Execute_SSE(a, b, c);
@@ -182,7 +182,7 @@ namespace anvil { namespace detail {
 			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
 			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
 			// that will be inlined together
-			if constexpr ((instruction_set & ASM_FMA) != 0ull) {
+			if constexpr ((instruction_set & ASM_FMA3) != 0ull) {
 				return Execute_FMA(a, b, c);
 			} else if constexpr ((instruction_set & ASM_AVX) != 0ull) {
 				return Execute_AVX(a, b, c);
@@ -239,7 +239,7 @@ namespace anvil { namespace detail {
 			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
 			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
 			// that will be inlined together
-			if constexpr ((instruction_set & ASM_FMA) != 0ull) {
+			if constexpr ((instruction_set & ASM_FMA3) != 0ull) {
 				return Execute_FMA(a, b, c);
 			} else if constexpr ((instruction_set & ASM_SSE2) != 0ull) {
 				return Execute_SSE2(a, b, c);
@@ -271,7 +271,7 @@ namespace anvil { namespace detail {
 			// There is a bug in Visual Studio where it will change which instruction sets the code will compile with
 			// even when its disabled behind a compile-time check, so it needs to be implemented in seperate functions
 			// that will be inlined together
-			if constexpr ((instruction_set & ASM_FMA) != 0ull) {
+			if constexpr ((instruction_set & ASM_FMA3) != 0ull) {
 				return Execute_FMA(a, b, c);
 			} else if constexpr ((instruction_set & ASM_AVX) != 0ull) {
 				return Execute_AVX(a, b, c);
