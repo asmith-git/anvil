@@ -20,71 +20,62 @@
 */
 
 #include "anvil/core/Keywords.hpp"
+#include "anvil/core/BitwiseLUT.hpp"
 
 namespace anvil {
-	namespace detail {
-		uint32_t ANVIL_CALL reflect1(const uint32_t aValue) throw();
-		uint32_t ANVIL_CALL reflect2(const uint32_t aValue) throw();
-		uint32_t ANVIL_CALL reflect4(const uint32_t aValue) throw();
-		uint64_t ANVIL_CALL reflect8(const uint64_t aValue) throw();
-	}
 
 	void ANVIL_CALL reflect(void*, const void*, size_t) throw();
 
-	ANVIL_STRONG_INLINE uint8_t ANVIL_CALL reflect(uint8_t aValue) throw() {
-		return detail::reflect1(aValue);
+	static ANVIL_STRONG_INLINE uint8_t ANVIL_CALL reflect(uint8_t aValue) throw() {
+		return detail::g_reflect_lut[aValue];
 	}
 
-	ANVIL_STRONG_INLINE uint16_t ANVIL_CALL reflect(uint16_t aValue) throw() {
-		return detail::reflect2(aValue);
+	static ANVIL_STRONG_INLINE uint16_t ANVIL_CALL reflect(uint16_t aValue) throw() {
+		uint32_t a = aValue & 255u;
+		uint32_t b = aValue >> 8u;
+		a = detail::g_reflect_lut[a];
+		b = detail::g_reflect_lut[b];
+		return (a << 8u) | b;
 	}
 
-	ANVIL_STRONG_INLINE uint32_t ANVIL_CALL reflect(uint32_t aValue) throw() {
-		return detail::reflect4(aValue);
+	static ANVIL_STRONG_INLINE uint32_t ANVIL_CALL reflect(uint32_t aValue) throw() {
+		uint32_t a = aValue & static_cast<uint32_t>(UINT16_MAX);
+		uint32_t b = aValue >> 16u;
+		a = reflect(static_cast<uint16_t>(a));
+		b = reflect(static_cast<uint16_t>(b));
+		return (a << 16u) | b;
 	}
 
-	ANVIL_STRONG_INLINE uint64_t ANVIL_CALL reflect(uint64_t aValue) throw() {
-		return detail::reflect8(aValue);
+	static ANVIL_STRONG_INLINE uint64_t ANVIL_CALL reflect(uint64_t aValue) throw() {
+		uint64_t a = aValue & static_cast<uint64_t>(UINT32_MAX);
+		uint64_t b = aValue >> 32ull;
+		a = reflect(static_cast<uint32_t>(a));
+		b = reflect(static_cast<uint32_t>(b));
+		return (a << 16ull) | b;
 	}
 
-	ANVIL_STRONG_INLINE int8_t ANVIL_CALL reflect(int8_t aValue) throw() {
-		union {
-			uint8_t u;
-			int8_t s;
-		};
-		s = aValue;
-		u = detail::reflect1(u);
-		return s;
+	static ANVIL_STRONG_INLINE int8_t ANVIL_CALL reflect(int8_t aValue) throw() {
+		return numeric_reinterpret_cast<int8_t>(reflect(numeric_reinterpret_cast<uint8_t>(aValue)));
 	}
 
-	ANVIL_STRONG_INLINE int16_t ANVIL_CALL reflect(int16_t aValue) throw() {
-		union {
-			uint16_t u;
-			int16_t s;
-		};
-		s = aValue;
-		u = detail::reflect2(u);
-		return s;
+	static ANVIL_STRONG_INLINE int16_t ANVIL_CALL reflect(int16_t aValue) throw() {
+		return numeric_reinterpret_cast<int16_t>(reflect(numeric_reinterpret_cast<uint16_t>(aValue)));
 	}
 
-	ANVIL_STRONG_INLINE int32_t ANVIL_CALL reflect(int32_t aValue) throw() {
-		union {
-			uint32_t u;
-			int32_t s;
-		};
-		s = aValue;
-		u = detail::reflect4(u);
-		return s;
+	static ANVIL_STRONG_INLINE int32_t ANVIL_CALL reflect(int32_t aValue) throw() {
+		return numeric_reinterpret_cast<int32_t>(reflect(numeric_reinterpret_cast<uint32_t>(aValue)));
 	}
 
-	ANVIL_STRONG_INLINE int64_t ANVIL_CALL reflect(int64_t aValue) throw() {
-		union {
-			uint64_t u;
-			int64_t s;
-		};
-		s = aValue;
-		u = detail::reflect8(u);
-		return s;
+	static ANVIL_STRONG_INLINE int64_t ANVIL_CALL reflect(int64_t aValue) throw() {
+		return numeric_reinterpret_cast<int64_t>(reflect(numeric_reinterpret_cast<uint64_t>(aValue)));
+	}
+
+	static ANVIL_STRONG_INLINE float ANVIL_CALL reflect(float aValue) throw() {
+		return numeric_reinterpret_cast<float>(reflect(numeric_reinterpret_cast<uint32_t>(aValue)));
+	}
+
+	static ANVIL_STRONG_INLINE double ANVIL_CALL reflect(double aValue) throw() {
+		return numeric_reinterpret_cast<double>(reflect(numeric_reinterpret_cast<uint64_t>(aValue)));
 	}
 
 }
