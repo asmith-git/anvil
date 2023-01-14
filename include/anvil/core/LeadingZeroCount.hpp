@@ -22,9 +22,7 @@
 #include "anvil/core/Keywords.hpp"
 #include "anvil/core/BitwiseLUT.hpp"
 
-#define ANVIL_USE_HARDWARE_LZCOUNT 1
-
-#if ANVIL_USE_HARDWARE_LZCOUNT && (ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64)
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 	#include <immintrin.h>
 	#include <intrin.h>
 #endif
@@ -87,9 +85,9 @@ namespace anvil { namespace detail {
 	static size_t ANVIL_CALL lzcount8_c(uint8_t aValue) throw() {
 		uint32_t x = aValue;
 		uint32_t found1 = 0u;
-		uint32_t count = 0u;
+		uint32_t count;
 
-		found1 = found1 | (x & 1u);
+		found1 = x & 1u;
 		count += found1 ^ 1u;
 		x >>= 1u;
 
