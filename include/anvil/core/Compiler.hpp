@@ -62,6 +62,8 @@
 		#define ANVIL_CPP_VER 2014
 	#elif __cplusplus >= 201700L
 		#define ANVIL_CPP_VER 2017
+	#elif __cplusplus >= 202002L
+		#define ANVIL_CPP_VER 2020
 	#else
 		#error Requires C++98 or greater
 	#endif
