@@ -10,11 +10,11 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{1b91ae1a-2fe7-4d83-85ac-21dffdca84b3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Anvil">
+      <UniqueIdentifier>{76e43117-76a3-41e5-b006-3ab26cc618fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipe.hpp">
-      <Filter>Header Files\Byte Pipe</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeBits.hpp">
       <Filter>Header Files\Byte Pipe</Filter>
     </ClInclude>
@@ -47,6 +47,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeWriter.hpp">
       <Filter>Header Files\Byte Pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\BytePipe.hpp">
+      <Filter>Header Files\Anvil</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

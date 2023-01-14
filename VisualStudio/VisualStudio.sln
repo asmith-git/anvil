@@ -8,6 +8,7 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestApplication", "TestApplication\TestApplication.vcxproj", "{EDF3130F-BC60-4DD1-918E-C277321D14E3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{62DF001E-60C2-47BA-9168-F58D4E18DFAE} = {62DF001E-60C2-47BA-9168-F58D4E18DFAE}
+		{CEAB0E93-334D-4164-B75E-CA3A313E3462} = {CEAB0E93-334D-4164-B75E-CA3A313E3462}
 		{E73261AD-201B-471C-87E0-2DBCAB454683} = {E73261AD-201B-471C-87E0-2DBCAB454683}
 		{26C297CD-CDAB-4B13-9864-335A1AC7A1D9} = {26C297CD-CDAB-4B13-9864-335A1AC7A1D9}
 	EndProjectSection
@@ -15,6 +16,11 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Anvil Utils", "Anvil Utils\Anvil Utils.vcxproj", "{62DF001E-60C2-47BA-9168-F58D4E18DFAE}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Anvil Compute", "Anvil Compute\Anvil Compute.vcxproj", "{E73261AD-201B-471C-87E0-2DBCAB454683}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Anvil Byte Pipe", "Anvil Byte Pipe\Anvil Byte Pipe.vcxproj", "{CEAB0E93-334D-4164-B75E-CA3A313E3462}"
+	ProjectSection(ProjectDependencies) = postProject
+		{26C297CD-CDAB-4B13-9864-335A1AC7A1D9} = {26C297CD-CDAB-4B13-9864-335A1AC7A1D9}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +62,14 @@ Global
 		{E73261AD-201B-471C-87E0-2DBCAB454683}.Release|x64.Build.0 = Release|x64
 		{E73261AD-201B-471C-87E0-2DBCAB454683}.Release|x86.ActiveCfg = Release|Win32
 		{E73261AD-201B-471C-87E0-2DBCAB454683}.Release|x86.Build.0 = Release|Win32
+		{CEAB0E93-334D-4164-B75E-CA3A313E3462}.Debug|x64.ActiveCfg = Debug|x64
+		{CEAB0E93-334D-4164-B75E-CA3A313E3462}.Debug|x64.Build.0 = Debug|x64
+		{CEAB0E93-334D-4164-B75E-CA3A313E3462}.Debug|x86.ActiveCfg = Debug|Win32
+		{CEAB0E93-334D-4164-B75E-CA3A313E3462}.Debug|x86.Build.0 = Debug|Win32
+		{CEAB0E93-334D-4164-B75E-CA3A313E3462}.Release|x64.ActiveCfg = Release|x64
+		{CEAB0E93-334D-4164-B75E-CA3A313E3462}.Release|x64.Build.0 = Release|x64
+		{CEAB0E93-334D-4164-B75E-CA3A313E3462}.Release|x86.ActiveCfg = Release|Win32
+		{CEAB0E93-334D-4164-B75E-CA3A313E3462}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

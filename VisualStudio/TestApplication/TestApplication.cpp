@@ -1,13 +1,44 @@
 #include <iostream>
 #include <bitset>
 #include <fstream>
+#include <chrono>
 #include "anvil/Core.hpp"
 #include "anvil/Compute.hpp"
 #include "anvil/BytePipe.hpp"
 #include "anvil/byte-pipe/BytePipeJSON.hpp"
 
+static uint64_t CurrentTime() {
+	return std::chrono::duration_cast<std::chrono::milliseconds>(
+		std::chrono::system_clock::now().time_since_epoch()
+		).count();
+}
+
 int main()
 {
+	std::cout << "HW LZCNT : " << anvil::detail::g_hw_lzcnt << std::endl;
+
+	for (uint32_t i = 0; i < 100; ++i) {
+		uint32_t x = i;
+
+		std::cout << x << "\t" << anvil::detail::lzcount32_hw((uint32_t)x) << "\t" << anvil::detail::lzcount32_c((uint32_t)x) << std::endl;
+	}
+
+	std::cout << "HW TZCNT : " << anvil::detail::g_hw_tzcnt << std::endl;
+
+	for (uint32_t i = 0; i < 100; ++i) {
+		uint32_t x = i;
+
+		std::cout << x << "\t" << anvil::detail::tzcount32_hw((uint32_t)x) << "\t" << anvil::detail::tzcount32_c((uint32_t)x) << std::endl;
+	}
+
+	//for (uint32_t i = 0; i < 10000; ++i) {
+	//	uint32_t x = rand();
+
+	//	std::cout << x << "\t" << anvil::lzcount((uint32_t) x) << "\t" << anvil::lzcount_c((uint32_t)x) << std::endl;
+	//}
+
+	system("pause");
+
 	//{
 	//	anvil::BytePipe::JsonWriter out_pipe;
 
@@ -27,9 +58,9 @@ int main()
 
 	//	std::cout << out_pipe.GetJSON() << std::endl;
 	//}
+	std::vector<std::map<std::string, std::vector<int>>> map_test;
+	std::vector<std::map<std::string, std::vector<int>>> in_test;
 	{
-		std::map<std::string, std::vector<int>> map_test;
-		std::map<std::string, std::vector<int>> in_test;
 
 		{
 			std::ofstream ofile("D:\\Adam\\Documents\\GitHub\\anvil\\test.bin", std::ios::binary);
@@ -37,28 +68,41 @@ int main()
 			anvil::BytePipe::Writer writer(out_pipe);
 
 
-			{
-				std::vector<int>& tmp = map_test.emplace("even", std::vector<int>()).first->second;
-				for (int i = 0; i <= 10; ++i) if ((i & 1) == 0) tmp.push_back(i);
+			for (int j = 0; j < 1000; ++j) {
+				map_test.push_back(std::map<std::string, std::vector<int>>());
+				std::map<std::string, std::vector<int>>& map = map_test.back();
+
+				{
+
+					std::vector<int>& tmp = map.emplace("even", std::vector<int>()).first->second;
+					for (int i = 0; i <= 1000; ++i) if ((i & 1) == 0) tmp.push_back(i);
+				}
+
+				{
+					std::vector<int>& tmp = map.emplace("odd", std::vector<int>()).first->second;
+					for (int i = 0; i <= 1000; ++i) if ((i & 1) != 0) tmp.push_back(i);
+				}
 			}
 
-			{
-				std::vector<int>& tmp = map_test.emplace("odd", std::vector<int>()).first->second;
-				for (int i = 0; i <= 10; ++i) if ((i & 1) != 0) tmp.push_back(i);
-			}
-
+			const uint64_t t = CurrentTime();
 			writer.OnPipeOpen();
 			writer(map_test);
 			writer.OnPipeClose();
+			std::cout << "Write : " << (CurrentTime() - t) << " ms" << std::endl;
 		}
 		{
 			std::ifstream ifile("D:\\Adam\\Documents\\GitHub\\anvil\\test.bin", std::ios::binary);
+			
+			uint64_t t = CurrentTime();
 			anvil::BytePipe::IStreamPipe in_pipe(ifile);
 			anvil::BytePipe::ValueParser parser;
 			anvil::BytePipe::Reader reader(in_pipe);
 			reader.Read(parser);
+			std::cout << "Read : " << (CurrentTime() - t) << " ms" << std::endl;
 
+			t = CurrentTime();
 			in_test = static_cast<decltype(in_test)>(parser.GetValue());
+			std::cout << "Parse : " << (CurrentTime() - t) << " ms" << std::endl;
 		}
 	}
 

@@ -78,6 +78,15 @@
     <ClInclude Include="..\..\include\anvil\core\Bitset256.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\anvil\core\LeadingZeroCount.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\core\TrailingZeroCount.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\anvil\core\BitwiseLUT.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CoreVisualStudio.cpp">

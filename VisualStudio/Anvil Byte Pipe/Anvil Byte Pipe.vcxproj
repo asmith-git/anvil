@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipe.hpp" />
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeBits.hpp" />
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeCore.hpp" />
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeEndian.hpp" />
@@ -31,6 +30,7 @@
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeRLE.hpp" />
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeSTL.hpp" />
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeWriter.hpp" />
+    <ClInclude Include="..\..\include\anvil\BytePipe.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\anvil\byte-pipe\BinaryPipe.cpp" />
@@ -149,7 +149,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ANVIL_CONTRACT_MODE=ANVIL_CONTRACT_IGNORE;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile />
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -169,7 +169,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ANVIL_CONTRACT_MODE=ANVIL_CONTRACT_IGNORE;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile />
       <LanguageStandard>stdcpp17</LanguageStandard>
