@@ -56,9 +56,9 @@ namespace anvil {
 				if (CheckCPUID(ECX, 20)) tmp |= ASM_SSE42;
 				if (CheckCPUID(ECX, 25)) tmp |= ASM_AES;
 
-				if (CheckCPUID(ECX, 28)) tmp |= ASM_AVX;
 				if (CheckCPUID(ECX, 12)) tmp |= ASM_FMA3;
-
+				if (CheckCPUID(ECX, 28)) tmp |= ASM_AVX;
+				if (CheckCPUID(ECX, 29)) tmp |= ASM_F16C;
 				//if (CheckCPUID(ECX, 30)) tmp |= ASM_RDRAND;
 			}
 			if (nIds >= 0x00000007) {

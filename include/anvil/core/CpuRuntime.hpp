@@ -60,6 +60,7 @@ namespace anvil {
 		ASM_AVX512IFMA =	1ull << 17ull,
 		ASM_AVX512VBMI =	1ull << 18ull,
 		
+		ASM_F16C =			1ull << 55ull,
 		ASM_AES =			1ull << 56ull,
 		ASM_SHA =			1ull << 57ull,
 		ASM_ADX =			1ull << 58ull,
