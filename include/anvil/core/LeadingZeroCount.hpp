@@ -84,8 +84,8 @@ namespace anvil { namespace detail {
 
 	static size_t ANVIL_CALL lzcount8_c(uint8_t aValue) throw() {
 		uint32_t x = aValue;
-		uint32_t found1 = 0u;
-		uint32_t count;
+		uint32_t found1;
+		uint32_t count = 0u;
 
 		found1 = x & 1u;
 		count += found1 ^ 1u;
@@ -131,19 +131,19 @@ namespace anvil { namespace detail {
 		//return count;
 	}
 
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount16_c(uint16_t aValue) throw() {
+	static size_t ANVIL_CALL lzcount16_c(uint16_t aValue) throw() {
 		size_t count = lzcount8_c(static_cast<uint8_t>(aValue & UINT8_MAX));
 		if (count == 8u) count += lzcount8_c(static_cast<uint8_t>(aValue >> 8ull));
 		return count;
 	}	
 	
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount32_c(uint32_t aValue) throw() {
+	static size_t ANVIL_CALL lzcount32_c(uint32_t aValue) throw() {
 		size_t count = lzcount16_c(static_cast<uint16_t>(aValue & UINT16_MAX));
 		if (count == 16u) count += lzcount16_c(static_cast<uint16_t>(aValue >> 16ull));
 		return count;
 	}
 
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount64_c(uint64_t aValue) throw() {
+	static size_t ANVIL_CALL lzcount64_c(uint64_t aValue) throw() {
 		size_t count = lzcount32_c(static_cast<uint32_t>(aValue & UINT32_MAX));
 		if (count == 32u) count += lzcount32_c(static_cast<uint32_t>(aValue >> 32ull));
 		return count;
