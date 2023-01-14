@@ -20,11 +20,18 @@
 */
 
 #include "anvil/core/Keywords.hpp"
-#include "anvil/core/BitwiseLUT.hpp"
 
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 	#include <immintrin.h>
 	#include <intrin.h>
+#endif
+
+#include "CpuRuntime.hpp"
+
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+	#define ANVIL_HW_LZCNT anvil::AreInstructionSetSupported(anvil::ASM_BMI1)
+#else
+	#define ANVIL_HW_LZCNT false
 #endif
 
 namespace anvil { namespace detail {
@@ -69,18 +76,6 @@ namespace anvil { namespace detail {
 		return 0;
 #endif
 	}
-
-	static ANVIL_STRONG_INLINE bool ANVIL_CALL HasHardwareLZCNT() throw() {
-#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-		int32_t words[4];
-		__cpuid(words, 0x80000001);
-		return (words[2] & (1 << 5)) != 0;
-#else
-		return false;
-#endif
-	}
-
-	static const bool g_hw_lzcnt = HasHardwareLZCNT();
 
 	static size_t ANVIL_CALL lzcount8_c(uint8_t aValue) throw() {
 		uint32_t x = aValue;
@@ -157,19 +152,19 @@ namespace anvil {
 	// unsigned
 
 	static ANVIL_STRONG_INLINE int8_t ANVIL_CALL lzcount(uint8_t aValue) throw() {
-		return detail::g_hw_lzcnt ? detail::lzcount8_hw(aValue) : detail::lzcount8_c(aValue);
+		return ANVIL_HW_LZCNT ? detail::lzcount8_hw(aValue) : detail::lzcount8_c(aValue);
 	}
 
 	static ANVIL_STRONG_INLINE int16_t ANVIL_CALL lzcount(uint16_t aValue) throw() {
-		return detail::g_hw_lzcnt ? detail::lzcount16_hw(aValue) : detail::lzcount16_c(aValue);
+		return ANVIL_HW_LZCNT ? detail::lzcount16_hw(aValue) : detail::lzcount16_c(aValue);
 	}
 
 	static ANVIL_STRONG_INLINE int32_t ANVIL_CALL lzcount(uint32_t aValue) throw() {
-		return detail::g_hw_lzcnt ? detail::lzcount32_hw(aValue) : detail::lzcount32_c(aValue);
+		return ANVIL_HW_LZCNT ? detail::lzcount32_hw(aValue) : detail::lzcount32_c(aValue);
 	}
 
 	static ANVIL_STRONG_INLINE int64_t ANVIL_CALL lzcount(uint64_t aValue) throw() {
-		return detail::g_hw_lzcnt ? detail::lzcount64_hw(aValue) : detail::lzcount64_c(aValue);
+		return ANVIL_HW_LZCNT ? detail::lzcount64_hw(aValue) : detail::lzcount64_c(aValue);
 	}
 
 	// signed

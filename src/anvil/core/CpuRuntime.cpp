@@ -14,12 +14,28 @@
 
 #include "anvil/core/CpuRuntime.hpp"
 
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+	#include <immintrin.h>
+	#include <intrin.h>
+#endif
+
 namespace anvil {
 
 	namespace detail {
 		InstructionSets CheckSupportedInstructionSets_Implement() throw() {
 			//! \todo Implement
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+			int32_t words[4];
+			__cpuid(words, 0x80000001);
+			uint64_t tmp;
+
+			if ((words[2] & (1 << 5)) != 0) tmp |= ASM_BMI1;
+
+			return static_cast<InstructionSets>(tmp | ANVIL_MIN_INSTRUCTION_SET);
+#else
 			return static_cast<InstructionSets>(ANVIL_MIN_INSTRUCTION_SET);
+#endif
+			
 		}
 	}
 

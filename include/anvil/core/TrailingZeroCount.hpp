@@ -21,6 +21,12 @@
 
 #include "anvil/core/LeadingZeroCount.hpp"
 
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+	#define ANVIL_HW_TZCNT ANVIL_HW_LZCNT
+#else
+	#define ANVIL_HW_TZCNT false
+#endif
+
 namespace anvil { namespace detail {
 
 	static ANVIL_STRONG_INLINE size_t ANVIL_CALL tzcount8_hw(uint8_t aValue) throw() {
@@ -63,16 +69,6 @@ namespace anvil { namespace detail {
 		return 0;
 #endif
 	}
-
-#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-	#define g_hw_tzcnt g_hw_lzcnt
-#else
-	static ANVIL_STRONG_INLINE bool ANVIL_CALL HasHardwareTZCNT() throw() {
-		return false;
-	}
-
-	static const bool g_hw_tzcnt = HasHardwareTZCNT();
-#endif
 
 	static size_t ANVIL_CALL tzcount8_c(uint8_t aValue) throw() {
 		uint32_t x = aValue;
@@ -128,19 +124,19 @@ namespace anvil {
 	// unsigned
 
 	static ANVIL_STRONG_INLINE int8_t ANVIL_CALL tzcount(uint8_t aValue) throw() {
-		return detail::g_hw_tzcnt ? detail::tzcount8_hw(aValue) : detail::tzcount8_c(aValue);
+		return ANVIL_HW_TZCNT ? detail::tzcount8_hw(aValue) : detail::tzcount8_c(aValue);
 	}
 
 	static ANVIL_STRONG_INLINE int16_t ANVIL_CALL tzcount(uint16_t aValue) throw() {
-		return detail::g_hw_tzcnt ? detail::tzcount16_hw(aValue) : detail::tzcount16_c(aValue);
+		return ANVIL_HW_TZCNT ? detail::tzcount16_hw(aValue) : detail::tzcount16_c(aValue);
 	}
 
 	static ANVIL_STRONG_INLINE int32_t ANVIL_CALL tzcount(uint32_t aValue) throw() {
-		return detail::g_hw_tzcnt ? detail::tzcount32_hw(aValue) : detail::tzcount32_c(aValue);
+		return ANVIL_HW_TZCNT ? detail::tzcount32_hw(aValue) : detail::tzcount32_c(aValue);
 	}
 
 	static ANVIL_STRONG_INLINE int64_t ANVIL_CALL tzcount(uint64_t aValue) throw() {
-		return detail::g_hw_tzcnt ? detail::tzcount64_hw(aValue) : detail::tzcount64_c(aValue);
+		return ANVIL_HW_TZCNT ? detail::tzcount64_hw(aValue) : detail::tzcount64_c(aValue);
 	}
 
 	// signed
