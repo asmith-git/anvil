@@ -29,7 +29,12 @@
 #include "CpuRuntime.hpp"
 
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-	#define ANVIL_HW_LZCNT anvil::AreInstructionSetSupported(anvil::ASM_BMI1)
+	static_assert(anvil::ASM_BMI1 == (1ull << 62ul), "BMI1 check is using the wrong value");
+	#if ANVIL_MIN_INSTRUCTION_SET & (1ull << 62ul)
+		#define ANVIL_HW_LZCNT true
+	#else
+		#define ANVIL_HW_LZCNT anvil::AreInstructionSetSupported(anvil::ASM_BMI1)
+	#endif
 #else
 	#define ANVIL_HW_LZCNT false
 #endif

@@ -15,7 +15,7 @@ static uint64_t CurrentTime() {
 
 int main()
 {
-	std::cout << "HW LZCNT : " << anvil::detail::g_hw_lzcnt << std::endl;
+	std::cout << "HW LZCNT : " << ANVIL_HW_LZCNT << std::endl;
 
 	for (uint32_t i = 0; i < 100; ++i) {
 		uint32_t x = i;
@@ -23,7 +23,7 @@ int main()
 		std::cout << x << "\t" << anvil::detail::lzcount32_hw((uint32_t)x) << "\t" << anvil::detail::lzcount32_c((uint32_t)x) << std::endl;
 	}
 
-	std::cout << "HW TZCNT : " << anvil::detail::g_hw_tzcnt << std::endl;
+	std::cout << "HW TZCNT : " << ANVIL_HW_TZCNT << std::endl;
 
 	for (uint32_t i = 0; i < 100; ++i) {
 		uint32_t x = i;
