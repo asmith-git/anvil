@@ -215,6 +215,14 @@ namespace anvil {
 		}
 
 		int32_t width = 80;
+#if ANVIL_OS == ANVIL_WINDOWS
+		{
+			CONSOLE_SCREEN_BUFFER_INFO csbi;
+			GetConsoleScreenBufferInfo(_stdout_handle, &csbi);
+			width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+			//height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+		}
+#endif
 		State tmp = SaveState();
 
 		ConsoleText bar1;
@@ -227,7 +235,7 @@ namespace anvil {
 		while (percentage < 100.f) {
 			LoadState(tmp);
 
-			int32_t progress = static_cast<int32_t>(static_cast<float>(width) * (percentage / 100.f));
+			int32_t progress = static_cast<int32_t>(std::round(static_cast<float>(width) * (percentage / 100.f)));
 			if (progress > width) progress = width;
 
 			bar1.text.clear();
@@ -248,9 +256,8 @@ namespace anvil {
 				}
 			};
 
-			std::string msg = std::to_string(progress) + "%";
-			size_t offset = (width + msg.size()) / 2;
-
+			const std::string msg = std::to_string(static_cast<int32_t>(std::round(percentage))) + "%";
+			const size_t offset = (width / 2) - (msg.size() / 2);
 			for (size_t i = 0; i < msg.size(); ++i) SetChar(offset + i, msg[i]);
 
 			Print(bar1);

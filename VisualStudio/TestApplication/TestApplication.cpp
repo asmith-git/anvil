@@ -56,8 +56,8 @@ static void ConsoleTest() {
 		float progress = 0.f;
 		std::thread test_thread([&progress]()->void {
 			while (progress < 100.f) {
-				progress += 1.f;
-				std::this_thread::sleep_for(std::chrono::milliseconds(100));
+				progress += 0.1f;
+				std::this_thread::sleep_for(std::chrono::milliseconds(10));
 			}
 		});
 		test.ProgressBar(progress);
