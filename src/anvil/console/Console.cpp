@@ -219,9 +219,9 @@ namespace anvil {
 
 		ConsoleText bar1;
 		ConsoleText bar2;
-		bar1.foreground_colour = CONSOLE_BLACK;
+		bar1.foreground_colour = dark_colour;
 		bar1.background_colour = bright_colour;
-		bar2.foreground_colour = CONSOLE_BLACK;
+		bar2.foreground_colour = bright_colour;
 		bar2.background_colour = dark_colour;
 
 		while (percentage < 100.f) {
@@ -234,6 +234,24 @@ namespace anvil {
 			bar2.text.clear();
 			for (int32_t i = 0; i < progress; ++i) bar1.text += ' ';
 			for (int32_t i = progress; i < width; ++i) bar2.text += ' ';
+
+			const auto SetChar = [&bar1, &bar2](size_t i, char c)->void {
+				size_t s = bar1.text.size();
+				if (i < s) {
+					bar1.text[i] = c;
+				} else {
+					i -= s;
+					s = bar2.text.size();
+					if (i < s) {
+						bar2.text[i] = c;
+					}
+				}
+			};
+
+			std::string msg = std::to_string(progress) + "%";
+			size_t offset = (width + msg.size()) / 2;
+
+			for (size_t i = 0; i < msg.size(); ++i) SetChar(offset + i, msg[i]);
 
 			Print(bar1);
 			Print(bar2);
