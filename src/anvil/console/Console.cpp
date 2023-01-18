@@ -232,39 +232,44 @@ namespace anvil {
 		bar2.foreground_colour = bright_colour;
 		bar2.background_colour = dark_colour;
 
+		int32_t prev_progress = -1;
 		while (percentage < 100.f) {
-			LoadState(tmp);
 
 			int32_t progress = static_cast<int32_t>(std::round(static_cast<float>(width) * (percentage / 100.f)));
 			if (progress > width) progress = width;
 
-			bar1.text.clear();
-			bar2.text.clear();
-			for (int32_t i = 0; i < progress; ++i) bar1.text += ' ';
-			for (int32_t i = progress; i < width; ++i) bar2.text += ' ';
+			if(progress != prev_progress) {
+				LoadState(tmp);
+				bar1.text.clear();
+				bar2.text.clear();
+				for (int32_t i = 0; i < progress; ++i) bar1.text += ' ';
+				for (int32_t i = progress; i < width; ++i) bar2.text += ' ';
 
-			const auto SetChar = [&bar1, &bar2](size_t i, char c)->void {
-				size_t s = bar1.text.size();
-				if (i < s) {
-					bar1.text[i] = c;
-				} else {
-					i -= s;
-					s = bar2.text.size();
+				const auto SetChar = [&bar1, &bar2](size_t i, char c)->void {
+					size_t s = bar1.text.size();
 					if (i < s) {
-						bar2.text[i] = c;
+						bar1.text[i] = c;
+					} else {
+						i -= s;
+						s = bar2.text.size();
+						if (i < s) {
+							bar2.text[i] = c;
+						}
 					}
-				}
-			};
+				};
 
-			const std::string msg = std::to_string(static_cast<int32_t>(std::round(percentage))) + "%";
-			const size_t offset = (width / 2) - (msg.size() / 2);
-			for (size_t i = 0; i < msg.size(); ++i) SetChar(offset + i, msg[i]);
+				const std::string msg = std::to_string(static_cast<int32_t>(std::round(percentage))) + "%";
+				const size_t offset = (width / 2) - (msg.size() / 2);
+				for (size_t i = 0; i < msg.size(); ++i) SetChar(offset + i, msg[i]);
 
-			Print(bar1);
-			Print(bar2);
-			EndLine();
+				Print(bar1);
+				Print(bar2);
+				EndLine();
 			
-			std::this_thread::sleep_for(std::chrono::milliseconds(200));
+				prev_progress = progress;
+			}
+
+			std::this_thread::sleep_for(std::chrono::milliseconds(66));
 		}
 	}
 
