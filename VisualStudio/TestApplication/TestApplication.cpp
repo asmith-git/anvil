@@ -51,6 +51,19 @@ static void ConsoleTest() {
 	test.Print("D. Magenta background\n", CONSOLE_BLACK, CONSOLE_MAGENTA_DARK);
 	test.Print("D. Yellow background\n", CONSOLE_BLACK, CONSOLE_YELLOW_DARK);
 
+	{
+		test.Clear();
+		float progress = 0.f;
+		std::thread test_thread([&progress]()->void {
+			while (progress < 100.f) {
+				progress += 1.f;
+				std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			}
+		});
+		test.ProgressBar(progress);
+		test_thread.join();
+	}
+
 	auto state = test.SaveState();
 	test.Clear();
 	test.LoadState(state);

@@ -78,8 +78,11 @@ namespace anvil {
 
 		void Print(ConsoleText text);
 
+		void ProgressBar(float& percentage, ConsoleColour colour = CONSOLE_GREEN_LIGHT);
+
 		std::string InputString(const ConsoleText& prompt, const bool clear = true);
 		std::string InputString();
+
 		size_t InputChoice(const ConsoleText& prompt, const std::vector<ConsoleText>& options, const bool clear = true);
 		size_t InputChoice(const ConsoleText& prompt, const std::vector<std::string>& options, const bool clear = true);
 		size_t InputChoice(const ConsoleText& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const bool clear = true);

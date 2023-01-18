@@ -162,6 +162,87 @@ namespace anvil {
 		for (const ConsoleText& text : state.text) PrintNoState(text);
 	}
 
+
+	void Console::ProgressBar(float& percentage, ConsoleColour colour) {
+
+		ConsoleColour bright_colour = colour;
+		ConsoleColour dark_colour = colour;
+
+		switch (colour) {
+		case CONSOLE_BLACK:
+			bright_colour = CONSOLE_GREY_DARK;
+			dark_colour = CONSOLE_BLACK;
+			break;
+		case CONSOLE_GREY_DARK:
+		case CONSOLE_GREY_LIGHT:
+			bright_colour = CONSOLE_GREY_LIGHT;
+			dark_colour = CONSOLE_GREY_DARK;
+			break;
+		case CONSOLE_WHITE:
+			bright_colour = CONSOLE_WHITE;
+			dark_colour = CONSOLE_GREY_LIGHT;
+			break;
+		case CONSOLE_BLUE_LIGHT:
+		case CONSOLE_BLUE_DARK:
+			bright_colour = CONSOLE_BLUE_LIGHT;
+			dark_colour = CONSOLE_BLUE_DARK;
+			break;
+		case CONSOLE_GREEN_LIGHT:
+		case CONSOLE_GREEN_DARK:
+			bright_colour = CONSOLE_GREEN_LIGHT;
+			dark_colour = CONSOLE_GREEN_DARK;
+			break;
+		case CONSOLE_CYAN_LIGHT:
+		case CONSOLE_CYAN_DARK:
+			bright_colour = CONSOLE_CYAN_LIGHT;
+			dark_colour = CONSOLE_CYAN_DARK;
+			break;
+		case CONSOLE_RED_LIGHT:
+		case CONSOLE_RED_DARK:
+			bright_colour = CONSOLE_RED_LIGHT;
+			dark_colour = CONSOLE_RED_DARK;
+			break;
+		case CONSOLE_MAGENTA_LIGHT:
+		case CONSOLE_MAGENTA_DARK:
+			bright_colour = CONSOLE_MAGENTA_LIGHT;
+			dark_colour = CONSOLE_MAGENTA_DARK;
+			break;
+		case CONSOLE_YELLOW_LIGHT:
+		case CONSOLE_YELLOW_DARK:
+			bright_colour = CONSOLE_YELLOW_LIGHT;
+			dark_colour = CONSOLE_YELLOW_DARK;
+			break;
+		}
+
+		int32_t width = 80;
+		State tmp = SaveState();
+
+		ConsoleText bar1;
+		ConsoleText bar2;
+		bar1.foreground_colour = CONSOLE_BLACK;
+		bar1.background_colour = bright_colour;
+		bar2.foreground_colour = CONSOLE_BLACK;
+		bar2.background_colour = dark_colour;
+
+		while (percentage < 100.f) {
+			LoadState(tmp);
+
+			int32_t progress = static_cast<int32_t>(static_cast<float>(width) * (percentage / 100.f));
+			if (progress > width) progress = width;
+
+			bar1.text.clear();
+			bar2.text.clear();
+			for (int32_t i = 0; i < progress; ++i) bar1.text += ' ';
+			for (int32_t i = progress; i < width; ++i) bar2.text += ' ';
+
+			Print(bar1);
+			Print(bar2);
+			EndLine();
+			
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		}
+	}
+
 	std::string Console::InputString(const ConsoleText& prompt, const bool clear) {
 		std::lock_guard<std::recursive_mutex> lock(_mutex);
 		if (clear) {
@@ -229,7 +310,7 @@ namespace anvil {
 	}
 
 	size_t Console::InputChoice(const ConsoleText& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const ConsoleColour background, const bool clear) {
-		size_t count = options.size();
+		const size_t count = options.size();
 		std::vector<ConsoleText> tmp(count);
 		for (size_t i = 0u; i < count; ++i) {
 			ConsoleText& ct = tmp[i];
