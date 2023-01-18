@@ -223,7 +223,6 @@ namespace anvil {
 			//height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 		}
 #endif
-		State tmp = SaveState();
 
 		ConsoleText bar1;
 		ConsoleText bar2;
@@ -232,6 +231,8 @@ namespace anvil {
 		bar2.foreground_colour = bright_colour;
 		bar2.background_colour = dark_colour;
 
+		std::lock_guard<std::recursive_mutex> lock(_mutex);
+		State tmp = SaveState();
 		int32_t prev_progress = -1;
 		while (percentage < 100.f) {
 
