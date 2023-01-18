@@ -156,15 +156,93 @@ namespace anvil {
 		for (const ConsoleText& text : state.text) PrintNoState(text);
 	}
 
-	std::string Console::InputString(const ConsoleText& prompt) {
-		PushState();
-		Clear();
+	std::string Console::InputString(const ConsoleText& prompt, const bool clear) {
+		if (clear) {
+			PushState();
+			Clear();
+		}
 		Print(prompt);
 		EndLine();
 		Print(" > ");
 		std::string tmp = InputString();
-		PopState();
+		if (clear) {
+			PopState();
+		} else {
+			_state_stack.back().text.push_back(ConsoleText(tmp));
+		}
 		return tmp;
+	}
+
+	size_t Console::InputChoice(const ConsoleText& prompt, const std::vector<ConsoleText>& options, const bool clear) {
+		if (options.size() <= 1u) return 0u;
+
+		if (clear) {
+			PushState();
+			Clear();
+		}
+
+		std::string tmp;
+		ConsoleText prompt2 = prompt;
+		const size_t count = options.size();
+		int32_t choice = 0;
+
+		while (true) {
+			Print(prompt);
+			EndLine();
+			for (size_t i = 0; i < count; ++i) {
+				prompt2.text = "\t[" + std::to_string(i) + "]\t: " + options[i].text + '\n';
+				Print(prompt2);
+			}
+
+			prompt2.text = "\nEnter a value between 0 and " + std::to_string(count - 1) + " :";
+			tmp = InputString(prompt2, false);
+
+			try {
+				choice = std::stoi(tmp);
+				if (choice >= 0 && choice < count) break;
+			} catch (...) {
+
+			}
+			if(clear) Clear();
+		}
+
+		if (clear) PopState();
+
+		return static_cast<size_t>(choice);
+	}
+
+
+	size_t Console::InputChoice(const ConsoleText& prompt, const std::vector<std::string>& options, const bool clear) {
+		return InputChoice(prompt, options, CONSOLE_WHITE, clear);
+	}
+
+	size_t Console::InputChoice(const ConsoleText& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const bool clear) {
+		return InputChoice(prompt, options, foreground, CONSOLE_BLACK, clear);
+	}
+
+	size_t Console::InputChoice(const ConsoleText& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const ConsoleColour background, const bool clear) {
+		size_t count = options.size();
+		std::vector<ConsoleText> tmp(count);
+		for (size_t i = 0u; i < count; ++i) {
+			ConsoleText& ct = tmp[i];
+			ct.foreground_colour = foreground;
+			ct.background_colour = background;
+			ct.text = options[i];
+		}
+
+		return InputChoice(prompt, tmp, clear);
+	}
+
+	size_t Console::InputChoice(const std::string& prompt, const std::vector<std::string>& options, const bool clear) {
+		return InputChoice(ConsoleText(prompt), options, clear);
+	}
+
+	size_t Console::InputChoice(const std::string& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const bool clear) {
+		return InputChoice(ConsoleText(prompt, foreground), options, foreground, clear);
+	}
+
+	size_t Console::InputChoice(const std::string& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const ConsoleColour background, const bool clear) {
+		return InputChoice(ConsoleText(prompt, foreground, background), options, foreground, background, clear);
 	}
 
 	std::string Console::InputString() {

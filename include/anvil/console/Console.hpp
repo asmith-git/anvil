@@ -76,8 +76,15 @@ namespace anvil {
 
 		void Print(ConsoleText text);
 
-		std::string InputString(const ConsoleText& prompt);
+		std::string InputString(const ConsoleText& prompt, const bool clear = true);
 		std::string InputString();
+		size_t InputChoice(const ConsoleText& prompt, const std::vector<ConsoleText>& options, const bool clear = true);
+		size_t InputChoice(const ConsoleText& prompt, const std::vector<std::string>& options, const bool clear = true);
+		size_t InputChoice(const ConsoleText& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const bool clear = true);
+		size_t InputChoice(const ConsoleText& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const ConsoleColour background, const bool clear = true);
+		size_t InputChoice(const std::string& prompt, const std::vector<std::string>& options, const bool clear = true);
+		size_t InputChoice(const std::string& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const bool clear = true);
+		size_t InputChoice(const std::string& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const ConsoleColour background, const bool clear = true);
 
 		ANVIL_STRONG_INLINE void Print(const std::string& text) { Print(ConsoleText(text)); }
 		ANVIL_STRONG_INLINE void Print(const std::string& text, const ConsoleColour foreground) { Print(ConsoleText(text, foreground)); }
