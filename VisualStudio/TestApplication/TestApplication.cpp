@@ -6,6 +6,7 @@
 #include "anvil/Compute.hpp"
 #include "anvil/BytePipe.hpp"
 #include "anvil/byte-pipe/BytePipeJSON.hpp"
+#include "anvil/Console.hpp"
 
 static uint64_t CurrentTime() {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -13,8 +14,90 @@ static uint64_t CurrentTime() {
 		).count();
 }
 
+static void ConsoleTest() {
+	using namespace anvil;
+
+	Console test;
+	test.Print("Black text\n", CONSOLE_BLACK);
+	test.Print("D. Grey text\n", CONSOLE_GREY_DARK);
+	test.Print("L. Grey text\n", CONSOLE_GREY_LIGHT);
+	test.Print("White text\n", CONSOLE_WHITE);
+	test.Print("L. Blue text\n", CONSOLE_BLUE_LIGHT);
+	test.Print("L. Green text\n", CONSOLE_GREEN_LIGHT);
+	test.Print("L. Cyan text\n", CONSOLE_CYAN_LIGHT);
+	test.Print("L. Red text\n", CONSOLE_RED_LIGHT);
+	test.Print("L. Magenta text\n", CONSOLE_MAGENTA_LIGHT);
+	test.Print("L. Yellow text\n", CONSOLE_YELLOW_LIGHT);
+	test.Print("D. Blue text\n", CONSOLE_BLUE_DARK);
+	test.Print("D. Green text\n", CONSOLE_GREEN_DARK);
+	test.Print("D. Cyan text\n", CONSOLE_CYAN_DARK);
+	test.Print("D. Red text\n", CONSOLE_RED_DARK);
+	test.Print("D. Magenta text\n", CONSOLE_MAGENTA_DARK);
+	test.Print("D. Yellow text\n", CONSOLE_YELLOW_DARK);
+	test.Print("Black background\n", CONSOLE_BLACK, CONSOLE_BLACK);
+	test.Print("D. Grey background\n", CONSOLE_BLACK, CONSOLE_GREY_DARK);
+	test.Print("L. Grey background\n", CONSOLE_BLACK, CONSOLE_GREY_LIGHT);
+	test.Print("White background\n", CONSOLE_BLACK, CONSOLE_WHITE);
+	test.Print("L. Blue background\n", CONSOLE_BLACK, CONSOLE_BLUE_LIGHT);
+	test.Print("L. Green background\n", CONSOLE_BLACK, CONSOLE_GREEN_LIGHT);
+	test.Print("L. Cyan background\n", CONSOLE_BLACK, CONSOLE_CYAN_LIGHT);
+	test.Print("L. Red background\n", CONSOLE_BLACK, CONSOLE_RED_LIGHT);
+	test.Print("L. Magenta background\n", CONSOLE_BLACK, CONSOLE_MAGENTA_LIGHT);
+	test.Print("L. Yellow background\n", CONSOLE_BLACK, CONSOLE_YELLOW_LIGHT);
+	test.Print("D. Blue background\n", CONSOLE_BLACK, CONSOLE_BLUE_DARK);
+	test.Print("D. Green background\n", CONSOLE_BLACK, CONSOLE_GREEN_DARK);
+	test.Print("D. Cyan background\n", CONSOLE_BLACK, CONSOLE_CYAN_DARK);
+	test.Print("D. Red background\n", CONSOLE_BLACK, CONSOLE_RED_DARK);
+	test.Print("D. Magenta background\n", CONSOLE_BLACK, CONSOLE_MAGENTA_DARK);
+	test.Print("D. Yellow background\n", CONSOLE_BLACK, CONSOLE_YELLOW_DARK);
+
+	auto state = test.SaveState();
+	test.Clear();
+	test.LoadState(state);
+
+	std::string msg = test.InputString("Enter a message");
+
+	test.Print(msg, CONSOLE_BLACK);
+	test.Print(msg, CONSOLE_GREY_DARK);
+	test.Print(msg, CONSOLE_GREY_LIGHT);
+	test.Print(msg, CONSOLE_WHITE);
+	test.Print(msg, CONSOLE_BLUE_LIGHT);
+	test.Print(msg, CONSOLE_GREEN_LIGHT);
+	test.Print(msg, CONSOLE_CYAN_LIGHT);
+	test.Print(msg, CONSOLE_RED_LIGHT);
+	test.Print(msg, CONSOLE_MAGENTA_LIGHT);
+	test.Print(msg, CONSOLE_YELLOW_LIGHT);
+	test.Print(msg, CONSOLE_BLUE_DARK);
+	test.Print(msg, CONSOLE_GREEN_DARK);
+	test.Print(msg, CONSOLE_CYAN_DARK);
+	test.Print(msg, CONSOLE_RED_DARK);
+	test.Print(msg, CONSOLE_MAGENTA_DARK);
+	test.Print(msg, CONSOLE_YELLOW_DARK);
+	test.Print(msg, CONSOLE_BLACK, CONSOLE_BLACK);
+	test.Print(msg, CONSOLE_BLACK, CONSOLE_GREY_DARK);
+	test.Print(msg, CONSOLE_BLACK, CONSOLE_GREY_LIGHT);
+	test.Print(msg, CONSOLE_BLACK, CONSOLE_WHITE);
+	test.Print(msg, CONSOLE_BLACK, CONSOLE_BLUE_LIGHT);
+	test.Print(msg, CONSOLE_BLACK, CONSOLE_GREEN_LIGHT);
+	test.Print(msg, CONSOLE_BLACK, CONSOLE_CYAN_LIGHT);
+	test.Print(msg, CONSOLE_BLACK, CONSOLE_RED_LIGHT);
+	test.Print(msg, CONSOLE_BLACK, CONSOLE_MAGENTA_LIGHT);
+	test.Print(msg, CONSOLE_BLACK, CONSOLE_YELLOW_LIGHT);
+	test.Print(msg, CONSOLE_BLACK, CONSOLE_BLUE_DARK);
+	test.Print(msg, CONSOLE_BLACK, CONSOLE_GREEN_DARK);
+	test.Print(msg, CONSOLE_BLACK, CONSOLE_CYAN_DARK);
+	test.Print(msg, CONSOLE_BLACK, CONSOLE_RED_DARK);
+	test.Print(msg, CONSOLE_BLACK, CONSOLE_MAGENTA_DARK);
+	test.Print(msg, CONSOLE_BLACK, CONSOLE_YELLOW_DARK);
+
+	system("pause");
+}
+
 int main()
 {
+	ConsoleTest();
+	return 0;
+
 	std::cout << "HW LZCNT : " << ANVIL_HW_LZCNT << std::endl;
 
 	for (uint32_t i = 0; i < 100; ++i) {
