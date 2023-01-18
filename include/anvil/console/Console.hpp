@@ -18,6 +18,7 @@
 #include <string>
 #include <vector>
 #include <deque>
+#include <mutex>
 #include "anvil/core/Keywords.hpp"
 #include "anvil/core/OperatingSystem.hpp"
 
@@ -58,6 +59,7 @@ namespace anvil {
 			std::vector<ConsoleText> text;
 		};
 	private:
+		mutable std::recursive_mutex _mutex;
 		std::deque<State> _state_stack;
 #if ANVIL_OS == ANVIL_WINDOWS
 		void* _stdout_handle;

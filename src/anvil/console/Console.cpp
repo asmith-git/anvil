@@ -60,6 +60,7 @@ namespace anvil {
 	}
 
 	void Console::Print(ConsoleText text) {
+		std::lock_guard<std::recursive_mutex> lock(_mutex);
 		_state_stack.back().text.push_back(text);
 		PrintNoState(text);
 	}
@@ -123,6 +124,7 @@ namespace anvil {
 	}
 
 	void Console::Clear() {
+		std::lock_guard<std::recursive_mutex> lock(_mutex);
 		_state_stack.back().text.clear();
 
 #if ANVIL_OS == ANVIL_WINDOWS
@@ -132,10 +134,12 @@ namespace anvil {
 	}
 
 	void Console::PushState() {
+		std::lock_guard<std::recursive_mutex> lock(_mutex);
 		_state_stack.push_back(State());
 	}
 
 	void Console::PopState() {
+		std::lock_guard<std::recursive_mutex> lock(_mutex);
 		_state_stack.pop_back();
 		if (_state_stack.empty()) {
 			_state_stack.push_back(State());
@@ -147,16 +151,19 @@ namespace anvil {
 	}
 
 	Console::State Console::SaveState() const {
+		std::lock_guard<std::recursive_mutex> lock(_mutex);
 		return _state_stack.back();
 	}
 
 	void Console::LoadState(const State& state) {
+		std::lock_guard<std::recursive_mutex> lock(_mutex);
 		Clear();
 		_state_stack.back() = state;
 		for (const ConsoleText& text : state.text) PrintNoState(text);
 	}
 
 	std::string Console::InputString(const ConsoleText& prompt, const bool clear) {
+		std::lock_guard<std::recursive_mutex> lock(_mutex);
 		if (clear) {
 			PushState();
 			Clear();
@@ -174,6 +181,7 @@ namespace anvil {
 	}
 
 	size_t Console::InputChoice(const ConsoleText& prompt, const std::vector<ConsoleText>& options, const bool clear) {
+		std::lock_guard<std::recursive_mutex> lock(_mutex);
 		if (options.size() <= 1u) return 0u;
 
 		if (clear) {
