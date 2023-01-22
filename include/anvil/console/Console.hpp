@@ -65,7 +65,8 @@ namespace anvil {
 		uint16_t _current_attribute;
 #endif
 
-		void PrintNoState(ConsoleText text);
+		void PrintNoState(const char* text, size_t len, const ConsoleColour foreground, const ConsoleColour background);
+		void PrintNoState(const ConsoleText& text);
 	public:
 		Console();
 		~Console();
@@ -76,7 +77,7 @@ namespace anvil {
 		State SaveState() const;
 		void LoadState(const State& state);
 
-		void Print(ConsoleText text);
+		void Print(const ConsoleText& text);
 
 		void ProgressBar(float& percentage, ConsoleColour colour = CONSOLE_GREEN_LIGHT);
 

@@ -51,6 +51,7 @@ static void ConsoleTest() {
 	test.Print("D. Magenta background\n", CONSOLE_BLACK, CONSOLE_MAGENTA_DARK);
 	test.Print("D. Yellow background\n", CONSOLE_BLACK, CONSOLE_YELLOW_DARK);
 
+	std::this_thread::sleep_for(std::chrono::milliseconds(300));
 	{
 		test.Clear();
 		float progress = 0.f;

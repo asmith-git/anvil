@@ -23,7 +23,9 @@ namespace anvil {
 	static std::recursive_mutex g_console_mutex;
 
 #if ANVIL_OS == ANVIL_WINDOWS
-	static ANVIL_CONSTEXPR_VAR const uint8_t g_forground_colours[] = {
+
+	static ANVIL_CONSTEXPR_VAR const uint8_t g_forground_colours[32] = {
+		// Foreground
 		0,																			//CONSOLE_BLACK,
 		FOREGROUND_INTENSITY,														//CONSOLE_GREY_DARK,
 		FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED,						//CONSOLE_GREY_LIGHT,
@@ -40,9 +42,8 @@ namespace anvil {
 		FOREGROUND_RED,																//CONSOLE_RED_DARK
 		FOREGROUND_RED | FOREGROUND_BLUE,											//CONSOLE_MAGENTA_DARK
 		FOREGROUND_RED | FOREGROUND_GREEN,											//CONSOLE_YELLOW_DARK
-	};
 
-	static ANVIL_CONSTEXPR_VAR const uint8_t g_background_colours[] = {
+		// Background
 		0,																			//CONSOLE_BLACK,
 		BACKGROUND_INTENSITY,														//CONSOLE_GREY_DARK,
 		BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED,						//CONSOLE_GREY_LIGHT,
@@ -60,6 +61,8 @@ namespace anvil {
 		BACKGROUND_RED | BACKGROUND_BLUE,											//CONSOLE_MAGENTA_DARK
 		BACKGROUND_RED | BACKGROUND_GREEN,											//CONSOLE_YELLOW_DARK
 	};
+
+#define g_background_colours (g_forground_colours + 16u)
 
 #if ANVIL_CPP_VER >= 2011
 	enum { DEFAULT_CONSOLE = g_forground_colours[CONSOLE_WHITE] | g_background_colours[CONSOLE_BLACK] };
@@ -108,28 +111,43 @@ namespace anvil {
 
 	}
 
-	void Console::Print(ConsoleText text) {
+	void Console::Print(const ConsoleText& text) {
 		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
-		_state_stack.back().text.push_back(text);
+
+		State& state = _state_stack.back();
+		if (state.text.empty()) {
+			state.text.push_back(text);
+
+		} else {
+			ConsoleText& prev = state.text.back();
+			if (prev.foreground_colour == text.foreground_colour && prev.background_colour == text.background_colour) {
+				prev.text += text.text;
+			} else {
+				state.text.push_back(text);
+			}
+		}
+
 		PrintNoState(text);
 	}
 
-	void Console::PrintNoState(ConsoleText text) {
-
+	void Console::PrintNoState(const char* text, size_t len, const ConsoleColour foreground, const ConsoleColour background) {
 #if ANVIL_OS == ANVIL_WINDOWS
-#if ANVIL_CPP_VER >= 2011
-		enum { DEFAULT_CONSOLE = g_forground_colours[CONSOLE_WHITE] | g_background_colours[CONSOLE_BLACK] };
-#else
-		const WORD DEFAULT_CONSOLE = g_forground_colours[CONSOLE_WHITE] | g_background_colours[CONSOLE_BLACK];
-#endif
 
-		const WORD attribute = g_forground_colours[text.foreground_colour] | g_background_colours[text.background_colour];
+		const WORD attribute = g_forground_colours[foreground] | g_background_colours[background];
 		if (attribute != _current_attribute) {
 			SetConsoleTextAttribute(_stdout_handle, attribute);
 			_current_attribute = attribute;
 		}
+
+		WriteConsoleA(_stdout_handle, text, static_cast<DWORD>(len), NULL, NULL);
+
+#else
+		std::cout.write(text, len);
 #endif
-		std::cout.write(text.text.c_str(), text.text.size());
+	}
+
+	void Console::PrintNoState(const ConsoleText& text) {
+		PrintNoState(text.text.c_str(), text.text.size(), text.foreground_colour, text.background_colour);
 	}
 
 	void Console::Clear() {
@@ -137,16 +155,17 @@ namespace anvil {
 		_state_stack.back().text.clear();
 
 #if ANVIL_OS == ANVIL_WINDOWS
-		if (DEFAULT_CONSOLE != _current_attribute) {
-			SetConsoleTextAttribute(_stdout_handle, DEFAULT_CONSOLE);
-			_current_attribute = DEFAULT_CONSOLE;
-		}
-		PCWSTR tmp = L"\x1b[2J";
-		WriteConsoleW(_stdout_handle, tmp, (DWORD)wcslen(tmp), NULL, NULL);
+		PrintNoState("\x1b[2J", 5, CONSOLE_WHITE, CONSOLE_BLACK);
 #else
-		//! \bug Implement correctly
-		const size_t h = GetHeight();
-		for (size_t i = 0; < h; ++i) EndLine();
+		//! \todo Implement correctly
+		enum { MAX_HEIGHT = 4096 };
+		char buf[MAX_HEIGHT];
+		size_t h = GetHeight();
+		if (h > MAX_HEIGHT) h = MAX_HEIGHT;
+
+		for (size_t i = 0; i < h; ++i) buf[i] = '\n';
+
+		PrintNoState(buf, h, CONSOLE_WHITE, CONSOLE_BLACK);
 #endif
 	}
 
