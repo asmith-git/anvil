@@ -59,10 +59,10 @@ namespace anvil {
 			std::vector<ConsoleText> text;
 		};
 	private:
-		mutable std::recursive_mutex _mutex;
 		std::deque<State> _state_stack;
 #if ANVIL_OS == ANVIL_WINDOWS
 		void* _stdout_handle;
+		uint16_t _current_attribute;
 #endif
 
 		void PrintNoState(ConsoleText text);
@@ -91,6 +91,8 @@ namespace anvil {
 		size_t InputChoice(const std::string& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const bool clear = true);
 		size_t InputChoice(const std::string& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const ConsoleColour background, const bool clear = true);
 
+		std::pair<size_t, size_t> GetSize() const;
+
 		ANVIL_STRONG_INLINE void Print(const std::string& text) { Print(ConsoleText(text)); }
 		ANVIL_STRONG_INLINE void Print(const std::string& text, const ConsoleColour foreground) { Print(ConsoleText(text, foreground)); }
 		ANVIL_STRONG_INLINE void Print(const std::string& text, const ConsoleColour foreground, const ConsoleColour background) { Print(ConsoleText(text, foreground, background)); }
@@ -98,6 +100,8 @@ namespace anvil {
 		ANVIL_STRONG_INLINE std::string InputString(const std::string& text, const ConsoleColour foreground) { return InputString(ConsoleText(text, foreground)); }
 		ANVIL_STRONG_INLINE std::string InputString(const std::string& text, const ConsoleColour foreground, const ConsoleColour background) { return InputString(ConsoleText(text, foreground, background)); }
 		ANVIL_STRONG_INLINE void EndLine() { Print("\n"); }
+		ANVIL_STRONG_INLINE size_t GetWidth() const { return GetSize().first; }
+		ANVIL_STRONG_INLINE size_t GetHeight() const { return GetSize().first; }
 	};
 }
 

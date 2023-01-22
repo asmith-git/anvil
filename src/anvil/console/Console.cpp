@@ -19,6 +19,55 @@
 #endif
 
 namespace anvil {
+
+	static std::recursive_mutex g_console_mutex;
+
+#if ANVIL_OS == ANVIL_WINDOWS
+	static ANVIL_CONSTEXPR_VAR const uint8_t g_forground_colours[] = {
+		0,																			//CONSOLE_BLACK,
+		FOREGROUND_INTENSITY,														//CONSOLE_GREY_DARK,
+		FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED,						//CONSOLE_GREY_LIGHT,
+		FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY, //CONSOLE_WHITE,
+		FOREGROUND_BLUE | FOREGROUND_INTENSITY,										//CONSOLE_BLUE_LIGHT
+		FOREGROUND_GREEN | FOREGROUND_INTENSITY,									//CONSOLE_GREEN_LIGHT
+		FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY,					//CONSOLE_CYAN_LIGHT
+		FOREGROUND_RED | FOREGROUND_INTENSITY,										//CONSOLE_RED_LIGHT
+		FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY,					//CONSOLE_MAGENTA_LIGHT
+		FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY,					//CONSOLE_YELLOW_LIGHT
+		FOREGROUND_BLUE,															//CONSOLE_BLUE_DARK
+		FOREGROUND_GREEN,															//CONSOLE_GREEN_DARK
+		FOREGROUND_BLUE | FOREGROUND_GREEN,											//CONSOLE_CYAN_DARK
+		FOREGROUND_RED,																//CONSOLE_RED_DARK
+		FOREGROUND_RED | FOREGROUND_BLUE,											//CONSOLE_MAGENTA_DARK
+		FOREGROUND_RED | FOREGROUND_GREEN,											//CONSOLE_YELLOW_DARK
+	};
+
+	static ANVIL_CONSTEXPR_VAR const uint8_t g_background_colours[] = {
+		0,																			//CONSOLE_BLACK,
+		BACKGROUND_INTENSITY,														//CONSOLE_GREY_DARK,
+		BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED,						//CONSOLE_GREY_LIGHT,
+		BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | BACKGROUND_INTENSITY, //CONSOLE_WHITE,
+		BACKGROUND_BLUE | BACKGROUND_INTENSITY,										//CONSOLE_BLUE_LIGHT
+		BACKGROUND_GREEN | BACKGROUND_INTENSITY,									//CONSOLE_GREEN_LIGHT
+		BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_INTENSITY,					//CONSOLE_CYAN_LIGHT
+		BACKGROUND_RED | BACKGROUND_INTENSITY,										//CONSOLE_RED_LIGHT
+		BACKGROUND_RED | BACKGROUND_BLUE | BACKGROUND_INTENSITY,					//CONSOLE_MAGENTA_LIGHT
+		BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_INTENSITY,					//CONSOLE_YELLOW_LIGHT
+		BACKGROUND_BLUE,															//CONSOLE_BLUE_DARK
+		BACKGROUND_GREEN,															//CONSOLE_GREEN_DARK
+		BACKGROUND_BLUE | BACKGROUND_GREEN,											//CONSOLE_CYAN_DARK
+		BACKGROUND_RED,																//CONSOLE_RED_DARK
+		BACKGROUND_RED | BACKGROUND_BLUE,											//CONSOLE_MAGENTA_DARK
+		BACKGROUND_RED | BACKGROUND_GREEN,											//CONSOLE_YELLOW_DARK
+	};
+
+#if ANVIL_CPP_VER >= 2011
+	enum { DEFAULT_CONSOLE = g_forground_colours[CONSOLE_WHITE] | g_background_colours[CONSOLE_BLACK] };
+#else
+	static const WORD DEFAULT_CONSOLE = g_forground_colours[CONSOLE_WHITE] | g_background_colours[CONSOLE_BLACK];
+#endif
+#endif
+
 	// ConsoleText
 
 	ConsoleText::ConsoleText() :
@@ -42,9 +91,7 @@ namespace anvil {
 
 	// Console
 
-	Console::Console() :
-		_stdout_handle(INVALID_HANDLE_VALUE)
-	{
+	Console::Console() {
 		_state_stack.push_back(State());
 #if ANVIL_OS == ANVIL_WINDOWS
 		_stdout_handle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -52,6 +99,8 @@ namespace anvil {
 		DWORD mode = 0;
 		GetConsoleMode(_stdout_handle, &mode);
 		if((mode & ENABLE_VIRTUAL_TERMINAL_PROCESSING) != ENABLE_VIRTUAL_TERMINAL_PROCESSING) SetConsoleMode(_stdout_handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+
+		_current_attribute = DEFAULT_CONSOLE;
 #endif
 	}
 
@@ -60,7 +109,7 @@ namespace anvil {
 	}
 
 	void Console::Print(ConsoleText text) {
-		std::lock_guard<std::recursive_mutex> lock(_mutex);
+		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
 		_state_stack.back().text.push_back(text);
 		PrintNoState(text);
 	}
@@ -68,44 +117,6 @@ namespace anvil {
 	void Console::PrintNoState(ConsoleText text) {
 
 #if ANVIL_OS == ANVIL_WINDOWS
-		static ANVIL_CONSTEXPR_VAR const uint8_t g_forground_colours[] = {
-			0,																			//CONSOLE_BLACK,
-			FOREGROUND_INTENSITY,														//CONSOLE_GREY_DARK,
-			FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED,						//CONSOLE_GREY_LIGHT,
-			FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY, //CONSOLE_WHITE,
-			FOREGROUND_BLUE | FOREGROUND_INTENSITY,										//CONSOLE_BLUE_LIGHT
-			FOREGROUND_GREEN | FOREGROUND_INTENSITY,									//CONSOLE_GREEN_LIGHT
-			FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY,					//CONSOLE_CYAN_LIGHT
-			FOREGROUND_RED | FOREGROUND_INTENSITY,										//CONSOLE_RED_LIGHT
-			FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY,					//CONSOLE_MAGENTA_LIGHT
-			FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY,					//CONSOLE_YELLOW_LIGHT
-			FOREGROUND_BLUE,															//CONSOLE_BLUE_DARK
-			FOREGROUND_GREEN,															//CONSOLE_GREEN_DARK
-			FOREGROUND_BLUE | FOREGROUND_GREEN,											//CONSOLE_CYAN_DARK
-			FOREGROUND_RED,																//CONSOLE_RED_DARK
-			FOREGROUND_RED | FOREGROUND_BLUE,											//CONSOLE_MAGENTA_DARK
-			FOREGROUND_RED | FOREGROUND_GREEN,											//CONSOLE_YELLOW_DARK
-		};
-
-		static ANVIL_CONSTEXPR_VAR const uint8_t g_background_colours[] = {
-			0,																			//CONSOLE_BLACK,
-			BACKGROUND_INTENSITY,														//CONSOLE_GREY_DARK,
-			BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED,						//CONSOLE_GREY_LIGHT,
-			BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | BACKGROUND_INTENSITY, //CONSOLE_WHITE,
-			BACKGROUND_BLUE | BACKGROUND_INTENSITY,										//CONSOLE_BLUE_LIGHT
-			BACKGROUND_GREEN | BACKGROUND_INTENSITY,									//CONSOLE_GREEN_LIGHT
-			BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_INTENSITY,					//CONSOLE_CYAN_LIGHT
-			BACKGROUND_RED | BACKGROUND_INTENSITY,										//CONSOLE_RED_LIGHT
-			BACKGROUND_RED | BACKGROUND_BLUE | BACKGROUND_INTENSITY,					//CONSOLE_MAGENTA_LIGHT
-			BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_INTENSITY,					//CONSOLE_YELLOW_LIGHT
-			BACKGROUND_BLUE,															//CONSOLE_BLUE_DARK
-			BACKGROUND_GREEN,															//CONSOLE_GREEN_DARK
-			BACKGROUND_BLUE | BACKGROUND_GREEN,											//CONSOLE_CYAN_DARK
-			BACKGROUND_RED,																//CONSOLE_RED_DARK
-			BACKGROUND_RED | BACKGROUND_BLUE,											//CONSOLE_MAGENTA_DARK
-			BACKGROUND_RED | BACKGROUND_GREEN,											//CONSOLE_YELLOW_DARK
-		};
-
 #if ANVIL_CPP_VER >= 2011
 		enum { DEFAULT_CONSOLE = g_forground_colours[CONSOLE_WHITE] | g_background_colours[CONSOLE_BLACK] };
 #else
@@ -113,55 +124,71 @@ namespace anvil {
 #endif
 
 		const WORD attribute = g_forground_colours[text.foreground_colour] | g_background_colours[text.background_colour];
-		if(attribute != DEFAULT_CONSOLE) SetConsoleTextAttribute(_stdout_handle, attribute);
+		if (attribute != _current_attribute) {
+			if (attribute != DEFAULT_CONSOLE) SetConsoleTextAttribute(_stdout_handle, attribute);
+			_current_attribute = attribute;
+		}
 #endif
-
 		std::cout.write(text.text.c_str(), text.text.size());
-
-#if ANVIL_OS == ANVIL_WINDOWS
-		if (attribute != DEFAULT_CONSOLE) SetConsoleTextAttribute(_stdout_handle, DEFAULT_CONSOLE);
-#endif
 	}
 
 	void Console::Clear() {
-		std::lock_guard<std::recursive_mutex> lock(_mutex);
+		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
 		_state_stack.back().text.clear();
 
 #if ANVIL_OS == ANVIL_WINDOWS
 		PCWSTR tmp = L"\x1b[2J";
 		WriteConsoleW(_stdout_handle, tmp, (DWORD)wcslen(tmp), NULL, NULL);
+#else
+		//! \bug Implement correctly
+		const size_t h = GetHeight();
+		for (size_t i = 0; < h; ++i) EndLine();
 #endif
 	}
 
 	void Console::PushState() {
-		std::lock_guard<std::recursive_mutex> lock(_mutex);
+		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
 		_state_stack.push_back(State());
 	}
 
 	void Console::PopState() {
-		std::lock_guard<std::recursive_mutex> lock(_mutex);
+		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
 		_state_stack.pop_back();
 		if (_state_stack.empty()) {
 			_state_stack.push_back(State());
-		}
-		else {
+		} else {
 			State tmp = std::move(_state_stack.back());
 			LoadState(tmp);
 		}
 	}
 
 	Console::State Console::SaveState() const {
-		std::lock_guard<std::recursive_mutex> lock(_mutex);
+		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
 		return _state_stack.back();
 	}
 
 	void Console::LoadState(const State& state) {
-		std::lock_guard<std::recursive_mutex> lock(_mutex);
+		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
 		Clear();
 		_state_stack.back() = state;
 		for (const ConsoleText& text : state.text) PrintNoState(text);
 	}
 
+	std::pair<size_t, size_t> Console::GetSize() const {
+		std::pair<size_t, size_t> tmp;
+#if ANVIL_OS == ANVIL_WINDOWS
+		{
+			CONSOLE_SCREEN_BUFFER_INFO csbi;
+			GetConsoleScreenBufferInfo(_stdout_handle, &csbi);
+			tmp.first = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+			tmp.second = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+		}
+#else
+		tmp.first = 120;
+		tmp.second = 80;
+#endif
+		return tmp;
+	}
 
 	void Console::ProgressBar(float& percentage, ConsoleColour colour) {
 
@@ -214,15 +241,7 @@ namespace anvil {
 			break;
 		}
 
-		int32_t width = 80;
-#if ANVIL_OS == ANVIL_WINDOWS
-		{
-			CONSOLE_SCREEN_BUFFER_INFO csbi;
-			GetConsoleScreenBufferInfo(_stdout_handle, &csbi);
-			width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-			//height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-		}
-#endif
+		int32_t width = GetWidth();
 
 		ConsoleText bar1;
 		ConsoleText bar2;
@@ -231,7 +250,7 @@ namespace anvil {
 		bar2.foreground_colour = bright_colour;
 		bar2.background_colour = dark_colour;
 
-		std::lock_guard<std::recursive_mutex> lock(_mutex);
+		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
 		State tmp = SaveState();
 		int32_t prev_progress = -1;
 		while (percentage < 100.f) {
@@ -275,7 +294,7 @@ namespace anvil {
 	}
 
 	std::string Console::InputString(const ConsoleText& prompt, const bool clear) {
-		std::lock_guard<std::recursive_mutex> lock(_mutex);
+		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
 		if (clear) {
 			PushState();
 			Clear();
@@ -293,7 +312,7 @@ namespace anvil {
 	}
 
 	size_t Console::InputChoice(const ConsoleText& prompt, const std::vector<ConsoleText>& options, const bool clear) {
-		std::lock_guard<std::recursive_mutex> lock(_mutex);
+		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
 		if (options.size() <= 1u) return 0u;
 
 		if (clear) {
