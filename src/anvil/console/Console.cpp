@@ -125,7 +125,7 @@ namespace anvil {
 
 		const WORD attribute = g_forground_colours[text.foreground_colour] | g_background_colours[text.background_colour];
 		if (attribute != _current_attribute) {
-			if (attribute != DEFAULT_CONSOLE) SetConsoleTextAttribute(_stdout_handle, attribute);
+			SetConsoleTextAttribute(_stdout_handle, attribute);
 			_current_attribute = attribute;
 		}
 #endif
@@ -137,6 +137,10 @@ namespace anvil {
 		_state_stack.back().text.clear();
 
 #if ANVIL_OS == ANVIL_WINDOWS
+		if (DEFAULT_CONSOLE != _current_attribute) {
+			SetConsoleTextAttribute(_stdout_handle, DEFAULT_CONSOLE);
+			_current_attribute = DEFAULT_CONSOLE;
+		}
 		PCWSTR tmp = L"\x1b[2J";
 		WriteConsoleW(_stdout_handle, tmp, (DWORD)wcslen(tmp), NULL, NULL);
 #else
