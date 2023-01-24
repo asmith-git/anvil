@@ -12,55 +12,40 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#ifndef ANVIL_LUTILS_BYTEPIPE_TCP_HPP
-#define ANVIL_LUTILS_BYTEPIPE_TCP_HPP
+#ifndef ANVIL_LUTILS_BYTEPIPE_UDP_HPP
+#define ANVIL_LUTILS_BYTEPIPE_UDP_HPP
 
-#include "anvil/core/OperatingSystem.hpp"
-#include "anvil/byte-pipe/BytePipeReader.hpp"
-#include "anvil/byte-pipe/BytePipeWriter.hpp"
-
-#if ANVIL_OS == ANVIL_WINDOWS
-	#define NO_MINMAX
-	#define WIN32_MEAN_AND_LEAN
-	#include <windows.h>
-#endif
+#include "anvil/byte-pipe/BytePipeTCP.hpp"
 
 namespace anvil { namespace BytePipe {
 
-	union IPAddress {
-		uint32_t u32;
-		uint32_t u8[4u];
-	};
+	typedef TCPPort UDPPort;
 
-	typedef uint16_t TCPPort;
-
-	class TCPServerInputPipe final : public InputPipe {
+	class UDPInputPipe final : public InputPipe {
 	private:
 #if ANVIL_OS == ANVIL_WINDOWS
 		SOCKET _socket;
 #endif
 	public:
-		TCPServerInputPipe(TCPPort listen_port);
-		virtual ~TCPServerInputPipe();
+		UDPInputPipe(UDPPort listen_port);
+		virtual ~UDPInputPipe();
 		uint32_t ReadBytes(void* dst, const uint32_t bytes) final;
 		void ReadBytesFast(void* dst, const uint32_t bytes) final;
 	};
 
-	class TCPClientOutputPipe final : public OutputPipe {
+	class UDPOutputPipe final : public OutputPipe {
 	private:
 #if ANVIL_OS == ANVIL_WINDOWS
 		SOCKET _socket;
+		SOCKADDR_IN _address;
 #endif
 	public:
-		TCPClientOutputPipe(IPAddress server_ip, TCPPort server_port);
-		virtual ~TCPClientOutputPipe();
+		UDPOutputPipe(IPAddress server_ip, UDPPort server_port);
+		virtual ~UDPOutputPipe();
 		uint32_t WriteBytes(const void* src, const uint32_t bytes) final;
 		void WriteBytesFast(const void* src, const uint32_t bytes) final;
 		void Flush() final;
 	};
-
-	typedef TCPServerInputPipe TCPInputPipe;
-	typedef TCPClientOutputPipe TCPOutputPipe;
 
 }}
 

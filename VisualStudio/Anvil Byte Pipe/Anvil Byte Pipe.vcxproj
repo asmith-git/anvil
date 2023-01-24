@@ -30,6 +30,7 @@
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeRLE.hpp" />
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeSTL.hpp" />
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeTCP.hpp" />
+    <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeUDP.hpp" />
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeWriter.hpp" />
     <ClInclude Include="..\..\include\anvil\BytePipe.hpp" />
   </ItemGroup>
@@ -41,6 +42,7 @@
     <ClCompile Include="..\..\src\anvil\byte-pipe\BinaryPipePacket.cpp" />
     <ClCompile Include="..\..\src\anvil\byte-pipe\BinaryPipeSTL.cpp" />
     <ClCompile Include="..\..\src\anvil\byte-pipe\BinaryPipeTCP.cpp" />
+    <ClCompile Include="..\..\src\anvil\byte-pipe\BinaryPipeUDP.cpp" />
     <ClCompile Include="..\..\src\anvil\byte-pipe\BytePipeObjects.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
