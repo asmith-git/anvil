@@ -13,14 +13,61 @@
 //limitations under the License.
 
 #include "anvil/byte-pipe/BytePipeTCP.hpp"
-#include "anvil/core/OperatingSystem.hpp"
-
-#if ANVIL_OS == ANVIL_WINDOWS
-	#define WIN32_MEAN_AND_LEAN
-	#include <windows.h>
-#endif
 
 namespace anvil { namespace BytePipe {
+
+#if ANVIL_OS == ANVIL_WINDOWS
+	static void InitWinsock() {
+		WSADATA wsaData;
+		memset(&wsaData, 0, sizeof(WSADATA));
+		WSAStartup(MAKEWORD(2, 2), &wsaData);
+	}
+#endif
 	
+	TcpClientOutputPipe::TcpClientOutputPipe(IPAddress server_ip, TCPPort server_port) {
+#if ANVIL_OS == ANVIL_WINDOWS
+		InitWinsock();
+
+		_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+		if (_socket == INVALID_SOCKET) throw std::runtime_error("TcpClientOutputPipe::TcpClientOutputPipe : Failed to create socket, WSA error code " + std::to_string(WSAGetLastError()));
+
+		SOCKADDR_IN server;
+		memset(&server, 0, sizeof(SOCKADDR_IN));
+		server.sin_family = AF_INET;
+		server.sin_port = htons(server_port);
+		server.sin_addr.s_addr = inet_addr((std::to_string(server_ip.u8[0u]) + "." + std::to_string(server_ip.u8[1u]) + "." + std::to_string(server_ip.u8[2u]) + "." + std::to_string(server_ip.u8[3u])).c_str());
+
+		int32_t code = connect(_socket, (SOCKADDR *)&server, sizeof(server));
+		if (code != 0) {
+			closesocket(_socket);
+			_socket = INVALID_SOCKET;
+			throw std::runtime_error("TcpClientOutputPipe::TcpClientOutputPipe : Failed to connect to server");
+		}
+#endif
+	}
+
+	TcpClientOutputPipe::~TcpClientOutputPipe() {
+
+	}
+
+	uint32_t TcpClientOutputPipe::WriteBytes(const void* src, const uint32_t bytes) {
+		int sent_bytes = send(_socket, static_cast<const char*>(src), static_cast<int>(bytes), 0);
+		if (sent_bytes == SOCKET_ERROR) throw std::runtime_error("TcpClientOutputPipe::WriteBytes : Failed to send data, WSA error code " + std::to_string(WSAGetLastError()));
+		return static_cast<uint32_t>(sent_bytes);
+	}
+
+	void TcpClientOutputPipe::WriteBytesFast(const void* src, const uint32_t bytes) {
+		const uint8_t* src2 = static_cast<const uint8_t*>(src);
+		uint32_t remaining_bytes = bytes;
+		while (remaining_bytes > 0) {
+			const uint32_t tmp = WriteBytes(src2, remaining_bytes);
+			remaining_bytes -= tmp;
+			src2 += tmp;
+		}
+	}
+
+	void TcpClientOutputPipe::Flush() {
+		
+	}
 
 }}

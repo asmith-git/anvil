@@ -16,8 +16,15 @@
 #define ANVIL_LUTILS_BYTEPIPE_TCP_HPP
 
 #include <iostream>
+#include "anvil/core/OperatingSystem.hpp"
 #include "anvil/byte-pipe/BytePipeReader.hpp"
 #include "anvil/byte-pipe/BytePipeWriter.hpp"
+
+#if ANVIL_OS == ANVIL_WINDOWS
+	#define NO_MINMAX
+	#define WIN32_MEAN_AND_LEAN
+	#include <windows.h>
+#endif
 
 namespace anvil { namespace BytePipe {
 
@@ -50,6 +57,9 @@ namespace anvil { namespace BytePipe {
 
 	class TcpClientOutputPipe final : public OutputPipe {
 	private:
+#if ANVIL_OS == ANVIL_WINDOWS
+		SOCKET _socket;
+#endif
 	public:
 		TcpClientOutputPipe(IPAddress server_ip, TCPPort server_port);
 		virtual ~TcpClientOutputPipe();
