@@ -39,11 +39,14 @@ namespace anvil { namespace BytePipe {
 		address.sin_port = htons(server_port);
 		address.sin_addr.s_addr = inet_addr((std::to_string(server_ip.u8[0u]) + "." + std::to_string(server_ip.u8[1u]) + "." + std::to_string(server_ip.u8[2u]) + "." + std::to_string(server_ip.u8[3u])).c_str());
 
-		int32_t code = connect(_socket, (SOCKADDR *)&address, sizeof(address));
+		int32_t code;
+		
+		code = connect(_socket, (SOCKADDR *)&address, sizeof(address));
 		if (code != 0) {
+			code = WSAGetLastError();
 			closesocket(_socket);
 			_socket = INVALID_SOCKET;
-			throw std::runtime_error("TCPClientOutputPipe::TCPClientOutputPipe : Failed to connect to server");
+			throw std::runtime_error("TCPClientOutputPipe::TCPClientOutputPipe : Failed to connect to server, WSA error code " + std::to_string(code));
 		}
 #endif
 	}
@@ -86,6 +89,8 @@ namespace anvil { namespace BytePipe {
 
 	TCPServerInputPipe::TCPServerInputPipe(TCPPort listen_port) {
 #if ANVIL_OS == ANVIL_WINDOWS
+		InitWinsock();
+
 		_socket = INVALID_SOCKET;
 
 		SOCKET listen_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -142,7 +147,6 @@ namespace anvil { namespace BytePipe {
 	}
 
 	void TCPServerInputPipe::ReadBytesFast(void* dst, const uint32_t bytes) {
-#if ANVIL_OS == ANVIL_WINDOWS
 		uint8_t* dst2 = static_cast<uint8_t*>(dst);
 		uint32_t remaining_bytes = bytes;
 
@@ -151,7 +155,6 @@ namespace anvil { namespace BytePipe {
 			remaining_bytes -= tmp;
 			dst2 += tmp;
 		}
-#endif
 	}
 
 

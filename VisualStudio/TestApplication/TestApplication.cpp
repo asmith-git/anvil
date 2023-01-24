@@ -14,6 +14,38 @@ static uint64_t CurrentTime() {
 		).count();
 }
 
+static void TCPTest() {
+
+	int port = 1234;
+
+	std::thread server([port]()->void {
+		anvil::BytePipe::TCPInputPipe pipe(port);
+
+		for (int i = 0; i < 100; ++i) {
+			int j = 0;
+			pipe.ReadBytesFast(&j, sizeof(j));
+			std::cout << j << std::endl;
+		}
+	});
+
+	std::thread client([port]()->void {
+		anvil::BytePipe::IPAddress ip;
+		ip.u8[0] = 127;
+		ip.u8[1] = 0;
+		ip.u8[2] = 0;
+		ip.u8[3] = 1;
+
+		anvil::BytePipe::TCPOutputPipe pipe(ip, port);
+
+		for (int i = 0; i < 100; ++i) {
+			pipe.WriteBytesFast(&i, sizeof(i));
+		}
+	});
+
+	client.join();
+	server.join();
+}
+
 static void ConsoleTest() {
 	using namespace anvil;
 
@@ -112,6 +144,9 @@ static void ConsoleTest() {
 
 int main()
 {
+	TCPTest();
+	return 0;
+
 	ConsoleTest();
 	return 0;
 
