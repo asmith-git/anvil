@@ -24,41 +24,53 @@ namespace anvil { namespace BytePipe {
 	}
 #endif
 	
-	TcpClientOutputPipe::TcpClientOutputPipe(IPAddress server_ip, TCPPort server_port) {
+	// TCPClientOutputPipe
+
+	TCPClientOutputPipe::TCPClientOutputPipe(IPAddress server_ip, TCPPort server_port) {
 #if ANVIL_OS == ANVIL_WINDOWS
 		InitWinsock();
 
 		_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-		if (_socket == INVALID_SOCKET) throw std::runtime_error("TcpClientOutputPipe::TcpClientOutputPipe : Failed to create socket, WSA error code " + std::to_string(WSAGetLastError()));
+		if (_socket == INVALID_SOCKET) throw std::runtime_error("TCPClientOutputPipe::TCPClientOutputPipe : Failed to create socket, WSA error code " + std::to_string(WSAGetLastError()));
 
-		SOCKADDR_IN server;
-		memset(&server, 0, sizeof(SOCKADDR_IN));
-		server.sin_family = AF_INET;
-		server.sin_port = htons(server_port);
-		server.sin_addr.s_addr = inet_addr((std::to_string(server_ip.u8[0u]) + "." + std::to_string(server_ip.u8[1u]) + "." + std::to_string(server_ip.u8[2u]) + "." + std::to_string(server_ip.u8[3u])).c_str());
+		SOCKADDR_IN address;
+		memset(&address, 0, sizeof(address));
+		address.sin_family = AF_INET;
+		address.sin_port = htons(server_port);
+		address.sin_addr.s_addr = inet_addr((std::to_string(server_ip.u8[0u]) + "." + std::to_string(server_ip.u8[1u]) + "." + std::to_string(server_ip.u8[2u]) + "." + std::to_string(server_ip.u8[3u])).c_str());
 
-		int32_t code = connect(_socket, (SOCKADDR *)&server, sizeof(server));
+		int32_t code = connect(_socket, (SOCKADDR *)&address, sizeof(address));
 		if (code != 0) {
 			closesocket(_socket);
 			_socket = INVALID_SOCKET;
-			throw std::runtime_error("TcpClientOutputPipe::TcpClientOutputPipe : Failed to connect to server");
+			throw std::runtime_error("TCPClientOutputPipe::TCPClientOutputPipe : Failed to connect to server");
 		}
 #endif
 	}
 
-	TcpClientOutputPipe::~TcpClientOutputPipe() {
-
+	TCPClientOutputPipe::~TCPClientOutputPipe() {
+#if ANVIL_OS == ANVIL_WINDOWS
+		if (_socket != INVALID_SOCKET) {
+			closesocket(_socket);
+			_socket = INVALID_SOCKET;
+		}
+#endif
 	}
 
-	uint32_t TcpClientOutputPipe::WriteBytes(const void* src, const uint32_t bytes) {
+	uint32_t TCPClientOutputPipe::WriteBytes(const void* src, const uint32_t bytes) {
+#if ANVIL_OS == ANVIL_WINDOWS
 		int sent_bytes = send(_socket, static_cast<const char*>(src), static_cast<int>(bytes), 0);
-		if (sent_bytes == SOCKET_ERROR) throw std::runtime_error("TcpClientOutputPipe::WriteBytes : Failed to send data, WSA error code " + std::to_string(WSAGetLastError()));
+		if (sent_bytes == SOCKET_ERROR) throw std::runtime_error("TCPClientOutputPipe::WriteBytes : Failed to send data, WSA error code " + std::to_string(WSAGetLastError()));
 		return static_cast<uint32_t>(sent_bytes);
+#else
+		return 0;
+#endif
 	}
 
-	void TcpClientOutputPipe::WriteBytesFast(const void* src, const uint32_t bytes) {
+	void TCPClientOutputPipe::WriteBytesFast(const void* src, const uint32_t bytes) {
 		const uint8_t* src2 = static_cast<const uint8_t*>(src);
 		uint32_t remaining_bytes = bytes;
+
 		while (remaining_bytes > 0) {
 			const uint32_t tmp = WriteBytes(src2, remaining_bytes);
 			remaining_bytes -= tmp;
@@ -66,8 +78,81 @@ namespace anvil { namespace BytePipe {
 		}
 	}
 
-	void TcpClientOutputPipe::Flush() {
+	void TCPClientOutputPipe::Flush() {
 		
 	}
+
+	// TCPServerInputPipe
+
+	TCPServerInputPipe::TCPServerInputPipe(TCPPort listen_port) {
+#if ANVIL_OS == ANVIL_WINDOWS
+		_socket = INVALID_SOCKET;
+
+		SOCKET listen_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+		if (listen_socket == INVALID_SOCKET) {
+			throw std::runtime_error("TCPServerInputPipe::TCPServerInputPipe : Failed to create socket, WSA error code " + std::to_string(WSAGetLastError()));
+		}
+
+		sockaddr_in address;
+		memset(&address, 0, sizeof(address));
+		address.sin_family = AF_INET;
+		address.sin_port = htons(listen_port);
+		address.sin_addr.s_addr = INADDR_ANY;
+
+		int code = bind(listen_socket, reinterpret_cast<SOCKADDR*>(&address), sizeof(address));
+		if (code == SOCKET_ERROR) {
+			closesocket(listen_socket);
+			throw std::runtime_error("TCPServerInputPipe::TCPServerInputPipe : Failed to bind socket, WSA error code " + std::to_string(WSAGetLastError()));
+		}
+
+		code = listen(listen_socket, SOMAXCONN);
+		if (code == SOCKET_ERROR) {
+			printf("listen failed with error: %d\n", WSAGetLastError());
+			closesocket(listen_socket);
+			throw std::runtime_error("TCPServerInputPipe::TCPServerInputPipe : Failed to listen on socket, WSA error code " + std::to_string(WSAGetLastError()));
+		}
+
+		_socket = accept(listen_socket, NULL, NULL);
+		if (_socket == INVALID_SOCKET) {
+			closesocket(listen_socket);
+			throw std::runtime_error("TCPServerInputPipe::TCPServerInputPipe : Failed to accept socket, WSA error code " + std::to_string(WSAGetLastError()));
+		}
+
+		closesocket(listen_socket);
+#endif
+	}
+
+	TCPServerInputPipe::~TCPServerInputPipe() {
+#if ANVIL_OS == ANVIL_WINDOWS
+		if (_socket != INVALID_SOCKET) {
+			closesocket(_socket);
+			_socket = INVALID_SOCKET;
+		}
+#endif
+	}
+
+	uint32_t TCPServerInputPipe::ReadBytes(void* dst, const uint32_t bytes) {
+#if ANVIL_OS == ANVIL_WINDOWS
+		int bytes_read = recv(_socket, static_cast<char*>(dst), static_cast<int32_t>(bytes), 0);
+		if (bytes_read == SOCKET_ERROR) throw std::runtime_error("TCPServerInputPipe::ReadBytes : Failed to read data, WSA error code " + std::to_string(WSAGetLastError()));
+		return static_cast<uint32_t>(bytes_read);
+#else
+		return 0;
+#endif
+	}
+
+	void TCPServerInputPipe::ReadBytesFast(void* dst, const uint32_t bytes) {
+#if ANVIL_OS == ANVIL_WINDOWS
+		uint8_t* dst2 = static_cast<uint8_t*>(dst);
+		uint32_t remaining_bytes = bytes;
+
+		while (remaining_bytes > 0) {
+			const uint32_t tmp = ReadBytes(dst, remaining_bytes);
+			remaining_bytes -= tmp;
+			dst2 += tmp;
+		}
+#endif
+	}
+
 
 }}

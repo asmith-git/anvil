@@ -35,48 +35,33 @@ namespace anvil { namespace BytePipe {
 
 	typedef uint16_t TCPPort;
 
-	class TCPClientInputPipe final : public InputPipe {
-	private:
-
-	public:
-		TCPClientInputPipe(IPAddress server_ip, TCPPort server_port);
-		virtual ~TCPClientInputPipe();
-		uint32_t ReadBytes(void* dst, const uint32_t bytes) final;
-		void ReadBytesFast(void* dst, const uint32_t bytes) final;
-	};
-
 	class TCPServerInputPipe final : public InputPipe {
-	private:
-
-	public:
-		TCPServerInputPipe(std::istream& stream);
-		virtual ~TCPServerInputPipe();
-		uint32_t ReadBytes(void* dst, const uint32_t bytes) final;
-		void ReadBytesFast(void* dst, const uint32_t bytes) final;
-	};
-
-	class TcpClientOutputPipe final : public OutputPipe {
 	private:
 #if ANVIL_OS == ANVIL_WINDOWS
 		SOCKET _socket;
 #endif
 	public:
-		TcpClientOutputPipe(IPAddress server_ip, TCPPort server_port);
-		virtual ~TcpClientOutputPipe();
+		TCPServerInputPipe(TCPPort listen_port);
+		virtual ~TCPServerInputPipe();
+		uint32_t ReadBytes(void* dst, const uint32_t bytes) final;
+		void ReadBytesFast(void* dst, const uint32_t bytes) final;
+	};
+
+	class TCPClientOutputPipe final : public OutputPipe {
+	private:
+#if ANVIL_OS == ANVIL_WINDOWS
+		SOCKET _socket;
+#endif
+	public:
+		TCPClientOutputPipe(IPAddress server_ip, TCPPort server_port);
+		virtual ~TCPClientOutputPipe();
 		uint32_t WriteBytes(const void* src, const uint32_t bytes) final;
 		void WriteBytesFast(const void* src, const uint32_t bytes) final;
 		void Flush() final;
 	};
 
-	class TcpServerOutputPipe final : public OutputPipe {
-	private:
-	public:
-		TcpServerOutputPipe();
-		virtual ~TcpServerOutputPipe();
-		uint32_t WriteBytes(const void* src, const uint32_t bytes) final;
-		void WriteBytesFast(const void* src, const uint32_t bytes) final;
-		void Flush() final;
-	};
+	typedef TCPServerInputPipe TCPInputPipe;
+	typedef TCPClientOutputPipe TCPOutputPipe;
 
 }}
 

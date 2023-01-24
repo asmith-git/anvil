@@ -23,5 +23,6 @@
 #include "anvil/byte-pipe/BytePipeRLE.hpp"
 #include "anvil/byte-pipe/BytePipePacket.hpp"
 #include "anvil/byte-pipe/BytePipeBits.hpp"
+#include "anvil/byte-pipe/BytePipeTCP.hpp"
 
 #endif
