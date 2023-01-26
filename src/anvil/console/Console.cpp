@@ -24,50 +24,26 @@ namespace anvil {
 
 #if ANVIL_OS == ANVIL_WINDOWS
 
-	static ANVIL_CONSTEXPR_VAR const uint8_t g_forground_colours[32] = {
-		// Foreground
-		0,																			//CONSOLE_BLACK,
-		FOREGROUND_INTENSITY,														//CONSOLE_GREY_DARK,
-		FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED,						//CONSOLE_GREY_LIGHT,
-		FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY, //CONSOLE_WHITE,
-		FOREGROUND_BLUE | FOREGROUND_INTENSITY,										//CONSOLE_BLUE_LIGHT
-		FOREGROUND_GREEN | FOREGROUND_INTENSITY,									//CONSOLE_GREEN_LIGHT
-		FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY,					//CONSOLE_CYAN_LIGHT
-		FOREGROUND_RED | FOREGROUND_INTENSITY,										//CONSOLE_RED_LIGHT
-		FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY,					//CONSOLE_MAGENTA_LIGHT
-		FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY,					//CONSOLE_YELLOW_LIGHT
-		FOREGROUND_BLUE,															//CONSOLE_BLUE_DARK
-		FOREGROUND_GREEN,															//CONSOLE_GREEN_DARK
-		FOREGROUND_BLUE | FOREGROUND_GREEN,											//CONSOLE_CYAN_DARK
-		FOREGROUND_RED,																//CONSOLE_RED_DARK
-		FOREGROUND_RED | FOREGROUND_BLUE,											//CONSOLE_MAGENTA_DARK
-		FOREGROUND_RED | FOREGROUND_GREEN,											//CONSOLE_YELLOW_DARK
+	static ANVIL_CONSTEXPR_FN WORD ConvertToWindowsColour(const ConsoleColour foreground, const ConsoleColour background) {
+		WORD fore = 0u;
+		WORD back = 0u;
 
-		// Background
-		0,																			//CONSOLE_BLACK,
-		BACKGROUND_INTENSITY,														//CONSOLE_GREY_DARK,
-		BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED,						//CONSOLE_GREY_LIGHT,
-		BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED | BACKGROUND_INTENSITY, //CONSOLE_WHITE,
-		BACKGROUND_BLUE | BACKGROUND_INTENSITY,										//CONSOLE_BLUE_LIGHT
-		BACKGROUND_GREEN | BACKGROUND_INTENSITY,									//CONSOLE_GREEN_LIGHT
-		BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_INTENSITY,					//CONSOLE_CYAN_LIGHT
-		BACKGROUND_RED | BACKGROUND_INTENSITY,										//CONSOLE_RED_LIGHT
-		BACKGROUND_RED | BACKGROUND_BLUE | BACKGROUND_INTENSITY,					//CONSOLE_MAGENTA_LIGHT
-		BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_INTENSITY,					//CONSOLE_YELLOW_LIGHT
-		BACKGROUND_BLUE,															//CONSOLE_BLUE_DARK
-		BACKGROUND_GREEN,															//CONSOLE_GREEN_DARK
-		BACKGROUND_BLUE | BACKGROUND_GREEN,											//CONSOLE_CYAN_DARK
-		BACKGROUND_RED,																//CONSOLE_RED_DARK
-		BACKGROUND_RED | BACKGROUND_BLUE,											//CONSOLE_MAGENTA_DARK
-		BACKGROUND_RED | BACKGROUND_GREEN,											//CONSOLE_YELLOW_DARK
-	};
+		fore |= foreground & detail::CONSOLE_BLUE ? FOREGROUND_BLUE : 0u;
+		back |= background & detail::CONSOLE_BLUE ? BACKGROUND_BLUE : 0u;
+		fore |= foreground & detail::CONSOLE_GREEN ? FOREGROUND_GREEN : 0u;
+		back |= background & detail::CONSOLE_GREEN ? BACKGROUND_GREEN : 0u;
+		fore |= foreground & detail::CONSOLE_RED ? FOREGROUND_RED : 0u;
+		back |= background & detail::CONSOLE_RED ? BACKGROUND_RED : 0u;
+		fore |= foreground & detail::CONSOLE_LIGHT ? FOREGROUND_INTENSITY : 0u;
+		back |= background & detail::CONSOLE_LIGHT ? BACKGROUND_INTENSITY : 0u;
 
-#define g_background_colours (g_forground_colours + 16u)
+		return fore | back;
+	}
 
 #if ANVIL_CPP_VER >= 2011
-	enum { DEFAULT_CONSOLE = g_forground_colours[CONSOLE_WHITE] | g_background_colours[CONSOLE_BLACK] };
+	enum { DEFAULT_CONSOLE = ConvertToWindowsColour(CONSOLE_WHITE, CONSOLE_BLACK) };
 #else
-	static const WORD DEFAULT_CONSOLE = g_forground_colours[CONSOLE_WHITE] | g_background_colours[CONSOLE_BLACK];
+	static const WORD DEFAULT_CONSOLE = ConvertToWindowsColour(CONSOLE_WHITE, CONSOLE_BLACK);
 #endif
 #endif
 
@@ -112,6 +88,8 @@ namespace anvil {
 	}
 
 	void Console::Print(const ConsoleText& text) {
+		if (text.text.empty()) return;
+
 		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
 
 		State& state = _state_stack.back();
@@ -133,7 +111,7 @@ namespace anvil {
 	void Console::PrintNoState(const char* text, size_t len, const ConsoleColour foreground, const ConsoleColour background) {
 #if ANVIL_OS == ANVIL_WINDOWS
 
-		const WORD attribute = g_forground_colours[foreground] | g_background_colours[background];
+		const WORD attribute = ConvertToWindowsColour(foreground, background);
 		if (attribute != _current_attribute) {
 			SetConsoleTextAttribute(_stdout_handle, attribute);
 			_current_attribute = attribute;
@@ -169,9 +147,10 @@ namespace anvil {
 #endif
 	}
 
-	void Console::PushState() {
+	const Console::State& Console::PushState() {
 		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
 		_state_stack.push_back(State());
+		return _state_stack[_state_stack.size() - 2u];
 	}
 
 	void Console::PopState() {
@@ -316,32 +295,9 @@ namespace anvil {
 		}
 	}
 
-	std::string Console::InputString(const ConsoleText& prompt, const bool clear) {
-		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
-		if (clear) {
-			PushState();
-			Clear();
-		}
-		Print(prompt);
-		EndLine();
-		Print(" > ");
-		std::string tmp = InputString();
-		if (clear) {
-			PopState();
-		} else {
-			_state_stack.back().text.push_back(ConsoleText(tmp));
-		}
-		return tmp;
-	}
-
-	size_t Console::InputChoice(const ConsoleText& prompt, const std::vector<ConsoleText>& options, const bool clear) {
+	size_t Console::InputChoice(const ConsoleText& prompt, const std::vector<ConsoleText>& options) {
 		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
 		if (options.size() <= 1u) return 0u;
-
-		if (clear) {
-			PushState();
-			Clear();
-		}
 
 		std::string tmp;
 		ConsoleText prompt2 = prompt;
@@ -357,7 +313,8 @@ namespace anvil {
 			}
 
 			prompt2.text = "\nEnter a value between 0 and " + std::to_string(count - 1) + " :";
-			tmp = InputString(prompt2, false);
+			Print(prompt2);
+			tmp = InputString();
 
 			try {
 				choice = std::stoi(tmp);
@@ -365,52 +322,53 @@ namespace anvil {
 			} catch (...) {
 
 			}
-			if(clear) Clear();
 		}
-
-		if (clear) PopState();
 
 		return static_cast<size_t>(choice);
 	}
 
-
-	size_t Console::InputChoice(const ConsoleText& prompt, const std::vector<std::string>& options, const bool clear) {
-		return InputChoice(prompt, options, CONSOLE_WHITE, clear);
-	}
-
-	size_t Console::InputChoice(const ConsoleText& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const bool clear) {
-		return InputChoice(prompt, options, foreground, CONSOLE_BLACK, clear);
-	}
-
-	size_t Console::InputChoice(const ConsoleText& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const ConsoleColour background, const bool clear) {
+	size_t Console::InputChoice(const ConsoleText& prompt, const std::vector<std::string>& options) {
 		const size_t count = options.size();
 		std::vector<ConsoleText> tmp(count);
 		for (size_t i = 0u; i < count; ++i) {
 			ConsoleText& ct = tmp[i];
-			ct.foreground_colour = foreground;
-			ct.background_colour = background;
+			ct.foreground_colour = prompt.foreground_colour;
+			ct.background_colour = prompt.background_colour;
 			ct.text = options[i];
 		}
 
-		return InputChoice(prompt, tmp, clear);
+		return InputChoice(prompt, tmp);
 	}
 
-	size_t Console::InputChoice(const std::string& prompt, const std::vector<std::string>& options, const bool clear) {
-		return InputChoice(ConsoleText(prompt), options, clear);
+	size_t Console::InputChoice(const std::string& prompt, const std::vector<std::string>& options) {
+		return InputChoice(ConsoleText(prompt), options);
 	}
 
-	size_t Console::InputChoice(const std::string& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const bool clear) {
-		return InputChoice(ConsoleText(prompt, foreground), options, foreground, clear);
+	size_t Console::InputChoice(const std::string& prompt, const std::vector<std::string>& options, const ConsoleColour foreground) {
+		return InputChoice(ConsoleText(prompt, foreground), options);
 	}
 
-	size_t Console::InputChoice(const std::string& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const ConsoleColour background, const bool clear) {
-		return InputChoice(ConsoleText(prompt, foreground, background), options, foreground, background, clear);
+	size_t Console::InputChoice(const std::string& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const ConsoleColour background) {
+		return InputChoice(ConsoleText(prompt, foreground, background), options);
+	}
+
+	bool Console::IsAtStartOfLine() const {
+		if (!_state_stack.back().text.empty()) {
+			const std::string& tmp = _state_stack.back().text.back().text;
+			if (!tmp.empty()) {
+				if (tmp.back() != '\n') return true;
+			}
+		}
+
+		return false;
 	}
 
 	std::string Console::InputString() {
-		enum { BUFFER_SIZE = 1024 };
-		char buffer[BUFFER_SIZE];
-		std::cin.getline(buffer, BUFFER_SIZE);
+		if(! IsAtStartOfLine()) EndLine();
+		Print(" > ");
+
+		std::string buffer;
+		std::getline(std::cin, buffer);
 		return buffer;
 	}
 }
