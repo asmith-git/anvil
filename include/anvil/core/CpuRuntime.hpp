@@ -76,7 +76,7 @@ namespace anvil {
 	static constexpr const uint64_t ASM_MINIMUM = ANVIL_MIN_INSTRUCTION_SET; // Placeholder
 
 	namespace detail {
-		InstructionSets CheckSupportedInstructionSets_Implement() throw();
+		InstructionSets CheckSupportedInstructionSets_Implement();
 	}
 
 	static const InstructionSets SupportedInstructionSets = detail::CheckSupportedInstructionSets_Implement();

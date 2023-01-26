@@ -507,22 +507,22 @@ namespace anvil { namespace BytePipe {
 
 	void Writer::OnPrimitiveBool(const bool value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(static_cast<uint32_t>(GetRaw<T, uint32_t>(value)), GetSecondaryID<T>());
 	}
 
 	void Writer::OnPrimitiveU8(const uint8_t value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(static_cast<uint32_t>(GetRaw<T, uint32_t>(value)), GetSecondaryID<T>());
 	}
 
 	void Writer::OnPrimitiveU16(const uint16_t value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(static_cast<uint32_t>(GetRaw<T, uint32_t>(value)), GetSecondaryID<T>());
 	}
 
 	void Writer::OnPrimitiveU32(const uint32_t value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(static_cast<uint32_t>(GetRaw<T, uint32_t>(value)), GetSecondaryID<T>());
 	}
 
 	void Writer::OnPrimitiveU64(const uint64_t value) {
@@ -532,17 +532,17 @@ namespace anvil { namespace BytePipe {
 
 	void Writer::OnPrimitiveS8(const int8_t value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(static_cast<uint32_t>(GetRaw<T, uint32_t>(value)), GetSecondaryID<T>());
 	}
 
 	void Writer::OnPrimitiveS16(const int16_t value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(static_cast<uint32_t>(GetRaw<T, uint32_t>(value)), GetSecondaryID<T>());
 	}
 
 	void Writer::OnPrimitiveS32(const int32_t value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(static_cast<uint32_t>(GetRaw<T, uint32_t>(value)), GetSecondaryID<T>());
 	}
 
 	void Writer::OnPrimitiveS64(const int64_t value) {
@@ -552,7 +552,7 @@ namespace anvil { namespace BytePipe {
 
 	void Writer::OnPrimitiveF32(const float value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(static_cast<uint32_t>(GetRaw<T, uint32_t>(value)), GetSecondaryID<T>());
 	}
 
 	void Writer::OnPrimitiveF64(const double value) {
@@ -562,12 +562,12 @@ namespace anvil { namespace BytePipe {
 
 	void Writer::OnPrimitiveC8(const char value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(static_cast<uint32_t>(GetRaw<T, uint32_t>(value)), GetSecondaryID<T>());
 	}
 
 	void Writer::OnPrimitiveF16(const half value) {
 		typedef std::remove_const<decltype(value)>::type T;
-		_OnPrimitive32(GetRaw<T, uint32_t>(value), GetSecondaryID<T>());
+		_OnPrimitive32(static_cast<uint32_t>(GetRaw<T, uint32_t>(value)), GetSecondaryID<T>());
 	}
 
 	void Writer::OnPrimitiveString(const char* value, const uint32_t length) {
@@ -1234,12 +1234,12 @@ READ_FROM_BUFFER:
 		case TYPE_STRING:
 			{
 				const char* str = const_cast<Value&>(value).GetString();
-				OnPrimitiveString(str, strlen(str));
+				OnPrimitiveString(str, static_cast<uint32_t>(strlen(str)));
 			}
 			break;
 		case TYPE_ARRAY:
 			{
-				const size_t size = value.GetSize();
+				const uint32_t size = static_cast<uint32_t>(value.GetSize());
 				if (value.IsPrimitiveArray()) {
 					switch (value.GetPrimitiveArrayType()) {
 					case TYPE_C8:
@@ -1293,9 +1293,9 @@ READ_FROM_BUFFER:
 			break;
 		case TYPE_OBJECT:
 			{
-				const size_t size = value.GetSize();
+				const uint32_t size = static_cast<uint32_t>(value.GetSize());
 				OnObjectBegin(size);
-				for (size_t i = 0u; i < size; ++i) {
+				for (uint32_t i = 0u; i < size; ++i) {
 					const ComponentID id = value.GetComponentID(i);
 					OnComponentID(id);
 					OnValue(const_cast<Value&>(value).GetValue(id));

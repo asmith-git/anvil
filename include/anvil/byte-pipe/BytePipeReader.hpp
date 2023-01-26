@@ -635,7 +635,7 @@ namespace anvil { namespace BytePipe {
 
 		template<class T>
 		inline void operator()(const std::vector<T>& value) {
-			OnArrayBegin(value.size());
+			OnArrayBegin(static_cast<uint32_t>(value.size()));
 			for(const T& val : value) operator()(val);
 			OnArrayEnd();
 		}
@@ -644,13 +644,13 @@ namespace anvil { namespace BytePipe {
 		template<> inline void operator()(const std::vector<uint16_t>& value) { OnPrimitiveArray<uint16_t>(value.data(), static_cast<uint32_t>(value.size())); }
 		template<> inline void operator()(const std::vector<uint32_t>& value) { OnPrimitiveArray<uint32_t>(value.data(), static_cast<uint32_t>(value.size())); }
 		template<> inline void operator()(const std::vector<uint64_t>& value) { OnPrimitiveArray<uint64_t>(value.data(), static_cast<uint32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<int8_t>& value) { OnPrimitiveArray<int8_t>(value.data(), static_cast<int32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<int16_t>& value) { OnPrimitiveArray<int16_t>(value.data(), static_cast<int32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<int32_t>& value) { OnPrimitiveArray<int32_t>(value.data(), static_cast<int32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<int64_t>& value) { OnPrimitiveArray<int64_t>(value.data(), static_cast<int32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<half>& value) { OnPrimitiveArray<half>(value.data(), static_cast<half>(value.size())); }
-		template<> inline void operator()(const std::vector<float>& value) { OnPrimitiveArray<float>(value.data(), static_cast<float>(value.size())); }
-		template<> inline void operator()(const std::vector<double>& value) { OnPrimitiveArray<double>(value.data(), static_cast<double>(value.size())); }
+		template<> inline void operator()(const std::vector<int8_t>& value) { OnPrimitiveArray<int8_t>(value.data(), static_cast<uint32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<int16_t>& value) { OnPrimitiveArray<int16_t>(value.data(), static_cast<uint32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<int32_t>& value) { OnPrimitiveArray<int32_t>(value.data(), static_cast<uint32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<int64_t>& value) { OnPrimitiveArray<int64_t>(value.data(), static_cast<uint32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<half>& value) { OnPrimitiveArray<half>(value.data(), static_cast<uint32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<float>& value) { OnPrimitiveArray<float>(value.data(), static_cast<uint32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<double>& value) { OnPrimitiveArray<double>(value.data(), static_cast<uint32_t>(value.size())); }
 
 		template<class T, uint32_t S>
 		inline void operator()(const std::array<T, S>& value) {
@@ -687,7 +687,7 @@ namespace anvil { namespace BytePipe {
 
 		template<class K, class T>
 		inline void operator()(const std::map<K, T>& value) {
-			const size_t s = value.size();
+			const uint32_t s = static_cast<uint32_t>(value.size());
 
 			OnArrayBegin(2);
 

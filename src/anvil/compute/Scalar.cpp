@@ -170,6 +170,8 @@ namespace anvil {
 			return _scalar.f32 < 0.f ? 0ull : static_cast<uint64_t>(_scalar.f32);
 		case ANVIL_64FX1:
 			return _scalar.f64 < 0.0 ? 0ull : static_cast<uint64_t>(_scalar.f64);
+		default:
+			return 0;
 		}
 	}
 
@@ -216,6 +218,8 @@ namespace anvil {
 			return static_cast<int64_t>(_scalar.f32);
 		case ANVIL_64FX1:
 			return static_cast<int64_t>(_scalar.f64);
+		default:
+			return 0;
 		}
 	}
 
@@ -226,7 +230,7 @@ namespace anvil {
 		case ANVIL_16UX1:
 			return _scalar.u16;
 		case ANVIL_32UX1:
-			return _scalar.u32;
+			return static_cast<float32_t>(_scalar.u32);
 		case ANVIL_64UX1:
 			return static_cast<float32_t>(_scalar.u64);
 		case ANVIL_8SX1:
@@ -234,13 +238,15 @@ namespace anvil {
 		case ANVIL_16SX1:
 			return _scalar.s16;
 		case ANVIL_32SX1:
-			return _scalar.s32;
+			return static_cast<float32_t>(_scalar.s32);
 		case ANVIL_64SX1:
 			return static_cast<float32_t>(_scalar.s64);
 		case ANVIL_32FX1:
 			return static_cast<float32_t>(_scalar.f32);
 		case ANVIL_64FX1:
 			return static_cast<float32_t>(_scalar.f64);
+		default:
+			return 0.f;
 		}
 	}
 
@@ -266,6 +272,8 @@ namespace anvil {
 			return static_cast<float64_t>(_scalar.f32);
 		case ANVIL_64FX1:
 			return _scalar.f64;
+		default:
+			return 0.0;
 		}
 	}
 

@@ -85,7 +85,7 @@ namespace anvil { namespace BytePipe {
 
 	void JsonWriter::OnUserPOD(const uint32_t type, const uint32_t bytes, const void* data) {
 		// Format the POD as an object, a POD is identified by containg the member __ANVIL_POD with the value 123456789
-		std::string value = "{\"__ANVIL_POD\":123456789,\"type\":" + std::to_string(type) + ",\data\":\"";
+		std::string value = "{\"__ANVIL_POD\":123456789,\"type\":" + std::to_string(type) + ",\"data\":\"";
 
 		// Store the binary data as hexidecimal
 		char buffer[3u] = "??";

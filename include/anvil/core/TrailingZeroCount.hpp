@@ -123,47 +123,47 @@ namespace anvil {
 	
 	// unsigned
 
-	static ANVIL_STRONG_INLINE int8_t ANVIL_CALL tzcount(uint8_t aValue) throw() {
+	static ANVIL_STRONG_INLINE size_t ANVIL_CALL tzcount(uint8_t aValue) throw() {
 		return ANVIL_HW_TZCNT ? detail::tzcount8_hw(aValue) : detail::tzcount8_c(aValue);
 	}
 
-	static ANVIL_STRONG_INLINE int16_t ANVIL_CALL tzcount(uint16_t aValue) throw() {
+	static ANVIL_STRONG_INLINE size_t ANVIL_CALL tzcount(uint16_t aValue) throw() {
 		return ANVIL_HW_TZCNT ? detail::tzcount16_hw(aValue) : detail::tzcount16_c(aValue);
 	}
 
-	static ANVIL_STRONG_INLINE int32_t ANVIL_CALL tzcount(uint32_t aValue) throw() {
+	static ANVIL_STRONG_INLINE size_t ANVIL_CALL tzcount(uint32_t aValue) throw() {
 		return ANVIL_HW_TZCNT ? detail::tzcount32_hw(aValue) : detail::tzcount32_c(aValue);
 	}
 
-	static ANVIL_STRONG_INLINE int64_t ANVIL_CALL tzcount(uint64_t aValue) throw() {
+	static ANVIL_STRONG_INLINE size_t ANVIL_CALL tzcount(uint64_t aValue) throw() {
 		return ANVIL_HW_TZCNT ? detail::tzcount64_hw(aValue) : detail::tzcount64_c(aValue);
 	}
 
 	// signed
 
-	static ANVIL_STRONG_INLINE int8_t ANVIL_CALL tzcount(int8_t aValue) throw() {
+	static ANVIL_STRONG_INLINE size_t ANVIL_CALL tzcount(int8_t aValue) throw() {
 		return tzcount(numeric_reinterpret_cast<uint8_t>(aValue));
 	}
 
-	static ANVIL_STRONG_INLINE int16_t ANVIL_CALL tzcount(int16_t aValue) throw() {
+	static ANVIL_STRONG_INLINE size_t ANVIL_CALL tzcount(int16_t aValue) throw() {
 		return tzcount(numeric_reinterpret_cast<uint16_t>(aValue));
 	}
 
-	static ANVIL_STRONG_INLINE int32_t ANVIL_CALL tzcount(int32_t aValue) throw() {
+	static ANVIL_STRONG_INLINE size_t ANVIL_CALL tzcount(int32_t aValue) throw() {
 		return tzcount(numeric_reinterpret_cast<uint32_t>(aValue));
 	}
 
-	static ANVIL_STRONG_INLINE int64_t ANVIL_CALL tzcount(int64_t aValue) throw() {
+	static ANVIL_STRONG_INLINE size_t ANVIL_CALL tzcount(int64_t aValue) throw() {
 		return tzcount(numeric_reinterpret_cast<uint64_t>(aValue));
 	}
 
 	// other types
 
-	static ANVIL_STRONG_INLINE float ANVIL_CALL tzcount(float aValue) throw() {
+	static ANVIL_STRONG_INLINE size_t ANVIL_CALL tzcount(float aValue) throw() {
 		return tzcount(numeric_reinterpret_cast<uint32_t>(aValue));
 	}
 
-	static ANVIL_STRONG_INLINE double ANVIL_CALL tzcount(double aValue) throw() {
+	static ANVIL_STRONG_INLINE size_t ANVIL_CALL tzcount(double aValue) throw() {
 		return tzcount(numeric_reinterpret_cast<uint64_t>(aValue));
 	}
 

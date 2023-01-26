@@ -1357,7 +1357,7 @@ namespace anvil {
 
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		static uint64_t ExtractBitField_BMI(const uint64_t src, const size_t start_bit, const size_t bit_count) throw() {
-			return _bextr_u64(src, static_cast<uint64_t>(start_bit), static_cast<uint64_t>(bit_count));
+			return _bextr_u64(src, static_cast<uint32_t>(start_bit), static_cast<uint32_t>(bit_count));
 		}
 #endif
 

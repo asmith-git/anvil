@@ -647,7 +647,7 @@ namespace anvil { namespace BytePipe {
 			\param index The index in an array or the componend ID of an object.
 			\return The value at the location.
 		*/
-		Value& GetValue(const uint32_t index);
+		Value& GetValue(const size_t index);
 
 		/*!
 			\brief Return the base address of an array of primitive values

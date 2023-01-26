@@ -265,7 +265,7 @@ namespace anvil {
 			break;
 		}
 
-		int32_t width = GetWidth();
+		int32_t width = static_cast<int32_t>(GetWidth());
 
 		ConsoleText bar1;
 		ConsoleText bar2;

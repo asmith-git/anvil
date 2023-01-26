@@ -22,7 +22,7 @@
 namespace anvil {
 
 	namespace detail {
-		InstructionSets CheckSupportedInstructionSets_Implement() throw() {
+		InstructionSets CheckSupportedInstructionSets_Implement() {
 			//! \todo Implement
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 

@@ -183,7 +183,7 @@ namespace anvil {
 
 		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN size_t GetPrimitiveSizeInBytes() const throw() {
 			//return std::pow(2u, _bytes);
-			return 1u << _bytes;
+			return static_cast<size_t>(1u) << static_cast<size_t>(_bytes);
 		}
 
 		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN size_t GetPrimitiveSizeInBits() const throw() {

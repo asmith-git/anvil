@@ -79,9 +79,9 @@ namespace anvil { namespace BytePipe {
 		case TYPE_S64:
 			return s64 < 0 ? 0 : static_cast<uint64_t>(s64);
 		case TYPE_F32:
-			return f32 < 0.f ? 0.f : static_cast<uint64_t>(std::round(f32));
+			return f32 < 0.f ? 0 : static_cast<uint64_t>(std::round(f32));
 		case TYPE_F64:
-			return f64 < 0.0 ? 0.0 : static_cast<uint64_t>(std::round(f64));
+			return f64 < 0.0 ? 0 : static_cast<uint64_t>(std::round(f64));
 		case TYPE_BOOL:
 			return b ? 1 : 0;
 		default:
@@ -109,9 +109,9 @@ namespace anvil { namespace BytePipe {
 		case TYPE_S32:
 			return s32 < 0 ? 0 : static_cast<uint64_t>(s32);
 		case TYPE_F32:
-			return f32 < 0.f ? 0.f : static_cast<uint64_t>(std::round(f32));
+			return f32 < 0.f ? 0 : static_cast<uint64_t>(std::round(f32));
 		case TYPE_F64:
-			return f64 < 0.0 ? 0.0 : static_cast<uint64_t>(std::round(f64));
+			return f64 < 0.0 ? 0 : static_cast<uint64_t>(std::round(f64));
 		case TYPE_BOOL:
 			return b ? 1 : 0;
 		default:
@@ -352,19 +352,19 @@ FLOATING_POINT:
 		const T* src_ptr = reinterpret_cast<const T*>(src.data());
 		for (size_t i = 0u; i < s; ++i) {
 			Value v;
-			if ANVIL_CONSTEXPR_FN(std::is_same<T, char>::value) v.SetC8(src_ptr[i]);
-			else if ANVIL_CONSTEXPR_FN (std::is_same<T, uint8_t>::value) v.SetU8(src_ptr[i]);
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, uint16_t>::value) v.SetU16(src_ptr[i]);
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, uint32_t>::value) v.SetU32(src_ptr[i]);
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, uint64_t>::value) v.SetU64(src_ptr[i]);
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, int8_t>::value) v.SetS8(src_ptr[i]);
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, int16_t>::value) v.SetS16(src_ptr[i]);
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, int32_t>::value) v.SetS32(src_ptr[i]);
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, int64_t>::value) v.SetS64(src_ptr[i]);
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, half>::value) v.SetF16(src_ptr[i]);
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, float>::value) v.SetS32(src_ptr[i]);
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, double>::value) v.SetS64(src_ptr[i]);
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, bool>::value) v.SetBool(src_ptr[i]);
+			if ANVIL_CONSTEXPR_FN(std::is_same<T, char>::value) v.SetC8(static_cast<char>(src_ptr[i]));
+			else if ANVIL_CONSTEXPR_FN (std::is_same<T, uint8_t>::value) v.SetU8(static_cast<uint8_t>(src_ptr[i]));
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, uint16_t>::value) v.SetU16(static_cast<uint16_t>(src_ptr[i]));
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, uint32_t>::value) v.SetU32(static_cast<uint32_t>(src_ptr[i]));
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, uint64_t>::value) v.SetU64(static_cast<uint64_t>(src_ptr[i]));
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, int8_t>::value) v.SetS8(static_cast<int8_t>(src_ptr[i]));
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, int16_t>::value) v.SetS16(static_cast<int16_t>(src_ptr[i]));
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, int32_t>::value) v.SetS32(static_cast<int32_t>(src_ptr[i]));
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, int64_t>::value) v.SetS64(static_cast<int64_t>(src_ptr[i]));
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, half>::value) v.SetF16(static_cast<half>(src_ptr[i]));
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, float>::value) v.SetS32(static_cast<int32_t>(src_ptr[i]));
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, double>::value) v.SetS64(static_cast<int64_t>(src_ptr[i]));
+			else if ANVIL_CONSTEXPR_FN(std::is_same<T, bool>::value) v.SetBool(static_cast<bool>(src_ptr[i]));
 			dst.push_back(std::move(v));
 		}
 	}
@@ -510,7 +510,7 @@ FLOATING_POINT:
 		return static_cast<std::string*>(_primitive.ptr)->c_str();
 	}
 
-	Value& Value::GetValue(const uint32_t index) {
+	Value& Value::GetValue(const size_t index) {
 		switch (_primitive.type) {
 		case TYPE_ARRAY:
 			{
@@ -572,7 +572,7 @@ FLOATING_POINT:
 		case TYPE_OBJECT:
 			{
 				Object& myObject = *static_cast<Object*>(_primitive.ptr);
-				auto i = myObject.find(index);
+				auto i = myObject.find(static_cast<uint16_t>(index));
 				if (i == myObject.end()) throw std::runtime_error("Value::GetValue : No member object with component ID");
 				return i->second;
 			}
