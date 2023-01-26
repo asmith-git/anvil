@@ -360,14 +360,6 @@ namespace anvil {
 		return InputChoice(prompt, tmp);
 	}
 
-	size_t Console::InputChoice(const std::string& prompt, const std::vector<std::string>& options) {
-		return InputChoice(ConsoleText(prompt), options);
-	}
-
-	size_t Console::InputChoice(const std::string& prompt, const std::vector<std::string>& options, const ConsoleColour foreground) {
-		return InputChoice(ConsoleText(prompt, foreground), options);
-	}
-
 	size_t Console::InputChoice(const std::string& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const ConsoleColour background) {
 		return InputChoice(ConsoleText(prompt, foreground, background), options);
 	}

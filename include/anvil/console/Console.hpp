@@ -165,18 +165,15 @@ namespace anvil {
 		*/
 		size_t InputChoice(const ConsoleText& prompt, const std::vector<ConsoleText>& options);
 		size_t InputChoice(const ConsoleText& prompt, const std::vector<std::string>& options);
-		size_t InputChoice(const std::string& prompt, const std::vector<std::string>& options);
-		size_t InputChoice(const std::string& prompt, const std::vector<std::string>& options, const ConsoleColour foreground);
-		size_t InputChoice(const std::string& prompt, const std::vector<std::string>& options, const ConsoleColour foreground, const ConsoleColour background);
+		size_t InputChoice(const std::string& prompt, const std::vector<std::string>& options, const ConsoleColour foreground = CONSOLE_WHITE, const ConsoleColour background = CONSOLE_BLACK);
 		ANVIL_STRONG_INLINE ANVIL_STRONG_INLINE size_t InputChoice(const std::vector<ConsoleText>& options) { return InputChoice(ConsoleText(), options); }
 		ANVIL_STRONG_INLINE size_t InputChoice(const std::vector<std::string>& options) { return InputChoice(ConsoleText(), options); }
 
-		ANVIL_STRONG_INLINE void Print(const std::string& text) { Print(ConsoleText(text)); }
-		ANVIL_STRONG_INLINE void Print(const std::string& text, const ConsoleColour foreground) { Print(ConsoleText(text, foreground)); }
-		ANVIL_STRONG_INLINE void Print(const std::string& text, const ConsoleColour foreground, const ConsoleColour background) { Print(ConsoleText(text, foreground, background)); }
-		ANVIL_STRONG_INLINE void EndLine() { Print("\n"); }
+		ANVIL_STRONG_INLINE void Print(const std::string& text, const ConsoleColour foreground = CONSOLE_WHITE, const ConsoleColour background = CONSOLE_BLACK) { Print(ConsoleText(text, foreground, background)); }
 		ANVIL_STRONG_INLINE size_t GetWidth() const { return GetSize().first; }
 		ANVIL_STRONG_INLINE size_t GetHeight() const { return GetSize().first; }
+
+		ANVIL_STRONG_INLINE void Print(char c, const ConsoleColour foreground = CONSOLE_WHITE, const ConsoleColour background = CONSOLE_BLACK) { char tmp[2] = { c, '\0' }; Print(tmp, foreground, background); }
 
 		inline void Print(const std::string& text0, const ConsoleColour colour0, const std::string& text1, const ConsoleColour colour1) { 
 			Print(text0, colour0);
@@ -203,6 +200,8 @@ namespace anvil {
 			Print(text3, colour3);
 			Print(text4, colour4);
 		}
+
+		ANVIL_STRONG_INLINE void EndLine() { Print('\n'); }
 	};
 }
 
