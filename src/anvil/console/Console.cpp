@@ -50,22 +50,30 @@ namespace anvil {
 	// ConsoleText
 
 	ConsoleText::ConsoleText() :
-		foreground_colour(CONSOLE_WHITE),
-		background_colour(CONSOLE_BLACK)
+		_text(),
+		_char(0),
+		_foreground_colour(CONSOLE_WHITE),
+		_background_colour(CONSOLE_BLACK),
+		_is_char(0),
+		_unused(0)
 	{}
 
-	ConsoleText::ConsoleText(const std::string& text) :
-		ConsoleText(text, CONSOLE_WHITE)
-	{}
-
-	ConsoleText::ConsoleText(const std::string& text, const ConsoleColour foreground) :
-		ConsoleText(text, foreground, CONSOLE_BLACK)
+	ConsoleText::ConsoleText(const char c, const ConsoleColour foreground, const ConsoleColour background) :
+		_text(),
+		_char(static_cast<uint8_t>(c)),
+		_foreground_colour(foreground),
+		_background_colour(background),
+		_is_char(1),
+		_unused(0)
 	{}
 
 	ConsoleText::ConsoleText(const std::string& txt, const ConsoleColour foreground, const ConsoleColour background) :
-		text(txt),
-		foreground_colour(foreground),
-		background_colour(background)
+		_text(txt),
+		_char(0),
+		_foreground_colour(foreground),
+		_background_colour(background),
+		_is_char(0),
+		_unused(0)
 	{}
 
 	// Console
@@ -88,7 +96,7 @@ namespace anvil {
 	}
 
 	void Console::Print(const ConsoleText& text) {
-		if (text.text.empty()) return;
+		if (text._text.empty() && ! text._is_char) return;
 
 		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
 
@@ -98,8 +106,9 @@ namespace anvil {
 
 		} else {
 			ConsoleText& prev = state.text.back();
-			if (prev.foreground_colour == text.foreground_colour && prev.background_colour == text.background_colour) {
-				prev.text += text.text;
+			if (prev._foreground_colour == text._foreground_colour && prev._background_colour == text._background_colour) {
+				if(text._is_char) prev._text += static_cast<char>(text._char);
+				else prev._text += text._text;
 			} else {
 				state.text.push_back(text);
 			}
@@ -125,7 +134,20 @@ namespace anvil {
 	}
 
 	void Console::PrintNoState(const ConsoleText& text) {
-		PrintNoState(text.text.c_str(), text.text.size(), text.foreground_colour, text.background_colour);
+		char buf;
+		const char* str;
+		size_t size;
+		if (text._is_char) {
+			buf = static_cast<char>(text._char);
+			str = &buf;
+			size = 1u;
+		} else {
+			if (text._text.empty()) return;
+			str = text._text.c_str();
+			size = text._text.size();
+
+		}
+		PrintNoState(str, size, static_cast<ConsoleColour>(text._foreground_colour), static_cast<ConsoleColour>(text._background_colour));
 	}
 
 	void Console::Clear() {
@@ -247,10 +269,10 @@ namespace anvil {
 
 		ConsoleText bar1;
 		ConsoleText bar2;
-		bar1.foreground_colour = dark_colour;
-		bar1.background_colour = bright_colour;
-		bar2.foreground_colour = bright_colour;
-		bar2.background_colour = dark_colour;
+		bar1._foreground_colour = dark_colour;
+		bar1._background_colour = bright_colour;
+		bar2._foreground_colour = bright_colour;
+		bar2._background_colour = dark_colour;
 
 		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
 		State tmp;
@@ -266,20 +288,20 @@ namespace anvil {
 
 			if(progress != prev_progress) {
 				if ANVIL_CONSTEXPR_FN(! CURSOR_POSITION_SUPPORTED) LoadState(tmp);
-				bar1.text.clear();
-				bar2.text.clear();
-				for (int32_t i = 0; i < progress; ++i) bar1.text += ' ';
-				for (int32_t i = progress; i < width; ++i) bar2.text += ' ';
+				bar1._text.clear();
+				bar2._text.clear();
+				for (int32_t i = 0; i < progress; ++i) bar1._text += ' ';
+				for (int32_t i = progress; i < width; ++i) bar2._text += ' ';
 
 				const auto SetChar = [&bar1, &bar2](size_t i, char c)->void {
-					size_t s = bar1.text.size();
+					size_t s = bar1._text.size();
 					if (i < s) {
-						bar1.text[i] = c;
+						bar1._text[i] = c;
 					} else {
 						i -= s;
-						s = bar2.text.size();
+						s = bar2._text.size();
 						if (i < s) {
-							bar2.text[i] = c;
+							bar2._text[i] = c;
 						}
 					}
 				};
@@ -319,7 +341,13 @@ namespace anvil {
 		Print(prompt);
 		EndLine();
 		for (size_t i = 0; i < count; ++i) {
-			prompt2.text = "\t[" + std::to_string(i) + "]\t: " + options[i].text + '\n';
+			prompt2._text = "\t[" + std::to_string(i) + "]\t: ";
+			if (options[i]._is_char) {
+				prompt2._text += static_cast<char>(options[i]._char);
+			} else {
+				prompt2._text += options[i]._text;
+			}
+			prompt2._text += '\n';
 			Print(prompt2);
 		}
 
@@ -328,7 +356,7 @@ namespace anvil {
 
 		while (true) {
 
-			prompt2.text = "\nEnter a value between 0 and " + std::to_string(count - 1) + " :";
+			prompt2._text = "\nEnter a value between 0 and " + std::to_string(count - 1) + " :";
 			Print(prompt2);
 			tmp = InputString();
 
@@ -339,7 +367,7 @@ namespace anvil {
 
 			}
 
-			Print("Invalid input, try again\n", CONSOLE_RED_LIGHT, prompt2.background_colour);
+			Print("Invalid input, try again\n", CONSOLE_RED_LIGHT, static_cast<ConsoleColour>(prompt2._background_colour));
 
 			if ANVIL_CONSTEXPR_FN(CURSOR_POSITION_SUPPORTED) SetCursorLocation(prev_location);
 		}
@@ -352,9 +380,9 @@ namespace anvil {
 		std::vector<ConsoleText> tmp(count);
 		for (size_t i = 0u; i < count; ++i) {
 			ConsoleText& ct = tmp[i];
-			ct.foreground_colour = prompt.foreground_colour;
-			ct.background_colour = prompt.background_colour;
-			ct.text = options[i];
+			ct._foreground_colour = prompt._foreground_colour;
+			ct._background_colour = prompt._background_colour;
+			ct._text = options[i];
 		}
 
 		return InputChoice(prompt, tmp);

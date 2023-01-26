@@ -52,15 +52,24 @@ namespace anvil {
 		CONSOLE_WHITE = CONSOLE_GREY_DARK | CONSOLE_GREY_LIGHT
 	};
 
-	struct ConsoleText {
-		std::string text;
-		ConsoleColour foreground_colour;
-		ConsoleColour background_colour;
+	class Console;
+
+	class ConsoleText {
+	private:
+		std::string _text;
+		struct {
+			uint32_t _char : 8u;
+			uint32_t _foreground_colour : 4u;
+			uint32_t _background_colour : 4u;
+			uint32_t _is_char : 1u;
+			uint32_t _unused : 15u;
+		};
+	public:
+		friend Console;
 
 		ConsoleText();
-		ConsoleText(const std::string& text);
-		ConsoleText(const std::string& text, const ConsoleColour foreground);
-		ConsoleText(const std::string& text, const ConsoleColour foreground, const ConsoleColour background);
+		ConsoleText(const char text, const ConsoleColour foreground = CONSOLE_WHITE, const ConsoleColour background = CONSOLE_BLACK);
+		ConsoleText(const std::string& text, const ConsoleColour foreground = CONSOLE_WHITE, const ConsoleColour background = CONSOLE_BLACK);
 	};
 
 	class Console {
