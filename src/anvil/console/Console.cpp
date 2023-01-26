@@ -253,15 +253,19 @@ namespace anvil {
 		bar2.background_colour = dark_colour;
 
 		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
-		State tmp = SaveState();
+		State tmp;
+		if ANVIL_CONSTEXPR_FN(!CURSOR_POSITION_SUPPORTED) tmp = SaveState();
 		int32_t prev_progress = -1;
+		std::pair<size_t, size_t> bar_location;
+		if ANVIL_CONSTEXPR_FN (CURSOR_POSITION_SUPPORTED) bar_location = GetCursorLocation();
+
 		while (percentage < 100.f) {
 
 			int32_t progress = static_cast<int32_t>(std::round(static_cast<float>(width) * (percentage / 100.f)));
 			if (progress > width) progress = width;
 
 			if(progress != prev_progress) {
-				LoadState(tmp);
+				if ANVIL_CONSTEXPR_FN(! CURSOR_POSITION_SUPPORTED) LoadState(tmp);
 				bar1.text.clear();
 				bar2.text.clear();
 				for (int32_t i = 0; i < progress; ++i) bar1.text += ' ';
@@ -284,9 +288,17 @@ namespace anvil {
 				const size_t offset = (width / 2) - (msg.size() / 2);
 				for (size_t i = 0; i < msg.size(); ++i) SetChar(offset + i, msg[i]);
 
-				Print(bar1);
-				Print(bar2);
-				EndLine();
+				if ANVIL_CONSTEXPR_FN(CURSOR_POSITION_SUPPORTED) {
+					const auto prev_pos = GetCursorLocation();
+					SetCursorLocation(bar_location.first, bar_location.second);
+					Print(bar1);
+					Print(bar2);
+					SetCursorLocation(prev_pos.first, prev_pos.second);
+				} else {
+					Print(bar1);
+					Print(bar2);
+					EndLine();
+				}
 			
 				prev_progress = progress;
 			}
@@ -353,14 +365,16 @@ namespace anvil {
 	}
 
 	bool Console::IsAtStartOfLine() const {
-		if (!_state_stack.back().text.empty()) {
-			const std::string& tmp = _state_stack.back().text.back().text;
-			if (!tmp.empty()) {
-				if (tmp.back() != '\n') return true;
-			}
-		}
+		//if (!_state_stack.back().text.empty()) {
+		//	const std::string& tmp = _state_stack.back().text.back().text;
+		//	if (!tmp.empty()) {
+		//		if (tmp.back() != '\n') return true;
+		//	}
+		//}
 
-		return false;
+		//return false;
+
+		return GetCursorLocation().first == 0u;
 	}
 
 	std::string Console::InputString() {
@@ -370,5 +384,42 @@ namespace anvil {
 		std::string buffer;
 		std::getline(std::cin, buffer);
 		return buffer;
+	}
+
+	std::pair<size_t, size_t> Console::GetCursorLocation() const {
+		std::pair<size_t, size_t> tmp(0u, 0u);
+
+#if ANVIL_OS == ANVIL_WINDOWS
+		CONSOLE_SCREEN_BUFFER_INFO info;
+		memset(&info, 0, sizeof(info));
+		GetConsoleScreenBufferInfo(_stdout_handle, &info);
+
+		tmp.first = info.dwCursorPosition.X;
+		tmp.second = info.dwCursorPosition.Y;
+#else
+		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
+		const State& state = _state_stack.back();
+
+		for (const ConsoleText& str : state.text) {
+			for (char c : str.text) {
+				if (c == '\n') {
+					++tmp.second;
+					tmp.first = 0u;
+				} else {
+					++tmp.first;
+				}
+			}
+		}
+#endif
+		return tmp;
+	}
+
+	void Console::SetCursorLocation(size_t x, size_t y) {
+#if ANVIL_OS == ANVIL_WINDOWS
+		COORD pos;
+		pos.X = static_cast<SHORT>(x);
+		pos.Y = static_cast<SHORT>(y);
+		SetConsoleCursorPosition(_stdout_handle, pos);
+#endif
 	}
 }

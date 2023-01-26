@@ -68,6 +68,11 @@ namespace anvil {
 		struct State {
 			std::vector<ConsoleText> text;
 		};
+#if ANVIL_OS == ANVIL_WINDOWS
+		enum { CURSOR_POSITION_SUPPORTED = 1 };
+#else
+		enum { CURSOR_POSITION_SUPPORTED = 0 };
+#endif
 	private:
 		std::deque<State> _state_stack;
 #if ANVIL_OS == ANVIL_WINDOWS
@@ -118,9 +123,19 @@ namespace anvil {
 		bool IsAtStartOfLine() const;
 
 		/*!
-			\brief The width and height of the console in characters
+			\brief Return the width and height of the console in characters
 		*/
 		std::pair<size_t, size_t> GetSize() const;
+
+		/*!
+			\brief Return the position of the cursor
+		*/
+		std::pair<size_t, size_t> GetCursorLocation() const;
+
+		/*!
+			\brief Set the position of the cursor
+		*/
+		void SetCursorLocation(size_t x, size_t y);
 
 		/*!
 			\brief Display text on the console
