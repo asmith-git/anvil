@@ -136,6 +136,7 @@ namespace anvil {
 			\brief Set the position of the cursor
 		*/
 		void SetCursorLocation(size_t x, size_t y);
+		ANVIL_STRONG_INLINE void SetCursorLocation(std::pair<size_t, size_t> pos) { SetCursorLocation(pos.first, pos.second); }
 
 		/*!
 			\brief Display text on the console

@@ -290,10 +290,10 @@ namespace anvil {
 
 				if ANVIL_CONSTEXPR_FN(CURSOR_POSITION_SUPPORTED) {
 					const auto prev_pos = GetCursorLocation();
-					SetCursorLocation(bar_location.first, bar_location.second);
-					Print(bar1);
-					Print(bar2);
-					SetCursorLocation(prev_pos.first, prev_pos.second);
+					SetCursorLocation(bar_location);
+					PrintNoState(bar1);
+					PrintNoState(bar2);
+					SetCursorLocation(prev_pos);
 				} else {
 					Print(bar1);
 					Print(bar2);
@@ -316,13 +316,17 @@ namespace anvil {
 		const size_t count = options.size();
 		int32_t choice = 0;
 
+		Print(prompt);
+		EndLine();
+		for (size_t i = 0; i < count; ++i) {
+			prompt2.text = "\t[" + std::to_string(i) + "]\t: " + options[i].text + '\n';
+			Print(prompt2);
+		}
+
+		std::pair<size_t, size_t> prev_location;
+		if ANVIL_CONSTEXPR_FN(CURSOR_POSITION_SUPPORTED) prev_location = GetCursorLocation();
+
 		while (true) {
-			Print(prompt);
-			EndLine();
-			for (size_t i = 0; i < count; ++i) {
-				prompt2.text = "\t[" + std::to_string(i) + "]\t: " + options[i].text + '\n';
-				Print(prompt2);
-			}
 
 			prompt2.text = "\nEnter a value between 0 and " + std::to_string(count - 1) + " :";
 			Print(prompt2);
@@ -334,6 +338,10 @@ namespace anvil {
 			} catch (...) {
 
 			}
+
+			Print("Invalid input, try again\n", CONSOLE_RED_LIGHT, prompt2.background_colour);
+
+			if ANVIL_CONSTEXPR_FN(CURSOR_POSITION_SUPPORTED) SetCursorLocation(prev_location);
 		}
 
 		return static_cast<size_t>(choice);
@@ -420,6 +428,8 @@ namespace anvil {
 		pos.X = static_cast<SHORT>(x);
 		pos.Y = static_cast<SHORT>(y);
 		SetConsoleCursorPosition(_stdout_handle, pos);
+		
+		//! \bug Current state will not be modified correctly if the console is written to
 #endif
 	}
 }
