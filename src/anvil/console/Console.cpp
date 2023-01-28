@@ -145,19 +145,16 @@ namespace anvil {
 	}
 
 	void Console::Clear() {
-		enum { MAX_HEIGHT = 4096 };
-		char buf[MAX_HEIGHT];
 		auto s = GetSize();
-		if (s.first > MAX_HEIGHT) s.first = MAX_HEIGHT;
-		for (size_t i = 0; i < s.first; ++i) buf[i] = ' ';
-		buf[s.first] = '\0';
+		ConsoleText txt;
+		txt._text.resize(s.first * s.second, ' ');
 
 		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
 		_state_stack.back().text.clear();
 
 		LockState();
 		if ANVIL_CONSTEXPR_FN (CURSOR_POSITION_SUPPORTED) SetCursorLocation({ 0,0 });
-		for (size_t i = 0; i < s.second; ++i) Print(buf, CONSOLE_WHITE, CONSOLE_BLACK);
+		Print(txt);
 		if ANVIL_CONSTEXPR_FN(CURSOR_POSITION_SUPPORTED) SetCursorLocation({ 0,0 });
 		UnlockState();
 	}
