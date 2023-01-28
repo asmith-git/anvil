@@ -18,6 +18,11 @@
 
 namespace anvil { namespace BytePipe {
 
+	enum IDMode : uint8_t {
+		ID_U16,
+		ID_STR
+	};
+
 	enum PrimaryID : uint8_t {
 		PID_NULL,
 		PID_PRIMATIVE,
@@ -329,7 +334,7 @@ namespace anvil { namespace BytePipe {
 	{}
 
 	Writer::Writer(OutputPipe& pipe) :
-		Writer(pipe, VERSION_2)
+		Writer(pipe, VERSION_3)
 	{}
 
 
@@ -453,7 +458,16 @@ namespace anvil { namespace BytePipe {
 
 	void Writer::OnComponentID(const uint16_t id) {
 		ANVIL_CONTRACT(GetCurrentState() == STATE_OBJECT, "BytePipe was not in object mode");
+		IDMode mode = ID_U16;
+		Write(&mode, 1u);
 		Write(&id, 2u);
+	}
+
+	void Writer::OnComponentID(const char* str, const uint32_t size) {
+		ANVIL_CONTRACT(GetCurrentState() == STATE_OBJECT, "BytePipe was not in object mode");
+		IDMode mode = ID_STR;
+		Write(&mode, 1u);
+		OnPrimitiveString(str, size);
 	}
 
 	void Writer::OnNull() {
@@ -703,6 +717,7 @@ namespace anvil { namespace BytePipe {
 		void* _mem;
 		uint32_t _mem_bytes;
 		uint32_t _buffer_size;
+		Version _version;
 		bool _swap_byte_order;
 
 		inline void ReadFromPipeRaw(void* dst, const uint32_t bytes) {
@@ -754,20 +769,49 @@ READ_FROM_BUFFER:
 			return _mem;
 		}
 
-		void ReadObject() {
+		char* ReadString(uint32_t& len) {
+			ANVIL_CONTRACT(header.secondary_id == SID_C8, "String subtype was not char");
+			ReadFromPipeBuffered(&header.string_v1, sizeof(header.string_v1));
+
+			len = header.string_v1.length;
+			char* const buffer = static_cast<char*>(AllocateMemory(len + 1u));
+			ReadFromPipeBuffered(buffer, len);
+			buffer[len] = '\0';
+			return buffer;
+		}
+
+		void ReadObject(Version version) {
 			const uint32_t size = header.object_v1.components;
 			_parser.OnObjectBegin(size);
 			uint16_t component_id;
 			for (uint32_t i = 0u; i < size; ++i) {
-				ReadFromPipeBuffered(&component_id, sizeof(component_id));
-				_parser.OnComponentID(component_id);
+				if (version >= VERSION_3) {
+					IDMode mode = ID_U16;
+					ReadFromPipeBuffered(&mode, 1u);
+					if (mode == ID_U16) {
+						goto OLD_COMPONENT_ID;
+
+					} else if (mode == PID_STRING) {
+						uint32_t len;
+						char* buffer = ReadString(len);
+						_parser.OnComponentID(buffer, len);
+
+					} else {
+						throw std::runtime_error("ReadHelper::ReadObject : Invalid component ID format");
+					}
+
+				} else {
+OLD_COMPONENT_ID:
+					ReadFromPipeBuffered(&component_id, sizeof(component_id));
+					_parser.OnComponentID(component_id);
+				}
 				ReadFromPipeBuffered(&header, 1u);
-				ReadGeneric();
+				ReadGeneric(version);
 			}
 			_parser.OnObjectEnd();
 		}
 
-		inline void ReadPrimitive() {
+		inline void ReadPrimitive(Version version) {
 			const uint32_t id = header.primary_id;
 
 			// Read primitive value
@@ -791,29 +835,25 @@ READ_FROM_BUFFER:
 			_parser.OnValue(tmp);
 		}
 
-		void ReadGeneric() {
+		void ReadGeneric(Version version) {
 			switch (header.primary_id) {
 			case PID_NULL:
 				_parser.OnNull();
 				break;
 			case PID_STRING:
-				ANVIL_CONTRACT(header.secondary_id == SID_C8, "String subtype was not char");
-				ReadFromPipeBuffered(&header.string_v1, sizeof(header.string_v1));
 				{
-					const uint32_t len = header.string_v1.length;
-					char* const buffer = static_cast<char*>(AllocateMemory(len + 1u));
-					ReadFromPipeBuffered(buffer, len);
-					buffer[len] = '\0';
+					uint32_t len;
+					char* buffer = ReadString(len);
 					_parser.OnPrimitiveString(buffer, len);
-				}
+				};
 				break;
 			case PID_ARRAY:
 				ReadFromPipeBuffered(&header.array_v1, sizeof(header.array_v1));
-				ReadArray();
+				ReadArray(version);
 				break;
 			case PID_OBJECT:
 				ReadFromPipeBuffered(&header.object_v1, sizeof(header.object_v1));
-				ReadObject();
+				ReadObject(version);
 				break;
 			case PID_USER_POD:
 				{
@@ -832,12 +872,12 @@ READ_FROM_BUFFER:
 				}
 				break;
 			default:
-				ReadPrimitive();
+				ReadPrimitive(version);
 				break;
 			}
 		}
 
-		void ReadArray() {
+		void ReadArray(Version version) {
 			const uint32_t id = header.secondary_id;
 			// If the array contains generic values
 			if (id == SID_NULL) {
@@ -845,7 +885,7 @@ READ_FROM_BUFFER:
 				_parser.OnArrayBegin(size);
 				for (uint32_t i = 0u; i < size; ++i) {
 					ReadFromPipeBuffered(&header, 1u);
-					ReadGeneric();
+					ReadGeneric(version);
 				}
 				_parser.OnArrayEnd();
 
@@ -887,7 +927,8 @@ READ_FROM_BUFFER:
 			_mem(nullptr),
 			_mem_bytes(0u),
 			_swap_byte_order(swap_byte_order),
-			_buffer_size(0u)
+			_buffer_size(0u),
+			_version(version)
 		{}
 
 		~ReadHelper() {
@@ -898,7 +939,7 @@ READ_FROM_BUFFER:
 			// Continue with read
 			ReadFromPipeBuffered(&header.id_union, 1u);
 			while (header.id_union != PID_NULL) {
-				ReadGeneric();
+				ReadGeneric(_version);
 				ReadFromPipeBuffered(&header.id_union, 1u);
 			}
 		}
@@ -921,7 +962,7 @@ READ_FROM_BUFFER:
 		_pipe.ReadBytesFast(&header_v1, sizeof(PipeHeaderV1));
 
 		// Check for unsupported version
-		if (header_v1.version > VERSION_2) throw std::runtime_error("Reader::Read : BytePipe version not supported");
+		if (header_v1.version > VERSION_3) throw std::runtime_error("Reader::Read : BytePipe version not supported");
 
 		// Read additional header data
 		bool swap_byte_order;
@@ -992,6 +1033,10 @@ READ_FROM_BUFFER:
 
 	void ValueParser::OnComponentID(const ComponentID id) {
 		_component_id = id;
+	}
+
+	void ValueParser::OnComponentID(const char* str, size_t size) {
+		_component_id_str = std::string(str, str + size);
 	}
 
 	void ValueParser::OnUserPOD(const uint32_t type, const uint32_t bytes, const void* data) {
@@ -1218,8 +1263,16 @@ READ_FROM_BUFFER:
 		case TYPE_OBJECT:
 			{
 				Value tmp;
-				val.AddValue(_component_id, std::move(tmp));
-				return val.GetValue(_component_id);
+				if (_component_id_str.empty()) {
+					val.AddValue(_component_id, std::move(tmp));
+					return val.GetValue(_component_id);
+
+				} else {
+					std::string idstr = std::move(_component_id_str);
+					idstr.clear();
+					val.AddValue(idstr, std::move(tmp));
+					return val.GetValue(idstr);
+				}
 			}
 			break;
 		default:

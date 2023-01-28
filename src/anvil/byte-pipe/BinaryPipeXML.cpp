@@ -77,6 +77,10 @@ namespace anvil { namespace BytePipe {
 		_next_id = id;
 	}
 
+	void XMLWriter::OnComponentID(const char* str, const uint32_t len) {
+		_next_id_str = std::string(str, str + len);
+	}
+
 
 	void XMLWriter::AddNode(const std::string& name, const std::string& value, std::vector<std::pair<std::string, std::string>> attributes) {
 		for (size_t i = 0; i < _depth; ++i) _str += '\t';
@@ -89,6 +93,14 @@ namespace anvil { namespace BytePipe {
 			_str += std::to_string(_next_id);
 			_str += "'";
 			_next_id = 0;
+		}
+
+		if (!_next_id_str.empty()) {
+			_str += "component_id='";
+			_str += _next_id_str;
+			_str += "'";
+			_next_id = 0;
+			_next_id_str.clear();
 		}
 
 		for (const auto& i : attributes) {
@@ -359,8 +371,7 @@ namespace anvil { namespace BytePipe {
 						if (IsComponentID(id)) {
 							parser.OnComponentID(std::stoi(id));
 						} else {
-							//parser.OnComponentID(id);
-							throw std::runtime_error("anvil::ReadCML : String component IDs are not implemented");
+							parser.OnComponentID(id.c_str(), static_cast<uint32_t>(id.size()));
 						}
 						parser.OnPrimitiveString(tmp->value(), tmp->value_size());
 						tmp = tmp->next_attribute();
@@ -375,8 +386,7 @@ namespace anvil { namespace BytePipe {
 						if (IsComponentID(id)) {
 							parser.OnComponentID(std::stoi(id));
 						} else {
-							//parser.OnComponentID(id);
-							throw std::runtime_error("anvil::ReadCML : String component IDs are not implemented");
+							parser.OnComponentID(id.c_str(), static_cast<uint32_t>(id.size()));
 						}
 						ReadXML(*tmp, parser);
 						tmp = tmp->next_sibling();

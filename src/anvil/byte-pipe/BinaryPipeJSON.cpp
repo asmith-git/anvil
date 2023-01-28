@@ -97,6 +97,15 @@ namespace anvil { namespace BytePipe {
 #endif
 	}
 
+	void JsonWriter::OnComponentID(const char* str, const uint32_t len) {
+		std::string tmp(str, str + len);
+#if ANVIL_JSON_SUPPORT
+		_next_id_str = tmp;
+#else
+		_out += '"' + tmp + "\":";
+#endif
+	}
+
 #if ANVIL_JSON_SUPPORT
 	nlohmann::json& JsonWriter::AddValue(nlohmann::json value) {
 		nlohmann::json& parent = *_json_stack.back();
@@ -109,7 +118,8 @@ namespace anvil { namespace BytePipe {
 			return parent.back();
 
 		} else if (parent.is_object()) {
-			std::string id = std::to_string(_next_id);
+			std::string id = _next_id_str.empty() ? std::to_string(_next_id) : _next_id_str;
+			_next_id_str.clear();
 			parent.emplace(id,value);
 			return parent[id];
 
@@ -349,8 +359,7 @@ namespace anvil { namespace BytePipe {
 				if (IsComponentID(k)) {
 					parser.OnComponentID(std::stoi(k));
 				} else {
-					throw std::runtime_error("anvil::ReadJSON : String component IDs are not implemented");
-					//parser.OnComponentID(k);
+					parser.OnComponentID(k.c_str(), static_cast<uint32_t>(k.size()));
 				}
 
 				ReadJSON(i.value(), parser);

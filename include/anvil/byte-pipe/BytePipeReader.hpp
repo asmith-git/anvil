@@ -112,6 +112,8 @@ namespace anvil { namespace BytePipe {
 		*/
 		virtual void OnComponentID(const ComponentID id) = 0;
 
+		virtual void OnComponentID(const char* str, const uint32_t size) = 0;
+
 		/*!
 			\brief Handle a user defined binary structure.
 			\details This allows the user to define their own POD (plain old data) structures, which can be 
@@ -736,6 +738,7 @@ namespace anvil { namespace BytePipe {
 	private:
 		Value _root;
 		std::vector<Value*> _value_stack;
+		std::string _component_id_str;
 		ComponentID _component_id;
 
 		Value& CurrentValue();
@@ -753,6 +756,7 @@ namespace anvil { namespace BytePipe {
 		void OnObjectBegin(const uint32_t component_count) final;
 		void OnObjectEnd() final;
 		void OnComponentID(const ComponentID id)  final;
+		void OnComponentID(const char* str, const uint32_t size)  final;
 		void OnUserPOD(const uint32_t type, const uint32_t bytes, const void* data) final;
 		void OnNull() final;
 		void OnPrimitiveF64(const double value) final; 

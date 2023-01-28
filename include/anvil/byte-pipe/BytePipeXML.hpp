@@ -40,6 +40,7 @@ namespace anvil { namespace BytePipe {
 	private:
 		std::string _str;
 		int32_t _next_id;
+		std::string _next_id_str;
 		uint16_t _depth;
 		void AddNode(const std::string& name, const std::string& value, std::vector<std::pair<std::string,std::string>> attribute);
 	public:
@@ -57,6 +58,7 @@ namespace anvil { namespace BytePipe {
 		void OnObjectBegin(const uint32_t component_count) final;
 		void OnObjectEnd() final;
 		void OnComponentID(const ComponentID id)  final;
+		void OnComponentID(const char* str, const uint32_t size)  final;
 		void OnUserPOD(const uint32_t type, const uint32_t bytes, const void* data) final;
 		void OnNull() final;
 		void OnPrimitiveF64(const double value) final;

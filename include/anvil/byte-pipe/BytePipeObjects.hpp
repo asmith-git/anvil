@@ -273,7 +273,7 @@ namespace anvil { namespace BytePipe {
 	private:
 		typedef std::vector<Value> Array;
 		typedef std::vector<uint8_t> PrimitiveArray;
-		typedef std::map<ComponentID, Value> Object;
+		typedef std::map<std::string, Value> Object;
 		PrimitiveValue _primitive;
 		Type _primitive_array_type;
 
@@ -571,6 +571,11 @@ namespace anvil { namespace BytePipe {
 		*/
 		inline void AddValue(const ComponentID id, Value&& value) {
 			if (_primitive.type != TYPE_OBJECT) throw std::runtime_error("Value::AddValue : Value is not an object");
+			static_cast<Object*>(_primitive.ptr)->emplace(std::to_string(id), std::move(value));
+		}
+
+		inline void AddValue(const std::string& id, Value&& value) {
+			if (_primitive.type != TYPE_OBJECT) throw std::runtime_error("Value::AddValue : Value is not an object");
 			static_cast<Object*>(_primitive.ptr)->emplace(id, std::move(value));
 		}
 
@@ -648,6 +653,7 @@ namespace anvil { namespace BytePipe {
 			\return The value at the location.
 		*/
 		Value& GetValue(const size_t index);
+		Value& GetValue(const std::string& index);
 
 		/*!
 			\brief Return the base address of an array of primitive values
@@ -662,6 +668,7 @@ namespace anvil { namespace BytePipe {
 			\return The component ID.
 		*/
 		ComponentID GetComponentID(const uint32_t index) const;
+		std::string GetComponentIDString(const uint32_t index) const;
 
 		/*!
 			\brief Return the value as a primitive

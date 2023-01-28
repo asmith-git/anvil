@@ -570,9 +570,19 @@ FLOATING_POINT:
 				}
 			}
 		case TYPE_OBJECT:
+			return GetValue(std::to_string(index));
+		default:
+			throw std::runtime_error("Value::GetValue : Value is not an array or object");
+		}
+	}
+	
+
+	Value& Value::GetValue(const std::string& index) {
+		switch (_primitive.type) {
+		case TYPE_OBJECT:
 			{
 				Object& myObject = *static_cast<Object*>(_primitive.ptr);
-				auto i = myObject.find(static_cast<uint16_t>(index));
+				auto i = myObject.find(index);
 				if (i == myObject.end()) throw std::runtime_error("Value::GetValue : No member object with component ID");
 				return i->second;
 			}
@@ -581,7 +591,6 @@ FLOATING_POINT:
 			throw std::runtime_error("Value::GetValue : Value is not an array or object");
 		}
 	}
-
 
 	void* Value::GetPrimitiveArray() {
 		return _primitive.type == TYPE_ARRAY ? (
@@ -592,6 +601,25 @@ FLOATING_POINT:
 	}
 
 	ComponentID Value::GetComponentID(const uint32_t index) const {
+		switch (_primitive.type) {
+		case TYPE_OBJECT:
+			{
+				Object& myObject = *static_cast<Object*>(_primitive.ptr);
+				if (index >= myObject.size()) throw std::runtime_error("Value::GetValue : Index out of bounds");
+				auto i = myObject.begin();
+				uint32_t j = index;
+				while (j != 0u) {
+					++i;
+				}
+				return static_cast<ComponentID>(std::stoi(i->first));
+			}
+			break;
+		default:
+			throw std::runtime_error("Value::GetValue : Value is not an array or object");
+		}
+	}
+
+	std::string Value::GetComponentIDString(const uint32_t index) const {
 		switch (_primitive.type) {
 		case TYPE_OBJECT:
 			{

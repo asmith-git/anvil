@@ -77,7 +77,7 @@ namespace anvil { namespace BytePipe {
 
 		// Read the data into the buffer
 		const uint64_t unused_bytes = (packet_size - g_header_sizes[version]) - used_bytes;
-		uint8_t* tmp = static_cast<uint8_t*>(_alloca(used_bytes + unused_bytes));
+		uint8_t* tmp = static_cast<uint8_t*>(_alloca(static_cast<size_t>(used_bytes + unused_bytes)));
 		read = _downstream_pipe.ReadBytes(tmp, static_cast<uint32_t>(used_bytes + unused_bytes));
 		if (read != used_bytes + unused_bytes) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Failed reading used packet data");
 

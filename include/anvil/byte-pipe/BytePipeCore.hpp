@@ -20,7 +20,8 @@
 namespace anvil { namespace BytePipe {
 	enum Version : uint8_t {
 		VERSION_1 = 1,
-		VERSION_2 = 2	// Endianness
+		VERSION_2 = 2, // Endianness
+		VERSION_3 = 3, // String component IDs
 	};
 }}
 

@@ -42,6 +42,7 @@ namespace anvil { namespace BytePipe {
 		std::vector<nlohmann::json*> _json_stack;
 		nlohmann::json _root;
 		ComponentID _next_id;
+		std::string _next_id_str;
 
 		nlohmann::json& AddValue(nlohmann::json value);
 #else
@@ -69,6 +70,7 @@ namespace anvil { namespace BytePipe {
 		void OnObjectBegin(const uint32_t component_count) final;
 		void OnObjectEnd() final;
 		void OnComponentID(const ComponentID id)  final;
+		void OnComponentID(const char* str, const uint32_t size)  final;
 		void OnUserPOD(const uint32_t type, const uint32_t bytes, const void* data) final;
 		void OnNull() final;
 		void OnPrimitiveF64(const double value) final;
