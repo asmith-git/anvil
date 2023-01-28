@@ -17,6 +17,13 @@
 
 #include <vector>
 #include <string>
+#include "anvil/core/LibDetect.hpp"
+
+#if ANVIL_JSON_SUPPORT
+#include <memory>
+#include "nlohmann/json.hpp"
+#endif
+
 #include "anvil/byte-pipe/BytePipeReader.hpp"
 
 namespace anvil { namespace BytePipe {
@@ -28,15 +35,27 @@ namespace anvil { namespace BytePipe {
 	*/
 	class JsonWriter final : public Parser {
 	private:
+#if ANVIL_JSON_SUPPORT
+		std::vector<nlohmann::json*> _json_stack;
+		nlohmann::json _root;
+		ComponentID _next_id;
+
+		nlohmann::json& AddValue(nlohmann::json value);
+#else
 		mutable std::string _out;
-	private:
+
 		void AddValue(const std::string& val);
 		void AddValueC(const char* val);
+#endif
 	public:
 		JsonWriter();
 		virtual ~JsonWriter();
 
+#if ANVIL_JSON_SUPPORT
+		const nlohmann::json& GetJSON() const;
+#else
 		const std::string& GetJSON() const;
+#endif
 
 		// Inherited from Parser
 
@@ -63,7 +82,6 @@ namespace anvil { namespace BytePipe {
 		void OnPrimitiveS16(const int16_t value) final;
 		void OnPrimitiveS32(const int32_t value) final;
 	};
-
 }}
 
 #endif

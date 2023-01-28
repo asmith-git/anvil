@@ -33,7 +33,7 @@
 	#define ANVIL_XML_SUPPORT 0
 #endif
 
-#if __has_include(<json.hpp>)
+#if __has_include(<nlohmann/json.hpp>)
 	#define ANVIL_JSON_SUPPORT 1
 #else
 	#define ANVIL_JSON_SUPPORT 0
