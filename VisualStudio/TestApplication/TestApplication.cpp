@@ -135,7 +135,8 @@ static void ConsoleTest() {
 
 	std::vector<std::string> choices = {"abc", "123", "hello world"};
 
-	std::string msg = choices[test.InputChoice("Select a test message", choices, true)];
+	test.Clear();
+	std::string msg = choices[test.InputChoice("Select a test message", choices)];
 	//std::string msg = test.InputString("Enter a message");
 
 	test.Print(msg, CONSOLE_BLACK);
@@ -176,11 +177,11 @@ static void ConsoleTest() {
 
 int main()
 {
-	UDPTest();
-	return 0;
+	//UDPTest();
+	//return 0;
 
-	TCPTest();
-	return 0;
+	//TCPTest();
+	//return 0;
 
 	ConsoleTest();
 	return 0;

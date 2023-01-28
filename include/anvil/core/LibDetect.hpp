@@ -15,11 +15,28 @@
 #ifndef ANVIL_CORE_LIBDETECT_HPP
 #define ANVIL_CORE_LIBDETECT_HPP
 
-// GSL
-#if defined(GSL_GSL_H) || defined(GSL_UTIL_H) || defined(GSL_BYTE_H) || defined(GSL_ALGORITHM_H) || defined(GSL_STRING_SPAN_H) || defined(GSL_SPAN_H) || defined(GSL_POINTERS_H) || defined(GSL_MULTI_SPAN_H) || defined(GSL_CONTRACTS_H)
+#if __has_include(<gsl/gsl>) || __has_include(<gsl>)
 	#define ANVIL_GSL_SUPPORT 1
 #else
 	#define ANVIL_GSL_SUPPORT 0
+#endif
+
+#if __has_include(<opencv2/opencv.hpp>)
+	#define ANVIL_OPENCV_SUPPORT 1
+#else
+	#define ANVIL_OPENCV_SUPPORT 0
+#endif
+
+#if __has_include(<rapidxml.hpp>)
+	#define ANVIL_XML_SUPPORT 1
+#else
+	#define ANVIL_XML_SUPPORT 0
+#endif
+
+#if __has_include(<json.hpp>)
+	#define ANVIL_JSON_SUPPORT 1
+#else
+	#define ANVIL_JSON_SUPPORT 0
 #endif
 
 #endif
