@@ -142,6 +142,8 @@ namespace anvil {
 #else
 		std::cout.write(txt, len);
 #endif
+
+		//if (txt[len - 1u] == '\n') ClearLine();
 	}
 
 	void Console::Clear() {
@@ -156,6 +158,23 @@ namespace anvil {
 		if ANVIL_CONSTEXPR_FN (CURSOR_POSITION_SUPPORTED) SetCursorLocation({ 0,0 });
 		Print(txt);
 		if ANVIL_CONSTEXPR_FN(CURSOR_POSITION_SUPPORTED) SetCursorLocation({ 0,0 });
+		UnlockState();
+	}
+
+	void Console::ClearLine() {
+		auto s = GetSize();
+		ConsoleText txt;
+		txt._text.resize(s.first, ' ');
+
+		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
+		_state_stack.back().text.clear();
+
+		LockState();
+		auto pos = GetCursorLocation();
+		pos.first = 0;
+		if ANVIL_CONSTEXPR_FN(CURSOR_POSITION_SUPPORTED) SetCursorLocation(pos);
+		Print(txt);
+		if ANVIL_CONSTEXPR_FN(CURSOR_POSITION_SUPPORTED) SetCursorLocation(pos);
 		UnlockState();
 	}
 

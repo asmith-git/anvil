@@ -99,6 +99,11 @@ namespace anvil {
 		void Clear();
 
 		/*!
+			\brief Clear the current line
+		*/
+		void ClearLine();
+
+		/*!
 			\brief Remember what is currently written on the console
 			\see PopState
 		*/
