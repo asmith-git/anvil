@@ -1,4 +1,4 @@
-//Copyright 2021 Adam G. Smith
+//Copyright 2023 Adam G. Smith
 //
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -12,49 +12,38 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#ifndef ANVIL_LUTILS_BYTEPIPE_JSON_HPP
-#define ANVIL_LUTILS_BYTEPIPE_JSON_HPP
+#ifndef ANVIL_LUTILS_BYTEPIPE_XML_HPP
+#define ANVIL_LUTILS_BYTEPIPE_XML_HPP
 
 #include <vector>
 #include <string>
 #include "anvil/core/LibDetect.hpp"
 
-#if ANVIL_JSON_SUPPORT
-#include "nlohmann/json.hpp"
+#if ANVIL_XML_SUPPORT
+#include <rapidxml.hpp>
 #endif
 
 #include "anvil/byte-pipe/BytePipeReader.hpp"
 
 namespace anvil { namespace BytePipe {
 
+#if ANVIL_XML_SUPPORT
 	/*!
 		\author Adam Smith
-		\date March 2021
-		\brief Converts a BytePipe serialisation into a JSON string
+		\date March 2023
+		\brief Converts a BytePipe serialisation into a XML string
 	*/
-	class JsonWriter final : public Parser {
+	class XMLWriter final : public Parser {
 	private:
-#if ANVIL_JSON_SUPPORT
-		std::vector<nlohmann::json*> _json_stack;
-		nlohmann::json _root;
+		std::string _str;
 		ComponentID _next_id;
-
-		nlohmann::json& AddValue(nlohmann::json value);
-#else
-		mutable std::string _out;
-
-		void AddValue(const std::string& val);
-		void AddValueC(const char* val);
-#endif
+		uint16_t _depth;
+		void AddNode(const std::string& name, const std::string& value, std::vector<std::pair<std::string,std::string>> attribute);
 	public:
-		JsonWriter();
-		virtual ~JsonWriter();
+		XMLWriter();
+		virtual ~XMLWriter();
 
-#if ANVIL_JSON_SUPPORT
-		const nlohmann::json& GetJSON() const;
-#else
-		const std::string& GetJSON() const;
-#endif
+		const std::string& GetXMLString() const;
 
 		// Inherited from Parser
 
@@ -81,6 +70,7 @@ namespace anvil { namespace BytePipe {
 		void OnPrimitiveS16(const int16_t value) final;
 		void OnPrimitiveS32(const int32_t value) final;
 	};
+#endif
 }}
 
 #endif
