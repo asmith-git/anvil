@@ -30,7 +30,7 @@ namespace anvil { namespace BytePipe {
 
 	XMLWriter::XMLWriter() {
 		_depth = 0;
-		_next_id = 0;
+		_next_id = -1;
 	}
 
 	XMLWriter::~XMLWriter() {
@@ -83,6 +83,14 @@ namespace anvil { namespace BytePipe {
 
 		_str += '<';
 		_str += name;
+
+		if (_next_id >= 0) {
+			_str += "component_id='";
+			_str += std::to_string(_next_id);
+			_str += "'";
+			_next_id = 0;
+		}
+
 		for (const auto& i : attributes) {
 			_str += ' ';
 			_str += i.first;
@@ -173,6 +181,219 @@ namespace anvil { namespace BytePipe {
 	void XMLWriter::OnPrimitiveS32(const int32_t value) {
 		AddNode("anvil_value", std::to_string(value), {{"type", "int32"}});
 	}
+
+	// Reading
+
+	static size_t CountAttributes(const rapidxml::xml_node<>& node) {
+		rapidxml::xml_attribute<>* tmp = node.first_attribute();
+		size_t count = 0u;
+		while (tmp) {
+			++count;
+			tmp = tmp->next_attribute();
+		}
+		return count;
+	}
+
+	static size_t CountChildNodes(const rapidxml::xml_node<>& node) {
+		rapidxml::xml_node<>* tmp = node.first_node();
+		size_t count = 0u;
+		while (tmp) {
+			++count;
+			tmp = tmp->next_sibling();
+		}
+		return count;
+	}
+
+	static rapidxml::xml_attribute<>* FindAttribute(const rapidxml::xml_node<>& node, const std::string& name) {
+		rapidxml::xml_attribute<>* tmp = node.first_attribute();
+		while (tmp) {
+			if (tmp->name() == name) return tmp;
+			tmp = tmp->next_attribute();
+		}
+		return nullptr;
+	}
+
+	static rapidxml::xml_node<>* FindChildNode(const rapidxml::xml_node<>& node, const std::string& name) {
+		rapidxml::xml_node<>* tmp = node.first_node();
+		while (tmp) {
+			if (tmp->name() == name) return tmp;
+			tmp = tmp->next_sibling();
+		}
+		return nullptr;
+	}
+
+	template<class T>
+	static T ReadPrimative(const rapidxml::xml_node<>& node) {
+		if ANVIL_CONSTEXPR_FN (std::is_same<bool, T>::value) {
+			if (strcmp(node.value(), "true") == 0) return true;
+			if (strcmp(node.value(), "false") == 0) return false;
+		}
+
+		std::stringstream ss(node.value());
+		T tmp;
+		ss >> tmp;
+		return tmp;
+	}
+
+	static uint32_t HexNybbleToBin(char hex) {
+		if (hex >= '0' && hex <= '9') {
+			return hex - '0';
+		} else if (hex >= 'A' && hex <= 'Z') {
+			return (hex - 'A') + 10;
+		} else  {
+			return (hex - 'a') + 10;
+		}
+	}
+
+	static void ConvertHexToBin(const char* hex, size_t bytes, uint8_t* bin) {
+		for (size_t i = 0u; i < bytes; ++i) {
+			*bin = static_cast<uint32_t>(HexNybbleToBin(hex[0u]) | (HexNybbleToBin(hex[1u]) << 4u));
+
+			hex += 2u;
+			--bin;
+		}
+	}
+
+	static bool IsComponentID(const std::string& str) {
+		for (char c : str) if (c < '0' || c > '9') return false;
+		return true;
+	}
+
+	void ReadXML(const rapidxml::xml_node<>& node, Parser& parser) {
+		if (strcmp(node.name(),"anvil_pod") == 0) {
+			// Interpret as pod
+			uint32_t bytes = node.value_size() / 2;
+			uint8_t* buffer = static_cast<uint8_t*>(_alloca(bytes));
+
+			ConvertHexToBin(node.value(), bytes, buffer);
+
+			parser.OnUserPOD(
+				std::stoi(FindAttribute(node, "type")->value()),
+				bytes,
+				buffer
+			);
+
+		} else if (strcmp(node.name(), "anvil_array") == 0) {
+			// Interpret as array
+			parser.OnArrayBegin(static_cast<uint32_t>(CountChildNodes(node)));
+			rapidxml::xml_node<>* tmp = node.first_node();
+			while (tmp) {
+				ReadXML(*tmp, parser);
+				tmp = tmp->next_sibling();
+			}
+			parser.OnArrayEnd();
+
+		} else if (strcmp(node.name(), "anvil_object") == 0) {
+			// Interpret as object
+			parser.OnObjectBegin(static_cast<uint32_t>(CountChildNodes(node)));
+			rapidxml::xml_node<>* tmp = node.first_node();
+			while (tmp) {
+				parser.OnComponentID(std::stoi(FindAttribute(node, "component_id")->value()));
+				ReadXML(*tmp, parser);
+				tmp = tmp->next_sibling();
+			}
+			parser.OnObjectEnd();
+
+		}  else if (strcmp(node.name(), "anvil_value") == 0) {
+			// Interpret as primative value
+			rapidxml::xml_attribute<>* type = FindAttribute(node, "type");
+			if (type) {
+				if (strcmp(node.value(), "uint8") == 0) {
+					parser.OnPrimitiveU8(ReadPrimative<uint8_t>(node));
+					return;
+				} else if (strcmp(node.value(), "uint16") == 0) {
+					parser.OnPrimitiveU16(ReadPrimative<uint16_t>(node));
+					return;
+				} else if (strcmp(node.value(), "uint32") == 0) {
+					parser.OnPrimitiveU32(ReadPrimative<uint32_t>(node));
+					return;
+				} else if (strcmp(node.value(), "uint64") == 0) {
+					parser.OnPrimitiveU64(ReadPrimative<uint64_t>(node));
+					return;
+				} else if (strcmp(node.value(), "int8") == 0) {
+					parser.OnPrimitiveS8(ReadPrimative<int8_t>(node));
+					return;
+				} else if (strcmp(node.value(), "int16") == 0) {
+					parser.OnPrimitiveS16(ReadPrimative<int16_t>(node));
+					return;
+				} else if (strcmp(node.value(), "int32") == 0) {
+					parser.OnPrimitiveS32(ReadPrimative<int32_t>(node));
+					return;
+				} else if (strcmp(node.value(), "int64") == 0) {
+					parser.OnPrimitiveS64(ReadPrimative<int64_t>(node));
+					return;
+				} else if (strcmp(node.value(), "float32") == 0) {
+					parser.OnPrimitiveF32(ReadPrimative<float>(node));
+					return;
+				} else if (strcmp(node.value(), "float32") == 0) {
+					parser.OnPrimitiveF64(ReadPrimative<double>(node));
+					return;
+				} else if (strcmp(node.value(), "bool") == 0) {
+					parser.OnPrimitiveBool(ReadPrimative<bool>(node));
+					return;
+				} else if (strcmp(node.value(), "char") == 0) {
+					parser.OnPrimitiveC8(ReadPrimative<char>(node));
+					return;
+				} else if (strcmp(node.value(), "null") == 0) {
+					parser.OnNull();
+					return;
+				}
+			}
+			parser.OnPrimitiveString(node.value(), node.value_size());
+
+		} else  {
+			// Node not formatted as expected, but try to interpret it anyway
+			size_t attribute_count = CountAttributes(node);
+			size_t node_count = CountChildNodes(node);
+			std::string value = node.value();
+
+			if (attribute_count > 0 || node_count > 0) {
+				if (!value.empty()) throw std::runtime_error("anvil::ReadXML : Failed to inteprpet XML data");
+
+				parser.OnObjectBegin(static_cast<uint32_t>(attribute_count + node_count));
+
+				{
+					rapidxml::xml_attribute<>* tmp = node.first_attribute();
+					while (tmp) {
+						std::string id = tmp->name();
+						if (IsComponentID(id)) {
+							parser.OnComponentID(std::stoi(id));
+						} else {
+							//parser.OnComponentID(id);
+							throw std::runtime_error("anvil::ReadCML : String component IDs are not implemented");
+						}
+						parser.OnPrimitiveString(tmp->value(), tmp->value_size());
+						tmp = tmp->next_attribute();
+					}
+				}
+
+				{
+					rapidxml::xml_node<>* tmp = node.first_node();
+					size_t count = 0u;
+					while (tmp) {
+						std::string id = tmp->name();
+						if (IsComponentID(id)) {
+							parser.OnComponentID(std::stoi(id));
+						} else {
+							//parser.OnComponentID(id);
+							throw std::runtime_error("anvil::ReadCML : String component IDs are not implemented");
+						}
+						ReadXML(*tmp, parser);
+						tmp = tmp->next_sibling();
+					}
+				}
+
+				parser.OnObjectEnd();
+
+			} else if (value.empty()) {
+				parser.OnNull();
+
+			} else {
+				parser.OnPrimitiveString(node.value(), node.value_size());
+			}
+		}
+	}
+
 #endif
 
 }}

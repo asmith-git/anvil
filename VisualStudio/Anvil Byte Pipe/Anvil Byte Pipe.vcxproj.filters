@@ -57,6 +57,9 @@
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeUDP.hpp">
       <Filter>Header Files\Byte Pipe</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeXML.hpp">
+      <Filter>Header Files\Byte Pipe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\anvil\byte-pipe\BinaryPipe.cpp">
@@ -84,6 +87,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\anvil\byte-pipe\BinaryPipeUDP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\anvil\byte-pipe\BinaryPipeXML.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

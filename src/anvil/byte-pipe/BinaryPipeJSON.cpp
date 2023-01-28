@@ -273,4 +273,113 @@ namespace anvil { namespace BytePipe {
 #endif
 	}
 
+#if ANVIL_JSON_SUPPORT
+	// Reading
+
+	static size_t CountChildNodes(const nlohmann::json& node) {
+		return node.size();
+	}
+
+	static uint32_t HexNybbleToBin(char hex) {
+		if (hex >= '0' && hex <= '9') {
+			return hex - '0';
+		} else if (hex >= 'A' && hex <= 'Z') {
+			return (hex - 'A') + 10;
+		} else  {
+			return (hex - 'a') + 10;
+		}
+	}
+
+	static void ConvertHexToBin(const char* hex, size_t bytes, uint8_t* bin) {
+		for (size_t i = 0u; i < bytes; ++i) {
+			*bin = static_cast<uint32_t>(HexNybbleToBin(hex[0u]) | (HexNybbleToBin(hex[1u]) << 4u));
+
+			hex += 2u;
+			--bin;
+		}
+	}
+
+	static bool IsPod(const nlohmann::json& node) {
+		if (!node.is_object()) return false;
+		return !node["__ANVIL_POD"].is_null();
+	}
+
+	static bool IsComponentID(const std::string& str) {
+		for (char c : str) if (c < '0' || c > '9') return false;
+		return true;
+	}
+
+	void ReadJSON(const nlohmann::json& node, Parser& parser) {
+		if (IsPod(node)) {
+			// Interpret as pod
+			std::string tmp = node["data"];
+			uint32_t bytes = tmp.size() / 2;
+			uint8_t* buffer = static_cast<uint8_t*>(_alloca(bytes));
+
+			ConvertHexToBin(tmp.c_str(), tmp.size(), buffer);
+
+			parser.OnUserPOD(
+				node["type"],
+				bytes,
+				buffer
+			);
+
+		} else if (node.is_array()) {
+			// Interpret as array
+			parser.OnArrayBegin(static_cast<uint32_t>(CountChildNodes(node)));
+			std::vector<nlohmann::json::const_iterator> children;
+			for (nlohmann::json::const_iterator i = node.begin(); i != node.end(); ++i) {
+				children.push_back(i);
+			}
+
+			std::sort(children.begin(), children.end(), [](nlohmann::json::const_iterator lhs, nlohmann::json::const_iterator rhs)->bool {
+				return lhs.key() < rhs.key();
+			});
+			
+			for (nlohmann::json::const_iterator i : children) {
+				ReadJSON(i.value(), parser);
+			}
+			parser.OnArrayEnd();
+
+		} else if (node.is_object()) {
+			// Interpret as object
+			parser.OnObjectBegin(static_cast<uint32_t>(CountChildNodes(node)));
+			for (nlohmann::json::const_iterator i = node.begin(); i != node.end(); ++i) {
+				std::string k = i.key();
+				if (IsComponentID(k)) {
+					parser.OnComponentID(std::stoi(k));
+				} else {
+					throw std::runtime_error("anvil::ReadJSON : String component IDs are not implemented");
+					//parser.OnComponentID(k);
+				}
+
+				ReadJSON(i.value(), parser);
+			}
+			parser.OnObjectEnd();
+
+		}  else  {
+			if (node.is_boolean()) {
+				parser.OnPrimitiveBool(node);
+
+			} else if (node.is_null()) {
+				parser.OnNull();
+
+			} else if (node.is_number_unsigned()) {
+				parser.OnPrimitiveU64(node);
+
+			} else if (node.is_number_integer()) {
+				parser.OnPrimitiveS64(node);
+
+			} else if (node.is_number_float()) {
+				parser.OnPrimitiveF64(node);
+
+			} else {
+				std::string str = node;
+				parser.OnPrimitiveString(str.c_str(), static_cast<uint32_t>(str.size()));
+			}
+		}
+	}
+
+#endif
+
 }}

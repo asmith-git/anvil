@@ -27,6 +27,10 @@
 
 namespace anvil { namespace BytePipe {
 
+#if ANVIL_JSON_SUPPORT
+		void ReadJSON(const nlohmann::json& node, Parser& parser);
+#endif
+
 	/*!
 		\author Adam Smith
 		\date March 2021

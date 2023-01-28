@@ -28,6 +28,9 @@
 namespace anvil { namespace BytePipe {
 
 #if ANVIL_XML_SUPPORT
+
+	void ReadXML(const rapidxml::xml_node<>& node, Parser& parser);
+
 	/*!
 		\author Adam Smith
 		\date March 2023
@@ -36,7 +39,7 @@ namespace anvil { namespace BytePipe {
 	class XMLWriter final : public Parser {
 	private:
 		std::string _str;
-		ComponentID _next_id;
+		int32_t _next_id;
 		uint16_t _depth;
 		void AddNode(const std::string& name, const std::string& value, std::vector<std::pair<std::string,std::string>> attribute);
 	public:
