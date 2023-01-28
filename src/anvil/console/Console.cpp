@@ -98,64 +98,59 @@ namespace anvil {
 	void Console::Print(const ConsoleText& text) {
 		if (text._text.empty() && ! text._is_char) return;
 
-		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
+		if (_state_lock == 0u) {
+			std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
 
-		State& state = _state_stack.back();
-		if (state.text.empty()) {
-			state.text.push_back(text);
-
-		} else {
-			ConsoleText& prev = state.text.back();
-			if (prev._foreground_colour == text._foreground_colour && prev._background_colour == text._background_colour) {
-				if(text._is_char) prev._text += static_cast<char>(text._char);
-				else prev._text += text._text;
-			} else {
+			State& state = _state_stack.back();
+			if (state.text.empty()) {
 				state.text.push_back(text);
+
+			}
+			else {
+				ConsoleText& prev = state.text.back();
+				if (prev._foreground_colour == text._foreground_colour && prev._background_colour == text._background_colour) {
+					if (text._is_char) prev._text += static_cast<char>(text._char);
+					else prev._text += text._text;
+				}
+				else {
+					state.text.push_back(text);
+				}
 			}
 		}
 
-		PrintNoState(text);
-	}
+		char c;
+		const char* txt;
+		size_t len;
+		if (text._is_char) {
+			c = static_cast<char>(text._char);
+			txt = &c;
+			len = 1u;
+		} else {
+			txt = text._text.c_str();
+			len = text._text.size();
+		}
 
-	void Console::PrintNoState(const char* text, size_t len, const ConsoleColour foreground, const ConsoleColour background) {
 #if ANVIL_OS == ANVIL_WINDOWS
-
-		const WORD attribute = ConvertToWindowsColour(foreground, background);
+		const WORD attribute = ConvertToWindowsColour(static_cast<ConsoleColour>(text._foreground_colour), static_cast<ConsoleColour>(text._background_colour));
 		if (attribute != _current_attribute) {
 			SetConsoleTextAttribute(_stdout_handle, attribute);
 			_current_attribute = attribute;
 		}
 
-		WriteConsoleA(_stdout_handle, text, static_cast<DWORD>(len), NULL, NULL);
+		WriteConsoleA(_stdout_handle, txt, static_cast<DWORD>(len), NULL, NULL);
 
 #else
-		std::cout.write(text, len);
+		std::cout.write(txt, len);
 #endif
-	}
-
-	void Console::PrintNoState(const ConsoleText& text) {
-		char buf;
-		const char* str;
-		size_t size;
-		if (text._is_char) {
-			buf = static_cast<char>(text._char);
-			str = &buf;
-			size = 1u;
-		} else {
-			if (text._text.empty()) return;
-			str = text._text.c_str();
-			size = text._text.size();
-
-		}
-		PrintNoState(str, size, static_cast<ConsoleColour>(text._foreground_colour), static_cast<ConsoleColour>(text._background_colour));
 	}
 
 	void Console::Clear() {
 		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
 		_state_stack.back().text.clear();
 
+		LockState();
 #if ANVIL_OS == ANVIL_WINDOWS
-		PrintNoState("\x1b[2J", 5, CONSOLE_WHITE, CONSOLE_BLACK);
+		Print("\x1b[2J", CONSOLE_WHITE, CONSOLE_BLACK);
 #else
 		//! \todo Implement correctly
 		enum { MAX_HEIGHT = 4096 };
@@ -164,9 +159,11 @@ namespace anvil {
 		if (h > MAX_HEIGHT) h = MAX_HEIGHT;
 
 		for (size_t i = 0; i < h; ++i) buf[i] = '\n';
+		buf[h] = '\0';
 
-		PrintNoState(buf, h, CONSOLE_WHITE, CONSOLE_BLACK);
+		Print(buf, CONSOLE_WHITE, CONSOLE_BLACK);
 #endif
+		UnlockState();
 	}
 
 	const Console::State& Console::PushState() {
@@ -195,7 +192,9 @@ namespace anvil {
 		std::lock_guard<std::recursive_mutex> lock(g_console_mutex);
 		Clear();
 		_state_stack.back() = state;
-		for (const ConsoleText& text : state.text) PrintNoState(text);
+		LockState();
+		for (const ConsoleText& text : state.text) Print(text);
+		UnlockState();
 	}
 
 	std::pair<size_t, size_t> Console::GetSize() const {
@@ -281,6 +280,7 @@ namespace anvil {
 		std::pair<size_t, size_t> bar_location;
 		if ANVIL_CONSTEXPR_FN (CURSOR_POSITION_SUPPORTED) bar_location = GetCursorLocation();
 
+		LockState();
 		while (percentage < 100.f) {
 
 			int32_t progress = static_cast<int32_t>(std::round(static_cast<float>(width) * (percentage / 100.f)));
@@ -313,8 +313,8 @@ namespace anvil {
 				if ANVIL_CONSTEXPR_FN(CURSOR_POSITION_SUPPORTED) {
 					const auto prev_pos = GetCursorLocation();
 					SetCursorLocation(bar_location);
-					PrintNoState(bar1);
-					PrintNoState(bar2);
+					Print(bar1);
+					Print(bar2);
 					SetCursorLocation(prev_pos);
 				} else {
 					Print(bar1);
@@ -327,6 +327,7 @@ namespace anvil {
 
 			std::this_thread::sleep_for(std::chrono::milliseconds(66));
 		}
+		UnlockState();
 	}
 
 	size_t Console::InputChoice(const ConsoleText& prompt, const std::vector<ConsoleText>& options) {

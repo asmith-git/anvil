@@ -88,9 +88,7 @@ namespace anvil {
 		void* _stdout_handle;
 		uint16_t _current_attribute;
 #endif
-
-		void PrintNoState(const char* text, size_t len, const ConsoleColour foreground, const ConsoleColour background);
-		void PrintNoState(const ConsoleText& text);
+		uint16_t _state_lock;
 	public:
 		Console();
 		~Console();
@@ -146,6 +144,25 @@ namespace anvil {
 		*/
 		void SetCursorLocation(size_t x, size_t y);
 		ANVIL_STRONG_INLINE void SetCursorLocation(std::pair<size_t, size_t> pos) { SetCursorLocation(pos.first, pos.second); }
+
+		/*!
+			\brief State changes will not be recorded until UnlockState is called
+			\see UnlockState
+		*/
+		ANVIL_STRONG_INLINE void LockState() { ++_state_lock; }
+
+		/*!
+			\brief Allows new information to be written to the current state
+			\see LockState
+		*/
+		ANVIL_STRONG_INLINE void UnlockState() { if (_state_lock > 0u) --_state_lock; }
+
+		/*!
+			\brief Check if the state is locked.
+			\see LockState
+			\see UnlockState
+		*/
+		ANVIL_STRONG_INLINE bool IsStateLocked() const { return _state_lock > 0; }
 
 		/*!
 			\brief Display text on the console
