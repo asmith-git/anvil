@@ -16,7 +16,6 @@
 
 namespace anvil { namespace BytePipe {
 
-#if ANVIL_XML_SUPPORT
 	static char ToHex(uint32_t nybble) {
 		return nybble <= 9 ?
 			'0' + nybble :
@@ -191,6 +190,7 @@ namespace anvil { namespace BytePipe {
 		AddNode(GetNextNodeName("value"), std::to_string(value), {{"anvil_type", "int32"}});
 	}
 
+#if ANVIL_XML_SUPPORT
 	// Reading
 
 	static size_t CountAttributes(const rapidxml::xml_node<>& node) {

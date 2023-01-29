@@ -31,6 +31,8 @@ namespace anvil { namespace BytePipe {
 
 	void ReadXML(const rapidxml::xml_node<>& node, Parser& parser);
 
+#endif
+
 	/*!
 		\author Adam Smith
 		\date March 2023
@@ -76,7 +78,6 @@ namespace anvil { namespace BytePipe {
 		void OnPrimitiveS16(const int16_t value) final;
 		void OnPrimitiveS32(const int32_t value) final;
 	};
-#endif
 }}
 
 #endif

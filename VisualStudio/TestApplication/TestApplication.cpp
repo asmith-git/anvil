@@ -175,6 +175,79 @@ static void ConsoleTest() {
 	system("pause");
 }
 
+
+void JSONTest() {
+	using namespace anvil::BytePipe;
+
+	JsonWriter writer;
+
+	{
+		writer.OnObjectBegin(3);
+
+		static_cast<Parser&>(writer).OnComponentID("array_test");
+		writer.OnArrayBegin(20);
+		for (int i = 0; i < 20; ++i) writer.OnPrimitiveS32(i);
+		writer.OnArrayEnd();
+
+		static_cast<Parser&>(writer).OnComponentID("old_object_test");
+		writer.OnObjectBegin(4);
+		writer.OnComponentID(0);
+		writer.OnPrimitiveC8('A');
+		writer.OnComponentID(1);
+		writer.OnPrimitiveC8('B');
+		writer.OnComponentID(2);
+		writer.OnPrimitiveC8('C');
+		writer.OnComponentID(3);
+		writer.OnPrimitiveC8('D');
+		writer.OnObjectEnd();
+
+		static_cast<Parser&>(writer).OnComponentID("new_object_test");
+		writer.OnObjectBegin(4);
+		static_cast<Parser&>(writer).OnComponentID("first");
+		writer.OnPrimitiveC8('A');
+		static_cast<Parser&>(writer).OnComponentID("second");
+		writer.OnPrimitiveC8('B');
+		static_cast<Parser&>(writer).OnComponentID("third");
+		writer.OnPrimitiveC8('C');
+		static_cast<Parser&>(writer).OnComponentID("fourth");
+		writer.OnPrimitiveC8('D');
+		writer.OnObjectEnd();
+
+		writer.OnObjectEnd();
+	}
+
+	{
+		std::ofstream file("D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest.json");
+		file << writer.GetJSONString();
+	}
+
+	system("notepad D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest.json");
+
+	{
+		std::string xml_src;
+		{
+			std::ifstream file("D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest.json");
+			while (!file.eof()) {
+				std::string line;
+				std::getline(file, line);
+				xml_src += line + '\n';
+			}
+		}
+
+		nlohmann::json node;
+		node = node.parse(xml_src);
+		writer.OnPipeClose();
+		writer.OnPipeOpen();
+		ReadJSON(node, writer);
+
+		std::ofstream file("D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest2.json");
+		file << writer.GetJSONString();
+	}
+
+	system("notepad D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest2.json");
+}
+
+
 void XMLTest() {
 	using namespace anvil::BytePipe;
 
@@ -198,7 +271,7 @@ void XMLTest() {
 				writer.OnPrimitiveC8('C');
 				writer.OnComponentID(3);
 				writer.OnPrimitiveC8('D');
-			writer.OnArrayEnd();
+			writer.OnObjectEnd();
 
 			static_cast<Parser&>(writer).OnComponentID("new_object_test");
 			writer.OnObjectBegin(4);
@@ -210,7 +283,7 @@ void XMLTest() {
 				writer.OnPrimitiveC8('C');
 				static_cast<Parser&>(writer).OnComponentID("fourth");
 				writer.OnPrimitiveC8('D');
-			writer.OnArrayEnd();
+			writer.OnObjectEnd();
 
 		writer.OnObjectEnd();
 	}
@@ -249,6 +322,9 @@ void XMLTest() {
 
 int main()
 {
+	JSONTest();
+	return 0;
+
 	XMLTest();
 	return 0;
 

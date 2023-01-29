@@ -38,28 +38,16 @@ namespace anvil { namespace BytePipe {
 	*/
 	class JsonWriter final : public Parser {
 	private:
-#if ANVIL_JSON_SUPPORT
-		std::vector<nlohmann::json*> _json_stack;
-		nlohmann::json _root;
-		ComponentID _next_id;
-		std::string _next_id_str;
-
-		nlohmann::json& AddValue(nlohmann::json value);
-#else
 		mutable std::string _out;
+		std::string _next_id;
+		uint32_t _depth;
 
 		void AddValue(const std::string& val);
-		void AddValueC(const char* val);
-#endif
 	public:
 		JsonWriter();
 		virtual ~JsonWriter();
 
-#if ANVIL_JSON_SUPPORT
-		const nlohmann::json& GetJSON() const;
-#else
-		const std::string& GetJSON() const;
-#endif
+		const std::string& GetJSONString() const;
 
 		// Inherited from Parser
 
