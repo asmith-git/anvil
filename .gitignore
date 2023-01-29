@@ -46,3 +46,9 @@
 *.ilk
 *.iobj
 *.enc
+*.ipdb
+*.ipdb
+*.iobj
+*.xml
+*.json
+*.iobj
