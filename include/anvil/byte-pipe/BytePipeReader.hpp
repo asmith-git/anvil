@@ -243,7 +243,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 #if ANVIL_OPENCV_SUPPORT
-		virtual void OnImage(const cv::Mat& value);
+		void OnImage(const cv::Mat& value);
 #endif
 
 		// Object Support
