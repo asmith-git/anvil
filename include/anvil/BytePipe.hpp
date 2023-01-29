@@ -25,5 +25,7 @@
 #include "anvil/byte-pipe/BytePipeBits.hpp"
 #include "anvil/byte-pipe/BytePipeTCP.hpp"
 #include "anvil/byte-pipe/BytePipeUDP.hpp"
+#include "anvil/byte-pipe/BytePipeJSON.hpp"
+#include "anvil/byte-pipe/BytePipeXML.hpp"
 
 #endif

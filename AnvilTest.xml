@@ -1,0 +1,36 @@
+<object anvil_type='object'>
+	<array_test anvil_type='array'>
+		<value anvil_type='int32'>0</value>
+		<value anvil_type='int32'>1</value>
+		<value anvil_type='int32'>2</value>
+		<value anvil_type='int32'>3</value>
+		<value anvil_type='int32'>4</value>
+		<value anvil_type='int32'>5</value>
+		<value anvil_type='int32'>6</value>
+		<value anvil_type='int32'>7</value>
+		<value anvil_type='int32'>8</value>
+		<value anvil_type='int32'>9</value>
+		<value anvil_type='int32'>10</value>
+		<value anvil_type='int32'>11</value>
+		<value anvil_type='int32'>12</value>
+		<value anvil_type='int32'>13</value>
+		<value anvil_type='int32'>14</value>
+		<value anvil_type='int32'>15</value>
+		<value anvil_type='int32'>16</value>
+		<value anvil_type='int32'>17</value>
+		<value anvil_type='int32'>18</value>
+		<value anvil_type='int32'>19</value>
+	</array_test>
+	<old_object_test anvil_type='object'>
+		<0 anvil_type='char'>A</0>
+		<1 anvil_type='char'>B</1>
+		<2 anvil_type='char'>C</2>
+		<3 anvil_type='char'>D</3>
+	</old_object_test>
+	<new_object_test anvil_type='object'>
+		<first anvil_type='char'>A</first>
+		<second anvil_type='char'>B</second>
+		<third anvil_type='char'>C</third>
+		<fourth anvil_type='char'>D</fourth>
+	</new_object_test>
+</object>

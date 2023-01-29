@@ -175,8 +175,83 @@ static void ConsoleTest() {
 	system("pause");
 }
 
+void XMLTest() {
+	using namespace anvil::BytePipe;
+
+	XMLWriter writer;
+
+	{
+		writer.OnObjectBegin(3);
+
+			static_cast<Parser&>(writer).OnComponentID("array_test");
+			writer.OnArrayBegin(20);
+			for (int i = 0; i < 20; ++i) writer.OnPrimitiveS32(i);
+			writer.OnArrayEnd();
+
+			static_cast<Parser&>(writer).OnComponentID("old_object_test");
+			writer.OnObjectBegin(4);
+				writer.OnComponentID(0);
+				writer.OnPrimitiveC8('A');
+				writer.OnComponentID(1);
+				writer.OnPrimitiveC8('B');
+				writer.OnComponentID(2);
+				writer.OnPrimitiveC8('C');
+				writer.OnComponentID(3);
+				writer.OnPrimitiveC8('D');
+			writer.OnArrayEnd();
+
+			static_cast<Parser&>(writer).OnComponentID("new_object_test");
+			writer.OnObjectBegin(4);
+				static_cast<Parser&>(writer).OnComponentID("first");
+				writer.OnPrimitiveC8('A');
+				static_cast<Parser&>(writer).OnComponentID("second");
+				writer.OnPrimitiveC8('B');
+				static_cast<Parser&>(writer).OnComponentID("third");
+				writer.OnPrimitiveC8('C');
+				static_cast<Parser&>(writer).OnComponentID("fourth");
+				writer.OnPrimitiveC8('D');
+			writer.OnArrayEnd();
+
+		writer.OnObjectEnd();
+	}
+
+	{
+		std::ofstream file("D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest.xml");
+		file << writer.GetXMLString();
+	}
+
+	system("notepad D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest.xml");
+
+	{
+		std::string xml_src;
+		{
+			std::ifstream file("D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest.xml");
+			while (!file.eof()) {
+				std::string line;
+				std::getline(file, line);
+				xml_src += line + '\n';
+			}
+		}
+
+		rapidxml::xml_document<> doc;
+		doc.parse<0>(const_cast<char*>(xml_src.c_str()));
+		rapidxml::xml_node<>* node = doc.first_node();
+		writer.OnPipeClose();
+		writer.OnPipeOpen();
+		ReadXML(*node, writer);
+
+		std::ofstream file("D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest2.xml");
+		file << writer.GetXMLString();
+	}
+
+	system("notepad D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest2.xml");
+}
+
 int main()
 {
+	XMLTest();
+	return 0;
+
 	//UDPTest();
 	//return 0;
 
