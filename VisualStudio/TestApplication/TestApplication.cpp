@@ -177,7 +177,7 @@ static void ConsoleTest() {
 
 void PopulateBytePipeTest(anvil::BytePipe::Parser& writer) {
 	writer.OnPipeOpen();
-		writer.OnObjectBegin(3);
+		writer.OnObjectBegin(4);
 
 		writer.OnComponentID("array_test");
 		writer.OnArrayBegin(20);
@@ -207,6 +207,20 @@ void PopulateBytePipeTest(anvil::BytePipe::Parser& writer) {
 			writer.OnComponentID("fourth");
 			writer.OnPrimitiveC8('D');
 		writer.OnObjectEnd();
+
+		writer.OnComponentID("Image");
+			{
+				cv::Mat tmp;
+				tmp.create(cv::Size(256, 256), CV_8UC4);
+				for (uint32_t y = 0u; y < tmp.rows; ++y) for (uint32_t x = 0u; x < tmp.cols; ++x) {
+					uint8_t* dst = static_cast<uint8_t*>(tmp.data) + (y * tmp.cols + x) * 4;
+					dst[0] = rand();
+					dst[1] = rand();
+					dst[2] = rand();
+					dst[3] = 255;
+				}
+				writer.OnImage(tmp);
+			}
 
 	writer.OnObjectEnd();
 	writer.OnPipeClose();

@@ -19,7 +19,7 @@ namespace anvil { namespace BytePipe {
 	static char ToHex(uint32_t nybble) {
 		return nybble <= 9 ?
 			'0' + nybble :
-			'A' + (nybble - 9);
+			'A' + (nybble - 10);
 	}
 
 	static inline void ToHex(uint32_t byte, char* out) {
@@ -112,6 +112,7 @@ namespace anvil { namespace BytePipe {
 
 		// Store the binary data as hexidecimal
 		char buffer[3u] = "??";
+		value.reserve(value.size() + bytes * 2u);
 		for (uint32_t i = 0u; i < bytes; ++i) {
 			ToHex(reinterpret_cast<const uint8_t*>(data)[i], buffer);
 			value += buffer;
@@ -201,7 +202,7 @@ namespace anvil { namespace BytePipe {
 			*bin = static_cast<uint32_t>(HexNybbleToBin(hex[0u]) | (HexNybbleToBin(hex[1u]) << 4u));
 
 			hex += 2u;
-			--bin;
+			++bin;
 		}
 	}
 
@@ -223,7 +224,7 @@ namespace anvil { namespace BytePipe {
 			uint32_t bytes = tmp.size() / 2;
 			uint8_t* buffer = static_cast<uint8_t*>(_alloca(bytes));
 
-			ConvertHexToBin(tmp.c_str(), tmp.size(), buffer);
+			ConvertHexToBin(tmp.c_str(), bytes, buffer);
 
 			parser.OnUserPOD(
 				node["anvil_pod_type"],

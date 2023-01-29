@@ -105,6 +105,9 @@
       <AdditionalDependencies>Anvil Core.lib;Anvil Utils.lib;Anvil Compute.lib;Anvil Byte Pipe.lib;Anvil Console.lib;opencv_world410d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\C++\OpenCV_410\$(PlatformShortName)\vc15\lib;$(ProjectDir)\..\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>COPY /y "C:\C++\OpenCV_410\$(PlatformShortName)\vc15\bin\*.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -125,6 +128,9 @@
       <AdditionalDependencies>Anvil Core.lib;Anvil Utils.lib;Anvil Compute.lib;Anvil Byte Pipe.lib;Anvil Console.lib;opencv_world410d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\C++\OpenCV_410\$(PlatformShortName)\vc15\lib;$(ProjectDir)\..\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>COPY /y "C:\C++\OpenCV_410\$(PlatformShortName)\vc15\bin\*.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -149,6 +155,9 @@
       <AdditionalDependencies>Anvil Core.lib;Anvil Utils.lib;Anvil Compute.lib;Anvil Byte Pipe.lib;Anvil Console.lib;opencv_world410.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\C++\OpenCV_410\$(PlatformShortName)\vc15\lib;$(ProjectDir)\..\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>COPY /y "C:\C++\OpenCV_410\$(PlatformShortName)\vc15\bin\*.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -173,6 +182,9 @@
       <AdditionalDependencies>Anvil Core.lib;Anvil Utils.lib;Anvil Compute.lib;Anvil Byte Pipe.lib;Anvil Console.lib;opencv_world410.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\C++\OpenCV_410\$(PlatformShortName)\vc15\lib;$(ProjectDir)\..\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>COPY /y "C:\C++\OpenCV_410\$(PlatformShortName)\vc15\bin\*.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="TestApplication.cpp" />

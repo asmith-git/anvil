@@ -19,7 +19,7 @@ namespace anvil { namespace BytePipe {
 	static char ToHex(uint32_t nybble) {
 		return nybble <= 9 ?
 			'0' + nybble :
-			'A' + (nybble - 9);
+			'A' + (nybble - 10);
 	}
 
 	static inline void ToHex(uint32_t byte, char* out) {
@@ -123,6 +123,7 @@ namespace anvil { namespace BytePipe {
 	void XMLWriter::OnUserPOD(const PodType type, const uint32_t bytes, const void* data) {
 		// Store the binary data as hexidecimal
 		std::string value;
+		value.reserve(bytes * 2u);
 		char buffer[3u] = "??";
 		for (uint32_t i = 0u; i < bytes; ++i) {
 			ToHex(reinterpret_cast<const uint8_t*>(data)[i], buffer);
@@ -259,7 +260,7 @@ namespace anvil { namespace BytePipe {
 			*bin = static_cast<uint32_t>(HexNybbleToBin(hex[0u]) | (HexNybbleToBin(hex[1u]) << 4u));
 
 			hex += 2u;
-			--bin;
+			++bin;
 		}
 	}
 
