@@ -234,16 +234,8 @@ namespace anvil { namespace BytePipe {
 		} else if (node.is_array()) {
 			// Interpret as array
 			parser.OnArrayBegin(static_cast<uint32_t>(CountChildNodes(node)));
-			std::vector<nlohmann::json::const_iterator> children;
-			for (nlohmann::json::const_iterator i = node.begin(); i != node.end(); ++i) {
-				children.push_back(i);
-			}
-
-			std::sort(children.begin(), children.end(), [](nlohmann::json::const_iterator lhs, nlohmann::json::const_iterator rhs)->bool {
-				return lhs.key() < rhs.key();
-			});
 			
-			for (nlohmann::json::const_iterator i : children) {
+			for (nlohmann::json::const_iterator i = node.begin(); i != node.end(); ++i) {
 				ReadJSON(i.value(), parser);
 			}
 			parser.OnArrayEnd();

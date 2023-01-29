@@ -175,53 +175,57 @@ static void ConsoleTest() {
 	system("pause");
 }
 
+void PopulateBytePipeTest(anvil::BytePipe::Parser& writer) {
+	writer.OnPipeOpen();
+		writer.OnObjectBegin(3);
+
+		writer.OnComponentID("array_test");
+		writer.OnArrayBegin(20);
+			for (int i = 0; i < 20; ++i) writer.OnPrimitiveS32(i);
+		writer.OnArrayEnd();
+
+		writer.OnComponentID("old_object_test");
+		writer.OnObjectBegin(4);
+			writer.OnComponentID((anvil::BytePipe::ComponentID)0);
+			writer.OnPrimitiveC8('A');
+			writer.OnComponentID(1);
+			writer.OnPrimitiveC8('B');
+			writer.OnComponentID(2);
+			writer.OnPrimitiveC8('C');
+			writer.OnComponentID(3);
+			writer.OnPrimitiveC8('D');
+		writer.OnObjectEnd();
+
+		writer.OnComponentID("new_object_test");
+		writer.OnObjectBegin(4);
+			writer.OnComponentID("first");
+			writer.OnPrimitiveC8('A');
+			writer.OnComponentID("second");
+			writer.OnPrimitiveC8('B');
+			writer.OnComponentID("third");
+			writer.OnPrimitiveC8('C');
+			writer.OnComponentID("fourth");
+			writer.OnPrimitiveC8('D');
+		writer.OnObjectEnd();
+
+	writer.OnObjectEnd();
+	writer.OnPipeClose();
+}
 
 void JSONTest() {
 	using namespace anvil::BytePipe;
 
 	JsonWriter writer;
 
-	{
-		writer.OnObjectBegin(3);
-
-		static_cast<Parser&>(writer).OnComponentID("array_test");
-		writer.OnArrayBegin(20);
-		for (int i = 0; i < 20; ++i) writer.OnPrimitiveS32(i);
-		writer.OnArrayEnd();
-
-		static_cast<Parser&>(writer).OnComponentID("old_object_test");
-		writer.OnObjectBegin(4);
-		writer.OnComponentID(0);
-		writer.OnPrimitiveC8('A');
-		writer.OnComponentID(1);
-		writer.OnPrimitiveC8('B');
-		writer.OnComponentID(2);
-		writer.OnPrimitiveC8('C');
-		writer.OnComponentID(3);
-		writer.OnPrimitiveC8('D');
-		writer.OnObjectEnd();
-
-		static_cast<Parser&>(writer).OnComponentID("new_object_test");
-		writer.OnObjectBegin(4);
-		static_cast<Parser&>(writer).OnComponentID("first");
-		writer.OnPrimitiveC8('A');
-		static_cast<Parser&>(writer).OnComponentID("second");
-		writer.OnPrimitiveC8('B');
-		static_cast<Parser&>(writer).OnComponentID("third");
-		writer.OnPrimitiveC8('C');
-		static_cast<Parser&>(writer).OnComponentID("fourth");
-		writer.OnPrimitiveC8('D');
-		writer.OnObjectEnd();
-
-		writer.OnObjectEnd();
-	}
+	PopulateBytePipeTest(writer);
 
 	{
 		std::ofstream file("D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest.json");
 		file << writer.GetJSONString();
 	}
 
-	system("notepad D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest.json");
+	std::thread display([]()->void { system("notepad D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest.json"); });
+	display.detach();
 
 	{
 		std::string xml_src;
@@ -244,7 +248,9 @@ void JSONTest() {
 		file << writer.GetJSONString();
 	}
 
-	system("notepad D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest2.json");
+	std::thread display2([]()->void { system("notepad D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest2.json"); });
+	display2.detach();
+	std::this_thread::sleep_for(std::chrono::milliseconds(500));
 }
 
 
@@ -252,48 +258,15 @@ void XMLTest() {
 	using namespace anvil::BytePipe;
 
 	XMLWriter writer;
-
-	{
-		writer.OnObjectBegin(3);
-
-			static_cast<Parser&>(writer).OnComponentID("array_test");
-			writer.OnArrayBegin(20);
-			for (int i = 0; i < 20; ++i) writer.OnPrimitiveS32(i);
-			writer.OnArrayEnd();
-
-			static_cast<Parser&>(writer).OnComponentID("old_object_test");
-			writer.OnObjectBegin(4);
-				writer.OnComponentID(0);
-				writer.OnPrimitiveC8('A');
-				writer.OnComponentID(1);
-				writer.OnPrimitiveC8('B');
-				writer.OnComponentID(2);
-				writer.OnPrimitiveC8('C');
-				writer.OnComponentID(3);
-				writer.OnPrimitiveC8('D');
-			writer.OnObjectEnd();
-
-			static_cast<Parser&>(writer).OnComponentID("new_object_test");
-			writer.OnObjectBegin(4);
-				static_cast<Parser&>(writer).OnComponentID("first");
-				writer.OnPrimitiveC8('A');
-				static_cast<Parser&>(writer).OnComponentID("second");
-				writer.OnPrimitiveC8('B');
-				static_cast<Parser&>(writer).OnComponentID("third");
-				writer.OnPrimitiveC8('C');
-				static_cast<Parser&>(writer).OnComponentID("fourth");
-				writer.OnPrimitiveC8('D');
-			writer.OnObjectEnd();
-
-		writer.OnObjectEnd();
-	}
+	PopulateBytePipeTest(writer);
 
 	{
 		std::ofstream file("D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest.xml");
 		file << writer.GetXMLString();
 	}
 
-	system("notepad D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest.xml");
+	std::thread display([]()->void { system("notepad D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest.xml"); });
+	display.detach();
 
 	{
 		std::string xml_src;
@@ -317,14 +290,14 @@ void XMLTest() {
 		file << writer.GetXMLString();
 	}
 
-	system("notepad D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest2.xml");
+	std::thread display2([]()->void { system("notepad D:\\Adam\\Documents\\GitHub\\anvil\\AnvilTest2.xml");});
+	display2.detach();
+	std::this_thread::sleep_for(std::chrono::milliseconds(500));
 }
 
 int main()
 {
 	JSONTest();
-	return 0;
-
 	XMLTest();
 	return 0;
 
