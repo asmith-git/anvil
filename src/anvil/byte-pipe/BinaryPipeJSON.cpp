@@ -105,7 +105,7 @@ namespace anvil { namespace BytePipe {
 		return _out;
 	}
 
-	void JsonWriter::OnUserPOD(const uint32_t type, const uint32_t bytes, const void* data) {
+	void JsonWriter::OnUserPOD(const PodType type, const uint32_t bytes, const void* data) {
 		// Format the POD as an object, a POD is identified by containg the member __ANVIL_POD with the value 123456789
 
 		std::string value = "{\"anvil_pod_type\":" + std::to_string(type) + ",\"data\":\"";

@@ -694,7 +694,7 @@ namespace anvil { namespace BytePipe {
 		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnUserPOD(const uint32_t type, const uint32_t bytes, const void* data) {
+	void Writer::OnUserPOD(const PodType type, const uint32_t bytes, const void* data) {
 		ANVIL_CONTRACT(type <= 1048575u, "Type must be <= 1048575u");
 		ValueHeader header;
 		header.primary_id = PID_USER_POD;
@@ -868,7 +868,7 @@ OLD_COMPONENT_ID:
 					//! \bug Doesn't know how to swap the byte order of a POD
 
 					// Output the POD
-					_parser.OnUserPOD(id, header.user_pod.bytes, mem);
+					_parser.OnUserPOD(static_cast<PodType>(id), header.user_pod.bytes, mem);
 				}
 				break;
 			default:
@@ -1039,7 +1039,7 @@ OLD_COMPONENT_ID:
 		_component_id_str = std::string(str, str + size);
 	}
 
-	void ValueParser::OnUserPOD(const uint32_t type, const uint32_t bytes, const void* data) {
+	void ValueParser::OnUserPOD(const PodType type, const uint32_t bytes, const void* data) {
 		throw std::runtime_error("ValueParser::OnUserPOD : Pods not supported");
 	}
 
@@ -1281,6 +1281,56 @@ OLD_COMPONENT_ID:
 	}
 
 	// Parser
+	
+	Parser::Parser() {
+
+	}
+
+	Parser::~Parser() {
+
+	}
+
+#if ANVIL_OPENCV_SUPPORT
+
+	struct OpenCVHeader {
+		uint32_t width;
+		uint32_t height;
+		uint16_t type;
+		uint16_t unused;
+	};
+
+	static_assert(sizeof(OpenCVHeader) == 12, "anvil/BytePipeParser.cpp : Expected OpenCVHeader to be 12 bytes");
+
+	cv::Mat Parser::CreateOpenCVMatFromPOD(const void* data, const uint32_t bytes) {
+		const OpenCVHeader* header = static_cast<const OpenCVHeader*>(data);
+
+		return cv::Mat(
+			cv::Size(header->width, header->height),
+			static_cast<int>(header->type),
+			const_cast<uint8_t*>(static_cast<const uint8_t*>(data) + sizeof(OpenCVHeader))
+		).clone();
+	}
+
+	void Parser::OnImage(const cv::Mat& value) {
+		uint32_t bytes = static_cast<uint32_t>(value.elemSize());
+
+		bytes *= static_cast<uint32_t>(value.rows * value.cols);
+		bytes += sizeof(OpenCVHeader);
+		void* data = operator new(bytes);
+
+		OpenCVHeader* header = static_cast<OpenCVHeader*>(data);
+		header->width = static_cast<uint32_t>(value.cols);
+		header->height = static_cast<uint32_t>(value.rows);
+		header->type = static_cast<uint16_t>(value.type());
+		header->unused = 0u;
+
+		memcpy(static_cast<uint8_t*>(data) + sizeof(OpenCVHeader), value.data, bytes - sizeof(OpenCVHeader));
+
+		OnUserPOD(POD_OPENCV_IMAGE, bytes, data);
+
+		operator delete(data);
+	}
+#endif
 
 	void Parser::OnValue(const Value& value) {
 		switch (value.GetType()) {

@@ -119,7 +119,7 @@ namespace anvil { namespace BytePipe {
 		void OnPrimitiveArrayF16(const half* src, const uint32_t size) final;
 		void OnPrimitiveArrayBool(const bool* src, const uint32_t size) final;
 
-		void OnUserPOD(const uint32_t type, const uint32_t bytes, const void* data) final;
+		void OnUserPOD(const PodType type, const uint32_t bytes, const void* data) final;
 	};
 
 }}

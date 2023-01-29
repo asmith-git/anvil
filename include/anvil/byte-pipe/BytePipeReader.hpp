@@ -20,6 +20,10 @@
 #include <deque>
 #include <list>
 #include <map>
+#include "anvil/core/LibDetect.hpp"
+#if ANVIL_OPENCV_SUPPORT
+#include <opencv2/opencv.hpp>
+#endif
 #include "anvil/byte-pipe/BytePipeCore.hpp"
 #include "anvil/byte-pipe/BytePipeEndian.hpp"
 #include "anvil/byte-pipe/BytePipeObjects.hpp"
@@ -39,6 +43,9 @@ namespace anvil { namespace BytePipe {
 		virtual void ReadBytesFast(void* dst, const uint32_t bytes) { ReadBytes(dst, bytes); }
 	};
 
+	enum PodType : uint32_t {
+		POD_OPENCV_IMAGE = 1u
+	};
 
 	/*!
 		\author Adam Smtih
@@ -47,13 +54,12 @@ namespace anvil { namespace BytePipe {
 	*/
 	class Parser {
 	public:
-		Parser() {
+#if ANVIL_OPENCV_SUPPORT
+		static cv::Mat CreateOpenCVMatFromPOD(const void* data, const uint32_t bytes);
+#endif
 
-		}
-
-		virtual ~Parser() {
-
-		}
+		Parser();
+		virtual ~Parser();
 
 		// Basic functionality
 
@@ -125,7 +131,7 @@ namespace anvil { namespace BytePipe {
 			\param bytes The size of the structure in bytes.
 			\param data A pointer to the structure.
 		*/
-		virtual void OnUserPOD(const uint32_t type, const uint32_t bytes, const void* data) = 0;
+		virtual void OnUserPOD(const PodType type, const uint32_t bytes, const void* data) = 0;
 
 		/*!
 			\brief Handle a null value
@@ -235,6 +241,10 @@ namespace anvil { namespace BytePipe {
 		virtual void OnPrimitiveF16(const half value) { 
 			OnPrimitiveF32(static_cast<float>(value));  //! \bug half to float conversion not implemented
 		}
+
+#if ANVIL_OPENCV_SUPPORT
+		virtual void OnImage(const cv::Mat& value);
+#endif
 
 		// Object Support
 
@@ -708,7 +718,6 @@ namespace anvil { namespace BytePipe {
 
 			OnArrayEnd();
 		}
-
 	};
 
 	/*!
@@ -761,7 +770,7 @@ namespace anvil { namespace BytePipe {
 		void OnObjectEnd() final;
 		void OnComponentID(const ComponentID id)  final;
 		void OnComponentID(const char* str, const uint32_t size)  final;
-		void OnUserPOD(const uint32_t type, const uint32_t bytes, const void* data) final;
+		void OnUserPOD(const PodType type, const uint32_t bytes, const void* data) final;
 		void OnNull() final;
 		void OnPrimitiveF64(const double value) final; 
 		void OnPrimitiveString(const char* value, const uint32_t length) final;

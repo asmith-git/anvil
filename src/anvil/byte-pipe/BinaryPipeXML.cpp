@@ -120,7 +120,7 @@ namespace anvil { namespace BytePipe {
 		return _str;
 	}
 
-	void XMLWriter::OnUserPOD(const uint32_t type, const uint32_t bytes, const void* data) {
+	void XMLWriter::OnUserPOD(const PodType type, const uint32_t bytes, const void* data) {
 		// Store the binary data as hexidecimal
 		std::string value;
 		char buffer[3u] = "??";
@@ -281,7 +281,7 @@ namespace anvil { namespace BytePipe {
 				ConvertHexToBin(node.value(), bytes, buffer);
 
 				parser.OnUserPOD(
-					std::stoi(FindAttribute(node, "pod_type")->value()),
+					static_cast<PodType>(std::stoi(FindAttribute(node, "pod_type")->value())),
 					bytes,
 					buffer
 				);

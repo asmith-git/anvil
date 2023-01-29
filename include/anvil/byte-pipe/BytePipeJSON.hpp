@@ -59,7 +59,7 @@ namespace anvil { namespace BytePipe {
 		void OnObjectEnd() final;
 		void OnComponentID(const ComponentID id)  final;
 		void OnComponentID(const char* str, const uint32_t size)  final;
-		void OnUserPOD(const uint32_t type, const uint32_t bytes, const void* data) final;
+		void OnUserPOD(const PodType type, const uint32_t bytes, const void* data) final;
 		void OnNull() final;
 		void OnPrimitiveF64(const double value) final;
 		void OnPrimitiveString(const char* value, const uint32_t length) final;
