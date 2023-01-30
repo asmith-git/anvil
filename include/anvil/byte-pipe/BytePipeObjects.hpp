@@ -23,6 +23,10 @@
 #include <deque>
 #include <memory>
 #include "anvil/byte-pipe/BytePipeCore.hpp"
+#include "anvil/core/LibDetect.hpp"
+#if ANVIL_OPENCV_SUPPORT
+#include <opencv2/opencv.hpp>
+#endif
 
 namespace anvil { namespace BytePipe {
 
@@ -280,6 +284,12 @@ namespace anvil { namespace BytePipe {
 		struct Pod{
 			std::vector<uint8_t> data;
 			PodType type;
+
+
+#if ANVIL_OPENCV_SUPPORT
+			static cv::Mat CreateOpenCVMatFromPOD(const void* data, const size_t bytes);
+			static Pod CreatePODFromCVMat(const cv::Mat& img);
+#endif
 		};
 	private:
 		typedef std::vector<Value> Array;
@@ -391,6 +401,12 @@ namespace anvil { namespace BytePipe {
 		{
 			SetPod() = value;
 		}
+
+#if ANVIL_OPENCV_SUPPORT
+		explicit Value(const cv::Mat& img) :
+			Value(Pod::CreatePODFromCVMat(img))
+		{}
+#endif
 
 		~Value() {
 			SetNull();
@@ -561,6 +577,13 @@ namespace anvil { namespace BytePipe {
 		*/
 		Pod& SetPod();
 
+#if ANVIL_OPENCV_SUPPORT
+		ANVIL_STRONG_INLINE Pod& SetImage() {
+			Pod pod = SetPod();
+			pod.type = POD_OPENCV_IMAGE;
+		}
+#endif
+
 		/*!
 			\brief Set the value to be an array.
 			\details Previous value will be lost.
@@ -674,8 +697,17 @@ namespace anvil { namespace BytePipe {
 		}
 
 		const char* GetString();
+
 		Pod& GetPod();
-		const Pod& GetPod() const;
+		const Pod& GetPod() const; 
+
+#if ANVIL_OPENCV_SUPPORT
+		ANVIL_STRONG_INLINE cv::Mat GetImage() const {
+			const Pod& pod = GetPod();
+			if (pod.type != POD_OPENCV_IMAGE) throw std::runtime_error("Value::GetImage : Value is not an image");
+			return Pod::CreateOpenCVMatFromPOD(pod.data.data(), pod.data.size());
+		}
+#endif
 
 		/*!
 			\brief Get a child value of an array or object.
@@ -802,6 +834,12 @@ namespace anvil { namespace BytePipe {
 		explicit ANVIL_STRONG_INLINE operator const Pod&() const {
 			return GetPod();
 		}
+
+#if ANVIL_OPENCV_SUPPORT
+		explicit ANVIL_STRONG_INLINE operator cv::Mat() const {
+			return GetImage();
+		}
+#endif
 
 		explicit Value(const std::string& value) :
 			Value()

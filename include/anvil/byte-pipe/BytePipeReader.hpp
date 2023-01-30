@@ -20,10 +20,6 @@
 #include <deque>
 #include <list>
 #include <map>
-#include "anvil/core/LibDetect.hpp"
-#if ANVIL_OPENCV_SUPPORT
-#include <opencv2/opencv.hpp>
-#endif
 #include "anvil/byte-pipe/BytePipeCore.hpp"
 #include "anvil/byte-pipe/BytePipeEndian.hpp"
 #include "anvil/byte-pipe/BytePipeObjects.hpp"
@@ -50,10 +46,6 @@ namespace anvil { namespace BytePipe {
 	*/
 	class Parser {
 	public:
-#if ANVIL_OPENCV_SUPPORT
-		static cv::Mat CreateOpenCVMatFromPOD(const void* data, const size_t bytes);
-#endif
-
 		Parser();
 		virtual ~Parser();
 

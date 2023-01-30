@@ -1303,7 +1303,7 @@ OLD_COMPONENT_ID:
 
 	static_assert(sizeof(OpenCVHeader) == 12, "anvil/BytePipeParser.cpp : Expected OpenCVHeader to be 12 bytes");
 
-	cv::Mat Parser::CreateOpenCVMatFromPOD(const void* data, const size_t bytes) {
+	cv::Mat Value::Pod::CreateOpenCVMatFromPOD(const void* data, const size_t bytes) {
 		const OpenCVHeader* header = static_cast<const OpenCVHeader*>(data);
 
 		return cv::Mat(
@@ -1313,12 +1313,15 @@ OLD_COMPONENT_ID:
 		).clone();
 	}
 
-	void Parser::OnImage(const cv::Mat& value) {
+	Value::Pod Value::Pod::CreatePODFromCVMat(const cv::Mat& value) {
 		uint32_t bytes = static_cast<uint32_t>(value.elemSize());
 
 		bytes *= static_cast<uint32_t>(value.rows * value.cols);
 		bytes += sizeof(OpenCVHeader);
-		void* data = operator new(bytes);
+		Pod pod;
+		pod.type = POD_OPENCV_IMAGE;
+		pod.data.resize(bytes);
+		void* data = pod.data.data();
 
 		OpenCVHeader* header = static_cast<OpenCVHeader*>(data);
 		header->width = static_cast<uint32_t>(value.cols);
@@ -1328,9 +1331,12 @@ OLD_COMPONENT_ID:
 
 		memcpy(static_cast<uint8_t*>(data) + sizeof(OpenCVHeader), value.data, bytes - sizeof(OpenCVHeader));
 
-		OnUserPOD(POD_OPENCV_IMAGE, bytes, data);
-
-		operator delete(data);
+		return pod;
+	}
+	
+	void Parser::OnImage(const cv::Mat& value) {
+		Value::Pod tmp = Value::Pod::CreatePODFromCVMat(value);
+		OnUserPOD(tmp.type, tmp.data.size(), tmp.data.data());
 	}
 #endif
 
