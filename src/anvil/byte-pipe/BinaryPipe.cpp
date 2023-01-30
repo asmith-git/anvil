@@ -1040,7 +1040,9 @@ OLD_COMPONENT_ID:
 	}
 
 	void ValueParser::OnUserPOD(const PodType type, const size_t bytes, const void* data) {
-		throw std::runtime_error("ValueParser::OnUserPOD : Pods not supported");
+		Value::Pod& pod = NextValue().SetPod();
+		pod.type = type;
+		pod.data = std::move(std::vector<uint8_t>(static_cast<const uint8_t*>(data), static_cast<const uint8_t*>(data) + bytes));
 	}
 
 	void ValueParser::OnNull() {

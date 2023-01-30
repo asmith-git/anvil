@@ -43,10 +43,6 @@ namespace anvil { namespace BytePipe {
 		virtual void ReadBytesFast(void* dst, const size_t bytes) { ReadBytes(dst, bytes); }
 	};
 
-	enum PodType : uint32_t {
-		POD_OPENCV_IMAGE = 1u
-	};
-
 	/*!
 		\author Adam Smtih
 		\date September 2019
@@ -491,7 +487,6 @@ namespace anvil { namespace BytePipe {
 		inline void OnPrimitiveArray<bool>(const bool* values, const size_t size) {
 			OnPrimitiveArrayBool(values, size);
 		}
-
 
 		template<>
 		inline void OnPrimitive<char>(const char value) {

@@ -15,7 +15,6 @@
 #ifndef ANVIL_BYTEPIPE_OBJECTS_HPP
 #define ANVIL_BYTEPIPE_OBJECTS_HPP
 
-#include "anvil/byte-pipe/BytePipeCore.hpp"
 #include <vector>
 #include <array>
 #include <map>
@@ -23,8 +22,13 @@
 #include <sstream>
 #include <deque>
 #include <memory>
+#include "anvil/byte-pipe/BytePipeCore.hpp"
 
 namespace anvil { namespace BytePipe {
+
+	enum PodType : uint32_t {
+		POD_OPENCV_IMAGE = 1u
+	};
 
 	enum Type : uint8_t {
 		TYPE_NULL,
@@ -43,7 +47,8 @@ namespace anvil { namespace BytePipe {
 		TYPE_STRING,
 		TYPE_ARRAY,
 		TYPE_OBJECT,
-		TYPE_BOOL
+		TYPE_BOOL,
+		TYPE_POD
 	};
 
 	static ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN bool IsUnsigned(const Type t) { return t >= TYPE_U8 && t <= TYPE_U64; }
@@ -58,7 +63,7 @@ namespace anvil { namespace BytePipe {
 	enum half : uint16_t {};
 
 	static size_t GetSizeOfPrimitiveType(const Type t) {
-		static const uint8_t g_sizes[TYPE_BOOL + 1] = {
+		static const uint8_t g_sizes[TYPE_POD + 1] = {
 			0u,					//TYPE_NULL
 			sizeof(char),		//TYPE_C8
 			sizeof(uint8_t),	//TYPE_U8
@@ -75,7 +80,8 @@ namespace anvil { namespace BytePipe {
 			0u,					//TYPE_STRING
 			0u,					//TYPE_ARRAY
 			0u,					//TYPE_OBJECT
-			sizeof(bool)		//TYPE_BOOL
+			sizeof(bool),		//TYPE_BOOL
+			0u					//TYPE_POD
 		};
 
 		return g_sizes[t];
@@ -104,7 +110,7 @@ namespace anvil { namespace BytePipe {
 
 	namespace details {
 		template<class T>
-		static inline uint64_t PrimitiveValueGetRaw(const T value) {
+		static ANVIL_STRONG_INLINE uint64_t PrimitiveValueGetRaw(const T value) {
 			union {
 				uint64_t raw;
 				T val;
@@ -203,12 +209,12 @@ namespace anvil { namespace BytePipe {
 			PrimitiveValue(TYPE_F64, details::PrimitiveValueGetRaw<double>(value))
 		{}
 
-		inline bool IsUnsigned() const { return BytePipe::IsUnsigned(type); }
-		inline bool IsSigned() const { return BytePipe::IsSigned(type); }
-		inline bool IsIntegral() const { return BytePipe::IsIntegral(type); }
-		inline bool IsFloatingPoint() const { return BytePipe::IsFloatingPoint(type); }
-		inline bool IsNumeric() const { return BytePipe::IsNumeric(type); }
-		inline bool IsPrimitive() const { return BytePipe::IsPrimitive(type); }
+		ANVIL_STRONG_INLINE bool IsUnsigned() const { return BytePipe::IsUnsigned(type); }
+		ANVIL_STRONG_INLINE bool IsSigned() const { return BytePipe::IsSigned(type); }
+		ANVIL_STRONG_INLINE bool IsIntegral() const { return BytePipe::IsIntegral(type); }
+		ANVIL_STRONG_INLINE bool IsFloatingPoint() const { return BytePipe::IsFloatingPoint(type); }
+		ANVIL_STRONG_INLINE bool IsNumeric() const { return BytePipe::IsNumeric(type); }
+		ANVIL_STRONG_INLINE bool IsPrimitive() const { return BytePipe::IsPrimitive(type); }
 
 		operator char() const;
 		operator uint64_t() const;
@@ -216,50 +222,50 @@ namespace anvil { namespace BytePipe {
 		operator half() const;
 		operator double() const;
 
-		inline operator bool() const {
+		ANVIL_STRONG_INLINE operator bool() const {
 			return type == TYPE_BOOL ? b : (operator uintptr_t() > 0u);
 		}
 
-		inline operator uint32_t() const {
+		ANVIL_STRONG_INLINE operator uint32_t() const {
 			uint64_t tmp = type == TYPE_U32 ? u32 : operator uint64_t();
 			if (tmp > UINT32_MAX) tmp = UINT32_MAX;
 			return static_cast<uint32_t>(tmp);
 		}
 
-		inline operator int32_t() const {
+		ANVIL_STRONG_INLINE operator int32_t() const {
 			int64_t tmp = type == TYPE_S32 ? s16 : operator int64_t();
 			if (tmp > INT32_MAX) tmp = INT32_MAX;
 			else if (tmp < INT32_MIN) tmp = INT32_MIN;
 			return static_cast<int32_t>(tmp);
 		}
 
-		inline operator uint8_t() const {
+		ANVIL_STRONG_INLINE operator uint8_t() const {
 			uintptr_t tmp = type == TYPE_U8 ? u8 : operator uintptr_t();
 			if (tmp > UINT8_MAX) tmp = UINT8_MAX;
 			return static_cast<uint8_t>(tmp);
 		}
 
-		inline operator uint16_t() const {
+		ANVIL_STRONG_INLINE operator uint16_t() const {
 			uintptr_t tmp = type == TYPE_U16 ? u16 : operator uintptr_t();
 			if (tmp > UINT16_MAX) tmp = UINT16_MAX;
 			return static_cast<uint16_t>(tmp);
 		}
 
-		inline operator int8_t() const {
+		ANVIL_STRONG_INLINE operator int8_t() const {
 			intptr_t tmp = type == TYPE_S8 ? s8 : operator intptr_t();
 			if (tmp > INT8_MAX) tmp = INT8_MAX;
 			else if (tmp < INT8_MIN) tmp = INT8_MIN;
 			return static_cast<int8_t>(tmp);
 		}
 
-		inline operator int16_t() const {
+		ANVIL_STRONG_INLINE operator int16_t() const {
 			intptr_t tmp = type == TYPE_S16 ? s16 : operator intptr_t();
 			if (tmp > INT16_MAX) tmp = INT16_MAX;
 			else if (tmp < INT16_MIN) tmp = INT16_MIN;
 			return static_cast<int16_t>(tmp);
 		}
 
-		inline operator float() const {
+		ANVIL_STRONG_INLINE operator float() const {
 			return type == TYPE_F32 ? f32 : static_cast<float>(operator double());
 		}
 
@@ -270,6 +276,11 @@ namespace anvil { namespace BytePipe {
 	};
 
 	class Value {
+	public:
+		struct Pod{
+			std::vector<uint8_t> data;
+			PodType type;
+		};
 	private:
 		typedef std::vector<Value> Array;
 		typedef std::vector<uint8_t> PrimitiveArray;
@@ -369,11 +380,19 @@ namespace anvil { namespace BytePipe {
 			_primitive_array_type(TYPE_NULL)
 		{}
 
+		explicit Value(const Pod& value) :
+			_primitive(),
+			_primitive_array_type(TYPE_POD)
+		{
+			SetPod();
+			GetPod() = value;
+		}
+
 		~Value() {
 			SetNull();
 		}
 
-		inline Value& operator=(Value&& other) {
+		ANVIL_STRONG_INLINE Value& operator=(Value&& other) {
 			Swap(other);
 			return *this;
 		}
@@ -385,7 +404,7 @@ namespace anvil { namespace BytePipe {
 		void Resize(const size_t size);
 		void Reserve(const size_t size);
 
-		inline Type GetType() const {
+		ANVIL_STRONG_INLINE Type GetType() const {
 			return _primitive.type;
 		}
 
@@ -400,7 +419,7 @@ namespace anvil { namespace BytePipe {
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		inline void SetBool(const bool value = false) {
+		ANVIL_STRONG_INLINE void SetBool(const bool value = false) {
 			SetNull();
 			_primitive = value;
 		}
@@ -410,7 +429,7 @@ namespace anvil { namespace BytePipe {
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		inline void SetC8(const char value = ' ') {
+		ANVIL_STRONG_INLINE void SetC8(const char value = ' ') {
 			SetNull();
 			_primitive = value;
 		}
@@ -420,7 +439,7 @@ namespace anvil { namespace BytePipe {
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		inline void SetU8(const uint8_t value = 0u) {
+		ANVIL_STRONG_INLINE void SetU8(const uint8_t value = 0u) {
 			SetNull();
 			_primitive = value;
 		}
@@ -430,7 +449,7 @@ namespace anvil { namespace BytePipe {
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		inline void SetU16(const uint16_t value = 0u) {
+		ANVIL_STRONG_INLINE void SetU16(const uint16_t value = 0u) {
 			SetNull();
 			_primitive = value;
 		}
@@ -440,7 +459,7 @@ namespace anvil { namespace BytePipe {
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		inline void SetU32(const uint32_t value = 0u) {
+		ANVIL_STRONG_INLINE void SetU32(const uint32_t value = 0u) {
 			SetNull();
 			_primitive = value;
 		}
@@ -450,7 +469,7 @@ namespace anvil { namespace BytePipe {
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		inline void SetU64(const uint64_t value = 0u) {
+		ANVIL_STRONG_INLINE void SetU64(const uint64_t value = 0u) {
 			SetNull();
 			_primitive = value;
 		}
@@ -460,7 +479,7 @@ namespace anvil { namespace BytePipe {
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		inline void SetS8(const int8_t value = 0) {
+		ANVIL_STRONG_INLINE void SetS8(const int8_t value = 0) {
 			SetNull();
 			_primitive = value;
 		}
@@ -470,7 +489,7 @@ namespace anvil { namespace BytePipe {
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		inline void SetS16(const int16_t value = 0) {
+		ANVIL_STRONG_INLINE void SetS16(const int16_t value = 0) {
 			SetNull();
 			_primitive = value;
 		}
@@ -480,7 +499,7 @@ namespace anvil { namespace BytePipe {
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		inline void SetS32(const int32_t value = 0) {
+		ANVIL_STRONG_INLINE void SetS32(const int32_t value = 0) {
 			SetNull();
 			_primitive = value;
 		}
@@ -490,7 +509,7 @@ namespace anvil { namespace BytePipe {
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		inline void SetS64(const int64_t value = 0) {
+		ANVIL_STRONG_INLINE void SetS64(const int64_t value = 0) {
 			SetNull();
 			_primitive = value;
 		}
@@ -500,7 +519,7 @@ namespace anvil { namespace BytePipe {
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		inline void SetF16(const half value = static_cast<half>(0)) {
+		ANVIL_STRONG_INLINE void SetF16(const half value = static_cast<half>(0)) {
 			SetNull();
 			_primitive = value;
 		}
@@ -510,7 +529,7 @@ namespace anvil { namespace BytePipe {
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		inline void SetF32(const float value = 0.f) {
+		ANVIL_STRONG_INLINE void SetF32(const float value = 0.f) {
 			SetNull();
 			_primitive = value;
 		}
@@ -520,7 +539,7 @@ namespace anvil { namespace BytePipe {
 			\details Previous value will be lost.
 			\param value The value to copy.
 		*/
-		inline void SetF64(const double value = 0.0) {
+		ANVIL_STRONG_INLINE void SetF64(const double value = 0.0) {
 			SetNull();
 			_primitive = value;
 		}
@@ -531,6 +550,12 @@ namespace anvil { namespace BytePipe {
 			\param value The value to copy, nullptr results in an empty string.
 		*/
 		void SetString(const char* value = nullptr);
+
+		/*!
+			\brief Set the value to be a POD.
+			\details Previous value will be lost.
+		*/
+		Pod& SetPod();
 
 		/*!
 			\brief Set the value to be an array.
@@ -569,82 +594,84 @@ namespace anvil { namespace BytePipe {
 			\param id The component ID of the value.
 			\param value The value to add.
 		*/
-		inline void AddValue(const ComponentID id, Value&& value) {
+		ANVIL_STRONG_INLINE void AddValue(const ComponentID id, Value&& value) {
 			if (_primitive.type != TYPE_OBJECT) throw std::runtime_error("Value::AddValue : Value is not an object");
 			static_cast<Object*>(_primitive.ptr)->emplace(std::to_string(id), std::move(value));
 		}
 
-		inline void AddValue(const std::string& id, Value&& value) {
+		ANVIL_STRONG_INLINE void AddValue(const std::string& id, Value&& value) {
 			if (_primitive.type != TYPE_OBJECT) throw std::runtime_error("Value::AddValue : Value is not an object");
 			static_cast<Object*>(_primitive.ptr)->emplace(id, std::move(value));
 		}
 
-		inline bool GetBool() const {
+		ANVIL_STRONG_INLINE bool GetBool() const {
 			if (IsPrimitive()) return _primitive;
 			throw std::runtime_error("Value::GetBool : Value cannot be converted to boolean");
 		}
 
-		inline char GetC8() const {
+		ANVIL_STRONG_INLINE char GetC8() const {
 			if (IsPrimitive()) return _primitive;
 			throw std::runtime_error("Value::GetC8 : Value cannot be converted to character");
 		}
 
-		inline uint8_t GetU8() const {
+		ANVIL_STRONG_INLINE uint8_t GetU8() const {
 			if (IsPrimitive()) return _primitive;
 			throw std::runtime_error("Value::GetU8 : Value cannot be converted to 8-bit unsigned integer");
 		}
 
-		inline uint16_t GetU16() const {
+		ANVIL_STRONG_INLINE uint16_t GetU16() const {
 			if (IsPrimitive()) return _primitive;
 			throw std::runtime_error("Value::GetU16 : Value cannot be converted to 16-bit unsigned integer");
 		}
 
-		inline uint32_t GetU32() const {
+		ANVIL_STRONG_INLINE uint32_t GetU32() const {
 			if (IsPrimitive()) return _primitive;
 			throw std::runtime_error("Value::GetU32 : Value cannot be converted to 32-bit unsigned integer");
 		}
 
-		inline uint64_t GetU64() const {
+		ANVIL_STRONG_INLINE uint64_t GetU64() const {
 			if (IsPrimitive()) return _primitive;
 			throw std::runtime_error("Value::GetU64 : Value cannot be converted to 64-bit unsigned integer");
 		}
 
-		inline int8_t GetS8() const {
+		ANVIL_STRONG_INLINE int8_t GetS8() const {
 			if (IsPrimitive()) return _primitive;
 			throw std::runtime_error("Value::GetS8 : Value cannot be converted to 8-bit signed integer");
 		}
 
-		inline int16_t GetS16() const {
+		ANVIL_STRONG_INLINE int16_t GetS16() const {
 			if (IsPrimitive()) return _primitive;
 			throw std::runtime_error("Value::GetS16 : Value cannot be converted to 16-bit signed integer");
 		}
 
-		inline int32_t GetS32() const {
+		ANVIL_STRONG_INLINE int32_t GetS32() const {
 			if (IsPrimitive()) return _primitive;
 			throw std::runtime_error("Value::GetS32 : Value cannot be converted to 32-bit signed integer");
 		}
 
-		inline int64_t GetS64() const {
+		ANVIL_STRONG_INLINE int64_t GetS64() const {
 			if (IsPrimitive()) return _primitive;
 			throw std::runtime_error("Value::GetS64 : Value cannot be converted to 64-bit signed integer");
 		}
 
-		inline half GetF16() const {
+		ANVIL_STRONG_INLINE half GetF16() const {
 			if (IsPrimitive()) return _primitive;
 			throw std::runtime_error("Value::GetF16 : Value cannot be converted to 16-bit floating point");
 		}
 
-		inline float GetF32() const {
+		ANVIL_STRONG_INLINE float GetF32() const {
 			if (IsPrimitive()) return _primitive;
 			throw std::runtime_error("Value::GetF32 : Value cannot be converted to 32-bit floating point");
 		}
 
-		inline double GetF64() const {
+		ANVIL_STRONG_INLINE double GetF64() const {
 			if (IsPrimitive()) return _primitive;
 			throw std::runtime_error("Value::GetF64 : Value cannot be converted to 64-bit floating point");
 		}
 
 		const char* GetString();
+		Pod& GetPod();
+		const Pod& GetPod() const;
 
 		/*!
 			\brief Get a child value of an array or object.
@@ -689,83 +716,87 @@ namespace anvil { namespace BytePipe {
 
 		// Helpers
 
-		inline bool IsUnsigned() const { return _primitive.IsUnsigned(); }
-		inline bool IsSigned() const { return _primitive.IsSigned(); }
-		inline bool IsIntegral() const { return _primitive.IsIntegral(); }
-		inline bool IsFloatingPoint() const { return _primitive.IsFloatingPoint(); }
-		inline bool IsNumeric() const { return _primitive.IsNumeric(); }
-		inline bool IsPrimitive() const { return _primitive.IsPrimitive(); }
+		ANVIL_STRONG_INLINE bool IsUnsigned() const { return _primitive.IsUnsigned(); }
+		ANVIL_STRONG_INLINE bool IsSigned() const { return _primitive.IsSigned(); }
+		ANVIL_STRONG_INLINE bool IsIntegral() const { return _primitive.IsIntegral(); }
+		ANVIL_STRONG_INLINE bool IsFloatingPoint() const { return _primitive.IsFloatingPoint(); }
+		ANVIL_STRONG_INLINE bool IsNumeric() const { return _primitive.IsNumeric(); }
+		ANVIL_STRONG_INLINE bool IsPrimitive() const { return _primitive.IsPrimitive(); }
 
-		inline bool IsPrimitiveArray() const {
+		ANVIL_STRONG_INLINE bool IsPrimitiveArray() const {
 			return _primitive_array_type != TYPE_BOOL && GetType() == TYPE_ARRAY;
 		}
 
-		inline Type GetPrimitiveArrayType() const {
+		ANVIL_STRONG_INLINE Type GetPrimitiveArrayType() const {
 			return _primitive_array_type;
 		}
 
-		inline Value& operator[] (const size_t i) {
+		ANVIL_STRONG_INLINE Value& operator[] (const size_t i) {
 			return GetValue(i);
 		}
 
-		inline const Value& operator[] (const size_t i) const{
+		ANVIL_STRONG_INLINE const Value& operator[] (const size_t i) const{
 			return const_cast<Value*>(this)->GetValue(i);
 		}
 
-		explicit inline operator bool() const {
+		explicit ANVIL_STRONG_INLINE operator bool() const {
 			return GetBool();
 		}
 
-		explicit inline operator char() const {
+		explicit ANVIL_STRONG_INLINE operator char() const {
 			return GetC8();
 		}
 
-		explicit inline operator uint8_t() const {
+		explicit ANVIL_STRONG_INLINE operator uint8_t() const {
 			return GetU8();
 		}
 
-		explicit inline operator uint16_t() const {
+		explicit ANVIL_STRONG_INLINE operator uint16_t() const {
 			return GetU16();
 		}
 
-		explicit inline operator uint32_t() const {
+		explicit ANVIL_STRONG_INLINE operator uint32_t() const {
 			return GetU32();
 		}
 
-		explicit inline operator uint64_t() const {
+		explicit ANVIL_STRONG_INLINE operator uint64_t() const {
 			return GetU64();
 		}
 
-		explicit inline operator int8_t() const {
+		explicit ANVIL_STRONG_INLINE operator int8_t() const {
 			return GetS8();
 		}
 
-		explicit inline operator int16_t() const {
+		explicit ANVIL_STRONG_INLINE operator int16_t() const {
 			return GetS16();
 		}
 
-		explicit inline operator int32_t() const {
+		explicit ANVIL_STRONG_INLINE operator int32_t() const {
 			return GetS32();
 		}
 
-		explicit inline operator int64_t() const {
+		explicit ANVIL_STRONG_INLINE operator int64_t() const {
 			return GetS64();
 		}
 
-		explicit inline operator half() const {
+		explicit ANVIL_STRONG_INLINE operator half() const {
 			return GetF16();
 		}
 
-		explicit inline operator float() const {
+		explicit ANVIL_STRONG_INLINE operator float() const {
 			return GetF32();
 		}
 
-		explicit inline operator double() const {
+		explicit ANVIL_STRONG_INLINE operator double() const {
 			return GetF64();
 		}
 
-		explicit inline operator std::string() const {
+		explicit ANVIL_STRONG_INLINE operator std::string() const {
 			return const_cast<Value*>(this)->GetString();
+		}
+
+		explicit ANVIL_STRONG_INLINE operator const Pod&() const {
+			return GetPod();
 		}
 
 		explicit Value(const std::string& value) :
@@ -775,7 +806,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<class T>
-		explicit inline operator std::vector<T>() const {
+		explicit ANVIL_STRONG_INLINE operator std::vector<T>() const {
 			const size_t s = GetSize();
 			std::vector<T> tmp(s);
 			if (IsPrimitiveArray() && GetPrimitiveArrayType() == BytePipe::GetTypeID<T>()) {
@@ -803,7 +834,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<class T>
-		explicit inline operator std::list<T>() const {
+		explicit ANVIL_STRONG_INLINE operator std::list<T>() const {
 			const size_t s = GetSize();
 			std::list<T> tmp;
 			for (size_t i = 0u; i < s; ++i) tmp.push_back(static_cast<T>(operator[](i)));
@@ -823,7 +854,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<class T>
-		explicit inline operator std::deque<T>() const {
+		explicit ANVIL_STRONG_INLINE operator std::deque<T>() const {
 			const size_t s = GetSize();
 			std::deque<T> tmp(s);
 			for (size_t i = 0u; i < s; ++i) tmp[i] = static_cast<T>(operator[](i));
@@ -843,7 +874,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<class T, size_t S>
-		explicit inline operator std::array<T, S>() const {
+		explicit ANVIL_STRONG_INLINE operator std::array<T, S>() const {
 			std::array<T,S> tmp;			
 			
 			if (IsPrimitiveArray() && GetPrimitiveArrayType() == BytePipe::GetTypeID<T>()) {
@@ -871,7 +902,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<class K, class V>
-		explicit inline operator std::map<K, V>() const {
+		explicit ANVIL_STRONG_INLINE operator std::map<K, V>() const {
 			const Value& keys = operator[](0);
 			const Value& values = operator[](1);
 

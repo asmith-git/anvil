@@ -295,6 +295,9 @@ FLOATING_POINT:
 		case TYPE_OBJECT:
 			delete static_cast<Object*>(_primitive.ptr);
 			break;
+		case TYPE_POD:
+			delete static_cast<Pod*>(_primitive.ptr);
+			break;
 		}
 		_primitive.u64 = 0u;
 		_primitive.type = TYPE_NULL;
@@ -316,6 +319,18 @@ FLOATING_POINT:
 			}
 			_primitive.type = TYPE_STRING;
 		}
+	}
+
+	Value::Pod& Value::SetPod() {
+		if (_primitive.type == TYPE_POD) {
+			static_cast<Pod*>(_primitive.ptr)->data.clear();
+		} else {
+			SetNull();
+			_primitive.ptr = new Pod();
+			_primitive.type = TYPE_POD;
+		}
+
+		return *static_cast<Pod*>(_primitive.ptr);
 	}
 
 	void Value::SetArray() {
@@ -508,6 +523,16 @@ FLOATING_POINT:
 			SetString(buffer);
 		}
 		return static_cast<std::string*>(_primitive.ptr)->c_str();
+	}
+
+	const Value::Pod& Value::GetPod() const {
+		if (_primitive.type != TYPE_POD) throw std::runtime_error("Value::GetPod : Value is not a POD");
+		return *static_cast<const Pod*>(_primitive.ptr);
+	}
+
+	Value::Pod& Value::GetPod() {
+		if (_primitive.type != TYPE_POD) throw std::runtime_error("Value::GetPod : Value is not a POD");
+		return *static_cast<Pod*>(_primitive.ptr);
 	}
 
 	Value& Value::GetValue(const size_t index) {
