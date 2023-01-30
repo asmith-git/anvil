@@ -231,7 +231,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 #if ANVIL_OPENCV_SUPPORT
-		void OnImage(const cv::Mat& value);
+		void OnImage(const cv::Mat& value, ImageFormat compression_format = IMAGE_BIN, float quality = 100.f);
 #endif
 
 		// Object Support

@@ -34,6 +34,20 @@ namespace anvil { namespace BytePipe {
 		POD_OPENCV_IMAGE = 1u
 	};
 
+#if ANVIL_OPENCV_SUPPORT
+	enum ImageFormat {
+		IMAGE_BIN,
+		IMAGE_JPEG,
+		IMAGE_JPEG2000,
+		IMAGE_BMP,
+		IMAGE_PNG,
+		IMAGE_TIFF,
+		IMAGE_WEBP,
+		IMAGE_EXR,
+		IMAGE_HDR
+	};
+#endif
+
 	enum Type : uint8_t {
 		TYPE_NULL,
 		TYPE_C8,
@@ -288,7 +302,7 @@ namespace anvil { namespace BytePipe {
 
 #if ANVIL_OPENCV_SUPPORT
 			static cv::Mat CreateOpenCVMatFromPOD(const void* data, const size_t bytes);
-			static Pod CreatePODFromCVMat(const cv::Mat& img);
+			static Pod CreatePODFromCVMat(const cv::Mat& img, ImageFormat compression_format = IMAGE_BIN, float compression_quality = 100.f);
 #endif
 		};
 	private:

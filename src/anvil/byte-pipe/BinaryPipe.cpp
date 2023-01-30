@@ -1298,7 +1298,7 @@ OLD_COMPONENT_ID:
 		uint32_t width;
 		uint32_t height;
 		uint16_t type;
-		uint16_t unused;
+		uint16_t compression_format;
 	};
 
 	static_assert(sizeof(OpenCVHeader) == 12, "anvil/BytePipeParser.cpp : Expected OpenCVHeader to be 12 bytes");
@@ -1306,36 +1306,82 @@ OLD_COMPONENT_ID:
 	cv::Mat Value::Pod::CreateOpenCVMatFromPOD(const void* data, const size_t bytes) {
 		const OpenCVHeader* header = static_cast<const OpenCVHeader*>(data);
 
-		return cv::Mat(
-			cv::Size(header->width, header->height),
-			static_cast<int>(header->type),
-			const_cast<uint8_t*>(static_cast<const uint8_t*>(data) + sizeof(OpenCVHeader))
-		).clone();
+		if (header->compression_format == IMAGE_BIN) {
+			return cv::Mat(
+				cv::Size(header->width, header->height),
+				static_cast<int>(header->type),
+				const_cast<uint8_t*>(static_cast<const uint8_t*>(data) + sizeof(OpenCVHeader))
+			);
+		} else {
+			const uint8_t* img_data = static_cast<const uint8_t*>(data) + sizeof(OpenCVHeader);
+			std::vector<uint8_t> tmp(img_data, img_data + (bytes - sizeof(OpenCVHeader)));
+			return cv::imdecode(tmp, 0);
+		}
 	}
 
-	Value::Pod Value::Pod::CreatePODFromCVMat(const cv::Mat& value) {
-		uint32_t bytes = static_cast<uint32_t>(value.elemSize());
+	Value::Pod Value::Pod::CreatePODFromCVMat(const cv::Mat& value, ImageFormat compression_format, float quality) {
 
-		bytes *= static_cast<uint32_t>(value.rows * value.cols);
-		bytes += sizeof(OpenCVHeader);
 		Pod pod;
 		pod.type = POD_OPENCV_IMAGE;
-		pod.data.resize(bytes);
-		void* data = pod.data.data();
 
-		OpenCVHeader* header = static_cast<OpenCVHeader*>(data);
-		header->width = static_cast<uint32_t>(value.cols);
-		header->height = static_cast<uint32_t>(value.rows);
-		header->type = static_cast<uint16_t>(value.type());
-		header->unused = 0u;
+		OpenCVHeader header;
+		header.width = static_cast<uint32_t>(value.cols);
+		header.height = static_cast<uint32_t>(value.rows);
+		header.type = static_cast<uint16_t>(value.type());
+		header.compression_format = compression_format;
 
-		memcpy(static_cast<uint8_t*>(data) + sizeof(OpenCVHeader), value.data, bytes - sizeof(OpenCVHeader));
+		if (compression_format == IMAGE_BIN) {
+			uint32_t bytes = static_cast<uint32_t>(value.elemSize());
+			bytes *= static_cast<uint32_t>(value.rows * value.cols);
+			bytes += sizeof(OpenCVHeader);
+
+			pod.data.resize(bytes);
+			void* data = pod.data.data();
+			memcpy(data, &header, sizeof(OpenCVHeader));
+			memcpy(static_cast<uint8_t*>(data) + sizeof(OpenCVHeader), value.data, bytes - sizeof(OpenCVHeader));
+		} else {
+			std::vector<uint8_t> tmp;
+
+			switch (compression_format) {
+			case IMAGE_JPEG:
+				cv::imencode(".jpg", value, tmp, { cv::IMWRITE_JPEG_QUALITY , static_cast<int>(std::round(quality))});
+				break;
+			case IMAGE_JPEG2000:
+				cv::imencode(".jp2", value, tmp, { cv::IMWRITE_JPEG2000_COMPRESSION_X1000, static_cast<int>(std::round(quality * 10.f)) });
+				break;
+			case IMAGE_BMP:
+				cv::imencode(".bmp", value, tmp);
+				break;
+			case IMAGE_PNG:
+				cv::imencode(".jpg", value, tmp, { cv::IMWRITE_PNG_COMPRESSION , static_cast<int>(std::round(quality / 100.f) * 9.f) });
+				break;
+			case IMAGE_TIFF:
+				cv::imencode(".tiff", value, tmp);
+				break;
+			case IMAGE_WEBP:
+				cv::imencode(".webp", value, tmp);
+				break;
+			case IMAGE_EXR:
+				cv::imencode(".exr", value, tmp);
+				break;
+			case IMAGE_HDR:
+				cv::imencode(".hdr", value, tmp);
+				break;
+			}
+
+			uint32_t bytes = sizeof(OpenCVHeader) + tmp.size();
+		
+			pod.data.resize(bytes);
+			void* data = pod.data.data();
+			memcpy(data, &header, sizeof(OpenCVHeader));
+			memcpy(static_cast<uint8_t*>(data) + sizeof(OpenCVHeader), tmp.data(), bytes - sizeof(OpenCVHeader));
+		}
 
 		return pod;
 	}
 	
-	void Parser::OnImage(const cv::Mat& value) {
-		Value::Pod tmp = Value::Pod::CreatePODFromCVMat(value);
+	void Parser::OnImage(const cv::Mat& value, ImageFormat compression_format, float quality) {
+		Value::Pod tmp = Value::Pod::CreatePODFromCVMat(value, compression_format, quality);
 		OnUserPOD(tmp.type, tmp.data.size(), tmp.data.data());
 	}
 #endif
