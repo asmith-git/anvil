@@ -43,11 +43,13 @@ namespace anvil { namespace BytePipe {
 		std::vector<std::string> _node_names;
 		std::string _str;
 		std::string _next_id_str;
-		void AddNode(const std::string& name, const std::string& value, std::vector<std::pair<std::string,std::string>> attribute);
+		bool _indent;
 
+		void AddNode(const std::string& name, const std::string& value, std::vector<std::pair<std::string,std::string>> attribute);
 		std::string GetNextNodeName(const char* default_name);
 	public:
 		XMLWriter();
+		XMLWriter(bool indent);
 		virtual ~XMLWriter();
 
 		const std::string& GetXMLString() const;

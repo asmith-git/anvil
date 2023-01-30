@@ -27,9 +27,14 @@ namespace anvil { namespace BytePipe {
 		out[1u] = ToHex(byte >> 4u);
 	}
 
-	JsonWriter::JsonWriter() {
-		_depth = 0u;
-	}
+	JsonWriter::JsonWriter() :
+		JsonWriter(true)
+	{}
+
+	JsonWriter::JsonWriter(bool indent) :
+		_depth(0u),
+		_indent(indent)
+	{}
 
 	JsonWriter::~JsonWriter() {
 
@@ -54,10 +59,14 @@ namespace anvil { namespace BytePipe {
 	}
 
 	void JsonWriter::OnArrayEnd() {
-		if (_out.size() > 2 && _out.substr(_out.size() - 2u, 2u) == ",\n") {
-			_out.pop_back();
-			_out.pop_back();
-			_out += '\n';
+		if (_indent) {
+			if (_out.size() > 2 && _out.substr(_out.size() - 2u, 2u) == ",\n") {
+				_out.pop_back();
+				_out.pop_back();
+				_out += '\n';
+			}
+		} else {
+			if (_out.back() == ',') _out.pop_back();
 		}
 		--_depth;
 		AddValue("]");
@@ -69,10 +78,14 @@ namespace anvil { namespace BytePipe {
 	}
 
 	void JsonWriter::OnObjectEnd() {
-		if (_out.size() > 2 && _out.substr(_out.size() - 2u, 2u) == ",\n") {
-			_out.pop_back();
-			_out.pop_back();
-			_out += '\n';
+		if (_indent) {
+			if (_out.size() > 2 && _out.substr(_out.size() - 2u, 2u) == ",\n") {
+				_out.pop_back();
+				_out.pop_back();
+				_out += '\n';
+			}
+		} else {
+			if (_out.back() == ',') _out.pop_back();
 		}
 		--_depth;
 		AddValue("}");
@@ -87,20 +100,26 @@ namespace anvil { namespace BytePipe {
 	}
 
 	void JsonWriter::AddValue(const std::string& val) {
-		for (uint32_t i = 0u; i < _depth; ++i) _out += '\t';
+		if(_indent) for (uint32_t i = 0u; i < _depth; ++i) _out += '\t';
 		if (!_next_id.empty()) {
-			_out += '"' + _next_id + "\" : ";
+			_out += '"' + _next_id;
+			_out += _indent ? "\" : " : "\":";
 			_next_id.clear();
 		}
 		_out += val;
 		if(val != "{" && val != "[") _out += ',';
-		_out += '\n';
+		if (_indent) _out += '\n';
 	}
 
 	const std::string& JsonWriter::GetJSONString() const {
-		if(_out.size() > 2 && _out.substr(_out.size() - 2u, 2u) == ",\n") {
-			_out.pop_back();
-			_out.pop_back();
+		if (_indent) {
+			if (_out.size() > 2 && _out.substr(_out.size() - 2u, 2u) == ",\n") {
+				_out.pop_back();
+				_out.pop_back();
+				_out += '\n';
+			}
+		} else {
+			if (_out.back() == ',') _out.pop_back();
 		}
 		return _out;
 	}

@@ -27,9 +27,13 @@ namespace anvil { namespace BytePipe {
 		out[1u] = ToHex(byte >> 4u);
 	}
 
-	XMLWriter::XMLWriter() {
+	XMLWriter::XMLWriter() :
+		XMLWriter(true)
+	{}
 
-	}
+	XMLWriter::XMLWriter(bool indent) :
+		_indent(indent)
+	{}
 
 	XMLWriter::~XMLWriter() {
 
@@ -58,28 +62,32 @@ namespace anvil { namespace BytePipe {
 	}
 
 	void XMLWriter::OnArrayBegin(const uint32_t size) {
-		for (size_t i = 0; i < _node_names.size(); ++i) _str += '\t';
+		if(_indent) for (size_t i = 0; i < _node_names.size(); ++i) _str += '\t';
 		std::string name = GetNextNodeName("array");
 		_node_names.push_back(name);
-		_str += '<' + name + " anvil_type='array'>\n";
+		_str += '<' + name + " anvil_type='array'>";
+		if (_indent) _str += '\n';
 	}
 
 	void XMLWriter::OnArrayEnd() {
-		for (size_t i = 0; i < _node_names.size() - 1u; ++i) _str += '\t';
-		_str += "</" + _node_names.back() + ">\n";
+		if (_indent) for (size_t i = 0; i < _node_names.size() - 1u; ++i) _str += '\t';
+		_str += "</" + _node_names.back() + ">";
+		if (_indent) _str += '\n';
 		_node_names.pop_back();
 	}
 
 	void XMLWriter::OnObjectBegin(const uint32_t component_count) {
-		for (size_t i = 0; i < _node_names.size(); ++i) _str += '\t';
+		if (_indent) for (size_t i = 0; i < _node_names.size(); ++i) _str += '\t';
 		std::string name = GetNextNodeName("object");
 		_node_names.push_back(name);
-		_str += '<' + name + " anvil_type='object'>\n";
+		_str += '<' + name + " anvil_type='object'>";
+		if (_indent) _str += '\n';
 	}
 
 	void XMLWriter::OnObjectEnd() {
-		for (size_t i = 0; i < _node_names.size() - 1u; ++i) _str += '\t';
-		_str += "</" + _node_names.back() + ">\n";
+		if (_indent) for (size_t i = 0; i < _node_names.size() - 1u; ++i) _str += '\t';
+		_str += "</" + _node_names.back() + ">";
+		if (_indent) _str += '\n';
 		_node_names.pop_back();
 	}
 
@@ -93,7 +101,7 @@ namespace anvil { namespace BytePipe {
 
 
 	void XMLWriter::AddNode(const std::string& name, const std::string& value, std::vector<std::pair<std::string, std::string>> attributes) {
-		for (size_t i = 0; i < _node_names.size(); ++i) _str += '\t';
+		if (_indent) for (size_t i = 0; i < _node_names.size(); ++i) _str += '\t';
 
 		_str += '<';
 		_str += name;
@@ -113,7 +121,7 @@ namespace anvil { namespace BytePipe {
 		_str += name;
 		_str += '>';
 
-		_str += '\n';
+		if(_indent) _str += '\n';
 	}
 
 	const std::string& XMLWriter::GetXMLString() const {

@@ -41,10 +41,12 @@ namespace anvil { namespace BytePipe {
 		mutable std::string _out;
 		std::string _next_id;
 		uint32_t _depth;
+		bool _indent;
 
 		void AddValue(const std::string& val);
 	public:
 		JsonWriter();
+		JsonWriter(bool indent);
 		virtual ~JsonWriter();
 
 		const std::string& GetJSONString() const;
