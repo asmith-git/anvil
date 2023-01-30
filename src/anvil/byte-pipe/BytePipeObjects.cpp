@@ -265,7 +265,12 @@ FLOATING_POINT:
 				const Object& otherObject = *static_cast<Object*>(other._primitive.ptr);
 				myObject = otherObject;
 			}
-		break;
+			break;
+		case TYPE_POD:
+			{
+				SetPod() = other.GetPod();
+			}
+			break;
 		default:
 			SetNull();
 			_primitive = other._primitive;

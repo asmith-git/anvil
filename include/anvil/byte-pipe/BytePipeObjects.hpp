@@ -758,6 +758,16 @@ namespace anvil { namespace BytePipe {
 		ANVIL_STRONG_INLINE bool IsFloatingPoint() const { return _primitive.IsFloatingPoint(); }
 		ANVIL_STRONG_INLINE bool IsNumeric() const { return _primitive.IsNumeric(); }
 		ANVIL_STRONG_INLINE bool IsPrimitive() const { return _primitive.IsPrimitive(); }
+		
+		ANVIL_STRONG_INLINE bool IsPod() const {
+			return GetType() == TYPE_POD;
+		}
+
+#if ANVIL_OPENCV_SUPPORT
+		ANVIL_STRONG_INLINE bool IsImage() const {
+			return IsPod() && GetPod().type == POD_OPENCV_IMAGE;
+		}
+#endif
 
 		ANVIL_STRONG_INLINE bool IsPrimitiveArray() const {
 			return _primitive_array_type != TYPE_BOOL && GetType() == TYPE_ARRAY;
