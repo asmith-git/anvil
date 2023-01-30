@@ -29,8 +29,8 @@ namespace anvil { namespace BytePipe {
 	public:
 		UDPInputPipe(UDPPort listen_port);
 		virtual ~UDPInputPipe();
-		uint32_t ReadBytes(void* dst, const uint32_t bytes) final;
-		void ReadBytesFast(void* dst, const uint32_t bytes) final;
+		size_t ReadBytes(void* dst, const size_t bytes) final;
+		void ReadBytesFast(void* dst, const size_t bytes) final;
 	};
 
 	class UDPOutputPipe final : public OutputPipe {
@@ -42,8 +42,8 @@ namespace anvil { namespace BytePipe {
 	public:
 		UDPOutputPipe(IPAddress server_ip, UDPPort server_port);
 		virtual ~UDPOutputPipe();
-		uint32_t WriteBytes(const void* src, const uint32_t bytes) final;
-		void WriteBytesFast(const void* src, const uint32_t bytes) final;
+		size_t WriteBytes(const void* src, const size_t bytes) final;
+		void WriteBytesFast(const void* src, const size_t bytes) final;
 		void Flush() final;
 	};
 

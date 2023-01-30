@@ -24,7 +24,8 @@ namespace anvil { namespace BytePipe {
 		_buffered_bits(0u)
 	{}
 
-	void BitOutputStream::WriteBits(uint32_t bits, uint32_t bit_count) {
+	void BitOutputStream::WriteBits(uint32_t bits, size_t bit_count2) {
+		uint32_t bit_count = static_cast<uint32_t>(bit_count2);
 		while(bit_count > 0u) {
 			if (_buffered_bits == 0u) {
 				// Write directly to the output
@@ -74,7 +75,8 @@ namespace anvil { namespace BytePipe {
 		_buffered_bits = 8u;
 	}
 
-	uint32_t BitInputStream::_ReadBits(uint32_t bit_count) {
+	uint32_t BitInputStream::_ReadBits(size_t bit_count2) {
+		uint32_t bit_count = static_cast<uint32_t>(bit_count2);
 		uint32_t bits;
 
 		if (_buffered_bits <= bit_count) {
@@ -89,7 +91,7 @@ namespace anvil { namespace BytePipe {
 
 				// Read more bits
 				const uint32_t bits_remaining = bit_count - count;
-				uint32_t next_bits = _ReadBits(bits_remaining);
+				uint32_t next_bits = static_cast<uint32_t>(_ReadBits(bits_remaining));
 				bits <<= bits_remaining;
 				bits |= next_bits;
 			}
@@ -110,7 +112,7 @@ namespace anvil { namespace BytePipe {
 		_buffered_bits(0u)
 	{}
 
-	uint32_t BitInputStream::ReadBits(uint32_t bit_count) {
+	uint32_t BitInputStream::ReadBits(size_t bit_count) {
 		if (_buffered_bits == 0u) NextByte();
 		return _ReadBits(bit_count);
 	}

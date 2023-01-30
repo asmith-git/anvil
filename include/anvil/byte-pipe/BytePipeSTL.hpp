@@ -27,8 +27,8 @@ namespace anvil { namespace BytePipe {
 	public:
 		IStreamPipe(std::istream& stream);
 		virtual ~IStreamPipe();
-		uint32_t ReadBytes(void* dst, const uint32_t bytes) final;
-		void ReadBytesFast(void* dst, const uint32_t bytes) final;
+		size_t ReadBytes(void* dst, const size_t bytes) final;
+		void ReadBytesFast(void* dst, const size_t bytes) final;
 	};
 
 	class OStreamPipe final : public OutputPipe {
@@ -37,8 +37,8 @@ namespace anvil { namespace BytePipe {
 	public:
 		OStreamPipe(std::ostream& stream);
 		virtual ~OStreamPipe();
-		uint32_t WriteBytes(const void* src, const uint32_t bytes) final;
-		void WriteBytesFast(const void* src, const uint32_t bytes) final;
+		size_t WriteBytes(const void* src, const size_t bytes) final;
+		void WriteBytesFast(const void* src, const size_t bytes) final;
 		void Flush() final;
 	};
 

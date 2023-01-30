@@ -29,10 +29,10 @@ namespace anvil { namespace BytePipe {
 	class OutputPipe {
 	public:
 		virtual ~OutputPipe() {}
-		virtual uint32_t WriteBytes(const void* src, const uint32_t bytes) = 0;
+		virtual size_t WriteBytes(const void* src, const size_t bytes) = 0;
 		virtual void Flush() = 0;
 
-		virtual void WriteBytesFast(const void* src, const uint32_t bytes) { WriteBytes(src, bytes); }
+		virtual void WriteBytesFast(const void* src, const size_t bytes) { WriteBytes(src, bytes); }
 	};
 
 	/*!
@@ -65,10 +65,10 @@ namespace anvil { namespace BytePipe {
 		bool _swap_byte_order;
 
 		State GetCurrentState() const;
-		void Write(const void* src, const uint32_t bytes);
+		void Write(const void* src, const size_t bytes);
 		void _OnPrimitive32(uint32_t value, const uint8_t id);
 		void _OnPrimitive64(uint64_t value, const uint8_t id);
-		void _OnPrimitiveArray(const void* ptr, const uint32_t size, const uint8_t id);
+		void _OnPrimitiveArray(const void* ptr, const size_t size, const uint8_t id);
 
 		Writer(OutputPipe& pipe, Version version, bool swap_byte_order);
 	public:
@@ -83,15 +83,15 @@ namespace anvil { namespace BytePipe {
 
 		void OnPipeOpen() final;
 		void OnPipeClose() final;
-		void OnArrayBegin(const uint32_t size)  final;
+		void OnArrayBegin(const size_t size)  final;
 		void OnArrayEnd() final;
-		void OnObjectBegin(const uint32_t component_count) final;
+		void OnObjectBegin(const size_t component_count) final;
 		void OnObjectEnd() final;
 		void OnComponentID(const uint16_t id) final;
-		void OnComponentID(const char* str, const uint32_t size) final;
+		void OnComponentID(const char* str, const size_t size) final;
 		void OnNull() final;
 		void OnPrimitiveF64(const double value) final;
-		void OnPrimitiveString(const char* value, const uint32_t length) final;
+		void OnPrimitiveString(const char* value, const size_t length) final;
 		void OnPrimitiveU64(const uint64_t value) final;
 		void OnPrimitiveS64(const int64_t value) final;
 		void OnPrimitiveF32(const float value) final;
@@ -105,21 +105,21 @@ namespace anvil { namespace BytePipe {
 		void OnPrimitiveF16(const half value) final;
 		void OnPrimitiveBool(const bool value) final;
 
-		void OnPrimitiveArrayU8(const uint8_t* src, const uint32_t size) final;
-		void OnPrimitiveArrayU16(const uint16_t* src, const uint32_t size) final;
-		void OnPrimitiveArrayU32(const uint32_t* src, const uint32_t size) final;
-		void OnPrimitiveArrayU64(const uint64_t* src, const uint32_t size) final;
-		void OnPrimitiveArrayS8(const int8_t* src, const uint32_t size) final;
-		void OnPrimitiveArrayS16(const int16_t* src, const uint32_t size) final;
-		void OnPrimitiveArrayS32(const int32_t* src, const uint32_t size) final;
-		void OnPrimitiveArrayS64(const int64_t* src, const uint32_t size) final;
-		void OnPrimitiveArrayF32(const float* src, const uint32_t size) final;
-		void OnPrimitiveArrayF64(const double* src, const uint32_t size) final;
-		void OnPrimitiveArrayC8(const char* src, const uint32_t size) final;
-		void OnPrimitiveArrayF16(const half* src, const uint32_t size) final;
-		void OnPrimitiveArrayBool(const bool* src, const uint32_t size) final;
+		void OnPrimitiveArrayU8(const uint8_t* src, const size_t size) final;
+		void OnPrimitiveArrayU16(const uint16_t* src, const size_t size) final;
+		void OnPrimitiveArrayU32(const uint32_t* src, const size_t size) final;
+		void OnPrimitiveArrayU64(const uint64_t* src, const size_t size) final;
+		void OnPrimitiveArrayS8(const int8_t* src, const size_t size) final;
+		void OnPrimitiveArrayS16(const int16_t* src, const size_t size) final;
+		void OnPrimitiveArrayS32(const int32_t* src, const size_t size) final;
+		void OnPrimitiveArrayS64(const int64_t* src, const size_t size) final;
+		void OnPrimitiveArrayF32(const float* src, const size_t size) final;
+		void OnPrimitiveArrayF64(const double* src, const size_t size) final;
+		void OnPrimitiveArrayC8(const char* src, const size_t size) final;
+		void OnPrimitiveArrayF16(const half* src, const size_t size) final;
+		void OnPrimitiveArrayBool(const bool* src, const size_t size) final;
 
-		void OnUserPOD(const PodType type, const uint32_t bytes, const void* data) final;
+		void OnUserPOD(const PodType type, const size_t bytes, const void* data) final;
 	};
 
 }}

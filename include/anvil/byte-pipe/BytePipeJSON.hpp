@@ -55,16 +55,16 @@ namespace anvil { namespace BytePipe {
 
 		void OnPipeOpen() final;
 		void OnPipeClose() final;
-		void OnArrayBegin(const uint32_t size) final;
+		void OnArrayBegin(const size_t size) final;
 		void OnArrayEnd() final;
-		void OnObjectBegin(const uint32_t component_count) final;
+		void OnObjectBegin(const size_t component_count) final;
 		void OnObjectEnd() final;
 		void OnComponentID(const ComponentID id)  final;
-		void OnComponentID(const char* str, const uint32_t size)  final;
-		void OnUserPOD(const PodType type, const uint32_t bytes, const void* data) final;
+		void OnComponentID(const char* str, const size_t size)  final;
+		void OnUserPOD(const PodType type, const size_t bytes, const void* data) final;
 		void OnNull() final;
 		void OnPrimitiveF64(const double value) final;
-		void OnPrimitiveString(const char* value, const uint32_t length) final;
+		void OnPrimitiveString(const char* value, const size_t length) final;
 		void OnPrimitiveBool(const bool value) final;
 		void OnPrimitiveC8(const char value) final;
 		void OnPrimitiveU64(const uint64_t value) final;

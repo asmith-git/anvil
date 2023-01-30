@@ -26,7 +26,7 @@ namespace anvil { namespace BytePipe {
 		uint32_t _buffered_bits;	//!< How many bits were leftover from the last write
 	public:
 		BitOutputStream(uint8_t* o);
-		void WriteBits(uint32_t bits, uint32_t bit_count);
+		void WriteBits(uint32_t bits, size_t bit_count);
 	};
 
 	struct BitInputStream {
@@ -36,10 +36,10 @@ namespace anvil { namespace BytePipe {
 		uint32_t _buffered_bits;	//!< How many bits were leftover from the last read
 
 		void NextByte();
-		uint32_t _ReadBits(uint32_t bit_count);
+		uint32_t _ReadBits(size_t bit_count);
 	public:
 		BitInputStream(const uint8_t* i);
-		uint32_t ReadBits(uint32_t bit_count);
+		uint32_t ReadBits(size_t bit_count);
 	};
 
 

@@ -1,3 +1,4 @@
+
 //Copyright 2023 Adam G. Smith
 //
 //Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,7 +48,7 @@ namespace anvil { namespace BytePipe {
 		for (Parser* parser : _parsers) parser->OnPipeClose();
 	}
 
-	void Repeater::OnArrayBegin(const uint32_t size) {
+	void Repeater::OnArrayBegin(const size_t size) {
 		for (Parser* parser : _parsers) parser->OnArrayBegin(size);
 	}
 
@@ -55,7 +56,7 @@ namespace anvil { namespace BytePipe {
 		for (Parser* parser : _parsers) parser->OnArrayEnd();
 	}
 
-	void Repeater::OnObjectBegin(const uint32_t component_count) {
+	void Repeater::OnObjectBegin(const size_t component_count) {
 		for (Parser* parser : _parsers) parser->OnObjectBegin(component_count);
 	}
 
@@ -67,11 +68,11 @@ namespace anvil { namespace BytePipe {
 		for (Parser* parser : _parsers) parser->OnComponentID(id);
 	}
 
-	void Repeater::OnComponentID(const char* str, const uint32_t size) {
+	void Repeater::OnComponentID(const char* str, const size_t size) {
 		for (Parser* parser : _parsers) parser->OnComponentID(str, size);
 	}
 
-	void Repeater::OnUserPOD(const PodType type, const uint32_t bytes, const void* data) {
+	void Repeater::OnUserPOD(const PodType type, const size_t bytes, const void* data) {
 		for (Parser* parser : _parsers) parser->OnUserPOD(type, bytes, data);
 	}
 
@@ -83,7 +84,7 @@ namespace anvil { namespace BytePipe {
 		for (Parser* parser : _parsers) parser->OnPrimitiveF64(value);
 	}
 
-	void Repeater::OnPrimitiveString(const char* value, const uint32_t length) {
+	void Repeater::OnPrimitiveString(const char* value, const size_t length) {
 		for (Parser* parser : _parsers) parser->OnPrimitiveString(value, length);
 	}
 
@@ -135,55 +136,55 @@ namespace anvil { namespace BytePipe {
 		for (Parser* parser : _parsers) parser->OnPrimitiveF16(value);
 	}
 
-	void Repeater::OnPrimitiveArrayU8(const uint8_t* src, const uint32_t size) {
+	void Repeater::OnPrimitiveArrayU8(const uint8_t* src, const size_t size) {
 		for (Parser* parser : _parsers) parser->OnPrimitiveArrayU8(src, size);
 	}
 
-	void Repeater::OnPrimitiveArrayU16(const uint16_t* src, const uint32_t size) {
+	void Repeater::OnPrimitiveArrayU16(const uint16_t* src, const size_t size) {
 		for (Parser* parser : _parsers) parser->OnPrimitiveArrayU16(src, size);
 	}
 
-	void Repeater::OnPrimitiveArrayU32(const uint32_t* src, const uint32_t size) {
+	void Repeater::OnPrimitiveArrayU32(const uint32_t* src, const size_t size) {
 		for (Parser* parser : _parsers) parser->OnPrimitiveArrayU32(src, size);
 	}
 
-	void Repeater::OnPrimitiveArrayU64(const uint64_t* src, const uint32_t size) {
+	void Repeater::OnPrimitiveArrayU64(const uint64_t* src, const size_t size) {
 		for (Parser* parser : _parsers) parser->OnPrimitiveArrayU64(src, size);
 	}
 
-	void Repeater::OnPrimitiveArrayS8(const int8_t* src, const uint32_t size) {
+	void Repeater::OnPrimitiveArrayS8(const int8_t* src, const size_t size) {
 		for (Parser* parser : _parsers) parser->OnPrimitiveArrayS8(src, size);
 	}
 
-	void Repeater::OnPrimitiveArrayS16(const int16_t* src, const uint32_t size) {
+	void Repeater::OnPrimitiveArrayS16(const int16_t* src, const size_t size) {
 		for (Parser* parser : _parsers) parser->OnPrimitiveArrayS16(src, size);
 	}
 
-	void Repeater::OnPrimitiveArrayS32(const int32_t* src, const uint32_t size) {
+	void Repeater::OnPrimitiveArrayS32(const int32_t* src, const size_t size) {
 		for (Parser* parser : _parsers) parser->OnPrimitiveArrayS32(src, size);
 	}
 
-	void Repeater::OnPrimitiveArrayS64(const int64_t* src, const uint32_t size) {
+	void Repeater::OnPrimitiveArrayS64(const int64_t* src, const size_t size) {
 		for (Parser* parser : _parsers) parser->OnPrimitiveArrayS64(src, size);
 	}
 
-	void Repeater::OnPrimitiveArrayF32(const float* src, const uint32_t size) {
+	void Repeater::OnPrimitiveArrayF32(const float* src, const size_t size) {
 		for (Parser* parser : _parsers) parser->OnPrimitiveArrayF32(src, size);
 	}
 
-	void Repeater::OnPrimitiveArrayF64(const double* src, const uint32_t size) {
+	void Repeater::OnPrimitiveArrayF64(const double* src, const size_t size) {
 		for (Parser* parser : _parsers) parser->OnPrimitiveArrayF64(src, size);
 	}
 
-	void Repeater::OnPrimitiveArrayC8(const char* src, const uint32_t size) {
+	void Repeater::OnPrimitiveArrayC8(const char* src, const size_t size) {
 		for (Parser* parser : _parsers) parser->OnPrimitiveArrayC8(src, size);
 	}
 
-	void Repeater::OnPrimitiveArrayF16(const half* src, const uint32_t size) {
+	void Repeater::OnPrimitiveArrayF16(const half* src, const size_t size) {
 		for (Parser* parser : _parsers) parser->OnPrimitiveArrayF16(src, size);
 	}
 
-	void Repeater::OnPrimitiveArrayBool(const bool* src, const uint32_t size) {
+	void Repeater::OnPrimitiveArrayBool(const bool* src, const size_t size) {
 		for(Parser* parser : _parsers) parser->OnPrimitiveArrayBool(src, size);
 	}
 

@@ -42,8 +42,8 @@ namespace anvil { namespace BytePipe {
 	public:
 		TCPServerInputPipe(TCPPort listen_port);
 		virtual ~TCPServerInputPipe();
-		uint32_t ReadBytes(void* dst, const uint32_t bytes) final;
-		void ReadBytesFast(void* dst, const uint32_t bytes) final;
+		size_t ReadBytes(void* dst, const size_t bytes) final;
+		void ReadBytesFast(void* dst, const size_t bytes) final;
 	};
 
 	class TCPClientOutputPipe final : public OutputPipe {
@@ -54,8 +54,8 @@ namespace anvil { namespace BytePipe {
 	public:
 		TCPClientOutputPipe(IPAddress server_ip, TCPPort server_port);
 		virtual ~TCPClientOutputPipe();
-		uint32_t WriteBytes(const void* src, const uint32_t bytes) final;
-		void WriteBytesFast(const void* src, const uint32_t bytes) final;
+		size_t WriteBytes(const void* src, const size_t bytes) final;
+		void WriteBytesFast(const void* src, const size_t bytes) final;
 		void Flush() final;
 	};
 

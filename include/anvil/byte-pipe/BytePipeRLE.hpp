@@ -258,8 +258,8 @@ NEW_BLOCK:
 		}
 
 
-		uint32_t WriteBytes(const void* src, const uint32_t bytes) final {
-			uint32_t words = bytes / sizeof(DataWord);
+		size_t WriteBytes(const void* src, const size_t bytes) final {
+			size_t words = bytes / sizeof(DataWord);
 			if (words * sizeof(DataWord) != bytes) throw std::runtime_error("RLEEncoderPipe::WriteBytes : Byte count is not divisible by the word size");
 
 			const DataWord* wordPtr = static_cast<const DataWord*>(src);
@@ -282,7 +282,7 @@ NEW_BLOCK:
 				}
 			}
 
-			for (uint32_t i = 0; i < words; ++i) {
+			for (size_t i = 0; i < words; ++i) {
 				WriteWord(wordPtr[i]);
 			}
 
@@ -352,12 +352,12 @@ NEW_BLOCK:
 		}
 
 
-		uint32_t ReadBytes(void* dst, const uint32_t bytes) final{
-			uint32_t words = bytes / sizeof(DataWord);
+		size_t ReadBytes(void* dst, const size_t bytes) final{
+			size_t words = bytes / sizeof(DataWord);
 			if (words * sizeof(DataWord) != bytes) throw std::runtime_error("RLEDecoderPipe::ReadBytes : Byte count is not divisible by the word size");
 
 			DataWord* wordPtr = static_cast<DataWord*>(dst);
-			uint32_t wordsToRead = 0u;
+			size_t wordsToRead = 0u;
 
 			while (words != 0u) {
 				if (_length == 0u) ReadNextBlock();

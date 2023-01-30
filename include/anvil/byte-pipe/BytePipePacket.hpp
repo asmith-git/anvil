@@ -73,7 +73,7 @@ namespace anvil { namespace BytePipe {
 	public:
 		PacketInputPipe(InputPipe& downstream_pipe);
 		virtual ~PacketInputPipe();
-		uint32_t ReadBytes(void* dst, const uint32_t bytes) final;
+		size_t ReadBytes(void* dst, const size_t bytes) final;
 	};
 
 	class PacketOutputPipe : public OutputPipe {
@@ -88,7 +88,7 @@ namespace anvil { namespace BytePipe {
 	public:
 		PacketOutputPipe(OutputPipe& downstream_pipe, const size_t packet_size, const uint8_t default_word = 0u);
 		virtual ~PacketOutputPipe();
-		uint32_t WriteBytes(const void* src, const uint32_t bytes) final;
+		size_t WriteBytes(const void* src, const size_t bytes) final;
 		void Flush() final;
 	};
 

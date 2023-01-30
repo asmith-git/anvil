@@ -61,7 +61,7 @@ namespace anvil { namespace BytePipe {
 		return default_name;
 	}
 
-	void XMLWriter::OnArrayBegin(const uint32_t size) {
+	void XMLWriter::OnArrayBegin(const size_t size) {
 		if(_indent) for (size_t i = 0; i < _node_names.size(); ++i) _str += '\t';
 		std::string name = GetNextNodeName("array");
 		_node_names.push_back(name);
@@ -76,7 +76,7 @@ namespace anvil { namespace BytePipe {
 		_node_names.pop_back();
 	}
 
-	void XMLWriter::OnObjectBegin(const uint32_t component_count) {
+	void XMLWriter::OnObjectBegin(const size_t component_count) {
 		if (_indent) for (size_t i = 0; i < _node_names.size(); ++i) _str += '\t';
 		std::string name = GetNextNodeName("object");
 		_node_names.push_back(name);
@@ -95,7 +95,7 @@ namespace anvil { namespace BytePipe {
 		_next_id_str = std::to_string(id);
 	}
 
-	void XMLWriter::OnComponentID(const char* str, const uint32_t len) {
+	void XMLWriter::OnComponentID(const char* str, const size_t len) {
 		_next_id_str = std::string(str, str + len);
 	}
 
@@ -128,12 +128,12 @@ namespace anvil { namespace BytePipe {
 		return _str;
 	}
 
-	void XMLWriter::OnUserPOD(const PodType type, const uint32_t bytes, const void* data) {
+	void XMLWriter::OnUserPOD(const PodType type, const size_t bytes, const void* data) {
 		// Store the binary data as hexidecimal
 		std::string value;
 		value.reserve(bytes * 2u);
 		char buffer[3u] = "??";
-		for (uint32_t i = 0u; i < bytes; ++i) {
+		for (size_t i = 0u; i < bytes; ++i) {
 			ToHex(reinterpret_cast<const uint8_t*>(data)[i], buffer);
 			value += buffer;
 		};
@@ -151,7 +151,7 @@ namespace anvil { namespace BytePipe {
 		AddNode(GetNextNodeName("value"), std::to_string(value), { {"anvil_type", "float32"} });
 	}
 
-	void XMLWriter::OnPrimitiveString(const char* value, const uint32_t length) {
+	void XMLWriter::OnPrimitiveString(const char* value, const size_t length) {
 		AddNode(GetNextNodeName("value"), std::string(value, value + length), { {"anvil_type", "string"} });
 	}
 
@@ -284,7 +284,7 @@ namespace anvil { namespace BytePipe {
 			const char* anvil_type_str = anvil_type->value();
 			if (strcmp(anvil_type_str, "pod") == 0) {
 				// Interpret as pod
-				uint32_t bytes = node.value_size() / 2;
+				size_t bytes = node.value_size() / 2;
 				uint8_t* buffer = static_cast<uint8_t*>(_alloca(bytes));
 
 				ConvertHexToBin(node.value(), bytes, buffer);
@@ -298,7 +298,7 @@ namespace anvil { namespace BytePipe {
 
 			} else if (strcmp(anvil_type_str, "array") == 0) {
 				// Interpret as array
-				parser.OnArrayBegin(static_cast<uint32_t>(CountChildNodes(node)));
+				parser.OnArrayBegin(CountChildNodes(node));
 				rapidxml::xml_node<>* tmp = node.first_node();
 				while (tmp) {
 					ReadXML(*tmp, parser);
@@ -309,7 +309,7 @@ namespace anvil { namespace BytePipe {
 
 			} else if (strcmp(anvil_type_str, "object") == 0) {
 				// Interpret as object
-				parser.OnObjectBegin(static_cast<uint32_t>(CountChildNodes(node)));
+				parser.OnObjectBegin(CountChildNodes(node));
 				rapidxml::xml_node<>* tmp = node.first_node();
 				while (tmp) {
 					std::string id = tmp->name();
@@ -389,7 +389,7 @@ namespace anvil { namespace BytePipe {
 				if (attribute_count > 0 || node_count > 0) {
 					if (!value.empty()) throw std::runtime_error("anvil::ReadXML : Failed to inteprpet XML data");
 
-					parser.OnObjectBegin(static_cast<uint32_t>(attribute_count + node_count));
+					parser.OnObjectBegin(attribute_count + node_count);
 
 					{
 						rapidxml::xml_attribute<>* tmp = node.first_attribute();
@@ -398,7 +398,7 @@ namespace anvil { namespace BytePipe {
 							if (IsComponentID(id)) {
 								parser.OnComponentID(static_cast<ComponentID>(std::stoi(id)));
 							} else {
-								parser.OnComponentID(id.c_str(), static_cast<uint32_t>(id.size()));
+								parser.OnComponentID(id.c_str(), id.size());
 							}
 							parser.OnPrimitiveString(tmp->value(), tmp->value_size());
 							tmp = tmp->next_attribute();
@@ -413,7 +413,7 @@ namespace anvil { namespace BytePipe {
 							if (IsComponentID(id)) {
 								parser.OnComponentID(std::stoi(id));
 							} else {
-								parser.OnComponentID(id.c_str(), static_cast<uint32_t>(id.size()));
+								parser.OnComponentID(id.c_str(), id.size());
 							}
 							ReadXML(*tmp, parser);
 							tmp = tmp->next_sibling();

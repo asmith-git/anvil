@@ -39,8 +39,8 @@ namespace anvil { namespace BytePipe {
 	class InputPipe {
 	public:
 		virtual ~InputPipe() {}
-		virtual uint32_t ReadBytes(void* dst, const uint32_t bytes) = 0;
-		virtual void ReadBytesFast(void* dst, const uint32_t bytes) { ReadBytes(dst, bytes); }
+		virtual size_t ReadBytes(void* dst, const size_t bytes) = 0;
+		virtual void ReadBytesFast(void* dst, const size_t bytes) { ReadBytes(dst, bytes); }
 	};
 
 	enum PodType : uint32_t {
@@ -55,7 +55,7 @@ namespace anvil { namespace BytePipe {
 	class Parser {
 	public:
 #if ANVIL_OPENCV_SUPPORT
-		static cv::Mat CreateOpenCVMatFromPOD(const void* data, const uint32_t bytes);
+		static cv::Mat CreateOpenCVMatFromPOD(const void* data, const size_t bytes);
 #endif
 
 		Parser();
@@ -85,7 +85,7 @@ namespace anvil { namespace BytePipe {
 			\param size The number of values in the array.
 			\see OnArrayEnd
 		*/
-		virtual void OnArrayBegin(const uint32_t size) = 0;
+		virtual void OnArrayBegin(const size_t size) = 0;
 
 		/*!
 			\brief Signal that all values in an array have been parsed.
@@ -101,7 +101,7 @@ namespace anvil { namespace BytePipe {
 			\see OnArrayEnd
 			\see OnComponentID
 		*/
-		virtual void OnObjectBegin(const uint32_t component_count) = 0;
+		virtual void OnObjectBegin(const size_t component_count) = 0;
 
 		/*!
 			\brief Signal that all values in an object have been parsed.
@@ -118,10 +118,10 @@ namespace anvil { namespace BytePipe {
 		*/
 		virtual void OnComponentID(const ComponentID id) = 0;
 
-		virtual void OnComponentID(const char* str, const uint32_t size) = 0;
+		virtual void OnComponentID(const char* str, const size_t size) = 0;
 
-		ANVIL_STRONG_INLINE void OnComponentID(const char* id) { OnComponentID(id, static_cast<uint32_t>(strlen(id))); }
-		ANVIL_STRONG_INLINE void OnComponentID(const std::string& id) { OnComponentID(id.c_str(), static_cast<uint32_t>(id.size())); }
+		ANVIL_STRONG_INLINE void OnComponentID(const char* id) { OnComponentID(id, strlen(id)); }
+		ANVIL_STRONG_INLINE void OnComponentID(const std::string& id) { OnComponentID(id.c_str(), id.size()); }
 
 		/*!
 			\brief Handle a user defined binary structure.
@@ -131,7 +131,7 @@ namespace anvil { namespace BytePipe {
 			\param bytes The size of the structure in bytes.
 			\param data A pointer to the structure.
 		*/
-		virtual void OnUserPOD(const PodType type, const uint32_t bytes, const void* data) = 0;
+		virtual void OnUserPOD(const PodType type, const size_t bytes, const void* data) = 0;
 
 		/*!
 			\brief Handle a null value
@@ -148,7 +148,7 @@ namespace anvil { namespace BytePipe {
 			\brief Handle a string value
 			\param value The string data, this may not zero-terminated
 		*/
-		virtual void OnPrimitiveString(const char* value, const uint32_t length) = 0;
+		virtual void OnPrimitiveString(const char* value, const size_t length) = 0;
 
 		/*!
 			\brief Handle a primitive value (boolean)
@@ -206,7 +206,7 @@ namespace anvil { namespace BytePipe {
 			\brief Handle a primitive value (32-bit unsigned integer)
 			\param value The value
 		*/
-		virtual void OnPrimitiveU32(const uint32_t value) { 
+		virtual void OnPrimitiveU32(const uint32_t value) {
 			OnPrimitiveU64(value);
 		}
 
@@ -258,15 +258,15 @@ namespace anvil { namespace BytePipe {
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveU8(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveU8(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimitiveArrayU8(const uint8_t* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayU8(const uint8_t* src, const size_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveU8(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveU8(src[i]);
 			OnArrayEnd();
 		}
 
@@ -275,15 +275,15 @@ namespace anvil { namespace BytePipe {
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveU16(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveU16(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimitiveArrayU16(const uint16_t* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayU16(const uint16_t* src, const size_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveU16(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveU16(src[i]);
 			OnArrayEnd();
 		}
 
@@ -292,15 +292,15 @@ namespace anvil { namespace BytePipe {
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveU32(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveU32(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimitiveArrayU32(const uint32_t* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayU32(const uint32_t* src, const size_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveU32(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveU32(src[i]);
 			OnArrayEnd();
 		}
 
@@ -309,15 +309,15 @@ namespace anvil { namespace BytePipe {
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveU64(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveU64(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimitiveArrayU64(const uint64_t* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayU64(const uint64_t* src, const size_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveU64(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveU64(src[i]);
 			OnArrayEnd();
 		}
 
@@ -326,15 +326,15 @@ namespace anvil { namespace BytePipe {
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveS8(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveS8(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimitiveArrayS8(const int8_t* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayS8(const int8_t* src, const size_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveS8(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveS8(src[i]);
 			OnArrayEnd();
 		}
 
@@ -343,15 +343,15 @@ namespace anvil { namespace BytePipe {
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveS16(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveS16(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimitiveArrayS16(const int16_t* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayS16(const int16_t* src, const size_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveS16(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveS16(src[i]);
 			OnArrayEnd();
 		}
 
@@ -360,15 +360,15 @@ namespace anvil { namespace BytePipe {
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveS32(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveS32(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimitiveArrayS32(const int32_t* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayS32(const int32_t* src, const size_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveS32(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveS32(src[i]);
 			OnArrayEnd();
 		}
 
@@ -377,15 +377,15 @@ namespace anvil { namespace BytePipe {
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveS64(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveS64(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimitiveArrayS64(const int64_t* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayS64(const int64_t* src, const size_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveS64(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveS64(src[i]);
 			OnArrayEnd();
 		}
 
@@ -394,15 +394,15 @@ namespace anvil { namespace BytePipe {
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveF32(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveF32(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimitiveArrayF32(const float* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayF32(const float* src, const size_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveF32(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveF32(src[i]);
 			OnArrayEnd();
 		}
 
@@ -411,15 +411,15 @@ namespace anvil { namespace BytePipe {
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveF64(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveF64(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimitiveArrayF64(const double* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayF64(const double* src, const size_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveF64(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveF64(src[i]);
 			OnArrayEnd();
 		}
 
@@ -428,15 +428,15 @@ namespace anvil { namespace BytePipe {
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveC8(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveC8(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimitiveArrayC8(const char* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayC8(const char* src, const size_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveC8(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveC8(src[i]);
 			OnArrayEnd();
 		}
 
@@ -445,15 +445,15 @@ namespace anvil { namespace BytePipe {
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveF16(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveF16(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimitiveArrayF16(const half* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayF16(const half* src, const size_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveF16(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveF16(src[i]);
 			OnArrayEnd();
 		}
 
@@ -462,15 +462,15 @@ namespace anvil { namespace BytePipe {
 			\details This is the same as the following code, but is a special case that could be optimised :
 			\code{.cpp}
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveBool(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveBool(src[i]);
 			OnArrayEnd();
 			\endcode
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimitiveArrayBool(const bool* src, const uint32_t size) {
+		virtual void OnPrimitiveArrayBool(const bool* src, const size_t size) {
 			OnArrayBegin(size);
-			for (uint32_t i = 0u; i < size; ++i) OnPrimitiveBool(src[i]);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveBool(src[i]);
 			OnArrayEnd();
 		}
 
@@ -480,7 +480,7 @@ namespace anvil { namespace BytePipe {
 		inline void OnPrimitive(const T value);
 
 		template<class T>
-		inline void OnPrimitiveArray(const T* values, const uint32_t size);
+		inline void OnPrimitiveArray(const T* values, const size_t size);
 
 		template<>
 		inline void OnPrimitive<bool>(const bool value) {
@@ -488,7 +488,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<>
-		inline void OnPrimitiveArray<bool>(const bool* values, const uint32_t size) {
+		inline void OnPrimitiveArray<bool>(const bool* values, const size_t size) {
 			OnPrimitiveArrayBool(values, size);
 		}
 
@@ -499,7 +499,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<>
-		inline void OnPrimitiveArray<char>(const char* values, const uint32_t size) {
+		inline void OnPrimitiveArray<char>(const char* values, const size_t size) {
 			OnPrimitiveArrayC8(values, size);
 		}
 
@@ -509,7 +509,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<>
-		inline void OnPrimitiveArray<uint8_t>(const uint8_t* values, const uint32_t size) {
+		inline void OnPrimitiveArray<uint8_t>(const uint8_t* values, const size_t size) {
 			OnPrimitiveArrayU8(values, size);
 		}
 
@@ -519,7 +519,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<>
-		inline void OnPrimitiveArray<uint16_t>(const uint16_t* values, const uint32_t size) {
+		inline void OnPrimitiveArray<uint16_t>(const uint16_t* values, const size_t size) {
 			OnPrimitiveArrayU16(values, size);
 		}
 
@@ -529,7 +529,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<>
-		inline void OnPrimitiveArray<uint32_t>(const uint32_t* values, const uint32_t size) {
+		inline void OnPrimitiveArray<uint32_t>(const uint32_t* values, const size_t size) {
 			OnPrimitiveArrayU32(values, size);
 		}
 
@@ -539,7 +539,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<>
-		inline void OnPrimitiveArray<uint64_t>(const uint64_t* values, const uint32_t size) {
+		inline void OnPrimitiveArray<uint64_t>(const uint64_t* values, const size_t size) {
 			OnPrimitiveArrayU64(values, size);
 		}
 
@@ -549,7 +549,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<>
-		inline void OnPrimitiveArray<int8_t>(const int8_t* values, const uint32_t size) {
+		inline void OnPrimitiveArray<int8_t>(const int8_t* values, const size_t size) {
 			OnPrimitiveArrayS8(values, size);
 		}
 
@@ -559,7 +559,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<>
-		inline void OnPrimitiveArray<int16_t>(const int16_t* values, const uint32_t size) {
+		inline void OnPrimitiveArray<int16_t>(const int16_t* values, const size_t size) {
 			OnPrimitiveArrayS16(values, size);
 		}
 
@@ -569,7 +569,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<>
-		inline void OnPrimitiveArray<int32_t>(const int32_t* values, const uint32_t size) {
+		inline void OnPrimitiveArray<int32_t>(const int32_t* values, const size_t size) {
 			OnPrimitiveArrayS32(values, size);
 		}
 
@@ -579,7 +579,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<>
-		inline void OnPrimitiveArray<int64_t>(const int64_t* values, const uint32_t size) {
+		inline void OnPrimitiveArray<int64_t>(const int64_t* values, const size_t size) {
 			OnPrimitiveArrayS64(values, size);
 		}
 
@@ -589,7 +589,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<>
-		inline void OnPrimitiveArray<half>(const half* values, const uint32_t size) {
+		inline void OnPrimitiveArray<half>(const half* values, const size_t size) {
 			OnPrimitiveArrayF16(values, size);
 		}
 
@@ -599,7 +599,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<>
-		inline void OnPrimitiveArray<float>(const float* values, const uint32_t size) {
+		inline void OnPrimitiveArray<float>(const float* values, const size_t size) {
 			OnPrimitiveArrayF32(values, size);
 		}
 
@@ -609,7 +609,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<>
-		inline void OnPrimitiveArray<double>(const double* values, const uint32_t size) {
+		inline void OnPrimitiveArray<double>(const double* values, const size_t size) {
 			OnPrimitiveArrayF64(values, size);
 		}
 
@@ -622,14 +622,14 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<class T>
-		inline void OnPrimitiveArray(const ComponentID component_id, const T* values, const uint32_t size) {
+		inline void OnPrimitiveArray(const ComponentID component_id, const T* values, const size_t size) {
 			OnComponentID(component_id);
 			OnPrimitiveArray<T>(values, size);
 		}
 
 		// General helper
 
-		inline void operator()(const char*& value) { OnPrimitiveString(value, static_cast<uint32_t>(strlen(value))); }
+		inline void operator()(const char*& value) { OnPrimitiveString(value, strlen(value)); }
 
 		template<class T>
 		inline void operator()(const T& value) = delete;
@@ -646,7 +646,7 @@ namespace anvil { namespace BytePipe {
 		template<> inline void operator()<float>(const float& value) { OnPrimitive<float>(value); }
 		template<> inline void operator()<double>(const double& value) { OnPrimitive<double>(value); }
 		template<> inline void operator()<bool>(const bool& value) { OnPrimitive<bool>(value); }
-		template<> inline void operator()<std::string>(const std::string& value) { OnPrimitiveString(value.c_str(), static_cast<uint32_t>(value.size())); }
+		template<> inline void operator()<std::string>(const std::string& value) { OnPrimitiveString(value.c_str(), value.size()); }
 
 		template<class T>
 		inline void operator()(const std::vector<T>& value) {
@@ -655,36 +655,36 @@ namespace anvil { namespace BytePipe {
 			OnArrayEnd();
 		}
 
-		template<> inline void operator()(const std::vector<uint8_t>& value) { OnPrimitiveArray<uint8_t>(value.data(), static_cast<uint32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<uint16_t>& value) { OnPrimitiveArray<uint16_t>(value.data(), static_cast<uint32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<uint32_t>& value) { OnPrimitiveArray<uint32_t>(value.data(), static_cast<uint32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<uint64_t>& value) { OnPrimitiveArray<uint64_t>(value.data(), static_cast<uint32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<int8_t>& value) { OnPrimitiveArray<int8_t>(value.data(), static_cast<uint32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<int16_t>& value) { OnPrimitiveArray<int16_t>(value.data(), static_cast<uint32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<int32_t>& value) { OnPrimitiveArray<int32_t>(value.data(), static_cast<uint32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<int64_t>& value) { OnPrimitiveArray<int64_t>(value.data(), static_cast<uint32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<half>& value) { OnPrimitiveArray<half>(value.data(), static_cast<uint32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<float>& value) { OnPrimitiveArray<float>(value.data(), static_cast<uint32_t>(value.size())); }
-		template<> inline void operator()(const std::vector<double>& value) { OnPrimitiveArray<double>(value.data(), static_cast<uint32_t>(value.size())); }
+		template<> inline void operator()(const std::vector<uint8_t>& value) { OnPrimitiveArray<uint8_t>(value.data(), value.size()); }
+		template<> inline void operator()(const std::vector<uint16_t>& value) { OnPrimitiveArray<uint16_t>(value.data(),value.size()); }
+		template<> inline void operator()(const std::vector<uint32_t>& value) { OnPrimitiveArray<uint32_t>(value.data(),value.size()); }
+		template<> inline void operator()(const std::vector<uint64_t>& value) { OnPrimitiveArray<uint64_t>(value.data(),value.size()); }
+		template<> inline void operator()(const std::vector<int8_t>& value) { OnPrimitiveArray<int8_t>(value.data(), value.size()); }
+		template<> inline void operator()(const std::vector<int16_t>& value) { OnPrimitiveArray<int16_t>(value.data(), value.size()); }
+		template<> inline void operator()(const std::vector<int32_t>& value) { OnPrimitiveArray<int32_t>(value.data(), value.size()); }
+		template<> inline void operator()(const std::vector<int64_t>& value) { OnPrimitiveArray<int64_t>(value.data(), value.size()); }
+		template<> inline void operator()(const std::vector<half>& value) { OnPrimitiveArray<half>(value.data(), value.size()); }
+		template<> inline void operator()(const std::vector<float>& value) { OnPrimitiveArray<float>(value.data(), value.size()); }
+		template<> inline void operator()(const std::vector<double>& value) { OnPrimitiveArray<double>(value.data(), value.size()); }
 
-		template<class T, uint32_t S>
+		template<class T, size_t S>
 		inline void operator()(const std::array<T, S>& value) {
 			OnArrayBegin(S);
 			for (const T& val : value) operator()(val);
 			OnArrayEnd();
 		}
 
-		template<uint32_t S> inline void operator()(const std::array<uint8_t, S>& value) { OnPrimitiveArray<uint8_t>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<uint16_t, S>& value) { OnPrimitiveArray<uint16_t>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<uint32_t, S>& value) { OnPrimitiveArray<uint32_t>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<uint64_t, S>& value) { OnPrimitiveArray<uint64_t>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<int8_t, S>& value) { OnPrimitiveArray<int8_t>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<int16_t, S>& value) { OnPrimitiveArray<int16_t>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<int32_t, S>& value) { OnPrimitiveArray<int32_t>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<int64_t, S>& value) { OnPrimitiveArray<int64_t>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<half, S>& value) { OnPrimitiveArray<half>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<float, S>& value) { OnPrimitiveArray<float>(value.data(), S); }
-		template<uint32_t S> inline void operator()(const std::array<double, S>& value) { OnPrimitiveArray<double>(value.data(), S); }
+		template<size_t S> inline void operator()(const std::array<uint8_t, S>& value) { OnPrimitiveArray<uint8_t>(value.data(), S); }
+		template<size_t S> inline void operator()(const std::array<uint16_t, S>& value) { OnPrimitiveArray<uint16_t>(value.data(), S); }
+		template<size_t S> inline void operator()(const std::array<uint32_t, S>& value) { OnPrimitiveArray<uint32_t>(value.data(), S); }
+		template<size_t S> inline void operator()(const std::array<uint64_t, S>& value) { OnPrimitiveArray<uint64_t>(value.data(), S); }
+		template<size_t S> inline void operator()(const std::array<int8_t, S>& value) { OnPrimitiveArray<int8_t>(value.data(), S); }
+		template<size_t S> inline void operator()(const std::array<int16_t, S>& value) { OnPrimitiveArray<int16_t>(value.data(), S); }
+		template<size_t S> inline void operator()(const std::array<int32_t, S>& value) { OnPrimitiveArray<int32_t>(value.data(), S); }
+		template<size_t S> inline void operator()(const std::array<int64_t, S>& value) { OnPrimitiveArray<int64_t>(value.data(), S); }
+		template<size_t S> inline void operator()(const std::array<half, S>& value) { OnPrimitiveArray<half>(value.data(), S); }
+		template<size_t S> inline void operator()(const std::array<float, S>& value) { OnPrimitiveArray<float>(value.data(), S); }
+		template<size_t S> inline void operator()(const std::array<double, S>& value) { OnPrimitiveArray<double>(value.data(), S); }
 
 		template<class T>
 		inline void operator()(const std::list<T>& value) {
@@ -702,7 +702,7 @@ namespace anvil { namespace BytePipe {
 
 		template<class K, class T>
 		inline void operator()(const std::map<K, T>& value) {
-			const uint32_t s = static_cast<uint32_t>(value.size());
+			const size_t s = value.size();
 
 			OnArrayBegin(2);
 
@@ -764,16 +764,16 @@ namespace anvil { namespace BytePipe {
 
 		void OnPipeOpen() final;
 		void OnPipeClose() final;
-		void OnArrayBegin(const uint32_t size) final;
+		void OnArrayBegin(const size_t size) final;
 		void OnArrayEnd() final;
-		void OnObjectBegin(const uint32_t component_count) final;
+		void OnObjectBegin(const size_t component_count) final;
 		void OnObjectEnd() final;
 		void OnComponentID(const ComponentID id)  final;
-		void OnComponentID(const char* str, const uint32_t size)  final;
-		void OnUserPOD(const PodType type, const uint32_t bytes, const void* data) final;
+		void OnComponentID(const char* str, const size_t size)  final;
+		void OnUserPOD(const PodType type, const size_t bytes, const void* data) final;
 		void OnNull() final;
 		void OnPrimitiveF64(const double value) final; 
-		void OnPrimitiveString(const char* value, const uint32_t length) final;
+		void OnPrimitiveString(const char* value, const size_t length) final;
 		void OnPrimitiveBool(const bool value) final;
 		void OnPrimitiveC8(const char value) final;
 		void OnPrimitiveU64(const uint64_t value) final;
@@ -787,19 +787,19 @@ namespace anvil { namespace BytePipe {
 		void OnPrimitiveS32(const int32_t value) final;
 		void OnPrimitiveF16(const half value) final;
 
-		void OnPrimitiveArrayC8(const char* src, const uint32_t size) final;
-		void OnPrimitiveArrayBool (const bool* src, const uint32_t size) final;
-		void OnPrimitiveArrayU8(const uint8_t* src, const uint32_t size) final;
-		void OnPrimitiveArrayU16(const uint16_t* src, const uint32_t size) final;
-		void OnPrimitiveArrayU32(const uint32_t* src, const uint32_t size) final;
-		void OnPrimitiveArrayU64(const uint64_t* src, const uint32_t size) final;
-		void OnPrimitiveArrayS8(const int8_t* src, const uint32_t size) final;
-		void OnPrimitiveArrayS16(const int16_t* src, const uint32_t size) final;
-		void OnPrimitiveArrayS32(const int32_t* src, const uint32_t size) final;
-		void OnPrimitiveArrayS64(const int64_t* src, const uint32_t size) final;
-		void OnPrimitiveArrayF16(const half* src, const uint32_t size) final;
-		void OnPrimitiveArrayF32(const float* src, const uint32_t size) final;
-		void OnPrimitiveArrayF64(const double* src, const uint32_t size) final;
+		void OnPrimitiveArrayC8(const char* src, const size_t size) final;
+		void OnPrimitiveArrayBool (const bool* src, const size_t size) final;
+		void OnPrimitiveArrayU8(const uint8_t* src, const size_t size) final;
+		void OnPrimitiveArrayU16(const uint16_t* src, const size_t size) final;
+		void OnPrimitiveArrayU32(const uint32_t* src, const size_t size) final;
+		void OnPrimitiveArrayU64(const uint64_t* src, const size_t size) final;
+		void OnPrimitiveArrayS8(const int8_t* src, const size_t size) final;
+		void OnPrimitiveArrayS16(const int16_t* src, const size_t size) final;
+		void OnPrimitiveArrayS32(const int32_t* src, const size_t size) final;
+		void OnPrimitiveArrayS64(const int64_t* src, const size_t size) final;
+		void OnPrimitiveArrayF16(const half* src, const size_t size) final;
+		void OnPrimitiveArrayF32(const float* src, const size_t size) final;
+		void OnPrimitiveArrayF64(const double* src, const size_t size) final;
 	};
 
 }}

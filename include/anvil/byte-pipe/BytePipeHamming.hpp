@@ -36,7 +36,7 @@ namespace anvil { namespace BytePipe {
 	public:
 		RawHamming74InputPipe(InputPipe& downstream_pipe);
 		virtual ~RawHamming74InputPipe();
-		uint32_t ReadBytes(void* dst, const uint32_t bytes) final;
+		size_t ReadBytes(void* dst, const size_t bytes) final;
 	};
 
 	/*!
@@ -50,7 +50,7 @@ namespace anvil { namespace BytePipe {
 	public:
 		RawHamming74OutputPipe(OutputPipe& downstream_pipe);
 		virtual ~RawHamming74OutputPipe();
-		uint32_t WriteBytes(const void* src, const uint32_t bytes) final;
+		size_t WriteBytes(const void* src, const size_t bytes) final;
 		void Flush() final;
 	};
 
@@ -67,7 +67,7 @@ namespace anvil { namespace BytePipe {
 	public:
 		Hamming74InputPipe(InputPipe& downstream_pipe);
 		virtual ~Hamming74InputPipe();
-		uint32_t ReadBytes(void* dst, const uint32_t bytes) final;
+		size_t ReadBytes(void* dst, const size_t bytes) final;
 	};
 
 	/*!
@@ -81,9 +81,9 @@ namespace anvil { namespace BytePipe {
 		RawHamming74OutputPipe _hamming_pipe;
 		PacketOutputPipe _packet_pipe;
 	public:
-		Hamming74OutputPipe(OutputPipe& downstream_pipe, uint32_t block_size = 256);
+		Hamming74OutputPipe(OutputPipe& downstream_pipe, size_t block_size = 256);
 		virtual ~Hamming74OutputPipe();
-		uint32_t WriteBytes(const void* src, const uint32_t bytes) final;
+		size_t WriteBytes(const void* src, const size_t bytes) final;
 		void Flush() final;
 	};
 
@@ -98,7 +98,7 @@ namespace anvil { namespace BytePipe {
 	public:
 		RawHamming1511OutputPipe(OutputPipe& downstream_pipe);
 		virtual ~RawHamming1511OutputPipe();
-		uint32_t WriteBytes(const void* src, const uint32_t bytes) final;
+		size_t WriteBytes(const void* src, const size_t bytes) final;
 		void Flush() final;
 	};
 
@@ -113,7 +113,7 @@ namespace anvil { namespace BytePipe {
 	public:
 		RawHamming1511InputPipe(InputPipe& downstream_pipe);
 		virtual ~RawHamming1511InputPipe();
-		uint32_t ReadBytes(void* dst, const uint32_t bytes) final;
+		size_t ReadBytes(void* dst, const size_t bytes) final;
 	};
 
 	/*!
@@ -129,7 +129,7 @@ namespace anvil { namespace BytePipe {
 	public:
 		Hamming1511InputPipe(InputPipe& downstream_pipe);
 		virtual ~Hamming1511InputPipe();
-		uint32_t ReadBytes(void* dst, const uint32_t bytes) final;
+		size_t ReadBytes(void* dst, const size_t bytes) final;
 	};
 
 	/*!
@@ -143,9 +143,9 @@ namespace anvil { namespace BytePipe {
 		RawHamming1511OutputPipe _hamming_pipe;
 		PacketOutputPipe _packet_pipe;
 	public:
-		Hamming1511OutputPipe(OutputPipe& downstream_pipe, uint32_t block_size = 264);
+		Hamming1511OutputPipe(OutputPipe& downstream_pipe, size_t block_size = 264);
 		virtual ~Hamming1511OutputPipe();
-		uint32_t WriteBytes(const void* src, const uint32_t bytes) final;
+		size_t WriteBytes(const void* src, const size_t bytes) final;
 		void Flush() final;
 	};
 

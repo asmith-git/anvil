@@ -53,7 +53,7 @@ namespace anvil { namespace BytePipe {
 		// Do nothing
 	}
 
-	void JsonWriter::OnArrayBegin(const uint32_t size) {
+	void JsonWriter::OnArrayBegin(const size_t size) {
 		AddValue("[");
 		++_depth;
 	}
@@ -72,7 +72,7 @@ namespace anvil { namespace BytePipe {
 		AddValue("]");
 	}
 
-	void JsonWriter::OnObjectBegin(const uint32_t component_count) {
+	void JsonWriter::OnObjectBegin(const size_t component_count) {
 		AddValue("{");
 		++_depth;
 	}
@@ -95,7 +95,7 @@ namespace anvil { namespace BytePipe {
 		_next_id = std::to_string(id);
 	}
 
-	void JsonWriter::OnComponentID(const char* str, const uint32_t len) {
+	void JsonWriter::OnComponentID(const char* str, const size_t len) {
 		_next_id = std::string(str, str + len);
 	}
 
@@ -124,7 +124,7 @@ namespace anvil { namespace BytePipe {
 		return _out;
 	}
 
-	void JsonWriter::OnUserPOD(const PodType type, const uint32_t bytes, const void* data) {
+	void JsonWriter::OnUserPOD(const PodType type, const size_t bytes, const void* data) {
 		// Format the POD as an object, a POD is identified by containg the member __ANVIL_POD with the value 123456789
 
 		std::string value = "{\"anvil_pod_type\":" + std::to_string(type) + ",\"data\":\"";
@@ -151,7 +151,7 @@ namespace anvil { namespace BytePipe {
 		AddValue(std::to_string(value));
 	}
 
-	void JsonWriter::OnPrimitiveString(const char* value, const uint32_t length) {
+	void JsonWriter::OnPrimitiveString(const char* value, const size_t length) {
 		AddValue('"' + std::string(value, value + length) + '"');
 	}
 
@@ -240,7 +240,7 @@ namespace anvil { namespace BytePipe {
 		if (IsPod(node)) {
 			// Interpret as pod
 			std::string tmp = node["data"];
-			uint32_t bytes = tmp.size() / 2;
+			size_t bytes = tmp.size() / 2;
 			uint8_t* buffer = static_cast<uint8_t*>(_alloca(bytes));
 
 			ConvertHexToBin(tmp.c_str(), bytes, buffer);
@@ -253,7 +253,7 @@ namespace anvil { namespace BytePipe {
 
 		} else if (node.is_array()) {
 			// Interpret as array
-			parser.OnArrayBegin(static_cast<uint32_t>(CountChildNodes(node)));
+			parser.OnArrayBegin(CountChildNodes(node));
 			
 			for (nlohmann::json::const_iterator i = node.begin(); i != node.end(); ++i) {
 				ReadJSON(i.value(), parser);
@@ -262,13 +262,13 @@ namespace anvil { namespace BytePipe {
 
 		} else if (node.is_object()) {
 			// Interpret as object
-			parser.OnObjectBegin(static_cast<uint32_t>(CountChildNodes(node)));
+			parser.OnObjectBegin(CountChildNodes(node));
 			for (nlohmann::json::const_iterator i = node.begin(); i != node.end(); ++i) {
 				std::string k = i.key();
 				if (IsComponentID(k)) {
 					parser.OnComponentID(std::stoi(k));
 				} else {
-					parser.OnComponentID(k.c_str(), static_cast<uint32_t>(k.size()));
+					parser.OnComponentID(k.c_str(), k.size());
 				}
 
 				ReadJSON(i.value(), parser);
@@ -296,7 +296,7 @@ namespace anvil { namespace BytePipe {
 				if (str.size() == 1u) {
 					parser.OnPrimitiveC8(str[0u]);
 				} else {
-					parser.OnPrimitiveString(str.c_str(), static_cast<uint32_t>(str.size()));
+					parser.OnPrimitiveString(str.c_str(), str.size());
 				}
 			}
 		}

@@ -352,8 +352,8 @@ namespace anvil { namespace BytePipe {
 		return _swap_byte_order ? (e == ENDIAN_LITTLE ? ENDIAN_BIG : ENDIAN_LITTLE) : e;
 	}
 
-	void Writer::Write(const void* src, const uint32_t bytes) {
-		const auto WriteToPipe = [this](const void* src, const uint32_t bytes) {
+	void Writer::Write(const void* src, const size_t bytes) {
+		const auto WriteToPipe = [this](const void* src, const size_t bytes) {
 #if ANVIL_CONTRACT_MODE == ANVIL_CONTRACT_IGNORE || ANVIL_CONTRACT_MODE == ANVIL_CONTRACT_ASSUME
 			// Benchmarks showed it's about twice as fast to write to a std::ofstream without checking the number of bytes written
 			// So if contracts are disabled then we wont check because the value isn't used
@@ -381,7 +381,7 @@ namespace anvil { namespace BytePipe {
 		} else {
 			if (_buffer_size + bytes > BUFFER_SIZE) FlushBuffer();
 			memcpy(_buffer + _buffer_size, src, bytes);
-			_buffer_size += bytes;
+			_buffer_size += static_cast<uint8_t>(bytes);
 		}
 	}
 
@@ -426,13 +426,13 @@ namespace anvil { namespace BytePipe {
 		Write(&terminator, 1u);
 	}
 
-	void Writer::OnArrayBegin(const uint32_t size) {
+	void Writer::OnArrayBegin(const size_t size) {
 		_state_stack.push_back(STATE_ARRAY);
 
 		ValueHeader header;
 		header.primary_id = PID_ARRAY;
 		header.secondary_id = SID_NULL;
-		header.array_v1.size = size;
+		header.array_v1.size = static_cast<uint32_t>(size);
 		Write(&header, sizeof(ValueHeader::array_v1) + 1u);
 	}
 
@@ -441,13 +441,13 @@ namespace anvil { namespace BytePipe {
 		_state_stack.pop_back();
 	}
 
-	void Writer::OnObjectBegin(const uint32_t components) {
+	void Writer::OnObjectBegin(const size_t components) {
 		_state_stack.push_back(STATE_OBJECT);
 
 		ValueHeader header;
 		header.primary_id = PID_OBJECT;
 		header.secondary_id = SID_NULL;
-		header.object_v1.components = components;
+		header.object_v1.components = static_cast<uint32_t>(components);
 		Write(&header, sizeof(ValueHeader::object_v1) + 1u);
 	}
 
@@ -463,7 +463,7 @@ namespace anvil { namespace BytePipe {
 		Write(&id, 2u);
 	}
 
-	void Writer::OnComponentID(const char* str, const uint32_t size) {
+	void Writer::OnComponentID(const char* str, const size_t size) {
 		ANVIL_CONTRACT(GetCurrentState() == STATE_OBJECT, "BytePipe was not in object mode");
 		IDMode mode = ID_STR;
 		Write(&mode, 1u);
@@ -584,20 +584,20 @@ namespace anvil { namespace BytePipe {
 		_OnPrimitive32(static_cast<uint32_t>(GetRaw<T, uint32_t>(value)), GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimitiveString(const char* value, const uint32_t length) {
+	void Writer::OnPrimitiveString(const char* value, const size_t length) {
 		ValueHeader header;
 		header.primary_id = PID_STRING;
 		header.secondary_id = SID_C8;
-		header.string_v1.length = length;
+		header.string_v1.length = static_cast<uint32_t>(length);
 		Write(&header, sizeof(ValueHeader::string_v1) + 1u);
 		Write(value, length);
 	}
 
-	void Writer::_OnPrimitiveArray(const void* ptr, const uint32_t size, const uint8_t id) {
+	void Writer::_OnPrimitiveArray(const void* ptr, const size_t size, const uint8_t id) {
 		ValueHeader header;
 		header.primary_id = PID_ARRAY;
 		header.secondary_id = id;
-		header.array_v1.size = size;
+		header.array_v1.size = static_cast<uint32_t>(size);
 		Write(&header, sizeof(ValueHeader::array_v1) + 1u);
 		const uint32_t element_bytes = g_secondary_type_sizes[id];
 		ANVIL_ASSUME(element_bytes <= 8u);
@@ -629,78 +629,78 @@ namespace anvil { namespace BytePipe {
 		}
 	}
 
-	void Writer::OnPrimitiveArrayBool(const bool* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayBool(const bool* ptr, const size_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
 		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimitiveArrayU8(const uint8_t* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayU8(const uint8_t* ptr, const size_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
 		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimitiveArrayU16(const uint16_t* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayU16(const uint16_t* ptr, const size_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
 		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimitiveArrayU32(const uint32_t* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayU32(const uint32_t* ptr, const size_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
 		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimitiveArrayU64(const uint64_t* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayU64(const uint64_t* ptr, const size_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
 		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimitiveArrayS8(const int8_t* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayS8(const int8_t* ptr, const size_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
 		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimitiveArrayS16(const int16_t* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayS16(const int16_t* ptr, const size_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
 		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimitiveArrayS32(const int32_t* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayS32(const int32_t* ptr, const size_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
 		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimitiveArrayS64(const int64_t* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayS64(const int64_t* ptr, const size_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
 		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimitiveArrayF32(const float* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayF32(const float* ptr, const size_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
 		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimitiveArrayF64(const double* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayF64(const double* ptr, const size_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
 		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimitiveArrayC8(const char* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayC8(const char* ptr, const size_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
 		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimitiveArrayF16(const half* ptr, const uint32_t size) {
+	void Writer::OnPrimitiveArrayF16(const half* ptr, const size_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
 		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnUserPOD(const PodType type, const uint32_t bytes, const void* data) {
+	void Writer::OnUserPOD(const PodType type, const size_t bytes, const void* data) {
 		ANVIL_CONTRACT(type <= 1048575u, "Type must be <= 1048575u");
 		ValueHeader header;
 		header.primary_id = PID_USER_POD;
 		header.secondary_id = type & 15u;
 		header.user_pod.extended_secondary_id = static_cast<uint16_t>(type >> 4u);
-		header.user_pod.bytes = bytes;
+		header.user_pod.bytes = static_cast<uint32_t>(bytes);
 		Write(&header, sizeof(ValueHeader::user_pod) + 1u);
 		Write(data, bytes);
 	}
@@ -739,7 +739,7 @@ READ_FROM_PIPE:
 					ReadFromPipeRaw(dst, bytes);
 				} else {
 					// Read from the pipe into the buffer
-					_buffer_size = _pipe.ReadBytes(_buffer, BUFFER_SIZE);
+					_buffer_size = static_cast<uint32_t>(_pipe.ReadBytes(_buffer, BUFFER_SIZE));
 					_buffer_head = _buffer;
 					goto READ_FROM_BUFFER;
 				}
@@ -1011,7 +1011,7 @@ OLD_COMPONENT_ID:
 		_root.SetNull();
 	}
 
-	void ValueParser::OnArrayBegin(const uint32_t size) {
+	void ValueParser::OnArrayBegin(const size_t size) {
 		Value& val = NextValue();
 		val.SetArray();
 		_value_stack.push_back(&val);
@@ -1021,7 +1021,7 @@ OLD_COMPONENT_ID:
 		_value_stack.pop_back();
 	}
 
-	void ValueParser::OnObjectBegin(const uint32_t component_count) {
+	void ValueParser::OnObjectBegin(const size_t component_count) {
 		Value& val = NextValue();
 		val.SetObject();
 		_value_stack.push_back(&val);
@@ -1035,11 +1035,11 @@ OLD_COMPONENT_ID:
 		_component_id = id;
 	}
 
-	void ValueParser::OnComponentID(const char* str, uint32_t size) {
+	void ValueParser::OnComponentID(const char* str, size_t size) {
 		_component_id_str = std::string(str, str + size);
 	}
 
-	void ValueParser::OnUserPOD(const PodType type, const uint32_t bytes, const void* data) {
+	void ValueParser::OnUserPOD(const PodType type, const size_t bytes, const void* data) {
 		throw std::runtime_error("ValueParser::OnUserPOD : Pods not supported");
 	}
 
@@ -1051,7 +1051,7 @@ OLD_COMPONENT_ID:
 		NextValue().SetF64(value);
 	}
 
-	void ValueParser::OnPrimitiveString(const char* value, const uint32_t length) {
+	void ValueParser::OnPrimitiveString(const char* value, const size_t length) {
 		// Zero terminate string
 		char* str = static_cast<char*>(operator new(length + 1));
 		memcpy(str, value, length);
@@ -1115,7 +1115,7 @@ OLD_COMPONENT_ID:
 		NextValue().SetBool(value);
 	}
 
-	void ValueParser::OnPrimitiveArrayC8(const char* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayC8(const char* src, const size_t size) {
 		Value& v = NextValue();
 		v.SetPrimitiveArray(TYPE_C8);
 
@@ -1125,7 +1125,7 @@ OLD_COMPONENT_ID:
 		}
 	}
 
-	void ValueParser::OnPrimitiveArrayBool(const bool* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayBool(const bool* src, const size_t size) {
 		Value& v = NextValue();
 		v.SetPrimitiveArray(TYPE_BOOL);
 
@@ -1135,112 +1135,112 @@ OLD_COMPONENT_ID:
 		}
 	}
 
-	void ValueParser::OnPrimitiveArrayU8(const uint8_t* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayU8(const uint8_t* src, const size_t size) {
 		Value& v = NextValue();
 		v.SetPrimitiveArray(TYPE_U8);
 
 		//! \todo optimise
-		for (uint32_t i = 0u; i < size; ++i) {
+		for (size_t i = 0u; i < size; ++i) {
 			v.AddValue(src[i]);
 		}
 	}
 
-	void ValueParser::OnPrimitiveArrayU16(const uint16_t* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayU16(const uint16_t* src, const size_t size) {
 		Value& v = NextValue();
 		v.SetPrimitiveArray(TYPE_U16);
 
 		//! \todo optimise
-		for (uint32_t i = 0u; i < size; ++i) {
+		for (size_t i = 0u; i < size; ++i) {
 			v.AddValue(src[i]);
 		}
 	}
 
-	void ValueParser::OnPrimitiveArrayU32(const uint32_t* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayU32(const uint32_t* src, const size_t size) {
 		Value& v = NextValue();
 		v.SetPrimitiveArray(TYPE_U32);
 
 		//! \todo optimise
-		for (uint32_t i = 0u; i < size; ++i) {
+		for (size_t i = 0u; i < size; ++i) {
 			v.AddValue(src[i]);
 		}
 	}
 
-	void ValueParser::OnPrimitiveArrayU64(const uint64_t* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayU64(const uint64_t* src, const size_t size) {
 		Value& v = NextValue();
 		v.SetPrimitiveArray(TYPE_U64);
 
 		//! \todo optimise
-		for (uint32_t i = 0u; i < size; ++i) {
+		for (size_t i = 0u; i < size; ++i) {
 			v.AddValue(src[i]);
 		}
 	}
 
-	void ValueParser::OnPrimitiveArrayS8(const int8_t* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayS8(const int8_t* src, const size_t size) {
 		Value& v = NextValue();
 		v.SetPrimitiveArray(TYPE_S8);
 
 		//! \todo optimise
-		for (uint32_t i = 0u; i < size; ++i) {
+		for (size_t i = 0u; i < size; ++i) {
 			v.AddValue(src[i]);
 		}
 	}
 
-	void ValueParser::OnPrimitiveArrayS16(const int16_t* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayS16(const int16_t* src, const size_t size) {
 		Value& v = NextValue();
 		v.SetPrimitiveArray(TYPE_S16);
 
 		//! \todo optimise
-		for (uint32_t i = 0u; i < size; ++i) {
+		for (size_t i = 0u; i < size; ++i) {
 			v.AddValue(src[i]);
 		}
 	}
 
-	void ValueParser::OnPrimitiveArrayS32(const int32_t* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayS32(const int32_t* src, const size_t size) {
 		Value& v = NextValue();
 		v.SetPrimitiveArray(TYPE_S32);
 
 		//! \todo optimise
-		for (uint32_t i = 0u; i < size; ++i) {
+		for (size_t i = 0u; i < size; ++i) {
 			v.AddValue(src[i]);
 		}
 	}
 
-	void ValueParser::OnPrimitiveArrayS64(const int64_t* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayS64(const int64_t* src, const size_t size) {
 		Value& v = NextValue();
 		v.SetPrimitiveArray(TYPE_S64);
 
 		//! \todo optimise
-		for (uint32_t i = 0u; i < size; ++i) {
+		for (size_t i = 0u; i < size; ++i) {
 			v.AddValue(src[i]);
 		}
 	}
 
-	void ValueParser::OnPrimitiveArrayF16(const half* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayF16(const half* src, const size_t size) {
 		Value& v = NextValue();
 		v.SetPrimitiveArray(TYPE_F16);
 
 		//! \todo optimise
-		for (uint32_t i = 0u; i < size; ++i) {
+		for (size_t i = 0u; i < size; ++i) {
 			v.AddValue(src[i]);
 		}
 	}
 
-	void ValueParser::OnPrimitiveArrayF32(const float* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayF32(const float* src, const size_t size) {
 		Value& v = NextValue();
 		v.SetPrimitiveArray(TYPE_F32);
 
 		//! \todo optimise
-		for (uint32_t i = 0u; i < size; ++i) {
+		for (size_t i = 0u; i < size; ++i) {
 			v.AddValue(src[i]);
 		}
 	}
 
-	void ValueParser::OnPrimitiveArrayF64(const double* src, const uint32_t size) {
+	void ValueParser::OnPrimitiveArrayF64(const double* src, const size_t size) {
 		Value& v = NextValue();
 		v.SetPrimitiveArray(TYPE_F64);
 
 		//! \todo optimise
-		for (uint32_t i = 0u; i < size; ++i) {
+		for (size_t i = 0u; i < size; ++i) {
 			v.AddValue(src[i]);
 		}
 	}
@@ -1301,7 +1301,7 @@ OLD_COMPONENT_ID:
 
 	static_assert(sizeof(OpenCVHeader) == 12, "anvil/BytePipeParser.cpp : Expected OpenCVHeader to be 12 bytes");
 
-	cv::Mat Parser::CreateOpenCVMatFromPOD(const void* data, const uint32_t bytes) {
+	cv::Mat Parser::CreateOpenCVMatFromPOD(const void* data, const size_t bytes) {
 		const OpenCVHeader* header = static_cast<const OpenCVHeader*>(data);
 
 		return cv::Mat(

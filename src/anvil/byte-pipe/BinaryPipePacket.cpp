@@ -45,7 +45,7 @@ namespace anvil { namespace BytePipe {
 	void PacketInputPipe::ReadNextPacket() {
 		// Read the packet header version
 		PacketHeader header;
-		uint32_t read = _downstream_pipe.ReadBytes(&header, 1u);
+		size_t read = _downstream_pipe.ReadBytes(&header, 1u);
 
 		// Error checking
 		if (read != 1u) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Failed to read packet version");
@@ -85,9 +85,9 @@ namespace anvil { namespace BytePipe {
 		for (uint32_t i = 0u; i < used_bytes; ++i) _buffer.push_back(tmp[i]); //! \todo This could be optimised
 	}
 
-	uint32_t PacketInputPipe::ReadBytes(void* dst, const uint32_t bytes) {
+	size_t PacketInputPipe::ReadBytes(void* dst, const size_t bytes) {
 		uint8_t* data = static_cast<uint8_t*>(dst);
-		uint32_t b = bytes;
+		size_t b = bytes;
 
 		//! \todo This could be optimised
 		while (b != 0u) {
@@ -124,7 +124,7 @@ namespace anvil { namespace BytePipe {
 		 _buffer = nullptr;
 	}
 
-	uint32_t PacketOutputPipe::WriteBytes(const void* src, const uint32_t bytes) {
+	size_t PacketOutputPipe::WriteBytes(const void* src, const size_t bytes) {
 		const uint32_t version = PacketVersionFromSize(_max_packet_size);
 		const uint32_t header_size = g_header_sizes[version];
 
@@ -132,11 +132,11 @@ namespace anvil { namespace BytePipe {
 		uint8_t* payload = _buffer + header_size;
 
 		const uint8_t* data = static_cast<const uint8_t*>(src);
-		uint32_t b = bytes;
+		size_t b = bytes;
 
 		while (b != 0u) {
 			// Copy to the packet buffer
-			uint32_t bytes_to_buffer = static_cast<uint32_t>(_max_packet_size - _current_packet_size);
+			size_t bytes_to_buffer = _max_packet_size - _current_packet_size;
 			if (b < bytes_to_buffer) bytes_to_buffer = b;
 
 			memcpy(payload + _current_packet_size, data, bytes_to_buffer);
