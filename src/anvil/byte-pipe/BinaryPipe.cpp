@@ -1035,7 +1035,7 @@ OLD_COMPONENT_ID:
 		_component_id = id;
 	}
 
-	void ValueParser::OnComponentID(const char* str, size_t size) {
+	void ValueParser::OnComponentID(const char* str, uint32_t size) {
 		_component_id_str = std::string(str, str + size);
 	}
 
