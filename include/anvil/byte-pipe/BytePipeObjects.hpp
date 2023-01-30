@@ -380,12 +380,16 @@ namespace anvil { namespace BytePipe {
 			_primitive_array_type(TYPE_NULL)
 		{}
 
-		explicit Value(const Pod& value) :
-			_primitive(),
-			_primitive_array_type(TYPE_POD)
+		explicit Value(Pod&& value) :
+			Value()
 		{
-			SetPod();
-			GetPod() = value;
+			SetPod() = std::move(value);
+		}
+
+		explicit Value(const Pod& value) :
+			Value()
+		{
+			SetPod() = value;
 		}
 
 		~Value() {
