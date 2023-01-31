@@ -635,14 +635,14 @@ namespace anvil { namespace BytePipe {
 			\param id The component ID of the value.
 			\param value The value to add.
 		*/
-		ANVIL_STRONG_INLINE void AddValue(const ComponentID id, Value&& value) {
-			if (_primitive.type != TYPE_OBJECT) throw std::runtime_error("Value::AddValue : Value is not an object");
-			static_cast<Object*>(_primitive.ptr)->emplace(std::to_string(id), std::move(value));
+		ANVIL_STRONG_INLINE Value& AddValue(const ComponentID id, Value&& value) {
+			return AddValue(std::to_string(id), std::move(value));
 		}
 
-		ANVIL_STRONG_INLINE void AddValue(const std::string& id, Value&& value) {
+		ANVIL_STRONG_INLINE Value& AddValue(const std::string& id, Value&& value) {
 			if (_primitive.type != TYPE_OBJECT) throw std::runtime_error("Value::AddValue : Value is not an object");
 			static_cast<Object*>(_primitive.ptr)->emplace(id, std::move(value));
+			return static_cast<Object*>(_primitive.ptr)->find(id)->second;
 		}
 
 		ANVIL_STRONG_INLINE bool GetBool() const {
@@ -725,12 +725,29 @@ namespace anvil { namespace BytePipe {
 
 		/*!
 			\brief Get a child value of an array or object.
+			\param index The index in an array or the componend ID of an object.
+			\return The value at the location.
+		*/
+		Value* GetValue2(const size_t index) throw();
+		Value* GetValue2(const std::string& index) throw();
+
+		/*!
+			\brief Get a child value of an array or object.
 			\details Throws an exception if the index is out of bounds or the component ID doesn't exist.
 			\param index The index in an array or the componend ID of an object.
 			\return The value at the location.
 		*/
-		Value& GetValue(const size_t index);
-		Value& GetValue(const std::string& index);
+		ANVIL_STRONG_INLINE Value& GetValue(const size_t index) {
+			Value* tmp = GetValue2(index);
+			if (tmp == nullptr) throw std::runtime_error("Value::GetValue : No value found at index " + std::to_string(index));
+			return *tmp;
+		}
+
+		ANVIL_STRONG_INLINE Value& GetValue(const std::string& index) {
+			Value* tmp = GetValue2(index);
+			if (tmp == nullptr) throw std::runtime_error("Value::GetValue : No value found at index '" + index + "'");
+			return *tmp;
+		}
 
 		/*!
 			\brief Return the base address of an array of primitive values

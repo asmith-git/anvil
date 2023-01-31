@@ -540,17 +540,17 @@ FLOATING_POINT:
 		return *static_cast<Pod*>(_primitive.ptr);
 	}
 
-	Value& Value::GetValue(const size_t index) {
+	Value* Value::GetValue2(const size_t index) throw() {
 		switch (_primitive.type) {
 		case TYPE_ARRAY:
 			{
 				if (_primitive_array_type == TYPE_NULL) {
 					Array& myArray = *static_cast<Array*>(_primitive.ptr);
-					if (index >= myArray.size()) throw std::runtime_error("Value::GetValue : Index out of bounds");
-					return myArray[index];
+					if (index >= myArray.size()) return nullptr;
+					return &myArray[index];
 				} else {
 					PrimitiveArray& myArray = *static_cast<PrimitiveArray*>(_primitive.ptr);
-					if (index >= GetSize()) throw std::runtime_error("Value::GetValue : Index out of bounds");
+					if (index >= GetSize()) return nullptr;
 
 					thread_local Value g_tmp_value;
 
@@ -596,29 +596,28 @@ FLOATING_POINT:
 						break;
 					}
 
-					return g_tmp_value;
+					return &g_tmp_value;
 				}
 			}
 		case TYPE_OBJECT:
-			return GetValue(std::to_string(index));
+			return GetValue2(std::to_string(index));
 		default:
-			throw std::runtime_error("Value::GetValue : Value is not an array or object");
+			return nullptr;
 		}
 	}
-	
 
-	Value& Value::GetValue(const std::string& index) {
+	Value* Value::GetValue2(const std::string& index) throw() {
 		switch (_primitive.type) {
 		case TYPE_OBJECT:
 			{
 				Object& myObject = *static_cast<Object*>(_primitive.ptr);
 				auto i = myObject.find(index);
-				if (i == myObject.end()) throw std::runtime_error("Value::GetValue : No member object with component ID");
-				return i->second;
+				if (i == myObject.end()) return nullptr;
+				return &i->second;
 			}
 			break;
 		default:
-			throw std::runtime_error("Value::GetValue : Value is not an array or object");
+			return nullptr;
 		}
 	}
 

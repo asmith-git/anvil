@@ -219,7 +219,7 @@ void PopulateBytePipeTest(anvil::BytePipe::Parser& writer) {
 					dst[2] = rand();
 					dst[3] = 255;
 				}
-				writer.OnImage(tmp);
+				writer.OnImage(tmp, anvil::BytePipe::IMAGE_JPEG, 90.f);
 			}
 
 	writer.OnObjectEnd();

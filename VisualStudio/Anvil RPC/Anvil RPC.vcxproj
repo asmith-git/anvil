@@ -18,35 +18,45 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\anvil\RPC.hpp" />
+    <ClInclude Include="..\..\include\anvil\RPC\Client.hpp" />
+    <ClInclude Include="..\..\include\anvil\RPC\Method.hpp" />
+    <ClInclude Include="..\..\include\anvil\RPC\Server.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\anvil\RPC\Client.cpp" />
+    <ClCompile Include="..\..\src\anvil\RPC\Server.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{EDF3130F-BC60-4DD1-918E-C277321D14E3}</ProjectGuid>
+    <ProjectGuid>{B7764E47-5659-4C46-AEFA-1D57DA736750}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>TestApplication</RootNamespace>
+    <RootNamespace>AnvilCore</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -92,22 +102,20 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>
-      </PrecompiledHeaderFile>
+      <PrecompiledHeaderFile />
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>C:\C++\OpenCV_410\include;C:\C++\GSL\include;C:\C++\json;C:\C++\RapidXML\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Anvil Core.lib;Anvil Utils.lib;Anvil Compute.lib;Anvil Byte Pipe.lib;Anvil Console.lib;Anvil RPC.lib;opencv_world410d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\C++\OpenCV_410\$(PlatformShortName)\vc15\lib;$(ProjectDir)\..\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
-    <PostBuildEvent>
-      <Command>COPY /y "C:\C++\OpenCV_410\$(PlatformShortName)\vc15\bin\*.dll" "$(OutDir)"</Command>
-    </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>Anvil Byte Pipe.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\C++\OpenCV_410\$(PlatformShortName)\vc15\lib;$(OutDir)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -115,22 +123,20 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>
-      </PrecompiledHeaderFile>
+      <PrecompiledHeaderFile />
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>C:\C++\OpenCV_410\include;C:\C++\GSL\include;C:\C++\json;C:\C++\RapidXML\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Anvil Core.lib;Anvil Utils.lib;Anvil Compute.lib;Anvil Byte Pipe.lib;Anvil Console.lib;Anvil RPC.lib;opencv_world410d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\C++\OpenCV_410\$(PlatformShortName)\vc15\lib;$(ProjectDir)\..\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
-    <PostBuildEvent>
-      <Command>COPY /y "C:\C++\OpenCV_410\$(PlatformShortName)\vc15\bin\*.dll" "$(OutDir)"</Command>
-    </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>Anvil Byte Pipe.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\C++\OpenCV_410\$(PlatformShortName)\vc15\lib;$(OutDir)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -140,24 +146,22 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ANVIL_CONTRACT_MODE=ANVIL_CONTRACT_IGNORE;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>
-      </PrecompiledHeaderFile>
+      <PrecompiledHeaderFile />
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>C:\C++\OpenCV_410\include;C:\C++\GSL\include;C:\C++\json;C:\C++\RapidXML\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Anvil Core.lib;Anvil Utils.lib;Anvil Compute.lib;Anvil Byte Pipe.lib;Anvil Console.lib;Anvil RPC.lib;opencv_world410.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\C++\OpenCV_410\$(PlatformShortName)\vc15\lib;$(ProjectDir)\..\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
-    <PostBuildEvent>
-      <Command>COPY /y "C:\C++\OpenCV_410\$(PlatformShortName)\vc15\bin\*.dll" "$(OutDir)"</Command>
-    </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>Anvil Byte Pipe.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\C++\OpenCV_410\$(PlatformShortName)\vc15\lib;$(OutDir)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -167,28 +171,23 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ANVIL_CONTRACT_MODE=ANVIL_CONTRACT_IGNORE;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>
-      </PrecompiledHeaderFile>
+      <PrecompiledHeaderFile />
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>C:\C++\OpenCV_410\include;C:\C++\GSL\include;C:\C++\json;C:\C++\RapidXML\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Anvil Core.lib;Anvil Utils.lib;Anvil Compute.lib;Anvil Byte Pipe.lib;Anvil Console.lib;Anvil RPC.lib;opencv_world410.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\C++\OpenCV_410\$(PlatformShortName)\vc15\lib;$(ProjectDir)\..\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
-    <PostBuildEvent>
-      <Command>COPY /y "C:\C++\OpenCV_410\$(PlatformShortName)\vc15\bin\*.dll" "$(OutDir)"</Command>
-    </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>Anvil Byte Pipe.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\C++\OpenCV_410\$(PlatformShortName)\vc15\lib;$(OutDir)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="TestApplication.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

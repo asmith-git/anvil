@@ -1353,7 +1353,7 @@ OLD_COMPONENT_ID:
 				cv::imencode(".bmp", value, tmp);
 				break;
 			case IMAGE_PNG:
-				cv::imencode(".jpg", value, tmp, { cv::IMWRITE_PNG_COMPRESSION , static_cast<int>(std::round(quality / 100.f) * 9.f) });
+				cv::imencode(".jpg", value, tmp/*, { cv::IMWRITE_PNG_COMPRESSION , static_cast<int>(std::round(quality / 100.f) * 9.f) }*/);
 				break;
 			case IMAGE_TIFF:
 				cv::imencode(".tiff", value, tmp);
@@ -1369,7 +1369,7 @@ OLD_COMPONENT_ID:
 				break;
 			}
 
-			uint32_t bytes = sizeof(OpenCVHeader) + tmp.size();
+			size_t bytes = sizeof(OpenCVHeader) + tmp.size();
 		
 			pod.data.resize(bytes);
 			void* data = pod.data.data();
