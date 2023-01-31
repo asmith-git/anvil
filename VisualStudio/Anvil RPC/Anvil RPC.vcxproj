@@ -21,11 +21,13 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\anvil\RPC.hpp" />
     <ClInclude Include="..\..\include\anvil\RPC\Client.hpp" />
+    <ClInclude Include="..\..\include\anvil\RPC\ClientExample.hpp" />
     <ClInclude Include="..\..\include\anvil\RPC\Method.hpp" />
     <ClInclude Include="..\..\include\anvil\RPC\Server.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\anvil\RPC\Client.cpp" />
+    <ClCompile Include="..\..\src\anvil\RPC\ClientExample.cpp" />
     <ClCompile Include="..\..\src\anvil\RPC\Server.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
