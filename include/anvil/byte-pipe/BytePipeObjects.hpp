@@ -927,7 +927,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		template<class T>
-		Value(const std::vector<T>& value) :
+		explicit Value(const std::vector<T>& value) :
 			Value()
 		{
 			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<T>())) {

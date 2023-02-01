@@ -43,7 +43,7 @@ namespace anvil { namespace RPC {
 
 		BytePipe::ReadJSON(json, parser);
 
-		BytePipe::Value value = parser.GetValue();
+		BytePipe::Value value = std::move(parser.GetValue());
 		parser.OnPipeClose();
 
 		return value;
