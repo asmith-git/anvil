@@ -1118,136 +1118,63 @@ OLD_COMPONENT_ID:
 		NextValue().SetBool(value);
 	}
 
-	void ValueParser::OnPrimitiveArrayC8(const char* src, const size_t size) {
-		Value& v = NextValue();
-		v.SetPrimitiveArray(TYPE_C8);
+	static void CopyToPrimativeArray(const void* src, const size_t size, const size_t bytes, Value::PrimitiveArray& primative_array) {
+		const size_t total_bytes = bytes * size;
+		primative_array.resize(total_bytes);
+		memcpy(primative_array.data(), src, total_bytes);
+	}
 
-		//! \todo optimise
-		for (uint32_t i = 0u; i < size; ++i) {
-			v.AddValue(src[i]);
-		}
+	void ValueParser::OnPrimitiveArrayC8(const char* src, const size_t size) {
+		CopyToPrimativeArray(src, size, sizeof(char), NextValue().SetPrimitiveArray(TYPE_C8));
 	}
 
 	void ValueParser::OnPrimitiveArrayBool(const bool* src, const size_t size) {
-		Value& v = NextValue();
-		v.SetPrimitiveArray(TYPE_BOOL);
-
-		//! \todo optimise
-		for (uint32_t i = 0u; i < size; ++i) {
-			v.AddValue(src[i]);
-		}
+		CopyToPrimativeArray(src, size, sizeof(bool), NextValue().SetPrimitiveArray(TYPE_BOOL));
 	}
 
 	void ValueParser::OnPrimitiveArrayU8(const uint8_t* src, const size_t size) {
-		Value& v = NextValue();
-		v.SetPrimitiveArray(TYPE_U8);
-
-		//! \todo optimise
-		for (size_t i = 0u; i < size; ++i) {
-			v.AddValue(src[i]);
-		}
+		CopyToPrimativeArray(src, size, sizeof(uint8_t), NextValue().SetPrimitiveArray(TYPE_U8));
 	}
 
 	void ValueParser::OnPrimitiveArrayU16(const uint16_t* src, const size_t size) {
-		Value& v = NextValue();
-		v.SetPrimitiveArray(TYPE_U16);
-
-		//! \todo optimise
-		for (size_t i = 0u; i < size; ++i) {
-			v.AddValue(src[i]);
-		}
+		CopyToPrimativeArray(src, size, sizeof(uint16_t), NextValue().SetPrimitiveArray(TYPE_U16));
 	}
 
 	void ValueParser::OnPrimitiveArrayU32(const uint32_t* src, const size_t size) {
-		Value& v = NextValue();
-		v.SetPrimitiveArray(TYPE_U32);
-
-		//! \todo optimise
-		for (size_t i = 0u; i < size; ++i) {
-			v.AddValue(src[i]);
-		}
+		CopyToPrimativeArray(src, size, sizeof(uint32_t), NextValue().SetPrimitiveArray(TYPE_U32));
 	}
 
 	void ValueParser::OnPrimitiveArrayU64(const uint64_t* src, const size_t size) {
-		Value& v = NextValue();
-		v.SetPrimitiveArray(TYPE_U64);
-
-		//! \todo optimise
-		for (size_t i = 0u; i < size; ++i) {
-			v.AddValue(src[i]);
-		}
+		CopyToPrimativeArray(src, size, sizeof(uint64_t), NextValue().SetPrimitiveArray(TYPE_U64));
 	}
 
 	void ValueParser::OnPrimitiveArrayS8(const int8_t* src, const size_t size) {
-		Value& v = NextValue();
-		v.SetPrimitiveArray(TYPE_S8);
-
-		//! \todo optimise
-		for (size_t i = 0u; i < size; ++i) {
-			v.AddValue(src[i]);
-		}
+		CopyToPrimativeArray(src, size, sizeof(int8_t), NextValue().SetPrimitiveArray(TYPE_S8));
 	}
 
 	void ValueParser::OnPrimitiveArrayS16(const int16_t* src, const size_t size) {
-		Value& v = NextValue();
-		v.SetPrimitiveArray(TYPE_S16);
-
-		//! \todo optimise
-		for (size_t i = 0u; i < size; ++i) {
-			v.AddValue(src[i]);
-		}
+		CopyToPrimativeArray(src, size, sizeof(int16_t), NextValue().SetPrimitiveArray(TYPE_S16));
 	}
 
 	void ValueParser::OnPrimitiveArrayS32(const int32_t* src, const size_t size) {
-		Value& v = NextValue();
-		v.SetPrimitiveArray(TYPE_S32);
-
-		//! \todo optimise
-		for (size_t i = 0u; i < size; ++i) {
-			v.AddValue(src[i]);
-		}
+		CopyToPrimativeArray(src, size, sizeof(int32_t), NextValue().SetPrimitiveArray(TYPE_S32));
 	}
 
 	void ValueParser::OnPrimitiveArrayS64(const int64_t* src, const size_t size) {
-		Value& v = NextValue();
-		v.SetPrimitiveArray(TYPE_S64);
-
-		//! \todo optimise
-		for (size_t i = 0u; i < size; ++i) {
-			v.AddValue(src[i]);
-		}
+		CopyToPrimativeArray(src, size, sizeof(int64_t), NextValue().SetPrimitiveArray(TYPE_S64));
 	}
 
 	void ValueParser::OnPrimitiveArrayF16(const half* src, const size_t size) {
-		Value& v = NextValue();
-		v.SetPrimitiveArray(TYPE_F16);
-
-		//! \todo optimise
-		for (size_t i = 0u; i < size; ++i) {
-			v.AddValue(src[i]);
-		}
+		CopyToPrimativeArray(src, size, sizeof(half), NextValue().SetPrimitiveArray(TYPE_F16));
 	}
 
 	void ValueParser::OnPrimitiveArrayF32(const float* src, const size_t size) {
-		Value& v = NextValue();
-		v.SetPrimitiveArray(TYPE_F32);
-
-		//! \todo optimise
-		for (size_t i = 0u; i < size; ++i) {
-			v.AddValue(src[i]);
-		}
+		CopyToPrimativeArray(src, size, sizeof(float), NextValue().SetPrimitiveArray(TYPE_F32));
 	}
 
 	void ValueParser::OnPrimitiveArrayF64(const double* src, const size_t size) {
-		Value& v = NextValue();
-		v.SetPrimitiveArray(TYPE_F64);
-
-		//! \todo optimise
-		for (size_t i = 0u; i < size; ++i) {
-			v.AddValue(src[i]);
-		}
+		CopyToPrimativeArray(src, size, sizeof(double), NextValue().SetPrimitiveArray(TYPE_F64));
 	}
-
 
 	Value& ValueParser::CurrentValue() {
 		return _value_stack.empty() ? _root : *_value_stack.back();

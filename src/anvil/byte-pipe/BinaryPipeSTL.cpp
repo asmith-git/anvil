@@ -27,7 +27,7 @@ namespace anvil { namespace BytePipe {
 
 	size_t IStreamPipe::ReadBytes(void* dst, const size_t bytes) {
 		_stream.read(static_cast<char*>(dst), bytes);
-		return _stream.gcount();
+		return static_cast<size_t>(_stream.gcount());
 	}
 
 	void IStreamPipe::ReadBytesFast(void* dst, const size_t bytes) {
@@ -48,7 +48,7 @@ namespace anvil { namespace BytePipe {
 	size_t OStreamPipe::WriteBytes(const void* src, const size_t bytes) {
 		const auto pos = _stream.tellp();
 		_stream.write(static_cast<const char*>(src), bytes);
-		return _stream.tellp() - pos;
+		return static_cast<size_t>(_stream.tellp() - pos);
 	}
 
 	void OStreamPipe::WriteBytesFast(const void* src, const size_t bytes) {

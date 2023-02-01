@@ -295,6 +295,10 @@ namespace anvil { namespace BytePipe {
 
 	class Value {
 	public:
+		typedef std::vector<Value> Array;
+		typedef std::map<std::string, Value> Object;
+		typedef std::vector<uint8_t> PrimitiveArray;
+
 		struct Pod{
 			std::vector<uint8_t> data;
 			PodType type;
@@ -306,9 +310,6 @@ namespace anvil { namespace BytePipe {
 #endif
 		};
 	private:
-		typedef std::vector<Value> Array;
-		typedef std::vector<uint8_t> PrimitiveArray;
-		typedef std::map<std::string, Value> Object;
 		PrimitiveValue _primitive;
 		Type _primitive_array_type;
 
@@ -392,102 +393,102 @@ namespace anvil { namespace BytePipe {
 			}
 		}
 
-		explicit Value(bool value) :
+		Value(bool value) :
 			_primitive(value),
 			_primitive_array_type(TYPE_NULL)
 		{}
 
-		explicit Value(char value) :
+		Value(char value) :
 			_primitive(value),
 			_primitive_array_type(TYPE_NULL)
 		{}
 
-		explicit Value(uint8_t value) :
+		Value(uint8_t value) :
 			_primitive(value),
 			_primitive_array_type(TYPE_NULL)
 		{}
 
-		explicit Value(uint16_t value) :
+		Value(uint16_t value) :
 			_primitive(value),
 			_primitive_array_type(TYPE_NULL)
 		{}
 
-		explicit Value(uint32_t value) :
+		Value(uint32_t value) :
 			_primitive(value),
 			_primitive_array_type(TYPE_NULL)
 		{}
 
-		explicit Value(uint64_t value) :
+		Value(uint64_t value) :
 			_primitive(value),
 			_primitive_array_type(TYPE_NULL)
 		{}
 
-		explicit Value(int8_t value) :
+		Value(int8_t value) :
 			_primitive(value),
 			_primitive_array_type(TYPE_NULL)
 		{}
 
-		explicit Value(int16_t value) :
+		Value(int16_t value) :
 			_primitive(value),
 			_primitive_array_type(TYPE_NULL)
 		{}
 
-		explicit Value(int32_t value) :
+		Value(int32_t value) :
 			_primitive(value),
 			_primitive_array_type(TYPE_NULL)
 		{}
 
-		explicit Value(int64_t value) :
+		Value(int64_t value) :
 			_primitive(value),
 			_primitive_array_type(TYPE_NULL)
 		{}
 
-		explicit Value(half value) :
+		Value(half value) :
 			_primitive(value),
 			_primitive_array_type(TYPE_NULL)
 		{}
 
-		explicit Value(float value) :
+		Value(float value) :
 			_primitive(value),
 			_primitive_array_type(TYPE_NULL)
 		{}
 
-		explicit Value(double value) :
+		Value(double value) :
 			_primitive(value),
 			_primitive_array_type(TYPE_NULL)
 		{}
 
-		explicit Value(const PrimitiveValue& value) :
+		Value(const PrimitiveValue& value) :
 			_primitive(value),
 			_primitive_array_type(TYPE_NULL)
 		{}
 
-		explicit Value(const char* string) :
+		Value(const char* string) :
 			Value()
 		{
 			SetString() = string;
 		}
 
-		explicit Value(const std::string& string) :
+		Value(const std::string& string) :
 			Value()
 		{
 			SetString() = string;
 		}
 
-		explicit Value(Pod&& value) :
+		Value(Pod&& value) :
 			Value()
 		{
 			SetPod() = std::move(value);
 		}
 
-		explicit Value(const Pod& value) :
+		Value(const Pod& value) :
 			Value()
 		{
 			SetPod() = value;
 		}
 
 #if ANVIL_OPENCV_SUPPORT
-		explicit Value(const cv::Mat& img) :
+		Value(const cv::Mat& img) :
 			Value(Pod::CreatePODFromCVMat(img))
 		{}
 #endif
@@ -672,31 +673,34 @@ namespace anvil { namespace BytePipe {
 			\brief Set the value to be an array.
 			\details Previous value will be lost.
 		*/
-		void SetArray();
+		Array& SetArray();
+
 		/*!
 			\brief Same as SetArray but the array can only contain one primitive type
 		*/
-		void SetPrimitiveArray(Type type);
+		PrimitiveArray& SetPrimitiveArray(Type type);
 
 		/*!
 			\brief Append a value to the end of the array.
 			\details Throws exception is value is not an array.
+			\return Points to the value that was added, will be nullptr instead if this is a primative array
 			\param value The value to add.
 		*/
-		void AddValue(Value&& value);
+		Value* AddValue(Value&& value);
 
 		/*!
 			\brief Append a value to the end of the array.
 			\details Throws exception is value is not an array.
+			\return Points to the value that was added, will be nullptr instead if this is a primative array
 			\param value The value to add.
 		*/
-		void AddValue(const PrimitiveValue& value);
+		Value* AddValue(const PrimitiveValue& value);
 
 		/*!
 			\brief Set the value to be an object.
 			\details Previous value will be lost.
 		*/
-		void SetObject();
+		Object& SetObject();
 
 
 		ANVIL_STRONG_INLINE Value& AddValue(const std::string& id) {
@@ -794,6 +798,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		std::string& GetString();
+		std::string GetString() const;
 
 		Pod& GetPod();
 		const Pod& GetPod() const; 
@@ -872,97 +877,40 @@ namespace anvil { namespace BytePipe {
 		ANVIL_STRONG_INLINE bool IsFloatingPoint() const { return _primitive.IsFloatingPoint(); }
 		ANVIL_STRONG_INLINE bool IsNumeric() const { return _primitive.IsNumeric(); }
 		ANVIL_STRONG_INLINE bool IsPrimitive() const { return _primitive.IsPrimitive(); }
-		
-		ANVIL_STRONG_INLINE bool IsPod() const {
-			return GetType() == TYPE_POD;
-		}
+		ANVIL_STRONG_INLINE bool IsNull() const { return GetType() == TYPE_NULL; }
+		ANVIL_STRONG_INLINE bool IsArray() const { return GetType() == TYPE_ARRAY; }
+		ANVIL_STRONG_INLINE bool IsObject() const { return GetType() == TYPE_OBJECT; }
+		ANVIL_STRONG_INLINE bool IsPod() const { return GetType() == TYPE_POD; }
 
 #if ANVIL_OPENCV_SUPPORT
-		ANVIL_STRONG_INLINE bool IsImage() const {
-			return IsPod() && GetPod().type == POD_OPENCV_IMAGE;
-		}
+		ANVIL_STRONG_INLINE bool IsImage() const { return IsPod() && GetPod().type == POD_OPENCV_IMAGE;}
 #endif
 
-		ANVIL_STRONG_INLINE bool IsPrimitiveArray() const {
-			return _primitive_array_type != TYPE_BOOL && GetType() == TYPE_ARRAY;
-		}
+		ANVIL_STRONG_INLINE bool IsPrimitiveArray() const { return _primitive_array_type != TYPE_BOOL && GetType() == TYPE_ARRAY; }
+		ANVIL_STRONG_INLINE Type GetPrimitiveArrayType() const { return _primitive_array_type; }
 
-		ANVIL_STRONG_INLINE Type GetPrimitiveArrayType() const {
-			return _primitive_array_type;
-		}
+		ANVIL_STRONG_INLINE Value& operator[] (const size_t i) { return GetValue(i); }
+		ANVIL_STRONG_INLINE const Value& operator[] (const size_t i) const { return const_cast<Value*>(this)->GetValue(i); }
 
-		ANVIL_STRONG_INLINE Value& operator[] (const size_t i) {
-			return GetValue(i);
-		}
-
-		ANVIL_STRONG_INLINE const Value& operator[] (const size_t i) const{
-			return const_cast<Value*>(this)->GetValue(i);
-		}
-
-		explicit ANVIL_STRONG_INLINE operator bool() const {
-			return GetBool();
-		}
-
-		explicit ANVIL_STRONG_INLINE operator char() const {
-			return GetC8();
-		}
-
-		explicit ANVIL_STRONG_INLINE operator uint8_t() const {
-			return GetU8();
-		}
-
-		explicit ANVIL_STRONG_INLINE operator uint16_t() const {
-			return GetU16();
-		}
-
-		explicit ANVIL_STRONG_INLINE operator uint32_t() const {
-			return GetU32();
-		}
-
-		explicit ANVIL_STRONG_INLINE operator uint64_t() const {
-			return GetU64();
-		}
-
-		explicit ANVIL_STRONG_INLINE operator int8_t() const {
-			return GetS8();
-		}
-
-		explicit ANVIL_STRONG_INLINE operator int16_t() const {
-			return GetS16();
-		}
-
-		explicit ANVIL_STRONG_INLINE operator int32_t() const {
-			return GetS32();
-		}
-
-		explicit ANVIL_STRONG_INLINE operator int64_t() const {
-			return GetS64();
-		}
-
-		explicit ANVIL_STRONG_INLINE operator half() const {
-			return GetF16();
-		}
-
-		explicit ANVIL_STRONG_INLINE operator float() const {
-			return GetF32();
-		}
-
-		explicit ANVIL_STRONG_INLINE operator double() const {
-			return GetF64();
-		}
-
-		explicit ANVIL_STRONG_INLINE operator std::string() const {
-			return const_cast<Value*>(this)->GetString();
-		}
-
-		explicit ANVIL_STRONG_INLINE operator const Pod&() const {
-			return GetPod();
-		}
+		explicit ANVIL_STRONG_INLINE operator bool() const { return GetBool(); }
+		explicit ANVIL_STRONG_INLINE operator char() const { return GetC8(); }
+		explicit ANVIL_STRONG_INLINE operator uint8_t() const { return GetU8(); }
+		explicit ANVIL_STRONG_INLINE operator uint16_t() const { return GetU16(); }
+		explicit ANVIL_STRONG_INLINE operator uint32_t() const { return GetU32(); }
+		explicit ANVIL_STRONG_INLINE operator uint64_t() const { return GetU64(); }
+		explicit ANVIL_STRONG_INLINE operator int8_t() const { return GetS8(); }
+		explicit ANVIL_STRONG_INLINE operator int16_t() const { return GetS16(); }
+		explicit ANVIL_STRONG_INLINE operator int32_t() const { return GetS32(); }
+		explicit ANVIL_STRONG_INLINE operator int64_t() const { return GetS64(); }
+		explicit ANVIL_STRONG_INLINE operator half() const { return GetF16(); }
+		explicit ANVIL_STRONG_INLINE operator float() const { return GetF32(); }
+		explicit ANVIL_STRONG_INLINE operator double() const { return GetF64(); }
+		explicit ANVIL_STRONG_INLINE operator  std::string&() { return GetString(); }
+		explicit ANVIL_STRONG_INLINE operator const std::string&() const { return GetString(); }
+		explicit ANVIL_STRONG_INLINE operator const Pod&() const { return GetPod(); }
 
 #if ANVIL_OPENCV_SUPPORT
-		explicit ANVIL_STRONG_INLINE operator cv::Mat() const {
-			return GetImage();
-		}
+		explicit ANVIL_STRONG_INLINE operator cv::Mat() const { return GetImage(); }
 #endif
 
 		template<class T>

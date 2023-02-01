@@ -340,7 +340,7 @@ FLOATING_POINT:
 		return *static_cast<Pod*>(_primitive.ptr);
 	}
 
-	void Value::SetArray() {
+	Value::Array& Value::SetArray() {
 		if (_primitive.type == TYPE_ARRAY && !_primitive_array_type == TYPE_NULL) {
 			static_cast<Array*>(_primitive.ptr)->clear();
 		} else {
@@ -349,9 +349,11 @@ FLOATING_POINT:
 			_primitive.type = TYPE_ARRAY;
 			_primitive_array_type = TYPE_NULL;
 		}
+
+		return *static_cast<Array*>(_primitive.ptr);
 	}
 
-	void Value::SetPrimitiveArray(Type type) {
+	Value::PrimitiveArray& Value::SetPrimitiveArray(Type type) {
 		if (_primitive.type == TYPE_ARRAY && !_primitive_array_type != TYPE_NULL) {
 			static_cast<PrimitiveArray*>(_primitive.ptr)->clear();
 		} else {
@@ -360,6 +362,7 @@ FLOATING_POINT:
 			_primitive.type = TYPE_ARRAY;
 			_primitive_array_type = type;
 		}
+		return *static_cast<PrimitiveArray*>(_primitive.ptr);
 	}
 
 	template<class T>
@@ -391,11 +394,12 @@ FLOATING_POINT:
 		}
 	}
 
-	void Value::AddValue(const PrimitiveValue& value) {
+	Value* Value::AddValue(const PrimitiveValue& value) {
 		if (_primitive.type != TYPE_ARRAY) throw std::runtime_error("Value::AddValue : Value is not an array");
 
 		if (_primitive_array_type == TYPE_NULL) {
 			static_cast<Array*>(_primitive.ptr)->push_back(std::move(Value(value)));
+			return &static_cast<Array*>(_primitive.ptr)->back();
 
 		} else {
 			switch (_primitive_array_type) {
@@ -438,7 +442,13 @@ FLOATING_POINT:
 			case TYPE_BOOL:
 				AddValueTemplate<bool>(*static_cast<PrimitiveArray*>(_primitive.ptr), value);
 				break;
+			default:
+				ConvertFromPrimitveArray();
+				return AddValue(value);
+				break;
 			}
+
+			return nullptr;
 		}
 	}
 
@@ -489,22 +499,21 @@ FLOATING_POINT:
 		}
 	}
 
-	void Value::AddValue(Value&& value) {
+	Value* Value::AddValue(Value&& value) {
 		// Handle primitive data types in a way that is optimised for them
 		if (value.IsPrimitive()) {
-			AddValue(value._primitive);
+			return AddValue(value._primitive);
 
 		// Complex values
 		} else {
-
 			if (_primitive.type != TYPE_ARRAY) throw std::runtime_error("Value::AddValue : Value is not an array");
-
 			if (_primitive_array_type != TYPE_NULL) ConvertFromPrimitveArray();
 			static_cast<Array*>(_primitive.ptr)->push_back(std::move(value));
+			return &static_cast<Array*>(_primitive.ptr)->back();
 		}
 	}
 
-	void Value::SetObject() {
+	Value::Object& Value::SetObject() {
 		// If the value is already an object then clear it
 		if (_primitive.type == TYPE_OBJECT) {
 			static_cast<Object*>(_primitive.ptr)->clear();
@@ -515,20 +524,35 @@ FLOATING_POINT:
 			_primitive.ptr = new Object();
 			_primitive.type = TYPE_OBJECT;
 		}
+
+		return *static_cast<Object*>(_primitive.ptr);
 	}
 
-	std::string& Value::GetString() {
-		if (_primitive.type != TYPE_STRING) {
+	std::string Value::GetString() const {
+		if (_primitive.type == TYPE_STRING) {
+			return *static_cast<std::string*>(_primitive.ptr);
+		} else {
 			char buffer[64];
 			if (_primitive.type == TYPE_C8) {
 				buffer[0u] = GetC8();
 				buffer[1u] = '\0';
+
+			} else if (IsUnsigned()) {
+				sprintf(buffer, "%u", GetU32());
+
+			} else if (IsSigned()) {
+				sprintf(buffer, "%i", GetS32());
+
 			} else {
-				const double f64 = GetF64();
-				sprintf(buffer, "%f", f64);
+				sprintf(buffer, "%f", GetF64());
 			}
-			SetString(buffer);
+
+			return buffer;
 		}
+	}
+
+	std::string& Value::GetString() {
+		if (_primitive.type != TYPE_STRING) SetString() = std::move(const_cast<Value*>(this)->GetString());
 		return *static_cast<std::string*>(_primitive.ptr);
 	}
 
