@@ -308,7 +308,7 @@ FLOATING_POINT:
 		_primitive.type = TYPE_NULL;
 	}
 
-	void Value::SetString(const char* value) {
+	std::string& Value::SetString(const char* value) {
 		if (_primitive.type == TYPE_STRING) {
 			if (value == nullptr) {
 				static_cast<std::string*>(_primitive.ptr)->clear();
@@ -324,6 +324,8 @@ FLOATING_POINT:
 			}
 			_primitive.type = TYPE_STRING;
 		}
+
+		return *static_cast<std::string*>(_primitive.ptr);
 	}
 
 	Value::Pod& Value::SetPod() {
@@ -515,7 +517,7 @@ FLOATING_POINT:
 		}
 	}
 
-	const char* Value::GetString() {
+	std::string& Value::GetString() {
 		if (_primitive.type != TYPE_STRING) {
 			char buffer[64];
 			if (_primitive.type == TYPE_C8) {
@@ -527,7 +529,7 @@ FLOATING_POINT:
 			}
 			SetString(buffer);
 		}
-		return static_cast<std::string*>(_primitive.ptr)->c_str();
+		return *static_cast<std::string*>(_primitive.ptr);
 	}
 
 	const Value::Pod& Value::GetPod() const {
@@ -639,6 +641,7 @@ FLOATING_POINT:
 				uint32_t j = index;
 				while (j != 0u) {
 					++i;
+					--j;
 				}
 				return static_cast<ComponentID>(std::stoi(i->first));
 			}
@@ -658,6 +661,7 @@ FLOATING_POINT:
 				uint32_t j = index;
 				while (j != 0u) {
 					++i;
+					--j;
 				}
 				return i->first;
 			}

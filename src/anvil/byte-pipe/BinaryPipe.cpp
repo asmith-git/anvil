@@ -1032,7 +1032,8 @@ OLD_COMPONENT_ID:
 	}
 
 	void ValueParser::OnComponentID(const ComponentID id) {
-		_component_id = id;
+		std::string str = std::to_string(id);
+		OnComponentID(str.c_str(), str.size());
 	}
 
 	void ValueParser::OnComponentID(const char* str, size_t size) {
@@ -1264,17 +1265,9 @@ OLD_COMPONENT_ID:
 			break;
 		case TYPE_OBJECT:
 			{
-				Value tmp;
-				if (_component_id_str.empty()) {
-					val.AddValue(_component_id, std::move(tmp));
-					return val.GetValue(_component_id);
-
-				} else {
-					std::string idstr = std::move(_component_id_str);
-					idstr.clear();
-					val.AddValue(idstr, std::move(tmp));
-					return val.GetValue(idstr);
-				}
+				Value& tmp = val.AddValue(_component_id_str);
+				_component_id_str.clear();
+				return tmp;
 			}
 			break;
 		default:
@@ -1390,8 +1383,8 @@ OLD_COMPONENT_ID:
 		switch (value.GetType()) {
 		case TYPE_STRING:
 			{
-				const char* str = const_cast<Value&>(value).GetString();
-				OnPrimitiveString(str, static_cast<uint32_t>(strlen(str)));
+				const std::string& str = const_cast<Value&>(value).GetString();
+				OnPrimitiveString(str.c_str(), str.size());
 			}
 			break;
 		case TYPE_ARRAY:
@@ -1453,7 +1446,7 @@ OLD_COMPONENT_ID:
 				const uint32_t size = static_cast<uint32_t>(value.GetSize());
 				OnObjectBegin(size);
 				for (uint32_t i = 0u; i < size; ++i) {
-					const ComponentID id = value.GetComponentID(i);
+					const std::string id = value.GetComponentIDString(i);
 					OnComponentID(id);
 					OnValue(const_cast<Value&>(value).GetValue(id));
 				}

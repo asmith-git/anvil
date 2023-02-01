@@ -739,7 +739,6 @@ namespace anvil { namespace BytePipe {
 		Value _root;
 		std::vector<Value*> _value_stack;
 		std::string _component_id_str;
-		ComponentID _component_id;
 
 		Value& CurrentValue();
 		Value& NextValue();

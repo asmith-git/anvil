@@ -334,6 +334,64 @@ namespace anvil { namespace BytePipe {
 			_primitive.u64 = 0u;
 		}
 
+		Value(const Type type) :
+			Value()
+		{
+			switch(type) {
+			case TYPE_C8:
+				SetC8();
+				break;
+			case TYPE_U8:
+				SetU8();
+				break;
+			case TYPE_U16:
+				SetU16();
+				break;
+			case TYPE_U32:
+				SetU32();
+				break;
+			case TYPE_U64:
+				SetU64();
+				break;
+			case TYPE_S8:
+				SetS8();
+				break;
+			case TYPE_S16:
+				SetS16();
+				break;
+			case TYPE_S32:
+				SetS32();
+				break;
+			case TYPE_S64:
+				SetS64();
+				break;
+			case TYPE_F16:
+				SetF16();
+				break;
+			case TYPE_F32:
+				SetF32();
+				break;
+			case TYPE_F64:
+				SetF64();
+				break;
+			case TYPE_STRING:
+				SetString();
+				break;
+			case TYPE_ARRAY:
+				SetArray();
+				break;
+			case TYPE_OBJECT:
+				SetObject();
+				break;
+			case TYPE_BOOL:
+				SetBool();
+				break;
+			case TYPE_POD:
+				SetPod();
+				break;
+			}
+		}
+
 		explicit Value(bool value) :
 			_primitive(value),
 			_primitive_array_type(TYPE_NULL)
@@ -403,6 +461,18 @@ namespace anvil { namespace BytePipe {
 			_primitive(value),
 			_primitive_array_type(TYPE_NULL)
 		{}
+
+		explicit Value(const char* string) :
+			Value()
+		{
+			SetString() = string;
+		}
+
+		explicit Value(const std::string& string) :
+			Value()
+		{
+			SetString() = string;
+		}
 
 		explicit Value(Pod&& value) :
 			Value()
@@ -583,7 +653,7 @@ namespace anvil { namespace BytePipe {
 			\details Previous value will be lost.
 			\param value The value to copy, nullptr results in an empty string.
 		*/
-		void SetString(const char* value = nullptr);
+		std::string& SetString(const char* value = nullptr);
 
 		/*!
 			\brief Set the value to be a POD.
@@ -628,6 +698,17 @@ namespace anvil { namespace BytePipe {
 		*/
 		void SetObject();
 
+
+		ANVIL_STRONG_INLINE Value& AddValue(const std::string& id) {
+			if (_primitive.type != TYPE_OBJECT) throw std::runtime_error("Value::AddValue : Value is not an object");
+			static_cast<Object*>(_primitive.ptr)->emplace(id, Value());
+			return static_cast<Object*>(_primitive.ptr)->find(id)->second;
+		}
+
+		ANVIL_STRONG_INLINE Value& AddValue(const ComponentID id) {
+			return AddValue(std::to_string(id));
+		}
+
 		/*!
 			\brief Add a member value to an object.
 			\details Throws exception is value is not an object.
@@ -636,13 +717,15 @@ namespace anvil { namespace BytePipe {
 			\param value The value to add.
 		*/
 		ANVIL_STRONG_INLINE Value& AddValue(const ComponentID id, Value&& value) {
-			return AddValue(std::to_string(id), std::move(value));
+			Value& val = AddValue(id);
+			val.Swap(value);
+			return val;
 		}
 
 		ANVIL_STRONG_INLINE Value& AddValue(const std::string& id, Value&& value) {
-			if (_primitive.type != TYPE_OBJECT) throw std::runtime_error("Value::AddValue : Value is not an object");
-			static_cast<Object*>(_primitive.ptr)->emplace(id, std::move(value));
-			return static_cast<Object*>(_primitive.ptr)->find(id)->second;
+			Value& val = AddValue(id);
+			val.Swap(value);
+			return val;
 		}
 
 		ANVIL_STRONG_INLINE bool GetBool() const {
@@ -710,7 +793,7 @@ namespace anvil { namespace BytePipe {
 			throw std::runtime_error("Value::GetF64 : Value cannot be converted to 64-bit floating point");
 		}
 
-		const char* GetString();
+		std::string& GetString();
 
 		Pod& GetPod();
 		const Pod& GetPod() const; 
@@ -881,12 +964,6 @@ namespace anvil { namespace BytePipe {
 			return GetImage();
 		}
 #endif
-
-		explicit Value(const std::string& value) :
-			Value()
-		{
-			SetString(value.c_str());
-		}
 
 		template<class T>
 		explicit ANVIL_STRONG_INLINE operator std::vector<T>() const {
