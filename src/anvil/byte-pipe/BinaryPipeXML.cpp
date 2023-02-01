@@ -241,7 +241,7 @@ namespace anvil { namespace BytePipe {
 	}
 
 	template<class T>
-	static T ReadPrimative(const rapidxml::xml_node<>& node) {
+	static T ReadPrimitive(const rapidxml::xml_node<>& node) {
 		if ANVIL_CONSTEXPR_FN (std::is_same<bool, T>::value) {
 			if (strcmp(node.value(), "true") == 0) return true;
 			if (strcmp(node.value(), "false") == 0) return false;
@@ -325,51 +325,51 @@ namespace anvil { namespace BytePipe {
 				return;
 
 			} else if (strcmp(anvil_type_str, "uint8") == 0) {
-				parser.OnPrimitiveU8(ReadPrimative<uint8_t>(node));
+				parser.OnPrimitiveU8(ReadPrimitive<uint8_t>(node));
 				return;
 
 			} else if (strcmp(anvil_type_str, "uint16") == 0) {
-				parser.OnPrimitiveU16(ReadPrimative<uint16_t>(node));
+				parser.OnPrimitiveU16(ReadPrimitive<uint16_t>(node));
 				return;
 
 			} else if (strcmp(anvil_type_str, "uint32") == 0) {
-				parser.OnPrimitiveU32(ReadPrimative<uint32_t>(node));
+				parser.OnPrimitiveU32(ReadPrimitive<uint32_t>(node));
 				return;
 
 			} else if (strcmp(anvil_type_str, "uint64") == 0 || strcmp(anvil_type_str, "uint") == 0) {
-				parser.OnPrimitiveU64(ReadPrimative<uint64_t>(node));
+				parser.OnPrimitiveU64(ReadPrimitive<uint64_t>(node));
 				return;
 
 			} else if (strcmp(anvil_type_str, "int8") == 0) {
-				parser.OnPrimitiveS8(ReadPrimative<int8_t>(node));
+				parser.OnPrimitiveS8(ReadPrimitive<int8_t>(node));
 				return;
 
 			} else if (strcmp(anvil_type_str, "int16") == 0) {
-				parser.OnPrimitiveS16(ReadPrimative<int16_t>(node));
+				parser.OnPrimitiveS16(ReadPrimitive<int16_t>(node));
 				return;
 
 			} else if (strcmp(anvil_type_str, "int32") == 0) {
-				parser.OnPrimitiveS32(ReadPrimative<int32_t>(node));
+				parser.OnPrimitiveS32(ReadPrimitive<int32_t>(node));
 				return;
 
 			} else if (strcmp(anvil_type_str, "int64") == 0 || strcmp(anvil_type_str, "int") == 0) {
-				parser.OnPrimitiveS64(ReadPrimative<int64_t>(node));
+				parser.OnPrimitiveS64(ReadPrimitive<int64_t>(node));
 				return;
 
 			} else if (strcmp(anvil_type_str, "float32") == 0) {
-				parser.OnPrimitiveF32(ReadPrimative<float>(node));
+				parser.OnPrimitiveF32(ReadPrimitive<float>(node));
 				return;
 
 			} else if (strcmp(anvil_type_str, "float64") == 0 || strcmp(anvil_type_str, "float") == 0) {
-				parser.OnPrimitiveF64(ReadPrimative<double>(node));
+				parser.OnPrimitiveF64(ReadPrimitive<double>(node));
 				return;
 
 			} else if (strcmp(anvil_type_str, "bool") == 0 || strcmp(anvil_type_str, "boolean") == 0) {
-				parser.OnPrimitiveBool(ReadPrimative<bool>(node));
+				parser.OnPrimitiveBool(ReadPrimitive<bool>(node));
 				return;
 
 			} else if (strcmp(anvil_type_str, "char") == 0) {
-				parser.OnPrimitiveC8(ReadPrimative<char>(node));
+				parser.OnPrimitiveC8(ReadPrimitive<char>(node));
 				return;
 
 			} else if (strcmp(anvil_type_str, "null") == 0) {

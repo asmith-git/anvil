@@ -247,22 +247,19 @@ FLOATING_POINT:
 			break;
 		case TYPE_ARRAY:
 			if(other._primitive_array_type == TYPE_NULL) {
-				SetArray();
-				Array& myArray = *static_cast<Array*>(_primitive.ptr);
-				const Array& otherArray = *static_cast<Array*>(other._primitive.ptr);
+				Array& myArray = SetArray();
+				const Array& otherArray = *other.GetArray();
 				myArray = otherArray;
 			} else {
-				SetPrimitiveArray(other._primitive_array_type);
-				PrimitiveArray& myArray = *static_cast<PrimitiveArray*>(_primitive.ptr);
-				const PrimitiveArray& otherArray = *static_cast<PrimitiveArray*>(other._primitive.ptr);
+				PrimitiveArray& myArray = SetPrimitiveArray(other._primitive_array_type);
+				const PrimitiveArray& otherArray = *other.GetPrimitiveArray();
 				myArray = otherArray;
 			}
 			break;
 		case TYPE_OBJECT:
 			{
-				SetObject();
-				Object& myObject = *static_cast<Object*>(_primitive.ptr);
-				const Object& otherObject = *static_cast<Object*>(other._primitive.ptr);
+				Object& myObject = SetObject();
+				const Object& otherObject = *other.GetObject();
 				myObject = otherObject;
 			}
 			break;
@@ -351,6 +348,45 @@ FLOATING_POINT:
 		}
 
 		return *static_cast<Array*>(_primitive.ptr);
+	}
+
+	Value::Array& Value::GetArray() {
+		if (_primitive.type == TYPE_ARRAY) {
+			if (_primitive_array_type == TYPE_NULL) {
+				return *static_cast<Array*>(_primitive.ptr);
+			} else {
+				return ConvertFromPrimitveArray();
+			}
+		} else {
+			return SetArray();
+		}
+	}
+
+	const Value::Array* Value::GetArray() const {
+		if (_primitive.type == TYPE_ARRAY) {
+			if (_primitive_array_type == TYPE_NULL) {
+				return static_cast<const Array*>(_primitive.ptr);
+			}
+		}
+		return nullptr;
+	}
+
+	Value::PrimitiveArray* Value::GetPrimitiveArray() {
+		if (_primitive.type == TYPE_ARRAY) {
+			if (_primitive_array_type != TYPE_NULL) {
+				return static_cast<PrimitiveArray*>(_primitive.ptr);
+			}
+		}
+		return nullptr;
+	}
+
+	const Value::PrimitiveArray* Value::GetPrimitiveArray() const {
+		if (_primitive.type == TYPE_ARRAY) {
+			if (_primitive_array_type != TYPE_NULL) {
+				return static_cast<const PrimitiveArray*>(_primitive.ptr);
+			}
+		}
+		return nullptr;
 	}
 
 	Value::PrimitiveArray& Value::SetPrimitiveArray(Type type) {
@@ -452,51 +488,53 @@ FLOATING_POINT:
 		}
 	}
 
-	void Value::ConvertFromPrimitveArray() {
+	Value::Array& Value::ConvertFromPrimitveArray() {
 		PrimitiveArray tmp = std::move(*static_cast<PrimitiveArray*>(_primitive.ptr));
-		SetArray();
+		Value::Array& new_array = SetArray();
 
 		switch (_primitive_array_type) {
 		case TYPE_C8:
-			ConvertToValueVector<char>(*static_cast<Array*>(_primitive.ptr), tmp);
+			ConvertToValueVector<char>(new_array, tmp);
 			break;
 		case TYPE_U8:
-			ConvertToValueVector<uint8_t>(*static_cast<Array*>(_primitive.ptr), tmp);
+			ConvertToValueVector<uint8_t>(new_array, tmp);
 			break;
 		case TYPE_U16:
-			ConvertToValueVector<uint16_t>(*static_cast<Array*>(_primitive.ptr), tmp);
+			ConvertToValueVector<uint16_t>(new_array, tmp);
 			break;
 		case TYPE_U32:
-			ConvertToValueVector<uint32_t>(*static_cast<Array*>(_primitive.ptr), tmp);
+			ConvertToValueVector<uint32_t>(new_array, tmp);
 			break;
 		case TYPE_U64:
-			ConvertToValueVector<uint64_t>(*static_cast<Array*>(_primitive.ptr), tmp);
+			ConvertToValueVector<uint64_t>(new_array, tmp);
 			break;
 		case TYPE_S8:
-			ConvertToValueVector<int8_t>(*static_cast<Array*>(_primitive.ptr), tmp);
+			ConvertToValueVector<int8_t>(new_array, tmp);
 			break;
 		case TYPE_S16:
-			ConvertToValueVector<int16_t>(*static_cast<Array*>(_primitive.ptr), tmp);
+			ConvertToValueVector<int16_t>(new_array, tmp);
 			break;
 		case TYPE_S32:
-			ConvertToValueVector<int32_t>(*static_cast<Array*>(_primitive.ptr), tmp);
+			ConvertToValueVector<int32_t>(new_array, tmp);
 			break;
 		case TYPE_S64:
-			ConvertToValueVector<int64_t>(*static_cast<Array*>(_primitive.ptr), tmp);
+			ConvertToValueVector<int64_t>(new_array, tmp);
 			break;
 		case TYPE_F16:
-			ConvertToValueVector<half>(*static_cast<Array*>(_primitive.ptr), tmp);
+			ConvertToValueVector<half>(new_array, tmp);
 			break;
 		case TYPE_F32:
-			ConvertToValueVector<float>(*static_cast<Array*>(_primitive.ptr), tmp);
+			ConvertToValueVector<float>(new_array, tmp);
 			break;
 		case TYPE_F64:
-			ConvertToValueVector<double>(*static_cast<Array*>(_primitive.ptr), tmp);
+			ConvertToValueVector<double>(new_array, tmp);
 			break;
 		case TYPE_BOOL:
-			ConvertToValueVector<bool>(*static_cast<Array*>(_primitive.ptr), tmp);
+			ConvertToValueVector<bool>(new_array, tmp);
 			break;
 		}
+
+		return new_array;
 	}
 
 	Value* Value::AddValue(Value&& value) {
@@ -526,6 +564,16 @@ FLOATING_POINT:
 		}
 
 		return *static_cast<Object*>(_primitive.ptr);
+	}
+
+	Value::Object& Value::GetObject() {
+		if (_primitive.type != TYPE_OBJECT) return SetObject();
+		return *static_cast<Object*>(_primitive.ptr);
+	}
+
+	const Value::Object* Value::GetObject() const {
+		if (_primitive.type != TYPE_OBJECT) return nullptr;
+		return static_cast<const Object*>(_primitive.ptr);
 	}
 
 	std::string Value::GetString() const {
@@ -645,14 +693,6 @@ FLOATING_POINT:
 		default:
 			return nullptr;
 		}
-	}
-
-	void* Value::GetPrimitiveArray() {
-		return _primitive.type == TYPE_ARRAY ? (
-				_primitive_array_type == TYPE_NULL ? 
-					static_cast<void*>(static_cast<Array*>(_primitive.ptr)->data()) :
-					static_cast<void*>(static_cast<PrimitiveArray*>(_primitive.ptr)->data())
-			) : nullptr;
 	}
 
 	ComponentID Value::GetComponentID(const uint32_t index) const {

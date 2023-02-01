@@ -1118,62 +1118,62 @@ OLD_COMPONENT_ID:
 		NextValue().SetBool(value);
 	}
 
-	static void CopyToPrimativeArray(const void* src, const size_t size, const size_t bytes, Value::PrimitiveArray& primative_array) {
+	static void CopyToPrimitiveArray(const void* src, const size_t size, const size_t bytes, Value::PrimitiveArray& primative_array) {
 		const size_t total_bytes = bytes * size;
 		primative_array.resize(total_bytes);
 		memcpy(primative_array.data(), src, total_bytes);
 	}
 
 	void ValueParser::OnPrimitiveArrayC8(const char* src, const size_t size) {
-		CopyToPrimativeArray(src, size, sizeof(char), NextValue().SetPrimitiveArray(TYPE_C8));
+		CopyToPrimitiveArray(src, size, sizeof(char), NextValue().SetPrimitiveArray(TYPE_C8));
 	}
 
 	void ValueParser::OnPrimitiveArrayBool(const bool* src, const size_t size) {
-		CopyToPrimativeArray(src, size, sizeof(bool), NextValue().SetPrimitiveArray(TYPE_BOOL));
+		CopyToPrimitiveArray(src, size, sizeof(bool), NextValue().SetPrimitiveArray(TYPE_BOOL));
 	}
 
 	void ValueParser::OnPrimitiveArrayU8(const uint8_t* src, const size_t size) {
-		CopyToPrimativeArray(src, size, sizeof(uint8_t), NextValue().SetPrimitiveArray(TYPE_U8));
+		CopyToPrimitiveArray(src, size, sizeof(uint8_t), NextValue().SetPrimitiveArray(TYPE_U8));
 	}
 
 	void ValueParser::OnPrimitiveArrayU16(const uint16_t* src, const size_t size) {
-		CopyToPrimativeArray(src, size, sizeof(uint16_t), NextValue().SetPrimitiveArray(TYPE_U16));
+		CopyToPrimitiveArray(src, size, sizeof(uint16_t), NextValue().SetPrimitiveArray(TYPE_U16));
 	}
 
 	void ValueParser::OnPrimitiveArrayU32(const uint32_t* src, const size_t size) {
-		CopyToPrimativeArray(src, size, sizeof(uint32_t), NextValue().SetPrimitiveArray(TYPE_U32));
+		CopyToPrimitiveArray(src, size, sizeof(uint32_t), NextValue().SetPrimitiveArray(TYPE_U32));
 	}
 
 	void ValueParser::OnPrimitiveArrayU64(const uint64_t* src, const size_t size) {
-		CopyToPrimativeArray(src, size, sizeof(uint64_t), NextValue().SetPrimitiveArray(TYPE_U64));
+		CopyToPrimitiveArray(src, size, sizeof(uint64_t), NextValue().SetPrimitiveArray(TYPE_U64));
 	}
 
 	void ValueParser::OnPrimitiveArrayS8(const int8_t* src, const size_t size) {
-		CopyToPrimativeArray(src, size, sizeof(int8_t), NextValue().SetPrimitiveArray(TYPE_S8));
+		CopyToPrimitiveArray(src, size, sizeof(int8_t), NextValue().SetPrimitiveArray(TYPE_S8));
 	}
 
 	void ValueParser::OnPrimitiveArrayS16(const int16_t* src, const size_t size) {
-		CopyToPrimativeArray(src, size, sizeof(int16_t), NextValue().SetPrimitiveArray(TYPE_S16));
+		CopyToPrimitiveArray(src, size, sizeof(int16_t), NextValue().SetPrimitiveArray(TYPE_S16));
 	}
 
 	void ValueParser::OnPrimitiveArrayS32(const int32_t* src, const size_t size) {
-		CopyToPrimativeArray(src, size, sizeof(int32_t), NextValue().SetPrimitiveArray(TYPE_S32));
+		CopyToPrimitiveArray(src, size, sizeof(int32_t), NextValue().SetPrimitiveArray(TYPE_S32));
 	}
 
 	void ValueParser::OnPrimitiveArrayS64(const int64_t* src, const size_t size) {
-		CopyToPrimativeArray(src, size, sizeof(int64_t), NextValue().SetPrimitiveArray(TYPE_S64));
+		CopyToPrimitiveArray(src, size, sizeof(int64_t), NextValue().SetPrimitiveArray(TYPE_S64));
 	}
 
 	void ValueParser::OnPrimitiveArrayF16(const half* src, const size_t size) {
-		CopyToPrimativeArray(src, size, sizeof(half), NextValue().SetPrimitiveArray(TYPE_F16));
+		CopyToPrimitiveArray(src, size, sizeof(half), NextValue().SetPrimitiveArray(TYPE_F16));
 	}
 
 	void ValueParser::OnPrimitiveArrayF32(const float* src, const size_t size) {
-		CopyToPrimativeArray(src, size, sizeof(float), NextValue().SetPrimitiveArray(TYPE_F32));
+		CopyToPrimitiveArray(src, size, sizeof(float), NextValue().SetPrimitiveArray(TYPE_F32));
 	}
 
 	void ValueParser::OnPrimitiveArrayF64(const double* src, const size_t size) {
-		CopyToPrimativeArray(src, size, sizeof(double), NextValue().SetPrimitiveArray(TYPE_F64));
+		CopyToPrimitiveArray(src, size, sizeof(double), NextValue().SetPrimitiveArray(TYPE_F64));
 	}
 
 	Value& ValueParser::CurrentValue() {
@@ -1320,43 +1320,43 @@ OLD_COMPONENT_ID:
 				if (value.IsPrimitiveArray()) {
 					switch (value.GetPrimitiveArrayType()) {
 					case TYPE_C8:
-						OnPrimitiveArrayC8(static_cast<const char*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
+						OnPrimitiveArrayC8(reinterpret_cast<const char*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
 						break;
 					case TYPE_U8:
-						OnPrimitiveArrayU8(static_cast<const uint8_t*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
+						OnPrimitiveArrayU8(reinterpret_cast<const uint8_t*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
 						break;
 					case TYPE_U16:
-						OnPrimitiveArrayU16(static_cast<const uint16_t*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
+						OnPrimitiveArrayU16(reinterpret_cast<const uint16_t*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
 						break;
 					case TYPE_U32:
-						OnPrimitiveArrayU32(static_cast<const uint32_t*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
+						OnPrimitiveArrayU32(reinterpret_cast<const uint32_t*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
 						break;
 					case TYPE_U64:
-						OnPrimitiveArrayU64(static_cast<const uint64_t*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
+						OnPrimitiveArrayU64(reinterpret_cast<const uint64_t*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
 						break;
 					case TYPE_S8:
-						OnPrimitiveArrayS8(static_cast<const int8_t*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
+						OnPrimitiveArrayS8(reinterpret_cast<const int8_t*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
 						break;
 					case TYPE_S16:
-						OnPrimitiveArrayS16(static_cast<const int16_t*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
+						OnPrimitiveArrayS16(reinterpret_cast<const int16_t*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
 						break;
 					case TYPE_S32:
-						OnPrimitiveArrayS32(static_cast<const int32_t*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
+						OnPrimitiveArrayS32(reinterpret_cast<const int32_t*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
 						break;
 					case TYPE_S64:
-						OnPrimitiveArrayS64(static_cast<const int64_t*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
+						OnPrimitiveArrayS64(reinterpret_cast<const int64_t*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
 						break;
 					case TYPE_F16:
-						OnPrimitiveArrayF16(static_cast<const half*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
+						OnPrimitiveArrayF16(reinterpret_cast<const half*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
 						break;
 					case TYPE_F32:
-						OnPrimitiveArrayF32(static_cast<const float*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
+						OnPrimitiveArrayF32(reinterpret_cast<const float*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
 						break;
 					case TYPE_F64:
-						OnPrimitiveArrayF64(static_cast<const double*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
+						OnPrimitiveArrayF64(reinterpret_cast<const double*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
 						break;
 					case TYPE_BOOL:
-						OnPrimitiveArrayBool(static_cast<const bool*>(const_cast<Value&>(value).GetPrimitiveArray()), size);
+						OnPrimitiveArrayBool(reinterpret_cast<const bool*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
 						break;
 					}
 				} else {

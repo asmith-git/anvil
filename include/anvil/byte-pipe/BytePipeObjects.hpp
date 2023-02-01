@@ -313,7 +313,7 @@ namespace anvil { namespace BytePipe {
 		PrimitiveValue _primitive;
 		Type _primitive_array_type;
 
-		void ConvertFromPrimitveArray();
+		Array& ConvertFromPrimitveArray();
 	public:
 
 		Value(Value&& other) :
@@ -674,6 +674,10 @@ namespace anvil { namespace BytePipe {
 			\details Previous value will be lost.
 		*/
 		Array& SetArray();
+		Array& GetArray();
+		const Array* GetArray() const;
+		PrimitiveArray* GetPrimitiveArray();
+		const PrimitiveArray* GetPrimitiveArray() const;
 
 		/*!
 			\brief Same as SetArray but the array can only contain one primitive type
@@ -701,6 +705,8 @@ namespace anvil { namespace BytePipe {
 			\details Previous value will be lost.
 		*/
 		Object& SetObject();
+		Object& GetObject();
+		const Object* GetObject() const;
 
 
 		ANVIL_STRONG_INLINE Value& AddValue(const std::string& id) {
@@ -838,12 +844,6 @@ namespace anvil { namespace BytePipe {
 		}
 
 		/*!
-			\brief Return the base address of an array of primitive values
-			\details Returns null if the value isn't a promative array
-		*/
-		void* GetPrimitiveArray();
-
-		/*!
 			\brief Get component ID at a specific index.
 			\details Throws an exception if the index is out of bounds.
 			\param index The index of the member (eg. 0 = First member, 1 = second member, ect).
@@ -918,7 +918,7 @@ namespace anvil { namespace BytePipe {
 			const size_t s = GetSize();
 			std::vector<T> tmp(s);
 			if (IsPrimitiveArray() && GetPrimitiveArrayType() == BytePipe::GetTypeID<T>()) {
-				const void* src = const_cast<Value*>(this)->GetPrimitiveArray();
+				const void* src = const_cast<Value*>(this)->GetPrimitiveArray()->data();
 				memcpy(tmp.data(), src, sizeof(T) * s);
 			} else {
 				for (size_t i = 0u; i < s; ++i) tmp[i] = static_cast<T>(operator[](i));
@@ -931,13 +931,13 @@ namespace anvil { namespace BytePipe {
 			Value()
 		{
 			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<T>())) {
-				SetPrimitiveArray(BytePipe::GetTypeID<T>());
+				Value::PrimitiveArray& new_array = SetPrimitiveArray(BytePipe::GetTypeID<T>());
 				const size_t s = value.size();
-				Resize(s);
-				memcpy(GetPrimitiveArray(), value.data(), sizeof(T) * s);
+				new_array.resize(sizeof(T) * s);
+				memcpy(new_array.data(), value.data(), sizeof(T) * s);
 			} else {
-				SetArray();
-				for (T& tmp : value) AddValue(tmp);
+				Array& new_array = SetArray();
+				for (T& tmp : value) new_array.push_back(tmp);
 			}
 		}
 
@@ -954,11 +954,17 @@ namespace anvil { namespace BytePipe {
 			Value()
 		{
 			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<T>())) {
-				SetPrimitiveArray(BytePipe::GetTypeID<T>());
+				PrimitiveArray& new_array = SetPrimitiveArray(BytePipe::GetTypeID<T>());
+				size_t i = 0u;
+				new_array.resize(sizeof(T) * i);
+				for (T& tmp : value) {
+					memcpy(new_array.data() + i, &tmp, sizeof(T));
+					i += sizeof(T);
+				}
 			} else {
-				SetArray();
+				Array& new_array = SetArray();
+				for (T& tmp : value) new_array.push_back(tmp);
 			}
-			for (T& tmp : value) AddValue(tmp);
 		}
 
 		template<class T>
@@ -986,7 +992,7 @@ namespace anvil { namespace BytePipe {
 			std::array<T,S> tmp;			
 			
 			if (IsPrimitiveArray() && GetPrimitiveArrayType() == BytePipe::GetTypeID<T>()) {
-				const void* src = const_cast<Value*>(this)->GetPrimitiveArray();
+				const void* src = const_cast<Value*>(this)->GetPrimitiveArray()->data();
 				memcpy(tmp.data(), src, sizeof(T) * S);
 			} else {
 				for (size_t i = 0u; i < S; ++i) tmp[i] = static_cast<T>(operator[](i));
@@ -999,13 +1005,13 @@ namespace anvil { namespace BytePipe {
 			Value()
 		{
 			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<T>())) {
-				SetPrimitiveArray(BytePipe::GetTypeID<T>());
+				PrimitiveArray& new_array = SetPrimitiveArray(BytePipe::GetTypeID<T>());
 				const size_t s = value.size();
-				Resize(s);
-				memcpy(GetPrimitiveArray(), value.data(), sizeof(T) * s);
+				new_array.resize(s);
+				memcpy(new_array.data(), value.data(), sizeof(T) * s);
 			} else {
-				SetArray();
-				for (T& tmp : value) AddValue(tmp);
+				Array& new_array = SetArray();
+				for (T& tmp : value) new_array.push_back(tmp);
 			}
 		}
 
@@ -1050,9 +1056,9 @@ namespace anvil { namespace BytePipe {
 				values.AddValue(tmp.second);
 			}
 
-			SetArray();
-			AddValue(std::move(keys));
-			AddValue(std::move(values));
+			Array& new_array = SetArray();
+			new_array.push_back(std::move(keys));
+			new_array.push_back(std::move(values));
 		}
 	};
 
