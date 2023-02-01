@@ -26,14 +26,6 @@ namespace anvil { namespace RPC {
 
 	}
 
-	void Client::OnResponseFromServer(const BytePipe::Value& response) {
-		{
-			std::lock_guard<std::mutex> lock(_mutex);
-			_responses.push_back(response);
-		}
-		_response_given.notify_all();
-	}
-
 	BytePipe::Value Client::SendRequest(const std::string& method, const BytePipe::Value& params) {
 		int32_t id = _next_id;
 		if (_next_id == INT32_MAX) _next_id = 0;
@@ -50,37 +42,7 @@ namespace anvil { namespace RPC {
 		}
 
 		// Wait for response
-		BytePipe::Value response;
-
-		while (true) {
-			{
-				std::lock_guard<std::mutex> lock(_mutex);
-				for (auto i = _responses.begin(); i != _responses.end(); ++i) {
-					BytePipe::Value* response_id = i->GetValue2("id");
-					if (response_id == nullptr) {
-						//! \bug Error messages with no ID are not handled correctly
-						_responses.erase(i);
-						i = _responses.begin();
-
-					} else {
-						try {
-							if (response_id->GetS32() == id) {
-								response = *i;
-								_responses.erase(i);
-								break;
-							}
-						} catch (...) {
-							//! \bug Invalid ID is not handled correctly
-							_responses.erase(i);
-							i = _responses.begin();
-						}
-					}
-				}
-			}
-
-			std::unique_lock<std::mutex> lock(_mutex);
-			_response_given.wait(lock);
-		}
+		BytePipe::Value response = ReadFromServer();
 
 		BytePipe::Value* error = response.GetValue2("error");
 		if (error) {

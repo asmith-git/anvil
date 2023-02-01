@@ -7,11 +7,32 @@
 #include "anvil/BytePipe.hpp"
 #include "anvil/byte-pipe/BytePipeJSON.hpp"
 #include "anvil/Console.hpp"
+#include "anvil/RPC.hpp"
 
 static uint64_t CurrentTime() {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(
 		std::chrono::system_clock::now().time_since_epoch()
 		).count();
+}
+
+static void RPCTest() {
+	using namespace anvil;
+
+	RPC::Server server;
+	RPC::ServerJsonTCP server_connect(server, 1234);
+
+	server.AddMethod("echo", [](const BytePipe::Value& value)->BytePipe::Value {
+		return value;
+	});
+
+	BytePipe::IPAddress ip;
+	ip.u8[0u] = 127;
+	ip.u8[1u] = 0;
+	ip.u8[2u] = 0;
+	ip.u8[3u] = 1;
+	RPC::ClientJsonTCP client(ip, 1234);
+
+	std::cout << client.SendRequest("echo", BytePipe::Value("hello RPC")).GetString() << std::endl;
 }
 
 static void UDPTest() {
@@ -51,7 +72,7 @@ static void TCPTest() {
 	int port = 1234;
 
 	std::thread server([port]()->void {
-		anvil::BytePipe::TCPInputPipe pipe(port);
+		anvil::BytePipe::TCPServerPipe pipe(port);
 
 		for (int i = 0; i < 100; ++i) {
 			int j = 0;
@@ -67,7 +88,7 @@ static void TCPTest() {
 		ip.u8[2] = 0;
 		ip.u8[3] = 1;
 
-		anvil::BytePipe::TCPOutputPipe pipe(ip, port);
+		anvil::BytePipe::TCPClientPipe pipe(ip, port);
 
 		for (int i = 0; i < 100; ++i) {
 			pipe.WriteBytesFast(&i, sizeof(i));
@@ -311,6 +332,9 @@ void XMLTest() {
 
 int main()
 {
+	RPCTest();
+	return 0;
+
 	JSONTest();
 	XMLTest();
 	return 0;

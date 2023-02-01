@@ -54,14 +54,15 @@ namespace anvil { namespace RPC {
 	}
 
 	BytePipe::Value Server::CallMethod(const std::string& name, const BytePipe::Value& params) const {
-		Method method;
+		const Method* method = nullptr;
 		{
 			std::lock_guard<std::mutex> lock(_mutex);
 			auto i = _methods.find(name);
-			if (i != _methods.end()) throw MethodNotFoundError(name);
+			if (i == _methods.end()) throw MethodNotFoundError(name);
+			method = &i->second;
 		}
 
-		return method(params);
+		return (*method)(params);
 	}
 
 	BytePipe::Value Server::ExecuteRequest(const BytePipe::Value& request) const {
@@ -75,14 +76,14 @@ namespace anvil { namespace RPC {
 			}
 			return tmp;
 
-		} else if (request.GetType() != BytePipe::TYPE_OBJECT) {
+		} else if (request.GetType() == BytePipe::TYPE_OBJECT) {
 			BytePipe::Value* id = const_cast<BytePipe::Value&>(request).GetValue2("id");
 
 			// Check version
 			BytePipe::Value* rpc_ver = const_cast<BytePipe::Value&>(request).GetValue2("method");
 			if (rpc_ver == nullptr) return CreateError(ERROR_INVALID_REQUEST, "No jsonrpc version specified", id ? static_cast<int32_t>(*id) : -1);
 			if (rpc_ver->GetType() != BytePipe::TYPE_STRING && ! rpc_ver->IsNumeric()) return CreateError(ERROR_INVALID_REQUEST, "Invalid jsonrpc version", id ? static_cast<int32_t>(*id) : -1);
-			if (strcmp(rpc_ver->GetString(), "2.0") == 0) return CreateError(ERROR_INVALID_REQUEST, "Invalid jsonrpc version", id ? static_cast<int32_t>(*id) : -1);
+			if (rpc_ver->GetString() == "2.0") return CreateError(ERROR_INVALID_REQUEST, "Invalid jsonrpc version", id ? static_cast<int32_t>(*id) : -1);
 
 			// Check method name
 			BytePipe::Value* method = const_cast<BytePipe::Value&>(request).GetValue2("method");

@@ -22,13 +22,11 @@ namespace anvil { namespace RPC {
 
 	class Client {
 	private:
-		std::list<BytePipe::Value> _responses;
-		std::mutex _mutex;
 		std::condition_variable _response_given;
 		int32_t _next_id;
 	protected:
 		virtual void SendToServer(const BytePipe::Value& request) = 0;
-		void OnResponseFromServer(const BytePipe::Value& response);
+		virtual BytePipe::Value ReadFromServer() = 0;
 	public:
 		Client();
 		virtual ~Client();

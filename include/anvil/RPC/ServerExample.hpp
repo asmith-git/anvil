@@ -12,11 +12,11 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#ifndef ANVIL_RPC_CLIENT_EXAMPLE_HPP
-#define ANVIL_RPC_CLIENT_EXAMPLE_HPP
+#ifndef ANVIL_RPC_SERVER_EXAMPLE_HPP
+#define ANVIL_RPC_SERVER_EXAMPLE_HPP
 
 #include <atomic>
-#include "anvil/RPC/Client.hpp"
+#include "anvil/RPC/Server.hpp"
 #include "anvil/byte-pipe/BytePipeWriter.hpp"
 #include "anvil/byte-pipe/BytePipeReader.hpp"
 #include "anvil/byte-pipe/BytePipeTCP.hpp"
@@ -24,16 +24,30 @@
 
 namespace anvil { namespace RPC {
 
-	class ClientJsonTCP final : public Client {
+	class ServerConnection {
 	private:
-		BytePipe::TCPClientPipe _tcp;
-		BytePipe::JsonWriter _json_writer;
+		Server& _server;
+		std::thread _thread;
+		std::atomic_int32_t _signal;
 	protected:
-		void SendToServer(const BytePipe::Value& request) final;
-		BytePipe::Value ReadFromServer() final;
+		virtual void ReadDataFromClient(BytePipe::Parser& parser) = 0;
+		virtual void SendDataToClient(const BytePipe::Value& response) = 0;
 	public:
-		ClientJsonTCP(BytePipe::IPAddress server_ip, BytePipe::TCPPort server_port);
-		virtual ~ClientJsonTCP();
+		ServerConnection(Server& server);
+		virtual ~ServerConnection();
+	};
+
+	class ServerJsonTCP final : public ServerConnection {
+	private:
+		std::unique_ptr<BytePipe::TCPServerPipe> _tcp;
+		BytePipe::JsonWriter _json_writer;
+		BytePipe::TCPPort _port;
+	protected:
+		void ReadDataFromClient(BytePipe::Parser& parser) final;
+		void SendDataToClient(const BytePipe::Value& response) final;
+	public:
+		ServerJsonTCP(Server& server, BytePipe::TCPPort server_port);
+		virtual ~ServerJsonTCP();
 	};
 }}
 

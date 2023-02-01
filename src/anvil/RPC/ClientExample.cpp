@@ -16,33 +16,6 @@
 
 namespace anvil { namespace RPC {
 
-	// ClientExample
-
-	ClientHelper::ClientHelper() :
-		_signal(0)
-	{
-		_read_thread = std::thread([this]()->void {
-			while (_signal == 0u) {
-				try {
-					BytePipe::ValueParser parser;
-					parser.OnPipeOpen();
-
-					ReadDataFromServer(parser);
-
-					OnResponseFromServer(parser.GetValue());
-					parser.OnPipeClose();
-				} catch (...) {
-
-				}
-			}
-		});
-	}
-
-	ClientHelper::~ClientHelper() {
-		_signal = 1;
-		_read_thread.join();
-	}
-
 	// ClientJsonTCP
 
 	ClientJsonTCP::ClientJsonTCP(BytePipe::IPAddress server_ip, BytePipe::TCPPort server_port) :
@@ -52,8 +25,8 @@ namespace anvil { namespace RPC {
 	ClientJsonTCP::~ClientJsonTCP() {
 
 	}
-
-	void ClientJsonTCP::ReadDataFromServer(BytePipe::Parser& parser) {
+	
+	BytePipe::Value ClientJsonTCP::ReadFromServer() {
 #if ANVIL_JSON_SUPPORT
 		std::string str;
 		char c = '?';
@@ -64,7 +37,16 @@ namespace anvil { namespace RPC {
 		}
 		nlohmann::json json;
 		json = json.parse(str);
+
+		BytePipe::ValueParser parser;
+		parser.OnPipeOpen();
+
 		BytePipe::ReadJSON(json, parser);
+
+		BytePipe::Value value = parser.GetValue();
+		parser.OnPipeClose();
+
+		return value;
 #else
 		throw std::runtime_error("ClientJsonTCP::ReadDataFromServer : ANVIL_JSON_SUPPORT is false");
 #endif
@@ -76,5 +58,6 @@ namespace anvil { namespace RPC {
 		const std::string& json = _json_writer.GetJSONString();
 		_tcp.WriteBytesFast(json.c_str(), json.size() + 1u);
 		_json_writer.OnPipeClose();
+		_tcp.Flush();
 	}
 }}

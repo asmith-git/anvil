@@ -18,5 +18,7 @@
 #include "anvil/RPC/Method.hpp"
 #include "anvil/RPC/Server.hpp"
 #include "anvil/RPC/Client.hpp"
+#include "anvil/RPC/ClientExample.hpp"
+#include "anvil/RPC/ServerExample.hpp"
 
 #endif

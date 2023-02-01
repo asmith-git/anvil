@@ -30,6 +30,9 @@
     <ClInclude Include="..\..\include\anvil\RPC\ClientExample.hpp">
       <Filter>Header Files\RPC</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\anvil\RPC\ServerExample.hpp">
+      <Filter>Header Files\RPC</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\anvil\RPC\Server.cpp">
@@ -39,6 +42,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\anvil\RPC\ClientExample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\anvil\RPC\ServerExample.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

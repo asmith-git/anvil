@@ -24,11 +24,13 @@
     <ClInclude Include="..\..\include\anvil\RPC\ClientExample.hpp" />
     <ClInclude Include="..\..\include\anvil\RPC\Method.hpp" />
     <ClInclude Include="..\..\include\anvil\RPC\Server.hpp" />
+    <ClInclude Include="..\..\include\anvil\RPC\ServerExample.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\anvil\RPC\Client.cpp" />
     <ClCompile Include="..\..\src\anvil\RPC\ClientExample.cpp" />
     <ClCompile Include="..\..\src\anvil\RPC\Server.cpp" />
+    <ClCompile Include="..\..\src\anvil\RPC\ServerExample.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
