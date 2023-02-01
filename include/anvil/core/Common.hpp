@@ -24,11 +24,6 @@ namespace anvil {
 	// abs
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL fabs(T a) {
-		return anvil::abs(a);
-	}
-
-	template<class T>
 	static ANVIL_STRONG_INLINE T ANVIL_CALL abs(T a) {
 		return std::abs(a);
 	}
@@ -61,6 +56,11 @@ namespace anvil {
 	template<>
 	static ANVIL_STRONG_INLINE float64_t ANVIL_CALL abs<float64_t>(const float64_t a) {
 		return std::fabs(a);
+	}
+
+	template<class T>
+	static ANVIL_STRONG_INLINE T ANVIL_CALL fabs(T a) {
+		return anvil::abs(a);
 	}
 
 	// mod / fmod
@@ -112,25 +112,25 @@ namespace anvil {
 	// max / fmax
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL fmax(T a, T b) {
-		return anvil::max(a, b);
+	static ANVIL_STRONG_INLINE T ANVIL_CALL max(T a, T b) {
+		return std::max<T>(a, b);
 	}
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL max(T a, T b) {
-		return std::max<T>(a, b);
+	static ANVIL_STRONG_INLINE T ANVIL_CALL fmax(T a, T b) {
+		return anvil::max(a, b);
 	}
 
 	// min / fmin
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL fmin(T a, T b) {
-		return anvil::min(a, b);
+	static ANVIL_STRONG_INLINE T ANVIL_CALL min(T a, T b) {
+		return std::min<T>(a, b);
 	}
 
 	template<class T>
-	static ANVIL_STRONG_INLINE T ANVIL_CALL min(T a, T b) {
-		return std::min<T>(a, b);
+	static ANVIL_STRONG_INLINE T ANVIL_CALL fmin(T a, T b) {
+		return anvil::min(a, b);
 	}
 
 	// dif / fdim
