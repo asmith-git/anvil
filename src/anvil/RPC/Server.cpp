@@ -123,5 +123,7 @@ namespace anvil { namespace RPC {
 				return BytePipe::Value();
 			}
 		}
+
+		return CreateError(ERROR_INVALID_REQUEST, "Request is not an array or object", -1);
 	}
 }}

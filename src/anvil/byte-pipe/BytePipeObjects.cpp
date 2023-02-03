@@ -41,10 +41,38 @@ namespace anvil { namespace BytePipe {
 		return g_table[a];
 	}
 
-	static PrimitiveValue OptimiseString(const std::string& str) {
-		PrimitiveValue value(std::stod(str));
-		value.Optimise();
-		return value;
+	static bool OptimiseString(const std::string& str, PrimitiveValue& v) {
+		const size_t s = str.size();
+
+		if (s == 0u) {
+			v.type == TYPE_NULL;
+			return true;
+		}
+
+		if (s >= 20) return false; // Unlikely to be a number that we can parse without losing data
+
+		// Check if number
+		bool decimal_place_found = false;
+		size_t i = 0u;
+		if (str[0u] == '-') ++i;
+
+		for (i; i < s; ++i) {
+			char c = str[i];
+			if (c < '0' || c > '0') {
+				if (c == '.') {
+					if (decimal_place_found) return false;
+					decimal_place_found = true;
+				} else {
+					return false;
+				}
+			}
+		}
+
+		//!\todo Support scientific notation
+
+		v = (std::stod(str));
+		v.Optimise();
+		return true;
 	}
 
 	static bool IsPrimitiveConvertable(const Type type) {
@@ -651,12 +679,6 @@ namespace anvil { namespace BytePipe {
 	}
 
 	template<class T>
-	static void AddValueTemplate(std::vector<uint8_t>& dst, const T value) {
-		const uint8_t* bytes = reinterpret_cast<const uint8_t*>(&value);
-		for(size_t i = 0u; i < sizeof(T); ++i) dst.push_back(bytes[i]);
-	}
-
-	template<class T>
 	static void ConvertToValueVector(std::vector<Value>& dst, const std::vector<uint8_t>& src) {
 		size_t s = src.size() / sizeof(T);
 		const T* src_ptr = reinterpret_cast<const T*>(src.data());
@@ -687,53 +709,24 @@ namespace anvil { namespace BytePipe {
 			return &static_cast<Array*>(_primitive.ptr)->back();
 
 		} else {
-			switch (_primitive_array_type) {
-			case TYPE_C8:
-				AddValueTemplate<char>(*static_cast<PrimitiveArray*>(_primitive.ptr), value);
-				break;
-			case TYPE_U8:
-				AddValueTemplate<uint8_t>(*static_cast<PrimitiveArray*>(_primitive.ptr), value);
-				break;
-			case TYPE_U16:
-				AddValueTemplate<uint16_t>(*static_cast<PrimitiveArray*>(_primitive.ptr), value);
-				break;
-			case TYPE_U32:
-				AddValueTemplate<uint32_t>(*static_cast<PrimitiveArray*>(_primitive.ptr), value);
-				break;
-			case TYPE_U64:
-				AddValueTemplate<uint64_t>(*static_cast<PrimitiveArray*>(_primitive.ptr), value);
-				break;
-			case TYPE_S8:
-				AddValueTemplate<int8_t>(*static_cast<PrimitiveArray*>(_primitive.ptr), value);
-				break;
-			case TYPE_S16:
-				AddValueTemplate<int16_t>(*static_cast<PrimitiveArray*>(_primitive.ptr), value);
-				break;
-			case TYPE_S32:
-				AddValueTemplate<int32_t>(*static_cast<PrimitiveArray*>(_primitive.ptr), value);
-				break;
-			case TYPE_S64:
-				AddValueTemplate<int64_t>(*static_cast<PrimitiveArray*>(_primitive.ptr), value);
-				break;
-			case TYPE_F16:
-				AddValueTemplate<half>(*static_cast<PrimitiveArray*>(_primitive.ptr), value);
-				break;
-			case TYPE_F32:
-				AddValueTemplate<float>(*static_cast<PrimitiveArray*>(_primitive.ptr), value);
-				break;
-			case TYPE_F64:
-				AddValueTemplate<double>(*static_cast<PrimitiveArray*>(_primitive.ptr), value);
-				break;
-			case TYPE_BOOL:
-				AddValueTemplate<bool>(*static_cast<PrimitiveArray*>(_primitive.ptr), value);
-				break;
-			default:
-				ConvertFromPrimitveArray();
-				return AddValue(value);
-				break;
-			}
+			// Try to add primative type
+			try {
+				PrimitiveValue v = value;
+				v.ConvertTo(_primitive_array_type);
 
-			return nullptr;
+				size_t bytes = GetSizeOfPrimitiveType(_primitive_array_type);
+				PrimitiveArray& primitive_array = *static_cast<PrimitiveArray*>(_primitive.ptr);
+
+				size_t prev_size = primitive_array.size();
+				primitive_array.resize(prev_size + bytes);
+				memcpy(primitive_array.data() + prev_size, &v.u8, bytes);
+
+				return nullptr;
+			} catch (...) {}
+
+			// Conver to value array
+			ConvertFromPrimitveArray();
+			return AddValue(value);
 		}
 	}
 
@@ -786,7 +779,7 @@ namespace anvil { namespace BytePipe {
 			return nullptr;
 		}
 
-		// Conver to primative array
+		// Convert to primative array
 		Value tmp;
 		PrimitiveArray& primitive_array = tmp.SetPrimitiveArray(target_type);
 		const size_t bytes = GetSizeOfPrimitiveType(target_type);
@@ -846,6 +839,9 @@ namespace anvil { namespace BytePipe {
 	}
 
 	Value* Value::AddValue(Value&& value) {
+		// Try to turn a string into a value
+		if (value.GetType() == TYPE_STRING) value.Optimise();
+
 		// Handle primitive data types in a way that is optimised for them
 		if (value.IsPrimitive()) {
 			return AddValue(value._primitive);
@@ -1027,10 +1023,12 @@ namespace anvil { namespace BytePipe {
 		if (_primitive.type <= TYPE_F64) {
 			return _primitive;
 		} else if(_primitive.type == TYPE_STRING) {
-			return OptimiseString(*static_cast<std::string*>(_primitive.ptr));
-		} else {
-			throw std::runtime_error("Value::GetPrimitiveValue : Value is not a numerical type");
+			PrimitiveValue tmp;
+			if (OptimiseString(*static_cast<std::string*>(_primitive.ptr), tmp)) {
+				return tmp;
+			}
 		}
+		throw std::runtime_error("Value::GetPrimitiveValue : Value is not a numerical type");
 	}
 
 	size_t Value::GetSize() const {
@@ -1047,9 +1045,11 @@ namespace anvil { namespace BytePipe {
 		switch (_primitive.type) {
 		case TYPE_STRING:
 			try {
-				PrimitiveValue tmp = OptimiseString(*static_cast<std::string*>(_primitive.ptr));
-				SetNull();
-				_primitive = tmp;
+				PrimitiveValue tmp;
+				if (OptimiseString(*static_cast<std::string*>(_primitive.ptr), tmp)) {
+					SetNull();
+					_primitive = tmp;
+				}
 			} catch (...) {}
 			break;
 		case TYPE_ARRAY:

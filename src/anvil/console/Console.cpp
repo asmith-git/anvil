@@ -375,7 +375,7 @@ namespace anvil {
 
 			try {
 				choice = std::stoi(tmp);
-				if (choice >= 0 && choice < count) break;
+				if (choice >= 0 && choice < static_cast<int32_t>(count)) break;
 			} catch (...) {
 
 			}
