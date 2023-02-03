@@ -291,6 +291,8 @@ namespace anvil { namespace BytePipe {
 			\brief Casts the value to the smallest type that can represent it without losing precision.
 		*/
 		void Optimise();
+
+		void ConvertTo(Type type);
 	};
 
 	class Value {
@@ -314,188 +316,41 @@ namespace anvil { namespace BytePipe {
 		Type _primitive_array_type;
 
 		Array& ConvertFromPrimitveArray();
+		PrimitiveArray* ConvertToPrimitveArray();
 	public:
+		Value();
+		Value(Value&& other);
+		Value(const Value& other);
 
-		Value(Value&& other) :
-			Value()
-		{
-			Swap(other);
-		}
+		Value(const Type type);
 
-		Value(const Value& other) :
-			Value()
-		{
-			*this = other;
-		}
+		Value(bool value);
+		Value(char value);
+		Value(uint8_t value);
+		Value(uint16_t value);
+		Value(uint32_t value);
+		Value(uint64_t value);
+		Value(int8_t value);
+		Value(int16_t value);
+		Value(int32_t value);
+		Value(int64_t value);
+		Value(half value);
+		Value(float value);
+		Value(double value);
 
-		Value() :
-			_primitive(),
-			_primitive_array_type(TYPE_NULL)
-		{
-			_primitive.u64 = 0u;
-		}
+		Value(const char* string);
+		Value(const std::string& string);
 
-		Value(const Type type) :
-			Value()
-		{
-			switch(type) {
-			case TYPE_C8:
-				SetC8();
-				break;
-			case TYPE_U8:
-				SetU8();
-				break;
-			case TYPE_U16:
-				SetU16();
-				break;
-			case TYPE_U32:
-				SetU32();
-				break;
-			case TYPE_U64:
-				SetU64();
-				break;
-			case TYPE_S8:
-				SetS8();
-				break;
-			case TYPE_S16:
-				SetS16();
-				break;
-			case TYPE_S32:
-				SetS32();
-				break;
-			case TYPE_S64:
-				SetS64();
-				break;
-			case TYPE_F16:
-				SetF16();
-				break;
-			case TYPE_F32:
-				SetF32();
-				break;
-			case TYPE_F64:
-				SetF64();
-				break;
-			case TYPE_STRING:
-				SetString();
-				break;
-			case TYPE_ARRAY:
-				SetArray();
-				break;
-			case TYPE_OBJECT:
-				SetObject();
-				break;
-			case TYPE_BOOL:
-				SetBool();
-				break;
-			case TYPE_POD:
-				SetPod();
-				break;
-			}
-		}
+		Value(const PrimitiveValue& value);
 
-		Value(bool value) :
-			_primitive(value),
-			_primitive_array_type(TYPE_NULL)
-		{}
-
-		Value(char value) :
-			_primitive(value),
-			_primitive_array_type(TYPE_NULL)
-		{}
-
-		Value(uint8_t value) :
-			_primitive(value),
-			_primitive_array_type(TYPE_NULL)
-		{}
-
-		Value(uint16_t value) :
-			_primitive(value),
-			_primitive_array_type(TYPE_NULL)
-		{}
-
-		Value(uint32_t value) :
-			_primitive(value),
-			_primitive_array_type(TYPE_NULL)
-		{}
-
-		Value(uint64_t value) :
-			_primitive(value),
-			_primitive_array_type(TYPE_NULL)
-		{}
-
-		Value(int8_t value) :
-			_primitive(value),
-			_primitive_array_type(TYPE_NULL)
-		{}
-
-		Value(int16_t value) :
-			_primitive(value),
-			_primitive_array_type(TYPE_NULL)
-		{}
-
-		Value(int32_t value) :
-			_primitive(value),
-			_primitive_array_type(TYPE_NULL)
-		{}
-
-		Value(int64_t value) :
-			_primitive(value),
-			_primitive_array_type(TYPE_NULL)
-		{}
-
-		Value(half value) :
-			_primitive(value),
-			_primitive_array_type(TYPE_NULL)
-		{}
-
-		Value(float value) :
-			_primitive(value),
-			_primitive_array_type(TYPE_NULL)
-		{}
-
-		Value(double value) :
-			_primitive(value),
-			_primitive_array_type(TYPE_NULL)
-		{}
-
-		Value(const PrimitiveValue& value) :
-			_primitive(value),
-			_primitive_array_type(TYPE_NULL)
-		{}
-
-		Value(const char* string) :
-			Value()
-		{
-			SetString() = string;
-		}
-
-		Value(const std::string& string) :
-			Value()
-		{
-			SetString() = string;
-		}
-
-		Value(Pod&& value) :
-			Value()
-		{
-			SetPod() = std::move(value);
-		}
-
-		Value(const Pod& value) :
-			Value()
-		{
-			SetPod() = value;
-		}
+		Value(Pod&& value);
+		Value(const Pod& value);
 
 #if ANVIL_OPENCV_SUPPORT
-		Value(const cv::Mat& img) :
-			Value(Pod::CreatePODFromCVMat(img))
-		{}
+		Value(const cv::Mat& img);
 #endif
 
-		~Value() {
-			SetNull();
-		}
+		~Value();
 
 		ANVIL_STRONG_INLINE Value& operator=(Value&& other) {
 			Swap(other);
@@ -711,8 +566,9 @@ namespace anvil { namespace BytePipe {
 
 		ANVIL_STRONG_INLINE Value& AddValue(const std::string& id) {
 			if (_primitive.type != TYPE_OBJECT) throw std::runtime_error("Value::AddValue : Value is not an object");
-			static_cast<Object*>(_primitive.ptr)->emplace(id, Value());
-			return static_cast<Object*>(_primitive.ptr)->find(id)->second;
+			Object& obj = *static_cast<Object*>(_primitive.ptr);
+			obj.emplace(id, Value());
+			return obj.find(id)->second;
 		}
 
 		ANVIL_STRONG_INLINE Value& AddValue(const ComponentID id) {
@@ -726,16 +582,14 @@ namespace anvil { namespace BytePipe {
 			\param id The component ID of the value.
 			\param value The value to add.
 		*/
-		ANVIL_STRONG_INLINE Value& AddValue(const ComponentID id, Value&& value) {
+		ANVIL_STRONG_INLINE Value& AddValue(const std::string& id, Value&& value) {
 			Value& val = AddValue(id);
 			val.Swap(value);
 			return val;
 		}
 
-		ANVIL_STRONG_INLINE Value& AddValue(const std::string& id, Value&& value) {
-			Value& val = AddValue(id);
-			val.Swap(value);
-			return val;
+		ANVIL_STRONG_INLINE Value& AddValue(const ComponentID id, Value&& value) {
+			return AddValue(std::to_string(id), std::move(value));
 		}
 
 		ANVIL_STRONG_INLINE bool GetBool() const {
@@ -849,8 +703,11 @@ namespace anvil { namespace BytePipe {
 			\param index The index of the member (eg. 0 = First member, 1 = second member, ect).
 			\return The component ID.
 		*/
-		ComponentID GetComponentID(const uint32_t index) const;
-		std::string GetComponentIDString(const uint32_t index) const;
+		std::string GetComponentIDString(const size_t index) const;
+
+		ANVIL_STRONG_INLINE ComponentID GetComponentID(const size_t index) const {
+			return static_cast<ComponentID>(std::stoi(GetComponentIDString(index)));
+		}
 
 		/*!
 			\brief Return the value as a primitive
@@ -868,6 +725,8 @@ namespace anvil { namespace BytePipe {
 			\brief Casts the value to the smallest type that can represent it without losing precision.
 		*/
 		void Optimise();
+
+		void ConvertTo(Type type);
 
 		// Helpers
 

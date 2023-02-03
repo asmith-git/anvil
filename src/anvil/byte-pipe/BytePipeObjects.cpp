@@ -16,6 +16,42 @@
 
 namespace anvil { namespace BytePipe {
 
+	static uint32_t GetLargness(const Type a) {
+		static ANVIL_CONSTEXPR_VAR const uint8_t g_table[] = {
+			0,//TYPE_NULL
+			10,//TYPE_C8
+			1,//TYPE_U8
+			2,//TYPE_U16
+			3,//TYPE_U32
+			4,//TYPE_U64
+			2,//TYPE_S8
+			3,//TYPE_S16
+			4,//TYPE_S32
+			5,//TYPE_S64
+			6,//TYPE_F16
+			7,//TYPE_F32
+			8,//TYPE_F64
+			9,//TYPE_STRING
+			10,//TYPE_ARRAY
+			11,//TYPE_OBJECT
+			12,//TYPE_BOOL
+			13,//TYPE_POD
+		};
+		
+		return g_table[a];
+	}
+
+	static PrimitiveValue OptimiseString(const std::string& str) {
+		PrimitiveValue value(std::stod(str));
+		value.Optimise();
+		return value;
+	}
+
+	static bool IsPrimitiveConvertable(const Type type) {
+		if (type == TYPE_F16) return 0; //!< \bug F16 conversion not implemented
+		return (type >= TYPE_U8 && type <= TYPE_F64) || type == TYPE_BOOL;
+	}
+
 	static ANVIL_CONSTEXPR_VAR const uint8_t g_type_sizes[] = {
 		0u,	// TYPE_NULL,
 		1u,	// TYPE_C8,
@@ -37,6 +73,112 @@ namespace anvil { namespace BytePipe {
 	};
 
 	// PrimitiveValue
+	
+	void PrimitiveValue::Optimise() {
+		Type prev_type = TYPE_NULL;
+		while (prev_type != type) {
+			prev_type = type;
+
+			switch (type) {
+			case TYPE_U8:
+				if (u8 == 0u) {
+					b = false;
+					type = TYPE_BOOL;
+				} else if (u8 == 1u) {
+					b = true;
+					type = TYPE_BOOL;
+				}
+				break;
+			case TYPE_U16:
+				if (u16 <= UINT8_MAX) type = TYPE_U8;
+				break;
+			case TYPE_U32:
+				if (u32 <= UINT16_MAX) type = TYPE_U16;
+				break;
+			case TYPE_U64:
+				if (u64 <= UINT32_MAX) type = TYPE_U32;
+				break;
+			case TYPE_S8:
+				if (s8 >= 0) type = TYPE_U8;
+				break;
+			case TYPE_S16:
+				if (s16 >= 0) type = TYPE_U16;
+				else if (s16 >= INT8_MIN && s16 <= INT8_MAX) type = TYPE_S8;
+				break;
+			case TYPE_S32:
+				if (s32 >= 0) type = TYPE_U32;
+				else if (s32 >= INT16_MIN && s32 <= INT16_MAX) type = TYPE_S16;
+				break;
+			case TYPE_S64:
+				if (s64 >= 0) type = TYPE_U64;
+				else if (s64 >= INT32_MIN && s64 <= INT32_MAX) type = TYPE_S32;
+				break;
+			case TYPE_F32:
+				{
+					int64_t tmp = static_cast<int64_t>(f32);
+					if (static_cast<float>(tmp) == f32) {
+						s64 = tmp;
+						type = TYPE_S64;
+					}
+				}
+				break;
+			case TYPE_F64:
+				{
+					int64_t tmp = static_cast<int64_t>(f64);
+					if (static_cast<double>(tmp) == f64) {
+						s64 = tmp;
+						type = TYPE_S64;
+					}
+				}
+				break;
+			}
+		}
+	}
+
+	void PrimitiveValue::ConvertTo(Type t) {
+		if (t == type) return;
+		if (!IsPrimitiveConvertable(type)) throw std::runtime_error("PrimativeValue : Current type is not convertable");
+		if (!IsPrimitiveConvertable(t)) throw std::runtime_error("PrimativeValue : Targer type is not convertable");
+
+		const double tmp = static_cast<double>(*this);
+
+		switch (t) {
+		case TYPE_U8:
+			u8 = static_cast<uint8_t>(*this);
+			break;
+		case TYPE_U16:
+			u16 = static_cast<uint16_t>(*this);
+			break;
+		case TYPE_U32:
+			u32 = static_cast<uint32_t>(*this);
+			break;
+		case TYPE_U64:
+			u64 = static_cast<uint64_t>(*this);
+			break;
+		case TYPE_S8:
+			s8 = static_cast<int8_t>(*this);
+			break;
+		case TYPE_S16:
+			s16 = static_cast<int16_t>(*this);
+			break;
+		case TYPE_S32:
+			s32 = static_cast<int32_t>(*this);
+			break;
+		case TYPE_S64:
+			s64 = static_cast<int64_t>(*this);
+			break;
+		case TYPE_F16:
+			f16 = static_cast<half>(*this);
+			break;
+		case TYPE_F32:
+			f32 = static_cast<float>(*this);
+			break;
+		case TYPE_BOOL:
+			b = static_cast<bool>(*this);
+			break;
+		}
+		type = t;
+	}
 
 	bool PrimitiveValue::operator==(const PrimitiveValue& other) const {
 		return type == other.type ? 
@@ -164,81 +306,188 @@ namespace anvil { namespace BytePipe {
 		throw std::runtime_error("PrimitiveValue::operator double : Type cannot be converted to double");
 	}
 
-	void PrimitiveValue::Optimise() {
-		// Don't change characters
-		if (type == TYPE_C8) return;
+	// Value
 
-		// Boolean values are already optimal
-		if (type == TYPE_BOOL) return;
+	Value::Value() :
+		_primitive(),
+		_primitive_array_type(TYPE_NULL)
+	{
+		_primitive.u64 = 0u;
+	}
 
-		double val = operator double();
+	Value::Value(Value&& other) :
+		Value()
+	{
+		Swap(other);
+	}
 
-		// If the value is a boolean
-		if (val == 1.0) {
-			u8 = 1;
-			type = TYPE_U8;
-		
-		// If the value is a boolean
-		} else if (val == 0.0) {
-			u8 = 0;
-			type = TYPE_U8;
+	Value::Value(const Value& other) :
+		Value()
+	{
+		*this = other;
+	}
 
-		} else if (std::round(val) == val) {
-			// If value is unsigned
-			if (val >= 0.0) {
-				if (val <= static_cast<double>(UINT8_MAX)) {
-					u8 = static_cast<uint8_t>(val);
-					type = TYPE_U8;
-				} else if (val > static_cast<double>(UINT16_MAX)) {
-					u16 = static_cast<uint16_t>(val);
-					type = TYPE_U16;
-				} else if (val > static_cast<double>(UINT32_MAX)) {
-					u32 = static_cast<uint32_t>(val);
-					type = TYPE_U32;
-				} else if (val > static_cast<double>(UINT64_MAX)) {
-					u64 = static_cast<uint64_t>(val);
-					type = TYPE_U64;
-				} else {
-					goto FLOATING_POINT;
-				}
-
-			// The value is signed
-			} else {
-				if (val > static_cast<double>(INT8_MIN)) {
-					s8 = static_cast<int8_t>(val);
-					type = TYPE_S8;
-				} else if (val > static_cast<double>(INT16_MIN)) {
-					s16 = static_cast<int16_t>(val);
-					type = TYPE_S16;
-				} else if (val > static_cast<double>(INT32_MIN)) {
-					s32 = static_cast<int32_t>(val);
-					type = TYPE_S32;
-				} else if (val > static_cast<double>(INT64_MIN)) {
-					s64 = static_cast<int64_t>(val);
-					type = TYPE_S64;
-				} else {
-					goto FLOATING_POINT;
-				}
-			}
-
-		// The value is floating point
-		} else {
-FLOATING_POINT:
-			// If the value can be stored as 32-bit floating point without losing precision
-			float tmp = static_cast<float>(val);
-			if (static_cast<double>(tmp) == val) {
-				f32 = tmp;
-				type = TYPE_F32;
-			} else {
-				f64 = val;
-				type = TYPE_F64;
-			}
+	Value::Value(const Type type) :
+		Value()
+	{
+		switch (type) {
+		case TYPE_C8:
+			SetC8();
+			break;
+		case TYPE_U8:
+			SetU8();
+			break;
+		case TYPE_U16:
+			SetU16();
+			break;
+		case TYPE_U32:
+			SetU32();
+			break;
+		case TYPE_U64:
+			SetU64();
+			break;
+		case TYPE_S8:
+			SetS8();
+			break;
+		case TYPE_S16:
+			SetS16();
+			break;
+		case TYPE_S32:
+			SetS32();
+			break;
+		case TYPE_S64:
+			SetS64();
+			break;
+		case TYPE_F16:
+			SetF16();
+			break;
+		case TYPE_F32:
+			SetF32();
+			break;
+		case TYPE_F64:
+			SetF64();
+			break;
+		case TYPE_STRING:
+			SetString();
+			break;
+		case TYPE_ARRAY:
+			SetArray();
+			break;
+		case TYPE_OBJECT:
+			SetObject();
+			break;
+		case TYPE_BOOL:
+			SetBool();
+			break;
+		case TYPE_POD:
+			SetPod();
+			break;
 		}
 	}
 
-	// Value
+	Value::Value(bool value) :
+		_primitive(value),
+		_primitive_array_type(TYPE_NULL)
+	{}
 
+	Value::Value(char value) :
+		_primitive(value),
+		_primitive_array_type(TYPE_NULL)
+	{}
 
+	Value::Value(uint8_t value) :
+		_primitive(value),
+		_primitive_array_type(TYPE_NULL)
+	{}
+
+	Value::Value(uint16_t value) :
+		_primitive(value),
+		_primitive_array_type(TYPE_NULL)
+	{}
+
+	Value::Value(uint32_t value) :
+		_primitive(value),
+		_primitive_array_type(TYPE_NULL)
+	{}
+
+	Value::Value(uint64_t value) :
+		_primitive(value),
+		_primitive_array_type(TYPE_NULL)
+	{}
+
+	Value::Value(int8_t value) :
+		_primitive(value),
+		_primitive_array_type(TYPE_NULL)
+	{}
+
+	Value::Value(int16_t value) :
+		_primitive(value),
+		_primitive_array_type(TYPE_NULL)
+	{}
+
+	Value::Value(int32_t value) :
+		_primitive(value),
+		_primitive_array_type(TYPE_NULL)
+	{}
+
+	Value::Value(int64_t value) :
+		_primitive(value),
+		_primitive_array_type(TYPE_NULL)
+	{}
+
+	Value::Value(half value) :
+		_primitive(value),
+		_primitive_array_type(TYPE_NULL)
+	{}
+
+	Value::Value(float value) :
+		_primitive(value),
+		_primitive_array_type(TYPE_NULL)
+	{}
+
+	Value::Value(double value) :
+		_primitive(value),
+		_primitive_array_type(TYPE_NULL)
+	{}
+
+	Value::Value(const PrimitiveValue& value) :
+		_primitive(value),
+		_primitive_array_type(TYPE_NULL)
+	{}
+
+	Value::Value(const char* string) :
+		Value()
+	{
+		SetString() = string;
+	}
+
+	Value::Value(const std::string& string) :
+		Value()
+	{
+		SetString() = string;
+	}
+
+	Value::Value(Pod&& value) :
+		Value()
+	{
+		SetPod() = std::move(value);
+	}
+
+	Value::Value(const Pod& value) :
+		Value()
+	{
+		SetPod() = value;
+	}
+
+#if ANVIL_OPENCV_SUPPORT
+	Value::Value(const cv::Mat& img) :
+		Value(Pod::CreatePODFromCVMat(img))
+	{}
+#endif
+
+	Value::~Value() {
+		SetNull();
+	}
 
 	Value& Value::operator=(const Value& other) {
 		switch (other._primitive.type) {
@@ -488,6 +737,65 @@ FLOATING_POINT:
 		}
 	}
 
+	Value::PrimitiveArray* Value::ConvertToPrimitveArray() {
+		Array& myArray = *static_cast<Array*>(_primitive.ptr);
+
+		const size_t s = myArray.size();
+		if (s == 0u) return nullptr;
+
+		// Try to optimise any string values
+		for (Value& v : myArray) if (v.GetType() == TYPE_STRING) {
+			v.Optimise();
+
+			// If still a string then it can't be made into a primative
+			if (v.GetType() == TYPE_STRING) return nullptr;
+		}
+
+		Type target_type = myArray[0u].GetType();
+		try {
+
+			// Check if all values are the same type
+			Type largest_type = target_type;
+			uint32_t score = GetLargness(target_type);
+			bool same_type = true;
+
+			for (size_t i = 1u; i < s; ++i) {
+				const Type t2 = myArray[i].GetType();
+
+				if (t2 != target_type) {
+					same_type = false;
+					uint32_t score2 = GetLargness(t2);
+					if (score2 > score) {
+						score = score2;
+						target_type = t2;
+					}
+				}
+			}
+
+
+			// Convert to be the same type
+			if (!same_type) {
+				target_type = largest_type;
+
+				for (Value& v : myArray) {
+					v.ConvertTo(target_type);
+				}
+			}
+
+		} catch (...) {
+			return nullptr;
+		}
+
+		// Conver to primative array
+		Value tmp;
+		PrimitiveArray& primitive_array = tmp.SetPrimitiveArray(target_type);
+		const size_t bytes = GetSizeOfPrimitiveType(target_type);
+		primitive_array.resize(s * bytes);
+		for (size_t i = 0; i < s; ++i) {
+			memcpy(primitive_array.data() + i * bytes, &myArray[0]._primitive.u8, bytes);
+		}
+	}
+
 	Value::Array& Value::ConvertFromPrimitveArray() {
 		PrimitiveArray tmp = std::move(*static_cast<PrimitiveArray*>(_primitive.ptr));
 		Value::Array& new_array = SetArray();
@@ -695,34 +1003,14 @@ FLOATING_POINT:
 		}
 	}
 
-	ComponentID Value::GetComponentID(const uint32_t index) const {
+	std::string Value::GetComponentIDString(const size_t index) const {
 		switch (_primitive.type) {
 		case TYPE_OBJECT:
 			{
 				Object& myObject = *static_cast<Object*>(_primitive.ptr);
 				if (index >= myObject.size()) throw std::runtime_error("Value::GetValue : Index out of bounds");
 				auto i = myObject.begin();
-				uint32_t j = index;
-				while (j != 0u) {
-					++i;
-					--j;
-				}
-				return static_cast<ComponentID>(std::stoi(i->first));
-			}
-			break;
-		default:
-			throw std::runtime_error("Value::GetValue : Value is not an array or object");
-		}
-	}
-
-	std::string Value::GetComponentIDString(const uint32_t index) const {
-		switch (_primitive.type) {
-		case TYPE_OBJECT:
-			{
-				Object& myObject = *static_cast<Object*>(_primitive.ptr);
-				if (index >= myObject.size()) throw std::runtime_error("Value::GetValue : Index out of bounds");
-				auto i = myObject.begin();
-				uint32_t j = index;
+				size_t j = index;
 				while (j != 0u) {
 					++i;
 					--j;
@@ -736,14 +1024,12 @@ FLOATING_POINT:
 	}
 
 	PrimitiveValue Value::GetPrimitiveValue() const {
-		switch (_primitive.type) {
-		case TYPE_STRING:
-		case TYPE_ARRAY:
-		case TYPE_OBJECT:
-			throw std::runtime_error("Value::GetPrimitiveValue : Value is not a numerical type");
-			break;
-		default:
+		if (_primitive.type <= TYPE_F64) {
 			return _primitive;
+		} else if(_primitive.type == TYPE_STRING) {
+			return OptimiseString(*static_cast<std::string*>(_primitive.ptr));
+		} else {
+			throw std::runtime_error("Value::GetPrimitiveValue : Value is not a numerical type");
 		}
 	}
 
@@ -760,29 +1046,23 @@ FLOATING_POINT:
 	void Value::Optimise() {
 		switch (_primitive.type) {
 		case TYPE_STRING:
-			{
-				std::string& str = *static_cast<std::string*>(_primitive.ptr);
-				const size_t size = str.size();
-
-				// If the string is empty then it can be null value
-				if (size == 0u) {
-					SetNull();
-
-				// If the string is only one character then it can be primitive character
-				} else if (size == 1u) {
-					SetC8(str[0u]);
-				}
-			}
+			try {
+				PrimitiveValue tmp = OptimiseString(*static_cast<std::string*>(_primitive.ptr));
+				SetNull();
+				_primitive = tmp;
+			} catch (...) {}
 			break;
 		case TYPE_ARRAY:
 			{
+
 				// Optimise the child values
 				if (_primitive_array_type == TYPE_NULL) {
-					Array& myArray = *static_cast<Array*>(_primitive.ptr);
-					for (Value& i : myArray) i.Optimise();
+					ConvertToPrimitveArray();
 				}
 
-				//! \todo If all of the values are primitives try to make them the same type
+				//if (_primitive_array_type != TYPE_NULL) {
+					//! \todo Optimise primative array
+				//}
 			}
 			break;
 		case TYPE_OBJECT:
@@ -795,6 +1075,21 @@ FLOATING_POINT:
 		default:
 			_primitive.Optimise();
 			break;
+		}
+	}
+
+	void Value::ConvertTo(Type type) {
+		if (type == GetType()) return;
+
+		if (IsPrimitive()) {
+			if (type == TYPE_STRING) {
+				GetString();
+
+			} else {
+				_primitive.ConvertTo(type);
+			}
+		} else {
+			throw std::runtime_error("Value::Convert : Cannot convert");
 		}
 	}
 
