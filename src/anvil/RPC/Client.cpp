@@ -32,12 +32,14 @@ namespace anvil { namespace RPC {
 		else ++_next_id;
 
 		{
-			BytePipe::Value request(BytePipe::TYPE_OBJECT);
-			request.AddValue("jsonrpc", BytePipe::Value("2.0"));
-			request.AddValue("method", BytePipe::Value(method));
-			request.AddValue("params", BytePipe::Value(params));
-			request.AddValue("id", BytePipe::Value(_next_id));
-
+			BytePipe::Value request;
+			BytePipe::Value::Object& obj = request.SetObject();
+			obj.emplace("method", BytePipe::Value(method));
+			obj.emplace("params", BytePipe::Value(params));
+			request.Optimise();
+			// Don't optimise these values, may not be compatible with RPC server
+			obj.emplace("jsonrpc", BytePipe::Value("2.0"));
+			obj.emplace("id", BytePipe::Value(_next_id)); 
 			SendToServer(request);
 		}
 
@@ -77,6 +79,7 @@ namespace anvil { namespace RPC {
 		request.AddValue("method", BytePipe::Value(method));
 		request.AddValue("params", BytePipe::Value(params));
 
+		request.Optimise();
 		SendToServer(request);
 	}
 }}

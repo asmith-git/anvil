@@ -113,10 +113,13 @@ namespace anvil { namespace RPC {
 			}
 
 			if (id) {
-				BytePipe::Value tmp(BytePipe::TYPE_OBJECT);
-				tmp.AddValue("jsonrpc", BytePipe::Value("2.0"));
-				tmp.AddValue("id", BytePipe::Value(static_cast<int32_t>(*id)));
-				tmp.AddValue("result", std::move(result));
+				BytePipe::Value tmp;
+				BytePipe::Value::Object& obj = tmp.SetObject();
+				obj.emplace("result", std::move(result));
+				tmp.Optimise();
+				// Don't optimise these values, may not be compatibile with RPC client
+				obj.emplace("jsonrpc", BytePipe::Value("2.0"));
+				obj.emplace("id", BytePipe::Value(static_cast<int32_t>(*id)));
 				return tmp;
 
 			} else {
