@@ -19,7 +19,9 @@ namespace anvil { namespace RPC {
 	// Server
 
 	Server::Server() {
-
+		AddMethod("Anvil.RPC.Server.GetRPCVersion", [](const BytePipe::Value& params)->BytePipe::Value {
+			return 1;
+		});
 	}
 
 	Server::~Server() {
