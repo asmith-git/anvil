@@ -33,6 +33,20 @@ namespace anvil { namespace RPC {
 
 		BytePipe::Value SendRequest(const std::string& method, const BytePipe::Value& params);
 		void SendNotifcation(const std::string& method, const BytePipe::Value& params);
+
+		// Built-in requests
+
+		inline bool HasExtension(const std::string& ext) { return SendRequest("Anvil.HasExtension", ext).GetBool(); }
+		inline bool HasGSL() { return  HasExtension("GSL"); }
+		inline bool HasXML() { return HasExtension("XML"); }
+		inline bool HasJSON() { return HasExtension("JSON"); }
+		inline bool HasOpenCV() { return HasExtension("OpenCV"); }
+		inline std::string GetOpenCVVersion() { return SendRequest("Anvil.OpenCV.GetVersion", BytePipe::Value()).GetString(); }
+		inline uint32_t GetVersion() { return SendRequest("Anvil.RPC.GetVersion", BytePipe::Value()).GetU32(); }
+		inline int32_t GetCPUArch() { return SendRequest("Anvil.CPU.GetArch", BytePipe::Value()).GetS32(); }
+		inline size_t GetCPUBits() { return SendRequest("Anvil.CPU.GetBits", BytePipe::Value()).GetU32(); }
+		inline InstructionSets GetInstructionSets() { return static_cast<InstructionSets>(SendRequest("Anvil.CPU.GetInstructionSets", BytePipe::Value()).GetU64()); }
+		inline int32_t GetOS() { return SendRequest("Anvil.OS.GetVersion", BytePipe::Value()).GetS32(); }
 	};
 }}
 

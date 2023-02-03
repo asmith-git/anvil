@@ -19,9 +19,45 @@ namespace anvil { namespace RPC {
 	// Server
 
 	Server::Server() {
-		AddMethod("Anvil.RPC.Server.GetRPCVersion", [](const BytePipe::Value& params)->BytePipe::Value {
+
+		AddMethod("Anvil.RPC.GetVersion", [](const BytePipe::Value& params)->BytePipe::Value {
 			return 1;
 		});
+
+		AddMethod("Anvil.HasExtension", [](const BytePipe::Value& params)->BytePipe::Value {
+			if (params.GetType() == BytePipe::TYPE_STRING) {
+				const std::string& str = params.GetString();
+				if (str == "GSL") return static_cast<bool>(ANVIL_GSL_SUPPORT);
+				if (str == "OpenCV") return static_cast<bool>(ANVIL_OPENCV_SUPPORT);
+				if (str == "XML") return static_cast<bool>(ANVIL_XML_SUPPORT);
+				if (str == "JSON") return static_cast<bool>(ANVIL_JSON_SUPPORT);
+			}
+			
+			return false;
+		});
+
+		AddMethod("Anvil.OS.GetVersion", [](const BytePipe::Value& params)->BytePipe::Value {
+			return ANVIL_OS;
+		});
+
+		AddMethod("Anvil.CPU.GetArch", [](const BytePipe::Value& params)->BytePipe::Value {
+			return ANVIL_CPU_ARCHITECTURE;
+		});
+
+		AddMethod("Anvil.CPU.GetGetBits", [](const BytePipe::Value& params)->BytePipe::Value {
+			return ANVIL_CPU_ARCHITECTURE_BITS;
+		});
+
+		AddMethod("Anvil.CPU.GetInstructionSets", [](const BytePipe::Value& params)->BytePipe::Value {
+			return SupportedInstructionSets;
+		});
+
+#if ANVIL_OPENCV_SUPPORT
+		AddMethod("Anvil.OpenCV.GetVersion", [](const BytePipe::Value& params)->BytePipe::Value {
+			return CV_VERSION;
+		});
+#endif
+
 	}
 
 	Server::~Server() {
