@@ -1275,7 +1275,7 @@ OLD_COMPONENT_ID:
 				cv::Size(header->width, header->height),
 				static_cast<int>(header->type),
 				const_cast<uint8_t*>(static_cast<const uint8_t*>(data) + sizeof(OpenCVHeader))
-			);
+			).clone();
 		} else {
 			const uint8_t* img_data = static_cast<const uint8_t*>(data) + sizeof(OpenCVHeader);
 			std::vector<uint8_t> tmp(img_data, img_data + (bytes - sizeof(OpenCVHeader)));
@@ -1417,6 +1417,12 @@ OLD_COMPONENT_ID:
 					OnValue(const_cast<Value&>(value).GetValue(id));
 				}
 				OnObjectEnd();
+			}
+			break;
+		case TYPE_POD:
+			{
+				const Value::Pod& pod = value.GetPod();
+				OnUserPOD(pod.type, pod.data.size(), pod.data.data());
 			}
 			break;
 		default:

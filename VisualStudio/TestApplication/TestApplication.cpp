@@ -200,48 +200,36 @@ void PopulateBytePipeTest(anvil::BytePipe::Parser& writer) {
 	writer.OnPipeOpen();
 		writer.OnObjectBegin(4);
 
-		writer.OnComponentID("array_test");
-		writer.OnArrayBegin(20);
-			for (int i = 0; i < 20; ++i) writer.OnPrimitiveS32(i);
+		writer.OnArrayBegin("array_test", 20);
+			for (int i = 0; i < 20; ++i) writer(i);
 		writer.OnArrayEnd();
 
-		writer.OnComponentID("old_object_test");
-		writer.OnObjectBegin(4);
-			writer.OnComponentID((anvil::BytePipe::ComponentID)0);
-			writer.OnPrimitiveC8('A');
-			writer.OnComponentID(1);
-			writer.OnPrimitiveC8('B');
-			writer.OnComponentID(2);
-			writer.OnPrimitiveC8('C');
-			writer.OnComponentID(3);
-			writer.OnPrimitiveC8('D');
+		writer.OnObjectBegin("old_object_test", 4);
+			writer((anvil::BytePipe::ComponentID)0, 'A');
+			writer((anvil::BytePipe::ComponentID)1, 'B');
+			writer((anvil::BytePipe::ComponentID)2, 'C');
+			writer((anvil::BytePipe::ComponentID)3, 'D');
 		writer.OnObjectEnd();
 
-		writer.OnComponentID("new_object_test");
-		writer.OnObjectBegin(4);
-			writer.OnComponentID("first");
-			writer.OnPrimitiveC8('A');
-			writer.OnComponentID("second");
-			writer.OnPrimitiveC8('B');
-			writer.OnComponentID("third");
-			writer.OnPrimitiveC8('C');
-			writer.OnComponentID("fourth");
-			writer.OnPrimitiveC8('D');
+		writer.OnObjectBegin("new_object_test", 4);
+			writer("first", 'A');
+			writer("second", 'B');
+			writer("third", 'C');
+			writer("fourth", 'D');
 		writer.OnObjectEnd();
 
-		writer.OnComponentID("Image");
-			{
-				cv::Mat tmp;
-				tmp.create(cv::Size(256, 256), CV_8UC4);
-				for (int32_t y = 0u; y < tmp.rows; ++y) for (int32_t x = 0u; x < tmp.cols; ++x) {
-					uint8_t* dst = static_cast<uint8_t*>(tmp.data) + (y * tmp.cols + x) * 4;
-					dst[0] = rand();
-					dst[1] = rand();
-					dst[2] = rand();
-					dst[3] = 255;
-				}
-				writer(tmp, anvil::BytePipe::IMAGE_JPEG, 90.f);
+		{
+			cv::Mat tmp;
+			tmp.create(cv::Size(256, 256), CV_8UC4);
+			for (int32_t y = 0u; y < tmp.rows; ++y) for (int32_t x = 0u; x < tmp.cols; ++x) {
+				uint8_t* dst = static_cast<uint8_t*>(tmp.data) + (y * tmp.cols + x) * 4;
+				dst[0] = rand();
+				dst[1] = rand();
+				dst[2] = rand();
+				dst[3] = 255;
 			}
+			writer("image", tmp, anvil::BytePipe::IMAGE_JPEG, 90.f);
+		}
 
 	writer.OnObjectEnd();
 	writer.OnPipeClose();
@@ -332,11 +320,9 @@ void XMLTest() {
 
 int main()
 {
-	RPCTest();
-	return 0;
-
 	JSONTest();
 	XMLTest();
+	RPCTest();
 	return 0;
 
 	//UDPTest();

@@ -483,21 +483,70 @@ namespace anvil { namespace BytePipe {
 
 		// General helper
 
-		ANVIL_STRONG_INLINE void operator()(const char*& value) { OnPrimitiveString(value, strlen(value)); }
-
-		template<class T>
-		inline void operator()(const T& value) {
-			OnValue(ValueEncoder<T>::Encode(value));
+		ANVIL_STRONG_INLINE void OnArrayBegin(const ComponentID id, size_t size) {
+			OnComponentID(id);
+			OnArrayBegin(size);
 		}
 
+		ANVIL_STRONG_INLINE void OnArrayBegin(const std::string& id, size_t size) {
+			OnComponentID(id);
+			OnArrayBegin(size);
+		}
+
+		ANVIL_STRONG_INLINE void OnObjectBegin(const ComponentID id, size_t size) {
+			OnComponentID(id);
+			OnObjectBegin(size);
+		}
+
+		ANVIL_STRONG_INLINE void OnObjectBegin(const std::string& id, size_t size) {
+			OnComponentID(id);
+			OnObjectBegin(size);
+		}
+
+private:
 		template<class T, class ...PARAMS>
-		inline void operator()(const T& value, PARAMS... params) {
+		ANVIL_STRONG_INLINE void _EncodeImplement(const T& value, PARAMS... params) {
 			OnValue(ValueEncoder<T>::Encode(value, params...));
+		}
+public:
+		template<class T>
+		inline void operator()(const T& value) {
+			_EncodeImplement<T>(value);
+		}
+
+		template<class P1, class ...P2>
+		ANVIL_STRONG_INLINE void operator()(const ComponentID first, const P1& second, P2... others) {
+			OnComponentID(first);
+			_EncodeImplement(second, others...);
+		}
+
+		template<class P1, class ...P2>
+		ANVIL_STRONG_INLINE void operator()(const std::string& first, const P1& second, P2... others) {
+			OnComponentID(first);
+			_EncodeImplement(second, others...);
+		}
+
+		template<class P1, class ...P2>
+		ANVIL_STRONG_INLINE void operator()(const char* first, const P1& second, P2... others) {
+			OnComponentID(first);
+			_EncodeImplement(second, others...);
+		}
+
+		template<class T, class P1, class ...P2>
+		ANVIL_STRONG_INLINE void operator()(const T& first, const P1& second, P2... others) {
+			typedef std::remove_reference<std::remove_const<T>::type>::type T2;
+			if ANVIL_CONSTEXPR_FN(std::is_same<T2, ComponentID>::value || std::is_same<T2, std::string>::value || std::is_same<T2, char*>::value) {
+				OnComponentID(first);
+				_EncodeImplement(second, others...);
+			} else {
+				_EncodeImplement(first, second, others...);
+			}
 		}
 	};
 
     template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<bool>(const bool value) { OnPrimitiveBool(value); }
     template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<bool>(const bool* values, const size_t size) {  OnPrimitiveArrayBool(values, size); }
+	template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<char>(const char value) { OnPrimitiveC8(value); }
     template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<char>(const char* values, const size_t size) {  OnPrimitiveArrayC8(values, size); }
     template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<uint8_t>(const uint8_t value) { OnPrimitiveU8(value); }
     template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<uint8_t>(const uint8_t* values, const size_t size) { OnPrimitiveArrayU8(values, size); }
@@ -522,20 +571,21 @@ namespace anvil { namespace BytePipe {
     template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<double>(const double value) { OnPrimitiveF64(value); }
     template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<double>(const double* values, const size_t size) { OnPrimitiveArrayF64(values, size); }
 
-    template<> ANVIL_STRONG_INLINE void Parser::operator()<bool>(const bool& value) { OnPrimitive<bool>(value); }
-    template<> ANVIL_STRONG_INLINE void Parser::operator()<char>(const char& value) { OnPrimitive<char>(value); }
-    template<> ANVIL_STRONG_INLINE void Parser::operator()<uint8_t>(const uint8_t& value) { OnPrimitive<uint8_t>(value); }
-    template<> ANVIL_STRONG_INLINE void Parser::operator()<uint16_t>(const uint16_t& value) { OnPrimitive<uint16_t>(value); }
-    template<> ANVIL_STRONG_INLINE void Parser::operator()<uint32_t>(const uint32_t& value) { OnPrimitive<uint32_t>(value); }
-    template<> ANVIL_STRONG_INLINE void Parser::operator()<uint64_t>(const uint64_t& value) { OnPrimitive<uint64_t>(value); }
-    template<> ANVIL_STRONG_INLINE void Parser::operator()<int8_t>(const int8_t& value) { OnPrimitive<int8_t>(value); }
-    template<> ANVIL_STRONG_INLINE void Parser::operator()<int16_t>(const int16_t& value) { OnPrimitive<int16_t>(value); }
-    template<> ANVIL_STRONG_INLINE void Parser::operator()<int32_t>(const int32_t& value) { OnPrimitive<int32_t>(value); }
-    template<> ANVIL_STRONG_INLINE void Parser::operator()<int64_t>(const int64_t& value) { OnPrimitive<int64_t>(value); }
-    template<> ANVIL_STRONG_INLINE void Parser::operator()<half>(const half& value) { OnPrimitive<half>(value); }
-    template<> ANVIL_STRONG_INLINE void Parser::operator()<float>(const float& value) { OnPrimitive<float>(value); }
-    template<> ANVIL_STRONG_INLINE void Parser::operator()<double>(const double& value) { OnPrimitive<double>(value); }
-    template<> ANVIL_STRONG_INLINE void Parser::operator()<std::string>(const std::string& value) { OnPrimitiveString(value.c_str(), value.size()); }
+    template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<bool>(const bool& value) { OnPrimitive<bool>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<char>(const char& value) { OnPrimitive<char>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<uint8_t>(const uint8_t& value) { OnPrimitive<uint8_t>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<uint16_t>(const uint16_t& value) { OnPrimitive<uint16_t>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<uint32_t>(const uint32_t& value) { OnPrimitive<uint32_t>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<uint64_t>(const uint64_t& value) { OnPrimitive<uint64_t>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<int8_t>(const int8_t& value) { OnPrimitive<int8_t>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<int16_t>(const int16_t& value) { OnPrimitive<int16_t>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<int32_t>(const int32_t& value) { OnPrimitive<int32_t>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<int64_t>(const int64_t& value) { OnPrimitive<int64_t>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<half>(const half& value) { OnPrimitive<half>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<float>(const float& value) { OnPrimitive<float>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<double>(const double& value) { OnPrimitive<double>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<std::string>(const std::string& value) { OnPrimitiveString(value.c_str(), value.size()); }
+    template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<Value>(const Value& value) { OnValue(value); }
 
 	/*!
 		\author Adam Smtih
