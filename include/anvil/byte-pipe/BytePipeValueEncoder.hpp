@@ -243,20 +243,25 @@ namespace anvil { namespace BytePipe {
 
 		template<class T>
 		static void ValueArrayDecoder(T* dst, const Value& value) {
-			if (!(value.IsArray() || value.IsPrimitiveArray())) throw std::runtime_error("anvil::ValueArrayDecoderPushBack : Value is not an array");
+			const Value::Array* a = value.Get<Value::Array>();
+			const Value::PrimitiveArray* pa = value.Get<Value::PrimitiveArray>();
 
-			const size_t s = value.GetSize();
 
-			if ANVIL_CONSTEXPR_VAR(IsPrimitiveType<T>()) {
-				if (value.IsPrimitiveArray()) {
-					memcpy(dst, value.Get<Value::PrimitiveArray>()->data(), sizeof(T) * s);
+			if (pa) {
+				const size_t s = pa->size();
+				if ANVIL_CONSTEXPR_VAR(IsPrimitiveType<T>()) {
+					memcpy(dst, pa->data(), sizeof(T) * s);
 					return;
 				}
 
-			} 
+			} else if (a) {
+				const size_t s = a->size();
+				const Value* src = a->data();
+				for (size_t i = 0u; i < s; ++i) dst[i] = ValueEncoder<T>::Decode(src[i]);
+				return;
+			}
 
-			const Value::Array& a = *value.Get<Value::Array>();
-			for (size_t i = 0u; i < s; ++i) dst[i] = ValueEncoder<T>::Decode(a[i]);
+			throw std::runtime_error("anvil::ValueArrayDecoderPushBack : Value is not an array");
 		}
 
 		template<class T, class IT>
@@ -295,21 +300,26 @@ namespace anvil { namespace BytePipe {
 
 		template<class T, class C>
 		static void ValueArrayDecoderPushBack(C& dst, const Value& value) {
-			if (!(value.IsArray() || value.IsPrimitiveArray())) throw std::runtime_error("anvil::ValueArrayDecoderPushBack : Value is not an array");
+			const Value::Array* a = value.Get<Value::Array>();
+			const Value::PrimitiveArray* pa = value.Get<Value::PrimitiveArray>();
 
-			const size_t s = value.GetSize();
-
-			if ANVIL_CONSTEXPR_VAR(IsPrimitiveType<T>()) {
-				if (value.IsPrimitiveArray()) {
-					const T* src = reinterpret_cast<const T*>(value.Get<Value::PrimitiveArray>()->data());
+			if(pa) {
+				if ANVIL_CONSTEXPR_VAR(IsPrimitiveType<T>()) {
+					const size_t s = pa->size();
+					const T* src = reinterpret_cast<const T*>(pa->data());
 					for (size_t i = 0u; i < s; ++i) dst.push_back(src[i]);
 					return;
+
 				}
 
+			} else if (a) {
+				const size_t s = a->size();
+				const Value* src = a->data();
+				for (size_t i = 0u; i < s; ++i) dst.push_back(ValueEncoder<T>::Decode(src[i]));
+				return;
 			}
 
-			const Value::Array& a = *value.Get<Value::Array>();
-			for (size_t i = 0u; i < s; ++i) dst.push_back(ValueEncoder<T>::Decode(a[i]));
+			throw std::runtime_error("anvil::ValueArrayDecoderPushBack : Value is not an array");
 		}
 	}
 
@@ -402,14 +412,14 @@ namespace anvil { namespace BytePipe {
 			}
 
 			static type Decode(const Value& value) {
-				if (!value.IsObject()) throw std::runtime_error("ValueEncoder<std::map>::Decode : Value is not an object");
-				const Value::Object& object = *value.GetObject();
+				const Value::Object* object = value.Get<Value::Object>();
+				if (!object) throw std::runtime_error("ValueEncoder<std::map>::Decode : Value is not an object");
 
-				auto keys_it = object.find("keys");
-				auto values_it = object.find("values");
+				auto keys_it = object->find("keys");
+				auto values_it = object->find("values");
 
-				if (keys_it == object.end()) throw std::runtime_error("ValueEncoder<std::map>::Decode : Could not find keys");
-				if (values_it == object.end()) throw std::runtime_error("ValueEncoder<std::map>::Decode : Could not find values");
+				if (keys_it == object->end()) throw std::runtime_error("ValueEncoder<std::map>::Decode : Could not find keys");
+				if (values_it == object->end()) throw std::runtime_error("ValueEncoder<std::map>::Decode : Could not find values");
 
 				std::vector<K> keys = ValueEncoder<std::vector<K>>::Decode(keys_it->second);
 				std::vector<T> values = ValueEncoder<std::vector<T>>::Decode(values_it->second);

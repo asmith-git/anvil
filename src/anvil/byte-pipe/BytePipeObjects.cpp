@@ -905,14 +905,46 @@ GENERAL_ARRAY:
 		return *static_cast<Object*>(_primitive.ptr);
 	}
 
-	Value::Object& Value::GetObject() {
-		if (_primitive.type != TYPE_OBJECT) return SetObject();
-		return *static_cast<Object*>(_primitive.ptr);
+	/*!
+		\brief Try to interpret this value as an object
+		\param convert If true then conversion from an array will be attempted
+		\return Nullptr if the value is not an object or cannot be converted to an object
+	*/
+	Value::Object* Value::GetObject(bool convert) {
+		if (_primitive.type != TYPE_OBJECT) {
+			if (convert && _primitive.type == TYPE_ARRAY) {
+				Value::PrimitiveArray* pa = GetPrimitiveArray();
+
+				Value::Array* a;
+				if (pa) a = ConvertFromPrimitveArray();
+				else a = GetArray();
+
+				if (a) {
+					// Convert from array to object
+					Value tmp;
+					Object& obj = tmp.SetObject();
+					size_t s = a->size();
+					for (size_t i = 0u; i < s; ++i) {
+						Value& v = obj.emplace(std::to_string(i), Value()).first->second;
+						v.Swap(a->data()[i]);
+					}
+					
+					Swap(tmp);
+					return static_cast<Object*>(_primitive.ptr);
+				}
+			}
+			return nullptr;
+		}
+
+		return static_cast<Object*>(_primitive.ptr);
 	}
 
+	/*!
+		\brief Try to interpret this value as an object
+		\return Nullptr if the value is not an object
+	*/
 	const Value::Object* Value::GetObject() const {
-		if (_primitive.type != TYPE_OBJECT) return nullptr;
-		return static_cast<const Object*>(_primitive.ptr);
+		return _primitive.type == TYPE_OBJECT ? static_cast<const Object*>(_primitive.ptr) : nullptr;
 	}
 
 	std::string Value::GetString() const {

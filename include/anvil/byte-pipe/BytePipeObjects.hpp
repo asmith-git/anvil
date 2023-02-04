@@ -331,6 +331,12 @@ namespace anvil { namespace BytePipe {
 			typedef const std::vector<T>* const_type;
 		};
 
+		template<class K, class V>
+		struct ValueGetReturn<std::map<K,V>> {
+			typedef std::map<K, V>* type;
+			typedef const std::map<K, V>* const_type;
+		};
+
 	}
 
 	class Value {
@@ -369,6 +375,9 @@ namespace anvil { namespace BytePipe {
 
 		PrimitiveArray* GetPrimitiveArray(bool convert = false);
 		const PrimitiveArray* GetPrimitiveArray() const;
+
+		Object* GetObject(bool convert = false);
+		const Object* GetObject() const;
 
 #if ANVIL_OPENCV_SUPPORT
 		ANVIL_STRONG_INLINE Pod& SetImage() {
@@ -459,9 +468,6 @@ namespace anvil { namespace BytePipe {
 			\param value The value to add.
 		*/
 		Value* AddValue(const PrimitiveValue& value);
-
-		Object& GetObject();
-		const Object* GetObject() const;
 
 
 		ANVIL_STRONG_INLINE Value& AddValue(const std::string& id) {
@@ -942,6 +948,16 @@ namespace anvil { namespace BytePipe {
 	template<>
 	ANVIL_STRONG_INLINE Value::Object& Value::Set<Value::Object>() {
 		return SetObject();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE const Value::Object* Value::Get<Value::Object>() const {
+		return GetObject();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE Value::Object* Value::Get<Value::Object>() {
+		return GetObject(false);
 	}
 
 	template<>
