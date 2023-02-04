@@ -630,43 +630,53 @@ namespace anvil { namespace BytePipe {
 		return *static_cast<Array*>(_primitive.ptr);
 	}
 
-	Value::Array& Value::GetArray() {
+	/*!
+		\brief Try to interpret this value as a general array
+		\param convert If true then conversion from primitive array will be attempted
+		\return Nullptr if the value is not a general array or cannot be converted to a general array
+	*/
+	Value::Array* Value::GetArray(bool convert) {
 		if (_primitive.type == TYPE_ARRAY) {
 			if (_primitive_array_type == TYPE_NULL) {
-				return *static_cast<Array*>(_primitive.ptr);
-			} else {
+				return static_cast<Array*>(_primitive.ptr);
+			} else if(convert) {
 				return ConvertFromPrimitveArray();
 			}
-		} else {
-			return SetArray();
 		}
-	}
 
-	const Value::Array* Value::GetArray() const {
-		if (_primitive.type == TYPE_ARRAY) {
-			if (_primitive_array_type == TYPE_NULL) {
-				return static_cast<const Array*>(_primitive.ptr);
-			}
-		}
 		return nullptr;
 	}
 
-	Value::PrimitiveArray* Value::GetPrimitiveArray() {
+	/*!
+		\brief Try to interpret this value as a general array
+		\return Nullptr if the value is not a general array
+	*/
+	const Value::Array* Value::GetArray() const {
+		return _primitive.type == TYPE_ARRAY && _primitive_array_type == TYPE_NULL ? static_cast<const Array*>(_primitive.ptr) : nullptr;
+	}
+
+	/*!
+		\brief Try to interpret this value as a primitive
+		\param convert If true then conversion from general array will be attempted
+		\return Nullptr if the value is not a primitive array or cannot be converted to a primitive array
+	*/
+	Value::PrimitiveArray* Value::GetPrimitiveArray(bool convert) {
 		if (_primitive.type == TYPE_ARRAY) {
 			if (_primitive_array_type != TYPE_NULL) {
 				return static_cast<PrimitiveArray*>(_primitive.ptr);
+			} else if(convert) {
+				return ConvertToPrimitveArray();
 			}
 		}
 		return nullptr;
 	}
 
+	/*!
+		\brief Try to interpret this value as an array
+		\return Nullptr if the value is not a primitve array
+	*/
 	const Value::PrimitiveArray* Value::GetPrimitiveArray() const {
-		if (_primitive.type == TYPE_ARRAY) {
-			if (_primitive_array_type != TYPE_NULL) {
-				return static_cast<const PrimitiveArray*>(_primitive.ptr);
-			}
-		}
-		return nullptr;
+		return _primitive.type == TYPE_ARRAY && _primitive_array_type != TYPE_NULL ? static_cast<const PrimitiveArray*>(_primitive.ptr) : nullptr;
 	}
 
 	Value::PrimitiveArray& Value::SetPrimitiveArray(Type type) {
@@ -693,41 +703,52 @@ namespace anvil { namespace BytePipe {
 	}
 
 	Value* Value::AddValue(const PrimitiveValue& value) {
-		if (_primitive.type != TYPE_ARRAY) throw std::runtime_error("Value::AddValue : Value is not an array");
+		PrimitiveArray* pa = GetPrimitiveArray();
+		Array* a = GetArray();
+		if (a) {
+GENERAL_ARRAY:
+			a->push_back(std::move(Value(value)));
+			return &a->back();
 
-		if (_primitive_array_type == TYPE_NULL) {
-			static_cast<Array*>(_primitive.ptr)->push_back(std::move(Value(value)));
-			return &static_cast<Array*>(_primitive.ptr)->back();
-
-		} else {
+		} else if(pa) {
 			// Try to add primative type
 			try {
 				PrimitiveValue v = value;
 				v.ConvertTo(_primitive_array_type);
 
 				size_t bytes = GetSizeOfPrimitiveType(_primitive_array_type);
-				PrimitiveArray& primitive_array = *static_cast<PrimitiveArray*>(_primitive.ptr);
 
-				size_t prev_size = primitive_array.size();
-				primitive_array.resize(prev_size + bytes);
-				memcpy(primitive_array.data() + prev_size, &v.u8, bytes);
+				size_t prev_size = pa->size();
+				pa->resize(prev_size + bytes);
+				memcpy(pa->data() + prev_size, &v.u8, bytes);
 
 				return nullptr;
 			} catch (...) {}
 
-			// Conver to value array
-			ConvertFromPrimitveArray();
-			return AddValue(value);
+			// Convert to value array
+			a = ConvertFromPrimitveArray();
+			if (a) goto GENERAL_ARRAY;
+			
 		}
+
+		throw std::runtime_error("Value::AddValue : Value is not an array, or value is not compatible");
 	}
 
+	/*!
+		\brief Attempt to convert a general array into a primitve array
+		\return Nullptr if is this value is not an array, or the primitive array could not be converted
+	*/
 	Value::PrimitiveArray* Value::ConvertToPrimitveArray() {
-		Array& myArray = *static_cast<Array*>(_primitive.ptr);
+		// Check if this is a valid general array
+		if (_primitive.type != TYPE_ARRAY) return nullptr;
+		if (_primitive_array_type != TYPE_NULL) return static_cast<PrimitiveArray*>(_primitive.ptr);
 
+		// If the array is empty then there is no way of knowing what primitve type to use
+		Array& myArray = *static_cast<Array*>(_primitive.ptr);
 		const size_t s = myArray.size();
 		if (s == 0u) return nullptr;
 
-		// Try to optimise any string values
+		// Try to optimise any string values into primitves
 		for (Value& v : myArray) if (v.GetType() == TYPE_STRING) {
 			v.Optimise();
 
@@ -738,7 +759,9 @@ namespace anvil { namespace BytePipe {
 		Type target_type = myArray[0u].GetType();
 		try {
 
-			// Check if all values are the same type
+			// This loop performs two operations:
+			//   1) Check if all values in the array are already the same type
+			//   2) Find the largest data type in the array, which the others will be converted to
 			Type largest_type = target_type;
 			uint32_t score = GetLargness(target_type);
 			bool same_type = true;
@@ -757,7 +780,7 @@ namespace anvil { namespace BytePipe {
 			}
 
 
-			// Convert to be the same type
+			// If the values are not the same type then try to conver them
 			if (!same_type) {
 				target_type = largest_type;
 
@@ -767,6 +790,7 @@ namespace anvil { namespace BytePipe {
 			}
 
 		} catch (...) {
+			// Failed to conver types
 			return nullptr;
 		}
 
@@ -778,13 +802,26 @@ namespace anvil { namespace BytePipe {
 		for (size_t i = 0; i < s; ++i) {
 			memcpy(primitive_array.data() + i * bytes, &myArray[0]._primitive.u8, bytes);
 		}
+
+		// Set this value to the new array and return
+		Swap(tmp);
 		return &primitive_array;
 	}
 
-	Value::Array& Value::ConvertFromPrimitveArray() {
+	/*!
+		\brief Attempt to convert a primitive array into a general array
+		\return Nullptr if is this value is not an array, or the primitive array could not be converted
+	*/
+	Value::Array* Value::ConvertFromPrimitveArray() {
+		// Check if the conversion is possible
+		if (_primitive.type != TYPE_ARRAY) return nullptr;
+		if (_primitive_array_type == TYPE_NULL) return static_cast<Array*>(_primitive.ptr);
+
+		// Set up the array memory
 		PrimitiveArray tmp = std::move(*static_cast<PrimitiveArray*>(_primitive.ptr));
 		Value::Array& new_array = SetArray();
 
+		// Convert the data
 		switch (_primitive_array_type) {
 		case TYPE_C8:
 			ConvertToValueVector<char>(new_array, tmp);
@@ -827,7 +864,7 @@ namespace anvil { namespace BytePipe {
 			break;
 		}
 
-		return new_array;
+		return &new_array;
 	}
 
 	Value* Value::AddValue(Value&& value) {
@@ -841,9 +878,15 @@ namespace anvil { namespace BytePipe {
 		// Complex values
 		} else {
 			if (_primitive.type != TYPE_ARRAY) throw std::runtime_error("Value::AddValue : Value is not an array");
-			if (_primitive_array_type != TYPE_NULL) ConvertFromPrimitveArray();
-			static_cast<Array*>(_primitive.ptr)->push_back(std::move(value));
-			return &static_cast<Array*>(_primitive.ptr)->back();
+			Array* a;
+			if (_primitive_array_type != TYPE_NULL) {
+				a = ConvertFromPrimitveArray();
+			} else {
+				a = static_cast<Array*>(_primitive.ptr);
+			}
+			if(a = nullptr) throw std::runtime_error("Value::AddValue : Array cannot be converted to contain general values");
+			a->push_back(std::move(value));
+			return &a->back();
 		}
 	}
 

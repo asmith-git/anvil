@@ -1356,52 +1356,54 @@ OLD_COMPONENT_ID:
 		case TYPE_ARRAY:
 			{
 				const uint32_t size = static_cast<uint32_t>(value.GetSize());
-				if (value.IsPrimitiveArray()) {
+				const Value::PrimitiveArray* pa = value.Get<Value::PrimitiveArray>();
+				if (pa) {
 					switch (value.GetPrimitiveArrayType()) {
 					case TYPE_C8:
-						OnPrimitiveArrayC8(reinterpret_cast<const char*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
+						OnPrimitiveArrayC8(reinterpret_cast<const char*>(const_cast<Value&>(value).Get<Value::PrimitiveArray>()->data()), size);
 						break;
 					case TYPE_U8:
-						OnPrimitiveArrayU8(reinterpret_cast<const uint8_t*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
+						OnPrimitiveArrayU8(reinterpret_cast<const uint8_t*>(pa->data()), size);
 						break;
 					case TYPE_U16:
-						OnPrimitiveArrayU16(reinterpret_cast<const uint16_t*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
+						OnPrimitiveArrayU16(reinterpret_cast<const uint16_t*>(pa->data()), size);
 						break;
 					case TYPE_U32:
-						OnPrimitiveArrayU32(reinterpret_cast<const uint32_t*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
+						OnPrimitiveArrayU32(reinterpret_cast<const uint32_t*>(pa->data()), size);
 						break;
 					case TYPE_U64:
-						OnPrimitiveArrayU64(reinterpret_cast<const uint64_t*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
+						OnPrimitiveArrayU64(reinterpret_cast<const uint64_t*>(pa->data()), size);
 						break;
 					case TYPE_S8:
-						OnPrimitiveArrayS8(reinterpret_cast<const int8_t*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
+						OnPrimitiveArrayS8(reinterpret_cast<const int8_t*>(pa->data()), size);
 						break;
 					case TYPE_S16:
-						OnPrimitiveArrayS16(reinterpret_cast<const int16_t*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
+						OnPrimitiveArrayS16(reinterpret_cast<const int16_t*>(pa->data()), size);
 						break;
 					case TYPE_S32:
-						OnPrimitiveArrayS32(reinterpret_cast<const int32_t*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
+						OnPrimitiveArrayS32(reinterpret_cast<const int32_t*>(pa->data()), size);
 						break;
 					case TYPE_S64:
-						OnPrimitiveArrayS64(reinterpret_cast<const int64_t*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
+						OnPrimitiveArrayS64(reinterpret_cast<const int64_t*>(pa->data()), size);
 						break;
 					case TYPE_F16:
-						OnPrimitiveArrayF16(reinterpret_cast<const half*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
+						OnPrimitiveArrayF16(reinterpret_cast<const half*>(pa->data()), size);
 						break;
 					case TYPE_F32:
-						OnPrimitiveArrayF32(reinterpret_cast<const float*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
+						OnPrimitiveArrayF32(reinterpret_cast<const float*>(pa->data()), size);
 						break;
 					case TYPE_F64:
-						OnPrimitiveArrayF64(reinterpret_cast<const double*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
+						OnPrimitiveArrayF64(reinterpret_cast<const double*>(pa->data()), size);
 						break;
 					case TYPE_BOOL:
-						OnPrimitiveArrayBool(reinterpret_cast<const bool*>(const_cast<Value&>(value).GetPrimitiveArray()->data()), size);
+						OnPrimitiveArrayBool(reinterpret_cast<const bool*>(pa->data()), size);
 						break;
 					}
 				} else {
 					OnArrayBegin(size);
+					const Value* a = value.Get<Value::Array>()->data();
 					for (size_t i = 0u; i < size; ++i) {
-						OnValue(const_cast<Value&>(value).GetValue(i));
+						OnValue(a[i]);
 					}
 					OnArrayEnd();
 				}

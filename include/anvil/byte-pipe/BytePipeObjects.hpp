@@ -325,6 +325,12 @@ namespace anvil { namespace BytePipe {
 			typedef void const_type;
 		};
 
+		template<class T>
+		struct ValueGetReturn<std::vector<T>> {
+			typedef std::vector<T>* type;
+			typedef const std::vector<T>* const_type;
+		};
+
 	}
 
 	class Value {
@@ -348,7 +354,7 @@ namespace anvil { namespace BytePipe {
 		PrimitiveValue _primitive;
 		Type _primitive_array_type;
 
-		Array& ConvertFromPrimitveArray();
+		Array* ConvertFromPrimitveArray();
 		PrimitiveArray* ConvertToPrimitveArray();		
 
 		void SetNull();
@@ -357,6 +363,12 @@ namespace anvil { namespace BytePipe {
 		PrimitiveArray& SetPrimitiveArray(Type type);
 		Pod& SetPod();
 		Object& SetObject();
+
+		Array* GetArray(bool convert = false);
+		const Array* GetArray() const;
+
+		PrimitiveArray* GetPrimitiveArray(bool convert = false);
+		const PrimitiveArray* GetPrimitiveArray() const;
 
 #if ANVIL_OPENCV_SUPPORT
 		ANVIL_STRONG_INLINE Pod& SetImage() {
@@ -431,11 +443,6 @@ namespace anvil { namespace BytePipe {
 
 		template<class T>
 		ANVIL_STRONG_INLINE typename detail::ValueGetReturn<T>::const_type Get() const;
-
-		Array& GetArray();
-		const Array* GetArray() const;
-		PrimitiveArray* GetPrimitiveArray();
-		const PrimitiveArray* GetPrimitiveArray() const;
 
 		/*!
 			\brief Append a value to the end of the array.
@@ -943,8 +950,28 @@ namespace anvil { namespace BytePipe {
 	}
 
 	template<>
+	ANVIL_STRONG_INLINE const Value::Array* Value::Get<Value::Array>() const {
+		return GetArray();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE Value::Array* Value::Get<Value::Array>() {
+		return GetArray(false);
+	}
+
+	template<>
 	ANVIL_STRONG_INLINE Value::PrimitiveArray& Value::Set<Value::PrimitiveArray, Type>(Type type) {
 		return SetPrimitiveArray(type);
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE const Value::PrimitiveArray* Value::Get<Value::PrimitiveArray>() const {
+		return GetPrimitiveArray();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE Value::PrimitiveArray* Value::Get<Value::PrimitiveArray>() {
+		return GetPrimitiveArray(false);
 	}
 
 	template<>

@@ -249,13 +249,13 @@ namespace anvil { namespace BytePipe {
 
 			if ANVIL_CONSTEXPR_VAR(IsPrimitiveType<T>()) {
 				if (value.IsPrimitiveArray()) {
-					memcpy(dst, value.GetPrimitiveArray()->data(), sizeof(T) * s);
+					memcpy(dst, value.Get<Value::PrimitiveArray>()->data(), sizeof(T) * s);
 					return;
 				}
 
 			} 
 
-			const Value::Array& a = *value.GetArray();
+			const Value::Array& a = *value.Get<Value::Array>();
 			for (size_t i = 0u; i < s; ++i) dst[i] = ValueEncoder<T>::Decode(a[i]);
 		}
 
@@ -301,14 +301,14 @@ namespace anvil { namespace BytePipe {
 
 			if ANVIL_CONSTEXPR_VAR(IsPrimitiveType<T>()) {
 				if (value.IsPrimitiveArray()) {
-					const T* src = reinterpret_cast<const T*>(value.GetPrimitiveArray()->data());
+					const T* src = reinterpret_cast<const T*>(value.Get<Value::PrimitiveArray>()->data());
 					for (size_t i = 0u; i < s; ++i) dst.push_back(src[i]);
 					return;
 				}
 
 			}
 
-			const Value::Array& a = *value.GetArray();
+			const Value::Array& a = *value.Get<Value::Array>();
 			for (size_t i = 0u; i < s; ++i) dst.push_back(ValueEncoder<T>::Decode(a[i]));
 		}
 	}
