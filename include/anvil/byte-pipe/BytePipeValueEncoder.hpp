@@ -15,6 +15,12 @@
 #ifndef ANVIL_BYTEPIPE_ENCODER_HPP
 #define ANVIL_BYTEPIPE_ENCODER_HPP
 
+#include <algorithm>
+#include <array>
+#include <vector>
+#include <deque>
+#include <list>
+#include <map>
 #include "anvil/byte-pipe/BytePipeObjects.hpp"
 
 namespace anvil { namespace BytePipe {
@@ -311,11 +317,11 @@ namespace anvil { namespace BytePipe {
 	struct ValueEncoder<std::vector<T>> {
 		typedef std::vector<T> type;
 
-		static Value Encode(const type& value) {
+		static ANVIL_STRONG_INLINE Value Encode(const type& value) {
 			return detail::ValueArrayEncoder<T>(value.data(), value.size());
 		}
 
-		static type Decode(const Value& value) {
+		static ANVIL_STRONG_INLINE type Decode(const Value& value) {
 			const size_t s = value.GetSize();
 			type tmp(s);
 			detail::ValueArrayDecoder<T>(tmp.data(), value);
@@ -328,11 +334,11 @@ namespace anvil { namespace BytePipe {
 	struct ValueEncoder<std::array<T,S>> {
 		typedef std::array<T, S> type;
 
-		static Value Encode(const type& value) {
+		static ANVIL_STRONG_INLINE Value Encode(const type& value) {
 			return detail::ValueArrayEncoder<T>(value.data(), S);
 		}
 
-		static type Decode(const Value& value) {
+		static ANVIL_STRONG_INLINE type Decode(const Value& value) {
 			if (value.GetSize() != S) throw std::runtime_error("ValueEncoder::Decode<std::array> : Array lengths do not match");
 			type tmp;
 			detail::ValueArrayDecoder<T>(tmp.data(), value);
@@ -345,11 +351,11 @@ namespace anvil { namespace BytePipe {
 	struct ValueEncoder<std::list<T>> {
 		typedef std::list<T> type;
 
-		static Value Encode(const type& value) {
+		static ANVIL_STRONG_INLINE Value Encode(const type& value) {
 			return detail::ValueArrayEncoderIterator<T, type::const_iterator>(value.begin(), value.end());
 		}
 
-		static type Decode(const Value& value) {
+		static ANVIL_STRONG_INLINE type Decode(const Value& value) {
 			type tmp;
 			detail::ValueArrayDecoderPushBack<T, type>(tmp, value);
 			return tmp;
@@ -361,11 +367,11 @@ namespace anvil { namespace BytePipe {
 	struct ValueEncoder<std::deque<T>> {
 		typedef std::deque<T> type;
 
-		static Value Encode(const type& value) {
+		static ANVIL_STRONG_INLINE Value Encode(const type& value) {
 			return detail::ValueArrayEncoderIterator<T, type::const_iterator>(value.begin(), value.end());
 		}
 
-		static type Decode(const Value& value) {
+		static ANVIL_STRONG_INLINE type Decode(const Value& value) {
 			type tmp;
 			detail::ValueArrayDecoderPushBack<T, type>(tmp, value);
 			return tmp;
@@ -373,44 +379,95 @@ namespace anvil { namespace BytePipe {
 
 	};
 
+	namespace detail {
+
+		template<class K, class T, class type>
+		struct ValueEncoderMapHelper {
+
+			static Value Encode(const type& value) {
+
+				std::vector<K> keys;
+				std::vector<T> values;
+
+				for (const auto& i : value) {
+					keys.push_back(i.first);
+					values.push_back(i.second);
+				}
+
+				Value tmp;
+				Value::Object& obj = tmp.Set<Value::Object>();
+				obj.emplace("keys", ValueEncoder<std::vector<K>>::Encode(keys));
+				obj.emplace("values", ValueEncoder<std::vector<T>>::Encode(values));
+				return tmp;
+			}
+
+			static type Decode(const Value& value) {
+				if (!value.IsObject()) throw std::runtime_error("ValueEncoder<std::map>::Decode : Value is not an object");
+				const Value::Object& object = *value.GetObject();
+
+				auto keys_it = object.find("keys");
+				auto values_it = object.find("values");
+
+				if (keys_it == object.end()) throw std::runtime_error("ValueEncoder<std::map>::Decode : Could not find keys");
+				if (values_it == object.end()) throw std::runtime_error("ValueEncoder<std::map>::Decode : Could not find values");
+
+				std::vector<K> keys = ValueEncoder<std::vector<K>>::Decode(keys_it->second);
+				std::vector<T> values = ValueEncoder<std::vector<T>>::Decode(values_it->second);
+
+				type tmp;
+				const size_t s = keys.size();
+				for (size_t i = 0u; i < s; ++i) tmp.emplace(keys[i], values[i]);
+				return tmp;
+			}
+
+		};
+	}
+
 	template<class K, class T>
 	struct ValueEncoder<std::map<K,T>> {
 		typedef std::map<K, T> type;
 
-		static Value Encode(const type& value) {
+		static ANVIL_STRONG_INLINE Value Encode(const type& value) {
+			return detail::ValueEncoderMapHelper<K, T, type>::Encode(value);
+		}
 
-			std::vector<K> keys;
-			std::vector<T> values;
+		static ANVIL_STRONG_INLINE type Decode(const Value& value) {
+			return detail::ValueEncoderMapHelper<K, T, type>::Decode(value);
+		}
 
-			for (const auto& i : value) {
-				keys.push_back(i.first);
-				values.push_back(i.second);
-			}
+	};
 
+	template<class K, class T>
+	struct ValueEncoder<std::unordered_map<K, T>> {
+		typedef std::unordered_map<K, T> type;
+
+		static ANVIL_STRONG_INLINE Value Encode(const type& value) {
+			return detail::ValueEncoderMapHelper<K, T, type>::Encode(value);
+		}
+
+		static ANVIL_STRONG_INLINE type Decode(const Value& value) {
+			return detail::ValueEncoderMapHelper<K, T, type>::Decode(value);
+		}
+
+	};
+
+	template<class A, class B>
+	struct ValueEncoder<std::pair<A,B>> {
+		typedef std::pair<A, B> type;
+
+		static inline Value Encode(const type& value) {
 			Value tmp;
-			Value::Object& obj = tmp.Set<Value::Object>();
-			obj.emplace("keys", ValueEncoder<std::vector<K>>::Encode(keys));
-			obj.emplace("values", ValueEncoder<std::vector<T>>::Encode(values));
+			Value::Array& a = value.set<Value::Array>();
+			a.push_back(ValueEncoder<A>::Encode(value.first));
+			a.push_back(ValueEncoder<B>::Encode(value.second));
 			return tmp;
 		}
 
-		static type Decode(const Value& value) {
-			if (!value.IsObject()) throw std::runtime_error("ValueEncoder<std::map>::Decode : Value is not an object");
-			const Value::Object& object = *value.GetObject();
-
-			auto keys_it = object.find("keys");
-			auto values_it = object.find("values");
-
-			if (keys_it == object.end()) throw std::runtime_error("ValueEncoder<std::map>::Decode : Could not find keys");
-			if (values_it == object.end()) throw std::runtime_error("ValueEncoder<std::map>::Decode : Could not find values");
-
-			std::vector<K> keys = ValueEncoder<std::vector<K>>::Decode(keys_it->second);
-			std::vector<T> values = ValueEncoder<std::vector<T>>::Decode(values_it->second);
-
-			type tmp;
-			const size_t s = keys.size();
-			for (size_t i = 0u; i < s; ++i) tmp.emplace(keys[i], values[i]);
-			return tmp;
+		static inline type Decode(const Value& value) {
+			return type(
+				ValueEncoder<A>::Decode(value[0u]),
+				ValueEncoder<B>::Decode(value[1u])
+			);
 		}
 
 	};
