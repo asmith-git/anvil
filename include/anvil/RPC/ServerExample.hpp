@@ -16,6 +16,7 @@
 #define ANVIL_RPC_SERVER_EXAMPLE_HPP
 
 #include <atomic>
+#include <thread>
 #include "anvil/RPC/Server.hpp"
 #include "anvil/byte-pipe/BytePipeWriter.hpp"
 #include "anvil/byte-pipe/BytePipeReader.hpp"

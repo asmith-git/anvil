@@ -62,8 +62,11 @@ namespace anvil { namespace detail {
 	static ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount32_hw(uint32_t aValue) throw() {
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 		if (aValue == 0u) return 32u;
-		//return _lzcnt_u32(aValue);
-		return __lzcnt(aValue);
+        #if ANVIL_COMPILER == ANVIL_MSVC
+            return __lzcnt(aValue);
+        #else
+            return _lzcnt_u32(aValue);
+		#endif
 #else
 		return 0;
 #endif
@@ -135,8 +138,8 @@ namespace anvil { namespace detail {
 		size_t count = lzcount8_c(static_cast<uint8_t>(aValue & UINT8_MAX));
 		if (count == 8u) count += lzcount8_c(static_cast<uint8_t>(aValue >> 8ull));
 		return count;
-	}	
-	
+	}
+
 	static size_t ANVIL_CALL lzcount32_c(uint32_t aValue) throw() {
 		size_t count = lzcount16_c(static_cast<uint16_t>(aValue & UINT16_MAX));
 		if (count == 16u) count += lzcount16_c(static_cast<uint16_t>(aValue >> 16ull));
@@ -153,7 +156,7 @@ namespace anvil { namespace detail {
 
 
 namespace anvil {
-	
+
 	// unsigned
 
 	static ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount(uint8_t aValue) throw() {

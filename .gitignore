@@ -52,3 +52,6 @@
 *.xml
 *.json
 *.iobj
+CodeBlocks/CodeBlocks.cbp
+CodeBlocks/CodeBlocks.depend
+CodeBlocks/CodeBlocks.layout

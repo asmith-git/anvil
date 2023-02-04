@@ -16,6 +16,7 @@
 #define ANVIL_RPC_SERVER_HPP
 
 #include "anvil/RPC/Method.hpp"
+#include <mutex>
 
 namespace anvil { namespace RPC {
 

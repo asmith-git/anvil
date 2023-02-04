@@ -107,24 +107,27 @@ namespace anvil { namespace BytePipe {
 
 
 	template<class T>
-	static ANVIL_CONSTEXPR_FN Type GetTypeID() {
+	ANVIL_CONSTEXPR_FN Type GetTypeID() {
 		return TYPE_OBJECT; // Default
 	}
 
-	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<void>() { return TYPE_NULL; }
-	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<char>() { return TYPE_C8; }
-	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<bool>() { return TYPE_BOOL; }
-	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<uint8_t>() { return TYPE_U8; }
-	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<uint16_t>() { return TYPE_U16; }
-	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<uint32_t>() { return TYPE_U32; }
-	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<uint64_t>() { return TYPE_U64; }
-	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<int8_t>() { return TYPE_S8; }
-	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<int16_t>() { return TYPE_S16; }
-	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<int32_t>() { return TYPE_S32; }
-	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<int64_t>() { return TYPE_S64; }
-	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<half>() { return TYPE_F16; }
-	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<float>() { return TYPE_F32; }
-	template<> static ANVIL_CONSTEXPR_FN Type GetTypeID<double>() { return TYPE_F64; }
+	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<void>() { return TYPE_NULL; }
+	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<char>() { return TYPE_C8; }
+	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<bool>() { return TYPE_BOOL; }
+	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<uint8_t>() { return TYPE_U8; }
+	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<uint16_t>() { return TYPE_U16; }
+	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<uint32_t>() { return TYPE_U32; }
+	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<uint64_t>() { return TYPE_U64; }
+	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<int8_t>() { return TYPE_S8; }
+	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<int16_t>() { return TYPE_S16; }
+	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<int32_t>() { return TYPE_S32; }
+	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<int64_t>() { return TYPE_S64; }
+	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<half>() { return TYPE_F16; }
+	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<float>() { return TYPE_F32; }
+	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<double>() { return TYPE_F64; }
+
+    template<class T>
+    bool ANVIL_CONSTEXPR_FN IsPrimitiveType() { return (GetTypeID<T>() >= TYPE_C8 && GetTypeID<T>() <= TYPE_F64) || GetTypeID<T>() == TYPE_BOOL; }
 
 	namespace details {
 		template<class T>
@@ -661,7 +664,7 @@ namespace anvil { namespace BytePipe {
 		std::string GetString() const;
 
 		Pod& GetPod();
-		const Pod& GetPod() const; 
+		const Pod& GetPod() const;
 
 #if ANVIL_OPENCV_SUPPORT
 		ANVIL_STRONG_INLINE cv::Mat GetImage() const {
@@ -764,8 +767,8 @@ namespace anvil { namespace BytePipe {
 		explicit ANVIL_STRONG_INLINE operator half() const { return GetF16(); }
 		explicit ANVIL_STRONG_INLINE operator float() const { return GetF32(); }
 		explicit ANVIL_STRONG_INLINE operator double() const { return GetF64(); }
-		explicit ANVIL_STRONG_INLINE operator  std::string&() { return GetString(); }
-		explicit ANVIL_STRONG_INLINE operator const std::string&() const { return GetString(); }
+		explicit ANVIL_STRONG_INLINE operator std::string&() { return GetString(); }
+		explicit ANVIL_STRONG_INLINE operator std::string() const { return GetString(); }
 		explicit ANVIL_STRONG_INLINE operator const Pod&() const { return GetPod(); }
 
 #if ANVIL_OPENCV_SUPPORT
@@ -848,8 +851,8 @@ namespace anvil { namespace BytePipe {
 
 		template<class T, size_t S>
 		explicit ANVIL_STRONG_INLINE operator std::array<T, S>() const {
-			std::array<T,S> tmp;			
-			
+			std::array<T,S> tmp;
+
 			if (IsPrimitiveArray() && GetPrimitiveArrayType() == BytePipe::GetTypeID<T>()) {
 				const void* src = const_cast<Value*>(this)->GetPrimitiveArray()->data();
 				memcpy(tmp.data(), src, sizeof(T) * S);
@@ -897,13 +900,13 @@ namespace anvil { namespace BytePipe {
 		{
 			Value keys;
 			Value values;
-			
+
 			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<K>())) {
 				keys.SetPrimitiveArray(BytePipe::GetTypeID<K>());
 			} else {
 				keys.SetArray();
 			}
-			
+
 			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<V>())) {
 				values.SetPrimitiveArray(BytePipe::GetTypeID<V>());
 			} else {

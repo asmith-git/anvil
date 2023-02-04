@@ -1,5 +1,5 @@
 #include "anvil/lutils/Message.hpp"
-
+#include <algorithm>
 
 namespace anvil { namespace lutils { namespace msg {
 	// Queue

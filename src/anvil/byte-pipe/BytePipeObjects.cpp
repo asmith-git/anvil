@@ -45,7 +45,7 @@ namespace anvil { namespace BytePipe {
 		const size_t s = str.size();
 
 		if (s == 0u) {
-			v.type == TYPE_NULL;
+			v.type = TYPE_NULL;
 			return true;
 		}
 
@@ -787,6 +787,7 @@ namespace anvil { namespace BytePipe {
 		for (size_t i = 0; i < s; ++i) {
 			memcpy(primitive_array.data() + i * bytes, &myArray[0]._primitive.u8, bytes);
 		}
+		return &primitive_array;
 	}
 
 	Value::Array& Value::ConvertFromPrimitveArray() {

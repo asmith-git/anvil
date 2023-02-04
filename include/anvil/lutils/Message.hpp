@@ -58,8 +58,10 @@ namespace anvil { namespace lutils { namespace msg {
 		std::atomic_uint32_t _recursion_counter;
 #if ANVIL_LUTILS_REUSE_MESSAGE_IDS
 		IDGeneratorSelector<uint64_t, true, false, true> _id_generator;
-#else
+#elif ANVIL_COMPILER == ANVIL_MSVC
 		IDGeneratorSelector<std::atomic_uint64_t, false, false, false> _id_generator;
+#else
+		IDGeneratorSelector<uint64_t, false, false, true> _id_generator;
 #endif
 		std::recursive_mutex _consumer_mutex;
 		std::recursive_mutex _message_mutex;

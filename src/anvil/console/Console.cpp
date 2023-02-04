@@ -14,8 +14,15 @@
 
 #include "anvil/Console/Console.hpp"
 #include <iostream>
+#include <cmath>
+#include <thread>
 #if ANVIL_OS == ANVIL_WINDOWS
 	#include <Windows.h>
+
+	#if __has_include(<Consoleapi.h>)
+	#else
+		#define ENABLE_VIRTUAL_TERMINAL_PROCESSING  0x0004
+	#endif
 #endif
 
 namespace anvil {
@@ -333,7 +340,7 @@ namespace anvil {
 					Print(bar2);
 					EndLine();
 				}
-			
+
 				prev_progress = progress;
 			}
 
@@ -461,7 +468,7 @@ namespace anvil {
 		pos.X = static_cast<SHORT>(x);
 		pos.Y = static_cast<SHORT>(y);
 		SetConsoleCursorPosition(_stdout_handle, pos);
-		
+
 		//! \bug Current state will not be modified correctly if the console is written to
 #endif
 	}

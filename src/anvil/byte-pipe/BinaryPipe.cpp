@@ -90,7 +90,7 @@ namespace anvil { namespace BytePipe {
 				uint32_t length;
 			} string_v1;
 
-			union ValueHeaderPrimitive {
+			union {
 				bool b;
 				uint8_t u8;
 				uint16_t u16;
@@ -112,6 +112,22 @@ namespace anvil { namespace BytePipe {
 			} user_pod;
 		};
 	};
+
+	union ValueHeaderPrimitive {
+        bool b;
+        uint8_t u8;
+        uint16_t u16;
+        uint32_t u32;
+        uint64_t u64;
+        int8_t s8;
+        int16_t s16;
+        int32_t s32;
+        int64_t s64;
+        float f32;
+        double f64;
+        char c8;
+        half f16;
+    };
 #pragma pack(pop)
 
 	// Compile-time error checks
@@ -183,7 +199,7 @@ namespace anvil { namespace BytePipe {
 	}
 
 	template<class T, class U>
-	static inline uint64_t GetRaw(const T value) {
+	ANVIL_STRONG_INLINE uint64_t GetRaw(const T value) {
 		union {
 			U raw;
 			T val;
@@ -194,12 +210,12 @@ namespace anvil { namespace BytePipe {
 	}
 
 	template<>
-	static inline uint64_t GetRaw<uint64_t, uint64_t>(const uint64_t value) {
+	ANVIL_STRONG_INLINE uint64_t GetRaw<uint64_t, uint64_t>(const uint64_t value) {
 		return value;
 	}
 
 	template<>
-	static inline uint64_t GetRaw<uint32_t, uint32_t>(const uint32_t value) {
+	ANVIL_STRONG_INLINE uint64_t GetRaw<uint32_t, uint32_t>(const uint32_t value) {
 		return value;
 	}
 
@@ -261,26 +277,54 @@ namespace anvil { namespace BytePipe {
 		SID_B, // TYPE_BOOL
 	};
 
-	typedef void(Parser::*PrimitiveArrayCallback)(const void* ptr, const uint32_t size);
-	static ANVIL_CONSTEXPR_VAR const PrimitiveArrayCallback g_primitive_array_callbacks[] = {
-		nullptr,														// SID_NULL
-		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU8),	// SID_U8
-		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU16),	// SID_U16
-		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU32),	// SID_U32
-		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU64),	// SID_U64
-		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS8),	// SID_S8
-		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS16),	// SID_S16
-		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS32),	// SID_S32
-		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS64),	// SID_S64
-		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayF32),	// SID_F32
-		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayF64),	// SID_F64
-		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayC8),	// SID_C8
-		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayF16),	// SID_F16
-		reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayBool)	// SID_B
-	};
-
-
+	typedef void(Parser::*PrimitiveArrayCallback)(const void* ptr, const size_t size);
 	typedef void(*PrimitiveCallback)(Parser& parser, const PrimitiveValue& header);
+
+#if ANVIL_COMPILER == ANVIL_MSVC
+
+	ANVIL_STRONG_INLINE PrimitiveArrayCallback GetPrimitiveArrayCallback(const SecondaryID id) {
+		static ANVIL_CONSTEXPR_VAR const PrimitiveArrayCallback g_primitive_array_callbacks[] = {
+			nullptr,						// SID_NULL
+			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU8),	// SID_U8
+			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU16),	// SID_U16
+			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU32),	// SID_U32
+			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU64),	// SID_U64
+			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS8),	// SID_S8
+			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS16),	// SID_S16
+			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS32),	// SID_S32
+			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS64),	// SID_S64
+			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayF32),	// SID_F32
+			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayF64),	// SID_F64
+			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayC8),	// SID_C8
+			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayF16),	// SID_F16
+			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayBool)	// SID_B
+		};
+
+		return g_primitive_array_callbacks[id];
+	}
+
+#else
+	PrimitiveArrayCallback GetPrimitiveArrayCallback(const SecondaryID id) {
+		switch (id) {
+		case SID_U8: return reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU8);	// SID_U8
+		case SID_U16: return reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU16);	// SID_U16
+		case SID_U32: return reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU32);	// SID_U32
+		case SID_U64: return reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU64);	// SID_U64
+		case SID_S8: return reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS8);	// SID_S8
+		case SID_S16: return reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS16);	// SID_S16
+		case SID_S32: return reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS32);	// SID_S32
+		case SID_S64: return reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS64);	// SID_S64
+		case SID_F32: return reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayF32);	// SID_F32
+		case SID_F64: return reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayF64);	// SID_F64
+		case SID_C8: return reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayC8);	// SID_C8
+		case SID_F16: return reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayF16);	// SID_F16
+		case SID_B: return reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayBool);	// SID_B
+		default: return nullptr;
+		}
+	}
+#endif
+
+
 	static ANVIL_CONSTEXPR_VAR const PrimitiveCallback g_primitive_callbacks[] = {
 		detail::CallOnNull,			// SID_NULL
 		detail::CallOnPrimitiveU8,	// SID_U8
@@ -299,22 +343,22 @@ namespace anvil { namespace BytePipe {
 	};
 
 	template<class T>
-	static ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID();
+	ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID();
 
-	template<> static ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<void>() { return SID_NULL; }
-	template<> static ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<char>() { return SID_C8; }
-	template<> static ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<bool>() { return SID_B; }
-	template<> static ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<uint8_t>() { return SID_U8; }
-	template<> static ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<uint16_t>() { return SID_U16; }
-	template<> static ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<uint32_t>() { return SID_U32; }
-	template<> static ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<uint64_t>() { return SID_U64; }
-	template<> static ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<int8_t>() { return SID_S8; }
-	template<> static ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<int16_t>() { return SID_S16; }
-	template<> static ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<int32_t>() { return SID_S32; }
-	template<> static ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<int64_t>() { return SID_S64; }
-	template<> static ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<half>() { return SID_F16; }
-	template<> static ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<float>() { return SID_F32; }
-	template<> static ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<double>() { return SID_F64; }
+	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<void>() { return SID_NULL; }
+	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<char>() { return SID_C8; }
+	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<bool>() { return SID_B; }
+	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<uint8_t>() { return SID_U8; }
+	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<uint16_t>() { return SID_U16; }
+	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<uint32_t>() { return SID_U32; }
+	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<uint64_t>() { return SID_U64; }
+	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<int8_t>() { return SID_S8; }
+	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<int16_t>() { return SID_S16; }
+	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<int32_t>() { return SID_S32; }
+	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<int64_t>() { return SID_S64; }
+	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<half>() { return SID_F16; }
+	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<float>() { return SID_F32; }
+	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<double>() { return SID_F64; }
 
 	// Writer
 
@@ -915,7 +959,7 @@ OLD_COMPONENT_ID:
 						throw std::runtime_error("ReadHelper::ReadArray : Cannot swap byte order");
 					}
 				}
-				(_parser.*g_primitive_array_callbacks[id])(buffer, size);
+				(_parser.*GetPrimitiveArrayCallback(static_cast<SecondaryID>(id)))(buffer, size);
 			}
 		}
 	public:
@@ -990,11 +1034,11 @@ OLD_COMPONENT_ID:
 	// ValueParser
 
 	ValueParser::ValueParser() {
-		
+
 	}
 
 	ValueParser::~ValueParser() {
-		
+
 	}
 
 	Value& ValueParser::GetValue() {
@@ -1203,7 +1247,7 @@ OLD_COMPONENT_ID:
 	}
 
 	// Parser
-	
+
 	Parser::Parser() {
 
 	}
@@ -1290,7 +1334,7 @@ OLD_COMPONENT_ID:
 			}
 
 			size_t bytes = sizeof(OpenCVHeader) + tmp.size();
-		
+
 			pod.data.resize(bytes);
 			void* data = pod.data.data();
 			memcpy(data, &header, sizeof(OpenCVHeader));
@@ -1299,7 +1343,7 @@ OLD_COMPONENT_ID:
 
 		return pod;
 	}
-	
+
 	void Parser::OnImage(const cv::Mat& value, ImageFormat compression_format, float quality) {
 		Value::Pod tmp = Value::Pod::CreatePODFromCVMat(value, compression_format, quality);
 		OnUserPOD(tmp.type, tmp.data.size(), tmp.data.data());

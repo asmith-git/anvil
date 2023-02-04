@@ -233,7 +233,7 @@ void PopulateBytePipeTest(anvil::BytePipe::Parser& writer) {
 			{
 				cv::Mat tmp;
 				tmp.create(cv::Size(256, 256), CV_8UC4);
-				for (uint32_t y = 0u; y < tmp.rows; ++y) for (uint32_t x = 0u; x < tmp.cols; ++x) {
+				for (int32_t y = 0u; y < tmp.rows; ++y) for (int32_t x = 0u; x < tmp.cols; ++x) {
 					uint8_t* dst = static_cast<uint8_t*>(tmp.data) + (y * tmp.cols + x) * 4;
 					dst[0] = rand();
 					dst[1] = rand();

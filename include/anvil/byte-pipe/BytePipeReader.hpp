@@ -26,6 +26,7 @@
 
 namespace anvil { namespace BytePipe {
 
+
 	/*!
 		\author Adam Smtih
 		\date September 2019
@@ -113,7 +114,7 @@ namespace anvil { namespace BytePipe {
 
 		/*!
 			\brief Handle a user defined binary structure.
-			\details This allows the user to define their own POD (plain old data) structures, which can be 
+			\details This allows the user to define their own POD (plain old data) structures, which can be
 			handled natively by pipes, this is faster than serialising the structure as an object.
 			\param type A 24-bit ID code that describes which structure is being parsed.
 			\param bytes The size of the structure in bytes.
@@ -154,7 +155,7 @@ namespace anvil { namespace BytePipe {
 			\brief Handle a primitive value (64-bit unsigned integer)
 			\param value The value
 		*/
-		virtual void OnPrimitiveU64(const uint64_t value) { 
+		virtual void OnPrimitiveU64(const uint64_t value) {
 			OnPrimitiveF64(static_cast<double>(value));
 		}
 
@@ -162,7 +163,7 @@ namespace anvil { namespace BytePipe {
 			\brief Handle a primitive value (64-bit signed integer)
 			\param value The value
 		*/
-		virtual void OnPrimitiveS64(const int64_t value) { 
+		virtual void OnPrimitiveS64(const int64_t value) {
 			OnPrimitiveF64(static_cast<double>(value));
 		}
 
@@ -170,7 +171,7 @@ namespace anvil { namespace BytePipe {
 			\brief Handle a primitive value (32-bit floating point)
 			\param value The value
 		*/
-		virtual void OnPrimitiveF32(const float value) { 
+		virtual void OnPrimitiveF32(const float value) {
 			OnPrimitiveF64(value);
 		}
 
@@ -178,7 +179,7 @@ namespace anvil { namespace BytePipe {
 			\brief Handle a primitive value (8-bit unsigned integer)
 			\param value The value
 		*/
-		virtual void OnPrimitiveU8(const uint8_t value) { 
+		virtual void OnPrimitiveU8(const uint8_t value) {
 			OnPrimitiveU64(value);
 		}
 
@@ -186,7 +187,7 @@ namespace anvil { namespace BytePipe {
 			\brief Handle a primitive value (16-bit unsigned integer)
 			\param value The value
 		*/
-		virtual void OnPrimitiveU16(const uint16_t value) { 
+		virtual void OnPrimitiveU16(const uint16_t value) {
 			OnPrimitiveU64(value);
 		}
 
@@ -202,7 +203,7 @@ namespace anvil { namespace BytePipe {
 			\brief Handle a primitive value (8-bit signed integer)
 			\param value The value
 		*/
-		virtual void OnPrimitiveS8(const int8_t value) { 
+		virtual void OnPrimitiveS8(const int8_t value) {
 			OnPrimitiveS64(value);
 		}
 
@@ -210,7 +211,7 @@ namespace anvil { namespace BytePipe {
 			\brief Handle a primitive value (16-bit signed integer)
 			\param value The value
 		*/
-		virtual void OnPrimitiveS16(const int16_t value) { 
+		virtual void OnPrimitiveS16(const int16_t value) {
 			OnPrimitiveS64(value);
 		}
 
@@ -218,15 +219,15 @@ namespace anvil { namespace BytePipe {
 			\brief Handle a primitive value (32-bit signed integer)
 			\param value The value
 		*/
-		virtual void OnPrimitiveS32(const int32_t value) { 
-			OnPrimitiveS64(value); 
+		virtual void OnPrimitiveS32(const int32_t value) {
+			OnPrimitiveS64(value);
 		}
 
 		/*!
 			\brief Handle a primitive value (16-bit floating point)
 			\param value The value
 		*/
-		virtual void OnPrimitiveF16(const half value) { 
+		virtual void OnPrimitiveF16(const half value) {
 			OnPrimitiveF32(static_cast<float>(value));  //! \bug half to float conversion not implemented
 		}
 
@@ -470,242 +471,155 @@ namespace anvil { namespace BytePipe {
 		template<class T>
 		inline void OnPrimitiveArray(const T* values, const size_t size);
 
-		template<>
-		inline void OnPrimitive<bool>(const bool value) {
-			OnPrimitiveBool(value);
-		}
-
-		template<>
-		inline void OnPrimitiveArray<bool>(const bool* values, const size_t size) {
-			OnPrimitiveArrayBool(values, size);
-		}
-
-		template<>
-		inline void OnPrimitive<char>(const char value) {
-			OnPrimitiveC8(value);
-		}
-
-		template<>
-		inline void OnPrimitiveArray<char>(const char* values, const size_t size) {
-			OnPrimitiveArrayC8(values, size);
-		}
-
-		template<>
-		inline void OnPrimitive<uint8_t>(const uint8_t value) {
-			OnPrimitiveU8(value);
-		}
-
-		template<>
-		inline void OnPrimitiveArray<uint8_t>(const uint8_t* values, const size_t size) {
-			OnPrimitiveArrayU8(values, size);
-		}
-
-		template<>
-		inline void OnPrimitive<uint16_t>(const uint16_t value) {
-			OnPrimitiveU16(value);
-		}
-
-		template<>
-		inline void OnPrimitiveArray<uint16_t>(const uint16_t* values, const size_t size) {
-			OnPrimitiveArrayU16(values, size);
-		}
-
-		template<>
-		inline void OnPrimitive<uint32_t>(const uint32_t value) {
-			OnPrimitiveU32(value);
-		}
-
-		template<>
-		inline void OnPrimitiveArray<uint32_t>(const uint32_t* values, const size_t size) {
-			OnPrimitiveArrayU32(values, size);
-		}
-
-		template<>
-		inline void OnPrimitive<uint64_t>(const uint64_t value) {
-			OnPrimitiveU64(value);
-		}
-
-		template<>
-		inline void OnPrimitiveArray<uint64_t>(const uint64_t* values, const size_t size) {
-			OnPrimitiveArrayU64(values, size);
-		}
-
-		template<>
-		inline void OnPrimitive<int8_t>(const int8_t value) {
-			OnPrimitiveS8(value);
-		}
-
-		template<>
-		inline void OnPrimitiveArray<int8_t>(const int8_t* values, const size_t size) {
-			OnPrimitiveArrayS8(values, size);
-		}
-
-		template<>
-		inline void OnPrimitive<int16_t>(const int16_t value) {
-			OnPrimitiveS16(value);
-		}
-
-		template<>
-		inline void OnPrimitiveArray<int16_t>(const int16_t* values, const size_t size) {
-			OnPrimitiveArrayS16(values, size);
-		}
-
-		template<>
-		inline void OnPrimitive<int32_t>(const int32_t value) {
-			OnPrimitiveS32(value);
-		}
-
-		template<>
-		inline void OnPrimitiveArray<int32_t>(const int32_t* values, const size_t size) {
-			OnPrimitiveArrayS32(values, size);
-		}
-
-		template<>
-		inline void OnPrimitive<int64_t>(const int64_t value) {
-			OnPrimitiveS64(value);
-		}
-
-		template<>
-		inline void OnPrimitiveArray<int64_t>(const int64_t* values, const size_t size) {
-			OnPrimitiveArrayS64(values, size);
-		}
-
-		template<>
-		inline void OnPrimitive<half>(const half value) {
-			OnPrimitiveF16(value);
-		}
-
-		template<>
-		inline void OnPrimitiveArray<half>(const half* values, const size_t size) {
-			OnPrimitiveArrayF16(values, size);
-		}
-
-		template<>
-		inline void OnPrimitive<float>(const float value) {
-			OnPrimitiveF32(value);
-		}
-
-		template<>
-		inline void OnPrimitiveArray<float>(const float* values, const size_t size) {
-			OnPrimitiveArrayF32(values, size);
-		}
-
-		template<>
-		inline void OnPrimitive<double>(const double value) {
-			OnPrimitiveF64(value);
-		}
-
-		template<>
-		inline void OnPrimitiveArray<double>(const double* values, const size_t size) {
-			OnPrimitiveArrayF64(values, size);
-		}
-
 		// Object helper functions
 
 		template<class T>
-		inline void OnPrimitive(const ComponentID component_id, const T value) {
+		ANVIL_STRONG_INLINE void OnPrimitive(const ComponentID component_id, const T value) {
 			OnComponentID(component_id);
 			OnPrimitive<T>(value);
 		}
 
 		template<class T>
-		inline void OnPrimitiveArray(const ComponentID component_id, const T* values, const size_t size) {
+		ANVIL_STRONG_INLINE void OnPrimitiveArray(const ComponentID component_id, const T* values, const size_t size) {
 			OnComponentID(component_id);
 			OnPrimitiveArray<T>(values, size);
 		}
 
 		// General helper
 
-		inline void operator()(const char*& value) { OnPrimitiveString(value, strlen(value)); }
+		ANVIL_STRONG_INLINE void operator()(const char*& value) { OnPrimitiveString(value, strlen(value)); }
 
 		template<class T>
 		inline void operator()(const T& value) = delete;
 
-		template<> inline void operator()<uint8_t>(const uint8_t& value) { OnPrimitive<uint8_t>(value); }
-		template<> inline void operator()<uint16_t>(const uint16_t& value) { OnPrimitive<uint16_t>(value); }
-		template<> inline void operator()<uint32_t>(const uint32_t& value) { OnPrimitive<uint32_t>(value); }
-		template<> inline void operator()<uint64_t>(const uint64_t& value) { OnPrimitive<uint64_t>(value); }
-		template<> inline void operator()<int8_t>(const int8_t& value) { OnPrimitive<int8_t>(value); }
-		template<> inline void operator()<int16_t>(const int16_t& value) { OnPrimitive<int16_t>(value); }
-		template<> inline void operator()<int32_t>(const int32_t& value) { OnPrimitive<int32_t>(value); }
-		template<> inline void operator()<int64_t>(const int64_t& value) { OnPrimitive<int64_t>(value); }
-		template<> inline void operator()<half>(const half& value) { OnPrimitive<half>(value); }
-		template<> inline void operator()<float>(const float& value) { OnPrimitive<float>(value); }
-		template<> inline void operator()<double>(const double& value) { OnPrimitive<double>(value); }
-		template<> inline void operator()<bool>(const bool& value) { OnPrimitive<bool>(value); }
-		template<> inline void operator()<std::string>(const std::string& value) { OnPrimitiveString(value.c_str(), value.size()); }
-
 		template<class T>
-		inline void operator()(const std::vector<T>& value) {
-			OnArrayBegin(static_cast<uint32_t>(value.size()));
-			for(const T& val : value) operator()(val);
-			OnArrayEnd();
-		}
-
-		template<> inline void operator()(const std::vector<uint8_t>& value) { OnPrimitiveArray<uint8_t>(value.data(), value.size()); }
-		template<> inline void operator()(const std::vector<uint16_t>& value) { OnPrimitiveArray<uint16_t>(value.data(),value.size()); }
-		template<> inline void operator()(const std::vector<uint32_t>& value) { OnPrimitiveArray<uint32_t>(value.data(),value.size()); }
-		template<> inline void operator()(const std::vector<uint64_t>& value) { OnPrimitiveArray<uint64_t>(value.data(),value.size()); }
-		template<> inline void operator()(const std::vector<int8_t>& value) { OnPrimitiveArray<int8_t>(value.data(), value.size()); }
-		template<> inline void operator()(const std::vector<int16_t>& value) { OnPrimitiveArray<int16_t>(value.data(), value.size()); }
-		template<> inline void operator()(const std::vector<int32_t>& value) { OnPrimitiveArray<int32_t>(value.data(), value.size()); }
-		template<> inline void operator()(const std::vector<int64_t>& value) { OnPrimitiveArray<int64_t>(value.data(), value.size()); }
-		template<> inline void operator()(const std::vector<half>& value) { OnPrimitiveArray<half>(value.data(), value.size()); }
-		template<> inline void operator()(const std::vector<float>& value) { OnPrimitiveArray<float>(value.data(), value.size()); }
-		template<> inline void operator()(const std::vector<double>& value) { OnPrimitiveArray<double>(value.data(), value.size()); }
+		void operator()(const std::vector<T>& value);
 
 		template<class T, size_t S>
-		inline void operator()(const std::array<T, S>& value) {
+		inline void operator()(const std::array<T, S>& value);
+
+		template<class T>
+		inline void operator()(const std::list<T>& value);
+
+		template<class T>
+		inline void operator()(const std::deque<T>& value);
+
+		template<class K, class T>
+		void operator()(const std::map<K, T>& value);
+	};
+
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<bool>(const bool value) { OnPrimitiveBool(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<bool>(const bool* values, const size_t size) {  OnPrimitiveArrayBool(values, size); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<char>(const char* values, const size_t size) {  OnPrimitiveArrayC8(values, size); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<uint8_t>(const uint8_t value) { OnPrimitiveU8(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<uint8_t>(const uint8_t* values, const size_t size) { OnPrimitiveArrayU8(values, size); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<uint16_t>(const uint16_t value) { OnPrimitiveU16(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<uint16_t>(const uint16_t* values, const size_t size) { OnPrimitiveArrayU16(values, size); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<uint32_t>(const uint32_t value) { OnPrimitiveU32(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<uint32_t>(const uint32_t* values, const size_t size) { OnPrimitiveArrayU32(values, size); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<uint64_t>(const uint64_t value) { OnPrimitiveU64(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<uint64_t>(const uint64_t* values, const size_t size) { OnPrimitiveArrayU64(values, size); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<int8_t>(const int8_t value) { OnPrimitiveS8(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<int8_t>(const int8_t* values, const size_t size) { OnPrimitiveArrayS8(values, size); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<int16_t>(const int16_t value) { OnPrimitiveS16(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<int16_t>(const int16_t* values, const size_t size) { OnPrimitiveArrayS16(values, size); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<int32_t>(const int32_t value) { OnPrimitiveS32(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<int32_t>(const int32_t* values, const size_t size) { OnPrimitiveArrayS32(values, size); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<int64_t>(const int64_t value) { OnPrimitiveS64(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<int64_t>(const int64_t* values, const size_t size) { OnPrimitiveArrayS64(values, size); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<half>(const half value) { OnPrimitiveF16(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<half>(const half* values, const size_t size) { OnPrimitiveArrayF16(values, size); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<float>(const float value) { OnPrimitiveF32(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<float>(const float* values, const size_t size) { OnPrimitiveArrayF32(values, size); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<double>(const double value) { OnPrimitiveF64(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<double>(const double* values, const size_t size) { OnPrimitiveArrayF64(values, size); }
+
+    template<> ANVIL_STRONG_INLINE void Parser::operator()<bool>(const bool& value) { OnPrimitive<bool>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::operator()<char>(const char& value) { OnPrimitive<char>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::operator()<uint8_t>(const uint8_t& value) { OnPrimitive<uint8_t>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::operator()<uint16_t>(const uint16_t& value) { OnPrimitive<uint16_t>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::operator()<uint32_t>(const uint32_t& value) { OnPrimitive<uint32_t>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::operator()<uint64_t>(const uint64_t& value) { OnPrimitive<uint64_t>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::operator()<int8_t>(const int8_t& value) { OnPrimitive<int8_t>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::operator()<int16_t>(const int16_t& value) { OnPrimitive<int16_t>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::operator()<int32_t>(const int32_t& value) { OnPrimitive<int32_t>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::operator()<int64_t>(const int64_t& value) { OnPrimitive<int64_t>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::operator()<half>(const half& value) { OnPrimitive<half>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::operator()<float>(const float& value) { OnPrimitive<float>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::operator()<double>(const double& value) { OnPrimitive<double>(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::operator()<std::string>(const std::string& value) { OnPrimitiveString(value.c_str(), value.size()); }
+
+	template<class T>
+	void Parser::operator()(const std::vector<T>& value) {
+#if ANVIL_CPP_VER >= 2011
+		if constexpr (std::is_same<T, bool>::value) {
+			const size_t s = value.size();
+			bool* tmp = static_cast<bool*>(_alloca(sizeof(bool) * s));
+			for (size_t i = 0u; i < s; ++i) tmp[i] = value[i];
+			OnPrimitiveArray<bool>(tmp, s);
+
+		} else if constexpr (IsPrimitiveType<T>()) {
+			OnPrimitiveArray<T>(value.data(), value.size());
+
+		} else {
+#endif
+			OnArrayBegin(static_cast<uint32_t>(value.size()));
+			for (const T& val : value) operator()(val);
+			OnArrayEnd();
+#if ANVIL_CPP_VER >= 2011
+		}
+#endif
+	}
+
+	template<class T, size_t S>
+	inline void Parser::operator()(const std::array<T, S>& value) {
+#if ANVIL_CPP_VER >= 2011
+		if constexpr (IsPrimitiveType<T>()) {
+			OnPrimitiveArray<T>(value.data(), value.size());
+
+		} else {
+#endif
 			OnArrayBegin(S);
 			for (const T& val : value) operator()(val);
 			OnArrayEnd();
+#if ANVIL_CPP_VER >= 2011
 		}
+#endif
+	}
 
-		template<size_t S> inline void operator()(const std::array<uint8_t, S>& value) { OnPrimitiveArray<uint8_t>(value.data(), S); }
-		template<size_t S> inline void operator()(const std::array<uint16_t, S>& value) { OnPrimitiveArray<uint16_t>(value.data(), S); }
-		template<size_t S> inline void operator()(const std::array<uint32_t, S>& value) { OnPrimitiveArray<uint32_t>(value.data(), S); }
-		template<size_t S> inline void operator()(const std::array<uint64_t, S>& value) { OnPrimitiveArray<uint64_t>(value.data(), S); }
-		template<size_t S> inline void operator()(const std::array<int8_t, S>& value) { OnPrimitiveArray<int8_t>(value.data(), S); }
-		template<size_t S> inline void operator()(const std::array<int16_t, S>& value) { OnPrimitiveArray<int16_t>(value.data(), S); }
-		template<size_t S> inline void operator()(const std::array<int32_t, S>& value) { OnPrimitiveArray<int32_t>(value.data(), S); }
-		template<size_t S> inline void operator()(const std::array<int64_t, S>& value) { OnPrimitiveArray<int64_t>(value.data(), S); }
-		template<size_t S> inline void operator()(const std::array<half, S>& value) { OnPrimitiveArray<half>(value.data(), S); }
-		template<size_t S> inline void operator()(const std::array<float, S>& value) { OnPrimitiveArray<float>(value.data(), S); }
-		template<size_t S> inline void operator()(const std::array<double, S>& value) { OnPrimitiveArray<double>(value.data(), S); }
+	template<class T>
+	inline void Parser::operator()(const std::list<T>& value) {
+		OnArrayBegin(value.size());
+		for (const T& val : value) operator()(val);
+		OnArrayEnd();
+	}
 
-		template<class T>
-		inline void operator()(const std::list<T>& value) {
-			OnArrayBegin(value.size());
-			for (const T& val : value) operator()(val);
-			OnArrayEnd();
-		}
+	template<class T>
+	inline void Parser::operator()(const std::deque<T>& value) {
+		OnArrayBegin(value.size());
+		for (const T& val : value) operator()(val);
+		OnArrayEnd();
+	}
 
-		template<class T>
-		inline void operator()(const std::deque<T>& value) {
-			OnArrayBegin(value.size());
-			for (const T& val : value) operator()(val);
-			OnArrayEnd();
-		}
+	template<class K, class T>
+	void Parser::operator()(const std::map<K, T>& value) {
+		const size_t s = value.size();
 
-		template<class K, class T>
-		inline void operator()(const std::map<K, T>& value) {
-			const size_t s = value.size();
+		OnArrayBegin(2);
 
-			OnArrayBegin(2);
+		// Keys
+		OnArrayBegin(s);
+		for (const auto& v : value) operator()(v.first);
+		OnArrayEnd();
 
-			// Keys
-			OnArrayBegin(s);
-			for (const auto& v : value) operator()(v.first);
-			OnArrayEnd();
+		// Values
+		OnArrayBegin(s);
+		for (const auto& v : value) operator()(v.second);
+		OnArrayEnd();
 
-			// Values
-			OnArrayBegin(s);
-			for (const auto& v : value) operator()(v.second);
-			OnArrayEnd();
+		OnArrayEnd();
+	}
 
-			OnArrayEnd();
-		}
-	};
 
 	/*!
 		\author Adam Smtih
@@ -758,7 +672,7 @@ namespace anvil { namespace BytePipe {
 		void OnComponentID(const char* str, const size_t size)  final;
 		void OnUserPOD(const PodType type, const size_t bytes, const void* data) final;
 		void OnNull() final;
-		void OnPrimitiveF64(const double value) final; 
+		void OnPrimitiveF64(const double value) final;
 		void OnPrimitiveString(const char* value, const size_t length) final;
 		void OnPrimitiveBool(const bool value) final;
 		void OnPrimitiveC8(const char value) final;

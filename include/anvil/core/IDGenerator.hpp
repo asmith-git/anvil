@@ -158,7 +158,7 @@ namespace anvil { namespace lutils {
 
 		void Release(const type id) override {
 			std::lock_guard<MUTEX> lock(_mutex);
-			GENERATOR::Release();
+			GENERATOR::Release(id);
 		}
 
 		bool Reserve(const type base, const size_t count) override {
