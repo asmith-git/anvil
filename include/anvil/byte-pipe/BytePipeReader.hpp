@@ -490,22 +490,9 @@ namespace anvil { namespace BytePipe {
 		ANVIL_STRONG_INLINE void operator()(const char*& value) { OnPrimitiveString(value, strlen(value)); }
 
 		template<class T>
-		inline void operator()(const T& value) = delete;
-
-		template<class T>
-		void operator()(const std::vector<T>& value);
-
-		template<class T, size_t S>
-		inline void operator()(const std::array<T, S>& value);
-
-		template<class T>
-		inline void operator()(const std::list<T>& value);
-
-		template<class T>
-		inline void operator()(const std::deque<T>& value);
-
-		template<class K, class T>
-		void operator()(const std::map<K, T>& value);
+		inline void operator()(const T& value) {
+			OnValue(ValueEncoder<T>::Encode(value));
+		}
 	};
 
     template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<bool>(const bool value) { OnPrimitiveBool(value); }
@@ -548,78 +535,6 @@ namespace anvil { namespace BytePipe {
     template<> ANVIL_STRONG_INLINE void Parser::operator()<float>(const float& value) { OnPrimitive<float>(value); }
     template<> ANVIL_STRONG_INLINE void Parser::operator()<double>(const double& value) { OnPrimitive<double>(value); }
     template<> ANVIL_STRONG_INLINE void Parser::operator()<std::string>(const std::string& value) { OnPrimitiveString(value.c_str(), value.size()); }
-
-	template<class T>
-	void Parser::operator()(const std::vector<T>& value) {
-#if ANVIL_CPP_VER >= 2011
-		if constexpr (std::is_same<T, bool>::value) {
-			const size_t s = value.size();
-			bool* tmp = static_cast<bool*>(_alloca(sizeof(bool) * s));
-			for (size_t i = 0u; i < s; ++i) tmp[i] = value[i];
-			OnPrimitiveArray<bool>(tmp, s);
-
-		} else if constexpr (IsPrimitiveType<T>()) {
-			OnPrimitiveArray<T>(value.data(), value.size());
-
-		} else {
-#endif
-			OnArrayBegin(static_cast<uint32_t>(value.size()));
-			for (const T& val : value) operator()(val);
-			OnArrayEnd();
-#if ANVIL_CPP_VER >= 2011
-		}
-#endif
-	}
-
-	template<class T, size_t S>
-	inline void Parser::operator()(const std::array<T, S>& value) {
-#if ANVIL_CPP_VER >= 2011
-		if constexpr (IsPrimitiveType<T>()) {
-			OnPrimitiveArray<T>(value.data(), value.size());
-
-		} else {
-#endif
-			OnArrayBegin(S);
-			for (const T& val : value) operator()(val);
-			OnArrayEnd();
-#if ANVIL_CPP_VER >= 2011
-		}
-#endif
-	}
-
-	template<class T>
-	inline void Parser::operator()(const std::list<T>& value) {
-		OnArrayBegin(value.size());
-		for (const T& val : value) operator()(val);
-		OnArrayEnd();
-	}
-
-	template<class T>
-	inline void Parser::operator()(const std::deque<T>& value) {
-		OnArrayBegin(value.size());
-		for (const T& val : value) operator()(val);
-		OnArrayEnd();
-	}
-
-	template<class K, class T>
-	void Parser::operator()(const std::map<K, T>& value) {
-		const size_t s = value.size();
-
-		OnArrayBegin(2);
-
-		// Keys
-		OnArrayBegin(s);
-		for (const auto& v : value) operator()(v.first);
-		OnArrayEnd();
-
-		// Values
-		OnArrayBegin(s);
-		for (const auto& v : value) operator()(v.second);
-		OnArrayEnd();
-
-		OnArrayEnd();
-	}
-
 
 	/*!
 		\author Adam Smtih
