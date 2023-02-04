@@ -163,10 +163,10 @@ namespace anvil { namespace BytePipe {
 		}
 	}
 
-	void PrimitiveValue::ConvertTo(Type t) {
-		if (t == type) return;
-		if (!IsPrimitiveConvertable(type)) throw std::runtime_error("PrimativeValue : Current type is not convertable");
-		if (!IsPrimitiveConvertable(t)) throw std::runtime_error("PrimativeValue : Targer type is not convertable");
+	bool PrimitiveValue::ConvertTo(Type t) {
+		if (t == type) return true;
+		if (!IsPrimitiveConvertable(type)) return false;
+		if (!IsPrimitiveConvertable(t)) return false;
 
 		const double tmp = static_cast<double>(*this);
 
@@ -206,6 +206,8 @@ namespace anvil { namespace BytePipe {
 			break;
 		}
 		type = t;
+
+		return true;
 	}
 
 	bool PrimitiveValue::operator==(const PrimitiveValue& other) const {
@@ -712,9 +714,9 @@ GENERAL_ARRAY:
 
 		} else if(pa) {
 			// Try to add primative type
-			try {
-				PrimitiveValue v = value;
-				v.ConvertTo(_primitive_array_type);
+
+			PrimitiveValue v = value;
+			if (v.ConvertTo(_primitive_array_type)) {
 
 				size_t bytes = GetSizeOfPrimitiveType(_primitive_array_type);
 
@@ -723,7 +725,7 @@ GENERAL_ARRAY:
 				memcpy(pa->data() + prev_size, &v.u8, bytes);
 
 				return nullptr;
-			} catch (...) {}
+			}
 
 			// Convert to value array
 			a = ConvertFromPrimitveArray();
@@ -757,41 +759,35 @@ GENERAL_ARRAY:
 		}
 
 		Type target_type = myArray[0u].GetType();
-		try {
 
-			// This loop performs two operations:
-			//   1) Check if all values in the array are already the same type
-			//   2) Find the largest data type in the array, which the others will be converted to
-			Type largest_type = target_type;
-			uint32_t score = GetLargness(target_type);
-			bool same_type = true;
+		// This loop performs two operations:
+		//   1) Check if all values in the array are already the same type
+		//   2) Find the largest data type in the array, which the others will be converted to
+		Type largest_type = target_type;
+		uint32_t score = GetLargness(target_type);
+		bool same_type = true;
 
-			for (size_t i = 1u; i < s; ++i) {
-				const Type t2 = myArray[i].GetType();
+		for (size_t i = 1u; i < s; ++i) {
+			const Type t2 = myArray[i].GetType();
 
-				if (t2 != target_type) {
-					same_type = false;
-					uint32_t score2 = GetLargness(t2);
-					if (score2 > score) {
-						score = score2;
-						target_type = t2;
-					}
+			if (t2 != target_type) {
+				same_type = false;
+				uint32_t score2 = GetLargness(t2);
+				if (score2 > score) {
+					score = score2;
+					target_type = t2;
 				}
 			}
+		}
 
 
-			// If the values are not the same type then try to conver them
-			if (!same_type) {
-				target_type = largest_type;
+		// If the values are not the same type then try to conver them
+		if (!same_type) {
+			target_type = largest_type;
 
-				for (Value& v : myArray) {
-					v.ConvertTo(target_type);
-				}
+			for (Value& v : myArray) {
+				if (!v.ConvertTo(target_type)) return nullptr;
 			}
-
-		} catch (...) {
-			// Failed to conver types
-			return nullptr;
 		}
 
 		// Convert to primative array
@@ -946,33 +942,85 @@ GENERAL_ARRAY:
 	const Value::Object* Value::GetObject() const {
 		return _primitive.type == TYPE_OBJECT ? static_cast<const Object*>(_primitive.ptr) : nullptr;
 	}
-
-	std::string Value::GetString() const {
+	
+	bool Value::IterpretAsString(std::string& str) const {
 		if (_primitive.type == TYPE_STRING) {
-			return *static_cast<std::string*>(_primitive.ptr);
+			str = *static_cast<std::string*>(_primitive.ptr);
+			return true;
+
 		} else {
-			char buffer[64];
-			if (_primitive.type == TYPE_C8) {
-				buffer[0u] = GetC8();
-				buffer[1u] = '\0';
-
-			} else if (IsUnsigned()) {
-				sprintf(buffer, "%u", GetU32());
-
-			} else if (IsSigned()) {
-				sprintf(buffer, "%i", GetS32());
-
-			} else {
-				sprintf(buffer, "%f", GetF64());
+			switch (_primitive.type) {
+			case TYPE_C8:
+				str += _primitive.c8;
+				return true;
+			case TYPE_U8:
+				str = std::to_string(_primitive.u8);
+				return true;
+			case TYPE_U16:
+				str = std::to_string(_primitive.u16);
+				return true;
+			case TYPE_U32:
+				str = std::to_string(_primitive.u32);
+				return true;
+			case TYPE_U64:
+				str = std::to_string(_primitive.u64);
+				return true;
+			case TYPE_S8:
+				str = std::to_string(_primitive.u8);
+				return true;
+			case TYPE_S16:
+				str = std::to_string(_primitive.s16);
+				return true;
+			case TYPE_S32:
+				str = std::to_string(_primitive.s32);
+				return true;
+			case TYPE_S64:
+				str = std::to_string(_primitive.s64);
+				return true;
+			case TYPE_F16:
+				str = std::to_string(Get<float>());
+				return true;
+			case TYPE_F32:
+				str = std::to_string(_primitive.f32);
+				return true;
+			case TYPE_F64:
+				str = std::to_string(_primitive.f64);
+				return true;
+			case TYPE_BOOL:
+				str = _primitive.b ? "true" : "false";
+				return true;
 			}
-
-			return buffer;
 		}
+		return false;
 	}
 
-	std::string& Value::GetString() {
-		if (_primitive.type != TYPE_STRING) SetString() = std::move(const_cast<Value*>(this)->GetString());
-		return *static_cast<std::string*>(_primitive.ptr);
+	/*!
+		\brief Try to interpret this value as a string
+		\param Nullptr if the value is not a string
+	*/
+	const std::string* Value::GetString() const {
+		return _primitive.type == TYPE_STRING ? static_cast<std::string*>(_primitive.ptr) : nullptr;
+	}
+
+	/*!
+		\brief Try to interpret this value as a string
+		\param convert If true then conversion from primitive to string will be performed
+		\param Nullptr if the value is not a string
+	*/
+	std::string* Value::GetString(bool convert) {
+		if (_primitive.type != TYPE_STRING) {
+			if (convert) {
+				std::string tmp;
+				if (IterpretAsString(tmp)) {
+					std::string& new_string = SetString();
+					new_string = std::move(tmp);
+					return &new_string;
+				}
+			}
+			return nullptr;
+		}
+
+		return static_cast<std::string*>(_primitive.ptr);
 	}
 
 	const Value::Pod& Value::GetPod() const {
@@ -1145,19 +1193,19 @@ GENERAL_ARRAY:
 		}
 	}
 
-	void Value::ConvertTo(Type type) {
-		if (type == GetType()) return;
+	bool Value::ConvertTo(Type type) {
+		if (type == GetType()) return true;
 
 		if (IsPrimitive()) {
 			if (type == TYPE_STRING) {
-				GetString();
+				return GetString(true) != nullptr;
 
 			} else {
-				_primitive.ConvertTo(type);
+				return _primitive.ConvertTo(type);
 			}
-		} else {
-			throw std::runtime_error("Value::Convert : Cannot convert");
 		}
+
+		return false;
 	}
 
 	void Value::Resize(const size_t size) {

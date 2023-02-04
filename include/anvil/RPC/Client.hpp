@@ -41,7 +41,7 @@ namespace anvil { namespace RPC {
 		inline bool HasXML() { return HasExtension("XML"); }
 		inline bool HasJSON() { return HasExtension("JSON"); }
 		inline bool HasOpenCV() { return HasExtension("OpenCV"); }
-		inline std::string GetOpenCVVersion() { return SendRequest("Anvil.OpenCV.GetVersion", BytePipe::Value()).GetString(); }
+		inline std::string GetOpenCVVersion() { return *SendRequest("Anvil.OpenCV.GetVersion", BytePipe::Value()).Get<std::string>(); }
 		inline uint32_t GetVersion() { return SendRequest("Anvil.RPC.GetVersion", BytePipe::Value()).GetU32(); }
 		inline int32_t GetCPUArch() { return SendRequest("Anvil.CPU.GetArch", BytePipe::Value()).GetS32(); }
 		inline size_t GetCPUBits() { return SendRequest("Anvil.CPU.GetBits", BytePipe::Value()).GetU32(); }

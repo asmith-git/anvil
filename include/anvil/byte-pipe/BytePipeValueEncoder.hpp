@@ -216,7 +216,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		static ANVIL_STRONG_INLINE type Decode(const Value& value) {
-			return value.Get<type>();
+			return *value.Get<type>();
 		}
 
 	};

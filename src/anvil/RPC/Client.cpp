@@ -51,10 +51,10 @@ namespace anvil { namespace RPC {
 			std::string msg;
 
 			BytePipe::Value* message = error->GetValue2("message");
+			msg = "null";
 			if (message) {
-				msg = message->GetString();
-			} else {
-				msg = "null";
+				std::string* str = message->Get<std::string>();
+				if (str) msg = *str;
 			}
 
 			BytePipe::Value* code = error->GetValue2("code");

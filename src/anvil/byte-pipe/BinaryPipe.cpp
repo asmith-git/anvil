@@ -1349,7 +1349,7 @@ OLD_COMPONENT_ID:
 		switch (value.GetType()) {
 		case TYPE_STRING:
 			{
-				const std::string& str = const_cast<Value&>(value).GetString();
+				const std::string& str = *value.Get<std::string>();
 				OnPrimitiveString(str.c_str(), str.size());
 			}
 			break;

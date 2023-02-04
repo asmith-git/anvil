@@ -295,7 +295,7 @@ namespace anvil { namespace BytePipe {
 		*/
 		void Optimise();
 
-		void ConvertTo(Type type);
+		bool ConvertTo(Type type);
 	};
 
 	template<class T>
@@ -335,6 +335,12 @@ namespace anvil { namespace BytePipe {
 		struct ValueGetReturn<std::map<K,V>> {
 			typedef std::map<K, V>* type;
 			typedef const std::map<K, V>* const_type;
+		};
+
+		template<>
+		struct ValueGetReturn<std::string> {
+			typedef std::string* type;
+			typedef const std::string* const_type;
 		};
 
 	}
@@ -378,6 +384,10 @@ namespace anvil { namespace BytePipe {
 
 		Object* GetObject(bool convert = false);
 		const Object* GetObject() const;
+
+		bool IterpretAsString(std::string& str) const;
+		std::string* GetString(bool convert = false);
+		const std::string* GetString() const;
 
 #if ANVIL_OPENCV_SUPPORT
 		ANVIL_STRONG_INLINE Pod& SetImage() {
@@ -563,9 +573,6 @@ namespace anvil { namespace BytePipe {
 			throw std::runtime_error("Value::GetF64 : Value cannot be converted to 64-bit floating point");
 		}
 
-		std::string& GetString();
-		std::string GetString() const;
-
 		Pod& GetPod();
 		const Pod& GetPod() const;
 
@@ -632,7 +639,7 @@ namespace anvil { namespace BytePipe {
 		*/
 		void Optimise();
 
-		void ConvertTo(Type type);
+		bool ConvertTo(Type type);
 
 		// Helpers
 
@@ -670,8 +677,6 @@ namespace anvil { namespace BytePipe {
 		explicit ANVIL_STRONG_INLINE operator half() const { return GetF16(); }
 		explicit ANVIL_STRONG_INLINE operator float() const { return GetF32(); }
 		explicit ANVIL_STRONG_INLINE operator double() const { return GetF64(); }
-		explicit ANVIL_STRONG_INLINE operator std::string&() { return GetString(); }
-		explicit ANVIL_STRONG_INLINE operator std::string() const { return GetString(); }
 		explicit ANVIL_STRONG_INLINE operator const Pod&() const { return GetPod(); }
 
 #if ANVIL_OPENCV_SUPPORT
@@ -930,14 +935,13 @@ namespace anvil { namespace BytePipe {
 	}
 
 	template<>
-	ANVIL_STRONG_INLINE std::string Value::Get<std::string>() const {
+	ANVIL_STRONG_INLINE const std::string* Value::Get<std::string>() const {
 		return GetString();
 	}
 
 	template<>
-	ANVIL_STRONG_INLINE std::string& Value::Get<std::string>() {
-		typedef std::string T;
-		return Set<T>() = const_cast<const Value*>(this)->Get<T>();
+	ANVIL_STRONG_INLINE std::string* Value::Get<std::string>() {
+		return GetString(true);
 	}
 
 	template<>

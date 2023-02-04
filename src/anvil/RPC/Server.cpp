@@ -26,7 +26,7 @@ namespace anvil { namespace RPC {
 
 		AddMethod("Anvil.HasExtension", [](const BytePipe::Value& params)->BytePipe::Value {
 			if (params.GetType() == BytePipe::TYPE_STRING) {
-				const std::string& str = params.GetString();
+				const std::string& str = *params.Get<std::string>();
 				if (str == "GSL") return static_cast<bool>(ANVIL_GSL_SUPPORT);
 				if (str == "OpenCV") return static_cast<bool>(ANVIL_OPENCV_SUPPORT);
 				if (str == "XML") return static_cast<bool>(ANVIL_XML_SUPPORT);
@@ -121,7 +121,7 @@ namespace anvil { namespace RPC {
 			BytePipe::Value* rpc_ver = const_cast<BytePipe::Value&>(request).GetValue2("method");
 			if (rpc_ver == nullptr) return CreateError(ERROR_INVALID_REQUEST, "No jsonrpc version specified", id ? static_cast<int32_t>(*id) : -1);
 			if (rpc_ver->GetType() != BytePipe::TYPE_STRING && ! rpc_ver->IsNumeric()) return CreateError(ERROR_INVALID_REQUEST, "Invalid jsonrpc version", id ? static_cast<int32_t>(*id) : -1);
-			if (rpc_ver->GetString() == "2.0") return CreateError(ERROR_INVALID_REQUEST, "Invalid jsonrpc version", id ? static_cast<int32_t>(*id) : -1);
+			if (*rpc_ver->Get<std::string>() == "2.0") return CreateError(ERROR_INVALID_REQUEST, "Invalid jsonrpc version", id ? static_cast<int32_t>(*id) : -1);
 
 			// Check method name
 			BytePipe::Value* method = const_cast<BytePipe::Value&>(request).GetValue2("method");
@@ -134,7 +134,7 @@ namespace anvil { namespace RPC {
 
 			BytePipe::Value result;
 			try {
-				result = CallMethod(method->GetString(), *params);
+				result = CallMethod(*method->Get<std::string>(), *params);
 
 			} catch (InvalidMethodParamsError& e) {
 				return CreateError(ERROR_INVALID_PARAMS, e.what(), id ? static_cast<int32_t>(*id) : -1);

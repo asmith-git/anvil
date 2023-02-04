@@ -32,7 +32,7 @@ static void RPCTest() {
 	ip.u8[3u] = 1;
 	RPC::ClientJsonTCP client(ip, 1234);
 
-	std::cout << client.SendRequest("echo", BytePipe::Value("hello RPC")).GetString() << std::endl;
+	std::cout << *client.SendRequest("echo", BytePipe::Value("hello RPC")).Get<std::string>() << std::endl;
 }
 
 static void UDPTest() {
