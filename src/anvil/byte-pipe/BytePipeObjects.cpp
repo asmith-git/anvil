@@ -359,41 +359,44 @@ namespace anvil { namespace BytePipe {
 		Value()
 	{
 		switch (type) {
+		case TYPE_NULL:
+			Set<Null>();
+			break;
 		case TYPE_C8:
-			SetC8();
+			Set<char>();
 			break;
 		case TYPE_U8:
-			SetU8();
+			Set<uint8_t>();
 			break;
 		case TYPE_U16:
-			SetU16();
+			Set<uint16_t>();
 			break;
 		case TYPE_U32:
-			SetU32();
+			Set<uint32_t>();
 			break;
 		case TYPE_U64:
-			SetU64();
+			Set<uint64_t>();
 			break;
 		case TYPE_S8:
-			SetS8();
+			Set<int8_t>();
 			break;
 		case TYPE_S16:
-			SetS16();
+			Set<int16_t>();
 			break;
 		case TYPE_S32:
-			SetS32();
+			Set<int32_t>();
 			break;
 		case TYPE_S64:
-			SetS64();
+			Set<int64_t>();
 			break;
 		case TYPE_F16:
-			SetF16();
+			Set<half>();
 			break;
 		case TYPE_F32:
-			SetF32();
+			Set<float>();
 			break;
 		case TYPE_F64:
-			SetF64();
+			Set<double>();
 			break;
 		case TYPE_STRING:
 			SetString();
@@ -405,7 +408,7 @@ namespace anvil { namespace BytePipe {
 			SetObject();
 			break;
 		case TYPE_BOOL:
-			SetBool();
+			Set<bool>();
 			break;
 		case TYPE_POD:
 			SetPod();
@@ -684,19 +687,7 @@ namespace anvil { namespace BytePipe {
 		const T* src_ptr = reinterpret_cast<const T*>(src.data());
 		for (size_t i = 0u; i < s; ++i) {
 			Value v;
-			if ANVIL_CONSTEXPR_FN(std::is_same<T, char>::value) v.SetC8(static_cast<char>(src_ptr[i]));
-			else if ANVIL_CONSTEXPR_FN (std::is_same<T, uint8_t>::value) v.SetU8(static_cast<uint8_t>(src_ptr[i]));
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, uint16_t>::value) v.SetU16(static_cast<uint16_t>(src_ptr[i]));
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, uint32_t>::value) v.SetU32(static_cast<uint32_t>(src_ptr[i]));
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, uint64_t>::value) v.SetU64(static_cast<uint64_t>(src_ptr[i]));
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, int8_t>::value) v.SetS8(static_cast<int8_t>(src_ptr[i]));
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, int16_t>::value) v.SetS16(static_cast<int16_t>(src_ptr[i]));
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, int32_t>::value) v.SetS32(static_cast<int32_t>(src_ptr[i]));
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, int64_t>::value) v.SetS64(static_cast<int64_t>(src_ptr[i]));
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, half>::value) v.SetF16(static_cast<half>(src_ptr[i]));
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, float>::value) v.SetS32(static_cast<int32_t>(src_ptr[i]));
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, double>::value) v.SetS64(static_cast<int64_t>(src_ptr[i]));
-			else if ANVIL_CONSTEXPR_FN(std::is_same<T, bool>::value) v.SetBool(static_cast<bool>(src_ptr[i]));
+			v.Set<T>() = src_ptr[i];
 			dst.push_back(std::move(v));
 		}
 	}
@@ -935,43 +926,43 @@ namespace anvil { namespace BytePipe {
 
 					switch (_primitive_array_type) {
 					case TYPE_C8:
-						g_tmp_value.SetC8(reinterpret_cast<const char*>(myArray.data())[index]);
+						{ typedef char T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
 						break;
 					case TYPE_U8:
-						g_tmp_value.SetU8(reinterpret_cast<const uint8_t*>(myArray.data())[index]);
+						{ typedef uint8_t T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
 						break;
 					case TYPE_U16:
-						g_tmp_value.SetU16(reinterpret_cast<const uint16_t*>(myArray.data())[index]);
+						{ typedef uint16_t T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
 						break;
 					case TYPE_U32:
-						g_tmp_value.SetU32(reinterpret_cast<const uint32_t*>(myArray.data())[index]);
+						{ typedef uint32_t T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
 						break;
 					case TYPE_U64:
-						g_tmp_value.SetU64(reinterpret_cast<const uint64_t*>(myArray.data())[index]);
+						{ typedef uint64_t T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
 						break;
 					case TYPE_S8:
-						g_tmp_value.SetS8(reinterpret_cast<const int8_t*>(myArray.data())[index]);
+						{ typedef int8_t T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
 						break;
 					case TYPE_S16:
-						g_tmp_value.SetS16(reinterpret_cast<const int16_t*>(myArray.data())[index]);
+						{ typedef int16_t T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
 						break;
 					case TYPE_S32:
-						g_tmp_value.SetS32(reinterpret_cast<const int32_t*>(myArray.data())[index]);
+						{ typedef int32_t T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
 						break;
 					case TYPE_S64:
-						g_tmp_value.SetS64(reinterpret_cast<const int64_t*>(myArray.data())[index]);
+						{ typedef int64_t T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
 						break;
 					case TYPE_F16:
-						g_tmp_value.SetF16(reinterpret_cast<const half*>(myArray.data())[index]);
+						{ typedef half T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
 						break;
 					case TYPE_F32:
-						g_tmp_value.SetF32(reinterpret_cast<const float*>(myArray.data())[index]);
+						{ typedef float T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
 						break;
 					case TYPE_F64:
-						g_tmp_value.SetF64(reinterpret_cast<const double*>(myArray.data())[index]);
+						{ typedef double T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
 						break;
 					case TYPE_BOOL:
-						g_tmp_value.SetBool(reinterpret_cast<const bool*>(myArray.data())[index]);
+						{ typedef bool T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
 						break;
 					}
 

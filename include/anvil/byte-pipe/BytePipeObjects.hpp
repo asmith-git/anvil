@@ -298,8 +298,38 @@ namespace anvil { namespace BytePipe {
 		void ConvertTo(Type type);
 	};
 
+	template<class T>
+	struct ValueEncoder;
+
+	namespace detail {
+
+		template<class T>
+		struct ValueSetReturn {
+			typedef T& type;
+		};
+
+		template<>
+		struct ValueSetReturn<void> {
+			typedef void type;
+		};
+
+		template<class T>
+		struct ValueGetReturn {
+			typedef T& type;
+			typedef T const_type;
+		};
+
+		template<>
+		struct ValueGetReturn<void> {
+			typedef void type;
+			typedef void const_type;
+		};
+
+	}
+
 	class Value {
 	public:
+		typedef void Null;
 		typedef std::vector<Value> Array;
 		typedef std::map<std::string, Value> Object;
 		typedef std::vector<uint8_t> PrimitiveArray;
@@ -319,7 +349,21 @@ namespace anvil { namespace BytePipe {
 		Type _primitive_array_type;
 
 		Array& ConvertFromPrimitveArray();
-		PrimitiveArray* ConvertToPrimitveArray();
+		PrimitiveArray* ConvertToPrimitveArray();		
+
+		void SetNull();
+		std::string& SetString(const char* value = nullptr);
+		Array& SetArray();
+		PrimitiveArray& SetPrimitiveArray(Type type);
+		Pod& SetPod();
+		Object& SetObject();
+
+#if ANVIL_OPENCV_SUPPORT
+		ANVIL_STRONG_INLINE Pod& SetImage() {
+			Pod pod = SetPod();
+			pod.type = POD_OPENCV_IMAGE;
+		}
+#endif
 	public:
 		Value();
 		Value(Value&& other);
@@ -372,175 +416,26 @@ namespace anvil { namespace BytePipe {
 		}
 
 		/*!
-			\brief Set the value to be a null value.
-			\details Previous value will be lost.
-		*/
-		void SetNull();
-
-		/*!
 			\brief Set the value to be a boolean.
 			\details Previous value will be lost.
-			\param value The value to copy.
+			\return A reference to the set value
 		*/
-		ANVIL_STRONG_INLINE void SetBool(const bool value = false) {
-			SetNull();
-			_primitive = value;
-		}
+		template<class T>
+		ANVIL_STRONG_INLINE typename detail::ValueSetReturn<T>::type Set();
 
-		/*!
-			\brief Set the value to be a character.
-			\details Previous value will be lost.
-			\param value The value to copy.
-		*/
-		ANVIL_STRONG_INLINE void SetC8(const char value = ' ') {
-			SetNull();
-			_primitive = value;
-		}
+		template<class T, class ...PARAMS>
+		ANVIL_STRONG_INLINE typename detail::ValueSetReturn<T>::type Set(PARAMS ... params);
 
-		/*!
-			\brief Set the value to be a 8-bit unsigned integer.
-			\details Previous value will be lost.
-			\param value The value to copy.
-		*/
-		ANVIL_STRONG_INLINE void SetU8(const uint8_t value = 0u) {
-			SetNull();
-			_primitive = value;
-		}
+		template<class T>
+		ANVIL_STRONG_INLINE typename detail::ValueGetReturn<T>::type Get();
 
-		/*!
-			\brief Set the value to be a 16-bit unsigned integer.
-			\details Previous value will be lost.
-			\param value The value to copy.
-		*/
-		ANVIL_STRONG_INLINE void SetU16(const uint16_t value = 0u) {
-			SetNull();
-			_primitive = value;
-		}
+		template<class T>
+		ANVIL_STRONG_INLINE typename detail::ValueGetReturn<T>::const_type Get() const;
 
-		/*!
-			\brief Set the value to be a 32-bit unsigned integer.
-			\details Previous value will be lost.
-			\param value The value to copy.
-		*/
-		ANVIL_STRONG_INLINE void SetU32(const uint32_t value = 0u) {
-			SetNull();
-			_primitive = value;
-		}
-
-		/*!
-			\brief Set the value to be a 64-bit unsigned integer.
-			\details Previous value will be lost.
-			\param value The value to copy.
-		*/
-		ANVIL_STRONG_INLINE void SetU64(const uint64_t value = 0u) {
-			SetNull();
-			_primitive = value;
-		}
-
-		/*!
-			\brief Set the value to be a 8-bit signed integer.
-			\details Previous value will be lost.
-			\param value The value to copy.
-		*/
-		ANVIL_STRONG_INLINE void SetS8(const int8_t value = 0) {
-			SetNull();
-			_primitive = value;
-		}
-
-		/*!
-			\brief Set the value to be a 16-bit signed integer.
-			\details Previous value will be lost.
-			\param value The value to copy.
-		*/
-		ANVIL_STRONG_INLINE void SetS16(const int16_t value = 0) {
-			SetNull();
-			_primitive = value;
-		}
-
-		/*!
-			\brief Set the value to be a 32-bit signed integer.
-			\details Previous value will be lost.
-			\param value The value to copy.
-		*/
-		ANVIL_STRONG_INLINE void SetS32(const int32_t value = 0) {
-			SetNull();
-			_primitive = value;
-		}
-
-		/*!
-			\brief Set the value to be a 64-bit signed integer.
-			\details Previous value will be lost.
-			\param value The value to copy.
-		*/
-		ANVIL_STRONG_INLINE void SetS64(const int64_t value = 0) {
-			SetNull();
-			_primitive = value;
-		}
-
-		/*!
-			\brief Set the value to be a 16-bit floating point.
-			\details Previous value will be lost.
-			\param value The value to copy.
-		*/
-		ANVIL_STRONG_INLINE void SetF16(const half value = static_cast<half>(0)) {
-			SetNull();
-			_primitive = value;
-		}
-
-		/*!
-			\brief Set the value to be a 32-bit floating point.
-			\details Previous value will be lost.
-			\param value The value to copy.
-		*/
-		ANVIL_STRONG_INLINE void SetF32(const float value = 0.f) {
-			SetNull();
-			_primitive = value;
-		}
-
-		/*!
-			\brief Set the value to be a 64-bit floating point.
-			\details Previous value will be lost.
-			\param value The value to copy.
-		*/
-		ANVIL_STRONG_INLINE void SetF64(const double value = 0.0) {
-			SetNull();
-			_primitive = value;
-		}
-
-		/*!
-			\brief Set the value to be a string.
-			\details Previous value will be lost.
-			\param value The value to copy, nullptr results in an empty string.
-		*/
-		std::string& SetString(const char* value = nullptr);
-
-		/*!
-			\brief Set the value to be a POD.
-			\details Previous value will be lost.
-		*/
-		Pod& SetPod();
-
-#if ANVIL_OPENCV_SUPPORT
-		ANVIL_STRONG_INLINE Pod& SetImage() {
-			Pod pod = SetPod();
-			pod.type = POD_OPENCV_IMAGE;
-		}
-#endif
-
-		/*!
-			\brief Set the value to be an array.
-			\details Previous value will be lost.
-		*/
-		Array& SetArray();
 		Array& GetArray();
 		const Array* GetArray() const;
 		PrimitiveArray* GetPrimitiveArray();
 		const PrimitiveArray* GetPrimitiveArray() const;
-
-		/*!
-			\brief Same as SetArray but the array can only contain one primitive type
-		*/
-		PrimitiveArray& SetPrimitiveArray(Type type);
 
 		/*!
 			\brief Append a value to the end of the array.
@@ -558,11 +453,6 @@ namespace anvil { namespace BytePipe {
 		*/
 		Value* AddValue(const PrimitiveValue& value);
 
-		/*!
-			\brief Set the value to be an object.
-			\details Previous value will be lost.
-		*/
-		Object& SetObject();
 		Object& GetObject();
 		const Object* GetObject() const;
 
@@ -774,155 +664,300 @@ namespace anvil { namespace BytePipe {
 #if ANVIL_OPENCV_SUPPORT
 		explicit ANVIL_STRONG_INLINE operator cv::Mat() const { return GetImage(); }
 #endif
-
-		template<class T>
-		explicit ANVIL_STRONG_INLINE operator std::vector<T>() const {
-			const size_t s = GetSize();
-			std::vector<T> tmp(s);
-			if (IsPrimitiveArray() && GetPrimitiveArrayType() == BytePipe::GetTypeID<T>()) {
-				const void* src = const_cast<Value*>(this)->GetPrimitiveArray()->data();
-				memcpy(tmp.data(), src, sizeof(T) * s);
-			} else {
-				for (size_t i = 0u; i < s; ++i) tmp[i] = static_cast<T>(operator[](i));
-			}
-			return tmp;
-		}
-
-		template<class T>
-		explicit Value(const std::vector<T>& value) :
-			Value()
-		{
-			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<T>())) {
-				Value::PrimitiveArray& new_array = SetPrimitiveArray(BytePipe::GetTypeID<T>());
-				const size_t s = value.size();
-				new_array.resize(sizeof(T) * s);
-				memcpy(new_array.data(), value.data(), sizeof(T) * s);
-			} else {
-				Array& new_array = SetArray();
-				for (T& tmp : value) new_array.push_back(tmp);
-			}
-		}
-
-		template<class T>
-		explicit ANVIL_STRONG_INLINE operator std::list<T>() const {
-			const size_t s = GetSize();
-			std::list<T> tmp;
-			for (size_t i = 0u; i < s; ++i) tmp.push_back(static_cast<T>(operator[](i)));
-			return tmp;
-		}
-
-		template<class T>
-		explicit Value(const std::list<T>& value) :
-			Value()
-		{
-			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<T>())) {
-				PrimitiveArray& new_array = SetPrimitiveArray(BytePipe::GetTypeID<T>());
-				size_t i = 0u;
-				new_array.resize(sizeof(T) * i);
-				for (T& tmp : value) {
-					memcpy(new_array.data() + i, &tmp, sizeof(T));
-					i += sizeof(T);
-				}
-			} else {
-				Array& new_array = SetArray();
-				for (T& tmp : value) new_array.push_back(tmp);
-			}
-		}
-
-		template<class T>
-		explicit ANVIL_STRONG_INLINE operator std::deque<T>() const {
-			const size_t s = GetSize();
-			std::deque<T> tmp(s);
-			for (size_t i = 0u; i < s; ++i) tmp[i] = static_cast<T>(operator[](i));
-			return tmp;
-		}
-
-		template<class T>
-		explicit Value(const std::deque<T>& value) :
-			Value()
-		{
-			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<T>())) {
-				SetPrimitiveArray(BytePipe::GetTypeID<T>());
-			} else {
-				SetArray();
-			}
-			for (T& tmp : value) AddValue(tmp);
-		}
-
-		template<class T, size_t S>
-		explicit ANVIL_STRONG_INLINE operator std::array<T, S>() const {
-			std::array<T,S> tmp;
-
-			if (IsPrimitiveArray() && GetPrimitiveArrayType() == BytePipe::GetTypeID<T>()) {
-				const void* src = const_cast<Value*>(this)->GetPrimitiveArray()->data();
-				memcpy(tmp.data(), src, sizeof(T) * S);
-			} else {
-				for (size_t i = 0u; i < S; ++i) tmp[i] = static_cast<T>(operator[](i));
-			}
-			return tmp;
-		}
-
-		template<class T, size_t S>
-		explicit Value(const std::array<T, S>& value) :
-			Value()
-		{
-			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<T>())) {
-				PrimitiveArray& new_array = SetPrimitiveArray(BytePipe::GetTypeID<T>());
-				const size_t s = value.size();
-				new_array.resize(s);
-				memcpy(new_array.data(), value.data(), sizeof(T) * s);
-			} else {
-				Array& new_array = SetArray();
-				for (T& tmp : value) new_array.push_back(tmp);
-			}
-		}
-
-		template<class K, class V>
-		explicit ANVIL_STRONG_INLINE operator std::map<K, V>() const {
-			const Value& keys = operator[](0);
-			const Value& values = operator[](1);
-
-			std::map<K, V> tmp;
-
-			const size_t s = keys.GetSize();
-			for (size_t i = 0u; i < s; ++i) {
-				tmp.emplace(
-					static_cast<K>(keys[i]),
-					static_cast<V>(values[i])
-				);
-			}
-			return tmp;
-		}
-
-		template<class K, class V>
-		explicit Value(const std::map<K, V >& value) :
-			Value()
-		{
-			Value keys;
-			Value values;
-
-			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<K>())) {
-				keys.SetPrimitiveArray(BytePipe::GetTypeID<K>());
-			} else {
-				keys.SetArray();
-			}
-
-			if ANVIL_CONSTEXPR_FN (BytePipe::IsPrimitive(BytePipe::GetTypeID<V>())) {
-				values.SetPrimitiveArray(BytePipe::GetTypeID<V>());
-			} else {
-				values.SetArray();
-			}
-
-			for (const std::pair<K, V>& tmp : value) {
-				keys.AddValue(tmp.first);
-				values.AddValue(tmp.second);
-			}
-
-			Array& new_array = SetArray();
-			new_array.push_back(std::move(keys));
-			new_array.push_back(std::move(values));
-		}
 	};
+
+	namespace detail {
+
+#if ANVIL_OPENCV_SUPPORT
+		template<>
+		struct ValueSetReturn<cv::Mat> {
+			typedef Value::Pod& type;
+		};
+#endif
+
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE bool& Value::Set<bool>() {
+		SetNull();
+		_primitive.type = GetTypeID<bool>();
+		return _primitive.b;
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE bool Value::Get<bool>() const {
+		return GetBool();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE bool& Value::Get<bool>() {
+		typedef bool T;
+		return Set<T>() = const_cast<const Value*>(this)->Get<T>();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE char& Value::Set<char>() {
+		SetNull();
+		_primitive.type = GetTypeID<char>();
+		return _primitive.c8;
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE char Value::Get<char>() const {
+		return GetC8();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE char& Value::Get<char>() {
+		typedef char T;
+		return Set<T>() = const_cast<const Value*>(this)->Get<T>();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE uint8_t& Value::Set<uint8_t>() {
+		SetNull();
+		_primitive.type = GetTypeID<uint8_t>();
+		return _primitive.u8;
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE uint8_t Value::Get<uint8_t>() const {
+		return GetU8();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE uint8_t& Value::Get<uint8_t>() {
+		typedef uint8_t T;
+		return Set<T>() = const_cast<const Value*>(this)->Get<T>();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE uint16_t& Value::Set<uint16_t>() {
+		SetNull();
+		_primitive.type = GetTypeID<uint16_t>();
+		return _primitive.u16;
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE uint16_t Value::Get<uint16_t>() const {
+		return GetU16();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE uint16_t& Value::Get<uint16_t>() {
+		typedef uint16_t T;
+		return Set<T>() = const_cast<const Value*>(this)->Get<T>();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE uint32_t& Value::Set<uint32_t>() {
+		SetNull();
+		_primitive.type = GetTypeID<uint32_t>();
+		return _primitive.u32;
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE uint32_t Value::Get<uint32_t>() const {
+		return GetU32();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE uint32_t& Value::Get<uint32_t>() {
+		typedef uint32_t T;
+		return Set<T>() = const_cast<const Value*>(this)->Get<T>();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE uint64_t& Value::Set<uint64_t>() {
+		SetNull();
+		_primitive.type = GetTypeID<uint64_t>();
+		return _primitive.u64;
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE uint64_t Value::Get<uint64_t>() const {
+		return GetU64();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE uint64_t& Value::Get<uint64_t>() {
+		typedef uint64_t T;
+		return Set<T>() = const_cast<const Value*>(this)->Get<T>();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE int8_t& Value::Set<int8_t>() {
+		SetNull();
+		_primitive.type = GetTypeID<int8_t>();
+		return _primitive.s8;
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE int8_t Value::Get<int8_t>() const {
+		return GetS8();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE int8_t& Value::Get<int8_t>() {
+		typedef int8_t T;
+		return Set<T>() = const_cast<const Value*>(this)->Get<T>();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE int16_t& Value::Set<int16_t>() {
+		SetNull();
+		_primitive.type = GetTypeID<int16_t>();
+		return _primitive.s16;
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE int16_t Value::Get<int16_t>() const {
+		return GetS16();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE int16_t& Value::Get<int16_t>() {
+		typedef int16_t T;
+		return Set<T>() = const_cast<const Value*>(this)->Get<T>();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE int32_t& Value::Set<int32_t>() {
+		SetNull();
+		_primitive.type = GetTypeID<int32_t>();
+		return _primitive.s32;
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE int32_t Value::Get<int32_t>() const {
+		return GetS32();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE int32_t& Value::Get<int32_t>() {
+		typedef int32_t T;
+		return Set<T>() = const_cast<const Value*>(this)->Get<T>();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE int64_t& Value::Set<int64_t>() {
+		SetNull();
+		_primitive.type = GetTypeID<int64_t>();
+		return _primitive.s64;
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE int64_t Value::Get<int64_t>() const {
+		return GetS64();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE int64_t& Value::Get<int64_t>() {
+		typedef int64_t T;
+		return Set<T>() = const_cast<const Value*>(this)->Get<T>();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE half& Value::Set<half>() {
+		SetNull();
+		_primitive.type = GetTypeID<half>();
+		return _primitive.f16;
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE half Value::Get<half>() const {
+		return GetF16();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE half& Value::Get<half>() {
+		typedef half T;
+		return Set<T>() = const_cast<const Value*>(this)->Get<T>();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE float& Value::Set<float>() {
+		SetNull();
+		_primitive.type = GetTypeID<float>();
+		return _primitive.f32;
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE float Value::Get<float>() const {
+		return GetF32();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE float& Value::Get<float>() {
+		typedef float T;
+		return Set<T>() = const_cast<const Value*>(this)->Get<T>();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE double& Value::Set<double>() {
+		SetNull();
+		_primitive.type = GetTypeID<double>();
+		return _primitive.f64;
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE double Value::Get<double>() const {
+		return GetF64();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE double& Value::Get<double>() {
+		typedef double T;
+		return Set<T>() = const_cast<const Value*>(this)->Get<T>();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE std::string& Value::Set<std::string>() {
+		return SetString();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE std::string Value::Get<std::string>() const {
+		return GetString();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE std::string& Value::Get<std::string>() {
+		typedef std::string T;
+		return Set<T>() = const_cast<const Value*>(this)->Get<T>();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE Value::Pod& Value::Set<Value::Pod>() {
+		return SetPod();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE Value::Object& Value::Set<Value::Object>() {
+		return SetObject();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE Value::Array& Value::Set<Value::Array>() {
+		return SetArray();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE Value::PrimitiveArray& Value::Set<Value::PrimitiveArray, Type>(Type type) {
+		return SetPrimitiveArray(type);
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE void Value::Set<Value::Null>() {
+		return SetNull();
+	}
+
+#if ANVIL_OPENCV_SUPPORT
+	template<>
+	ANVIL_STRONG_INLINE Value::Pod& Value::Set<cv::Mat>() {
+		return SetImage();
+	}
+#endif
 
 }}
 

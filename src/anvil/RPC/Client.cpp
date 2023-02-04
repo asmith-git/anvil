@@ -33,7 +33,7 @@ namespace anvil { namespace RPC {
 
 		{
 			BytePipe::Value request;
-			BytePipe::Value::Object& obj = request.SetObject();
+			BytePipe::Value::Object& obj = request.Set<BytePipe::Value::Object>();
 			obj.emplace("method", BytePipe::Value(method));
 			obj.emplace("params", BytePipe::Value(params));
 			request.Optimise();

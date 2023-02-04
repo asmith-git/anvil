@@ -63,6 +63,9 @@
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeRepeater.hpp">
       <Filter>Header Files\Byte Pipe</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeValueEncoder.hpp">
+      <Filter>Header Files\Byte Pipe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\anvil\byte-pipe\BinaryPipe.cpp">

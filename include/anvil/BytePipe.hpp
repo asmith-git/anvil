@@ -17,6 +17,7 @@
 
 #include "anvil/byte-pipe/BytePipeCore.hpp"
 #include "anvil/byte-pipe/BytePipeObjects.hpp"
+#include "anvil/byte-pipe/BytePipeValueEncoder.hpp"
 #include "anvil/byte-pipe/BytePipeReader.hpp"
 #include "anvil/byte-pipe/BytePipeWriter.hpp"
 #include "anvil/byte-pipe/BytePipeRepeater.hpp"

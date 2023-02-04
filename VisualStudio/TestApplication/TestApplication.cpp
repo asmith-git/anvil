@@ -434,7 +434,7 @@ int main()
 			std::cout << "Read : " << (CurrentTime() - t) << " ms" << std::endl;
 
 			t = CurrentTime();
-			in_test = static_cast<decltype(in_test)>(parser.GetValue());
+			in_test = anvil::BytePipe::ValueEncoder<decltype(in_test)>::Decode(parser.GetValue());
 			std::cout << "Parse : " << (CurrentTime() - t) << " ms" << std::endl;
 		}
 	}

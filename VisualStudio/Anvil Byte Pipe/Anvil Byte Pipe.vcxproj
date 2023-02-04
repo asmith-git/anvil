@@ -32,6 +32,7 @@
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeSTL.hpp" />
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeTCP.hpp" />
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeUDP.hpp" />
+    <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeValueEncoder.hpp" />
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeWriter.hpp" />
     <ClInclude Include="..\..\include\anvil\byte-pipe\BytePipeXML.hpp" />
     <ClInclude Include="..\..\include\anvil\BytePipe.hpp" />

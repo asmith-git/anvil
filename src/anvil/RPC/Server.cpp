@@ -152,7 +152,7 @@ namespace anvil { namespace RPC {
 
 			if (id) {
 				BytePipe::Value tmp;
-				BytePipe::Value::Object& obj = tmp.SetObject();
+				BytePipe::Value::Object& obj = tmp.Set<BytePipe::Value::Object>();
 				obj.emplace("result", std::move(result));
 				tmp.Optimise();
 				// Don't optimise these values, may not be compatibile with RPC client
