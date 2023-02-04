@@ -231,10 +231,6 @@ namespace anvil { namespace BytePipe {
 			OnPrimitiveF32(static_cast<float>(value));  //! \bug half to float conversion not implemented
 		}
 
-#if ANVIL_OPENCV_SUPPORT
-		void OnImage(const cv::Mat& value, ImageFormat compression_format = IMAGE_BIN, float quality = 100.f);
-#endif
-
 		// Object Support
 
 		void OnValue(const Value& value);
@@ -492,6 +488,11 @@ namespace anvil { namespace BytePipe {
 		template<class T>
 		inline void operator()(const T& value) {
 			OnValue(ValueEncoder<T>::Encode(value));
+		}
+
+		template<class T, class ...PARAMS>
+		inline void operator()(const T& value, PARAMS... params) {
+			OnValue(ValueEncoder<T>::Encode(value, params...));
 		}
 	};
 

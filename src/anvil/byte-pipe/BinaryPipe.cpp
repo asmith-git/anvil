@@ -1343,11 +1343,6 @@ OLD_COMPONENT_ID:
 
 		return pod;
 	}
-
-	void Parser::OnImage(const cv::Mat& value, ImageFormat compression_format, float quality) {
-		Value::Pod tmp = Value::Pod::CreatePODFromCVMat(value, compression_format, quality);
-		OnUserPOD(tmp.type, tmp.data.size(), tmp.data.data());
-	}
 #endif
 
 	void Parser::OnValue(const Value& value) {

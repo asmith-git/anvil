@@ -472,6 +472,30 @@ namespace anvil { namespace BytePipe {
 
 	};
 
+#if ANVIL_OPENCV_SUPPORT
+
+	template<>
+	struct ValueEncoder<cv::Mat> {
+		typedef cv::Mat type;
+
+		static inline Value Encode(const type& value, ImageFormat format = IMAGE_BIN, float quality = 100.f) {
+			Value tmp;
+			tmp.Set<Value::Pod>() = Value::Pod::CreatePODFromCVMat(value, format, quality);
+			
+			return tmp;
+		}
+
+		static inline type Decode(const Value& value) {
+			if (!value.IsPod()) throw std::runtime_error("ValueEncoder<cv::Mat>::Decode : Value is not a POD");
+			const Value::Pod& pod= value.GetPod();
+			if (pod.type != POD_OPENCV_IMAGE) throw std::runtime_error("ValueEncoder<cv::Mat>::Decode : POD is not an image");
+			return Value::Pod::CreateOpenCVMatFromPOD(pod.data.data(), pod.data.size());
+		}
+
+	};
+
+#endif
+
 }}
 
 #endif
