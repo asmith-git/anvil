@@ -93,7 +93,8 @@ namespace anvil {
 		*dst = '\0';
 	}
 
-	void Base64::Decode(const char* src, size_t src_len, uint8_t* dst, size_t& bytes_out, const char* const table, char padding) {
+	template<bool DEFAULT_TABLE>
+	void Base64Decode(const char* src, size_t src_len, uint8_t* dst, size_t& bytes_out, const char* const table, char padding) {
 		Base64Helper helper;
 		helper.u32 = 0u;
 
@@ -111,9 +112,17 @@ namespace anvil {
 		}
 
 		const auto DecodeChar = [table](const char c)->uint32_t {
-			uint32_t i = 0u;
-			for (i; i < 64; ++i) if (c == table[i]) break;
-			return i;
+			if ANVIL_CONSTEXPR_FN(DEFAULT_TABLE) {
+				if (c >= 'A' && c <= 'Z') return c - 'A';
+				if (c >= 'a' && c <= 'z') return (c - 'a') + 26;
+				if (c >= '0' && c <= '9') return (c - '0') + 52;
+				else if (c == '+') return 62;
+				return 63;
+			} else {
+				uint32_t i = 0u;
+				for (i; i < 64; ++i) if (c == table[i]) break;
+				return i;
+			}
 		};
 
 		while (src_len >= 4u) {
@@ -152,6 +161,14 @@ namespace anvil {
 				dst += 1u;
 				bytes_out += 1u;
 			}
+		}
+	}
+
+	void Base64::Decode(const char* src, size_t src_len, uint8_t* dst, size_t& bytes_out, const char* const table, char padding) {
+		if (table == g_default_base64_table) {
+			Base64Decode<true>(src, src_len, dst, bytes_out, table, padding);
+		} else {
+			Base64Decode<false>(src, src_len, dst, bytes_out, table, padding);
 		}
 	}
 
