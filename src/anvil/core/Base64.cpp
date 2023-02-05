@@ -43,17 +43,15 @@ namespace anvil {
 		dst_len = 0u;
 
 		while (bytes_in >= 3u) {
-			helper.u8[0u] = src[0u];
-			helper.u8[1u] = src[1u];
-			helper.u8[2u] = src[2u];
+			const uint32_t tmp = static_cast<uint32_t>(src[0u]) | (static_cast<uint32_t>(src[1u]) << 8u) | (static_cast<uint32_t>(src[2u]) << 16u);
 			src += 3u;
 			bytes_in -= 3u;
 
-			dst[0u] = table[helper.u6_0];
-			dst[1u] = table[helper.u6_1];
-			dst[2u] = table[helper.u6_2];
-			dst[3u] = table[helper.u6_3];
 
+			dst[0u] = table[tmp & 63u];
+			dst[1u] = table[(tmp >> 6u) & 63u];
+			dst[2u] = table[(tmp >> 12u) & 63];
+			dst[3u] = table[tmp >> 18u];
 			dst += 4u;
 			dst_len += 4u;
 		}
