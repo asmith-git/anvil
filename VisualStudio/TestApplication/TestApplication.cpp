@@ -341,8 +341,6 @@ void XMLTest() {
 int main()
 {
 	Base64Test();
-	return 0;
-
 	JSONTest();
 	XMLTest();
 	RPCTest();

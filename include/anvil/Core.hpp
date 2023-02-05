@@ -33,5 +33,6 @@
 #include "anvil/core/LeadingZeroCount.hpp"
 #include "anvil/core/TrailingZeroCount.hpp"
 #include "anvil/core/Base64.hpp"
+#include "anvil/core/Hexadecimal.hpp"
 
 #endif
