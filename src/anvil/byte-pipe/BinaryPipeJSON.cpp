@@ -13,19 +13,10 @@
 //limitations under the License.
 
 #include "anvil/byte-pipe/BytePipeJSON.hpp"
+#include "anvil/core/Base64.hpp"
+#include "anvil/core/Hexadecimal.hpp"
 
 namespace anvil { namespace BytePipe {
-
-	static char ToHex(uint32_t nybble) {
-		return nybble <= 9 ?
-			'0' + nybble :
-			'A' + (nybble - 10);
-	}
-
-	static inline void ToHex(uint32_t byte, char* out) {
-		out[0u] = ToHex(byte & 15u);
-		out[1u] = ToHex(byte >> 4u);
-	}
 
 	JsonWriter::JsonWriter() :
 		JsonWriter(true)
@@ -127,16 +118,10 @@ namespace anvil { namespace BytePipe {
 	void JsonWriter::OnUserPOD(const PodType type, const size_t bytes, const void* data) {
 		// Format the POD as an object, a POD is identified by containg the member __ANVIL_POD with the value 123456789
 
-		std::string value = "{\"anvil_pod_type\":" + std::to_string(type) + ",\"data\":\"";
+		std::string value = "{\"anvil_pod_type\":" + std::to_string(type) + ",\"encoding\":\"Base64\",\"data\":\"";
 
-		// Store the binary data as hexidecimal
-		char buffer[3u] = "??";
-		value.reserve(value.size() + bytes * 2u);
-		for (uint32_t i = 0u; i < bytes; ++i) {
-			ToHex(reinterpret_cast<const uint8_t*>(data)[i], buffer);
-			value += buffer;
-		};
-
+		// Store the binary data as Base64
+		value += Base64::Encode(reinterpret_cast<const uint8_t*>(data), bytes);
 		
 		// Add the value
 		value += "\"}";
@@ -206,25 +191,6 @@ namespace anvil { namespace BytePipe {
 		return node.size();
 	}
 
-	static uint32_t HexNybbleToBin(char hex) {
-		if (hex >= '0' && hex <= '9') {
-			return hex - '0';
-		} else if (hex >= 'A' && hex <= 'Z') {
-			return (hex - 'A') + 10;
-		} else  {
-			return (hex - 'a') + 10;
-		}
-	}
-
-	static void ConvertHexToBin(const char* hex, size_t bytes, uint8_t* bin) {
-		for (size_t i = 0u; i < bytes; ++i) {
-			*bin = static_cast<uint32_t>(HexNybbleToBin(hex[0u]) | (HexNybbleToBin(hex[1u]) << 4u));
-
-			hex += 2u;
-			++bin;
-		}
-	}
-
 	static bool IsPod(const nlohmann::json& node) {
 		if (!node.is_object()) return false;
 		for (auto i = node.begin(); i != node.end(); ++i) if (i.key() == "anvil_pod_type") return true;
@@ -239,16 +205,27 @@ namespace anvil { namespace BytePipe {
 	void ReadJSON(const nlohmann::json& node, Parser& parser) {
 		if (IsPod(node)) {
 			// Interpret as pod
-			std::string tmp = node["data"];
-			size_t bytes = tmp.size() / 2;
-			uint8_t* buffer = static_cast<uint8_t*>(_alloca(bytes));
+			const std::string& tmp = node["data"];
 
-			ConvertHexToBin(tmp.c_str(), bytes, buffer);
+			auto encoding_it = node.find("encoding");
+			std::string encoding = "Hex";
+			if (encoding_it != node.end()) {
+				encoding = static_cast<std::string>(encoding_it.value());
+			}
+
+			std::vector<uint8_t> data;
+			if (encoding == "Base64") {
+				data = Base64::Decode(tmp.c_str(), tmp.size());
+			} else if (encoding == "Hex") {
+				data = Hexadecimal::Decode(tmp.c_str(), tmp.size());
+			} else {
+				throw std::runtime_error("anvil::ReadJSON : Unknown POD encoding");
+			}
 
 			parser.OnUserPOD(
 				node["anvil_pod_type"],
-				bytes,
-				buffer
+				data.size(),
+				data.data()
 			);
 
 		} else if (node.is_array()) {

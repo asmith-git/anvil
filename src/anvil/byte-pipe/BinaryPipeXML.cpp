@@ -13,19 +13,10 @@
 //limitations under the License.
 
 #include "anvil/byte-pipe/BytePipeXML.hpp"
+#include "anvil/core/Base64.hpp"
+#include "anvil/core/Hexadecimal.hpp"
 
 namespace anvil { namespace BytePipe {
-
-	static char ToHex(uint32_t nybble) {
-		return nybble <= 9 ?
-			'0' + nybble :
-			'A' + (nybble - 10);
-	}
-
-	static inline void ToHex(uint32_t byte, char* out) {
-		out[0u] = ToHex(byte & 15u);
-		out[1u] = ToHex(byte >> 4u);
-	}
 
 	XMLWriter::XMLWriter() :
 		XMLWriter(true)
@@ -129,17 +120,11 @@ namespace anvil { namespace BytePipe {
 	}
 
 	void XMLWriter::OnUserPOD(const PodType type, const size_t bytes, const void* data) {
-		// Store the binary data as hexidecimal
-		std::string value;
-		value.reserve(bytes * 2u);
-		char buffer[3u] = "??";
-		for (size_t i = 0u; i < bytes; ++i) {
-			ToHex(reinterpret_cast<const uint8_t*>(data)[i], buffer);
-			value += buffer;
-		};
+		// Store the binary data as Base64
+		std::string value = Base64::Encode(reinterpret_cast<const uint8_t*>(data), bytes);
 
 		// Add the value
-		AddNode(GetNextNodeName("value"), value, { {"anvil_type", "pod"}, {"pod_type", std::to_string(type) }
+		AddNode(GetNextNodeName("value"), value, { {"anvil_type", "pod"}, {"encoding", "Base64"}, {"pod_type", std::to_string(type) }
 	});
 	}
 
@@ -253,25 +238,6 @@ namespace anvil { namespace BytePipe {
 		return tmp;
 	}
 
-	static uint32_t HexNybbleToBin(char hex) {
-		if (hex >= '0' && hex <= '9') {
-			return hex - '0';
-		} else if (hex >= 'A' && hex <= 'Z') {
-			return (hex - 'A') + 10;
-		} else  {
-			return (hex - 'a') + 10;
-		}
-	}
-
-	static void ConvertHexToBin(const char* hex, size_t bytes, uint8_t* bin) {
-		for (size_t i = 0u; i < bytes; ++i) {
-			*bin = static_cast<uint32_t>(HexNybbleToBin(hex[0u]) | (HexNybbleToBin(hex[1u]) << 4u));
-
-			hex += 2u;
-			++bin;
-		}
-	}
-
 	static bool IsComponentID(const std::string& str) {
 		for (char c : str) if (c < '0' || c > '9') return false;
 		return true;
@@ -284,15 +250,26 @@ namespace anvil { namespace BytePipe {
 			const char* anvil_type_str = anvil_type->value();
 			if (strcmp(anvil_type_str, "pod") == 0) {
 				// Interpret as pod
-				size_t bytes = node.value_size() / 2;
-				uint8_t* buffer = static_cast<uint8_t*>(_alloca(bytes));
 
-				ConvertHexToBin(node.value(), bytes, buffer);
+				const rapidxml::xml_attribute<>* encoding_it = FindAttribute(node, "encoding");
+				std::string encoding = "Hex";
+				if (encoding_it) {
+					encoding = static_cast<std::string>(encoding_it->value());
+				}
+
+				std::vector<uint8_t> data;
+				if (encoding == "Base64") {
+					data = Base64::Decode(node.value(), node.value_size());
+				} else if (encoding == "Hex") {
+					data = Hexadecimal::Decode(node.value(), node.value_size());
+				} else {
+					throw std::runtime_error("anvil::ReadXML : Unknown POD encoding");
+				}
 
 				parser.OnUserPOD(
 					static_cast<PodType>(std::stoi(FindAttribute(node, "pod_type")->value())),
-					bytes,
-					buffer
+					data.size(),
+					data.data()
 				);
 				return;
 

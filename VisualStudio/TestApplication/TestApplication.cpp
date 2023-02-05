@@ -30,9 +30,6 @@ static void Base64Test() {
 	anvil::Base64::Decode(base64, b64_len, reinterpret_cast<uint8_t*>(decode), decode_len);
 	decode[decode_len] = '\0';
 	std::cout << decode << std::endl;
-
-
-	system("pause");
 }
 
 static void RPCTest() {
