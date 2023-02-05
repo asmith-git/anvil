@@ -332,8 +332,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		static ANVIL_STRONG_INLINE type Decode(const Value& value) {
-			const size_t s = value.GetSize();
-			type tmp(s);
+			type tmp(Value::ArrayWrapper(const_cast<Value&>(value)).size());
 			detail::ValueArrayDecoder<T>(tmp.data(), value);
 			return tmp;
 		}
@@ -349,7 +348,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		static ANVIL_STRONG_INLINE type Decode(const Value& value) {
-			if (value.GetSize() != S) throw std::runtime_error("ValueEncoder::Decode<std::array> : Array lengths do not match");
+			if (Value::ArrayWrapper(const_cast<Value&>(value)).size() != S) throw std::runtime_error("ValueEncoder::Decode<std::array> : Array lengths do not match");
 			type tmp;
 			detail::ValueArrayDecoder<T>(tmp.data(), value);
 			return tmp;
@@ -497,9 +496,9 @@ namespace anvil { namespace BytePipe {
 
 		static inline type Decode(const Value& value) {
 			if (!value.IsPod()) throw std::runtime_error("ValueEncoder<cv::Mat>::Decode : Value is not a POD");
-			const Value::Pod& pod= value.GetPod();
-			if (pod.type != POD_OPENCV_IMAGE) throw std::runtime_error("ValueEncoder<cv::Mat>::Decode : POD is not an image");
-			return Value::Pod::CreateOpenCVMatFromPOD(pod.data.data(), pod.data.size());
+			const Value::Pod* pod= value.Get<Value::Pod>();
+			if (pod == nullptr || pod->type != POD_OPENCV_IMAGE) throw std::runtime_error("ValueEncoder<cv::Mat>::Decode : POD is not an image");
+			return Value::Pod::CreateOpenCVMatFromPOD(pod->data.data(), pod->data.size());
 		}
 
 	};

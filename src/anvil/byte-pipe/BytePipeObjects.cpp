@@ -547,7 +547,7 @@ namespace anvil { namespace BytePipe {
 			break;
 		case TYPE_POD:
 			{
-				SetPod() = other.GetPod();
+				SetPod() = *other.GetPod();
 			}
 			break;
 		default:
@@ -704,40 +704,6 @@ namespace anvil { namespace BytePipe {
 		}
 	}
 
-	Value* Value::ArrayPushBack(const PrimitiveValue& value) {
-		PrimitiveArray* pa = GetPrimitiveArray();
-		Array* a = GetArray();
-
-		if(pa) {
-			// Try to add primative type
-
-			PrimitiveValue v = value;
-			if (v.ConvertTo(_primitive_array_type)) {
-
-				size_t bytes = GetSizeOfPrimitiveType(_primitive_array_type);
-
-				size_t prev_size = pa->size();
-				pa->resize(prev_size + bytes);
-				memcpy(pa->data() + prev_size, &v.u8, bytes);
-
-				return nullptr;
-			}
-
-			// Convert to value array
-			a = ConvertFromPrimitveArray();
-		}
-		
-		if (a) {
-			a->push_back(Value());
-			Value& v = a->back();
-			v = value;
-			return &v;
-
-		}
-
-		throw std::runtime_error("Value::AddValue : Value is not an array, or value is not compatible");
-	}
-
 	/*!
 		\brief Attempt to convert a general array into a primitve array
 		\return Nullptr if is this value is not an array, or the primitive array could not be converted
@@ -863,30 +829,6 @@ namespace anvil { namespace BytePipe {
 		}
 
 		return &new_array;
-	}
-
-	Value* Value::ArrayPushBack(Value&& value) {
-		PrimitiveArray* pa = GetPrimitiveArray();
-		if (pa) value.Optimise(); // Decrease probability of primitve array being converted to general array
-
-		// Handle primitive data types in a way that is optimised for them
-		if (value.IsPrimitive()) {
-			return ArrayPushBack(value._primitive);
-
-		// General values
-		} else {
-			Array* a = GetArray();
-
-			if (pa) a = ConvertFromPrimitveArray();
-
-			if (a) {
-				a->push_back(std::move(value));
-				return &a->back();
-			}
-			
-		}
-
-		throw std::runtime_error("Value::AddValue : Value is not an array");
 	}
 
 	Value::Object& Value::SetObject() {
@@ -1026,97 +968,6 @@ namespace anvil { namespace BytePipe {
 		return static_cast<std::string*>(_primitive.ptr);
 	}
 
-	const Value::Pod& Value::GetPod() const {
-		if (_primitive.type != TYPE_POD) throw std::runtime_error("Value::GetPod : Value is not a POD");
-		return *static_cast<const Pod*>(_primitive.ptr);
-	}
-
-	Value::Pod& Value::GetPod() {
-		if (_primitive.type != TYPE_POD) throw std::runtime_error("Value::GetPod : Value is not a POD");
-		return *static_cast<Pod*>(_primitive.ptr);
-	}
-
-	Value* Value::GetValue2(const size_t index) throw() {
-		switch (_primitive.type) {
-		case TYPE_ARRAY:
-			{
-				if (_primitive_array_type == TYPE_NULL) {
-					Array& myArray = *static_cast<Array*>(_primitive.ptr);
-					if (index >= myArray.size()) return nullptr;
-					return &myArray[index];
-				} else {
-					PrimitiveArray& myArray = *static_cast<PrimitiveArray*>(_primitive.ptr);
-					if (index >= GetSize()) return nullptr;
-
-					thread_local Value g_tmp_value;
-
-					switch (_primitive_array_type) {
-					case TYPE_C8:
-						{ typedef char T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
-						break;
-					case TYPE_U8:
-						{ typedef uint8_t T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
-						break;
-					case TYPE_U16:
-						{ typedef uint16_t T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
-						break;
-					case TYPE_U32:
-						{ typedef uint32_t T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
-						break;
-					case TYPE_U64:
-						{ typedef uint64_t T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
-						break;
-					case TYPE_S8:
-						{ typedef int8_t T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
-						break;
-					case TYPE_S16:
-						{ typedef int16_t T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
-						break;
-					case TYPE_S32:
-						{ typedef int32_t T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
-						break;
-					case TYPE_S64:
-						{ typedef int64_t T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
-						break;
-					case TYPE_F16:
-						{ typedef half T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
-						break;
-					case TYPE_F32:
-						{ typedef float T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
-						break;
-					case TYPE_F64:
-						{ typedef double T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
-						break;
-					case TYPE_BOOL:
-						{ typedef bool T; g_tmp_value.Set<T>() = reinterpret_cast<const T*>(myArray.data())[index]; }
-						break;
-					}
-
-					return &g_tmp_value;
-				}
-			}
-		case TYPE_OBJECT:
-			return GetValue2(std::to_string(index));
-		default:
-			return nullptr;
-		}
-	}
-
-	Value* Value::GetValue2(const std::string& index) throw() {
-		switch (_primitive.type) {
-		case TYPE_OBJECT:
-			{
-				Object& myObject = *static_cast<Object*>(_primitive.ptr);
-				auto i = myObject.find(index);
-				if (i == myObject.end()) return nullptr;
-				return &i->second;
-			}
-			break;
-		default:
-			return nullptr;
-		}
-	}
-
 	std::string Value::GetComponentIDString(const size_t index) const {
 		switch (_primitive.type) {
 		case TYPE_OBJECT:
@@ -1147,16 +998,6 @@ namespace anvil { namespace BytePipe {
 			}
 		}
 		throw std::runtime_error("Value::GetPrimitiveValue : Value is not a numerical type");
-	}
-
-	size_t Value::GetSize() const {
-		return _primitive.type == TYPE_ARRAY ? (
-			_primitive_array_type == TYPE_NULL ? 
-				static_cast<Array*>(_primitive.ptr)->size() : 
-				(static_cast<PrimitiveArray*>(_primitive.ptr)->size() / GetSizeOfPrimitiveType(_primitive_array_type))
-			) :
-			_primitive.type == TYPE_OBJECT ? static_cast<Object*>(_primitive.ptr)->size() :
-			0u;
 	}
 
 	void Value::Optimise() {
@@ -1229,6 +1070,231 @@ namespace anvil { namespace BytePipe {
 		} else {
 			static_cast<PrimitiveArray*>(_primitive.ptr)->reserve(size * GetSizeOfPrimitiveType(_primitive_array_type));
 		}
+	}
+
+	// ArrayWrapper
+
+	Value::ArrayWrapper::ArrayWrapper(Value& parent) :
+		_parent(parent)
+	{}
+
+	Value::ArrayWrapper::~ArrayWrapper() {
+
+	}
+
+	void Value::ArrayWrapper::resize(size_t s) {
+		Array* a = _parent.GetArray();
+		if (a) {
+			a->resize(s);
+			return;
+		}
+
+		PrimitiveArray* pa = _parent.GetPrimitiveArray();
+		if (pa) {
+			pa->resize(s * GetSizeOfPrimitiveType(_parent._primitive_array_type));
+		}
+		
+	}
+
+	void Value::ArrayWrapper::reserve(size_t s) {
+		Array* a = _parent.GetArray();
+		if (a) {
+			a->reserve(s);
+			return;
+		}
+
+		PrimitiveArray* pa = _parent.GetPrimitiveArray();
+		if (pa) {
+			pa->reserve(s * GetSizeOfPrimitiveType(_parent._primitive_array_type));
+		}
+
+	}
+
+	size_t Value::ArrayWrapper::size() const {
+		Array* a = _parent.GetArray();
+		if (a) return a->size();
+
+		PrimitiveArray* pa = _parent.GetPrimitiveArray();
+		if (pa) return pa->size() / GetSizeOfPrimitiveType(_parent._primitive_array_type);
+
+		return 0u;
+	}
+
+	/*!
+		\brief Append a primitive value to the end of the array
+		\detail May be converted to a general array if the value is not compatible with the array's primitive type
+		\param value The value to add
+		\param The addres of the added value, or nullptr if this is stil a primitive arary
+	*/
+	Value* Value::ArrayWrapper::push_back(const PrimitiveValue& value) {
+		PrimitiveArray* pa = _parent.GetPrimitiveArray();
+		Array* a = _parent.GetArray();
+
+		if(pa) {
+			// Try to add primative type
+
+			PrimitiveValue v = value;
+			if (v.ConvertTo(_parent._primitive_array_type)) {
+
+				size_t bytes = GetSizeOfPrimitiveType(_parent._primitive_array_type);
+
+				size_t prev_size = pa->size();
+				pa->resize(prev_size + bytes);
+				memcpy(pa->data() + prev_size, &v.u8, bytes);
+
+				return nullptr;
+			}
+
+			// Convert to value array
+			a = _parent.ConvertFromPrimitveArray();
+		}
+		
+		if (a) {
+			a->push_back(Value());
+			Value& v = a->back();
+			v = value;
+			return &v;
+
+		}
+
+		throw std::runtime_error("Value::ArrayWrapper::push_back : Value is not an array, or value is not compatible");
+	}
+
+	/*!
+		\brief Append a value to the end of the array
+		\detail May be converted to a general array if the value is not primitive
+		\param value The value to add
+		\param The addres of the added value, or nullptr if this is still a primitive arary
+	*/
+	Value* Value::ArrayWrapper::push_back(Value&& value) {
+		PrimitiveArray* pa = _parent.GetPrimitiveArray();
+		if (pa) value.Optimise(); // Decrease probability of primitve array being converted to general array
+
+		// Handle primitive data types in a way that is optimised for them
+		if (value.IsPrimitive()) {
+			return push_back(value._primitive);
+
+		// General values
+		} else {
+			Array* a = _parent.GetArray();
+
+			if (pa) a = _parent.ConvertFromPrimitveArray();
+
+			if (a) {
+				a->push_back(std::move(value));
+				return &a->back();
+			}
+			
+		}
+
+		throw std::runtime_error("Value::ArrayWrapper::push_back : Value is not an array");
+	}
+
+	void Value::ArrayWrapper::pop_back() {
+		Array* a = _parent.GetArray();
+		if (a) { a->pop_back(); return; }
+
+		PrimitiveArray* pa = _parent.GetPrimitiveArray();
+		if (pa) {
+			const size_t bytes = GetSizeOfPrimitiveType(_parent._primitive_array_type);
+			for (size_t i = 0u; i < bytes; ++i) pa->pop_back();
+		}
+	}
+
+	void Value::ArrayWrapper::clear() {
+		Array* a = _parent.GetArray();
+		if (a) { a->clear(); return; }
+
+		PrimitiveArray* pa = _parent.GetPrimitiveArray();
+		if (pa) pa->clear();
+	}
+
+	/*!
+		\brief Get a reference to a value in the array
+		\detail The array will be converted to general array if it is a primitive array
+		\param i The index in the array
+		\return The value
+	*/
+	Value& Value::ArrayWrapper::operator[](size_t i) {
+		PrimitiveArray* pa = _parent.GetPrimitiveArray();
+		if (pa) _parent.ConvertFromPrimitveArray();
+
+		Array* a = _parent.GetArray();
+		if (a) return a->operator[](i);
+
+		throw std::runtime_error("Value::ArrayWrapper::operator[] : Value is not an array");
+	}
+
+	/*!
+		\brief Attempt to write a primitive value to the array without converting the type of the array
+		\detail Data may be lost in the conversion of the value to the array's type. If the value cannot be converted then the array will be converted to a general array.
+		\param i The index to write to
+		\param val The value to write
+		\return A pointer to the value at the index requested, or nullptr if the array is a primitive array
+	*/
+	Value* Value::ArrayWrapper::set(size_t i, PrimitiveValue val) {
+		PrimitiveArray* pa = _parent.GetPrimitiveArray();
+		if (pa) {
+			if (val.ConvertTo(_parent._primitive_array_type)) {
+				const size_t bytes = GetSizeOfPrimitiveType(_parent._primitive_array_type);
+				memcpy(pa->data() + bytes * i, &val.u64, bytes);
+				return nullptr;
+			}
+
+			_parent.ConvertToPrimitveArray();
+		}
+
+		Array* a = _parent.GetArray();
+		if (a) {
+			Value& v = a->operator[](i);
+			v = val;
+			return &v;
+		}
+
+		throw std::runtime_error("Value::ArrayWrapper::set : Value is not an array");
+	}
+
+	/*!
+		\brief Attempt to write a primitive value to the array without converting the type of the array
+		\detail Data may be lost in the conversion of the value to the array's type. If the value cannot be converted then the array will be converted to a general array.
+		\param i The index to write to
+		\param val The value to write
+		\return A pointer to the value at the index requested, or nullptr if the array is a primitive array
+	*/
+	Value* Value::ArrayWrapper::set(size_t i, const Value& val) {
+		if (val.IsPrimitive()) return set(i, val._primitive);
+		Value& tmp = operator[](i);
+		tmp = val;
+		return &tmp;
+	}
+
+	/*!
+		\brief Attempt to read a value from the array without converting it's type
+		\param i The index to read from
+		\param val The primitive value that is read, set to null if the value is not primitive
+		\return A pointer to the value at the index requested, or nullptr if the array is a primitive array
+	*/
+	const Value* Value::ArrayWrapper::at(size_t i, PrimitiveValue& val) const {
+		PrimitiveArray* pa = _parent.GetPrimitiveArray();
+		if (pa) {
+			const size_t bytes = GetSizeOfPrimitiveType(_parent._primitive_array_type);
+			memcpy(&val.u64, pa->data() + bytes * i, bytes);
+			val.type = _parent._primitive_array_type;
+			return nullptr;
+		}
+
+		Array* a = _parent.GetArray();
+		if (a) {
+			Value& v = a->operator[](i);
+			if (v.IsPrimitive()) {
+				val = v.GetPrimitiveValue();
+			} else {
+				val.type == TYPE_NULL;
+			}
+			return &v;
+		}
+
+		throw std::runtime_error("Value::ArrayWrapper::at : Value is not an array");
 	}
 
 }}

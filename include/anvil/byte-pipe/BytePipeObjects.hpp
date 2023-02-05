@@ -302,6 +302,16 @@ namespace anvil { namespace BytePipe {
 	struct ValueEncoder;
 
 	namespace detail {
+		struct Pod {
+			std::vector<uint8_t> data;
+			PodType type;
+
+
+#if ANVIL_OPENCV_SUPPORT
+			static cv::Mat CreateOpenCVMatFromPOD(const void* data, const size_t bytes);
+			static Pod CreatePODFromCVMat(const cv::Mat& img, ImageFormat compression_format = IMAGE_BIN, float compression_quality = 100.f);
+#endif
+		};
 
 		template<class T>
 		struct ValueSetReturn {
@@ -343,6 +353,12 @@ namespace anvil { namespace BytePipe {
 			typedef const std::string* const_type;
 		};
 
+		template<>
+		struct ValueGetReturn<Pod> {
+			typedef Pod* type;
+			typedef const Pod* const_type;
+		};
+
 	}
 
 	class Value {
@@ -352,16 +368,40 @@ namespace anvil { namespace BytePipe {
 		typedef std::map<std::string, Value> Object;
 		typedef std::vector<uint8_t> PrimitiveArray;
 
-		struct Pod{
-			std::vector<uint8_t> data;
-			PodType type;
+		class ArrayWrapper {
+		private:
+			Value& _parent;
+		public:
+			ArrayWrapper(Value& parent);
+			~ArrayWrapper();
 
+			void resize(size_t);
+			void reserve(size_t);
+			size_t size() const;
 
-#if ANVIL_OPENCV_SUPPORT
-			static cv::Mat CreateOpenCVMatFromPOD(const void* data, const size_t bytes);
-			static Pod CreatePODFromCVMat(const cv::Mat& img, ImageFormat compression_format = IMAGE_BIN, float compression_quality = 100.f);
-#endif
+			Value* push_back(const PrimitiveValue& value);
+			Value* push_back(Value&& value);
+
+			void pop_back();
+
+			void clear();
+
+			Value& operator[](size_t i);
+
+			Value* set(size_t i, PrimitiveValue val);
+			Value* set(size_t i, const Value& val);
+			const Value* at(size_t i, PrimitiveValue& val) const;
+
+			ANVIL_STRONG_INLINE Value& at(size_t i) { return operator[](i); }
+			ANVIL_STRONG_INLINE Value& front() { return operator[](0u); }
+			ANVIL_STRONG_INLINE Value& back() { return operator[](size() - 1u); }
+			ANVIL_STRONG_INLINE bool empty() const { return size() == 0u; }
+
+			ANVIL_STRONG_INLINE Array* GetArray(bool convert = false) { return convert ? _parent.ConvertFromPrimitveArray() : _parent.GetArray(); }
+			ANVIL_STRONG_INLINE PrimitiveArray* GetPrimitiveArray(bool convert = false) { return convert ? _parent.ConvertToPrimitveArray() : _parent.GetPrimitiveArray(); }
 		};
+
+		typedef detail::Pod Pod;
 	private:
 		PrimitiveValue _primitive;
 		Type _primitive_array_type;
@@ -393,6 +433,17 @@ namespace anvil { namespace BytePipe {
 		ANVIL_STRONG_INLINE Pod& SetImage() {
 			Pod pod = SetPod();
 			pod.type = POD_OPENCV_IMAGE;
+		}
+#endif
+
+		ANVIL_STRONG_INLINE Pod* GetPod() { return _primitive.type == TYPE_POD ? static_cast<Pod*>(_primitive.ptr) : nullptr; }
+		ANVIL_STRONG_INLINE const Pod* GetPod() const { return _primitive.type == TYPE_POD ? static_cast<const Pod*>(_primitive.ptr) : nullptr; }
+
+#if ANVIL_OPENCV_SUPPORT
+		ANVIL_STRONG_INLINE cv::Mat GetImage() const {
+			const Pod* pod = GetPod();
+			if (pod == nullptr || pod->type != POD_OPENCV_IMAGE) throw std::runtime_error("Value::GetImage : Value is not an image");
+			return Pod::CreateOpenCVMatFromPOD(pod->data.data(), pod->data.size());
 		}
 #endif
 	public:
@@ -463,24 +514,6 @@ namespace anvil { namespace BytePipe {
 		template<class T>
 		ANVIL_STRONG_INLINE typename detail::ValueGetReturn<T>::const_type Get() const;
 
-		/*!
-			\brief Append a value to the end of the array.
-			\details Throws exception is value is not an array.
-			\return Points to the value that was added, will be nullptr instead if this is a primative array
-			\param value The value to add.
-			\return The object that was added, or nullptr if this value is a primitive array
-		*/
-		Value* ArrayPushBack(Value&& value);
-
-		/*!
-			\brief Append a value to the end of the array.
-			\details Throws exception is value is not an array.
-			\return Points to the value that was added, will be nullptr instead if this is a primative array
-			\param value The value to add.
-			\return The object that was added, or nullptr if this value is a primitive array
-		*/
-		Value* ArrayPushBack(const PrimitiveValue& value);
-
 		ANVIL_STRONG_INLINE bool GetBool() const {
 			if (IsPrimitive()) return _primitive;
 			throw std::runtime_error("Value::GetBool : Value cannot be converted to boolean");
@@ -546,43 +579,6 @@ namespace anvil { namespace BytePipe {
 			throw std::runtime_error("Value::GetF64 : Value cannot be converted to 64-bit floating point");
 		}
 
-		Pod& GetPod();
-		const Pod& GetPod() const;
-
-#if ANVIL_OPENCV_SUPPORT
-		ANVIL_STRONG_INLINE cv::Mat GetImage() const {
-			const Pod& pod = GetPod();
-			if (pod.type != POD_OPENCV_IMAGE) throw std::runtime_error("Value::GetImage : Value is not an image");
-			return Pod::CreateOpenCVMatFromPOD(pod.data.data(), pod.data.size());
-		}
-#endif
-
-		/*!
-			\brief Get a child value of an array or object.
-			\param index The index in an array or the componend ID of an object.
-			\return The value at the location.
-		*/
-		Value* GetValue2(const size_t index) throw();
-		Value* GetValue2(const std::string& index) throw();
-
-		/*!
-			\brief Get a child value of an array or object.
-			\details Throws an exception if the index is out of bounds or the component ID doesn't exist.
-			\param index The index in an array or the componend ID of an object.
-			\return The value at the location.
-		*/
-		ANVIL_STRONG_INLINE Value& GetValue(const size_t index) {
-			Value* tmp = GetValue2(index);
-			if (tmp == nullptr) throw std::runtime_error("Value::GetValue : No value found at index " + std::to_string(index));
-			return *tmp;
-		}
-
-		ANVIL_STRONG_INLINE Value& GetValue(const std::string& index) {
-			Value* tmp = GetValue2(index);
-			if (tmp == nullptr) throw std::runtime_error("Value::GetValue : No value found at index '" + index + "'");
-			return *tmp;
-		}
-
 		/*!
 			\brief Get component ID at a specific index.
 			\details Throws an exception if the index is out of bounds.
@@ -600,12 +596,6 @@ namespace anvil { namespace BytePipe {
 			\detail Throws an exception if the type is not numerical.
 		*/
 		PrimitiveValue GetPrimitiveValue() const;
-
-		/*!
-			\brief Get the number of child values in an array or object.
-			\detail Zero will be returned if the value is not an array or object.
-		*/
-		size_t GetSize() const;
 
 		/*!
 			\brief Casts the value to the smallest type that can represent it without losing precision.
@@ -628,14 +618,11 @@ namespace anvil { namespace BytePipe {
 		ANVIL_STRONG_INLINE bool IsPod() const { return GetType() == TYPE_POD; }
 
 #if ANVIL_OPENCV_SUPPORT
-		ANVIL_STRONG_INLINE bool IsImage() const { return IsPod() && GetPod().type == POD_OPENCV_IMAGE;}
+		ANVIL_STRONG_INLINE bool IsImage() const { return IsPod() && GetPod()->type == POD_OPENCV_IMAGE;}
 #endif
 
 		ANVIL_STRONG_INLINE bool IsPrimitiveArray() const { return _primitive_array_type != TYPE_BOOL && GetType() == TYPE_ARRAY; }
 		ANVIL_STRONG_INLINE Type GetPrimitiveArrayType() const { return _primitive_array_type; }
-
-		ANVIL_STRONG_INLINE Value& operator[] (const size_t i) { return GetValue(i); }
-		ANVIL_STRONG_INLINE const Value& operator[] (const size_t i) const { return const_cast<Value*>(this)->GetValue(i); }
 
 		explicit ANVIL_STRONG_INLINE operator bool() const { return GetBool(); }
 		explicit ANVIL_STRONG_INLINE operator char() const { return GetC8(); }
@@ -650,7 +637,6 @@ namespace anvil { namespace BytePipe {
 		explicit ANVIL_STRONG_INLINE operator half() const { return GetF16(); }
 		explicit ANVIL_STRONG_INLINE operator float() const { return GetF32(); }
 		explicit ANVIL_STRONG_INLINE operator double() const { return GetF64(); }
-		explicit ANVIL_STRONG_INLINE operator const Pod&() const { return GetPod(); }
 
 #if ANVIL_OPENCV_SUPPORT
 		explicit ANVIL_STRONG_INLINE operator cv::Mat() const { return GetImage(); }
@@ -918,11 +904,6 @@ namespace anvil { namespace BytePipe {
 	}
 
 	template<>
-	ANVIL_STRONG_INLINE Value::Pod& Value::Set<Value::Pod>() {
-		return SetPod();
-	}
-
-	template<>
 	ANVIL_STRONG_INLINE Value::Object& Value::Set<Value::Object>() {
 		return SetObject();
 	}
@@ -965,6 +946,21 @@ namespace anvil { namespace BytePipe {
 	template<>
 	ANVIL_STRONG_INLINE Value::PrimitiveArray* Value::Get<Value::PrimitiveArray>() {
 		return GetPrimitiveArray(false);
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE Value::Pod& Value::Set<Value::Pod>() {
+		return SetPod();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE const Value::Pod* Value::Get<Value::Pod>() const {
+		return GetPod();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE Value::Pod* Value::Get<Value::Pod>() {
+		return GetPod();
 	}
 
 	template<>

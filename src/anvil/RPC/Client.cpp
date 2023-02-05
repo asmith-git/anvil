@@ -45,19 +45,28 @@ namespace anvil { namespace RPC {
 
 		// Wait for response
 		BytePipe::Value response = ReadFromServer();
+		const auto Find = [](const BytePipe::Value& v, const std::string& name)->const BytePipe::Value* {
+			const BytePipe::Value::Object* obj = v.Get<BytePipe::Value::Object>();
+			if (obj) {
+				auto i = obj->find(name);
+				if (i != obj->end())return &i->second;
+			}
+			
+			return nullptr;
+		};
 
-		BytePipe::Value* error = response.GetValue2("error");
+		const BytePipe::Value* error = Find(response,"error");
 		if (error) {
 			std::string msg;
 
-			BytePipe::Value* message = error->GetValue2("message");
+			const BytePipe::Value* message = Find(error,"message");
 			msg = "null";
 			if (message) {
-				std::string* str = message->Get<std::string>();
+				const std::string* str = message->Get<std::string>();
 				if (str) msg = *str;
 			}
 
-			BytePipe::Value* code = error->GetValue2("code");
+			const BytePipe::Value* code = Find(error, "code");
 			if (code && code->IsNumeric()) {
 				msg = "JSON RPC error code " + std::to_string(code->GetS32()) + " : '" + msg + "'";
 			}
@@ -65,7 +74,7 @@ namespace anvil { namespace RPC {
 			throw std::runtime_error(msg);
 		}
 
-		BytePipe::Value* result = response.GetValue2("result");
+		const BytePipe::Value* result = Find(response,"result");
 		if (result) {
 			return std::move(*result);
 		}

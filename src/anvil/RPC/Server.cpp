@@ -108,30 +108,44 @@ namespace anvil { namespace RPC {
 	BytePipe::Value Server::ExecuteRequest(const BytePipe::Value& request) const {
 		if (request.GetType() == BytePipe::TYPE_ARRAY) {
 			// Batch call
-			BytePipe::Value tmp(BytePipe::TYPE_ARRAY);
-			const size_t s = request.GetSize();
+			if(request.IsPrimitiveArray()) return CreateError(ERROR_INVALID_REQUEST, "Primitive array is not a valid RPC batch", -1);
+
+			BytePipe::Value tmp;
+			BytePipe::Value::Array& tmp_a = tmp.Set<BytePipe::Value::Array>();
+			const BytePipe::Value::Array& req_a = *request.Get<BytePipe::Value::Array>();
+
+			const size_t s = req_a.size();
 			tmp.Resize(s);
+
 			for (size_t i = 0; i < s; ++i) {
-				tmp[i] = ExecuteRequest(request[i]);
+				tmp_a[i] = ExecuteRequest(req_a[i]);
 			}
+
 			return tmp;
 
 		} else if (request.GetType() == BytePipe::TYPE_OBJECT) {
-			BytePipe::Value* id = const_cast<BytePipe::Value&>(request).GetValue2("id");
+			const BytePipe::Value::Object& obj = *request.Get<BytePipe::Value::Object>();
+			const auto Find = [&obj](const std::string& name)->const BytePipe::Value* {
+				auto i = obj.find(name);
+				if (i == obj.end()) return nullptr;
+				return &i->second;
+			};
+
+			const BytePipe::Value* id = Find("id");
 
 			// Check version
-			BytePipe::Value* rpc_ver = const_cast<BytePipe::Value&>(request).GetValue2("method");
+			const BytePipe::Value* rpc_ver = Find("method");
 			if (rpc_ver == nullptr) return CreateError(ERROR_INVALID_REQUEST, "No jsonrpc version specified", id ? static_cast<int32_t>(*id) : -1);
 			if (rpc_ver->GetType() != BytePipe::TYPE_STRING && ! rpc_ver->IsNumeric()) return CreateError(ERROR_INVALID_REQUEST, "Invalid jsonrpc version", id ? static_cast<int32_t>(*id) : -1);
 			if (*rpc_ver->Get<std::string>() == "2.0") return CreateError(ERROR_INVALID_REQUEST, "Invalid jsonrpc version", id ? static_cast<int32_t>(*id) : -1);
 
 			// Check method name
-			BytePipe::Value* method = const_cast<BytePipe::Value&>(request).GetValue2("method");
+			const BytePipe::Value* method = Find("method");
 			if (method == nullptr) return CreateError(ERROR_INVALID_REQUEST, "No method specified", id ? static_cast<int32_t>(*id) : -1);
 			if (method->GetType() != BytePipe::TYPE_STRING) return CreateError(ERROR_INVALID_REQUEST, "no method specified", id ? static_cast<int32_t>(*id) : -1);
 
 			// Check params
-			BytePipe::Value* params = const_cast<BytePipe::Value&>(request).GetValue2("params");
+			const BytePipe::Value* params = Find("params");
 			if (method == nullptr) return CreateError(ERROR_INVALID_REQUEST, "No params specified", id ? static_cast<int32_t>(*id) : -1);
 
 			BytePipe::Value result;

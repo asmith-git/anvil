@@ -1229,7 +1229,7 @@ OLD_COMPONENT_ID:
 		switch (val.GetType()) {
 		case TYPE_ARRAY:
 			{
-				Value* v = val.ArrayPushBack(Value());
+				Value* v = Value::ArrayWrapper(val).push_back(Value());
 				if (!v) throw std::runtime_error("ValueParser::NextValue : Failed to convert from primitve array");
 				return *v;
 			}
@@ -1356,9 +1356,9 @@ OLD_COMPONENT_ID:
 			break;
 		case TYPE_ARRAY:
 			{
-				const uint32_t size = static_cast<uint32_t>(value.GetSize());
 				const Value::PrimitiveArray* pa = value.Get<Value::PrimitiveArray>();
 				if (pa) {
+					const uint32_t size = pa->size();
 					switch (value.GetPrimitiveArrayType()) {
 					case TYPE_C8:
 						OnPrimitiveArrayC8(reinterpret_cast<const char*>(const_cast<Value&>(value).Get<Value::PrimitiveArray>()->data()), size);
@@ -1401,10 +1401,11 @@ OLD_COMPONENT_ID:
 						break;
 					}
 				} else {
+					const Value::Array* a = value.Get<Value::Array>();
+					const uint32_t size = a->size();
 					OnArrayBegin(size);
-					const Value* a = value.Get<Value::Array>()->data();
 					for (size_t i = 0u; i < size; ++i) {
-						OnValue(a[i]);
+						OnValue(a->operator[](i));
 					}
 					OnArrayEnd();
 				}
@@ -1412,19 +1413,19 @@ OLD_COMPONENT_ID:
 			break;
 		case TYPE_OBJECT:
 			{
-				const uint32_t size = static_cast<uint32_t>(value.GetSize());
+				const Value::Object& obj = *value.Get<Value::Object>();
+				const uint32_t size = static_cast<uint32_t>(obj.size());
 				OnObjectBegin(size);
-				for (uint32_t i = 0u; i < size; ++i) {
-					const std::string id = value.GetComponentIDString(i);
-					OnComponentID(id);
-					OnValue(const_cast<Value&>(value).GetValue(id));
+				for (auto& i : obj) {
+					OnComponentID(i.first);
+					OnValue(i.second);
 				}
 				OnObjectEnd();
 			}
 			break;
 		case TYPE_POD:
 			{
-				const Value::Pod& pod = value.GetPod();
+				const Value::Pod& pod = *value.Get<Value::Pod>();
 				OnUserPOD(pod.type, pod.data.size(), pod.data.data());
 			}
 			break;
