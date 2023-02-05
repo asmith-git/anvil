@@ -74,12 +74,13 @@ namespace anvil { namespace RPC {
 	}
 
 	void Client::SendNotifcation(const std::string& method, const BytePipe::Value& params) {
-		BytePipe::Value request(BytePipe::TYPE_OBJECT);
-		request.AddValue("jsonrpc", BytePipe::Value("2.0"));
-		request.AddValue("method", BytePipe::Value(method));
-		request.AddValue("params", BytePipe::Value(params));
-
+		BytePipe::Value request;
+		BytePipe::Value::Object& obj = request.Set<BytePipe::Value::Object>();
+		obj.emplace("method", method);
+		obj.emplace("params", params);
 		request.Optimise();
+		// Don't optimise these values, may not be compatible with RPC server
+		obj.emplace("jsonrpc", "2.0");
 		SendToServer(request);
 	}
 }}

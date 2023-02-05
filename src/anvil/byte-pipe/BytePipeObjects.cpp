@@ -704,15 +704,11 @@ namespace anvil { namespace BytePipe {
 		}
 	}
 
-	Value* Value::AddValue(const PrimitiveValue& value) {
+	Value* Value::ArrayPushBack(const PrimitiveValue& value) {
 		PrimitiveArray* pa = GetPrimitiveArray();
 		Array* a = GetArray();
-		if (a) {
-GENERAL_ARRAY:
-			a->push_back(std::move(Value(value)));
-			return &a->back();
 
-		} else if(pa) {
+		if(pa) {
 			// Try to add primative type
 
 			PrimitiveValue v = value;
@@ -729,8 +725,14 @@ GENERAL_ARRAY:
 
 			// Convert to value array
 			a = ConvertFromPrimitveArray();
-			if (a) goto GENERAL_ARRAY;
-			
+		}
+		
+		if (a) {
+			a->push_back(Value());
+			Value& v = a->back();
+			v = value;
+			return &v;
+
 		}
 
 		throw std::runtime_error("Value::AddValue : Value is not an array, or value is not compatible");
@@ -863,27 +865,28 @@ GENERAL_ARRAY:
 		return &new_array;
 	}
 
-	Value* Value::AddValue(Value&& value) {
-		// Try to turn a string into a value
-		if (value.GetType() == TYPE_STRING) value.Optimise();
+	Value* Value::ArrayPushBack(Value&& value) {
+		PrimitiveArray* pa = GetPrimitiveArray();
+		if (pa) value.Optimise(); // Decrease probability of primitve array being converted to general array
 
 		// Handle primitive data types in a way that is optimised for them
 		if (value.IsPrimitive()) {
-			return AddValue(value._primitive);
+			return ArrayPushBack(value._primitive);
 
-		// Complex values
+		// General values
 		} else {
-			if (_primitive.type != TYPE_ARRAY) throw std::runtime_error("Value::AddValue : Value is not an array");
-			Array* a;
-			if (_primitive_array_type != TYPE_NULL) {
-				a = ConvertFromPrimitveArray();
-			} else {
-				a = static_cast<Array*>(_primitive.ptr);
+			Array* a = GetArray();
+
+			if (pa) a = ConvertFromPrimitveArray();
+
+			if (a) {
+				a->push_back(std::move(value));
+				return &a->back();
 			}
-			if(a = nullptr) throw std::runtime_error("Value::AddValue : Array cannot be converted to contain general values");
-			a->push_back(std::move(value));
-			return &a->back();
+			
 		}
+
+		throw std::runtime_error("Value::AddValue : Value is not an array");
 	}
 
 	Value::Object& Value::SetObject() {

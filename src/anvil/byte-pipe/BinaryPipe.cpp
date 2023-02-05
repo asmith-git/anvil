@@ -1229,16 +1229,17 @@ OLD_COMPONENT_ID:
 		switch (val.GetType()) {
 		case TYPE_ARRAY:
 			{
-				Value tmp;
-				val.AddValue(std::move(tmp));
-				return val.GetValue(val.GetSize() - 1);
+				Value* v = val.ArrayPushBack(Value());
+				if (!v) throw std::runtime_error("ValueParser::NextValue : Failed to convert from primitve array");
+				return *v;
 			}
 			break;
 		case TYPE_OBJECT:
 			{
-				Value& tmp = val.AddValue(_component_id_str);
+				Value::Object& obj = *val.Get<Value::Object>();
+				Value* v = &obj.emplace(_component_id_str, Value()).first->second;
 				_component_id_str.clear();
-				return tmp;
+				return *v;
 			}
 			break;
 		default:

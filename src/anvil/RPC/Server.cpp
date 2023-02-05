@@ -76,18 +76,20 @@ namespace anvil { namespace RPC {
 	}
 
 	BytePipe::Value Server::CreateError(ErrorCode code, const std::string& message, int32_t id) {
-		BytePipe::Value tmp(BytePipe::TYPE_OBJECT);
-		tmp.AddValue("jsonrpc", BytePipe::Value("2.0"));
+		BytePipe::Value tmp;
+		BytePipe::Value::Object& obj = tmp.Set<BytePipe::Value::Object>();
+
+		obj.emplace("jsonrpc", "2.0");
 		if (id < 0) {
-			tmp.AddValue("id", BytePipe::Value());
+			obj.emplace("id", BytePipe::Value());
 		} else {
-			tmp.AddValue("id", BytePipe::Value(id));
+			obj.emplace("id", id);
 		}
 
-		BytePipe::Value& error = tmp.AddValue("error", BytePipe::Value(BytePipe::TYPE_OBJECT));
-		error.AddValue("code", BytePipe::Value(code));
-		error.AddValue("message", BytePipe::Value(message));
-
+		BytePipe::Value& err = obj.emplace("error", BytePipe::Value()).first->second;
+		BytePipe::Value::Object& err_obj = err.Set<BytePipe::Value::Object>();
+		err_obj.emplace("code", code);
+		err_obj.emplace("message", message);
 		return tmp;
 	}
 

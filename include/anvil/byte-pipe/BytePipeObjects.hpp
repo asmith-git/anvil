@@ -468,45 +468,18 @@ namespace anvil { namespace BytePipe {
 			\details Throws exception is value is not an array.
 			\return Points to the value that was added, will be nullptr instead if this is a primative array
 			\param value The value to add.
+			\return The object that was added, or nullptr if this value is a primitive array
 		*/
-		Value* AddValue(Value&& value);
+		Value* ArrayPushBack(Value&& value);
 
 		/*!
 			\brief Append a value to the end of the array.
 			\details Throws exception is value is not an array.
 			\return Points to the value that was added, will be nullptr instead if this is a primative array
 			\param value The value to add.
+			\return The object that was added, or nullptr if this value is a primitive array
 		*/
-		Value* AddValue(const PrimitiveValue& value);
-
-
-		ANVIL_STRONG_INLINE Value& AddValue(const std::string& id) {
-			if (_primitive.type != TYPE_OBJECT) throw std::runtime_error("Value::AddValue : Value is not an object");
-			Object& obj = *static_cast<Object*>(_primitive.ptr);
-			obj.emplace(id, Value());
-			return obj.find(id)->second;
-		}
-
-		ANVIL_STRONG_INLINE Value& AddValue(const ComponentID id) {
-			return AddValue(std::to_string(id));
-		}
-
-		/*!
-			\brief Add a member value to an object.
-			\details Throws exception is value is not an object.
-			If the component ID already exists the previous value will be overwritten.
-			\param id The component ID of the value.
-			\param value The value to add.
-		*/
-		ANVIL_STRONG_INLINE Value& AddValue(const std::string& id, Value&& value) {
-			Value& val = AddValue(id);
-			val.Swap(value);
-			return val;
-		}
-
-		ANVIL_STRONG_INLINE Value& AddValue(const ComponentID id, Value&& value) {
-			return AddValue(std::to_string(id), std::move(value));
-		}
+		Value* ArrayPushBack(const PrimitiveValue& value);
 
 		ANVIL_STRONG_INLINE bool GetBool() const {
 			if (IsPrimitive()) return _primitive;
