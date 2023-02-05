@@ -93,6 +93,25 @@ namespace anvil {
 		*dst = '\0';
 	}
 
+	static size_t CheckSize(const char* src, size_t src_len, char padding) {
+		size_t padded_bytes = 0u;
+		if (src[src_len - 1] == padding) ++padded_bytes;
+		if (src[src_len - 2] == padding) ++padded_bytes;
+
+		if (padded_bytes == 2u) {
+			src_len -= 6u;
+
+		} else if (padded_bytes == 1u) {
+			src_len -= 5u;
+		}
+
+		size_t s = (src_len / 4u) * 3u;
+		if (padded_bytes == 2u) s += 1u;
+		else if (padded_bytes == 1u) s += 2u;
+		
+		return s;
+	}
+
 	template<bool DEFAULT_TABLE>
 	void Base64Decode(const char* src, size_t src_len, uint8_t* dst, size_t& bytes_out, const char* const table, char padding) {
 		Base64Helper helper;
@@ -173,17 +192,19 @@ namespace anvil {
 	}
 
 	std::string Base64::Encode(const uint8_t* src, size_t bytes_in, const char* const table, char padding) {
-		char* buf = static_cast<char*>(_alloca(bytes_in * 2));
+		std::string tmp;
+		tmp.resize((bytes_in / 3u) * 4u + 6u);
 		size_t buf_len = 0u;
-		Encode(src, bytes_in, buf, buf_len, table, padding);
-		return std::string(buf, buf + buf_len);
+		Encode(src, bytes_in, const_cast<char*>(tmp.c_str()), buf_len, table, padding);
+		while (tmp.size() > buf_len) tmp.pop_back(); //! \todo Calculate the size correctly so this isn't needed
+		return tmp;
 	}
 
 	std::vector<uint8_t> Base64::Decode(const char* src, size_t src_len, const char* const table, char padding) {
-		uint8_t* buf = static_cast<uint8_t*>(_alloca(src_len));
+		std::vector<uint8_t> tmp(CheckSize(src, src_len, padding));
 		size_t bytes_out = 0u;
-		Decode(src, src_len, buf, bytes_out, table, padding);
-		return std::vector<uint8_t>(buf, buf + bytes_out);
+		Decode(src, src_len, tmp.data(), bytes_out, table, padding);
+		return tmp;
 	}
 
 }

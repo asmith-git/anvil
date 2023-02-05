@@ -59,10 +59,11 @@ namespace anvil {
 	}
 
 	std::string Hexadecimal::Encode(const uint8_t* src, size_t bytes_in) {
-		char* buf = static_cast<char*>(_alloca(bytes_in * 2));
+		std::string tmp;
+		tmp.resize(bytes_in * 2u);
 		size_t buf_len = 0u;
-		Encode(src, bytes_in, buf, buf_len);
-		return std::string(buf, buf + buf_len);
+		Encode(src, bytes_in, const_cast<char*>(tmp.c_str()), buf_len);
+		return tmp;
 	}
 
 	std::vector<uint8_t> Hexadecimal::Decode(const char* src, size_t src_len) {
