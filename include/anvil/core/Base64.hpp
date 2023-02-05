@@ -16,6 +16,8 @@
 #define ANVIL_CORE_BASE64_HPP
 
 #include <cstdint>
+#include <vector>
+#include <string>
 
 namespace anvil {
 	struct Base64 {
@@ -23,6 +25,9 @@ namespace anvil {
 
 		static void Encode(const uint8_t* src, size_t bytes_in, char* dst, size_t& dst_len, const char* const table = GetDefaultTable(), char padding = '=');
 		static void Decode(const char* src, size_t src_len, uint8_t* dst, size_t& bytes_out, const char* const table = GetDefaultTable(), char padding = '=');
+
+		static std::string Encode(const uint8_t* src, size_t bytes_in, const char* const table = GetDefaultTable(), char padding = '=');
+		static std::vector<uint8_t> Decode(const char* src, size_t src_len, const char* const table = GetDefaultTable(), char padding = '=');
 	};
 }
 

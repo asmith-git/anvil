@@ -172,4 +172,18 @@ namespace anvil {
 		}
 	}
 
+	std::string Base64::Encode(const uint8_t* src, size_t bytes_in, const char* const table, char padding) {
+		char* buf = static_cast<char*>(_alloca(bytes_in * 2));
+		size_t buf_len = 0u;
+		Encode(src, bytes_in, buf, buf_len, table, padding);
+		return std::string(buf, buf + buf_len);
+	}
+
+	std::vector<uint8_t> Base64::Decode(const char* src, size_t src_len, const char* const table, char padding) {
+		uint8_t* buf = static_cast<uint8_t*>(_alloca(src_len));
+		size_t bytes_out = 0u;
+		Decode(src, src_len, buf, bytes_out, table, padding);
+		return std::vector<uint8_t>(buf, buf + bytes_out);
+	}
+
 }
