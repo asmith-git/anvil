@@ -15,6 +15,26 @@ static uint64_t CurrentTime() {
 		).count();
 }
 
+static void Base64Test() {
+	const char* src = "hello base64!";
+	size_t src_len = strlen(src);
+	std::cout << src << std::endl;
+
+	size_t b64_len;
+	char base64[512];
+	anvil::Base64::Encode(reinterpret_cast<const uint8_t*>(src), src_len, base64, b64_len);
+	std::cout << base64 << std::endl;
+
+	size_t decode_len;
+	char decode[512];
+	anvil::Base64::Decode(base64, b64_len, reinterpret_cast<uint8_t*>(decode), decode_len);
+	decode[decode_len] = '\0';
+	std::cout << decode << std::endl;
+
+
+	system("pause");
+}
+
 static void RPCTest() {
 	using namespace anvil;
 
@@ -320,6 +340,9 @@ void XMLTest() {
 
 int main()
 {
+	Base64Test();
+	return 0;
+
 	JSONTest();
 	XMLTest();
 	RPCTest();

@@ -22,6 +22,7 @@
     <ClInclude Include="..\..\include\anvil\Core.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Alignment.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Assert.hpp" />
+    <ClInclude Include="..\..\include\anvil\core\Base64.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Bitset128.hpp" />
     <ClInclude Include="..\..\include\anvil\core\Bitset256.hpp" />
     <ClInclude Include="..\..\include\anvil\core\BitwiseLUT.hpp" />
@@ -43,6 +44,7 @@
     <ClInclude Include="..\..\include\anvil\core\TrailingZeroCount.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\anvil\core\Base64.cpp" />
     <ClCompile Include="..\..\src\anvil\core\CpuRuntime.cpp" />
     <ClCompile Include="..\..\src\anvil\core\Reflection.cpp" />
     <ClCompile Include="CoreVisualStudio.cpp" />

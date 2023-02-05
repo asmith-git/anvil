@@ -87,6 +87,9 @@
     <ClInclude Include="..\..\include\anvil\core\BitwiseLUT.hpp">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\anvil\core\Base64.hpp">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CoreVisualStudio.cpp">
@@ -96,6 +99,9 @@
       <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\anvil\core\CpuRuntime.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\anvil\core\Base64.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
   </ItemGroup>
