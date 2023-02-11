@@ -364,9 +364,7 @@ namespace anvil {
 #if ANVIL_USE_PARENTCHILDREN
 		parent(nullptr),
 #endif
-#if ANVIL_USE_TASK_REFERENCE_COUNTER
 		reference_counter(0u),
-#endif
 		priority(Priority::PRIORITY_MIDDLE),
 		state(Task::STATE_INITIALISED),
 		scheduled_flag(0u),
@@ -377,9 +375,7 @@ namespace anvil {
 	void TaskSchedulingData::Reset() {
 		task = nullptr;
 		scheduler = nullptr;
-#if ANVIL_USE_TASK_REFERENCE_COUNTER
 		reference_counter = 0u;
-#endif
 		priority = Priority::PRIORITY_MIDDLE;
 		state = Task::STATE_INITIALISED;
 		scheduled_flag = 0u;
@@ -443,9 +439,7 @@ namespace anvil {
 	Task::Task()  {
 		_data = Scheduler::AllocateTaskSchedulingData();
 		_data->task = this;
-#if ANVIL_USE_TASK_REFERENCE_COUNTER
 		_data->reference_counter = 1u;
-#endif
 #if ANVIL_DEBUG_TASKS
 		_data->debug_id = g_task_debug_id++;
 		{
@@ -470,7 +464,6 @@ namespace anvil {
 #if ANVIL_USE_PARENTCHILDREN
 			_data->DetachFromParent();
 #endif
-#if ANVIL_USE_TASK_REFERENCE_COUNTER
 			bool still_has_references;
 			{
 				std::lock_guard<std::shared_mutex> task_lock(_data->lock);
@@ -497,7 +490,6 @@ namespace anvil {
 					}
 				}
 			}
-#endif
 			Scheduler::FreeTaskSchedulingData(_data);
 			_data = nullptr;
 		}

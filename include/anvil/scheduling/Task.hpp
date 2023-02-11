@@ -99,8 +99,6 @@ namespace anvil {
 	};
 #endif
 
-#define ANVIL_USE_TASK_REFERENCE_COUNTER ANVIL_USE_PARENTCHILDREN
-
 	/*!
 		\class TaskSchedulingData
 		\author Adam G. Smith
@@ -126,9 +124,7 @@ namespace anvil {
 #if ANVIL_DEBUG_TASKS
 		uint32_t debug_id;
 #endif
-#if ANVIL_USE_TASK_REFERENCE_COUNTER
 		std::atomic_uint32_t reference_counter;
-#endif
 		PriorityValue priority;			//!< Stores the scheduling priority of the task
 		struct {
 			uint8_t state : 4;				//!< Stores the current state of the task
@@ -154,17 +150,13 @@ namespace anvil {
 		TaskDataLock(TaskSchedulingData& task_data_ref) :
 			task_data(task_data_ref)
 		{
-#if ANVIL_USE_TASK_REFERENCE_COUNTER
 			std::lock_guard<std::shared_mutex>(task_data.lock);
 			++task_data.reference_counter;
-#endif
 		}
 
 		~TaskDataLock() {
-#if ANVIL_USE_TASK_REFERENCE_COUNTER
 			std::lock_guard<std::shared_mutex>(task_data.lock);
 			--task_data.reference_counter;
-#endif
 		}
 	};
 
