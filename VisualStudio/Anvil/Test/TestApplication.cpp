@@ -125,6 +125,8 @@ void SchedulerTest() {
 			uint64_t t1 = 0u;
 
 			std::thread console_thread([&]()->void{
+				SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
+
 				const auto pos = console.GetCursorLocation();
 				while (true) {
 					console.SetCursorLocation(pos);
@@ -174,6 +176,9 @@ void SchedulerTest() {
 				scheduler.Schedule(root);
 
 				root.Wait();
+
+				if (counter != real_counter)
+					throw std::runtime_error("Tasks did not execute correctly");
 			}
 		}
 	}
