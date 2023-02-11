@@ -33,6 +33,7 @@ void SchedulerTest() {
 	private:
 		bool ShouldSplit() const {
 			if (my_w <= 1u || my_h <= 1u) return false;
+			if (my_w & 1u || my_h & 1u) return false;
 			if (GetScheduler().GetSleepingThreadCount() == 0u) return false;
 			//if (GetNestingDepth() >= 3u) return false;
 
@@ -63,8 +64,6 @@ void SchedulerTest() {
 
 					GetScheduler().Schedule(children, 4u);
 
-					if (!GetScheduler().IsWorkerThread())
-						std::this_thread::sleep_for(std::chrono::milliseconds(1));
 					for (QuadTreeTask& c : children) c.Wait();
 
 				}
@@ -103,7 +102,9 @@ void SchedulerTest() {
 	};
 
 	{
-		ExampleSchedulerMultiThreaded scheduler(4u);
+		Console console;
+		ExampleSchedulerMultiThreaded scheduler(8u);
+		scheduler.SetExecutionOnTaskWait(false);
 		//ExampleSchedulerSingleThreaded scheduler;
 		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		{
@@ -121,8 +122,43 @@ void SchedulerTest() {
 				}
 			}
 
-			std::cout << "Real count : \t\t" << real_counter << std::endl;
+			uint64_t t1 = 0u;
+
+			std::thread console_thread([&]()->void{
+				const auto pos = console.GetCursorLocation();
+				while (true) {
+					console.SetCursorLocation(pos);
+					console.ClearLine();
+					console.Print("Real count : \t\t" + std::to_string(real_counter) + '\n');
+					console.ClearLine();
+					console.Print("Tasks counted : \t" + std::to_string(counter) + '\n');
+					console.ClearLine();
+					uint64_t t2 = CurrentTime();
+					console.Print("Time : " + std::to_string(t2 - t1) + " ms\n");
+					console.EndLine();
+					console.ClearLine();
+
+					for (size_t i = 0u; i < scheduler.GetThreadCount(); ++i) {
+						Scheduler::ThreadDebugData* debug_data = scheduler.GetDebugDataForThread(i);
+						console.Print("Thread[" + std::to_string(i) + "] : ");
+						if (debug_data->enabled == 0u) {
+							console.Print("disabled", CONSOLE_RED_LIGHT);
+						}
+						else if (debug_data->sleeping) {
+							console.Print("sleeping", CONSOLE_YELLOW_LIGHT);
+						}
+						else {
+							console.Print("executing " + std::to_string(debug_data->tasks_executing), CONSOLE_GREEN_LIGHT);
+						}
+						console.EndLine();
+						console.ClearLine();
+					}
+					std::this_thread::sleep_for(std::chrono::milliseconds(15));
+				}
+			});
+
 			while(true) {
+				t1 = CurrentTime();
 				counter = 0u;
 
 				QuadTreeTask root;
@@ -134,15 +170,10 @@ void SchedulerTest() {
 				root.my_w = root.data_w;
 				root.my_h = root.data_h;
 				root.data = data;
-				uint64_t t = CurrentTime();
 
 				scheduler.Schedule(root);
 
 				root.Wait();
-
-				uint64_t t2 = CurrentTime();
-				std::cout << "Tasks counted : \t" << counter << std::endl;
-				std::cout << "Time : " << (t2 - t) << " ms" << std::endl;
 			}
 		}
 	}
