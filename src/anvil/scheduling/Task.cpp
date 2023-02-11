@@ -546,7 +546,7 @@ namespace anvil {
 		TaskDataLock task_lock(*_data);
 
 		// If no scheduler is attached to this task then it cannot be canceled
-		Scheduler* scheduler = _GetScheduler();
+		Scheduler* scheduler = _data->scheduler;
 		if (scheduler == nullptr) return false;
 
 		// Lock the scheduler's task queue
@@ -607,8 +607,8 @@ namespace anvil {
 	void Task::Wait() {
 		TaskDataLock task_lock(*_data);
 
-		Scheduler* scheduler = _GetScheduler();
-		if (scheduler == nullptr || _data->state == Task::STATE_COMPLETE || _data->state == Task::STATE_CANCELED || _data->state == Task::STATE_INITIALISED) return;
+		Scheduler* const scheduler = _data->scheduler;
+		if (_data->state >= Task::STATE_COMPLETE || _data->state == Task::STATE_INITIALISED || scheduler == nullptr) return;
 
 		const bool will_yield = scheduler->_no_execution_on_wait ?
 			GetNumberOfTasksExecutingOnThisThread() > 0 :	// Only call yield if Wait is called from inside of a Task
@@ -623,16 +623,13 @@ namespace anvil {
 
 		const auto YieldCondition = [this]()->bool {
 			std::shared_lock<std::shared_mutex> task_lock(_data->lock);
-			if (_data->state != STATE_CANCELED && _data->state != STATE_COMPLETE) return false;
-			return _data->scheduler == nullptr;
+			return _data->state >= STATE_COMPLETE && _data->scheduler == nullptr;
 		};
 
 		if (will_yield) {
-			scheduler->Yield([this, YieldCondition]()->bool {
-				return YieldCondition();
-			});
+			scheduler->Yield(YieldCondition);
 		} else {
-			while (! YieldCondition()) {
+			while (!YieldCondition()) {
 				// Wait for 1ms then check again
 				std::unique_lock<std::mutex> lock(scheduler->_condition_mutex);
 				if (YieldCondition()) break; // If the condition was met while acquiring the lock
@@ -664,7 +661,7 @@ namespace anvil {
 		if constexpr(Priority::PRIORITY_HIGHEST > 255u) priority = static_cast<Priority>(priority +GetNestingDepth());
 
 		std::exception_ptr exception = nullptr;
-		Scheduler* scheduler = _GetScheduler();
+		Scheduler* scheduler = _data->scheduler;
 		if (scheduler) {
 			if (_data->state == STATE_SCHEDULED) {
 				_data->priority = priority;
@@ -686,8 +683,8 @@ HANDLE_ERROR:
 
 	void Task::Execute() throw() {
 		// Remember the scheduler for later
-		Scheduler* const scheduler = _GetScheduler();
 		TaskDataLock task_lock(*_data);
+		Scheduler* const scheduler = _data->scheduler;
 
 		const auto CatchException = [this](std::exception_ptr&& exception, bool set_exception) {
 			// Handle the exception
@@ -1076,23 +1073,27 @@ HANDLE_ERROR:
 
 		max_sleep_milliseconds = std::max(1u, max_sleep_milliseconds);
 
-		// If this function is being called by a task
-#if ANVIL_TASK_FIBERS
-		FiberData* fiber = g_thread_additional_data.current_fiber;
-		Task* t = fiber == nullptr ? nullptr : fiber->task;
-#else
-		Task* const t = g_thread_additional_data.task_stack.empty() ? nullptr : g_thread_additional_data.task_stack.back();
-#endif
 		Scheduler::ThreadDebugData* const debug_data = GetDebugDataForThisThread();
 
 #if ANVIL_DEBUG_TASKS
 		const float debug_time = GetDebugTime();
 #endif
+		// If this function is being called by a task
+		const TaskThreadLocalData& local_data = g_thread_additional_data;
+#if ANVIL_TASK_FIBERS
+		FiberData* fiber = local_data.current_fiber;
+		Task* t = fiber == nullptr ? nullptr : fiber->task;
+#else
+		Task* const t = local_data.task_stack.empty() ? nullptr : local_data.task_stack.back();
+#endif
+
 		if (t) {
 			std::lock_guard<std::shared_mutex> lock(t->_data->lock);
 
 			// State change
+#if _DEBUG
 			if (t->_data->state != Task::STATE_EXECUTING) throw std::runtime_error("anvil::Scheduler::Yield : Task cannot yield unless it is in STATE_EXECUTING");
+#endif
 			t->_data->state = Task::STATE_BLOCKED;
 #if ANVIL_TASK_CALLBACKS
 			t->OnBlock();
@@ -1119,7 +1120,7 @@ HANDLE_ERROR:
 				const auto predicate = [this, &condition, thread_enabled]()->bool {
 					if (thread_enabled) {
 #if ANVIL_TASK_FIBERS
-						if (g_thread_additional_data.AreAnyFibersReady()) return true;
+						if (local_data.AreAnyFibersReady()) return true;
 #endif
 						if (!_task_queue.empty()) return true;
 					}
@@ -1132,10 +1133,7 @@ HANDLE_ERROR:
 				// Check if something has changed while the mutex was being acquired
 				if (!predicate()) {
 #if ANVIL_DEBUG_TASKS
-					{
-						SchedulerDebugEvent e = SchedulerDebugEvent::PauseEvent(_debug_id);
-						g_debug_event_handler(&e, nullptr);
-					}
+					{ SchedulerDebugEvent e = SchedulerDebugEvent::PauseEvent(_debug_id); g_debug_event_handler(&e, nullptr); }
 #endif
 
 					// Update that thread is sleeping
@@ -1158,10 +1156,7 @@ HANDLE_ERROR:
 					}
 
 #if ANVIL_DEBUG_TASKS
-					{
-						SchedulerDebugEvent e = SchedulerDebugEvent::ResumeEvent(_debug_id);
-						g_debug_event_handler(&e, nullptr);
-					}
+					{ SchedulerDebugEvent e = SchedulerDebugEvent::ResumeEvent(_debug_id); g_debug_event_handler(&e, nullptr); }
 #endif
 				}
 

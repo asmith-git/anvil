@@ -126,10 +126,7 @@ namespace anvil {
 #endif
 		std::atomic_uint32_t reference_counter;
 		PriorityValue priority;			//!< Stores the scheduling priority of the task
-		struct {
-			uint8_t state : 4;				//!< Stores the current state of the task
-			uint8_t unused_flags : 4;
-		};
+		uint8_t state;
 
 		TaskSchedulingData();
 		void Reset();
@@ -202,13 +199,6 @@ namespace anvil {
 #endif
 
 		/*!
-			\return Pointer to an attached scheduler, nullptr if none 
-		*/
-		inline Scheduler* _GetScheduler() const throw() {
-			return _data->scheduler;
-		}
-
-		/*!
 			\brief Calls Task::OnExecution() with proper state changes and exception handling
 		*/
 		void Execute() throw();
@@ -225,13 +215,14 @@ namespace anvil {
 			\param max_sleep_milliseconds The longest period of time the thread should sleep for before checking the wait condition again.
 		*/
 		inline void Yield(const std::function<bool()>& condition, uint32_t max_sleep_milliseconds = 33u) {
-			Scheduler* scheduler = _GetScheduler();
+			TaskDataLock task_lock(*_data);
+			Scheduler* scheduler = _data->scheduler;
 			if (scheduler) {
 				scheduler->Yield(condition, max_sleep_milliseconds);
 			} else {
 				throw std::runtime_error("anvil::Task::Yield : Cannot yield without a scheduler");
 			}
-	}
+		}
 
 		/*!
 			\brief Implements the work payload of the task.
@@ -410,7 +401,7 @@ namespace anvil {
 			\return The scheduler handling this Task.
 		*/
 		inline Scheduler& GetScheduler() const {
-			Scheduler* const tmp = _GetScheduler();
+			Scheduler* const tmp = _data->scheduler;
 			if (tmp == nullptr) throw std::runtime_error("Task is not attached to a scheduler");
 			return *tmp;
 		}
