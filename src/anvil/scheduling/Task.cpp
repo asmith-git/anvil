@@ -1015,10 +1015,6 @@ HANDLE_ERROR:
 			// Remove the last task(s) in the queue
 			uint32_t count2 = 0u;
 			while (count2 < count && !_task_queue.empty()) {
-#if _DEBUG
-				if (_task_queue.back()->state != Task::STATE_SCHEDULED)
-					throw std::runtime_error("Task is in queue but not in STATE_SCHEDULED");
-#endif
 				tasks[count2++] = _task_queue.back();
 				_task_queue.pop_back();
 			}
@@ -1185,10 +1181,6 @@ HANDLE_ERROR:
 
 		// If this function is being called by a task
 		if (t) {
-#if _DEBUG
-			if (t->_data->state != Task::STATE_BLOCKED)
-				throw std::runtime_error("Attempting to resume a task that wasn't in STATE_BLOCKED");
-#endif
 			std::lock_guard<std::shared_mutex> lock(t->_data->lock);
 
 			// State change
@@ -1222,7 +1214,7 @@ HANDLE_ERROR:
 	}
 
 	void Scheduler::Schedule(Task** tasks, const uint32_t count) {
-		const auto this_scheduler = this;
+		if (count == 0u) return;
 
 #if ANVIL_TASK_FIBERS
 		Task* const parent = g_thread_additional_data.current_fiber == nullptr ? nullptr : g_thread_additional_data.current_fiber->task;
@@ -1230,7 +1222,7 @@ HANDLE_ERROR:
 		Task* const parent = g_thread_additional_data.task_stack.empty() ? nullptr : g_thread_additional_data.task_stack.back();
 #endif
 
-		std::vector<TaskSchedulingData*> task_data_tmp(count);
+		TaskSchedulingData** task_data_tmp = static_cast<TaskSchedulingData**>(_alloca(count * sizeof(TaskSchedulingData*)));
 
 		// Initial error checking and initialisation
 		size_t ready_count = 0u;
@@ -1241,12 +1233,11 @@ HANDLE_ERROR:
 			std::lock_guard<std::shared_mutex> task_lock(t._data->lock);
 
 			if (t._data->state != Task::STATE_INITIALISED) continue;
-			task_data_tmp[i] = t._data;
+			task_data_tmp[ready_count] = t._data;
 
 			// Change state
 			t._data->scheduled_flag = 1u;
 			t._data->wait_flag = 0u;
-			t._data->schedule_valid = 0u;
 			t._data->state = Task::STATE_SCHEDULED;
 
 			// Initialise scheduling data
@@ -1293,7 +1284,7 @@ HANDLE_ERROR:
 #endif
 
 			// Skip the task if initalisation failed
-			if (t._data->scheduler != this_scheduler) continue;
+			if (t._data->scheduler != this) continue;
 #if ANVIL_TASK_DELAY_SCHEDULING
 			// If the task isn't ready to execute yet push it to the innactive queue
 			if (!t.IsReadyToExecute()) {
@@ -1309,7 +1300,6 @@ HANDLE_ERROR:
 				g_debug_event_handler(nullptr, &e);
 			}
 #endif
-			t._data->schedule_valid = 1u;
 			++ready_count;
 		}
 
@@ -1317,17 +1307,9 @@ HANDLE_ERROR:
 			{
 				// Lock the task queue
 				std::lock_guard<std::shared_mutex> lock(_task_queue_mutex);
-				_task_queue.reserve(_task_queue.size() + ready_count);
-				for (uint32_t i = 0u; i < count; ++i) {
-					if (tasks[i]->_data->schedule_valid) {
-						// Add to the active queue
-#if _DEBUG
-						if(task_data_tmp[i]->state != Task::STATE_SCHEDULED) 
-							throw std::runtime_error("Attempting to add a task to queue when not in STATE_SCHEDULED");
-#endif
-						_task_queue.push_back(task_data_tmp[i]);
-					}
-				}
+				// Add to the active queue
+				_task_queue.insert(_task_queue.end(), task_data_tmp, task_data_tmp + ready_count);
+
 				// Sort task list by priority
 				SortTaskQueue();
 			}

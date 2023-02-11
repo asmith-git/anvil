@@ -130,7 +130,7 @@ namespace anvil {
 			uint8_t state : 4;				//!< Stores the current state of the task
 			uint8_t scheduled_flag : 1;		//!< Set to 1 when the task has been scheduled
 			uint8_t wait_flag : 1;			//!< Set to 1 when it is okay to exit out of Task::Wait()
-			uint8_t schedule_valid : 1;		//!< Set to 1 when when a scheduler has decided the task is valid
+			uint8_t unused_flag : 1;
 		};
 
 		TaskSchedulingData();
