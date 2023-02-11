@@ -31,8 +31,10 @@ void SchedulerTest() {
 		size_t my_h;
 
 	private:
-		bool Split() const {
-			if (my_w == 1u || my_h == 1u) return false;
+		bool ShouldSplit() const {
+			if (my_w <= 1u || my_h <= 1u) return false;
+			if (GetScheduler().GetSleepingThreadCount() == 0u) return false;
+			//if (GetNestingDepth() >= 3u) return false;
 
 			return true;
 		}
@@ -40,12 +42,45 @@ void SchedulerTest() {
 	protected:
 
 		void OnExecution() final {
-			const size_t end_x = my_x + my_w;
-			const size_t end_y = my_y + my_h;
-			for (size_t y = my_y; y < end_y; ++y) {
-				for (size_t x = my_x; x < end_x; ++x) {
-					if (data[y * data_w + x] & 1) ++*counter;
+			try {
+				if (ShouldSplit()) {
+					QuadTreeTask children[4u];
+					for (QuadTreeTask& c : children) {
+						c.counter = counter;
+						c.data = data;
+						c.data_w = data_w;
+						c.data_h = data_h;
+						c.my_w = my_w / 2;
+						c.my_h = my_h / 2;
+						c.my_x = my_x;
+						c.my_y = my_y;
+					}
+
+					children[1].my_x += children[1].my_w;
+					children[2].my_y += children[2].my_h;
+					children[3].my_x += children[3].my_w;
+					children[3].my_y += children[3].my_h;
+
+					GetScheduler().Schedule(children, 4u);
+
+					if (!GetScheduler().IsWorkerThread())
+						std::this_thread::sleep_for(std::chrono::milliseconds(1));
+					for (QuadTreeTask& c : children) c.Wait();
+
 				}
+				else {
+					const size_t end_x = my_x + my_w;
+					const size_t end_y = my_y + my_h;
+					for (size_t y = my_y; y < end_y; ++y) {
+						for (size_t x = my_x; x < end_x; ++x) {
+							if (data[y * data_w + x] & 1)++*counter;
+						}
+					}
+				}
+			} catch (std::exception& e) {
+				std::cerr << e.what() << std::endl;
+			} catch (...) {
+				std::cerr << "Unspecified error" << std::endl;
 			}
 		}
 
@@ -68,35 +103,51 @@ void SchedulerTest() {
 	};
 
 	{
-		ExampleSchedulerMultiThreaded scheduler(8u);
+		ExampleSchedulerMultiThreaded scheduler(4u);
+		//ExampleSchedulerSingleThreaded scheduler;
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		{
 			std::atomic_uint32_t counter = 0u;
-
-			QuadTreeTask root;
-			root.counter = &counter;
-			root.data_w = 1024;
-			root.data_h = root.data_w;
-			root.my_x = 0u;
-			root.my_y = 0u;
-			root.my_w = root.data_w;
-			root.my_h = root.data_h;
-			root.data = new int8_t[root.data_w * root.data_h];
+			enum { size = 1024 * 12 };
+			int8_t* data = new int8_t[size * size];
 
 			uint32_t real_counter = 0u;
-			for (size_t i = 0u; i < (root.data_w * root.data_h); ++i) {
-				root.data[i] = rand() % INT8_MAX;
-				if (root.data[i] & 1) ++real_counter;
+			{
+				int8_t tmp = 0;
+				for (size_t i = 0u; i < (size * size); ++i) {
+					//tmp = rand() % INT8_MAX;
+					if (tmp & 1) ++real_counter;
+					data[i] = tmp++;
+				}
 			}
 
-			std::cout << "Real count : " << real_counter << std::endl;
+			std::cout << "Real count : \t\t" << real_counter << std::endl;
+			while(true) {
+				counter = 0u;
 
-			scheduler.Schedule(root);
+				QuadTreeTask root;
+				root.counter = &counter;
+				root.data_w = size;
+				root.data_h = size;
+				root.my_x = 0u;
+				root.my_y = 0u;
+				root.my_w = root.data_w;
+				root.my_h = root.data_h;
+				root.data = data;
+				uint64_t t = CurrentTime();
 
-			root.Wait();
+				scheduler.Schedule(root);
 
-			std::cout << "Tasks counted : " << counter << std::endl;
+				root.Wait();
+
+				uint64_t t2 = CurrentTime();
+				std::cout << "Tasks counted : \t" << counter << std::endl;
+				std::cout << "Time : " << (t2 - t) << " ms" << std::endl;
+			}
 		}
 	}
+
+	system("pause");
 }
 
 void EncodeOptimise() {

@@ -236,6 +236,8 @@ namespace anvil {
 	};
 #endif
 
+	static std::atomic_uint32_t g_next_thread_index = UINT32_MAX;
+
 	struct TaskThreadLocalData {
 #if ANVIL_TASK_FIBERS
 		std::deque<FiberData*> fiber_list;
@@ -244,6 +246,7 @@ namespace anvil {
 #else
 		std::vector<Task*> task_stack;
 #endif
+		Scheduler* scheduler;
 		uint32_t scheduler_index;
 		bool is_worker_thread;
 
@@ -252,7 +255,7 @@ namespace anvil {
 			current_fiber(nullptr),
 			main_fiber(nullptr),
 #endif
-			scheduler_index(0u),
+			scheduler_index(g_next_thread_index--),
 			is_worker_thread(false)
 		{
 #if ANVIL_TASK_FIBERS
@@ -358,17 +361,91 @@ namespace anvil {
 	TaskSchedulingData::TaskSchedulingData() :
 		task(nullptr),
 		scheduler(nullptr),
+#if ANVIL_USE_PARENTCHILDREN
+		parent(nullptr),
+#endif
+#if ANVIL_USE_TASK_REFERENCE_COUNTER
+		reference_counter(0u),
+#endif
 		priority(Priority::PRIORITY_MIDDLE),
 		state(Task::STATE_INITIALISED),
 		scheduled_flag(0u),
 		wait_flag(0u)
 	{}
 
+
+	void TaskSchedulingData::Reset() {
+		task = nullptr;
+		scheduler = nullptr;
+#if ANVIL_USE_TASK_REFERENCE_COUNTER
+		reference_counter = 0u;
+#endif
+		priority = Priority::PRIORITY_MIDDLE;
+		state = Task::STATE_INITIALISED;
+		scheduled_flag = 0u;
+		wait_flag = 0u;
+
+#if ANVIL_USE_PARENTCHILDREN
+		parent = nullptr;
+		children.clear();
+#endif
+#if ANVIL_TASK_HAS_EXCEPTIONS
+		exception = nullptr;
+#endif
+	}
+
+#if ANVIL_USE_PARENTCHILDREN
+	bool TaskSchedulingData::AddChild(TaskSchedulingData* c) {
+		if (c->parent != nullptr) return false;
+
+		std::lock_guard<std::shared_mutex> lockguard(lock);
+
+		for (TaskSchedulingData* c2 : children) if (c == c2) return false;
+		++reference_counter;
+		children.push_back(c);
+		++c->reference_counter;
+		c->parent = this;
+		return true;
+	}
+
+	bool TaskSchedulingData::RemoveChild(TaskSchedulingData* c) {
+		if (c->parent != this) return false;
+
+		std::lock_guard<std::shared_mutex> lockguard(lock);
+		auto i = std::find(children.begin(), children.end(), c);
+		children.erase(i);
+		--reference_counter;
+		--c->reference_counter;
+		c->parent = nullptr;
+		return true;
+	}
+
+	bool TaskSchedulingData::DetachFromParent() {
+		if (parent == nullptr) return true;
+		return parent->RemoveChild(this);
+	}
+
+	bool TaskSchedulingData::DetachFromChildren() {
+		std::lock_guard<std::shared_mutex> lockguard(lock);
+
+		while (!children.empty()) {
+			TaskSchedulingData* c = children.back();
+			if (!RemoveChild(c)) return false;
+			if (parent) parent->AddChild(c); 	// Transfer children to grandparent
+		}
+
+		return true;
+	}
+#endif
+
 	// Task
 
 	Task::Task()  {
-		_data.reset(new TaskSchedulingData());
+		_data = Scheduler::AllocateTaskSchedulingData();
 		_data->task = this;
+#if ANVIL_USE_TASK_REFERENCE_COUNTER
+		_data->reference_counter = 1u;
+#endif
 #if ANVIL_DEBUG_TASKS
 		_data->debug_id = g_task_debug_id++;
 		{
@@ -379,31 +456,38 @@ namespace anvil {
 	}
 
 	Task::~Task() {
-		{
-			const State s = GetState();
-			if (s == STATE_SCHEDULED || s == STATE_EXECUTING || s == STATE_BLOCKED) {
-				bool not_finished = true;
-				while (not_finished) {
-					// Wait for task to complete
-					StrongSchedulingPtr data = _data;
-					if (data) {
-						std::shared_lock<std::shared_mutex> lock(data->lock);
-						not_finished = data->wait_flag == 0u;
-					} else {
-						break;
+
+		if(_data) {
+			Wait();
+
+	#if ANVIL_DEBUG_TASKS
+			{
+				TaskDebugEvent e = TaskDebugEvent::DestroyEvent(_data->debug_id);
+				g_debug_event_handler(nullptr, &e);
+			}
+	#endif
+
+#if ANVIL_USE_PARENTCHILDREN
+			_data->DetachFromParent();
+#endif
+#if ANVIL_USE_TASK_REFERENCE_COUNTER
+			--_data->reference_counter;
+			if (_data->reference_counter > 0u) {
+				if (_data->scheduler) {
+					_data->scheduler->Yield([this]()->bool {
+						return _data->reference_counter == 0u;
+					});
+
+				} else {
+					while (_data->reference_counter > 0u) {
+						std::this_thread::sleep_for(std::chrono::milliseconds(1));
 					}
 				}
 			}
-
-			_data->task = nullptr;
-		}
-
-#if ANVIL_DEBUG_TASKS
-		{
-			TaskDebugEvent e = TaskDebugEvent::DestroyEvent(_data->debug_id);
-			g_debug_event_handler(nullptr, &e);
-		}
 #endif
+			Scheduler::FreeTaskSchedulingData(_data);
+			_data = nullptr;
+		}
 		//! \bug If the task is scheduled it must be removed from the scheduler
 	}
 
@@ -520,7 +604,7 @@ namespace anvil {
 
 	void Task::Wait() {
 		Scheduler* scheduler = _GetScheduler();
-		if (scheduler == nullptr || _data->state == Task::STATE_COMPLETE || _data->state == Task::STATE_CANCELED) return;
+		if (scheduler == nullptr || _data->state == Task::STATE_COMPLETE || _data->state == Task::STATE_CANCELED || _data->state == Task::STATE_INITIALISED) return;
 
 		const bool will_yield = scheduler->_no_execution_on_wait ?
 			GetNumberOfTasksExecutingOnThisThread() > 0 :	// Only call yield if Wait is called from inside of a Task
@@ -851,7 +935,7 @@ HANDLE_ERROR:
 		_task_queue_update.notify_all();
 	}
 
-	void Scheduler::RemoveNextTaskFromQueue(StrongSchedulingPtr* tasks, uint32_t& count) throw() {
+	void Scheduler::RemoveNextTaskFromQueue(TaskSchedulingData** tasks, uint32_t& count) throw() {
 #if ANVIL_TASK_DELAY_SCHEDULING
 		// Check if there are tasks before locking the queue
 		// Avoids overhead of locking during periods of low activity
@@ -921,6 +1005,10 @@ HANDLE_ERROR:
 			// Remove the last task(s) in the queue
 			uint32_t count2 = 0u;
 			while (count2 < count && !_task_queue.empty()) {
+#if _DEBUG
+				if (_task_queue.back()->state != Task::STATE_SCHEDULED)
+					throw std::runtime_error("Task is in queue but not in STATE_SCHEDULED");
+#endif
 				tasks[count2++] = _task_queue.back();
 				_task_queue.pop_back();
 			}
@@ -940,7 +1028,7 @@ HANDLE_ERROR:
 		enum { MAX_TASKS = 32u };
 #endif
 		// Try to start the execution of a new task
-		StrongSchedulingPtr tasks[MAX_TASKS];
+		TaskSchedulingData* tasks[MAX_TASKS];
 		uint32_t task_count = static_cast<uint32_t>(_task_queue.size()) / _scheduler_debug.total_thread_count;
 		if (task_count < 1) task_count = 1u;
 		if (task_count > MAX_TASKS) task_count = MAX_TASKS;
@@ -951,10 +1039,6 @@ HANDLE_ERROR:
 
 			for (uint32_t i = 0u; i < task_count; ++i) {
 				tasks[i]->task->Execute(); 
-				
-				// Delete task data
-				StrongSchedulingPtr tmp;
-				tasks[i].swap(tmp);
 			}
 
 			return true;
@@ -969,6 +1053,7 @@ HANDLE_ERROR:
 		local_data.is_worker_thread = true;
 
 		if(_scheduler_debug.thread_debug_data != nullptr) {
+			local_data.scheduler = this;
 			local_data.scheduler_index = _scheduler_debug.total_thread_count++;
 			ThreadDebugData& debug_data = _scheduler_debug.thread_debug_data[local_data.scheduler_index];
 			debug_data.tasks_executing = 0u;
@@ -1083,6 +1168,10 @@ HANDLE_ERROR:
 
 		// If this function is being called by a task
 		if (t) {
+#if _DEBUG
+			if (t->_data->state != Task::STATE_BLOCKED)
+				throw std::runtime_error("Attempting to resume a task that wasn't in STATE_BLOCKED");
+#endif
 			std::lock_guard<std::shared_mutex> lock(t->_data->lock);
 
 			// State change
@@ -1095,7 +1184,7 @@ HANDLE_ERROR:
 	}
 
 	void Scheduler::SortTaskQueue() throw() {
-		std::sort(_task_queue.begin(), _task_queue.end(), [](const StrongSchedulingPtr& lhs, const StrongSchedulingPtr& rhs)->bool {
+		std::sort(_task_queue.begin(), _task_queue.end(), [](const TaskSchedulingData* lhs, const TaskSchedulingData* rhs)->bool {
 			return lhs->task->_data->priority < rhs->task->_data->priority;
 		});
 	}
@@ -1124,7 +1213,7 @@ HANDLE_ERROR:
 		Task* const parent = g_thread_additional_data.task_stack.empty() ? nullptr : g_thread_additional_data.task_stack.back();
 #endif
 
-		std::vector<StrongSchedulingPtr> task_data_tmp(count);
+		std::vector<TaskSchedulingData*> task_data_tmp(count);
 
 		// Initial error checking and initialisation
 		size_t ready_count = 0u;
@@ -1134,9 +1223,7 @@ HANDLE_ERROR:
 			std::lock_guard<std::shared_mutex> task_lock(t._data->lock);
 
 			if (t._data->state != Task::STATE_INITIALISED) continue;
-
-			StrongSchedulingPtr data(new TaskSchedulingData());
-			task_data_tmp[i] = data;
+			task_data_tmp[i] = t._data;
 
 			// Change state
 			t._data->scheduled_flag = 1u;
@@ -1145,9 +1232,8 @@ HANDLE_ERROR:
 			t._data->state = Task::STATE_SCHEDULED;
 
 			// Initialise scheduling data
-			t._data = data;
-			data->scheduler = this;
-			data->task = &t;
+			t._data->scheduler = this;
+			t._data->task = &t;
 
 #if ANVIL_TASK_HAS_EXCEPTIONS
 			t._data->exception = std::exception_ptr();
@@ -1155,12 +1241,7 @@ HANDLE_ERROR:
 
 			// Update the child / parent relationship between tasks
 #if ANVIL_USE_PARENTCHILDREN
-			if (parent) {
-				std::lock_guard<std::shared_mutex> parent_lock(parent->_data->lock);
-				StrongSchedulingPtr parent_data = parent->_data;
-				data->parent = parent_data;
-				parent_data->children.push_back(data);
-			}
+			if (parent) parent->_data->AddChild(t._data);
 #endif
 
 			// Calculate extended priority
@@ -1194,7 +1275,7 @@ HANDLE_ERROR:
 #endif
 
 			// Skip the task if initalisation failed
-			if (data->scheduler != this_scheduler) continue;
+			if (t._data->scheduler != this_scheduler) continue;
 #if ANVIL_TASK_DELAY_SCHEDULING
 			// If the task isn't ready to execute yet push it to the innactive queue
 			if (!t.IsReadyToExecute()) {
@@ -1222,6 +1303,10 @@ HANDLE_ERROR:
 				for (uint32_t i = 0u; i < count; ++i) {
 					if (tasks[i]->_data->schedule_valid) {
 						// Add to the active queue
+#if _DEBUG
+						if(task_data_tmp[i]->state != Task::STATE_SCHEDULED) 
+							throw std::runtime_error("Attempting to add a task to queue when not in STATE_SCHEDULED");
+#endif
 						_task_queue.push_back(task_data_tmp[i]);
 					}
 				}
@@ -1251,6 +1336,10 @@ HANDLE_ERROR:
 
 	uint32_t Scheduler::GetThisThreadIndex() const {
 		return g_thread_additional_data.scheduler_index;
+	}
+
+	bool Scheduler::IsWorkerThread() const {
+		return g_thread_additional_data.scheduler == this;
 	}
 
 #if ANVIL_DEBUG_TASKS
@@ -1385,4 +1474,32 @@ HANDLE_ERROR:
 	}
 
 #endif
+
+	std::deque<TaskSchedulingData*> g_task_scheduling_data;
+	std::vector<TaskSchedulingData*> g_free_task_scheduling_data;
+	std::mutex g_task_scheduling_data_lock;
+
+	TaskSchedulingData* Scheduler::AllocateTaskSchedulingData() {
+		std::lock_guard<std::mutex> lock(g_task_scheduling_data_lock);
+
+		if (g_free_task_scheduling_data.empty()) {
+			enum { BLOCK_SIZE = 128 };
+			TaskSchedulingData* tmp = new TaskSchedulingData[BLOCK_SIZE];
+			for (size_t i = 0u; i < BLOCK_SIZE; ++i) {
+				g_task_scheduling_data.push_back(tmp + i);
+				g_free_task_scheduling_data.push_back(tmp + i);
+			}
+		}
+
+		TaskSchedulingData* tmp = g_free_task_scheduling_data.back();
+		g_free_task_scheduling_data.pop_back();
+		return tmp;
+	}
+
+	void Scheduler::FreeTaskSchedulingData(TaskSchedulingData* data) {
+		data->Reset();
+
+		std::lock_guard<std::mutex> lock(g_task_scheduling_data_lock);
+		g_free_task_scheduling_data.push_back(data);
+	}
 }

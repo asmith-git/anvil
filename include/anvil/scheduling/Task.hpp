@@ -99,6 +99,8 @@ namespace anvil {
 	};
 #endif
 
+#define ANVIL_USE_TASK_REFERENCE_COUNTER ANVIL_USE_PARENTCHILDREN
+
 	/*!
 		\class TaskSchedulingData
 		\author Adam G. Smith
@@ -115,14 +117,17 @@ namespace anvil {
 		Task* task;
 		Scheduler* scheduler;			//!< Points to the scheduler handling this task, otherwise null
 #if ANVIL_USE_PARENTCHILDREN
-		WeakSchedulingPtr parent;
-		std::vector<WeakSchedulingPtr> children;
+		TaskSchedulingData* parent;
+		std::vector<TaskSchedulingData*> children;
 #endif
 #if ANVIL_TASK_HAS_EXCEPTIONS
 		std::exception_ptr exception;	//!< Holds an exception that is caught during execution, thrown when wait is called
 #endif
 #if ANVIL_DEBUG_TASKS
 		uint32_t debug_id;
+#endif
+#if ANVIL_USE_TASK_REFERENCE_COUNTER
+		std::atomic_uint32_t reference_counter;
 #endif
 		PriorityValue priority;			//!< Stores the scheduling priority of the task
 		struct {
@@ -133,6 +138,14 @@ namespace anvil {
 		};
 
 		TaskSchedulingData();
+		void Reset();
+
+#if ANVIL_USE_PARENTCHILDREN
+		bool AddChild(TaskSchedulingData*);
+		bool RemoveChild(TaskSchedulingData*);
+		bool DetachFromParent();
+		bool DetachFromChildren();
+#endif
 	};
 
 	/*!
@@ -192,7 +205,7 @@ namespace anvil {
 
 		void SetException(std::exception_ptr exception);
 
-		StrongSchedulingPtr _data;
+		TaskSchedulingData* _data;
 	protected:
 		/*!
 			\brief Return control to the scheduler while the task is waiting for something.
@@ -319,9 +332,8 @@ namespace anvil {
 		inline Task* GetParent() const throw() {
 #if ANVIL_USE_PARENTCHILDREN
 			if (_data) {
-				std::lock_guard<std::shared_mutex> lock(_data->lock);
-				StrongSchedulingPtr tmp = _data->parent.lock();
-				if (tmp) return tmp->task;
+				std::shared_lock<std::shared_mutex> lock(_data->lock);
+				if (_data->parent) return _data->parent->task;
 			}
 #endif
 			return nullptr;
@@ -335,8 +347,7 @@ namespace anvil {
 #if ANVIL_USE_PARENTCHILDREN
 			std::lock_guard<std::shared_mutex> lock(_data->lock);
 			if (_data) {
-				for (WeakSchedulingPtr& i : _data->children) {
-					StrongSchedulingPtr tmp = i.lock();
+				for (TaskSchedulingData* tmp : _data->children) {
 					Task* t = tmp->task;
 					if (t) children.push_back(t);
 				}

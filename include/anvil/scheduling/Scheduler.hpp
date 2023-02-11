@@ -35,9 +35,6 @@
 
 namespace anvil {
 
-	typedef std::shared_ptr<TaskSchedulingData> StrongSchedulingPtr;
-	typedef std::weak_ptr<TaskSchedulingData> WeakSchedulingPtr;
-
 	class ANVIL_DLL_EXPORT Scheduler {
 	public:
 		struct ThreadDebugData {
@@ -55,6 +52,9 @@ namespace anvil {
 			std::atomic_uint32_t total_tasks_queued;
 		};
 	private:
+		static TaskSchedulingData* AllocateTaskSchedulingData();
+		static void FreeTaskSchedulingData(TaskSchedulingData*);
+
 		Scheduler(Scheduler&&) = delete;
 		Scheduler(const Scheduler&) = delete;
 		Scheduler& operator=(Scheduler&&) = delete;
@@ -63,10 +63,10 @@ namespace anvil {
 #if ANVIL_TASK_DELAY_SCHEDULING
 		std::vector<StrongSchedulingPtr> _unready_task_queue; //!< Contains tasks that have been scheduled but are not yet ready to execute
 #endif
-		std::vector<StrongSchedulingPtr> _task_queue;			//!< Contains tasks that have been scheduled and are ready to execute
+		std::vector<TaskSchedulingData*> _task_queue;			//!< Contains tasks that have been scheduled and are ready to execute
 		void SortTaskQueue() throw();
 
-		void RemoveNextTaskFromQueue(StrongSchedulingPtr* tasks, uint32_t& count) throw();
+		void RemoveNextTaskFromQueue(TaskSchedulingData** tasks, uint32_t& count) throw();
 
 		/*!
 			\brief Called when a Task has been added or removed from the queue
@@ -264,14 +264,16 @@ namespace anvil {
 #endif
 
 		uint32_t GetThisThreadIndex() const;
+		bool IsWorkerThread() const;
 
 		inline ThreadDebugData* GetDebugDataForThread(const uint32_t index) {
 			return index > _scheduler_debug.total_thread_count ? nullptr : _scheduler_debug.thread_debug_data + index;
 		}
 
 		inline ThreadDebugData* GetDebugDataForThisThread() { 
-			return GetDebugDataForThread(GetThisThreadIndex());
+			return IsWorkerThread() ? GetDebugDataForThread(GetThisThreadIndex()) : nullptr;
 		}
+
 
 		inline SchedulerDebugData& GetDebugData() {
 			_scheduler_debug.sleeping_thread_count = _scheduler_debug.total_thread_count - _scheduler_debug.executing_thread_count;
