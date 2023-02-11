@@ -366,9 +366,7 @@ namespace anvil {
 #endif
 		reference_counter(0u),
 		priority(Priority::PRIORITY_MIDDLE),
-		state(Task::STATE_INITIALISED),
-		scheduled_flag(0u),
-		wait_flag(0u)
+		state(Task::STATE_INITIALISED)
 	{}
 
 
@@ -378,8 +376,6 @@ namespace anvil {
 		reference_counter = 0u;
 		priority = Priority::PRIORITY_MIDDLE;
 		state = Task::STATE_INITIALISED;
-		scheduled_flag = 0u;
-		wait_flag = 0u;
 
 #if ANVIL_USE_PARENTCHILDREN
 		parent = nullptr;
@@ -601,7 +597,6 @@ namespace anvil {
 			std::lock_guard<std::shared_mutex> lock(_data->lock);
 			_data->state = Task::STATE_CANCELED;
 			_data->scheduler = nullptr;
-			_data->wait_flag = 1u;
 		}
 
 		// Notify anythign waiting for changes to the task queue
@@ -629,7 +624,7 @@ namespace anvil {
 		const auto YieldCondition = [this]()->bool {
 			std::shared_lock<std::shared_mutex> task_lock(_data->lock);
 			if (_data->state != STATE_CANCELED && _data->state != STATE_COMPLETE) return false;
-			return _data->wait_flag == 1u;
+			return _data->scheduler == nullptr;
 		};
 
 		if (will_yield) {
@@ -782,7 +777,6 @@ HANDLE_ERROR:
 			std::lock_guard<std::shared_mutex> task_lock(_data->lock);
 			_data->state = Task::STATE_COMPLETE;
 			_data->scheduler = nullptr;
-			_data->wait_flag = 1u;
 		}
 	}
 
@@ -1236,8 +1230,6 @@ HANDLE_ERROR:
 			task_data_tmp[ready_count] = t._data;
 
 			// Change state
-			t._data->scheduled_flag = 1u;
-			t._data->wait_flag = 0u;
 			t._data->state = Task::STATE_SCHEDULED;
 
 			// Initialise scheduling data

@@ -128,9 +128,7 @@ namespace anvil {
 		PriorityValue priority;			//!< Stores the scheduling priority of the task
 		struct {
 			uint8_t state : 4;				//!< Stores the current state of the task
-			uint8_t scheduled_flag : 1;		//!< Set to 1 when the task has been scheduled
-			uint8_t wait_flag : 1;			//!< Set to 1 when it is okay to exit out of Task::Wait()
-			uint8_t unused_flag : 1;
+			uint8_t unused_flags : 4;
 		};
 
 		TaskSchedulingData();
