@@ -368,7 +368,7 @@ namespace anvil { namespace BytePipe {
 		typedef std::map<std::string, Value> Object;
 		typedef std::vector<uint8_t> PrimitiveArray;
 
-		class ArrayWrapper {
+		class ANVIL_DLL_EXPORT ArrayWrapper {
 		private:
 			Value& _parent;
 		public:

@@ -15,6 +15,28 @@ static uint64_t CurrentTime() {
 		).count();
 }
 
+void EncodeOptimise() {
+	enum {s = 4096 * 1024 };
+	uint8_t* src = new uint8_t[s];
+	char* dst = new char[s * 1.5];
+
+	size_t src_out;
+	size_t dst_out;
+
+	uint64_t t = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	anvil::Base64::Encode(src, s, dst, dst_out);
+	uint64_t t2 = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	anvil::Base64::Decode(dst, dst_out, src, src_out);
+
+	uint64_t t3 = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+	std::cout  << "Encode : " << static_cast<double>(t2 - t) / 1000.0 << std::endl;
+	std::cout << "Decode : " << static_cast<double>(t3 - t2) / 1000.0 << std::endl;
+
+	delete[] src;
+	delete[] dst;
+}
+
 static void Base64Test() {
 	const char* src = "hello base64!";
 	size_t src_len = strlen(src);
@@ -337,6 +359,10 @@ void XMLTest() {
 
 int main()
 {
+	Base64Test();
+	EncodeOptimise();
+	return 0;
+
 	Base64Test();
 	JSONTest();
 	XMLTest();
