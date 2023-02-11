@@ -35,7 +35,7 @@ void SchedulerTest() {
 			if (my_w <= 1u || my_h <= 1u) return false;
 			if (my_w & 1u || my_h & 1u) return false;
 			if (GetScheduler().GetSleepingThreadCount() == 0u) return false;
-			//if (GetNestingDepth() >= 3u) return false;
+			//if (GetNestingDepth() > 6) return false;
 
 			return true;
 		}
@@ -104,7 +104,7 @@ void SchedulerTest() {
 	{
 		Console console;
 		ExampleSchedulerMultiThreaded scheduler(8u);
-		scheduler.SetExecutionOnTaskWait(false);
+		//scheduler.SetExecutionOnTaskWait(false);
 		//ExampleSchedulerSingleThreaded scheduler;
 		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		{
@@ -144,10 +144,10 @@ void SchedulerTest() {
 						Scheduler::ThreadDebugData* debug_data = scheduler.GetDebugDataForThread(i);
 						console.Print("Thread[" + std::to_string(i) + "] : ");
 						if (debug_data->enabled == 0u) {
-							console.Print("disabled", CONSOLE_RED_LIGHT);
+							console.Print("disabled " + std::to_string(debug_data->tasks_executing), CONSOLE_RED_LIGHT);
 						}
 						else if (debug_data->sleeping) {
-							console.Print("sleeping", CONSOLE_YELLOW_LIGHT);
+							console.Print("sleeping " + std::to_string(debug_data->tasks_executing), CONSOLE_YELLOW_LIGHT);
 						}
 						else {
 							console.Print("executing " + std::to_string(debug_data->tasks_executing), CONSOLE_GREEN_LIGHT);
