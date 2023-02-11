@@ -31,7 +31,7 @@
 #include <vector>
 #include <functional>
 #include <memory>
-#include "asmith/TaskScheduler/Core.hpp"
+#include "anvil/scheduling/Core.hpp"
 
 namespace anvil {
 

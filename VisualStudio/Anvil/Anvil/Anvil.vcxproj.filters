@@ -1,0 +1,300 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\core">
+      <UniqueIdentifier>{49ee6fb7-b15a-47a9-8820-6f42ca1c9046}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\byte-pipe">
+      <UniqueIdentifier>{b7646189-fc3a-41e3-b823-dd7a1ad286be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\console">
+      <UniqueIdentifier>{048486d8-2f49-4398-a656-a4f55eaa187a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\lutils">
+      <UniqueIdentifier>{6cad9563-e26a-4d23-a5df-c0c7cae41fe1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\rpc">
+      <UniqueIdentifier>{86bcd5f7-fe2a-40ca-baf5-15c68143f8d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\scheduling">
+      <UniqueIdentifier>{5730136b-37a8-4e1f-84ca-68ef3d3ceb4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core">
+      <UniqueIdentifier>{35f0f302-7212-44cc-93e5-c8b83e47f65d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\byte-pipe">
+      <UniqueIdentifier>{3d6d00cd-cb85-4a84-abdd-a68765910e47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\console">
+      <UniqueIdentifier>{bddccb66-eaeb-419e-9236-ee5fd983876c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\lutils">
+      <UniqueIdentifier>{c38c6919-920d-4ca1-a3d7-282762e1b343}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rpc">
+      <UniqueIdentifier>{09748f0f-4786-452a-9b46-255a783e61f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\scheduling">
+      <UniqueIdentifier>{aa1c2e66-7d1a-4515-a6a1-f71964d8d9c3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\core\Base64.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\core\CpuRuntime.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\core\Hexadecimal.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\core\Reflection.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\byte-pipe\BinaryPipe.cpp">
+      <Filter>Source Files\byte-pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\byte-pipe\BinaryPipeBits.cpp">
+      <Filter>Source Files\byte-pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\byte-pipe\BinaryPipeHamming.cpp">
+      <Filter>Source Files\byte-pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\byte-pipe\BinaryPipeJSON.cpp">
+      <Filter>Source Files\byte-pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\byte-pipe\BinaryPipePacket.cpp">
+      <Filter>Source Files\byte-pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\byte-pipe\BinaryPipeSTL.cpp">
+      <Filter>Source Files\byte-pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\byte-pipe\BinaryPipeTCP.cpp">
+      <Filter>Source Files\byte-pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\byte-pipe\BinaryPipeUDP.cpp">
+      <Filter>Source Files\byte-pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\byte-pipe\BinaryPipeXML.cpp">
+      <Filter>Source Files\byte-pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\byte-pipe\BytePipeObjects.cpp">
+      <Filter>Source Files\byte-pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\byte-pipe\BytePipeRepeater.cpp">
+      <Filter>Source Files\byte-pipe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\console\Console.cpp">
+      <Filter>Source Files\console</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\lutils\Message.cpp">
+      <Filter>Source Files\lutils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\RPC\Client.cpp">
+      <Filter>Source Files\rpc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\RPC\ClientExample.cpp">
+      <Filter>Source Files\rpc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\RPC\Server.cpp">
+      <Filter>Source Files\rpc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\RPC\ServerExample.cpp">
+      <Filter>Source Files\rpc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\scheduling\SchedulerExamples.cpp">
+      <Filter>Source Files\scheduling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\scheduling\Task.cpp">
+      <Filter>Source Files\scheduling</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\anvil\core\Alignment.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\Assert.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\Base64.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\Bitset128.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\Bitset256.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\BitwiseLUT.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\ByteSwap.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\Common.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\Compiler.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\Constants.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\CPU.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\CpuRuntime.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\FastSharedPtr.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\Hexadecimal.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\IDGenerator.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\Keywords.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\LeadingZeroCount.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\LibDetect.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\OperatingSystem.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\PODAlgorithm.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\PODVector.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\Reflection.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\TrailingZeroCount.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeBits.hpp">
+      <Filter>Header Files\byte-pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeCore.hpp">
+      <Filter>Header Files\byte-pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeEndian.hpp">
+      <Filter>Header Files\byte-pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeHamming.hpp">
+      <Filter>Header Files\byte-pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeJSON.hpp">
+      <Filter>Header Files\byte-pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeObjects.hpp">
+      <Filter>Header Files\byte-pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipePacket.hpp">
+      <Filter>Header Files\byte-pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeReader.hpp">
+      <Filter>Header Files\byte-pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeRepeater.hpp">
+      <Filter>Header Files\byte-pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeRLE.hpp">
+      <Filter>Header Files\byte-pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeSTL.hpp">
+      <Filter>Header Files\byte-pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeTCP.hpp">
+      <Filter>Header Files\byte-pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeUDP.hpp">
+      <Filter>Header Files\byte-pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeValueEncoder.hpp">
+      <Filter>Header Files\byte-pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeWriter.hpp">
+      <Filter>Header Files\byte-pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeXML.hpp">
+      <Filter>Header Files\byte-pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\console\Console.hpp">
+      <Filter>Header Files\console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\lutils\Message.hpp">
+      <Filter>Header Files\lutils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\RPC\Client.hpp">
+      <Filter>Header Files\rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\RPC\ClientExample.hpp">
+      <Filter>Header Files\rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\RPC\Method.hpp">
+      <Filter>Header Files\rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\RPC\Server.hpp">
+      <Filter>Header Files\rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\RPC\ServerExample.hpp">
+      <Filter>Header Files\rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\scheduling\Core.hpp">
+      <Filter>Header Files\scheduling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\scheduling\Scheduler.hpp">
+      <Filter>Header Files\scheduling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\scheduling\SchedulerExamples.hpp">
+      <Filter>Header Files\scheduling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\scheduling\Task.hpp">
+      <Filter>Header Files\scheduling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\scheduling\TaskFunctional.hpp">
+      <Filter>Header Files\scheduling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\BytePipe.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\Compute.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\Console.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\Core.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\RPC.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\Utils.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

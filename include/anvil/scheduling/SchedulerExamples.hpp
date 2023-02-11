@@ -29,7 +29,7 @@
 #include <thread>
 #include <vector>
 #include <memory>
-#include "asmith/TaskScheduler/Scheduler.hpp"
+#include "anvil/scheduling/Scheduler.hpp"
 
 namespace anvil {
 

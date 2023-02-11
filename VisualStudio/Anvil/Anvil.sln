@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.33026.149
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Anvil", "Anvil\Anvil.vcxproj", "{30DA2E10-2ECA-4088-97CD-BB78F84F91CC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{30DA2E10-2ECA-4088-97CD-BB78F84F91CC}.Debug|x64.ActiveCfg = Debug|x64
+		{30DA2E10-2ECA-4088-97CD-BB78F84F91CC}.Debug|x64.Build.0 = Debug|x64
+		{30DA2E10-2ECA-4088-97CD-BB78F84F91CC}.Debug|x86.ActiveCfg = Debug|Win32
+		{30DA2E10-2ECA-4088-97CD-BB78F84F91CC}.Debug|x86.Build.0 = Debug|Win32
+		{30DA2E10-2ECA-4088-97CD-BB78F84F91CC}.Release|x64.ActiveCfg = Release|x64
+		{30DA2E10-2ECA-4088-97CD-BB78F84F91CC}.Release|x64.Build.0 = Release|x64
+		{30DA2E10-2ECA-4088-97CD-BB78F84F91CC}.Release|x86.ActiveCfg = Release|Win32
+		{30DA2E10-2ECA-4088-97CD-BB78F84F91CC}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {36DE0E86-2080-40DA-9557-B1DCC4794BA4}
+	EndGlobalSection
+EndGlobal

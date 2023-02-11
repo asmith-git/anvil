@@ -22,7 +22,7 @@
 
 // For the latest version, please visit https://github.com/asmith-git/anvil-scheduling
 
-#include "asmith/TaskScheduler/Core.hpp"
+#include "anvil/scheduling/Core.hpp"
 #if ANVIL_DEBUG_TASKS
 	#include <cctype>
 	#include <chrono>
@@ -35,8 +35,8 @@
 #include <algorithm>
 #include <deque>
 #include <list>
-#include "asmith/TaskScheduler/Scheduler.hpp"
-#include "asmith/TaskScheduler/Task.hpp"
+#include "anvil/scheduling/Scheduler.hpp"
+#include "anvil/scheduling/Task.hpp"
 #include <emmintrin.h>
 
 namespace anvil {

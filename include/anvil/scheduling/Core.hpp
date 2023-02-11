@@ -41,7 +41,9 @@
 	#define ANVIL_TASK_FAST_CHILD_COUNT 1
 	#define ANVIL_TASK_DELAY_SCHEDULING 0
 	#define ANVIL_TASK_FIBERS 0
-	#define  ANVIL_DLL_EXPORT __declspec(dllimport)
+	#ifndef ANVIL_DLL_EXPORT
+		#define  ANVIL_DLL_EXPORT __declspec(dllimport)
+	#endif
 #endif
 
 // Define options that are missing

@@ -22,7 +22,7 @@
 
 // For the latest version, please visit https://github.com/asmith-git/anvil-scheduling
 
-#include "asmith/TaskScheduler/SchedulerExamples.hpp"
+#include "anvil/scheduling/SchedulerExamples.hpp"
 
 namespace anvil {
 

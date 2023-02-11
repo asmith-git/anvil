@@ -29,7 +29,7 @@
 #include <stdexcept>
 #include <memory>
 #include <shared_mutex>
-#include "asmith/TaskScheduler/Scheduler.hpp"
+#include "anvil/scheduling/Scheduler.hpp"
 
 #if ANVIL_TASK_FIBERS
 	#define NOMINMAX
