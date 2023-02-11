@@ -25,7 +25,7 @@
 #ifndef ANVIL_SCHEDULER_TASK_FUNCTIONAL_HPP
 #define ANVIL_SCHEDULER_TASK_FUNCTIONAL_HPP
 
-#include "asmith/TaskScheduler/Task.hpp"
+#include "anvil/scheduling/Task.hpp"
 
 namespace anvil {
 

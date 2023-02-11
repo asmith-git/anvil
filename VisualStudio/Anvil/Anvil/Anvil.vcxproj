@@ -256,6 +256,7 @@
     <ClInclude Include="..\..\..\include\anvil\RPC\Method.hpp" />
     <ClInclude Include="..\..\..\include\anvil\RPC\Server.hpp" />
     <ClInclude Include="..\..\..\include\anvil\RPC\ServerExample.hpp" />
+    <ClInclude Include="..\..\..\include\anvil\Scheduling.hpp" />
     <ClInclude Include="..\..\..\include\anvil\scheduling\Core.hpp" />
     <ClInclude Include="..\..\..\include\anvil\scheduling\Scheduler.hpp" />
     <ClInclude Include="..\..\..\include\anvil\scheduling\SchedulerExamples.hpp" />

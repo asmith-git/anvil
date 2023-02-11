@@ -8,11 +8,95 @@
 #include "anvil/byte-pipe/BytePipeJSON.hpp"
 #include "anvil/Console.hpp"
 #include "anvil/RPC.hpp"
+#include "anvil/Scheduling.hpp"
 
 static uint64_t CurrentTime() {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(
 		std::chrono::system_clock::now().time_since_epoch()
 		).count();
+}
+
+void SchedulerTest() {
+	using namespace anvil;
+
+	class QuadTreeTask : public Task {
+	public:
+		std::atomic_uint32_t* counter;
+		int8_t* data;
+		size_t data_w;
+		size_t data_h;
+		size_t my_x;
+		size_t my_y;
+		size_t my_w;
+		size_t my_h;
+
+	private:
+		bool Split() const {
+			if (my_w == 1u || my_h == 1u) return false;
+
+			return true;
+		}
+
+	protected:
+
+		void OnExecution() final {
+			const size_t end_x = my_x + my_w;
+			const size_t end_y = my_y + my_h;
+			for (size_t y = my_y; y < end_y; ++y) {
+				for (size_t x = my_x; x < end_x; ++x) {
+					if (data[y * data_w + x] & 1) ++*counter;
+				}
+			}
+		}
+
+	public:
+
+		QuadTreeTask() :
+			counter(nullptr),
+			data(nullptr),
+			data_w(0u),
+			data_h(0u),
+			my_x(0u),
+			my_y(0u),
+			my_w(0u),
+			my_h(0u)
+		{}
+
+		virtual ~QuadTreeTask() {
+
+		}
+	};
+
+	{
+		ExampleSchedulerMultiThreaded scheduler(8u);
+		{
+			std::atomic_uint32_t counter = 0u;
+
+			QuadTreeTask root;
+			root.counter = &counter;
+			root.data_w = 1024;
+			root.data_h = root.data_w;
+			root.my_x = 0u;
+			root.my_y = 0u;
+			root.my_w = root.data_w;
+			root.my_h = root.data_h;
+			root.data = new int8_t[root.data_w * root.data_h];
+
+			uint32_t real_counter = 0u;
+			for (size_t i = 0u; i < (root.data_w * root.data_h); ++i) {
+				root.data[i] = rand() % INT8_MAX;
+				if (root.data[i] & 1) ++real_counter;
+			}
+
+			std::cout << "Real count : " << real_counter << std::endl;
+
+			scheduler.Schedule(root);
+
+			root.Wait();
+
+			std::cout << "Tasks counted : " << counter << std::endl;
+		}
+	}
 }
 
 void EncodeOptimise() {
@@ -359,6 +443,9 @@ void XMLTest() {
 
 int main()
 {
+	SchedulerTest();
+	return 0;
+
 	Base64Test();
 	EncodeOptimise();
 	return 0;

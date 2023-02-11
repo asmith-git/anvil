@@ -296,5 +296,8 @@
     <ClInclude Include="..\..\..\include\anvil\Utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\Scheduling.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
