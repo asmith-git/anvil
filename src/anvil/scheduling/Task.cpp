@@ -1043,13 +1043,20 @@ HANDLE_ERROR:
 
 		enum { MAX_TASKS = 1u };
 #else
-		enum { MAX_TASKS = 32u };
+		enum { MAX_TASKS = 1u };
 #endif
 		// Try to start the execution of a new task
 		TaskSchedulingData* tasks[MAX_TASKS];
-		uint32_t task_count = static_cast<uint32_t>(_task_queue.size()) / _scheduler_debug.total_thread_count;
-		if (task_count < 1) task_count = 1u;
-		if (task_count > MAX_TASKS) task_count = MAX_TASKS;
+		uint32_t task_count = 1u;
+		if constexpr (MAX_TASKS > 1u) {
+			// If all threads are executing tasks
+			if (_scheduler_debug.sleeping_thread_count == 0u) {
+				// Take only a small proportion of the availbile tasks
+				task_count = static_cast<uint32_t>(_task_queue.size()) / (_scheduler_debug.total_thread_count * 4);
+				if (task_count < 1) task_count = 1u;
+				if (task_count > MAX_TASKS) task_count = MAX_TASKS;
+			}
+		}
 		RemoveNextTaskFromQueue(tasks, task_count);
 
 		// If there is a task available then execute it
