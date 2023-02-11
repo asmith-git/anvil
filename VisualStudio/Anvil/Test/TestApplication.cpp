@@ -21,6 +21,9 @@ void SchedulerTest() {
 
 	class QuadTreeTask : public Task {
 	public:
+		enum {
+			SQUARE_MODE = 0
+		};
 		std::atomic_uint32_t* counter;
 		int8_t* data;
 		size_t data_w;
@@ -32,10 +35,16 @@ void SchedulerTest() {
 
 	private:
 		bool ShouldSplit() const {
-			if (my_w <= 1u || my_h <= 1u) return false;
-			if (my_w & 1u || my_h & 1u) return false;
-			if (GetScheduler().GetSleepingThreadCount() == 0u) return false;
-			//if (GetNestingDepth() > 6) return false;
+			if (SQUARE_MODE) {
+				if (my_w <= 1u || my_h <= 1u) return false;
+				if (my_w & 1u || my_h & 1u) return false;
+			} else {
+				if (my_h <= 4u) return false;
+			}
+			//if (GetScheduler().GetSleepingThreadCount() == 0u) return false;
+			//if (GetNestingDepth() >= 2) return false;
+			//if (std::pow(4, GetNestingDepth()) >= GetScheduler().GetSleepingThreadCount()) return false;
+			if (std::pow(4, GetNestingDepth()) >= GetScheduler().GetThreadCount()) return false;
 
 			return true;
 		}
@@ -51,16 +60,27 @@ void SchedulerTest() {
 						c.data = data;
 						c.data_w = data_w;
 						c.data_h = data_h;
-						c.my_w = my_w / 2;
-						c.my_h = my_h / 2;
+						if (SQUARE_MODE) {
+							c.my_w = my_w / 2;
+							c.my_h = my_h / 2;
+						} else {
+							c.my_w = my_w;
+							c.my_h = my_h / 4;
+						}
 						c.my_x = my_x;
 						c.my_y = my_y;
 					}
 
-					children[1].my_x += children[1].my_w;
-					children[2].my_y += children[2].my_h;
-					children[3].my_x += children[3].my_w;
-					children[3].my_y += children[3].my_h;
+					if (SQUARE_MODE) {
+						children[1].my_x += children[1].my_w;
+						children[2].my_y += children[2].my_h;
+						children[3].my_x += children[3].my_w;
+						children[3].my_y += children[3].my_h;
+					} else {
+						children[1].my_y += children[1].my_h;
+						children[2].my_y += children[2].my_h * 2;
+						children[3].my_y += children[3].my_h * 3;
+					}
 
 					GetScheduler().Schedule(children, 4u);
 
@@ -109,7 +129,7 @@ void SchedulerTest() {
 		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		{
 			std::atomic_uint32_t counter = 0u;
-			enum { size = 1024 * 12 };
+			enum { size = 1024 * 18 };
 			int8_t* data = new int8_t[size * size];
 
 			uint32_t real_counter = 0u;
