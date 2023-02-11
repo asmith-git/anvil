@@ -1289,7 +1289,7 @@ namespace anvil { namespace BytePipe {
 			if (v.IsPrimitive()) {
 				val = v.GetPrimitiveValue();
 			} else {
-				val.type == TYPE_NULL;
+				val.type = TYPE_NULL;
 			}
 			return &v;
 		}
