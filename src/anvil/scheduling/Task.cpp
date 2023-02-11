@@ -968,7 +968,7 @@ HANDLE_ERROR:
 		TaskThreadLocalData& local_data = g_thread_additional_data;
 		local_data.is_worker_thread = true;
 
-		{
+		if(_scheduler_debug.thread_debug_data != nullptr) {
 			local_data.scheduler_index = _scheduler_debug.total_thread_count++;
 			ThreadDebugData& debug_data = _scheduler_debug.thread_debug_data[local_data.scheduler_index];
 			debug_data.tasks_executing = 0u;

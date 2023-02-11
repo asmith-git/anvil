@@ -103,7 +103,7 @@ namespace anvil {
 	// ExampleSchedulerSingleThreaded
 
 	ExampleSchedulerSingleThreaded::ExampleSchedulerSingleThreaded() :
-		ExampleScheduler(0u),
+		ExampleScheduler(1u),
 		_thread(*this)
 	{
 		_thread.Start();

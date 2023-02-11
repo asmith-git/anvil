@@ -323,9 +323,8 @@ namespace anvil {
 				StrongSchedulingPtr tmp = _data->parent.lock();
 				if (tmp) return tmp->task;
 			}
-#else
-			return nullptr;
 #endif
+			return nullptr;
 		}
 
 		/*!
