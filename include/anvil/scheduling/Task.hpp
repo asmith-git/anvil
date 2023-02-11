@@ -108,7 +108,7 @@ namespace anvil {
 		\copyright MIT License
 		\brief This structure contains the information that a Scheduler knows about a Task
 	*/
-	struct TaskSchedulingData {
+	struct ANVIL_DLL_EXPORT TaskSchedulingData {
 		typedef Scheduler::Priority Priority;
 		typedef Scheduler::PriorityInteger PriorityInteger;
 		typedef Scheduler::PriorityValue PriorityValue;
@@ -146,6 +146,26 @@ namespace anvil {
 		bool DetachFromParent();
 		bool DetachFromChildren();
 #endif
+	};
+
+	struct ANVIL_DLL_EXPORT TaskDataLock {
+		TaskSchedulingData& task_data;
+
+		TaskDataLock(TaskSchedulingData& task_data_ref) :
+			task_data(task_data_ref)
+		{
+#if ANVIL_USE_TASK_REFERENCE_COUNTER
+			std::lock_guard<std::shared_mutex>(task_data.lock);
+			++task_data.reference_counter;
+#endif
+		}
+
+		~TaskDataLock() {
+#if ANVIL_USE_TASK_REFERENCE_COUNTER
+			std::lock_guard<std::shared_mutex>(task_data.lock);
+			--task_data.reference_counter;
+#endif
+		}
 	};
 
 	/*!

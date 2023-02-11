@@ -471,16 +471,29 @@ namespace anvil {
 			_data->DetachFromParent();
 #endif
 #if ANVIL_USE_TASK_REFERENCE_COUNTER
-			--_data->reference_counter;
-			if (_data->reference_counter > 0u) {
+			bool still_has_references;
+			{
+				std::lock_guard<std::shared_mutex> task_lock(_data->lock);
+				--_data->reference_counter;
+				still_has_references = _data->reference_counter > 0;
+			}
+			if (still_has_references) {
 				if (_data->scheduler) {
 					_data->scheduler->Yield([this]()->bool {
+						std::shared_lock<std::shared_mutex> task_lock(_data->lock);
 						return _data->reference_counter == 0u;
 					});
 
 				} else {
-					while (_data->reference_counter > 0u) {
+					{
+						std::shared_lock<std::shared_mutex> task_lock(_data->lock);
+						still_has_references = _data->reference_counter > 0; 
+					}
+					while (still_has_references) {
 						std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+						std::shared_lock<std::shared_mutex> task_lock(_data->lock);
+						still_has_references = _data->reference_counter > 0;
 					}
 				}
 			}
@@ -542,6 +555,8 @@ namespace anvil {
 	}
 
 	bool Task::Cancel() throw() {
+		TaskDataLock task_lock(*_data);
+
 		// If no scheduler is attached to this task then it cannot be canceled
 		Scheduler* scheduler = _GetScheduler();
 		if (scheduler == nullptr) return false;
@@ -603,6 +618,8 @@ namespace anvil {
 	}
 
 	void Task::Wait() {
+		TaskDataLock task_lock(*_data);
+
 		Scheduler* scheduler = _GetScheduler();
 		if (scheduler == nullptr || _data->state == Task::STATE_COMPLETE || _data->state == Task::STATE_CANCELED || _data->state == Task::STATE_INITIALISED) return;
 
@@ -655,6 +672,7 @@ namespace anvil {
 
 
 	void Task::SetPriority(Priority priority) {
+		TaskDataLock task_lock(*_data);
 
 		if constexpr(Priority::PRIORITY_HIGHEST > 255u) priority = static_cast<Priority>(priority +GetNestingDepth());
 
@@ -682,6 +700,7 @@ HANDLE_ERROR:
 	void Task::Execute() throw() {
 		// Remember the scheduler for later
 		Scheduler* const scheduler = _GetScheduler();
+		TaskDataLock task_lock(*_data);
 
 		const auto CatchException = [this](std::exception_ptr&& exception, bool set_exception) {
 			// Handle the exception
@@ -765,6 +784,14 @@ HANDLE_ERROR:
 #else
 		FiberFunction(*g_thread_additional_data.task_stack.back());
 #endif
+
+		{
+			// Post-execution cleanup
+			std::lock_guard<std::shared_mutex> task_lock(_data->lock);
+			_data->state = Task::STATE_COMPLETE;
+			_data->scheduler = nullptr;
+			_data->wait_flag = 1u;
+		}
 	}
 
 #if ANVIL_TASK_FIBERS
@@ -776,6 +803,7 @@ HANDLE_ERROR:
 	void Task::FiberFunction(Task& task) {
 		if (true) {
 #endif
+			TaskDataLock task_lock(*task._data);
 
 			Scheduler& scheduler = task.GetScheduler();
 			const auto CatchException = [&task](std::exception_ptr&& exception, bool set_exception) {
@@ -845,16 +873,6 @@ HANDLE_ERROR:
 				g_debug_event_handler(nullptr, &e);
 			}
 #endif
-
-			{
-
-				// Post-execution cleanup
-				std::lock_guard<std::shared_mutex> task_lock(task._data->lock);
-
-				task._data->state = Task::STATE_COMPLETE;
-				task._data->wait_flag = 1u;
-				task._data->scheduler = nullptr;
-			}
 
 			scheduler.TaskQueueNotify();
 
@@ -1219,6 +1237,7 @@ HANDLE_ERROR:
 		size_t ready_count = 0u;
 		for (uint32_t i = 0u; i < count; ++i) {
 			Task& t = *tasks[i];
+			TaskDataLock task_data_lock(*t._data);
 
 			std::lock_guard<std::shared_mutex> task_lock(t._data->lock);
 
