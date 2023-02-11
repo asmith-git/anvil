@@ -24,7 +24,7 @@ namespace anvil { namespace BytePipe {
 		\date September 2023
 		\brief Duplicates data to multiple parsers
 	*/
-	class Repeater final : public Parser {
+	class ANVIL_DLL_EXPORT Repeater final : public Parser {
 	private:
 		std::vector<Parser*> _parsers;
 	public:

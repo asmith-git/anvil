@@ -25,7 +25,7 @@
 
 namespace anvil { namespace RPC {
 
-	class ServerConnection {
+	class ANVIL_DLL_EXPORT ServerConnection {
 	private:
 		Server& _server;
 		std::thread _thread;
@@ -38,7 +38,7 @@ namespace anvil { namespace RPC {
 		virtual ~ServerConnection();
 	};
 
-	class ServerJsonTCP final : public ServerConnection {
+	class ANVIL_DLL_EXPORT ServerJsonTCP final : public ServerConnection {
 	private:
 		std::unique_ptr<BytePipe::TCPServerPipe> _tcp;
 		BytePipe::JsonWriter _json_writer;

@@ -29,7 +29,7 @@ namespace anvil { namespace BytePipe {
 
 #if ANVIL_XML_SUPPORT
 
-	void ReadXML(const rapidxml::xml_node<>& node, Parser& parser);
+	ANVIL_DLL_EXPORT void ReadXML(const rapidxml::xml_node<>& node, Parser& parser);
 
 #endif
 
@@ -38,7 +38,7 @@ namespace anvil { namespace BytePipe {
 		\date March 2023
 		\brief Converts a BytePipe serialisation into a XML string
 	*/
-	class XMLWriter final : public Parser {
+	class ANVIL_DLL_EXPORT XMLWriter final : public Parser {
 	private:
 		std::vector<std::string> _node_names;
 		std::string _str;

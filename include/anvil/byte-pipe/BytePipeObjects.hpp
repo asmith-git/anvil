@@ -142,7 +142,7 @@ namespace anvil { namespace BytePipe {
 		}
 	}
 
-	struct PrimitiveValue {
+	struct ANVIL_DLL_EXPORT PrimitiveValue {
 		union {
 			void* ptr;
 			bool b;
@@ -302,7 +302,7 @@ namespace anvil { namespace BytePipe {
 	struct ValueEncoder;
 
 	namespace detail {
-		struct Pod {
+		struct ANVIL_DLL_EXPORT Pod {
 			std::vector<uint8_t> data;
 			PodType type;
 
@@ -361,7 +361,7 @@ namespace anvil { namespace BytePipe {
 
 	}
 
-	class Value {
+	class ANVIL_DLL_EXPORT Value {
 	public:
 		typedef void Null;
 		typedef std::vector<Value> Array;
@@ -431,8 +431,9 @@ namespace anvil { namespace BytePipe {
 
 #if ANVIL_OPENCV_SUPPORT
 		ANVIL_STRONG_INLINE Pod& SetImage() {
-			Pod pod = SetPod();
+			Pod& pod = SetPod();
 			pod.type = POD_OPENCV_IMAGE;
+			return pod;
 		}
 #endif
 

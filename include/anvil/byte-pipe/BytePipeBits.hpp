@@ -19,7 +19,7 @@
 
 namespace anvil { namespace BytePipe {
 
-	struct BitOutputStream {
+	struct ANVIL_DLL_EXPORT BitOutputStream {
 	private:
 		uint8_t* _out;				//!< The location that the next complete byte will be written to
 		uint32_t _buffer;			//!< The bits that were leftover from the last write
@@ -29,7 +29,7 @@ namespace anvil { namespace BytePipe {
 		void WriteBits(uint32_t bits, size_t bit_count);
 	};
 
-	struct BitInputStream {
+	struct ANVIL_DLL_EXPORT BitInputStream {
 	private:
 		const uint8_t* _in;			//!< The location that the next byte will be read from
 		uint32_t _buffer;			//!< The bits that were leftover from the last read

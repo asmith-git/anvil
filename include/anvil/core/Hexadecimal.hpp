@@ -20,7 +20,7 @@
 #include <string>
 
 namespace anvil {
-	struct Hexadecimal {
+	struct ANVIL_DLL_EXPORT Hexadecimal {
 		static void Encode(const uint8_t* src, size_t bytes_in, char* dst, size_t& dst_len);
 		static void Decode(const char* src, size_t src_len, uint8_t* dst, size_t& bytes_out);
 

@@ -30,7 +30,7 @@ namespace anvil { namespace BytePipe {
 		\details The number of bits sent to ReadBytes() must be divisble by 4 otherwise an exception will be thrown.
 		\see RawHamming74OutputPipe
 	*/
-	class RawHamming74InputPipe final : public InputPipe {
+	class ANVIL_DLL_EXPORT RawHamming74InputPipe final : public InputPipe {
 	private:
 		InputPipe& _downstream_pipe;
 	public:
@@ -44,7 +44,7 @@ namespace anvil { namespace BytePipe {
 		\details The number of bits sent to WriteBytes() must be divisble by 4 otherwise an exception will be thrown.
 		\see RawHamming74InputPipe
 	*/
-	class RawHamming74OutputPipe final : public OutputPipe {
+	class ANVIL_DLL_EXPORT RawHamming74OutputPipe final : public OutputPipe {
 	private:
 		OutputPipe& _downstream_pipe;
 	public:
@@ -60,7 +60,7 @@ namespace anvil { namespace BytePipe {
 		This adds some additional overhead, use RawHamming74InputPipe to avoid.
 		\see Hamming74OutputPipe
 	*/
-	class Hamming74InputPipe final : public InputPipe {
+	class ANVIL_DLL_EXPORT Hamming74InputPipe final : public InputPipe {
 	private:
 		PacketInputPipe _packet_pipe;
 		RawHamming74InputPipe _hamming_pipe;
@@ -76,7 +76,7 @@ namespace anvil { namespace BytePipe {
 		This adds some additional overhead, use RawHamming74OutputPipe to avoid.
 		\see Hamming74InputPipe
 	*/
-	class Hamming74OutputPipe final : public OutputPipe {
+	class ANVIL_DLL_EXPORT Hamming74OutputPipe final : public OutputPipe {
 	private:
 		RawHamming74OutputPipe _hamming_pipe;
 		PacketOutputPipe _packet_pipe;
@@ -92,7 +92,7 @@ namespace anvil { namespace BytePipe {
 		\details The number of bits sent to WriteBytes() must be divisble by 11 otherwise an exception will be thrown.
 		\see RawHamming1511InputPipe
 	*/
-	class RawHamming1511OutputPipe final : public OutputPipe {
+	class ANVIL_DLL_EXPORT RawHamming1511OutputPipe final : public OutputPipe {
 	private:
 		OutputPipe& _downstream_pipe;
 	public:
@@ -107,7 +107,7 @@ namespace anvil { namespace BytePipe {
 		\details The number of bits sent to ReadBytes() must be divisble by 11 otherwise an exception will be thrown.
 		\see RawHamming1511OutputPipe
 	*/
-	class RawHamming1511InputPipe final : public InputPipe {
+	class ANVIL_DLL_EXPORT RawHamming1511InputPipe final : public InputPipe {
 	private:
 		InputPipe& _downstream_pipe;
 	public:
@@ -122,7 +122,7 @@ namespace anvil { namespace BytePipe {
 		This adds some additional overhead, use RawHamming1511InputPipe to avoid.
 		\see Hamming1511OutputPipe
 	*/
-	class Hamming1511InputPipe final : public InputPipe {
+	class ANVIL_DLL_EXPORT Hamming1511InputPipe final : public InputPipe {
 	private:
 		PacketInputPipe _packet_pipe;
 		RawHamming1511InputPipe _hamming_pipe;
@@ -138,7 +138,7 @@ namespace anvil { namespace BytePipe {
 		This adds some additional overhead, use RawHamming1511OutputPipe to avoid.
 		\see Hamming1511InputPipe
 	*/
-	class Hamming1511OutputPipe final : public OutputPipe {
+	class ANVIL_DLL_EXPORT Hamming1511OutputPipe final : public OutputPipe {
 	private:
 		RawHamming1511OutputPipe _hamming_pipe;
 		PacketOutputPipe _packet_pipe;

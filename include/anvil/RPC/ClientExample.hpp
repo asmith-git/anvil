@@ -24,7 +24,7 @@
 
 namespace anvil { namespace RPC {
 
-	class ClientJsonTCP final : public Client {
+	class ANVIL_DLL_EXPORT ClientJsonTCP final : public Client {
 	private:
 		BytePipe::TCPClientPipe _tcp;
 		BytePipe::JsonWriter _json_writer;

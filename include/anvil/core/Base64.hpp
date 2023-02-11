@@ -20,7 +20,7 @@
 #include <string>
 
 namespace anvil {
-	struct Base64 {
+	struct ANVIL_DLL_EXPORT Base64 {
 		static const char* const GetDefaultTable();
 
 		static void Encode(const uint8_t* src, size_t bytes_in, char* dst, size_t& dst_len, const char* const table = GetDefaultTable(), char padding = '=');

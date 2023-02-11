@@ -28,7 +28,7 @@
 namespace anvil { namespace BytePipe {
 
 #if ANVIL_JSON_SUPPORT
-		void ReadJSON(const nlohmann::json& node, Parser& parser);
+	ANVIL_DLL_EXPORT void ReadJSON(const nlohmann::json& node, Parser& parser);
 #endif
 
 	/*!
@@ -36,7 +36,7 @@ namespace anvil { namespace BytePipe {
 		\date March 2021
 		\brief Converts a BytePipe serialisation into a JSON string
 	*/
-	class JsonWriter final : public Parser {
+	class ANVIL_DLL_EXPORT JsonWriter final : public Parser {
 	private:
 		mutable std::string _out;
 		std::string _next_id;

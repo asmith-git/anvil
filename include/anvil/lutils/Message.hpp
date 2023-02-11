@@ -32,7 +32,7 @@ namespace anvil { namespace lutils { namespace msg {
 		MSG_NULL = 0u						//!< Default message type
 	};
 
-	struct Message {
+	struct ANVIL_DLL_EXPORT Message {
 		Producer* producer;					//!< The msg::Producer that created this message
 		void* data;							//!< Additional data that the producer appended to this message
 		uint64_t id;						//!< An ID number unique to each message instance
@@ -53,7 +53,7 @@ namespace anvil { namespace lutils { namespace msg {
 		{}
 	};
 
-	class Queue {
+	class ANVIL_DLL_EXPORT Queue {
 	private:
 		std::atomic_uint32_t _recursion_counter;
 #if ANVIL_LUTILS_REUSE_MESSAGE_IDS
@@ -85,7 +85,7 @@ namespace anvil { namespace lutils { namespace msg {
 		size_t Flush();
 	};
 
-	class CommonBase {
+	class ANVIL_DLL_EXPORT CommonBase {
 	protected:
 		Queue& _queue;
 	public:
@@ -97,7 +97,7 @@ namespace anvil { namespace lutils { namespace msg {
 		}
 	};
 
-	class Producer : public CommonBase {
+	class ANVIL_DLL_EXPORT Producer : public CommonBase {
 	protected:
 		virtual void Cleanup(Message&) = 0;
 
@@ -111,7 +111,7 @@ namespace anvil { namespace lutils { namespace msg {
 		virtual ~Producer();
 	};
 
-	class Consumer : public CommonBase {
+	class ANVIL_DLL_EXPORT Consumer : public CommonBase {
 	protected:
 		virtual void Consume(const Message* const msgs, const size_t count) = 0;
 	public:

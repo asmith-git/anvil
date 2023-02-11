@@ -30,7 +30,7 @@ namespace anvil { namespace RPC {
 		ERROR_INTERNAL = -32603
 	};
 
-	class Server {
+	class ANVIL_DLL_EXPORT Server {
 	private:
 		std::map<std::string, Method> _methods;
 		mutable std::mutex _mutex;

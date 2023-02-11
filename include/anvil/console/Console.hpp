@@ -54,7 +54,7 @@ namespace anvil {
 
 	class Console;
 
-	class ConsoleText {
+	class ANVIL_DLL_EXPORT ConsoleText {
 	private:
 		std::string _text;
 		struct {
@@ -72,7 +72,7 @@ namespace anvil {
 		ConsoleText(const std::string& text, const ConsoleColour foreground = CONSOLE_WHITE, const ConsoleColour background = CONSOLE_BLACK);
 	};
 
-	class Console {
+	class ANVIL_DLL_EXPORT Console {
 	public:
 		struct State {
 			std::vector<ConsoleText> text;

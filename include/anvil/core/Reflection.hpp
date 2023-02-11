@@ -24,7 +24,7 @@
 
 namespace anvil {
 
-	void ANVIL_CALL reflect(void*, const void*, size_t) throw();
+	ANVIL_DLL_EXPORT void ANVIL_CALL reflect(void*, const void*, size_t) throw();
 
 	static ANVIL_STRONG_INLINE uint8_t ANVIL_CALL reflect(uint8_t aValue) throw() {
 		return detail::g_reflect_lut[aValue];

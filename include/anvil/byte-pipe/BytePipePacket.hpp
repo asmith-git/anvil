@@ -64,7 +64,7 @@ namespace anvil { namespace BytePipe {
 	};
 
 
-	class PacketInputPipe : public InputPipe {
+	class ANVIL_DLL_EXPORT PacketInputPipe : public InputPipe {
 	private:
 		std::deque<uint8_t> _buffer;
 		InputPipe& _downstream_pipe;
@@ -76,7 +76,7 @@ namespace anvil { namespace BytePipe {
 		size_t ReadBytes(void* dst, const size_t bytes) final;
 	};
 
-	class PacketOutputPipe : public OutputPipe {
+	class ANVIL_DLL_EXPORT PacketOutputPipe : public OutputPipe {
 	private:
 		OutputPipe& _downstream_pipe;
 		uint8_t* _buffer;

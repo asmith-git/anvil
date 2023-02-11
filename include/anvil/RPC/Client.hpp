@@ -20,7 +20,7 @@
 
 namespace anvil { namespace RPC {
 
-	class Client {
+	class ANVIL_DLL_EXPORT Client {
 	private:
 		std::condition_variable _response_given;
 		int32_t _next_id;

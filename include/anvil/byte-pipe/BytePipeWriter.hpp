@@ -26,7 +26,7 @@ namespace anvil { namespace BytePipe {
 		\brief An output stream for binary data.
 		\see InputPipe
 	*/
-	class OutputPipe {
+	class ANVIL_DLL_EXPORT OutputPipe {
 	public:
 		virtual ~OutputPipe() {}
 		virtual size_t WriteBytes(const void* src, const size_t bytes) = 0;
@@ -41,7 +41,7 @@ namespace anvil { namespace BytePipe {
 		\brief Writes binary serialised data into an OutputPipe
 		\see Reader
 	*/
-	class Writer final : public Parser {
+	class ANVIL_DLL_EXPORT Writer final : public Parser {
 	private:
 		Writer(Writer&&) = delete;
 		Writer(const Writer&) = delete;

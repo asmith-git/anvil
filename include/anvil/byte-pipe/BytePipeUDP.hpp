@@ -21,7 +21,7 @@ namespace anvil { namespace BytePipe {
 
 	typedef TCPPort UDPPort;
 
-	class UDPInputPipe final : public InputPipe {
+	class ANVIL_DLL_EXPORT UDPInputPipe final : public InputPipe {
 	private:
 #if ANVIL_OS == ANVIL_WINDOWS
 		SOCKET _socket;
@@ -33,7 +33,7 @@ namespace anvil { namespace BytePipe {
 		void ReadBytesFast(void* dst, const size_t bytes) final;
 	};
 
-	class UDPOutputPipe final : public OutputPipe {
+	class ANVIL_DLL_EXPORT UDPOutputPipe final : public OutputPipe {
 	private:
 #if ANVIL_OS == ANVIL_WINDOWS
 		SOCKET _socket;

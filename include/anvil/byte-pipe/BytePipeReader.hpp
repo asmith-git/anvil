@@ -33,7 +33,7 @@ namespace anvil { namespace BytePipe {
 		\brief An input stream for binary data.
 		\see OutputPipe
 	*/
-	class InputPipe {
+	class ANVIL_DLL_EXPORT InputPipe {
 	public:
 		virtual ~InputPipe() {}
 		virtual size_t ReadBytes(void* dst, const size_t bytes) = 0;
@@ -45,7 +45,7 @@ namespace anvil { namespace BytePipe {
 		\date September 2019
 		\brief Interface for serialising or deserialising data.
 	*/
-	class Parser {
+	class ANVIL_DLL_EXPORT Parser {
 	public:
 		Parser();
 		virtual ~Parser();
@@ -593,7 +593,7 @@ public:
 		\brief Reads binary serialised data from an InputPipe and outputs it into a Parser
 		\see Writer
 	*/
-	class Reader {
+	class ANVIL_DLL_EXPORT Reader {
 	private:
 		Reader(Reader&&) = delete;
 		Reader(const Reader&) = delete;
@@ -614,7 +614,7 @@ public:
 		\date March 2021
 		\brief Converts data into DOM (document object model) style format.
 	*/
-	class ValueParser final : public Parser {
+	class ANVIL_DLL_EXPORT ValueParser final : public Parser {
 	private:
 		Value _root;
 		std::vector<Value*> _value_stack;

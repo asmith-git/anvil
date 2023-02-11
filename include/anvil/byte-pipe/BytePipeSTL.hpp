@@ -21,7 +21,7 @@
 
 namespace anvil { namespace BytePipe {
 
-	class IStreamPipe final : public InputPipe {
+	class ANVIL_DLL_EXPORT IStreamPipe final : public InputPipe {
 	private:
 		std::istream& _stream;
 	public:
@@ -31,7 +31,7 @@ namespace anvil { namespace BytePipe {
 		void ReadBytesFast(void* dst, const size_t bytes) final;
 	};
 
-	class OStreamPipe final : public OutputPipe {
+	class ANVIL_DLL_EXPORT OStreamPipe final : public OutputPipe {
 	private:
 		std::ostream& _stream;
 	public:

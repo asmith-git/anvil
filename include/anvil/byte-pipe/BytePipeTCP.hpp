@@ -35,7 +35,7 @@ namespace anvil { namespace BytePipe {
 	typedef uint16_t TCPPort;
 
 	namespace detail {
-		class TCPCommonPipe : public InputPipe, public OutputPipe {
+		class ANVIL_DLL_EXPORT TCPCommonPipe : public InputPipe, public OutputPipe {
 		protected:
 #if ANVIL_OS == ANVIL_WINDOWS
 			SOCKET _socket;
@@ -52,13 +52,13 @@ namespace anvil { namespace BytePipe {
 		};
 	}
 
-	class TCPServerPipe final : public detail::TCPCommonPipe {
+	class ANVIL_DLL_EXPORT TCPServerPipe final : public detail::TCPCommonPipe {
 	public:
 		TCPServerPipe(TCPPort listen_port);
 		virtual ~TCPServerPipe();
 	};
 
-	class TCPClientPipe final : public detail::TCPCommonPipe {
+	class ANVIL_DLL_EXPORT TCPClientPipe final : public detail::TCPCommonPipe {
 	public:
 		TCPClientPipe(IPAddress server_ip, TCPPort server_port);
 		virtual ~TCPClientPipe();
