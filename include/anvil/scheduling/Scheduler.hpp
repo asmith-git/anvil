@@ -38,7 +38,8 @@ namespace anvil {
 	class ANVIL_DLL_EXPORT Scheduler {
 	public:
 		enum FeatureFlag : uint32_t {
-			FEATURE_ONLY_EXECUTE_ON_WORKER_THREADS = 1u << 0u, //!< Previously known as ANVIL_NO_EXECUTE_ON_WAIT
+			FEATURE_ONLY_EXECUTE_ON_WORKER_THREADS	= 1u << 0u, //!< Previously known as ANVIL_NO_EXECUTE_ON_WAIT
+			FEATURE_TASK_CALLBACKS					= 1u << 1u, //!< Previously known as ANVIL_TASK_CALLBACKS
 
 			DEFAULT_FEATURES = 0u
 		};

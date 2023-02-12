@@ -82,7 +82,6 @@ namespace anvil {
 	private:
 		std::vector<std::shared_ptr<ExampleThread>> _threads;
 	public:
-		ExampleSchedulerMultiThreaded(uint32_t feature_flags = DEFAULT_FEATURES);
 		ExampleSchedulerMultiThreaded(size_t count, uint32_t feature_flags = DEFAULT_FEATURES);
 		virtual ~ExampleSchedulerMultiThreaded();
 	};

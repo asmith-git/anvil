@@ -572,15 +572,14 @@ namespace anvil {
 			}
 #endif
 
-#if ANVIL_TASK_CALLBACKS
-			// Call the cancelation callback
-			try {
-				OnCancel();
-			} catch (...) {
-				SetException(std::current_exception());
+			if ((scheduler->_feature_flags & Scheduler::FEATURE_TASK_CALLBACKS) != 0u) {
+				// Call the cancelation callback
+				try {
+					OnCancel();
+				} catch (...) {
+					SetException(std::current_exception());
+				}
 			}
-			
-#endif
 			// State change and cleanup
 			std::lock_guard<std::shared_mutex> lock(_data->lock);
 			_data->state = Task::STATE_CANCELED;
@@ -684,18 +683,20 @@ HANDLE_ERROR:
 			} else {			
 				// Cancel the Task
 				_data->state = Task::STATE_CANCELED;
-#if ANVIL_TASK_CALLBACKS
-				// Call the cancelation callback
-				try {
-					OnCancel();
-				} catch (std::exception& e) {
-					// Task caught during execution takes priority as it probably has more useful debugging information
-					if (!set_exception) this->SetException(std::current_exception());
-				} catch (...) {
-					// Task caught during execution takes priority as it probably has more useful debugging information
-					if (!set_exception) this->SetException(std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception")));
+				if ((_data->scheduler->_feature_flags & Scheduler::FEATURE_TASK_CALLBACKS) != 0u) {
+					// Call the cancelation callback
+					try {
+						OnCancel();
+
+					} catch (std::exception& e) {
+						// Task caught during execution takes priority as it probably has more useful debugging information
+						if (!set_exception) this->SetException(std::current_exception());
+
+					} catch (...) {
+						// Task caught during execution takes priority as it probably has more useful debugging information
+						if (!set_exception) this->SetException(std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception")));
+					}
 				}
-#endif
 			}
 		};
 #if ANVIL_TASK_FIBERS
@@ -781,20 +782,20 @@ HANDLE_ERROR:
 				} else {
 					// Cancel the Task
 					task._data->state = Task::STATE_CANCELED;
-#if ANVIL_TASK_CALLBACKS
-					// Call the cancelation callback
-					try {
-						task.OnCancel();
+					if ((task._data->scheduler->_feature_flags & Scheduler::FEATURE_TASK_CALLBACKS) != 0u) {
+						// Call the cancelation callback
+						try {
+							task.OnCancel();
+
+						} catch (std::exception& e) {
+							// Task caught during execution takes priority as it probably has more useful debugging information
+							if (!set_exception) task.SetException(std::current_exception());
+
+						} catch (...) {
+							// Task caught during execution takes priority as it probably has more useful debugging information
+							if (!set_exception) task.SetException(std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception")));
+						}
 					}
-					catch (std::exception& e) {
-						// Task caught during execution takes priority as it probably has more useful debugging information
-						if (!set_exception) task.SetException(std::current_exception());
-					}
-					catch (...) {
-						// Task caught during execution takes priority as it probably has more useful debugging information
-						if (!set_exception) task.SetException(std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception")));
-					}
-#endif
 				}
 			};
 
@@ -845,6 +846,26 @@ HANDLE_ERROR:
 			g_thread_additional_data.SwitchToMainFiber();
 #endif
 		}
+	}
+
+	void Task::OnExecution() {
+		// Does nothing
+	}
+
+	void Task::OnScheduled() {
+		// Does nothing
+	}
+
+	void Task::OnBlock() {
+		// Does nothing
+	}
+
+	void Task::OnResume() {
+		// Does nothing
+	}
+
+	void Task::OnCancel() {
+		// Does nothing
 	}
 
 	// Scheduler
@@ -1076,9 +1097,9 @@ HANDLE_ERROR:
 			if (t->_data->state != Task::STATE_EXECUTING) throw std::runtime_error("anvil::Scheduler::Yield : Task cannot yield unless it is in STATE_EXECUTING");
 #endif
 			t->_data->state = Task::STATE_BLOCKED;
-#if ANVIL_TASK_CALLBACKS
-			t->OnBlock();
-#endif
+			if ((_feature_flags & Scheduler::FEATURE_TASK_CALLBACKS) != 0u) {
+				t->OnBlock();
+			}
 		}
 
 #if ANVIL_TASK_FIBERS
@@ -1156,9 +1177,9 @@ HANDLE_ERROR:
 			// State change
 			t->_data->state = Task::STATE_EXECUTING;
 
-#if ANVIL_TASK_CALLBACKS
-			t->OnResume();
-#endif
+			if ((_feature_flags & Scheduler::FEATURE_TASK_CALLBACKS) != 0u) {
+				t->OnResume();
+			}
 		}
 	}
 
@@ -1232,20 +1253,21 @@ HANDLE_ERROR:
 			}
 #endif
 
-#if ANVIL_TASK_CALLBACKS
-			// Task callback
-			try {
-				t.OnScheduled();
-			} catch (std::exception& e) {
-				t.SetException(std::current_exception());
-				t.Cancel();
-				continue;
-			} catch (...) {
-				t.SetException(std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception")));
-				t.Cancel();
-				continue;
+
+			if ((_feature_flags & Scheduler::FEATURE_TASK_CALLBACKS) != 0u) {
+				// Task callback
+				try {
+					t.OnScheduled();
+				} catch (std::exception& e) {
+					t.SetException(std::current_exception());
+					t.Cancel();
+					continue;
+				} catch (...) {
+					t.SetException(std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception")));
+					t.Cancel();
+					continue;
+				}
 			}
-#endif
 
 			// Skip the task if initalisation failed
 			if (t._data->scheduler != this) continue;

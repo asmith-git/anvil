@@ -154,7 +154,6 @@ namespace anvil {
 		\copyright MIT License
 		\brief Base structure for implementing Task based parallel programming.
 		\details There are currently three optional compiler constants that can be defined (> 0) to enable extension features:
-		- ANVIL_TASK_CALLBACKS : Adds user callbacks when Task is scheduled, suspended or resumed.
 		- ANVIL_TASK_EXTENDED_PRIORITY : Allows the user to program finer grained control of how tasks with equal priority are handled by the scheduler.
 		- ANVIL_TASK_MEMORY_OPTIMISED : Compressed the internal memory layout of the Task to from 20+ bytes to 8 bytes. Exceptions and ANVIL_TASK_EXTENDED_PRIORITY are not allowed in this mode.
 		- ANVIL_TASK_DELAY_SCHEDULING : A task is not executed until Task::IsReadyToExecute() returns true.
@@ -221,34 +220,32 @@ namespace anvil {
 			\details Called by the scheduler when it is ready.
 			An exception thrown by this call can be retrieved when Task::Wait() is called.
 		*/
-		virtual void OnExecution() = 0;
+		virtual void OnExecution();
 
-#if ANVIL_TASK_CALLBACKS
 		/*!
 			\brief Called when the task is being added to the scheduler's work queue.
 			\details If an exception is thrown then the task goes into OnScheduled and the task will not be scheduled.
 			The exception can be retrieved by calling Task::Wait().
 		*/
-		virtual void OnScheduled() = 0;
+		virtual void OnScheduled();
 
 		/*!
 			\brief Called when the task is being suspended by the scheduler (because Task::Yield() was called).
 			\details Exceptions thrown are handled the same way as if thrown by the wait condition function.
 		*/
-		virtual void OnBlock() = 0;
+		virtual void OnBlock();
 
 		/*!
 			\brief Called when a suspended task is about to resume execution.
 			\details Exceptions thrown are handled the same way as if thrown by Task::Execute().
 		*/
-		virtual void OnResume() = 0;
+		virtual void OnResume();
 
 		/*!
 			\brief Called a task is canceled.
 			\see Cancel
 		*/
-		virtual void OnCancel() = 0;
-#endif
+		virtual void OnCancel();
 
 #if ANVIL_TASK_EXTENDED_PRIORITY
 		/*!

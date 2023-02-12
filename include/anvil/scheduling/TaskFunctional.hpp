@@ -51,23 +51,6 @@ namespace anvil {
 			void OnExecution() final {
 				_payload();
 			}
-#if ANVIL_TASK_CALLBACKS
-			void OnScheduled() final {
-
-			}
-		
-			void OnBlock() final {
-
-			}
-
-			void OnResume() final {
-
-			}
-
-			void OnCancel() final {
-
-			}
-#endif
 
 #if ANVIL_TASK_EXTENDED_PRIORITY
 			PriorityInteger CalculateExtendedPriorty() const final {
@@ -127,23 +110,6 @@ namespace anvil {
 			void OnExecution() final {
 				this->SetResult(_payload());
 			}
-#if ANVIL_TASK_CALLBACKS
-			void OnScheduled() final {
-	
-			}
-			
-			void OnBlock() final {
-	
-			}
-
-			void OnResume() final {
-	
-			}
-
-			void OnCancel() final {
-
-			}
-#endif
 
 #if ANVIL_TASK_EXTENDED_PRIORITY
 			Task::PriorityInteger CalculateExtendedPriorty() const final {
