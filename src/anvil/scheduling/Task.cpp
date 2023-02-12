@@ -257,11 +257,7 @@ namespace anvil {
 #endif
 			scheduler_index(g_next_thread_index--),
 			is_worker_thread(false)
-		{
-#if ANVIL_TASK_FIBERS
-			main_fiber = ConvertThreadToFiber(nullptr);
-#endif
-		}
+		{}
 		
 		~TaskThreadLocalData() {
 #if ANVIL_TASK_FIBERS
@@ -305,14 +301,21 @@ namespace anvil {
 	
 	bool SwitchToAnyTask() {
 		// Try to execute a task that is ready to resume
+RETRY:
 		if (! fiber_list.empty()) {
 			auto end = fiber_list.end();
 			auto i = std::find_if(fiber_list.begin(), end, [this](FiberData* fiber)->bool {
 				return fiber != current_fiber && fiber->task != nullptr && (fiber->yield_condition == nullptr || (*fiber->yield_condition)());
 			});
 			if (i != end) {
-				// Move fiber to the back of the list
 				FiberData* fiber = *i;
+
+				if (fiber->task && fiber->task->_data->scheduler == nullptr) {
+					fiber->task = nullptr;
+					goto RETRY;
+				}
+
+				// Move fiber to the back of the list
 				fiber_list.erase(i);
 				fiber_list.push_back(fiber);
 
@@ -324,6 +327,25 @@ namespace anvil {
 		}
 	
 		return false;
+	}
+
+	void SwitchToMainFiber2() {
+		// Only switch to the main fiber if there are no other fibers
+		const auto HasOtherFiber = [this]()->bool {
+			for (FiberData* fiber : fiber_list) {
+				if (fiber == current_fiber) continue;
+				if (fiber->task == nullptr) continue;
+				return true;
+			}
+
+			return false;
+		};
+
+		while (HasOtherFiber()) {
+			SwitchToAnyTask();
+		}
+
+		SwitchToMainFiber();
 	}
 		
 	void SwitchToMainFiber() {
@@ -410,15 +432,39 @@ namespace anvil {
 	}
 
 	bool TaskSchedulingData::DetachFromChildren() {
-		std::lock_guard<std::shared_mutex> lockguard(lock);
+		TaskDataLock dataguard(*this);
+		{
+			std::lock_guard<std::shared_mutex> lockguard(lock);
+			if (parent) {
+				TaskDataLock dataguard2(*parent);
+				{
+					std::lock_guard<std::shared_mutex> lockguard2(parent->lock);
 
-		while (!children.empty()) {
-			TaskSchedulingData* c = children.back();
-			if (!RemoveChild(c)) return false;
-			if (parent) parent->AddChild(c); 	// Transfer children to grandparent
+					while (!children.empty()) {
+						TaskSchedulingData* c = children.back();
+						TaskDataLock dataguard3(*c);
+						{
+							std::lock_guard<std::shared_mutex> lockguard3(c->lock);
+							if (!RemoveChild(c)) continue;
+							parent->AddChild(c); 	// Transfer children to grandparent
+						}
+					}
+				}
+
+			}
+			else {
+				while (!children.empty()) {
+					TaskSchedulingData* c = children.back();
+					TaskDataLock dataguard3(*c);
+					{
+						std::lock_guard<std::shared_mutex> lockguard3(c->lock);
+						RemoveChild(c);
+					}
+				}
+			}
 		}
 
-		return true;
+		return children.size() == 0;
 	}
 
 	void TaskSchedulingData::SetExtendedPriority(uintptr_t value) {
@@ -469,6 +515,7 @@ namespace anvil {
 			}
 	#endif
 
+			_data->DetachFromChildren();
 			_data->DetachFromParent();
 
 			bool still_has_references;
@@ -478,8 +525,9 @@ namespace anvil {
 				still_has_references = _data->reference_counter > 0;
 			}
 			if (still_has_references) {
-				if (_data->scheduler) {
-					_data->scheduler->Yield([this]()->bool {
+				Scheduler* scheduler = _data->scheduler ? _data->scheduler : g_thread_additional_data.scheduler;
+				if (scheduler) {
+					scheduler->Yield([this]()->bool {
 						std::shared_lock<std::shared_mutex> task_lock(_data->lock);
 						return _data->reference_counter == 0u;
 					});
@@ -631,6 +679,9 @@ namespace anvil {
 
 		const auto YieldCondition = [this]()->bool {
 			std::shared_lock<std::shared_mutex> task_lock(_data->lock);
+#if ANVIL_TASK_FIBERS
+			//if (!_data->children.empty()) return false; // Wait for all children to execute
+#endif
 			return _data->state >= STATE_COMPLETE && _data->scheduler == nullptr;
 		};
 
@@ -779,88 +830,98 @@ namespace anvil {
 		FiberData& fiber = *static_cast<FiberData*>(param);
 		while (true) {
 			Task& task = *fiber.task;
+			if (task._data == nullptr || task._data->scheduler == nullptr) {
+				// fiber.task hasn't been set to null somehow
+				throw 0;
+			} else {
 #else
 	void Task::FiberFunction(Task& task) {
-		if (true) {
 #endif
-			TaskDataLock task_lock(*task._data);
+				TaskDataLock task_lock(*task._data);
 
-			Scheduler& scheduler = task.GetScheduler();
-			const auto CatchException = [&task](std::exception_ptr&& exception, bool set_exception) {
-				// Handle the exception
-				if (set_exception) task.SetException(std::move(exception));
-				// If the exception was caught after the task finished execution
-				if (task._data->state == STATE_COMPLETE || task._data->state == STATE_CANCELED) {
-					// Do nothing
+				Scheduler& scheduler = task.GetScheduler();
+				const auto CatchException = [&task](std::exception_ptr&& exception, bool set_exception) {
+					// Handle the exception
+					if (set_exception) task.SetException(std::move(exception));
+					// If the exception was caught after the task finished execution
+					if (task._data->state == STATE_COMPLETE || task._data->state == STATE_CANCELED) {
+						// Do nothing
 
-				// If the exception was caught before or during execution
-				} else {
-					// Cancel the Task
-					task._data->state = Task::STATE_CANCELED;
-					if ((task._data->scheduler->_feature_flags & Scheduler::FEATURE_TASK_CALLBACKS) != 0u) {
-						// Call the cancelation callback
-						try {
-							task.OnCancel();
+					// If the exception was caught before or during execution
+					} else {
+						// Cancel the Task
+						task._data->state = Task::STATE_CANCELED;
+						if ((task._data->scheduler->_feature_flags & Scheduler::FEATURE_TASK_CALLBACKS) != 0u) {
+							// Call the cancelation callback
+							try {
+								task.OnCancel();
 
-						} catch (std::exception& e) {
-							// Task caught during execution takes priority as it probably has more useful debugging information
-							if (!set_exception) task.SetException(std::current_exception());
+							} catch (std::exception& e) {
+								// Task caught during execution takes priority as it probably has more useful debugging information
+								if (!set_exception) task.SetException(std::current_exception());
 
-						} catch (...) {
-							// Task caught during execution takes priority as it probably has more useful debugging information
-							if (!set_exception) task.SetException(std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception")));
+							} catch (...) {
+								// Task caught during execution takes priority as it probably has more useful debugging information
+								if (!set_exception) task.SetException(std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception")));
+							}
 						}
 					}
-				}
-			};
+				};
 
-			// If an error hasn't been detected yet
-			if (task._data->state != Task::STATE_CANCELED) {
+				// If an error hasn't been detected yet
+				if (task._data->state != Task::STATE_CANCELED) {
 
-				// Execute the task
-				{
-					std::lock_guard<std::shared_mutex> task_lock(task._data->lock);
-					task._data->state = Task::STATE_EXECUTING;
+					// Execute the task
+					{
+						std::lock_guard<std::shared_mutex> task_lock(task._data->lock);
+						task._data->state = Task::STATE_EXECUTING;
+					}
+					try {
+						task.OnExecution();
+					} catch (std::exception&) {
+						CatchException(std::move(std::current_exception()), true);
+					} catch (...) {
+						CatchException(std::exception_ptr(std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception"))), true);
+					}
 				}
+
 				try {
-					task.OnExecution();
+	#if ANVIL_TASK_FIBERS
+					fiber.task = nullptr;
+	#else
+					g_thread_additional_data.task_stack.pop_back();
+	#endif
 				} catch (std::exception&) {
-					CatchException(std::move(std::current_exception()), true);
-				} catch (...) {
-					CatchException(std::exception_ptr(std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception"))), true);
+					CatchException(std::move(std::current_exception()), false);
 				}
-			}
+	#if ANVIL_TASK_FIBERS
+				if (task._data->scheduler == nullptr)
+					throw 0; // Main fiber has been switched to before this one somehow
+	#endif
 
-			try {
-#if ANVIL_TASK_FIBERS
-				fiber.task = nullptr;
-#else
-				g_thread_additional_data.task_stack.pop_back();
-#endif
-			} catch (std::exception&) {
-				CatchException(std::move(std::current_exception()), false);
-			}
+				Scheduler::ThreadDebugData* debug_data = task._data->scheduler->GetDebugDataForThread(g_thread_additional_data.scheduler_index);
+				if (debug_data) {
+					--debug_data->tasks_executing;
+					--task._data->scheduler->_scheduler_debug.total_tasks_executing;
+				}
 
-			Scheduler::ThreadDebugData* debug_data = task._data->scheduler->GetDebugDataForThread(g_thread_additional_data.scheduler_index);
-			if (debug_data) {
-				--debug_data->tasks_executing;
-				--task._data->scheduler->_scheduler_debug.total_tasks_executing;
-			}
+	#if ANVIL_DEBUG_TASKS
+				{
+					TaskDebugEvent e = TaskDebugEvent::ExecuteEndEvent(task._data->debug_id);
+					g_debug_event_handler(nullptr, &e);
+				}
+	#endif
 
-#if ANVIL_DEBUG_TASKS
-			{
-				TaskDebugEvent e = TaskDebugEvent::ExecuteEndEvent(task._data->debug_id);
-				g_debug_event_handler(nullptr, &e);
-			}
-#endif
-
-			scheduler.TaskQueueNotify();
+				scheduler.TaskQueueNotify();
 
 			// Return control to the main thread
 #if ANVIL_TASK_FIBERS
-			g_thread_additional_data.SwitchToMainFiber();
-#endif
+			}
+			if(fiber.task != nullptr)
+				throw 0;
+			g_thread_additional_data.SwitchToMainFiber2();
 		}
+#endif
 	}
 
 	void Task::OnExecution() {
@@ -903,6 +964,10 @@ namespace anvil {
 		_scheduler_debug.sleeping_thread_count = 0u;
 		_scheduler_debug.total_tasks_executing = 0u;
 		_scheduler_debug.total_tasks_queued = 0u;
+
+#if ANVIL_TASK_FIBERS
+		_feature_flags |= FEATURE_ONLY_EXECUTE_ON_WORKER_THREADS; // Simplify fiber creation & management
+#endif
 
 #if ANVIL_DEBUG_TASKS
 		_debug_id = g_scheduler_debug_id++;
@@ -1078,6 +1143,10 @@ namespace anvil {
 		TaskThreadLocalData& local_data = g_thread_additional_data;
 		local_data.is_worker_thread = true;
 
+#if ANVIL_TASK_FIBERS
+		local_data.main_fiber = ConvertThreadToFiber(nullptr);
+#endif
+
 		if(_scheduler_debug.thread_debug_data != nullptr) {
 			local_data.scheduler = this;
 			local_data.scheduler_index = _scheduler_debug.total_thread_count++;
@@ -1085,6 +1154,7 @@ namespace anvil {
 			debug_data.tasks_executing = 0u;
 			debug_data.sleeping = 0u;
 			debug_data.enabled = 1u;
+			debug_data.thread_local_data = &local_data;
 			++_scheduler_debug.executing_thread_count; // Default state is executing
 		}
 	}
@@ -1142,7 +1212,7 @@ namespace anvil {
 				const auto predicate = [this, &condition, thread_enabled]()->bool {
 					if (thread_enabled) {
 #if ANVIL_TASK_FIBERS
-						if (local_data.AreAnyFibersReady()) return true;
+						if (g_thread_additional_data.AreAnyFibersReady()) return true;
 #endif
 						if (!_task_queue.empty()) return true;
 					}

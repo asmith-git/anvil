@@ -36,6 +36,8 @@
 
 namespace anvil {
 
+	struct TaskThreadLocalData;
+
 	class ANVIL_DLL_EXPORT Scheduler {
 	public:
 		enum FeatureFlag : uint32_t {
@@ -45,6 +47,7 @@ namespace anvil {
 			FEATURE_EXTENDED_PRIORITY				= 1u << 3u, //!< Previously known as ANVIL_TASK_EXTENDED_PRIORITY
 
 			DEFAULT_FEATURES = 0u
+				// Backwards compatibility with old versions
 #if ANVIL_TASK_DELAY_SCHEDULING
 				| FEATURE_DELAYED_SCHEDULING
 #endif
@@ -60,6 +63,7 @@ namespace anvil {
 		};
 
 		struct ThreadDebugData {
+			TaskThreadLocalData* thread_local_data;
 			std::atomic_uint32_t tasks_executing;
 			std::atomic_uint32_t sleeping;
 			std::atomic_uint32_t enabled;

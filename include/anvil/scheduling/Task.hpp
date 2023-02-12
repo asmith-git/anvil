@@ -256,7 +256,7 @@ namespace anvil {
 		virtual bool IsReadyToExecute() const throw();
 	public:
 		friend Scheduler;
-		friend class _TaskThreadLocalData;
+		friend TaskThreadLocalData;
 
 		/*!
 			\brief Create a new task.

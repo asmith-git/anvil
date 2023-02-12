@@ -39,10 +39,11 @@ void SchedulerTest() {
 				if (my_w <= 1u || my_h <= 1u) return false;
 				if (my_w & 1u || my_h & 1u) return false;
 			} else {
-				if (my_h <= 4u) return false;
+				if (my_h < 4u) return false;
+				if ((my_h % 4) != 0) return false;
 			}
 			//if (GetScheduler().GetSleepingThreadCount() == 0u) return false;
-			//if (GetNestingDepth() >= 2) return false;
+			//if (GetNestingDepth() >= 6) return false;
 			//if (std::pow(4, GetNestingDepth()) >= GetScheduler().GetSleepingThreadCount()) return false;
 			if (std::pow(4, GetNestingDepth()) >= GetScheduler().GetThreadCount()) return false;
 
@@ -195,7 +196,9 @@ void SchedulerTest() {
 
 				scheduler.Schedule(root);
 
+				std::this_thread::sleep_for(std::chrono::milliseconds(300));
 				root.Wait();
+				std::this_thread::sleep_for(std::chrono::milliseconds(300));
 
 				if (counter != real_counter)
 					throw std::runtime_error("Tasks did not execute correctly");
