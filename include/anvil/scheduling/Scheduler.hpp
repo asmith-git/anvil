@@ -37,6 +37,12 @@ namespace anvil {
 
 	class ANVIL_DLL_EXPORT Scheduler {
 	public:
+		enum FeatureFlag : uint32_t {
+			FEATURE_ONLY_EXECUTE_ON_WORKER_THREADS = 1u << 0u, //!< Previously known as ANVIL_NO_EXECUTE_ON_WAIT
+
+			DEFAULT_FEATURES = 0u
+		};
+
 		struct ThreadDebugData {
 			std::atomic_uint32_t tasks_executing;
 			std::atomic_uint32_t sleeping;
@@ -86,7 +92,7 @@ namespace anvil {
 #if ANVIL_DEBUG_TASKS
 		uint32_t _debug_id;
 #endif
-		bool _no_execution_on_wait;
+		uint32_t _feature_flags;
 
 		bool TryToExecuteTask() throw();
 
@@ -169,7 +175,7 @@ namespace anvil {
 		friend Task;
 		friend TaskSchedulingData;
 
-		Scheduler(size_t thread_count);
+		Scheduler(size_t thread_count, uint32_t feature_flags);
 		virtual ~Scheduler();
 
 		void RegisterAsWorkerThread();
@@ -253,10 +259,6 @@ namespace anvil {
 		template<class T>
 		inline void Schedule(const std::vector<T>& tasks) {
 			Schedule(tasks.data(), static_cast<uint32_t>(tasks.size()));
-		}
-
-		inline void SetExecutionOnTaskWait(bool execute) {
-			_no_execution_on_wait = execute;
 		}
 
 #if ANVIL_DEBUG_TASKS

@@ -66,7 +66,7 @@ namespace anvil {
 	public:
 		friend ExampleThread; // Allow ExampleThread to access thread synchronisation helpers
 
-		ExampleScheduler(size_t thread_count);
+		ExampleScheduler(size_t thread_count, uint32_t feature_flags);
 		virtual ~ExampleScheduler();
 	};
 
@@ -74,7 +74,7 @@ namespace anvil {
 	private:
 		ExampleThread _thread;
 	public:
-		ExampleSchedulerSingleThreaded();
+		ExampleSchedulerSingleThreaded(uint32_t feature_flags = DEFAULT_FEATURES);
 		virtual ~ExampleSchedulerSingleThreaded();
 	};
 
@@ -82,8 +82,8 @@ namespace anvil {
 	private:
 		std::vector<std::shared_ptr<ExampleThread>> _threads;
 	public:
-		ExampleSchedulerMultiThreaded();
-		ExampleSchedulerMultiThreaded(size_t count);
+		ExampleSchedulerMultiThreaded(uint32_t feature_flags = DEFAULT_FEATURES);
+		ExampleSchedulerMultiThreaded(size_t count, uint32_t feature_flags = DEFAULT_FEATURES);
 		virtual ~ExampleSchedulerMultiThreaded();
 	};
 }

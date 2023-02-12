@@ -33,7 +33,6 @@
 // Otherwise define default options
 #else
 	#define ANVIL_TASK_EXTENDED_PRIORITY 0
-	#define ANVIL_NO_EXECUTE_ON_WAIT 0
 	#define ANVIL_TASK_CALLBACKS 0
 	#define ANVIL_DEBUG_TASKS 0
 	#define ANVIL_TASK_DELAY_SCHEDULING 0
@@ -47,10 +46,6 @@
 
 #ifndef ANVIL_TASK_EXTENDED_PRIORITY
 	#define ANVIL_TASK_EXTENDED_PRIORITY 0
-#endif
-
-#ifndef ANVIL_NO_EXECUTE_ON_WAIT
-	#define ANVIL_NO_EXECUTE_ON_WAIT 0
 #endif
 
 #ifndef ANVIL_TASK_CALLBACKS

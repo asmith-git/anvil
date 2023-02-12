@@ -598,9 +598,9 @@ namespace anvil {
 		Scheduler* const scheduler = _data->scheduler;
 		if (_data->state >= Task::STATE_COMPLETE || _data->state == Task::STATE_INITIALISED || scheduler == nullptr) return;
 
-		const bool will_yield = scheduler->_no_execution_on_wait ?
-			GetNumberOfTasksExecutingOnThisThread() > 0 :	// Only call yield if Wait is called from inside of a Task
-			true;											// Always yield
+		const bool will_yield = (scheduler->_feature_flags & Scheduler::FEATURE_ONLY_EXECUTE_ON_WORKER_THREADS) == 0 ?
+			true :											// Always yield
+			GetNumberOfTasksExecutingOnThisThread() > 0;	// Only call yield if Wait is called from inside of a Task					
 
 #if ANVIL_DEBUG_TASKS
 		{
@@ -849,8 +849,8 @@ HANDLE_ERROR:
 
 	// Scheduler
 
-	Scheduler::Scheduler(size_t thread_count) :
-		_no_execution_on_wait(ANVIL_NO_EXECUTE_ON_WAIT ? true : false)
+	Scheduler::Scheduler(size_t thread_count, uint32_t feature_flags) :
+		_feature_flags(feature_flags)
 
 	{
 		_scheduler_debug.thread_debug_data = thread_count == 0u ? nullptr : new ThreadDebugData[thread_count];

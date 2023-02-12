@@ -92,8 +92,8 @@ namespace anvil {
 
 	// ExampleScheduler
 
-	ExampleScheduler::ExampleScheduler(size_t thread_count) :
-		Scheduler(thread_count)
+	ExampleScheduler::ExampleScheduler(size_t thread_count, uint32_t feature_flags) :
+		Scheduler(thread_count, feature_flags)
 	{}
 
 	ExampleScheduler::~ExampleScheduler() {
@@ -102,8 +102,8 @@ namespace anvil {
 
 	// ExampleSchedulerSingleThreaded
 
-	ExampleSchedulerSingleThreaded::ExampleSchedulerSingleThreaded() :
-		ExampleScheduler(1u),
+	ExampleSchedulerSingleThreaded::ExampleSchedulerSingleThreaded(uint32_t feature_flags) :
+		ExampleScheduler(1u, feature_flags),
 		_thread(*this)
 	{
 		_thread.Start();
@@ -115,12 +115,12 @@ namespace anvil {
 
 	// ExampleSchedulerMultiThreaded
 
-	ExampleSchedulerMultiThreaded::ExampleSchedulerMultiThreaded() :
-		ExampleSchedulerMultiThreaded(4u)
+	ExampleSchedulerMultiThreaded::ExampleSchedulerMultiThreaded(uint32_t feature_flags) :
+		ExampleSchedulerMultiThreaded(4u, feature_flags)
 	{}
 
-	ExampleSchedulerMultiThreaded::ExampleSchedulerMultiThreaded(size_t thread_count) :
-		ExampleScheduler(thread_count)
+	ExampleSchedulerMultiThreaded::ExampleSchedulerMultiThreaded(size_t thread_count, uint32_t feature_flags) :
+		ExampleScheduler(thread_count, feature_flags)
 	{
 		for (size_t i = 0u; i < thread_count; ++i) {
 			std::shared_ptr<ExampleThread> thread(new ExampleThread(*this));
