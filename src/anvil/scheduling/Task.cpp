@@ -1284,19 +1284,6 @@ RETRY:
 			TaskDataLock task_data_lock(*t._data);
 			std::lock_guard<std::shared_mutex> task_lock(t._data->lock);
 
-			// Calculate extended priority
-			if ((_feature_flags & FEATURE_EXTENDED_PRIORITY) != 0u) {
-				try {
-					t._data->SetExtendedPriority(t.CalculateExtendedPriorty());
-				} catch (std::exception&) {
-					exception = std::current_exception();
-					goto HANDLE_EXCEPTION;
-				} catch (...) {
-					exception = std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception"));
-					goto HANDLE_EXCEPTION;
-				}
-			}
-
 			if ((_feature_flags & Scheduler::FEATURE_TASK_CALLBACKS) != 0u) {
 				// Task callback
 				try {
@@ -1363,7 +1350,7 @@ TASK_SCHEDULED:
 					_task_queue.insert(_task_queue.end(), ready_tasks, ready_tasks + ready_count);
 
 					// Sort task list by priority
-					SortTaskQueue(true, true);
+					SortTaskQueue(true, false);
 				}
 			}
 
