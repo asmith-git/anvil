@@ -37,8 +37,6 @@
 	#undef Yield
 #endif
 
-#define ANVIL_USE_PARENTCHILDREN (ANVIL_TASK_PARENT || ANVIL_TASK_FAST_CHILD_COUNT)
-
 namespace anvil {
 #if ANVIL_DEBUG_TASKS
 	struct ANVIL_DLL_EXPORT SchedulerDebugEvent {
@@ -114,10 +112,8 @@ namespace anvil {
 		mutable std::shared_mutex lock;
 		Task* task;
 		Scheduler* scheduler;			//!< Points to the scheduler handling this task, otherwise null
-#if ANVIL_USE_PARENTCHILDREN
 		TaskSchedulingData* parent;
 		std::vector<TaskSchedulingData*> children;
-#endif
 		std::exception_ptr exception;	//!< Holds an exception that is caught during execution, thrown when wait is called
 #if ANVIL_DEBUG_TASKS
 		uint32_t debug_id;
@@ -129,12 +125,10 @@ namespace anvil {
 		TaskSchedulingData();
 		void Reset();
 
-#if ANVIL_USE_PARENTCHILDREN
 		bool AddChild(TaskSchedulingData*);
 		bool RemoveChild(TaskSchedulingData*);
 		bool DetachFromParent();
 		bool DetachFromChildren();
-#endif
 	};
 
 	struct ANVIL_DLL_EXPORT TaskDataLock {
@@ -329,12 +323,10 @@ namespace anvil {
 			\return The parent of this task or null if there is no known parent
 		*/
 		inline Task* GetParent() const throw() {
-#if ANVIL_USE_PARENTCHILDREN
 			if (_data) {
 				std::shared_lock<std::shared_mutex> lock(_data->lock);
 				if (_data->parent) return _data->parent->task;
 			}
-#endif
 			return nullptr;
 		}
 
@@ -343,7 +335,6 @@ namespace anvil {
 		*/
 		inline std::vector<Task*> GetChildren() const throw() {
 			std::vector<Task*> children;
-#if ANVIL_USE_PARENTCHILDREN
 			std::lock_guard<std::shared_mutex> lock(_data->lock);
 			if (_data) {
 				for (TaskSchedulingData* tmp : _data->children) {
@@ -351,7 +342,6 @@ namespace anvil {
 					if (t) children.push_back(t);
 				}
 			}
-#endif
 			return children;
 		}
 
@@ -360,20 +350,8 @@ namespace anvil {
 			\return The number of children this task has
 		*/
 		inline size_t GetChildCount(bool aproximate = false) const throw() {
-#if ANVIL_USE_PARENTCHILDREN
-			if (aproximate) {
-				if (_data) {
-					std::lock_guard<std::shared_mutex> lock(_data->lock);
-					return _data->children.size();
-				} else {
-					return 0u;
-				}
-			} else {
-				return GetChildren().size();
-			}
-#else
-			return 0u;
-#endif
+			std::lock_guard<std::shared_mutex> lock(_data->lock);
+			return _data->children.size();
 		}
 
 		inline size_t GetRecursiveChildCount(bool aproximate = false) const throw() {
@@ -385,7 +363,6 @@ namespace anvil {
 
 		/*!
 			\return Return the size of the inheritance tree for this task
-			\details This will be incorrect if ANVIL_TASK_PARENT or ANVIL_TASK_FAST_CHILD_COUNT are both disabled and ANVIL_TASK_FIBERS is enabled
 		*/
 		inline size_t GetNestingDepth() const throw() {
 			size_t depth = 0u;

@@ -361,9 +361,7 @@ namespace anvil {
 	TaskSchedulingData::TaskSchedulingData() :
 		task(nullptr),
 		scheduler(nullptr),
-#if ANVIL_USE_PARENTCHILDREN
 		parent(nullptr),
-#endif
 		reference_counter(0u),
 		priority(Priority::PRIORITY_MIDDLE),
 		state(Task::STATE_INITIALISED)
@@ -376,15 +374,11 @@ namespace anvil {
 		reference_counter = 0u;
 		priority = Priority::PRIORITY_MIDDLE;
 		state = Task::STATE_INITIALISED;
-
-#if ANVIL_USE_PARENTCHILDREN
 		parent = nullptr;
 		children.clear();
-#endif
 		exception = nullptr;
 	}
 
-#if ANVIL_USE_PARENTCHILDREN
 	bool TaskSchedulingData::AddChild(TaskSchedulingData* c) {
 		if (c->parent != nullptr) return false;
 
@@ -426,7 +420,6 @@ namespace anvil {
 
 		return true;
 	}
-#endif
 
 	// Task
 
@@ -455,9 +448,8 @@ namespace anvil {
 			}
 	#endif
 
-#if ANVIL_USE_PARENTCHILDREN
 			_data->DetachFromParent();
-#endif
+
 			bool still_has_references;
 			{
 				std::lock_guard<std::shared_mutex> task_lock(_data->lock);
@@ -1223,9 +1215,7 @@ HANDLE_ERROR:
 			t._data->exception = std::exception_ptr();
 
 			// Update the child / parent relationship between tasks
-#if ANVIL_USE_PARENTCHILDREN
 			if (parent) parent->_data->AddChild(t._data);
-#endif
 
 			// Calculate extended priority
 #if ANVIL_TASK_EXTENDED_PRIORITY
