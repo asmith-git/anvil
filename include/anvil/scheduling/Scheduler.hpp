@@ -40,8 +40,18 @@ namespace anvil {
 		enum FeatureFlag : uint32_t {
 			FEATURE_ONLY_EXECUTE_ON_WORKER_THREADS	= 1u << 0u, //!< Previously known as ANVIL_NO_EXECUTE_ON_WAIT
 			FEATURE_TASK_CALLBACKS					= 1u << 1u, //!< Previously known as ANVIL_TASK_CALLBACKS
+			FEATURE_DELAYED_SCHEDULING				= 1u << 2u, //!< Previously known as ANVIL_TASK_DELAY_SCHEDULING
 
 			DEFAULT_FEATURES = 0u
+#if ANVIL_TASK_DELAY_SCHEDULING
+				| FEATURE_DELAYED_SCHEDULING
+#endif
+#if ANVIL_TASK_CALLBACKS
+				| FEATURE_TASK_CALLBACKS
+#endif
+#if ANVIL_NO_EXECUTE_ON_WAIT
+				| FEATURE_ONLY_EXECUTE_ON_WORKER_THREADS
+#endif
 		};
 
 		struct ThreadDebugData {
@@ -67,9 +77,7 @@ namespace anvil {
 		Scheduler& operator=(Scheduler&&) = delete;
 		Scheduler& operator=(const Scheduler&) = delete;
 
-#if ANVIL_TASK_DELAY_SCHEDULING
-		std::vector<StrongSchedulingPtr> _unready_task_queue; //!< Contains tasks that have been scheduled but are not yet ready to execute
-#endif
+		std::vector<TaskSchedulingData*> _unready_task_queue; //!< Contains tasks that have been scheduled but are not yet ready to execute
 		std::vector<TaskSchedulingData*> _task_queue;			//!< Contains tasks that have been scheduled and are ready to execute
 		void SortTaskQueue() throw();
 
@@ -80,11 +88,7 @@ namespace anvil {
 			\details Wakes up threads that were sleeping and performs some additional scheduling logic
 		*/
 		void TaskQueueNotify();
-
-
-#if ANVIL_TASK_DELAY_SCHEDULING
 		void CheckUnreadyTasks();
-#endif
 	protected:
 		SchedulerDebugData _scheduler_debug;
 		std::condition_variable _task_queue_update;

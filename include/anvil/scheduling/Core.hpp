@@ -34,7 +34,6 @@
 #else
 	#define ANVIL_TASK_EXTENDED_PRIORITY 0
 	#define ANVIL_DEBUG_TASKS 0
-	#define ANVIL_TASK_DELAY_SCHEDULING 0
 	#define ANVIL_TASK_FIBERS 0
 	#ifndef ANVIL_DLL_EXPORT
 		#define  ANVIL_DLL_EXPORT __declspec(dllimport)
@@ -49,10 +48,6 @@
 
 #ifndef ANVIL_DEBUG_TASKS
 	#define ANVIL_DEBUG_TASKS 0
-#endif
-
-#ifndef ANVIL_TASK_DELAY_SCHEDULING
-	#define ANVIL_TASK_DELAY_SCHEDULING 0
 #endif
 
 #ifndef ANVIL_DLL_EXPORT

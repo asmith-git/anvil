@@ -156,7 +156,6 @@ namespace anvil {
 		\details There are currently three optional compiler constants that can be defined (> 0) to enable extension features:
 		- ANVIL_TASK_EXTENDED_PRIORITY : Allows the user to program finer grained control of how tasks with equal priority are handled by the scheduler.
 		- ANVIL_TASK_MEMORY_OPTIMISED : Compressed the internal memory layout of the Task to from 20+ bytes to 8 bytes. Exceptions and ANVIL_TASK_EXTENDED_PRIORITY are not allowed in this mode.
-		- ANVIL_TASK_DELAY_SCHEDULING : A task is not executed until Task::IsReadyToExecute() returns true.
 		These features are disabled by default to avoid any overheads that would be added to scheduling systems that don't need them.
 	*/
 	class ANVIL_DLL_EXPORT Task {
@@ -255,9 +254,7 @@ namespace anvil {
 		virtual PriorityInteger CalculateExtendedPriorty() const = 0;
 #endif
 
-#if ANVIL_TASK_DELAY_SCHEDULING
-		virtual bool IsReadyToExecute() const throw() = 0;
-#endif
+		virtual bool IsReadyToExecute() const throw();
 	public:
 		friend Scheduler;
 		friend class _TaskThreadLocalData;
