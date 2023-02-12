@@ -1314,43 +1314,30 @@ RETRY:
 		Task* const parent = g_thread_additional_data.task_stack.empty() ? nullptr : g_thread_additional_data.task_stack.back();
 #endif
 
-		TaskSchedulingData** task_data_tmp = static_cast<TaskSchedulingData**>(_alloca(count * sizeof(TaskSchedulingData*)));
+		// Ready tasks are placed at the start of this array, undready tasks are added to the end
+		TaskSchedulingData** ready_tasks = static_cast<TaskSchedulingData**>(_alloca(count * sizeof(TaskSchedulingData*)));
+		TaskSchedulingData** unready_tasks = ready_tasks + (count - 1u);
 
+		std::exception_ptr exception;
 		// Initial error checking and initialisation
 		size_t ready_count = 0u;
+		size_t unready_count = 0u;
 		for (uint32_t i = 0u; i < count; ++i) {
 			Task& t = *tasks[i];
+
 			TaskDataLock task_data_lock(*t._data);
-
 			std::lock_guard<std::shared_mutex> task_lock(t._data->lock);
-
-			if (t._data->state != Task::STATE_INITIALISED) continue;
-			task_data_tmp[ready_count] = t._data;
-
-			// Change state
-			t._data->state = Task::STATE_SCHEDULED;
-
-			// Initialise scheduling data
-			t._data->scheduler = this;
-			t._data->task = &t;
-
-			t._data->exception = std::exception_ptr();
-
-			// Update the child / parent relationship between tasks
-			if (parent) parent->_data->AddChild(t._data);
 
 			// Calculate extended priority
 			if ((_feature_flags & FEATURE_EXTENDED_PRIORITY) != 0u) {
 				try {
 					t._data->SetExtendedPriority(t.CalculateExtendedPriorty());
-				} catch (std::exception& e) {
-					t.SetException(std::current_exception());
-					t.Cancel();
-					continue;
+				} catch (std::exception&) {
+					exception = std::current_exception();
+					goto HANDLE_EXCEPTION;
 				} catch (...) {
-					t.SetException(std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception")));
-					t.Cancel();
-					continue;
+					exception = std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception"));
+					goto HANDLE_EXCEPTION;
 				}
 			}
 
@@ -1358,46 +1345,69 @@ RETRY:
 				// Task callback
 				try {
 					t.OnScheduled();
-				} catch (std::exception& e) {
-					t.SetException(std::current_exception());
-					t.Cancel();
-					continue;
+				} catch (std::exception&) {
+					exception = std::current_exception();
+					goto HANDLE_EXCEPTION;
 				} catch (...) {
-					t.SetException(std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception")));
-					t.Cancel();
-					continue;
+					exception = std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception"));
+					goto HANDLE_EXCEPTION;
 				}
 			}
 
-			// Skip the task if initalisation failed
-			if (t._data->scheduler != this) continue;
+			// Change state
+			t._data->state = Task::STATE_SCHEDULED;
+
+			// Initialise scheduling data
+			t._data->scheduler = this;
+
+			// Update the child / parent relationship between tasks
+			if (parent) parent->_data->AddChild(t._data);
+
 			if ((_feature_flags & FEATURE_DELAYED_SCHEDULING) != 0u) {
 				// If the task isn't ready to execute yet push it to the innactive queue
 				if (!t.IsReadyToExecute()) {
-					_unready_task_queue.push_back(t._data);
-					continue;
+					*unready_tasks = t._data;
+					--unready_tasks;
+					++unready_count;
+					goto TASK_SCHEDULED;
 				}
 			}
+
+			ready_tasks[ready_count++] = t._data;
+			if(false){
+HANDLE_EXCEPTION:
+				t.SetException(exception);
+				t.Cancel();
+			} else {
+TASK_SCHEDULED:
 #if ANVIL_DEBUG_TASKS
-			{
 				uint32_t parent_id = 0u;
 				if (parent) parent_id = parent->_data->debug_id;
 				TaskDebugEvent e = TaskDebugEvent::ScheduleEvent(t._data->debug_id, parent_id, _debug_id);
 				g_debug_event_handler(nullptr, &e);
-			}
+#else
+				;
 #endif
-			++ready_count;
+			}
 		}
 
-		if (ready_count > 0u) {
+		if ((ready_count | unready_count) > 0u) {
 			{
 				// Lock the task queue
 				std::lock_guard<std::shared_mutex> lock(_task_queue_mutex);
-				// Add to the active queue
-				_task_queue.insert(_task_queue.end(), task_data_tmp, task_data_tmp + ready_count);
 
-				// Sort task list by priority
-				SortTaskQueue();
+				if (unready_count > 0u) {
+					// Add to the active queue
+					_unready_task_queue.insert(_unready_task_queue.end(), unready_tasks + 1u, unready_tasks + 1u + unready_count);
+				}
+
+				if (ready_count > 0u) {
+					// Add to the active queue
+					_task_queue.insert(_task_queue.end(), ready_tasks, ready_tasks + ready_count);
+
+					// Sort task list by priority
+					SortTaskQueue();
+				}
 			}
 
 			// Notify waiting threads
