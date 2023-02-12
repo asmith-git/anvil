@@ -194,6 +194,8 @@ namespace anvil {
 
 		void SetException(std::exception_ptr exception);
 
+		void CatchException(std::exception_ptr&& exception, bool set_exception);
+
 		TaskSchedulingData* _data;
 	protected:
 		/*!

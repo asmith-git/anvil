@@ -727,44 +727,45 @@ RETRY:
 		if (scheduler) {
 			if (_data->state == STATE_SCHEDULED) {
 				std::lock_guard<std::shared_mutex> lock(scheduler->_task_queue_mutex);
-				scheduler->SortTaskQueue();
+				scheduler->SortTaskQueue(false, false);
 			}
 		}
 	}
+
+	void Task::CatchException(std::exception_ptr&& exception, bool set_exception) {
+		// Handle the exception
+		if (set_exception) SetException(std::move(exception));
+
+		// If the exception was caught after the task finished execution
+		if (_data->state == Task::STATE_COMPLETE || _data->state == Task::STATE_CANCELED) {
+			// Do nothing
+
+		// If the exception was caught before or during execution
+		} else {
+			// Cancel the Task
+			_data->state = Task::STATE_CANCELED;
+			if ((_data->scheduler->_feature_flags & Scheduler::FEATURE_TASK_CALLBACKS) != 0u) {
+				// Call the cancelation callback
+				try {
+					OnCancel();
+
+				} catch (std::exception& e) {
+					// Task caught during execution takes priority as it probably has more useful debugging information
+					if (!set_exception) this->SetException(std::current_exception());
+
+				} catch (...) {
+					// Task caught during execution takes priority as it probably has more useful debugging information
+					if (!set_exception) this->SetException(std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception")));
+				}
+			}
+		}
+	};
 
 	void Task::Execute() throw() {
 		// Remember the scheduler for later
 		TaskDataLock task_lock(*_data);
 		Scheduler* const scheduler = _data->scheduler;
-
-		const auto CatchException = [this](std::exception_ptr&& exception, bool set_exception) {
-			// Handle the exception
-			if (set_exception) this->SetException(std::move(exception));
-
-			// If the exception was caught after the task finished execution
-			if (_data->state == STATE_COMPLETE || _data->state == STATE_CANCELED) {
-				// Do nothing
-
-			// If the exception was caught before or during execution
-			} else {			
-				// Cancel the Task
-				_data->state = Task::STATE_CANCELED;
-				if ((_data->scheduler->_feature_flags & Scheduler::FEATURE_TASK_CALLBACKS) != 0u) {
-					// Call the cancelation callback
-					try {
-						OnCancel();
-
-					} catch (std::exception& e) {
-						// Task caught during execution takes priority as it probably has more useful debugging information
-						if (!set_exception) this->SetException(std::current_exception());
-
-					} catch (...) {
-						// Task caught during execution takes priority as it probably has more useful debugging information
-						if (!set_exception) this->SetException(std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception")));
-					}
-				}
-			}
-		};
+	
 #if ANVIL_TASK_FIBERS
 		FiberData* fiber = nullptr;
 		try {
@@ -791,11 +792,7 @@ RETRY:
 		}
 
 #else
-		try {
-			g_thread_additional_data.task_stack.push_back(this);
-		} catch (std::exception&) {
-			CatchException(std::move(std::current_exception()), false);
-		}
+		g_thread_additional_data.task_stack.push_back(this);
 #endif
 		Scheduler::ThreadDebugData* debug_data = _data->scheduler->GetDebugDataForThread(g_thread_additional_data.scheduler_index);
 		if (debug_data) {
@@ -840,33 +837,6 @@ RETRY:
 				TaskDataLock task_lock(*task._data);
 
 				Scheduler& scheduler = task.GetScheduler();
-				const auto CatchException = [&task](std::exception_ptr&& exception, bool set_exception) {
-					// Handle the exception
-					if (set_exception) task.SetException(std::move(exception));
-					// If the exception was caught after the task finished execution
-					if (task._data->state == STATE_COMPLETE || task._data->state == STATE_CANCELED) {
-						// Do nothing
-
-					// If the exception was caught before or during execution
-					} else {
-						// Cancel the Task
-						task._data->state = Task::STATE_CANCELED;
-						if ((task._data->scheduler->_feature_flags & Scheduler::FEATURE_TASK_CALLBACKS) != 0u) {
-							// Call the cancelation callback
-							try {
-								task.OnCancel();
-
-							} catch (std::exception& e) {
-								// Task caught during execution takes priority as it probably has more useful debugging information
-								if (!set_exception) task.SetException(std::current_exception());
-
-							} catch (...) {
-								// Task caught during execution takes priority as it probably has more useful debugging information
-								if (!set_exception) task.SetException(std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception")));
-							}
-						}
-					}
-				};
 
 				// If an error hasn't been detected yet
 				if (task._data->state != Task::STATE_CANCELED) {
@@ -879,25 +849,18 @@ RETRY:
 					try {
 						task.OnExecution();
 					} catch (std::exception&) {
-						CatchException(std::move(std::current_exception()), true);
+						task.CatchException(std::move(std::current_exception()), true);
 					} catch (...) {
-						CatchException(std::exception_ptr(std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception"))), true);
+						task.CatchException(std::exception_ptr(std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception"))), true);
 					}
 				}
 
-				try {
-	#if ANVIL_TASK_FIBERS
-					fiber.task = nullptr;
-	#else
-					g_thread_additional_data.task_stack.pop_back();
-	#endif
-				} catch (std::exception&) {
-					CatchException(std::move(std::current_exception()), false);
-				}
-	#if ANVIL_TASK_FIBERS
-				if (task._data->scheduler == nullptr)
-					throw 0; // Main fiber has been switched to before this one somehow
-	#endif
+#if ANVIL_TASK_FIBERS
+				fiber.task = nullptr;
+				if (task._data->scheduler == nullptr) throw 0; // Main fiber has been switched to before this one somehow
+#else
+				g_thread_additional_data.task_stack.pop_back();
+#endif
 
 				Scheduler::ThreadDebugData* debug_data = task._data->scheduler->GetDebugDataForThread(g_thread_additional_data.scheduler_index);
 				if (debug_data) {
@@ -905,20 +868,19 @@ RETRY:
 					--task._data->scheduler->_scheduler_debug.total_tasks_executing;
 				}
 
-	#if ANVIL_DEBUG_TASKS
-				{
-					TaskDebugEvent e = TaskDebugEvent::ExecuteEndEvent(task._data->debug_id);
-					g_debug_event_handler(nullptr, &e);
+#if ANVIL_DEBUG_TASKS
+				{ TaskDebugEvent e = TaskDebugEvent::ExecuteEndEvent(task._data->debug_id); g_debug_event_handler(nullptr, &e); }
+#endif
+				if((scheduler._feature_flags & Scheduler::FEATURE_DELAYED_SCHEDULING) != 0u){
+					std::lock_guard<std::shared_mutex> lock(scheduler._task_queue_mutex);
+					scheduler.SortTaskQueue(false, true);
 				}
-	#endif
-
 				scheduler.TaskQueueNotify();
 
-			// Return control to the main thread
+				// Return control to the main thread
 #if ANVIL_TASK_FIBERS
 			}
-			if(fiber.task != nullptr)
-				throw 0;
+			if(fiber.task != nullptr) throw 0;
 			g_thread_additional_data.SwitchToMainFiber2();
 		}
 #endif
@@ -992,35 +954,8 @@ RETRY:
 		}
 	}
 
-	void Scheduler::CheckUnreadyTasks() {
-		// _task_queue_mutex must be locked before calling this function
-
-		size_t count = 0u;
-		for (auto i = _unready_task_queue.begin(); i != _unready_task_queue.end(); ++i) {
-			Task& t = *(**i).task;
-
-			// If the task is now ready then add it to the ready queue
-			if (t.IsReadyToExecute()) {
-				_task_queue.push_back(t._data);
-				++count;
-				_unready_task_queue.erase(i);
-				i = _unready_task_queue.begin();
-			}
-		}
-
-		// If the ready queue has been changed then make sure the tasks are in the correct order
-		if (count > 0u) SortTaskQueue();
-	}
-
 
 	void Scheduler::TaskQueueNotify() {
-		if ((_feature_flags & FEATURE_DELAYED_SCHEDULING) != 0u) {
-			// If the status of the task queue has changed then tasks may now be able to execute that couldn't before
-			if (!_unready_task_queue.empty()) {
-				std::lock_guard<std::shared_mutex> lock(_task_queue_mutex);
-				CheckUnreadyTasks();
-			}
-		}
 		_task_queue_update.notify_all();
 	}
 
@@ -1036,7 +971,7 @@ RETRY:
 				}
 
 				std::lock_guard<std::shared_mutex> lock(_task_queue_mutex);
-				CheckUnreadyTasks();
+				SortTaskQueue(false, true);
 
 				if (_task_queue.empty()) {
 					count = 0u;
@@ -1273,8 +1208,29 @@ RETRY:
 		}
 	}
 
-	void Scheduler::SortTaskQueue() throw() {
-		if ((_feature_flags & FEATURE_EXTENDED_PRIORITY) != 0u) {
+	void Scheduler::SortTaskQueue(bool recalculate_extended_priority, bool check_delayed_tasks) throw() {
+
+		if (check_delayed_tasks && (_feature_flags & FEATURE_DELAYED_SCHEDULING) != 0u) {
+			// If the status of the task queue has changed then tasks may now be able to execute that couldn't before
+			if (!_unready_task_queue.empty()) {
+				size_t count = 0u;
+				for (auto i = _unready_task_queue.begin(); i != _unready_task_queue.end(); ++i) {
+					Task& t = *(**i).task;
+
+					// If the task is now ready then add it to the ready queue
+					if (t.IsReadyToExecute()) {
+						_task_queue.push_back(t._data);
+						++count;
+						_unready_task_queue.erase(i);
+						i = _unready_task_queue.begin();
+					}
+				}
+
+				if(count > 0) recalculate_extended_priority = true;
+			}
+		}
+
+		if (recalculate_extended_priority && (_feature_flags & FEATURE_EXTENDED_PRIORITY) != 0u) {
 			for (TaskSchedulingData* t : _task_queue) {
 				try {
 					std::shared_lock<std::shared_mutex> lock(t->lock);
@@ -1317,11 +1273,11 @@ RETRY:
 		// Ready tasks are placed at the start of this array, undready tasks are added to the end
 		TaskSchedulingData** ready_tasks = static_cast<TaskSchedulingData**>(_alloca(count * sizeof(TaskSchedulingData*)));
 		TaskSchedulingData** unready_tasks = ready_tasks + (count - 1u);
+		size_t ready_count = 0u;
+		size_t unready_count = 0u;
 
 		std::exception_ptr exception;
 		// Initial error checking and initialisation
-		size_t ready_count = 0u;
-		size_t unready_count = 0u;
 		for (uint32_t i = 0u; i < count; ++i) {
 			Task& t = *tasks[i];
 
@@ -1397,8 +1353,9 @@ TASK_SCHEDULED:
 				std::lock_guard<std::shared_mutex> lock(_task_queue_mutex);
 
 				if (unready_count > 0u) {
-					// Add to the active queue
-					_unready_task_queue.insert(_unready_task_queue.end(), unready_tasks + 1u, unready_tasks + 1u + unready_count);
+					// Add to the inactive queue
+					++unready_tasks;
+					_unready_task_queue.insert(_unready_task_queue.end(), unready_tasks, unready_tasks + unready_count);
 				}
 
 				if (ready_count > 0u) {
@@ -1406,7 +1363,7 @@ TASK_SCHEDULED:
 					_task_queue.insert(_task_queue.end(), ready_tasks, ready_tasks + ready_count);
 
 					// Sort task list by priority
-					SortTaskQueue();
+					SortTaskQueue(true, true);
 				}
 			}
 

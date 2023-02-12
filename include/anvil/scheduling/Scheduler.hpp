@@ -88,7 +88,7 @@ namespace anvil {
 
 		std::vector<TaskSchedulingData*> _unready_task_queue; //!< Contains tasks that have been scheduled but are not yet ready to execute
 		std::vector<TaskSchedulingData*> _task_queue;			//!< Contains tasks that have been scheduled and are ready to execute
-		void SortTaskQueue() throw();
+		void SortTaskQueue(bool recalculate_extended_priority, bool check_delayed_tasks) throw();
 
 		void RemoveNextTaskFromQueue(TaskSchedulingData** tasks, uint32_t& count) throw();
 
@@ -97,7 +97,6 @@ namespace anvil {
 			\details Wakes up threads that were sleeping and performs some additional scheduling logic
 		*/
 		void TaskQueueNotify();
-		void CheckUnreadyTasks();
 	protected:
 		SchedulerDebugData _scheduler_debug;
 		std::condition_variable _task_queue_update;
