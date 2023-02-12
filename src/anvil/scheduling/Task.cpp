@@ -363,7 +363,7 @@ namespace anvil {
 		scheduler(nullptr),
 		parent(nullptr),
 		reference_counter(0u),
-		priority(Priority::PRIORITY_MIDDLE),
+		priority(Priority::PRIORITY_MIDDLE << Scheduler::EXTENDED_PRIORITY_BITS),
 		state(Task::STATE_INITIALISED)
 	{}
 
@@ -372,7 +372,7 @@ namespace anvil {
 		task = nullptr;
 		scheduler = nullptr;
 		reference_counter = 0u;
-		priority = Priority::PRIORITY_MIDDLE;
+		priority = Priority::PRIORITY_MIDDLE << Scheduler::EXTENDED_PRIORITY_BITS;
 		state = Task::STATE_INITIALISED;
 		parent = nullptr;
 		children.clear();
@@ -419,6 +419,27 @@ namespace anvil {
 		}
 
 		return true;
+	}
+
+	void TaskSchedulingData::SetExtendedPriority(uintptr_t value) {
+		priority &= ~Scheduler::EXTENDED_PRIORITY_MASK;
+		value &= Scheduler::EXTENDED_PRIORITY_MASK;
+		priority |= value;
+	}
+
+	void TaskSchedulingData::SetRegularPriority(Priority value) {
+		uintptr_t tmp = value;
+		priority &= Scheduler::EXTENDED_PRIORITY_MASK;
+		tmp <<= Scheduler::EXTENDED_PRIORITY_BITS;
+		priority |= tmp;
+	}
+
+	uintptr_t TaskSchedulingData::GetExtendedPriority() const {
+		return priority & Scheduler::EXTENDED_PRIORITY_MASK;
+	}
+
+	Scheduler::Priority TaskSchedulingData::GetRegularPriority() const {
+		return static_cast<Priority>(priority >> Scheduler::EXTENDED_PRIORITY_BITS);
 	}
 
 	// Task
@@ -643,27 +664,21 @@ namespace anvil {
 	void Task::SetPriority(Priority priority) {
 		TaskDataLock task_lock(*_data);
 
-		if constexpr(Priority::PRIORITY_HIGHEST > 255u) priority = static_cast<Priority>(priority +GetNestingDepth());
-
-		std::exception_ptr exception = nullptr;
-		Scheduler* scheduler = _data->scheduler;
-		if (scheduler) {
-			if (_data->state == STATE_SCHEDULED) {
-				_data->priority = priority;
-				std::lock_guard<std::shared_mutex> lock(scheduler->_task_queue_mutex);
-				scheduler->SortTaskQueue();
-			} else {
-				exception = std::make_exception_ptr(std::runtime_error("Priority of a task cannot be changed when executing"));
-				goto HANDLE_ERROR;
-			}
-		} else {
-			_data->priority = priority;
+		// Set the priority
+		Scheduler* scheduler;
+		{
+			std::shared_lock<std::shared_mutex> lock(_data->lock);
+			_data->SetRegularPriority(priority);
+			scheduler = _data->scheduler;
 		}
 
-		return;
-HANDLE_ERROR:
-		Cancel();
-		std::rethrow_exception(exception);
+		// Update the scheduler
+		if (scheduler) {
+			if (_data->state == STATE_SCHEDULED) {
+				std::lock_guard<std::shared_mutex> lock(scheduler->_task_queue_mutex);
+				scheduler->SortTaskQueue();
+			}
+		}
 	}
 
 	void Task::Execute() throw() {
@@ -870,6 +885,10 @@ HANDLE_ERROR:
 	
 	bool Task::IsReadyToExecute() const throw() {
 		return true;
+	}
+
+	uintptr_t Task::CalculateExtendedPriorty() const {
+		return 0u;
 	}
 
 	// Scheduler
@@ -1185,6 +1204,17 @@ HANDLE_ERROR:
 	}
 
 	void Scheduler::SortTaskQueue() throw() {
+		if ((_feature_flags & FEATURE_EXTENDED_PRIORITY) != 0u) {
+			for (TaskSchedulingData* t : _task_queue) {
+				try {
+					std::shared_lock<std::shared_mutex> lock(t->lock);
+					t->SetExtendedPriority(t->task->CalculateExtendedPriorty());
+				} catch (...) {
+					t->task->SetException(std::current_exception());
+				}
+			}
+		}
+
 		std::sort(_task_queue.begin(), _task_queue.end(), [](const TaskSchedulingData* lhs, const TaskSchedulingData* rhs)->bool {
 			return lhs->task->_data->priority < rhs->task->_data->priority;
 		});
@@ -1240,9 +1270,9 @@ HANDLE_ERROR:
 			if (parent) parent->_data->AddChild(t._data);
 
 			// Calculate extended priority
-#if ANVIL_TASK_EXTENDED_PRIORITY
+			if ((_feature_flags & FEATURE_EXTENDED_PRIORITY) != 0u) {
 				try {
-					t._priority.extended = t.CalculateExtendedPriorty();
+					t._data->SetExtendedPriority(t.CalculateExtendedPriorty());
 				} catch (std::exception& e) {
 					t.SetException(std::current_exception());
 					t.Cancel();
@@ -1252,8 +1282,7 @@ HANDLE_ERROR:
 					t.Cancel();
 					continue;
 				}
-#endif
-
+			}
 
 			if ((_feature_flags & Scheduler::FEATURE_TASK_CALLBACKS) != 0u) {
 				// Task callback
@@ -1307,19 +1336,9 @@ HANDLE_ERROR:
 	}
 	
 	void Scheduler::Schedule(Task* task, Priority priority) {
-		task->SetPriority(priority);
+		task->_data->SetRegularPriority(priority);
 		Schedule(&task, 1u);
 	}
-
-#if ANVIL_TASK_EXTENDED_PRIORITY
-	void Scheduler::RecalculatedExtendedPriorities() {
-		std::lock_guard<std::mutex> lock(_mutex);
-		for (Task* t : _task_queue) {
-			t->_priority.extended = t->CalculateExtendedPriorty();
-		}
-		SortTaskQueue();
-	}
-#endif
 
 	uint32_t Scheduler::GetThisThreadIndex() const {
 		return g_thread_additional_data.scheduler_index;

@@ -32,7 +32,6 @@
 
 // Otherwise define default options
 #else
-	#define ANVIL_TASK_EXTENDED_PRIORITY 0
 	#define ANVIL_DEBUG_TASKS 0
 	#define ANVIL_TASK_FIBERS 0
 	#ifndef ANVIL_DLL_EXPORT
@@ -41,10 +40,6 @@
 #endif
 
 // Define options that are missing
-
-#ifndef ANVIL_TASK_EXTENDED_PRIORITY
-	#define ANVIL_TASK_EXTENDED_PRIORITY 0
-#endif
 
 #ifndef ANVIL_DEBUG_TASKS
 	#define ANVIL_DEBUG_TASKS 0

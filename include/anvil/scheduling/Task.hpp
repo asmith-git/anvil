@@ -106,8 +106,6 @@ namespace anvil {
 	*/
 	struct ANVIL_DLL_EXPORT TaskSchedulingData {
 		typedef Scheduler::Priority Priority;
-		typedef Scheduler::PriorityInteger PriorityInteger;
-		typedef Scheduler::PriorityValue PriorityValue;
 
 		mutable std::shared_mutex lock;
 		Task* task;
@@ -119,7 +117,7 @@ namespace anvil {
 		uint32_t debug_id;
 #endif
 		std::atomic_uint32_t reference_counter;
-		PriorityValue priority;			//!< Stores the scheduling priority of the task
+		uintptr_t priority;			//!< Stores the scheduling priority of the task
 		uint8_t state;
 
 		TaskSchedulingData();
@@ -129,6 +127,11 @@ namespace anvil {
 		bool RemoveChild(TaskSchedulingData*);
 		bool DetachFromParent();
 		bool DetachFromChildren();
+
+		void SetExtendedPriority(uintptr_t value);
+		void SetRegularPriority(Priority value);
+		uintptr_t GetExtendedPriority() const;
+		Priority GetRegularPriority() const;
 	};
 
 	struct ANVIL_DLL_EXPORT TaskDataLock {
@@ -154,8 +157,6 @@ namespace anvil {
 		\copyright MIT License
 		\brief Base structure for implementing Task based parallel programming.
 		\details There are currently three optional compiler constants that can be defined (> 0) to enable extension features:
-		- ANVIL_TASK_EXTENDED_PRIORITY : Allows the user to program finer grained control of how tasks with equal priority are handled by the scheduler.
-		- ANVIL_TASK_MEMORY_OPTIMISED : Compressed the internal memory layout of the Task to from 20+ bytes to 8 bytes. Exceptions and ANVIL_TASK_EXTENDED_PRIORITY are not allowed in this mode.
 		These features are disabled by default to avoid any overheads that would be added to scheduling systems that don't need them.
 	*/
 	class ANVIL_DLL_EXPORT Task {
@@ -173,8 +174,6 @@ namespace anvil {
 		};
 
 		typedef Scheduler::Priority Priority;
-		typedef Scheduler::PriorityInteger PriorityInteger;
-		typedef Scheduler::PriorityValue PriorityValue;
 		typedef TaskSchedulingData Data;
 	private:
 		Task(Task&&) = delete;
@@ -246,13 +245,13 @@ namespace anvil {
 		*/
 		virtual void OnCancel();
 
-#if ANVIL_TASK_EXTENDED_PRIORITY
 		/*!
 			\brief Decide which order tasks scheduled with the same priority will execute
+			\detail For 64-bit systems the lowest 56 bits will be used.
+			\detail For 32-bit systems the lowest 24 bits will be used.
 			\return Tasks returning a higher value will execute first
 		*/
-		virtual PriorityInteger CalculateExtendedPriorty() const = 0;
-#endif
+		virtual uintptr_t CalculateExtendedPriorty() const;
 
 		virtual bool IsReadyToExecute() const throw();
 	public:
@@ -310,7 +309,7 @@ namespace anvil {
 			\return The current priority of the Task.
 		*/
 		inline Priority GetPriority() const throw() {
-			return static_cast<Priority>(_data->priority);
+			return _data->GetRegularPriority();
 		}
 
 		/*!

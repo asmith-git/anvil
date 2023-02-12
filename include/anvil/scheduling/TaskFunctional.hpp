@@ -51,18 +51,6 @@ namespace anvil {
 			void OnExecution() final {
 				_payload();
 			}
-
-#if ANVIL_TASK_EXTENDED_PRIORITY
-			PriorityInteger CalculateExtendedPriorty() const final {
-				return 0u;
-			}
-#endif
-
-#if ANVIL_TASK_DELAY_SCHEDULING
-			bool IsReadyToExecute() const throw() final {
-				return true;
-			}
-#endif
 		public:
 			TaskFunctional_NoReturn() :
 				Task(),
@@ -110,18 +98,6 @@ namespace anvil {
 			void OnExecution() final {
 				this->SetResult(_payload());
 			}
-
-#if ANVIL_TASK_EXTENDED_PRIORITY
-			Task::PriorityInteger CalculateExtendedPriorty() const final {
-				return 0u;
-			}
-#endif
-
-#if ANVIL_TASK_DELAY_SCHEDULING
-			bool IsReadyToExecute() const throw() final {
-				return true;
-			}
-#endif
 		public:
 			TaskFunctional_Return() :
 				TaskWithReturn<R>(),

@@ -31,6 +31,7 @@
 #include <vector>
 #include <functional>
 #include <memory>
+#include "anvil/core/CPU.hpp"
 #include "anvil/scheduling/Core.hpp"
 
 namespace anvil {
@@ -41,6 +42,7 @@ namespace anvil {
 			FEATURE_ONLY_EXECUTE_ON_WORKER_THREADS	= 1u << 0u, //!< Previously known as ANVIL_NO_EXECUTE_ON_WAIT
 			FEATURE_TASK_CALLBACKS					= 1u << 1u, //!< Previously known as ANVIL_TASK_CALLBACKS
 			FEATURE_DELAYED_SCHEDULING				= 1u << 2u, //!< Previously known as ANVIL_TASK_DELAY_SCHEDULING
+			FEATURE_EXTENDED_PRIORITY				= 1u << 3u, //!< Previously known as ANVIL_TASK_EXTENDED_PRIORITY
 
 			DEFAULT_FEATURES = 0u
 #if ANVIL_TASK_DELAY_SCHEDULING
@@ -51,6 +53,9 @@ namespace anvil {
 #endif
 #if ANVIL_NO_EXECUTE_ON_WAIT
 				| FEATURE_ONLY_EXECUTE_ON_WORKER_THREADS
+#endif
+#if FEATURE_EXTENDED_PRIORITY
+				| FEATURE_EXTENDED_PRIORITY
 #endif
 		};
 
@@ -101,45 +106,14 @@ namespace anvil {
 
 		bool TryToExecuteTask() throw();
 
-
-#if ANVIL_TASK_EXTENDED_PRIORITY
-		void RecalculatedExtendedPriorities();
-#endif
-
 	public:
-#if ANVIL_TASK_EXTENDED_PRIORITY == 0
-		enum {
+		enum : uintptr_t {
 			MAIN_PRIORITY_BITS = 8u,
-			EXTENDED_PRIORITY_BITS = 0u
+			EXTENDED_PRIORITY_BITS = ANVIL_CPU_ARCHITECTURE_BITS - MAIN_PRIORITY_BITS,
+			EXTENDED_PRIORITY_MASK = (1u << EXTENDED_PRIORITY_BITS) - 1u
 		};
-		typedef uint8_t PriorityInteger;
-#elif ANVIL_TASK_EXTENDED_PRIORITY <= 7u
-		enum {
-			MAIN_PRIORITY_BITS = 8u - ANVIL_TASK_EXTENDED_PRIORITY,
-			EXTENDED_PRIORITY_BITS = ANVIL_TASK_EXTENDED_PRIORITY
-		};
-		typedef uint8_t PriorityInteger;
-#elif ANVIL_TASK_EXTENDED_PRIORITY <= 15u
-		enum {
-			MAIN_PRIORITY_BITS = 16u - ANVIL_TASK_EXTENDED_PRIORITY,
-			EXTENDED_PRIORITY_BITS = ANVIL_TASK_EXTENDED_PRIORITY
-		};
-		typedef uint16_t PriorityInteger;
-#elif ANVIL_TASK_EXTENDED_PRIORITY <= 31u
-		enum {
-			MAIN_PRIORITY_BITS = 32u - ANVIL_TASK_EXTENDED_PRIORITY,
-			EXTENDED_PRIORITY_BITS = ANVIL_TASK_EXTENDED_PRIORITY
-		};
-		typedef uint32_t PriorityInteger;
-#else
-		enum {
-			MAIN_PRIORITY_BITS = 64u - ANVIL_TASK_EXTENDED_PRIORITY,
-			EXTENDED_PRIORITY_BITS = ANVIL_TASK_EXTENDED_PRIORITY
-		};
-		typedef uint64_t PriorityInteger;
-#endif
 
-		enum Priority : PriorityInteger {
+		enum Priority : uint8_t {
 			PRIORITY_LOWEST = 0u,										//!< The lowest prority level supported by the Scheduler.
 			PRIORITY_HIGHEST = (1 << MAIN_PRIORITY_BITS) - 1,			//!< The highest prority level supported by the Scheduler.
 			PRIORITY_MIDDLE = PRIORITY_HIGHEST / 2u,					//!< The default priority level.
@@ -147,36 +121,6 @@ namespace anvil {
 			PRIORITY_LOW = PRIORITY_MIDDLE - (PRIORITY_MIDDLE / 2u)		//!< Halfway between PRIORITY_MIDDLE and PRIORITY_LOWEST.
 		};//!< Defines the order in which Tasks are executed.
 
-	protected:
-
-#if ANVIL_TASK_EXTENDED_PRIORITY == 0
-		typedef PriorityInteger PriorityValue;
-#else
-		union PriorityValue {
-			struct {
-				PriorityInteger main : MAIN_PRIORITY_BITS;
-				PriorityInteger extended : EXTENDED_PRIORITY_BITS;
-			};
-			PriorityInteger integer;
-
-			PriorityValue() = default;
-			~PriorityValue() = default;
-			PriorityValue(Priority m, PriorityInteger e = 0u) : main(m), extended(e) {}
-
-			inline bool operator==(const PriorityValue& other) const throw()  { return integer == other.integer; }
-			inline bool operator!=(const PriorityValue& other) const throw()  { return integer != other.integer; }
-			inline bool operator<(const PriorityValue& other) const throw() { return integer < other.integer; }
-			inline bool operator>(const PriorityValue& other) const throw() { return integer > other.integer; }
-			inline bool operator<=(const PriorityValue& other) const throw() { return integer <= other.integer; }
-			inline bool operator>=(const PriorityValue& other) const throw() { return integer >= other.integer; }
-
-			inline operator Priority() const throw() { return static_cast<Priority>(main); }
-			inline PriorityValue& operator=(Priority p) throw() { main = p; return *this; }
-		};
-
-		static_assert(sizeof(PriorityValue) == sizeof(PriorityInteger), "Size of PriorityValue is different than expected");
-#endif
-	public:
 		friend Task;
 		friend TaskSchedulingData;
 
