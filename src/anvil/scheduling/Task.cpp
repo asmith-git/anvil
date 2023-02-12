@@ -381,9 +381,7 @@ namespace anvil {
 		parent = nullptr;
 		children.clear();
 #endif
-#if ANVIL_TASK_HAS_EXCEPTIONS
 		exception = nullptr;
-#endif
 	}
 
 #if ANVIL_USE_PARENTCHILDREN
@@ -537,9 +535,7 @@ namespace anvil {
 	}
 
 	void Task::SetException(std::exception_ptr exception) {
-#if ANVIL_TASK_HAS_EXCEPTIONS
 		_data->exception = exception;
-#endif
 	}
 
 	bool Task::Cancel() throw() {
@@ -644,14 +640,12 @@ namespace anvil {
 		}
 #endif
 
-#if ANVIL_TASK_HAS_EXCEPTIONS
 		// Rethrow a caught exception
 		if (_data->exception) {
 			std::exception_ptr tmp = _data->exception;
 			_data->exception = std::exception_ptr();
 			std::rethrow_exception(tmp);
 		}
-#endif
 	}
 
 
@@ -688,9 +682,8 @@ HANDLE_ERROR:
 
 		const auto CatchException = [this](std::exception_ptr&& exception, bool set_exception) {
 			// Handle the exception
-#if ANVIL_TASK_HAS_EXCEPTIONS
 			if (set_exception) this->SetException(std::move(exception));
-#endif
+
 			// If the exception was caught after the task finished execution
 			if (_data->state == STATE_COMPLETE || _data->state == STATE_CANCELED) {
 				// Do nothing
@@ -704,15 +697,11 @@ HANDLE_ERROR:
 				try {
 					OnCancel();
 				} catch (std::exception& e) {
-#if ANVIL_TASK_HAS_EXCEPTIONS
 					// Task caught during execution takes priority as it probably has more useful debugging information
 					if (!set_exception) this->SetException(std::current_exception());
-#endif
 				} catch (...) {
-#if ANVIL_TASK_HAS_EXCEPTIONS
 					// Task caught during execution takes priority as it probably has more useful debugging information
 					if (!set_exception) this->SetException(std::make_exception_ptr(std::runtime_error("Thrown value was not a C++ exception")));
-#endif
 				}
 #endif
 			}
@@ -1231,9 +1220,7 @@ HANDLE_ERROR:
 			t._data->scheduler = this;
 			t._data->task = &t;
 
-#if ANVIL_TASK_HAS_EXCEPTIONS
 			t._data->exception = std::exception_ptr();
-#endif
 
 			// Update the child / parent relationship between tasks
 #if ANVIL_USE_PARENTCHILDREN

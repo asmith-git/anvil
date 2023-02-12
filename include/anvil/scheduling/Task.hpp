@@ -118,9 +118,7 @@ namespace anvil {
 		TaskSchedulingData* parent;
 		std::vector<TaskSchedulingData*> children;
 #endif
-#if ANVIL_TASK_HAS_EXCEPTIONS
 		std::exception_ptr exception;	//!< Holds an exception that is caught during execution, thrown when wait is called
-#endif
 #if ANVIL_DEBUG_TASKS
 		uint32_t debug_id;
 #endif
