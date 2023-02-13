@@ -412,7 +412,7 @@ namespace anvil {
 		\see Task
 	*/
 	template<class R>
-	class ANVIL_DLL_EXPORT TaskWithReturn : public Task {
+	class TaskWithReturn : public Task {
 	public:
 		typedef R Result;
 	private:
