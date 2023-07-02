@@ -306,7 +306,7 @@ static void TCPTest() {
 
 	std::thread server([port]()->void {
 		anvil::BytePipe::TCPServerPipe tcppipe(port);
-		anvil::BytePipe::PacketInputPipe pipe(tcppipe);
+		anvil::BytePipe::PacketInputPipe pipe(tcppipe, false);
 
 		for (int i = 0; i < 100; ++i) {
 			int j = 0;
@@ -323,7 +323,7 @@ static void TCPTest() {
 		ip.u8[3] = 1;
 
 		anvil::BytePipe::TCPClientPipe tcppipe(ip, port);
-		anvil::BytePipe::PacketOutputPipe pipe(tcppipe, 4096);
+		anvil::BytePipe::PacketOutputPipe pipe(tcppipe, 4096, false);
 
 		for (int i = 0; i < 100; ++i) {
 			std::cout << ("Client writing " + std::to_string(i) + "\n");

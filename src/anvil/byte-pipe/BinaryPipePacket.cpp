@@ -34,9 +34,10 @@ namespace anvil { namespace BytePipe {
 
 	// PacketInputPipe
 
-	PacketInputPipe::PacketInputPipe(InputPipe& downstream_pipe) :
+	PacketInputPipe::PacketInputPipe(InputPipe& downstream_pipe, bool fixed_sized_packets) :
 		_downstream_pipe(downstream_pipe),
-		_buffer_read_head(0u)
+		_buffer_read_head(0u),
+		_fixed_size_packets(fixed_sized_packets)
 	{
 		read2_faster = 1;
 	}
@@ -58,7 +59,7 @@ namespace anvil { namespace BytePipe {
 		uint32_t version = header.v1.packet_version;
 		if (version >= 3u) version = header.v3.packet_version; // Read the extended version number
 		if (header.v1.packet_version == 0 || header.v1.packet_version > 3u) {
-BAD_VERSION:
+		BAD_VERSION:
 			throw std::runtime_error("PacketInputPipe::ReadNextPacket : Packet version is not supported");
 		}
 
@@ -72,13 +73,16 @@ BAD_VERSION:
 		if (version == 1u) {
 			used_bytes = header.v1.used_size;
 			packet_size = header.v1.packet_size;
-		} else if (version == 2u) {
+		}
+		else if (version == 2u) {
 			used_bytes = header.v2.used_size;
 			packet_size = header.v2.packet_size;
-		} else if (version == 3u) {
+		}
+		else if (version == 3u) {
 			used_bytes = header.v3.used_size;
 			packet_size = header.v3.packet_size;
-		} else {
+		}
+		else {
 			goto BAD_VERSION; // This should never execute as version has already been checked
 		}
 
@@ -100,13 +104,17 @@ BAD_VERSION:
 		_buffer_a.resize(prev_buffer_size + packet_size);
 
 		// Read the data into the buffer
+		if (_fixed_size_packets) {
+			const uint64_t unused_bytes = (packet_size - used_bytes) - header_size;
+			read = _downstream_pipe.ReadBytes(_buffer_a.data() + prev_buffer_size, static_cast<uint32_t>(used_bytes + unused_bytes));
+			if (read != used_bytes + unused_bytes) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Failed reading used packet data");
 
-		const uint64_t unused_bytes = (packet_size - used_bytes) - header_size;
-		read = _downstream_pipe.ReadBytes(_buffer_a.data() + prev_buffer_size, static_cast<uint32_t>(used_bytes + unused_bytes));
-		if (read != used_bytes + unused_bytes) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Failed reading used packet data");
-
-		// Remove unused bytes from the buffer
-		_buffer_a.resize(prev_buffer_size + used_bytes);
+			// Remove unused bytes from the buffer
+			_buffer_a.resize(prev_buffer_size + used_bytes);
+		} else {
+			read = _downstream_pipe.ReadBytes(_buffer_a.data() + prev_buffer_size, static_cast<uint32_t>(used_bytes));
+			if (read != used_bytes) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Failed reading used packet data");
+		}
 	}
 
 	size_t PacketInputPipe::ReadBytes(void* dst, const size_t bytes) {
@@ -142,12 +150,12 @@ NO_DATA:
 
 	// PacketOutputPipe
 
-	PacketOutputPipe::PacketOutputPipe(OutputPipe& downstream_pipe, const size_t packet_size, const uint8_t default_word) :
+	PacketOutputPipe::PacketOutputPipe(OutputPipe& downstream_pipe, const size_t packet_size, bool fixed_sized_packets) :
 		_downstream_pipe(downstream_pipe),
 		_buffer(nullptr),
 		_max_packet_size(0u),
 		_current_packet_size(0u),
-		_default_word(default_word)
+		_fixed_size_packets(fixed_sized_packets)
 	{
 		uint32_t version = PacketVersionFromSize(packet_size);
 		uint32_t header_size = g_header_sizes[version - 1u];
@@ -198,9 +206,6 @@ NO_DATA:
 		PacketHeader& header = *reinterpret_cast<PacketHeader*>(_buffer);
 		uint8_t* payload = _buffer + header_size;
 
-		// 'Zero' unused data in the packet
-		memset(payload + _current_packet_size, _default_word, _max_packet_size - _current_packet_size);
-
 		if (version == 1u) {
 			// Create the header
 			header.v1.packet_version = 1u;
@@ -222,7 +227,14 @@ NO_DATA:
 
 		// Write the packet to the downstream pipe
 		//! \bug Packets larger than UINT32_MAX will cause an integer overflow on the byte count
-		_downstream_pipe.WriteBytes(_buffer, static_cast<uint32_t>(_max_packet_size + header_size));
+		if (_fixed_size_packets) {
+			// 'Zero' unused data in the packet
+			memset(payload + _current_packet_size, 0, _max_packet_size - _current_packet_size);
+			_downstream_pipe.WriteBytes(_buffer, static_cast<uint32_t>(_max_packet_size + header_size));
+
+		} else {
+			_downstream_pipe.WriteBytes(_buffer, static_cast<uint32_t>(_current_packet_size + header_size));
+		}
 
 		// Reset the state of this pipe
 		_current_packet_size = 0u;
