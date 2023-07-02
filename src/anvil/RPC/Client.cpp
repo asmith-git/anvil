@@ -27,7 +27,6 @@ namespace anvil { namespace RPC {
 	}
 
 	BytePipe::Value Client::SendRequest(const std::string& method, const BytePipe::Value& params) {
-		int32_t id = _next_id;
 		if (_next_id == INT32_MAX) _next_id = 0;
 		else ++_next_id;
 

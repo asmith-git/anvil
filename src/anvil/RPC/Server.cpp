@@ -20,6 +20,7 @@ namespace anvil { namespace RPC {
 
 	Server::Server() {
 
+		#pragma warning( disable : 4100) // params may not be used in all methods, name is retained to improve code readability
 		AddMethod("Anvil.RPC.GetVersion", [](const BytePipe::Value& params)->BytePipe::Value {
 			return 1;
 		});
@@ -168,12 +169,12 @@ namespace anvil { namespace RPC {
 
 			if (id) {
 				BytePipe::Value tmp;
-				BytePipe::Value::Object& obj = tmp.Set<BytePipe::Value::Object>();
-				obj.emplace("result", std::move(result));
+				BytePipe::Value::Object& obj2 = tmp.Set<BytePipe::Value::Object>();
+				obj2.emplace("result", std::move(result));
 				tmp.Optimise();
 				// Don't optimise these values, may not be compatibile with RPC client
-				obj.emplace("jsonrpc", BytePipe::Value("2.0"));
-				obj.emplace("id", BytePipe::Value(static_cast<int32_t>(*id)));
+				obj2.emplace("jsonrpc", BytePipe::Value("2.0"));
+				obj2.emplace("id", BytePipe::Value(static_cast<int32_t>(*id)));
 				return tmp;
 
 			} else {

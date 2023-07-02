@@ -51,7 +51,8 @@ namespace anvil { namespace BytePipe {
 		}
 		return default_name;
 	}
-
+	
+	#pragma warning( disable : 4100) // Size is not used, name is retained to improve code readability
 	void XMLWriter::OnArrayBegin(const size_t size) {
 		if(_indent) for (size_t i = 0; i < _node_names.size(); ++i) _str += '\t';
 		std::string name = GetNextNodeName("array");
@@ -216,14 +217,14 @@ namespace anvil { namespace BytePipe {
 		return nullptr;
 	}
 
-	static rapidxml::xml_node<>* FindChildNode(const rapidxml::xml_node<>& node, const std::string& name) {
-		rapidxml::xml_node<>* tmp = node.first_node();
-		while (tmp) {
-			if (tmp->name() == name) return tmp;
-			tmp = tmp->next_sibling();
-		}
-		return nullptr;
-	}
+	//static rapidxml::xml_node<>* FindChildNode(const rapidxml::xml_node<>& node, const std::string& name) {
+	//	rapidxml::xml_node<>* tmp = node.first_node();
+	//	while (tmp) {
+	//		if (tmp->name() == name) return tmp;
+	//		tmp = tmp->next_sibling();
+	//	}
+	//	return nullptr;
+	//}
 
 	template<class T>
 	static T ReadPrimitive(const rapidxml::xml_node<>& node) {
@@ -373,7 +374,9 @@ namespace anvil { namespace BytePipe {
 						while (tmp) {
 							std::string id = tmp->name();
 							if (IsComponentID(id)) {
-								parser.OnComponentID(static_cast<ComponentID>(std::stoi(id)));
+								const size_t idint = std::stoi(id);
+								ANVIL_RUNTIME_ASSERT(idint <= std::numeric_limits<ComponentID>::max(), "anvil::ReadXML : Component ID is too large");
+								parser.OnComponentID(static_cast<ComponentID>(idint));
 							} else {
 								parser.OnComponentID(id.c_str(), id.size());
 							}
@@ -384,11 +387,12 @@ namespace anvil { namespace BytePipe {
 
 					{
 						rapidxml::xml_node<>* tmp = node.first_node();
-						size_t count = 0u;
 						while (tmp) {
 							std::string id = tmp->name();
 							if (IsComponentID(id)) {
-								parser.OnComponentID(std::stoi(id));
+								const size_t idint = std::stoi(id);
+								ANVIL_RUNTIME_ASSERT(idint <= std::numeric_limits<ComponentID>::max(), "anvil::ReadXML : Component ID is too large");
+								parser.OnComponentID(static_cast<ComponentID>(idint));
 							} else {
 								parser.OnComponentID(id.c_str(), id.size());
 							}

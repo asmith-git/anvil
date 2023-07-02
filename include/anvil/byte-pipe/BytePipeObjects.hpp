@@ -80,30 +80,7 @@ namespace anvil { namespace BytePipe {
 
 	enum half : uint16_t {};
 
-	static size_t GetSizeOfPrimitiveType(const Type t) {
-		static const uint8_t g_sizes[TYPE_POD + 1] = {
-			0u,					//TYPE_NULL
-			sizeof(char),		//TYPE_C8
-			sizeof(uint8_t),	//TYPE_U8
-			sizeof(uint16_t),	//TYPE_U16
-			sizeof(uint32_t),	//TYPE_U32
-			sizeof(uint64_t),	//TYPE_U64
-			sizeof(int8_t),		//TYPE_S8
-			sizeof(int16_t),	//TYPE_S16
-			sizeof(int32_t),	//TYPE_S32
-			sizeof(int64_t),	//TYPE_S64
-			sizeof(half),		//TYPE_F16
-			sizeof(float),		//TYPE_F32
-			sizeof(double),		//TYPE_F64
-			0u,					//TYPE_STRING
-			0u,					//TYPE_ARRAY
-			0u,					//TYPE_OBJECT
-			sizeof(bool),		//TYPE_BOOL
-			0u					//TYPE_POD
-		};
-
-		return g_sizes[t];
-	}
+	size_t ANVIL_DLL_EXPORT GetSizeOfPrimitiveType(const Type t);
 
 
 	template<class T>

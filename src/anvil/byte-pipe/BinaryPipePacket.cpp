@@ -43,6 +43,9 @@ namespace anvil { namespace BytePipe {
 	}
 
 	void PacketInputPipe::ReadNextPacket() {
+
+		uint64_t used_bytes, packet_size;
+
 		// Read the packet header version
 		PacketHeader header;
 		size_t read = _downstream_pipe.ReadBytes(&header, 1u);
@@ -51,14 +54,15 @@ namespace anvil { namespace BytePipe {
 		if (read != 1u) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Failed to read packet version");
 		uint32_t version = header.v1.packet_version;
 		if (version >= 3u) version = header.v3.packet_version; // Read the extended version number
-		if(header.v1.packet_version > 3u) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Packet version is not supported");
+		if (header.v1.packet_version > 3u) {
+BAD_VERSION:
+			throw std::runtime_error("PacketInputPipe::ReadNextPacket : Packet version is not supported");
+		}
 
 		// Read the rest of the header
 		read = _downstream_pipe.ReadBytes(reinterpret_cast<uint8_t*>(&header) + 1u, g_header_sizes[header.v1.packet_version] - 1u);
 
 		// Allocate a temporary buffer for the data
-		uint64_t used_bytes;
-		uint64_t packet_size;
 		//! \bug Packets larger than UINT32_MAX will cause an integer overflow on the byte count
 
 		if (version == 1u) {
@@ -70,6 +74,8 @@ namespace anvil { namespace BytePipe {
 		} else if (version == 3u) {
 			used_bytes = header.v3.used_size;
 			packet_size = header.v3.packet_size;
+		} else {
+			goto BAD_VERSION; // This should never execute as version has already been checked
 		}
 
 		used_bytes += 1u;
@@ -128,7 +134,7 @@ namespace anvil { namespace BytePipe {
 		const uint32_t version = PacketVersionFromSize(_max_packet_size);
 		const uint32_t header_size = g_header_sizes[version];
 
-		PacketHeader& header = *reinterpret_cast<PacketHeader*>(_buffer);
+		//PacketHeader& header = *reinterpret_cast<PacketHeader*>(_buffer);
 		uint8_t* payload = _buffer + header_size;
 
 		const uint8_t* data = static_cast<const uint8_t*>(src);

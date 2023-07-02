@@ -55,6 +55,9 @@ namespace anvil { namespace BytePipe {
 		uint8_t version;
 	};
 
+	static_assert(sizeof(PipeHeaderV1) == 1, "Expected PipeHeaderV1 to be 1 byte");
+	
+	#pragma warning( disable : 4201) // Unnamed struct. Should be fine as layout is checked by static asserts
 	struct PipeHeaderV2 {
 		uint8_t version;
 		struct {
@@ -68,6 +71,9 @@ namespace anvil { namespace BytePipe {
 			uint8_t reserved_flag7 : 1u;
 		};
 	};
+
+	static_assert(sizeof(PipeHeaderV2) == 2, "Expected PipeHeaderV2 to be 2 bytes");
+	static_assert(offsetof(PipeHeaderV2, version) == 0, "Memory layout of PipeHeaderV2 is different than expected");
 
 	struct ValueHeader {
 		union {
@@ -188,7 +194,8 @@ namespace anvil { namespace BytePipe {
 		static void CallOnPrimitiveC8(Parser& parser, const PrimitiveValue& header) {
 			parser.OnPrimitiveC8(header.c8);
 		}
-
+		
+		#pragma warning( disable : 4100) // Header is not used, name is retained to improve code readability
 		static void CallOnNull(Parser& parser, const PrimitiveValue& header) {
 			parser.OnNull();
 		}
@@ -1293,7 +1300,7 @@ OLD_COMPONENT_ID:
 		header.width = static_cast<uint32_t>(value.cols);
 		header.height = static_cast<uint32_t>(value.rows);
 		header.type = static_cast<uint16_t>(value.type());
-		header.compression_format = compression_format;
+		header.compression_format = static_cast<uint16_t>(compression_format);
 
 		if (compression_format == IMAGE_BIN) {
 			uint32_t bytes = static_cast<uint32_t>(value.elemSize());

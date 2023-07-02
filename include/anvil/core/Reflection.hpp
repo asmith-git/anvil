@@ -35,7 +35,7 @@ namespace anvil {
 		uint32_t b = aValue >> 8u;
 		a = detail::g_reflect_lut[a];
 		b = detail::g_reflect_lut[b];
-		return (a << 8u) | b;
+		return static_cast<uint16_t>((a << 8u) | b);
 	}
 
 	static ANVIL_STRONG_INLINE uint32_t ANVIL_CALL reflect(uint32_t aValue) throw() {

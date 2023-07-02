@@ -44,6 +44,7 @@ namespace anvil { namespace BytePipe {
 		// Do nothing
 	}
 
+	#pragma warning( disable : 4100) // Size is not used, name is retained to improve code readability
 	void JsonWriter::OnArrayBegin(const size_t size) {
 		AddValue("[");
 		++_depth;
@@ -243,7 +244,9 @@ namespace anvil { namespace BytePipe {
 			for (nlohmann::json::const_iterator i = node.begin(); i != node.end(); ++i) {
 				std::string k = i.key();
 				if (IsComponentID(k)) {
-					parser.OnComponentID(std::stoi(k));
+					const size_t kint = std::stoi(k);
+					ANVIL_RUNTIME_ASSERT(kint <= std::numeric_limits<ComponentID>::max(), "anvil::ReadJSON : Component ID is too large");
+					parser.OnComponentID(static_cast<ComponentID>(kint));
 				} else {
 					parser.OnComponentID(k.c_str(), k.size());
 				}
