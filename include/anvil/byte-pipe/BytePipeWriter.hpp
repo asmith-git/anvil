@@ -28,11 +28,12 @@ namespace anvil { namespace BytePipe {
 	*/
 	class ANVIL_DLL_EXPORT OutputPipe {
 	public:
-		virtual ~OutputPipe() {}
+		OutputPipe();
+		virtual ~OutputPipe();
 		virtual size_t WriteBytes(const void* src, const size_t bytes) = 0;
 		virtual void Flush() = 0;
 
-		virtual void WriteBytesFast(const void* src, const size_t bytes) { WriteBytes(src, bytes); }
+		virtual void WriteBytesFast(const void* src, size_t bytes, int timeout_ms = -1);
 	};
 
 	/*!

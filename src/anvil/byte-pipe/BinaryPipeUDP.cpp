@@ -69,17 +69,6 @@ namespace anvil { namespace BytePipe {
 #endif
 	}
 
-	void UDPOutputPipe::WriteBytesFast(const void* src, const size_t bytes) {
-		const uint8_t* src2 = static_cast<const uint8_t*>(src);
-		size_t remaining_bytes = bytes;
-
-		while (remaining_bytes > 0) {
-			const size_t tmp = WriteBytes(src2, remaining_bytes);
-			remaining_bytes -= tmp;
-			src2 += tmp;
-		}
-	}
-
 	void UDPOutputPipe::Flush() {
 		
 	}

@@ -46,7 +46,6 @@ namespace anvil { namespace BytePipe {
 
 			size_t ReadBytes(void* dst, const size_t bytes) final;
 			size_t WriteBytes(const void* src, const size_t bytes) final;
-			void WriteBytesFast(const void* src, const size_t bytes) final;
 			void Flush() final;
 		};
 	}

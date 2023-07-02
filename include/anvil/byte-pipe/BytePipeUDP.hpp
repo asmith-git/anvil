@@ -42,7 +42,6 @@ namespace anvil { namespace BytePipe {
 		UDPOutputPipe(IPAddress server_ip, UDPPort server_port);
 		virtual ~UDPOutputPipe();
 		size_t WriteBytes(const void* src, const size_t bytes) final;
-		void WriteBytesFast(const void* src, const size_t bytes) final;
 		void Flush() final;
 	};
 

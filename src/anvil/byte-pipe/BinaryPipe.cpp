@@ -1517,7 +1517,7 @@ OLD_COMPONENT_ID:
 	*	\brief Read an exact ammount of data from the pipe.
 	*	\details Use of this function is no longer recommended. Throws exception on time-out. Timing out will leave the data in an undefined state as the number of bytes read will not be recorded.
 	*	\param dst The address to write any bytes that can be read
-	*	\param bytes The maximum number of bytes to read
+	*	\param bytes The number of bytes to read
 	*	\param timout_ms The number of milliseconds before the read times-out. A value of -1 will force it to never time out.
 	*/
 	void InputPipe::ReadBytesFast(void* dst, size_t bytes, int timeout_ms) {
@@ -1539,6 +1539,37 @@ OLD_COMPONENT_ID:
 			if (bytes > 0u && timeout_ms >= 0) {
 				const uint64_t t2 = GetTimeMSUint();
 				if (static_cast<int>(t2 - t) > timeout_ms) throw std::runtime_error("InputPipe::ReadBytesFast : Read timed-out");
+			}
+		}
+	}
+
+	OutputPipe::OutputPipe() {
+
+	}
+
+	OutputPipe::~OutputPipe() {
+		
+	}
+	
+	/*!
+	*	\brief Write an exact ammount of data from the pipe.
+	*	\details Use of this function is no longer recommended. Throws exception on time-out. Timing out will leave the data in an undefined state as the number of bytes writeen will not be recorded.
+	*	\param src The address of the bytes to write
+	*	\param bytes The number of bytes to write
+	*	\param timout_ms The number of milliseconds before the write times-out. A value of -1 will force it to never time out.
+	*/
+	void OutputPipe::WriteBytesFast(const void* src, size_t bytes, int timeout_ms) {
+		const uint64_t t = GetTimeMSUint();
+
+		while (bytes > 0u) {
+			size_t bytes_written = WriteBytes(src, bytes);
+
+			bytes -= bytes_written;
+			src = static_cast<const uint8_t*>(src) + bytes_written;
+
+			if (bytes > 0u && timeout_ms >= 0) {
+				const uint64_t t2 = GetTimeMSUint();
+				if (static_cast<int>(t2 - t) > timeout_ms) throw std::runtime_error("OutputPipe::WriteBytesFast : Read timed-out");
 			}
 		}
 	}

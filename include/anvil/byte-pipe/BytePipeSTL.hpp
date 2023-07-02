@@ -38,7 +38,7 @@ namespace anvil { namespace BytePipe {
 		OStreamPipe(std::ostream& stream);
 		virtual ~OStreamPipe();
 		size_t WriteBytes(const void* src, const size_t bytes) final;
-		void WriteBytesFast(const void* src, const size_t bytes) final;
+		void WriteBytesFast(const void* src, size_t bytes, int timeout_ms) final;
 		void Flush() final;
 	};
 

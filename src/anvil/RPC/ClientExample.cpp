@@ -56,7 +56,7 @@ namespace anvil { namespace RPC {
 		_json_writer.OnPipeOpen();
 		_json_writer.OnValue(request);
 		const std::string& json = _json_writer.GetJSONString();
-		_tcp.WriteBytesFast(json.c_str(), json.size() + 1u);
+		_tcp.WriteBytesFast(json.c_str(), json.size() + 1u, 1000);
 		_json_writer.OnPipeClose();
 		_tcp.Flush();
 	}
