@@ -35,10 +35,16 @@ namespace anvil { namespace BytePipe {
 	*/
 	class ANVIL_DLL_EXPORT InputPipe {
 	public:
-		virtual ~InputPipe() {}
-		virtual size_t ReadBytes(void* dst, const size_t bytes) = 0;
-		virtual void ReadBytesFast(void* dst, const size_t bytes) { ReadBytes(dst, bytes); }
+		#pragma warning( disable : 4201) // Unnamed struct.
+		struct {
+			uint8_t read2_faster : 1;	//!< Set to 1 if the next call to ReadBytes2 will be faster than calling ReadBytes instead
+			uint8_t unused_flags : 7;
+		};
 
+		InputPipe();
+		virtual ~InputPipe();
+		virtual size_t ReadBytes(void* dst, const size_t bytes);
+		virtual void ReadBytesFast(void* dst, size_t bytes, int timeout_ms = -1);
 		virtual const void* ReadBytes2(const size_t bytes_requested, size_t& bytes_actual);
 	};
 

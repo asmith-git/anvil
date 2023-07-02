@@ -30,7 +30,6 @@ namespace anvil { namespace BytePipe {
 		UDPInputPipe(UDPPort listen_port);
 		virtual ~UDPInputPipe();
 		size_t ReadBytes(void* dst, const size_t bytes) final;
-		void ReadBytesFast(void* dst, const size_t bytes) final;
 	};
 
 	class ANVIL_DLL_EXPORT UDPOutputPipe final : public OutputPipe {

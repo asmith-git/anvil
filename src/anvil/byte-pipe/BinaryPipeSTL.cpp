@@ -30,7 +30,8 @@ namespace anvil { namespace BytePipe {
 		return static_cast<size_t>(_stream.gcount());
 	}
 
-	void IStreamPipe::ReadBytesFast(void* dst, const size_t bytes) {
+	#pragma warning( disable : 4100) // timeout_ms is not used, name is retained to improve code readability
+	void IStreamPipe::ReadBytesFast(void* dst, size_t bytes, int timeout_ms) {
 		_stream.read(static_cast<char*>(dst), bytes);
 	}
 

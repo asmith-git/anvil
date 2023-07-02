@@ -153,16 +153,5 @@ namespace anvil { namespace BytePipe {
 #endif
 	}
 
-	void detail::TCPCommonPipe::ReadBytesFast(void* dst, const size_t bytes) {
-		uint8_t* dst2 = static_cast<uint8_t*>(dst);
-		size_t remaining_bytes = bytes;
-
-		while (remaining_bytes > 0) {
-			const size_t tmp = ReadBytes(dst, remaining_bytes);
-			remaining_bytes -= tmp;
-			dst2 += tmp;
-		}
-	}
-
 
 }}

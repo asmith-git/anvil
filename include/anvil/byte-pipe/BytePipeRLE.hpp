@@ -325,6 +325,7 @@ NEW_BLOCK:
 				_length = len;
 
 				_rle_mode = true;
+				read2_faster = 0;
 				_repeat_word = 0u;
 				
 				// Read the word
@@ -333,6 +334,7 @@ NEW_BLOCK:
 			} else {
 				_length = len;
 				_rle_mode = false;
+				read2_faster = 1;
 				bytes_read = _input.ReadBytes(_buffer, _length * sizeof(DataWord));
 				if (bytes_read != _length * sizeof(DataWord)) throw std::runtime_error("RLEDecoderPipe::ReadNextBlock : Failed to non-repeating words");
 			}

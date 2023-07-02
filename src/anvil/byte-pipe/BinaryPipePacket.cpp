@@ -37,7 +37,9 @@ namespace anvil { namespace BytePipe {
 	PacketInputPipe::PacketInputPipe(InputPipe& downstream_pipe) :
 		_downstream_pipe(downstream_pipe),
 		_buffer_read_head(0u)
-	{}
+	{
+		read2_faster = 1;
+	}
 
 	PacketInputPipe::~PacketInputPipe() {
 

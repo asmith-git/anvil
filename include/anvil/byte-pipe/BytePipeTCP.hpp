@@ -45,7 +45,6 @@ namespace anvil { namespace BytePipe {
 			virtual ~TCPCommonPipe();
 
 			size_t ReadBytes(void* dst, const size_t bytes) final;
-			void ReadBytesFast(void* dst, const size_t bytes) final;
 			size_t WriteBytes(const void* src, const size_t bytes) final;
 			void WriteBytesFast(const void* src, const size_t bytes) final;
 			void Flush() final;
