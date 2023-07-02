@@ -385,7 +385,7 @@ RETRY:
 		scheduler(nullptr),
 		parent(nullptr),
 		reference_counter(0u),
-		priority(Priority::PRIORITY_MIDDLE << Scheduler::EXTENDED_PRIORITY_BITS),
+		priority(static_cast<uintptr_t>(Priority::PRIORITY_MIDDLE) << Scheduler::EXTENDED_PRIORITY_BITS),
 		state(Task::STATE_INITIALISED)
 	{}
 
@@ -394,7 +394,7 @@ RETRY:
 		task = nullptr;
 		scheduler = nullptr;
 		reference_counter = 0u;
-		priority = Priority::PRIORITY_MIDDLE << Scheduler::EXTENDED_PRIORITY_BITS;
+		priority = static_cast<uintptr_t>(Priority::PRIORITY_MIDDLE) << Scheduler::EXTENDED_PRIORITY_BITS;
 		state = Task::STATE_INITIALISED;
 		parent = nullptr;
 		children.clear();
@@ -749,7 +749,7 @@ RETRY:
 				try {
 					OnCancel();
 
-				} catch (std::exception& e) {
+				} catch (std::exception&) {
 					// Task caught during execution takes priority as it probably has more useful debugging information
 					if (!set_exception) this->SetException(std::current_exception());
 

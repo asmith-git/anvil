@@ -452,11 +452,11 @@ namespace anvil { namespace lutils {
 		}
 
 		inline const T* data() const {
-			return empty() ? _vector.data() : nullptr;
+			return empty() ? static_cast<const T*>(_vector.data()) : nullptr;
 		}
 
 		inline T* data() {
-			return const_cast<T*>(const_cast<PODVector<T, IMPLEMENTATION>*>(this)->data());
+			return empty() ? static_cast<T*>(_vector.data()) : nullptr;
 		}
 
 		bool reserve(const size_t size) throw() {

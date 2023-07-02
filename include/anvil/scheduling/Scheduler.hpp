@@ -113,7 +113,7 @@ namespace anvil {
 		enum : uintptr_t {
 			MAIN_PRIORITY_BITS = 8u,
 			EXTENDED_PRIORITY_BITS = ANVIL_CPU_ARCHITECTURE_BITS - MAIN_PRIORITY_BITS,
-			EXTENDED_PRIORITY_MASK = (1u << EXTENDED_PRIORITY_BITS) - 1u
+			EXTENDED_PRIORITY_MASK = static_cast<uintptr_t>((1ull << EXTENDED_PRIORITY_BITS) - 1ull)
 		};
 
 		enum Priority : uint8_t {

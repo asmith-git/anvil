@@ -403,7 +403,7 @@ namespace anvil { namespace BytePipe {
 			// So if contracts are disabled then we wont check because the value isn't used
 			_pipe.WriteBytesFast(src, bytes);
 #else
-			const uint32_t bytesWritten = _pipe.WriteBytes(src, bytes);
+			const size_t bytesWritten = _pipe.WriteBytes(src, bytes);
 			ANVIL_CONTRACT(bytesWritten == bytes, "Failed to write to pipe");
 #endif
 		};
@@ -768,7 +768,7 @@ namespace anvil { namespace BytePipe {
 #if ANVIL_CONTRACT_MODE == ANVIL_CONTRACT_IGNORE || ANVIL_CONTRACT_MODE == ANVIL_CONTRACT_ASSUME
 			_pipe.ReadBytesFast(dst, bytes);
 #else
-			const uint32_t bytesRead = _pipe.ReadBytes(dst, bytes);
+			const size_t bytesRead = _pipe.ReadBytes(dst, bytes);
 			ANVIL_CONTRACT(bytesRead == bytes, "Failed to read from pipe");
 #endif
 		}
@@ -1358,7 +1358,7 @@ OLD_COMPONENT_ID:
 			{
 				const Value::PrimitiveArray* pa = value.Get<Value::PrimitiveArray>();
 				if (pa) {
-					const uint32_t size = pa->size();
+					const size_t size = pa->size();
 					switch (value.GetPrimitiveArrayType()) {
 					case TYPE_C8:
 						OnPrimitiveArrayC8(reinterpret_cast<const char*>(const_cast<Value&>(value).Get<Value::PrimitiveArray>()->data()), size);
@@ -1402,7 +1402,7 @@ OLD_COMPONENT_ID:
 					}
 				} else {
 					const Value::Array* a = value.Get<Value::Array>();
-					const uint32_t size = a->size();
+					const size_t size = a->size();
 					OnArrayBegin(size);
 					for (size_t i = 0u; i < size; ++i) {
 						OnValue(a->operator[](i));

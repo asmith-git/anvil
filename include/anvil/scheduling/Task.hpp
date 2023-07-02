@@ -140,12 +140,12 @@ namespace anvil {
 		TaskDataLock(TaskSchedulingData& task_data_ref) :
 			task_data(task_data_ref)
 		{
-			std::lock_guard<std::shared_mutex>(task_data.lock);
+			std::lock_guard<std::shared_mutex>lock(task_data.lock);
 			++task_data.reference_counter;
 		}
 
 		~TaskDataLock() {
-			std::lock_guard<std::shared_mutex>(task_data.lock);
+			std::lock_guard<std::shared_mutex>lock(task_data.lock);
 			--task_data.reference_counter;
 		}
 	};
