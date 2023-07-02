@@ -376,6 +376,41 @@ NEW_BLOCK:
 
 			return bytes;
 		}
+
+		const void* ReadBytes2(const size_t bytes_requested, size_t& bytes_actual) final {
+			if (bytes_requested == 0u) {
+				bytes_actual = 0u;
+				return nullptr;
+			}
+
+			size_t words = bytes / sizeof(DataWord);
+			if (words * sizeof(DataWord) != bytes) throw std::runtime_error("RLEDecoderPipe::ReadBytes : Byte count is not divisible by the word size");
+
+			DataWord* wordPtr = static_cast<DataWord*>(dst);
+			size_t wordsToRead = 0u;
+
+			void* address = nullptr;
+
+			while (words != 0u) {
+				if (_length == 0u) ReadNextBlock();
+				wordsToRead = words < _length ? words : _length;
+
+				if (_rle_mode) {
+					address = &_repeat_word;
+					wordsToRead = 1;
+				} else {
+					address = _buffer;
+				}
+
+				bytes_actual = sizeof(DataWord) * wordsToRead;
+
+				_length -= wordsToRead;
+				words -= wordsToRead;
+				wordPtr += wordsToRead;
+			}
+
+			return address;
+		}
 	};
 
 }}

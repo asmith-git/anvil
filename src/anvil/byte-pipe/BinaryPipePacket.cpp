@@ -35,7 +35,8 @@ namespace anvil { namespace BytePipe {
 	// PacketInputPipe
 
 	PacketInputPipe::PacketInputPipe(InputPipe& downstream_pipe) :
-		_downstream_pipe(downstream_pipe)
+		_downstream_pipe(downstream_pipe),
+		_buffer_read_head(0u)
 	{}
 
 	PacketInputPipe::~PacketInputPipe() {
@@ -82,34 +83,56 @@ BAD_VERSION:
 		used_bytes += 1u;
 		packet_size += 1u;
 
+		// Align read head to start of buffer
+		if (_buffer_read_head != 0u) {
+			size_t bytes_in_buffer = _buffer_a.size() - _buffer_read_head;
+			_buffer_b.resize(bytes_in_buffer);
+			memcpy(_buffer_b.data(), _buffer_a.data() + _buffer_read_head, bytes_in_buffer);
+
+			std::swap(_buffer_a, _buffer_b);
+			_buffer_read_head = 0u;
+		}
+
+		// Make sure the buffer is big enough to stor the packet
+		const size_t prev_buffer_size = _buffer_a.size();
+		_buffer_a.resize(prev_buffer_size + packet_size);
+
 		// Read the data into the buffer
+
 		const uint64_t unused_bytes = (packet_size - header_size) - used_bytes;
-		uint8_t* tmp = static_cast<uint8_t*>(_malloca(static_cast<size_t>(used_bytes + unused_bytes)));
-		ANVIL_RUNTIME_ASSERT(tmp != nullptr, "PacketInputPipe::ReadNextPacket : Failed to allocate temporary buffer");
-		read = _downstream_pipe.ReadBytes(tmp, static_cast<uint32_t>(used_bytes + unused_bytes));
+		read = _downstream_pipe.ReadBytes(_buffer_a.data() + prev_buffer_size, static_cast<uint32_t>(used_bytes + unused_bytes));
 		if (read != used_bytes + unused_bytes) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Failed reading used packet data");
 
-		// Copy the used data into the main buffer
-		for (uint32_t i = 0u; i < used_bytes; ++i) _buffer.push_back(tmp[i]); //! \todo This could be optimised
-		_freea(tmp);
+		// Remove unused bytes from the buffer
+		_buffer_a.resize(prev_buffer_size + used_bytes);
 	}
 
 	size_t PacketInputPipe::ReadBytes(void* dst, const size_t bytes) {
-		uint8_t* data = static_cast<uint8_t*>(dst);
-		size_t b = bytes;
+		size_t bytes_read = 0u;
+		const void* tmp = ReadBytes2(bytes, bytes_read);
+		memcpy(dst, tmp, bytes_read);
+		return bytes_read;
+	}
 
-		//! \todo This could be optimised
-		while (b != 0u) {
-			if (_buffer.empty()) ReadNextPacket();
-
-			*data = _buffer.front();
-			_buffer.pop_front();
-
-			--b;
-			++data;
+	const void* PacketInputPipe::ReadBytes2(const size_t bytes_requested, size_t& bytes_actual) {
+		if (bytes_requested == 0u) {
+NO_DATA:
+			bytes_actual = 0u;
+			return nullptr;
 		}
 
-		return bytes;
+		if (_buffer_a.empty()) ReadNextPacket();
+		if (_buffer_a.empty()) goto NO_DATA;
+
+		bytes_actual = _buffer_a.size() - _buffer_read_head;
+		if (bytes_actual > bytes_requested) bytes_actual = bytes_requested;
+
+		void* address = _buffer_a.data() + _buffer_read_head;
+
+		_buffer_read_head += bytes_actual;
+		if (_buffer_read_head >= _buffer_a.size()) bytes_actual = _buffer_read_head;
+
+		return address;
 	}
 
 	// PacketOutputPipe

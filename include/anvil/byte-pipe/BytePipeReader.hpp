@@ -38,6 +38,8 @@ namespace anvil { namespace BytePipe {
 		virtual ~InputPipe() {}
 		virtual size_t ReadBytes(void* dst, const size_t bytes) = 0;
 		virtual void ReadBytesFast(void* dst, const size_t bytes) { ReadBytes(dst, bytes); }
+
+		virtual const void* ReadBytes2(const size_t bytes_requested, size_t& bytes_actual);
 	};
 
 	/*!

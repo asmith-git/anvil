@@ -1455,5 +1455,22 @@ OLD_COMPONENT_ID:
 		ANVIL_CONTRACT(id <= SID_B, "PrimitiveCallbackHelper : Unknown primitive type");
 		g_primitive_callbacks[id](*this, value);
 	}
+	
+	// InputPipe
+
+	const void* InputPipe::ReadBytes2(const size_t bytes_requested, size_t& bytes_actual) {
+		if (bytes_requested == 0u) {
+			bytes_actual = 0u;
+			return nullptr;
+		}
+
+		enum { LOCAL_BUFFER_SIZE = 4096 };
+		thread_local uint8_t buffer[LOCAL_BUFFER_SIZE];
+
+		bytes_actual = bytes_requested > LOCAL_BUFFER_SIZE ? LOCAL_BUFFER_SIZE : bytes_requested;
+		bytes_actual = ReadBytes(buffer, bytes_actual);
+
+		return buffer;
+	}
 
 }}
