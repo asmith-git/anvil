@@ -329,13 +329,12 @@ namespace anvil { namespace BytePipe {
 		const size_t encoded_bytes = encoded_bits / 8u;
 		if (encoded_bytes * 8u != encoded_bits) throw std::runtime_error("RawHamming74OutputPipe::ReadBytes : Encoded bit count is not divisible by 8");
 
-		// Allocate temporary storage for the encoded data
-		uint8_t* buffer = static_cast<uint8_t*>(_alloca(encoded_bytes));
-
 		// Read encoded data from the downstream pipe
-		if(_downstream_pipe.ReadBytes(buffer, encoded_bytes) != encoded_bytes) throw std::runtime_error("RawHamming74OutputPipe::ReadBytes : Error reading from downstream pipe");
+		size_t encoded_bytes_read = 0u;
+		const uint8_t* buffer = static_cast<const uint8_t*>(_downstream_pipe.ReadBytes2(encoded_bytes, encoded_bytes_read));
+		if(encoded_bytes_read != encoded_bytes) throw std::runtime_error("RawHamming74OutputPipe::ReadBytes : Error reading from downstream pipe");
 
-		// Decode the data
+		// Decode the data stream
 		BitInputStream stream(buffer);
 		for (size_t i = 0; i < decoded_bytes; ++i) {
 			static_cast<uint8_t*>(dst)[i] = static_cast<uint8_t>(DecodeHamming74_8(stream.ReadBits(14u)));
@@ -362,7 +361,8 @@ namespace anvil { namespace BytePipe {
 		if(encoded_bytes * 8u != encoded_bits) throw std::runtime_error("RawHamming74OutputPipe::WriteBytes : Encoded bit count is not divisible by 8");
 
 		// Allocate temporary storage for the encoded data
-		uint8_t* buffer = static_cast<uint8_t*>(_alloca(encoded_bytes));
+		uint8_t* buffer = static_cast<uint8_t*>(_malloca(encoded_bytes));
+		if (buffer == nullptr) throw std::runtime_error("RawHamming74OutputPipe::WriteBytes : Failed to allocate buffer");
 		BitOutputStream stream(buffer);
 
 		// Encode the data
@@ -371,8 +371,10 @@ namespace anvil { namespace BytePipe {
 		}
 
 		// Write the encoded data downstream
-		if(_downstream_pipe.WriteBytes(buffer, encoded_bytes) != encoded_bytes) throw std::runtime_error("RawHamming74OutputPipe::WriteBytes : Error writing to downstream Pipe");
-
+		if (_downstream_pipe.WriteBytes(buffer, encoded_bytes) != encoded_bytes) {
+			_freea(buffer);
+			throw std::runtime_error("RawHamming74OutputPipe::WriteBytes : Error writing to downstream Pipe");
+		}
 		return decoded_bytes;
 	}
 
@@ -439,7 +441,8 @@ namespace anvil { namespace BytePipe {
 		if (encoded_bytes * 8u != encoded_bits) throw std::runtime_error("RawHamming1511OutputPipe::WriteBytes : Decoded bit count is not divisible by 11");
 
 		// Allocate temporary storage for the encoded data
-		uint8_t* buffer = static_cast<uint8_t*>(_alloca(encoded_bytes));
+		uint8_t* buffer = static_cast<uint8_t*>(_malloca(encoded_bytes));
+		if(buffer == nullptr) throw std::runtime_error("RawHamming1511OutputPipe::WriteBytes : Failed to allocate buffer");
 		BitInputStream in(static_cast<const uint8_t*>(src));
 		uint16_t* out = reinterpret_cast<uint16_t*>(buffer);
 
@@ -456,8 +459,12 @@ namespace anvil { namespace BytePipe {
 		}
 
 		// Write the encoded data downstream
-		if (_downstream_pipe.WriteBytes(buffer, encoded_bytes) != encoded_bytes) throw std::runtime_error("RawHamming1511OutputPipe::WriteBytes : Error writing to downstream Pipe");
+		if (_downstream_pipe.WriteBytes(buffer, encoded_bytes) != encoded_bytes) {
+			_freea(buffer);
+			throw std::runtime_error("RawHamming1511OutputPipe::WriteBytes : Error writing to downstream Pipe");
+		}
 
+		_freea(buffer);
 		return decoded_bytes;
 	}
 
@@ -482,16 +489,16 @@ namespace anvil { namespace BytePipe {
 		const size_t encoded_bytes = encoded_bits / 8u;
 		if (encoded_bytes * 8u != encoded_bits) throw std::runtime_error("RawHamming1511InputPipe::ReadBytes : Decoded bit count is not divisible by 11");
 
-		// Allocate temporary storage for the encoded data
-		uint8_t* buffer = static_cast<uint8_t*>(_alloca(encoded_bytes));
-		BitOutputStream out(static_cast<uint8_t*>(dst));
-		uint16_t* in = reinterpret_cast<uint16_t*>(buffer);
-
 		// Read encoded data from downstream
-		if(_downstream_pipe.ReadBytes(buffer, encoded_bytes) != encoded_bytes) throw std::runtime_error("RawHamming1511InputPipe::ReadBytes : Failed to read from downstream pipe");
+		size_t encoded_bytes_read = 0u;
+		const uint8_t* buffer = static_cast<const uint8_t*>(_downstream_pipe.ReadBytes2(encoded_bytes, encoded_bytes_read));
+		if (encoded_bytes_read != encoded_bytes) throw std::runtime_error("RawHamming1511InputPipe::ReadBytes : Error reading from downstream pipe");
+		const uint16_t* in = reinterpret_cast<const uint16_t*>(buffer);
 
+		// Decode data stream
+		BitOutputStream out(static_cast<uint8_t*>(dst));
 		for (size_t i = 0u; i < encoded_bits; i += 15u) {
-			// Read data bits from downstream
+			// Read data bits
 			uint32_t tmp = *in;
 			++in;
 
