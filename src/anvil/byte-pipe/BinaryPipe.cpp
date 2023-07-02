@@ -285,19 +285,19 @@ namespace anvil { namespace BytePipe {
 	ANVIL_STRONG_INLINE PrimitiveArrayCallback GetPrimitiveArrayCallback(const SecondaryID id) {
 		static ANVIL_CONSTEXPR_VAR const PrimitiveArrayCallback g_primitive_array_callbacks[] = {
 			nullptr,						// SID_NULL
-			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU8),	// SID_U8
-			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU16),	// SID_U16
-			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU32),	// SID_U32
-			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayU64),	// SID_U64
-			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS8),	// SID_S8
-			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS16),	// SID_S16
-			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS32),	// SID_S32
-			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayS64),	// SID_S64
-			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayF32),	// SID_F32
-			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayF64),	// SID_F64
-			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayC8),	// SID_C8
-			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayF16),	// SID_F16
-			reinterpret_cast<PrimitiveArrayCallback>(&Parser::OnPrimitiveArrayBool)	// SID_B
+			(PrimitiveArrayCallback)(&Parser::OnPrimitiveArrayU8),	// SID_U8
+			(PrimitiveArrayCallback)(&Parser::OnPrimitiveArrayU16),	// SID_U16
+			(PrimitiveArrayCallback)(&Parser::OnPrimitiveArrayU32),	// SID_U32
+			(PrimitiveArrayCallback)(&Parser::OnPrimitiveArrayU64),	// SID_U64
+			(PrimitiveArrayCallback)(&Parser::OnPrimitiveArrayS8),	// SID_S8
+			(PrimitiveArrayCallback)(&Parser::OnPrimitiveArrayS16),	// SID_S16
+			(PrimitiveArrayCallback)(&Parser::OnPrimitiveArrayS32),	// SID_S32
+			(PrimitiveArrayCallback)(&Parser::OnPrimitiveArrayS64),	// SID_S64
+			(PrimitiveArrayCallback)(&Parser::OnPrimitiveArrayF32),	// SID_F32
+			(PrimitiveArrayCallback)(&Parser::OnPrimitiveArrayF64),	// SID_F64
+			(PrimitiveArrayCallback)(&Parser::OnPrimitiveArrayC8),	// SID_C8
+			(PrimitiveArrayCallback)(&Parser::OnPrimitiveArrayF16),	// SID_F16
+			(PrimitiveArrayCallback)(&Parser::OnPrimitiveArrayBool)	// SID_B
 		};
 
 		return g_primitive_array_callbacks[id];
