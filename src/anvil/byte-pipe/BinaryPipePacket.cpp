@@ -200,7 +200,7 @@ NO_DATA:
 		PacketHeader& header = *reinterpret_cast<PacketHeader*>(_buffer);
 		uint8_t* payload = _buffer + header_size;
 
-		size_t packet_size = _fixed_size_packets ? _max_packet_size + header_size : _current_packet_size + header_size;
+		size_t packet_size = (_fixed_size_packets ? _max_packet_size : _current_packet_size) + header_size;
 
 		if (version == 1u) {
 			// Create the header
@@ -218,15 +218,12 @@ NO_DATA:
 			header.v3.packet_version = 3u;
 			header.v3.reseved = 0u;
 			header.v3.used_size = _current_packet_size - 1u;
-			header.v3.packet_size = packet_size- 1u;
+			header.v3.packet_size = packet_size - 1u;
 		}
 
 		// Write the packet to the downstream pipe
 		//! \bug Packets larger than UINT32_MAX will cause an integer overflow on the byte count
-		
-		// 'Zero' unused data in the packet
-		if (_fixed_size_packets) memset(payload + _current_packet_size, 0, _max_packet_size - _current_packet_size);
-			
+		if (_fixed_size_packets) memset(payload + _current_packet_size, 0, _max_packet_size - _current_packet_size); // 'Zero' unused data in the packet
 		_downstream_pipe.WriteBytes(_buffer, packet_size);
 
 		// Reset the state of this pipe
