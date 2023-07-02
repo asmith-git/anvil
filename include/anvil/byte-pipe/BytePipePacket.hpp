@@ -70,11 +70,10 @@ namespace anvil { namespace BytePipe {
 		std::vector<uint8_t> _buffer_b;
 		size_t _buffer_read_head;
 		InputPipe& _downstream_pipe;
-		bool _fixed_size_packets;
 
 		void ReadNextPacket();
 	public:
-		PacketInputPipe(InputPipe& downstream_pipe, bool fixed_size_packets = true);
+		PacketInputPipe(InputPipe& downstream_pipe);
 		virtual ~PacketInputPipe();
 		size_t ReadBytes(void* dst, const size_t bytes) final;
 		virtual const void* ReadBytes2(const size_t bytes_requested, size_t& bytes_actual);

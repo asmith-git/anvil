@@ -34,10 +34,9 @@ namespace anvil { namespace BytePipe {
 
 	// PacketInputPipe
 
-	PacketInputPipe::PacketInputPipe(InputPipe& downstream_pipe, bool fixed_sized_packets) :
+	PacketInputPipe::PacketInputPipe(InputPipe& downstream_pipe) :
 		_downstream_pipe(downstream_pipe),
-		_buffer_read_head(0u),
-		_fixed_size_packets(fixed_sized_packets)
+		_buffer_read_head(0u)
 	{
 		read2_faster = 1;
 	}
@@ -104,17 +103,12 @@ namespace anvil { namespace BytePipe {
 		_buffer_a.resize(prev_buffer_size + packet_size);
 
 		// Read the data into the buffer
-		if (_fixed_size_packets) {
-			const uint64_t unused_bytes = (packet_size - used_bytes) - header_size;
-			read = _downstream_pipe.ReadBytes(_buffer_a.data() + prev_buffer_size, static_cast<uint32_t>(used_bytes + unused_bytes));
-			if (read != used_bytes + unused_bytes) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Failed reading used packet data");
+		const uint64_t unused_bytes = (packet_size - used_bytes) - header_size;
+		read = _downstream_pipe.ReadBytes(_buffer_a.data() + prev_buffer_size, static_cast<uint32_t>(used_bytes + unused_bytes));
+		if (read != used_bytes + unused_bytes) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Failed reading used packet data");
 
-			// Remove unused bytes from the buffer
-			_buffer_a.resize(prev_buffer_size + used_bytes);
-		} else {
-			read = _downstream_pipe.ReadBytes(_buffer_a.data() + prev_buffer_size, static_cast<uint32_t>(used_bytes));
-			if (read != used_bytes) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Failed reading used packet data");
-		}
+		// Remove unused bytes from the buffer
+		if(unused_bytes > 0) _buffer_a.resize(prev_buffer_size + used_bytes);
 	}
 
 	size_t PacketInputPipe::ReadBytes(void* dst, const size_t bytes) {
@@ -206,35 +200,34 @@ NO_DATA:
 		PacketHeader& header = *reinterpret_cast<PacketHeader*>(_buffer);
 		uint8_t* payload = _buffer + header_size;
 
+		size_t packet_size = _fixed_size_packets ? _max_packet_size + header_size : _current_packet_size + header_size;
+
 		if (version == 1u) {
 			// Create the header
 			header.v1.packet_version = 1u;
 			header.v1.reseved = 0u;
 			header.v1.used_size = _current_packet_size - 1u;
-			header.v1.packet_size = (_max_packet_size + header_size) - 1u;
+			header.v1.packet_size = packet_size - 1u;
 		} else if (version == 2u) {
 			// Create the header
 			header.v2.packet_version = 2u;
 			header.v2.used_size = _current_packet_size - 1u;
-			header.v2.packet_size = (_max_packet_size + header_size) - 1u;
+			header.v2.packet_size = packet_size - 1u;
 		} else if (version == 3u) {
 			// Create the header
 			header.v3.packet_version = 3u;
 			header.v3.reseved = 0u;
 			header.v3.used_size = _current_packet_size - 1u;
-			header.v3.packet_size = (_max_packet_size + header_size) - 1u;
+			header.v3.packet_size = packet_size- 1u;
 		}
 
 		// Write the packet to the downstream pipe
 		//! \bug Packets larger than UINT32_MAX will cause an integer overflow on the byte count
-		if (_fixed_size_packets) {
-			// 'Zero' unused data in the packet
-			memset(payload + _current_packet_size, 0, _max_packet_size - _current_packet_size);
-			_downstream_pipe.WriteBytes(_buffer, static_cast<uint32_t>(_max_packet_size + header_size));
-
-		} else {
-			_downstream_pipe.WriteBytes(_buffer, static_cast<uint32_t>(_current_packet_size + header_size));
-		}
+		
+		// 'Zero' unused data in the packet
+		if (_fixed_size_packets) memset(payload + _current_packet_size, 0, _max_packet_size - _current_packet_size);
+			
+		_downstream_pipe.WriteBytes(_buffer, packet_size);
 
 		// Reset the state of this pipe
 		_current_packet_size = 0u;
