@@ -54,13 +54,14 @@ namespace anvil { namespace BytePipe {
 		if (read != 1u) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Failed to read packet version");
 		uint32_t version = header.v1.packet_version;
 		if (version >= 3u) version = header.v3.packet_version; // Read the extended version number
-		if (header.v1.packet_version > 3u) {
+		if (header.v1.packet_version == 0 || header.v1.packet_version > 3u) {
 BAD_VERSION:
 			throw std::runtime_error("PacketInputPipe::ReadNextPacket : Packet version is not supported");
 		}
 
 		// Read the rest of the header
-		read = _downstream_pipe.ReadBytes(reinterpret_cast<uint8_t*>(&header) + 1u, g_header_sizes[header.v1.packet_version] - 1u);
+		const size_t header_size = g_header_sizes[header.v1.packet_version - 1u];
+		read = _downstream_pipe.ReadBytes(reinterpret_cast<uint8_t*>(&header) + 1u, header_size - 1u);
 
 		// Allocate a temporary buffer for the data
 		//! \bug Packets larger than UINT32_MAX will cause an integer overflow on the byte count
@@ -82,13 +83,15 @@ BAD_VERSION:
 		packet_size += 1u;
 
 		// Read the data into the buffer
-		const uint64_t unused_bytes = (packet_size - g_header_sizes[version]) - used_bytes;
-		uint8_t* tmp = static_cast<uint8_t*>(_alloca(static_cast<size_t>(used_bytes + unused_bytes)));
+		const uint64_t unused_bytes = (packet_size - header_size) - used_bytes;
+		uint8_t* tmp = static_cast<uint8_t*>(_malloca(static_cast<size_t>(used_bytes + unused_bytes)));
+		ANVIL_RUNTIME_ASSERT(tmp != nullptr, "PacketInputPipe::ReadNextPacket : Failed to allocate temporary buffer");
 		read = _downstream_pipe.ReadBytes(tmp, static_cast<uint32_t>(used_bytes + unused_bytes));
 		if (read != used_bytes + unused_bytes) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Failed reading used packet data");
 
 		// Copy the used data into the main buffer
 		for (uint32_t i = 0u; i < used_bytes; ++i) _buffer.push_back(tmp[i]); //! \todo This could be optimised
+		_freea(tmp);
 	}
 
 	size_t PacketInputPipe::ReadBytes(void* dst, const size_t bytes) {

@@ -67,6 +67,8 @@ namespace anvil {
 			std::atomic_uint32_t tasks_executing;
 			std::atomic_uint32_t sleeping;
 			std::atomic_uint32_t enabled;
+
+			ThreadDebugData();
 		};
 
 		struct SchedulerDebugData {
@@ -76,6 +78,8 @@ namespace anvil {
 			std::atomic_uint32_t sleeping_thread_count;
 			std::atomic_uint32_t total_tasks_executing;
 			std::atomic_uint32_t total_tasks_queued;
+
+			SchedulerDebugData();
 		};
 	private:
 		static TaskSchedulingData* AllocateTaskSchedulingData();
@@ -134,7 +138,7 @@ namespace anvil {
 
 		void Yield(const std::function<bool()>& condition, uint32_t max_sleep_milliseconds = 1u);
 
-		void Schedule(Task** tasks, const uint32_t count);
+		void Schedule(Task** tasks, uint32_t count);
 		void Schedule(std::shared_ptr<Task>* tasks, uint32_t count);
 
 		void Schedule(Task* task, Priority priority);

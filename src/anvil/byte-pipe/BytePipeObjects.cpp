@@ -303,7 +303,7 @@ namespace anvil { namespace BytePipe {
 		case TYPE_NULL:
 			return 0.f;
 		case TYPE_C8:
-			if(c8 >= '0' && c8 <= '9') return static_cast<double>(c8 - '0');
+			if(c8 >= '0' && c8 <= '9') return static_cast<double>(static_cast<int>(c8) - static_cast<int>('0'));
 			break;
 		case TYPE_U8:
 			return static_cast<double>(u8);
@@ -343,7 +343,7 @@ namespace anvil { namespace BytePipe {
 		_primitive.u64 = 0u;
 	}
 
-	Value::Value(Value&& other) throw()  :
+	Value::Value(Value&& other)  :
 		Value()
 	{
 		Swap(other);

@@ -376,6 +376,8 @@ namespace anvil { namespace BytePipe {
 		_swap_byte_order(swap_byte_order),
 		_buffer_size(0)
 	{
+		memset(_buffer, 0, sizeof(_buffer));
+
 		// Check for invalid settings
 		if (_version == VERSION_1 && GetEndianness() == ENDIAN_BIG) throw std::runtime_error("Writer::Writer : Writing to big endian requires version 2 or higher");
 	}
@@ -549,7 +551,7 @@ namespace anvil { namespace BytePipe {
 	}
 
 	void Writer::_OnPrimitive64(uint64_t value, const uint8_t id) {
-		const uint32_t bytes = g_secondary_type_sizes[id];
+		const size_t bytes = g_secondary_type_sizes[id];
 		ANVIL_ASSUME(bytes <= 8u);
 
 		ValueHeader header;
@@ -654,7 +656,8 @@ namespace anvil { namespace BytePipe {
 		ANVIL_ASSUME(element_bytes <= 8u);
 		if (_swap_byte_order && element_bytes > 1u) {
 			// Allocate temporary storage
-			void* buffer = _alloca(size * element_bytes);
+			void* buffer = _malloca(size * element_bytes);
+			ANVIL_RUNTIME_ASSERT(buffer != nullptr, "Writer::_OnPrimitiveArray : Failed to allocate buffer");
 
 			// Copy and swap byte order
 			if (element_bytes == 2u) {
@@ -675,6 +678,7 @@ namespace anvil { namespace BytePipe {
 
 			// Write the swapped bytes
 			Write(buffer, size * element_bytes);
+			_freea(buffer);
 		} else {
 			Write(ptr, size * element_bytes);
 		}
@@ -982,7 +986,9 @@ OLD_COMPONENT_ID:
 			_buffer_size(0u),
 			_version(version),
 			_buffer_head(nullptr)
-		{}
+		{
+			memset(_buffer, 0, sizeof(_buffer));
+		}
 
 		~ReadHelper() {
 			if (_mem) operator delete(_mem);

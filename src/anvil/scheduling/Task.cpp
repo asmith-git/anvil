@@ -1262,7 +1262,15 @@ RETRY:
 		}
 	}
 
-	void Scheduler::Schedule(Task** tasks, const uint32_t count) {
+	void Scheduler::Schedule(Task** tasks, uint32_t count) {
+		// Limit number of tasks that can be added in one call to prevent stack overflow
+		enum {MAX_TASKS = 512};
+		while (count > MAX_TASKS) {
+			Schedule(tasks, MAX_TASKS);
+			tasks += MAX_TASKS;
+			count -= MAX_TASKS;
+		}
+
 		if (count == 0u) return;
 
 #if ANVIL_TASK_FIBERS
@@ -1272,7 +1280,7 @@ RETRY:
 #endif
 
 		// Ready tasks are placed at the start of this array, undready tasks are added to the end
-		TaskSchedulingData** ready_tasks = static_cast<TaskSchedulingData**>(_alloca(count * sizeof(TaskSchedulingData*)));
+		TaskSchedulingData* ready_tasks[MAX_TASKS];
 		TaskSchedulingData** unready_tasks = ready_tasks + (count - 1u);
 		size_t ready_count = 0u;
 		size_t unready_count = 0u;
@@ -1533,4 +1541,20 @@ TASK_SCHEDULED:
 		std::lock_guard<std::mutex> lock(g_task_scheduling_data_lock);
 		g_free_task_scheduling_data.push_back(data);
 	}
+
+	Scheduler::ThreadDebugData::ThreadDebugData() :
+		thread_local_data(nullptr),
+		tasks_executing(0),
+		sleeping(0),
+		enabled(0)
+	{}
+
+	Scheduler::SchedulerDebugData::SchedulerDebugData() :
+		thread_debug_data(nullptr),
+		total_thread_count(0),
+		executing_thread_count(0),
+		sleeping_thread_count(0),
+		total_tasks_executing(0),
+		total_tasks_queued(0)
+	{}
 }

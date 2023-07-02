@@ -49,6 +49,7 @@ namespace anvil { namespace lutils { namespace msg {
 			data(nullptr),
 			id(0u),
 			type(MSG_NULL),
+			sub_type(0u),
 			cleanup_flag(0u),
 			unused_flags(0u)
 		{}

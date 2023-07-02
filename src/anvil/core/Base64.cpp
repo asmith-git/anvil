@@ -113,17 +113,18 @@ namespace anvil {
 	}
 
 	void Base64::Decode(const char* src, size_t src_len, uint8_t* dst, size_t& bytes_out, const char* const table, char padding) {
+		uint8_t stack_table[256u];
+
 		const uint8_t* reverse_table;
 		if (table == g_default_base64_table) {
 			reverse_table = g_default_base64_reverse_table;
 
 		} else {
-			uint8_t* t = static_cast<uint8_t*>(_alloca(256u)); 
 			for (size_t c = 0u; c < 256u; ++c) {
 				for (uint32_t j = 0; j < 64u; ++j) if (c == table[j]) break; 
-				t[c] = 0;
+				stack_table[c] = 0;
 			}
-			reverse_table = t;
+			reverse_table = stack_table;
 		}
 
 		bytes_out = 0u;
