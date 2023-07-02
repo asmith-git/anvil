@@ -41,10 +41,10 @@
 
 namespace anvil {
 
-	static float GetTimeMS() {
-		static const uint64_t g_reference_time = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-		return static_cast<float>(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count() - g_reference_time) / 1000000.f;
-	}
+	//static float GetTimeMS() {
+	//	static const uint64_t g_reference_time = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	//	return static_cast<float>(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count() - g_reference_time) / 1000000.f;
+	//}
 
 
 #if ANVIL_DEBUG_TASKS
@@ -251,6 +251,7 @@ namespace anvil {
 		bool is_worker_thread;
 
 		TaskThreadLocalData() :
+			scheduler(nullptr),
 #if ANVIL_TASK_FIBERS
 			current_fiber(nullptr),
 			main_fiber(nullptr),
@@ -633,7 +634,7 @@ RETRY:
 			}
 		}
 		{
-			std::lock_guard<std::shared_mutex> task_lock(_data->lock);
+			std::lock_guard<std::shared_mutex> new_task_lock(_data->lock);
 #if ANVIL_DEBUG_TASKS
 			{
 				TaskDebugEvent e = TaskDebugEvent::CancelEvent(_data->debug_id);
@@ -764,7 +765,6 @@ RETRY:
 	void Task::Execute() throw() {
 		// Remember the scheduler for later
 		TaskDataLock task_lock(*_data);
-		Scheduler* const scheduler = _data->scheduler;
 	
 #if ANVIL_TASK_FIBERS
 		FiberData* fiber = nullptr;
@@ -816,7 +816,7 @@ RETRY:
 
 		{
 			// Post-execution cleanup
-			std::lock_guard<std::shared_mutex> task_lock(_data->lock);
+			std::lock_guard<std::shared_mutex> new_task_lock(_data->lock);
 			_data->state = Task::STATE_COMPLETE;
 			_data->scheduler = nullptr;
 		}
@@ -843,7 +843,7 @@ RETRY:
 
 					// Execute the task
 					{
-						std::lock_guard<std::shared_mutex> task_lock(task._data->lock);
+						std::lock_guard<std::shared_mutex> new_task_lock(task._data->lock); //! \bug Not sure this lock is required now, task is already locked at this point
 						task._data->state = Task::STATE_EXECUTING;
 					}
 					try {
@@ -995,7 +995,8 @@ RETRY:
 					// Remove the task at the back of the queue
 					task = _task_queue.back();
 					_task_queue.pop_back();
-
+					
+					if (task == nullptr) continue; // A null task shouldn't exist in the queue but if it somehow does then remove it
 					if (!task->task->IsReadyToExecute()) {
 						// Add the task to the unready list
 						_unready_task_queue.push_back(task);

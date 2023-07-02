@@ -57,6 +57,7 @@ namespace anvil {
 	class ANVIL_DLL_EXPORT ConsoleText {
 	private:
 		std::string _text;
+		#pragma warning( disable : 4201) // Unnamed struct
 		struct {
 			uint32_t _char : 8u;
 			uint32_t _foreground_colour : 4u;

@@ -339,7 +339,8 @@ namespace anvil {
 			}
 			return children;
 		}
-
+		
+		#pragma warning( disable : 4100) // Approximate child count no longer implemented, name is retained to improve code readability
 		/*!
 			\param aproximate If true then count will include children that previously existed but have since been destroyed (this is faster)
 			\return The number of children this task has

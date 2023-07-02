@@ -52,7 +52,8 @@ namespace anvil { namespace lutils {
 		void Release(const T id) override {
 
 		}
-
+		
+		#pragma warning( disable : 4100) // base & count are not used, names are retained to improve code readability
 		bool Reserve(const T base, const size_t count) override {
 			return false;
 		}

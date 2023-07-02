@@ -343,7 +343,7 @@ namespace anvil { namespace BytePipe {
 		_primitive.u64 = 0u;
 	}
 
-	Value::Value(Value&& other) :
+	Value::Value(Value&& other) throw()  :
 		Value()
 	{
 		Swap(other);

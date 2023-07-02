@@ -973,13 +973,15 @@ OLD_COMPONENT_ID:
 		ValueHeader header;
 
 		ReadHelper(InputPipe& pipe, Parser& parser, Version version, const bool swap_byte_order) :
+			header(),
 			_pipe(pipe),
 			_parser(parser),
 			_mem(nullptr),
 			_mem_bytes(0u),
 			_swap_byte_order(swap_byte_order),
 			_buffer_size(0u),
-			_version(version)
+			_version(version),
+			_buffer_head(nullptr)
 		{}
 
 		~ReadHelper() {
@@ -1027,7 +1029,7 @@ OLD_COMPONENT_ID:
 			swap_byte_order = e != (header_v2.little_endian ? ENDIAN_LITTLE : ENDIAN_BIG);
 
 			// These header options are not defined yet
-			if(header_v2.reserved_flag1 || header_v2.reserved_flag2 || header_v2.reserved_flag3 || header_v2.reserved_flag4 || header_v2.reserved_flag5 ||
+			if(header_v2.reserved_flag1 || header_v2.reserved_flag2 || header_v2.reserved_flag3 || header_v2.reserved_flag4 || 
 				header_v2.reserved_flag5 || header_v2.reserved_flag6 || header_v2.reserved_flag7)
 				throw std::runtime_error("Reader::Read : BytePipe version not supported");
 		}

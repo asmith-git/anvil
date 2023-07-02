@@ -38,6 +38,7 @@ namespace anvil { namespace lutils { namespace msg {
 		uint64_t id;						//!< An ID number unique to each message instance
 		uint32_t type;						//!< Identifies which type of message this is
 		uint16_t sub_type;					//!< Indentifies a message subtype
+		#pragma warning( disable : 4201) // Unnamed struct
 		struct {
 			uint16_t cleanup_flag : 1;		//!< Set to true if the producer should cleanup data after all consumers have acknowledged the message
 			uint16_t unused_flags : 15;		//!< Memory reserved for future use

@@ -18,9 +18,9 @@
 namespace anvil {
 
 	static char ToHex(uint32_t nybble) {
-		return nybble <= 9 ?
+		return static_cast<char>(nybble <= 9 ?
 			'0' + nybble :
-			'A' + (nybble - 10);
+			'A' + (nybble - 10));
 	}
 
 	static inline void ToHex(uint32_t byte, char* out) {
@@ -51,7 +51,7 @@ namespace anvil {
 	void Hexadecimal::Decode(const char* src, size_t src_len, uint8_t* dst, size_t& bytes_out) {
 		bytes_out = src_len / 2u;
 		for (size_t i = 0u; i < bytes_out; ++i) {
-			*dst = static_cast<uint32_t>(HexNybbleToBin(src[0u]) | (HexNybbleToBin(src[1u]) << 4u));
+			*dst = static_cast<uint8_t>(HexNybbleToBin(src[0u]) | (HexNybbleToBin(src[1u]) << 4u));
 
 			src += 2u;
 			++dst;

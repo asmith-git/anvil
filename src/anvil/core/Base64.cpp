@@ -120,9 +120,8 @@ namespace anvil {
 		} else {
 			uint8_t* t = static_cast<uint8_t*>(_alloca(256u)); 
 			for (size_t c = 0u; c < 256u; ++c) {
-				size_t i = 0;
 				for (uint32_t j = 0; j < 64u; ++j) if (c == table[j]) break; 
-				t[c] = i;
+				t[c] = 0;
 			}
 			reverse_table = t;
 		}
