@@ -101,7 +101,7 @@ BAD_VERSION:
 
 		// Read the data into the buffer
 
-		const uint64_t unused_bytes = (packet_size - header_size) - used_bytes;
+		const uint64_t unused_bytes = (packet_size - used_bytes) - header_size;
 		read = _downstream_pipe.ReadBytes(_buffer_a.data() + prev_buffer_size, static_cast<uint32_t>(used_bytes + unused_bytes));
 		if (read != used_bytes + unused_bytes) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Failed reading used packet data");
 
@@ -132,7 +132,10 @@ NO_DATA:
 		void* address = _buffer_a.data() + _buffer_read_head;
 
 		_buffer_read_head += bytes_actual;
-		if (_buffer_read_head >= _buffer_a.size()) bytes_actual = _buffer_read_head;
+		if (_buffer_read_head >= _buffer_a.size()) {
+			_buffer_read_head = 0u;
+			_buffer_a.clear();
+		}
 
 		return address;
 	}
@@ -147,7 +150,7 @@ NO_DATA:
 		_default_word(default_word)
 	{
 		uint32_t version = PacketVersionFromSize(packet_size);
-		uint32_t header_size = g_header_sizes[version];
+		uint32_t header_size = g_header_sizes[version - 1u];
 		_max_packet_size = packet_size - header_size;
 		_buffer = new uint8_t[packet_size]; // _max_packet_size + header_size
 	}
@@ -160,7 +163,7 @@ NO_DATA:
 
 	size_t PacketOutputPipe::WriteBytes(const void* src, const size_t bytes) {
 		const uint32_t version = PacketVersionFromSize(_max_packet_size);
-		const uint32_t header_size = g_header_sizes[version];
+		const uint32_t header_size = g_header_sizes[version - 1u];
 
 		//PacketHeader& header = *reinterpret_cast<PacketHeader*>(_buffer);
 		uint8_t* payload = _buffer + header_size;
@@ -190,7 +193,7 @@ NO_DATA:
 		if (_current_packet_size == 0u) return;
 
 		const uint32_t version = PacketVersionFromSize(_max_packet_size);
-		const uint32_t header_size = g_header_sizes[version];
+		const uint32_t header_size = g_header_sizes[version - 1u];
 
 		PacketHeader& header = *reinterpret_cast<PacketHeader*>(_buffer);
 		uint8_t* payload = _buffer + header_size;

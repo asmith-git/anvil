@@ -72,3 +72,4 @@ VisualStudio/Anvil/Anvil/x64/Release/Anvil.vcxproj.FileListAbsolute.txt
 VisualStudio/Anvil/Debug/Anvil.exp
 VisualStudio/Anvil/.vs/Anvil/v15/.suo
 *.vsidx
+*.recipe

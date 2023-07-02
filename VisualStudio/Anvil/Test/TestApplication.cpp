@@ -3,7 +3,7 @@
 #include <fstream>
 #include <chrono>
 #include "anvil/Core.hpp"
-#include "anvil/Compute.hpp"
+//#include "anvil/Compute.hpp"
 #include "anvil/BytePipe.hpp"
 #include "anvil/byte-pipe/BytePipeJSON.hpp"
 #include "anvil/Console.hpp"
@@ -305,12 +305,13 @@ static void TCPTest() {
 	int port = 1234;
 
 	std::thread server([port]()->void {
-		anvil::BytePipe::TCPServerPipe pipe(port);
+		anvil::BytePipe::TCPServerPipe tcppipe(port);
+		anvil::BytePipe::PacketInputPipe pipe(tcppipe);
 
 		for (int i = 0; i < 100; ++i) {
 			int j = 0;
 			pipe.ReadBytesFast(&j, sizeof(j));
-			std::cout << j << std::endl;
+			std::cout << ("Server reading " + std::to_string(j) + "\n");
 		}
 	});
 
@@ -321,11 +322,14 @@ static void TCPTest() {
 		ip.u8[2] = 0;
 		ip.u8[3] = 1;
 
-		anvil::BytePipe::TCPClientPipe pipe(ip, port);
+		anvil::BytePipe::TCPClientPipe tcppipe(ip, port);
+		anvil::BytePipe::PacketOutputPipe pipe(tcppipe, 4096);
 
 		for (int i = 0; i < 100; ++i) {
+			std::cout << ("Client writing " + std::to_string(i) + "\n");
 			pipe.WriteBytesFast(&i, sizeof(i));
 		}
+		pipe.Flush();
 	});
 
 	client.join();
@@ -553,24 +557,24 @@ void XMLTest() {
 
 int main()
 {
-	SchedulerTest();
-	return 0;
+	//SchedulerTest();
+	//return 0;
 
-	Base64Test();
-	EncodeOptimise();
-	return 0;
+	//Base64Test();
+	//EncodeOptimise();
+	//return 0;
 
-	Base64Test();
-	JSONTest();
-	XMLTest();
-	RPCTest();
-	return 0;
+	//Base64Test();
+	//JSONTest();
+	//XMLTest();
+	//RPCTest();
+	//return 0;
 
 	//UDPTest();
 	//return 0;
 
-	//TCPTest();
-	//return 0;
+	TCPTest();
+	return 0;
 
 	ConsoleTest();
 	return 0;

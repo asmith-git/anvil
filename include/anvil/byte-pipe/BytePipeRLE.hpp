@@ -149,12 +149,12 @@ NEW_BLOCK:
 					if (_length > 0u) {
 						if (_rle_mode) {
 							if (w1 != _current_word) {
-							FLUSH:
 								// Flush the current block
 								_Flush();
 							}
 						} else {
-							goto FLUSH;
+							// Flush the current block
+							_Flush();
 						}
 					}
 
@@ -201,12 +201,12 @@ NEW_BLOCK:
 					if (_length > 0u) {
 						if (_rle_mode) {
 							if (w1 != _current_word) {
-							FLUSH:
 								// Flush the current block
 								_Flush();
 							}
 						} else {
-							goto FLUSH;
+							// Flush the current block
+							_Flush();
 						}
 					}
 
@@ -385,31 +385,26 @@ NEW_BLOCK:
 				return nullptr;
 			}
 
-			size_t words = bytes / sizeof(DataWord);
-			if (words * sizeof(DataWord) != bytes) throw std::runtime_error("RLEDecoderPipe::ReadBytes : Byte count is not divisible by the word size");
+			size_t words = bytes_requested / sizeof(DataWord);
+			if (words * sizeof(DataWord) != bytes_requested) throw std::runtime_error("RLEDecoderPipe::ReadBytes : Byte count is not divisible by the word size");
 
-			DataWord* wordPtr = static_cast<DataWord*>(dst);
 			size_t wordsToRead = 0u;
 
 			void* address = nullptr;
 
-			while (words != 0u) {
-				if (_length == 0u) ReadNextBlock();
-				wordsToRead = words < _length ? words : _length;
+			if (_length == 0u) ReadNextBlock();
+			wordsToRead = words < _length ? words : _length;
 
-				if (_rle_mode) {
-					address = &_repeat_word;
-					wordsToRead = 1;
-				} else {
-					address = _buffer;
-				}
-
-				bytes_actual = sizeof(DataWord) * wordsToRead;
-
-				_length -= wordsToRead;
-				words -= wordsToRead;
-				wordPtr += wordsToRead;
+			if (_rle_mode) {
+				address = &_repeat_word;
+				wordsToRead = 1;
+			} else {
+				address = _buffer;
 			}
+
+			bytes_actual = sizeof(DataWord) * wordsToRead;
+
+			_length -= wordsToRead;
 
 			return address;
 		}
