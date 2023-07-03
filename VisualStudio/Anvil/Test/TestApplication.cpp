@@ -16,6 +16,41 @@ static uint64_t CurrentTime() {
 		).count();
 }
 
+class DebugPipe : public anvil::BytePipe::InputPipe, public anvil::BytePipe::OutputPipe {
+private:
+	std::deque<uint8_t> _buffer;
+	std::mutex _lock;
+public:
+	DebugPipe() {
+
+	}
+
+	virtual ~DebugPipe() {
+
+	}
+
+	size_t ReadBytes(void* dst, const size_t bytes) final {
+		std::lock_guard<std::mutex> lock(_lock);
+		size_t to_read = _buffer.size();
+		if (to_read > bytes) to_read = bytes;
+		for (size_t i = 0u; i < to_read; ++i) {
+			static_cast<uint8_t*>(dst)[i] = _buffer.front();
+			_buffer.pop_front();
+		}
+		return to_read;
+	}
+
+	size_t WriteBytes(const void* src, const size_t bytes) final {
+		std::lock_guard<std::mutex> lock(_lock);
+		for (size_t i = 0u; i < bytes; ++i) _buffer.push_back(static_cast<const uint8_t*>(src)[i]);
+		return bytes;
+	}
+
+	void Flush() final {
+
+	}
+};
+
 void SchedulerTest() {
 	using namespace anvil;
 
@@ -300,49 +335,59 @@ static void UDPTest() {
 	server.join();
 }
 
+#pragma optimize("", off)
 static void TCPTest() {
 
 	int port = 1234;
 
-	std::thread server([port]()->void {
-		anvil::BytePipe::TCPServerPipe tcppipe(port);
-		anvil::BytePipe::PacketInputPipe packetpipe1(tcppipe);
-		anvil::BytePipe::PacketInputPipe packetpipe2(packetpipe1);
-		//anvil::BytePipe::RLEDecoderPipe<> rlepipe(packetpipe2);
-		anvil::BytePipe::InputPipe& pipe = packetpipe2;
+	DebugPipe debugpipe;
+
+	std::thread server([port, &debugpipe]()->void {
+		std::unique_ptr<anvil::BytePipe::InputPipe>ipacketpipe1(new anvil::BytePipe::PacketInputPipe(debugpipe));
+		std::unique_ptr<anvil::BytePipe::InputPipe>ipacketpipe2(new anvil::BytePipe::PacketInputPipe(*ipacketpipe1));
+
+		//anvil::BytePipe::TCPServerPipe itcppipe(port);
+		//anvil::BytePipe::PacketInputPipe ipacketpipe1(debugpipe);
+		//anvil::BytePipe::PacketInputPipe ipacketpipe2(ipacketpipe1);
+		//anvil::BytePipe::RLEDecoderPipe<> rlepipe(ipacketpipe2);
+		anvil::BytePipe::InputPipe& ipipe = *ipacketpipe2;
+
+		//ipacketpipe1->debug_name = "PacketPipe 1";
+		//ipacketpipe2->debug_name = "PacketPipe 2";
 
 		int count = 0;
-		pipe.ReadBytesFast(&count, sizeof(count));
+		ipipe.ReadBytesFast(&count, sizeof(count));
 
 		for (int i = 0; i < count; ++i) {
-			int j = 0;
-			pipe.ReadBytesFast(&j, sizeof(j));
-			std::cout << ("Server reading " + std::to_string(j) + "\n");
+			int val = 0;
+			ipipe.ReadBytesFast(&val, sizeof(val));
+			std::cout << ("Server reading " + std::to_string(val) + "\n");
 		}
 	});
 
-	std::thread client([port]()->void {
+	std::thread client([port, &debugpipe]()->void {
 		anvil::BytePipe::IPAddress ip;
 		ip.u8[0] = 127;
 		ip.u8[1] = 0;
 		ip.u8[2] = 0;
 		ip.u8[3] = 1;
 
-		anvil::BytePipe::TCPClientPipe tcppipe(ip, port);
-		anvil::BytePipe::PacketOutputPipe packetpipe1(tcppipe, 500, true);
-		anvil::BytePipe::PacketOutputPipe packetpipe2(packetpipe1, 1000, true);
-		//anvil::BytePipe::RLEEncoderPipe<> rlepipe(packetpipe2);
+		//anvil::BytePipe::TCPClientPipe otcppipe(ip, port);
+		anvil::BytePipe::PacketOutputPipe opacketpipe1(debugpipe, 500, true);
+		anvil::BytePipe::PacketOutputPipe opacketpipe2(opacketpipe1, 1000, true);
+		//anvil::BytePipe::RLEEncoderPipe<> orlepipe(packetpipe2);
 
-		anvil::BytePipe::OutputPipe& pipe = packetpipe2;
+		anvil::BytePipe::OutputPipe& opipe = opacketpipe2;
 
-		int count = 6000;
-		pipe.WriteBytesFast(&count, sizeof(count));
+		int count = 2000;
+		opipe.WriteBytesFast(&count, sizeof(count));
 
 		for (int i = 0; i < count; ++i) {
-			std::cout << ("Client writing " + std::to_string(i) + "\n");
-			pipe.WriteBytesFast(&i, sizeof(i));
+			int val = i;
+			std::cout << ("Client writing " + std::to_string(val) + "\n");
+			opipe.WriteBytesFast(&val, sizeof(val));
 		}
-		pipe.Flush();
+		opipe.Flush();
 	});
 
 	client.join();

@@ -19,8 +19,6 @@
 #include "anvil/byte-pipe/BytePipeReader.hpp"
 #include "anvil/byte-pipe/BytePipeWriter.hpp"
 
-#pragma optimize("", off)
-
 namespace anvil { namespace BytePipe {
 
 	/*!

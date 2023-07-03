@@ -14,8 +14,6 @@
 
 #include "anvil/byte-pipe/BytePipePacket.hpp"
 
-#pragma optimize("", off)
-
 namespace anvil { namespace BytePipe {
 
 	static uint32_t PacketVersionFromSize(const uint64_t size) {
@@ -193,9 +191,8 @@ WRITE_TO_BUFFER:
 	void PacketOutputPipe::_Flush(const void* buffer, size_t bytes_in_buffer) {
 		if (bytes_in_buffer == 0u) return;
 
-
 		const size_t packet_size = (_fixed_size_packets ? _packet_size : bytes_in_buffer + _header_size);
-		if (bytes_in_buffer > packet_size) throw std::runtime_error("PacketOutputPipe::_Flush : Packet is too large");
+		if (bytes_in_buffer + _header_size > packet_size) throw std::runtime_error("PacketOutputPipe::_Flush : Packet is too large");
 
 		PacketHeader header;
 		if (_version == 1u) {
@@ -204,24 +201,27 @@ WRITE_TO_BUFFER:
 			header.v1.reseved = 0u;
 			header.v1.payload_size = bytes_in_buffer - 1u;
 			header.v1.packet_size = packet_size - 1u;
+			ANVIL_RUNTIME_ASSERT(_header_size == sizeof(PacketHeaderVersion1), "PacketOutputPipe::_Flush : Header size is wrong");
 		} else if (_version == 2u) {
 			// Create the header
 			header.v2.packet_version = 2u;
 			header.v2.payload_size = bytes_in_buffer - 1u;
 			header.v2.packet_size = packet_size - 1u;
+			ANVIL_RUNTIME_ASSERT(_header_size == sizeof(PacketHeaderVersion2), "PacketOutputPipe::_Flush : Header size is wrong");
 		} else if (_version == 3u) {
 			// Create the header
 			header.v3.packet_version = 3u;
 			header.v3.reseved = 0u;
 			header.v3.payload_size = bytes_in_buffer - 1u;
 			header.v3.packet_size = packet_size - 1u;
+			ANVIL_RUNTIME_ASSERT(_header_size == sizeof(PacketHeaderVersion3), "PacketOutputPipe::_Flush : Header size is wrong");
 		}
 
 		// Write the packet to the downstream pipe
 		_downstream_pipe.WriteBytesFast(&header, _header_size);
 		_downstream_pipe.WriteBytesFast(buffer, bytes_in_buffer);
 
-		const size_t unused_bytes = packet_size - bytes_in_buffer;
+		const size_t unused_bytes = packet_size - (bytes_in_buffer + _header_size);
 		if (unused_bytes > 0) {
 			void* tmp = _malloca(unused_bytes);
 			memset(tmp, 0, unused_bytes);

@@ -53,16 +53,20 @@ namespace anvil { namespace BytePipe {
 	// Large packets
 #pragma pack(pop)
 
-	static_assert(sizeof(PacketHeaderVersion1) == 8u, "Expected PacketHeaderVersion1 to be 8 bytes");
-	static_assert(sizeof(PacketHeaderVersion2) == 4u, "Expected PacketHeaderVersion2 to be 4 bytes");
-	static_assert(sizeof(PacketHeaderVersion3) == 21u, "Expected PacketHeaderVersion3 to be 21 bytes");
-
 	union PacketHeader {
 		PacketHeaderVersion1 v1;
 		PacketHeaderVersion2 v2;
 		PacketHeaderVersion3 v3;
 	};
 
+	// Check that the compiler has laid out the data structures as we expect
+	static_assert(sizeof(PacketHeaderVersion1) == 8u, "Expected PacketHeaderVersion1 to be 8 bytes");
+	static_assert(sizeof(PacketHeaderVersion2) == 4u, "Expected PacketHeaderVersion2 to be 4 bytes");
+	static_assert(sizeof(PacketHeaderVersion3) == 21u, "Expected PacketHeaderVersion3 to be 21 bytes");
+
+	static_assert(offsetof(PacketHeader, v1) == 0u, "Expected PacketHeader::v1 to be located at byte offset 0");
+	static_assert(offsetof(PacketHeader, v2) == 0u, "Expected PacketHeader::v2 to be located at byte offset 0");
+	static_assert(offsetof(PacketHeader, v3) == 0u, "Expected PacketHeader::v3 to be located at byte offset 0");
 
 	class ANVIL_DLL_EXPORT PacketInputPipe : public InputPipe {
 	private:
