@@ -787,7 +787,7 @@ namespace anvil { namespace BytePipe {
 
 		inline void ReadFromPipeRaw(void* dst, const uint32_t bytes) {
 #if ANVIL_CONTRACT_MODE == ANVIL_CONTRACT_IGNORE || ANVIL_CONTRACT_MODE == ANVIL_CONTRACT_ASSUME
-			_pipe.ReadBytesFast(dst, bytes, 1000);
+			_pipe.ReadBytesFast(dst, bytes, 10000);
 #else
 			const size_t bytesRead = _pipe.ReadBytes(dst, bytes);
 			ANVIL_CONTRACT(bytesRead == bytes, "Failed to read from pipe");
@@ -1028,7 +1028,7 @@ OLD_COMPONENT_ID:
 			PipeHeaderV1 header_v1;
 			PipeHeaderV2 header_v2;
 		};
-		_pipe.ReadBytesFast(&header_v1, sizeof(PipeHeaderV1), 1000);
+		_pipe.ReadBytesFast(&header_v1, sizeof(PipeHeaderV1), 10000);
 
 		// Check for unsupported version
 		if (header_v1.version > VERSION_3) throw std::runtime_error("Reader::Read : BytePipe version not supported");
@@ -1041,7 +1041,7 @@ OLD_COMPONENT_ID:
 			swap_byte_order = e != ENDIAN_LITTLE;
 		} else {
 			// Read the version 2 header info
-			_pipe.ReadBytesFast(reinterpret_cast<uint8_t*>(&header_v2) + sizeof(PipeHeaderV1), sizeof(PipeHeaderV2) - sizeof(PipeHeaderV1), 1000);
+			_pipe.ReadBytesFast(reinterpret_cast<uint8_t*>(&header_v2) + sizeof(PipeHeaderV1), sizeof(PipeHeaderV2) - sizeof(PipeHeaderV1), 10000);
 			swap_byte_order = e != (header_v2.little_endian ? ENDIAN_LITTLE : ENDIAN_BIG);
 
 			// These header options are not defined yet
@@ -1521,7 +1521,8 @@ OLD_COMPONENT_ID:
 	*	\param timout_ms The number of milliseconds before the read times-out. A value of -1 will force it to never time out.
 	*/
 	void InputPipe::ReadBytesFast(void* dst, size_t bytes, int timeout_ms) {
-		const uint64_t t = GetTimeMSUint();
+		uint64_t t = 0u;
+		bool once = true;
 
 		while (bytes > 0u) {
 			size_t bytes_read = 0u;
@@ -1538,10 +1539,23 @@ OLD_COMPONENT_ID:
 
 			if (bytes > 0u && timeout_ms >= 0) {
 				const uint64_t t2 = GetTimeMSUint();
+				if(once) t = t2;
+				once = false;
 				if (static_cast<int>(t2 - t) > timeout_ms) throw std::runtime_error("InputPipe::ReadBytesFast : Read timed-out");
 			}
 		}
 	}
+
+	/*!
+	*	\brief Get how many bytes are immediately available for reading.
+	*	\details More bytes may be available but will only be processed when ReadBytes or ReadBytes2 are called.
+	*	\return The number of bytes
+	*/
+	size_t InputPipe::GetBufferSize() const {
+		return 0u;
+	}
+
+	// OutputPipe
 
 	OutputPipe::OutputPipe() {
 

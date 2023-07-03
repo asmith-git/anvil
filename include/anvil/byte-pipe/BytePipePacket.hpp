@@ -30,7 +30,7 @@ namespace anvil { namespace BytePipe {
 #pragma pack(push, 1)
 	struct PacketHeaderVersion1 {
 		uint64_t packet_version : 2;	//!< Defines the layout of the packet header, values : 0 - 3
-		uint64_t used_size : 16;		//!< The number of bytes in the payload that contain valid data
+		uint64_t payload_size : 16;		//!< The number of bytes in the payload that contain valid data
 		uint64_t packet_size : 16;		//!< The size of the packet in bytes (including the header)
 		uint64_t reseved : 30;			//!< Unused bits, zeroed by default. May be used by user clases.
 	};
@@ -38,14 +38,14 @@ namespace anvil { namespace BytePipe {
 	// Small packets
 	struct PacketHeaderVersion2 {
 		uint32_t packet_version : 2;	//!< Defines the layout of the packet header, values : 0 - 3
-		uint32_t used_size : 15;		//!< The number of bytes in the payload that contain valid data : 0 - 32766
+		uint32_t payload_size : 15;		//!< The number of bytes in the payload that contain valid data : 0 - 32766
 		uint32_t packet_size : 15;		//!< The size of the packet in bytes (including the header)
 	};
 
 	// Large packets
 	struct PacketHeaderVersion3 {
 		uint8_t packet_version;
-		uint64_t used_size;		//!< The number of bytes in the payload that contain valid data
+		uint64_t payload_size;		//!< The number of bytes in the payload that contain valid data
 		uint64_t packet_size;	//!< The size of the packet in bytes (including the header)
 		uint32_t reseved;		//!< Unused bits, zeroed by default. May be used by user clases.
 	};
@@ -66,28 +66,34 @@ namespace anvil { namespace BytePipe {
 
 	class ANVIL_DLL_EXPORT PacketInputPipe : public InputPipe {
 	private:
-		std::vector<uint8_t> _buffer_a;
-		std::vector<uint8_t> _buffer_b;
-		size_t _buffer_read_head;
+		uint8_t* _payload;
+		size_t _payload_capacity;
+		size_t _payload_bytes;
+		size_t _payload_read_head;
+		int _timeout_ms;
 		InputPipe& _downstream_pipe;
 
 		void ReadNextPacket();
 	public:
-		PacketInputPipe(InputPipe& downstream_pipe);
+		PacketInputPipe(InputPipe& downstream_pipe, int timeout_ms = -1);
 		virtual ~PacketInputPipe();
 		size_t ReadBytes(void* dst, const size_t bytes) final;
 		virtual const void* ReadBytes2(const size_t bytes_requested, size_t& bytes_actual);
+		size_t GetBufferSize() const final;
 	};
 
 	class ANVIL_DLL_EXPORT PacketOutputPipe : public OutputPipe {
 	private:
 		OutputPipe& _downstream_pipe;
-		uint8_t* _buffer;
-		size_t _max_packet_size;
+		uint8_t* _payload;
+		size_t _packet_size;
+		size_t _max_payload_size;
+		size_t _header_size;
 		size_t _current_packet_size;
+		uint32_t _version;
 		bool _fixed_size_packets;
 
-		void _Flush();
+		void _Flush(const void* buffer, size_t bytes_in_buffer);
 	public:
 		PacketOutputPipe(OutputPipe& downstream_pipe, const size_t packet_size, bool fixed_size_packets = true);
 		virtual ~PacketOutputPipe();

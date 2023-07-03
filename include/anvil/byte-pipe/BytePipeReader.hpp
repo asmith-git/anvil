@@ -46,6 +46,7 @@ namespace anvil { namespace BytePipe {
 		virtual size_t ReadBytes(void* dst, const size_t bytes);
 		virtual void ReadBytesFast(void* dst, size_t bytes, int timeout_ms = -1);
 		virtual const void* ReadBytes2(const size_t bytes_requested, size_t& bytes_actual);
+		virtual size_t GetBufferSize() const;
 	};
 
 	/*!

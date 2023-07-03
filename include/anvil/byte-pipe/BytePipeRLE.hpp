@@ -19,6 +19,8 @@
 #include "anvil/byte-pipe/BytePipeReader.hpp"
 #include "anvil/byte-pipe/BytePipeWriter.hpp"
 
+#pragma optimize("", off)
+
 namespace anvil { namespace BytePipe {
 
 	/*!
@@ -106,16 +108,24 @@ NEW_BLOCK:
 			// If the current RLE block is full then flush the data
 			if (_length == MAX_RLE_LENGTH) _Flush();
 
-			if (_length > 0u) {
+			if (_length >= 8u) {
 				// If the word is the same as the last word in the buffer
-				if (_buffer[_length - 1u] == word) {
+				if (
+					_buffer[_length - 7u] == word &&
+					_buffer[_length - 6u] == word &&
+					_buffer[_length - 5u] == word &&
+					_buffer[_length - 4u] == word &&
+					_buffer[_length - 3u] == word &&
+					_buffer[_length - 2u] == word && 
+					_buffer[_length - 1u] == word
+				) {
 					// Flush the current block except for the last word
-					--_length;
+					_length -= 7u;
 					_Flush();
 
 					// Start a new RLE block
 					_current_word = word;
-					_length = 2u;
+					_length = 8u;
 					_rle_mode = true;
 					return;
 				}
@@ -309,15 +319,21 @@ NEW_BLOCK:
 
 		InputPipe& _input;
 		DataWord* _buffer;
+		int _timeout_ms;
+		LengthWord _buffer_read_head;
 		LengthWord _length;
 		DataWord _repeat_word;
 		bool _rle_mode;
 
 		void ReadNextBlock() {
+			// Reset the buffer
+			if (_length != 0u) throw std::runtime_error("RLEDecoderPipe::ReadNextBlock : Buffer was not empty when trying to read new block");
+			_buffer_read_head = 0u;
+
 			// Read the length of the block
 			LengthWord len = 0u;
-			uint32_t bytes_read = _input.ReadBytes(&len, sizeof(LengthWord));
-			if (bytes_read != sizeof(LengthWord)) throw std::runtime_error("RLEDecoderPipe::ReadNextBlock : Failed to read block length");
+			uint32_t bytes_read = sizeof(LengthWord);
+			_input.ReadBytesFast(&len, sizeof(LengthWord), _timeout_ms);
 
 			// If the block is repeated word
 			if (len & RLE_FLAG) {
@@ -329,21 +345,23 @@ NEW_BLOCK:
 				_repeat_word = 0u;
 				
 				// Read the word
-				bytes_read = _input.ReadBytes(&_repeat_word, sizeof(DataWord));
-				if (bytes_read != sizeof(DataWord)) throw std::runtime_error("RLEDecoderPipe::ReadNextBlock : Failed to repeated word");
+				bytes_read = sizeof(DataWord);
+				_input.ReadBytesFast(&_repeat_word, bytes_read, _timeout_ms);
 			} else {
 				_length = len;
 				_rle_mode = false;
 				read2_faster = 1;
-				bytes_read = _input.ReadBytes(_buffer, _length * sizeof(DataWord));
-				if (bytes_read != _length * sizeof(DataWord)) throw std::runtime_error("RLEDecoderPipe::ReadNextBlock : Failed to non-repeating words");
+				bytes_read = _length * sizeof(DataWord);
+				_input.ReadBytesFast(_buffer, bytes_read, _timeout_ms);
 			}
 		}
 	public:
-		RLEDecoderPipe(InputPipe& input) :
+		RLEDecoderPipe(InputPipe& input, int timeout_ms = -1) :
 			_input(input),
 			_buffer(new DataWord[MAX_RLE_LENGTH]),
+			_timeout_ms(timeout_ms),
 			_repeat_word(0u),
+			_buffer_read_head(0u),
 			_length(0u),
 			_rle_mode(false)
 		{}
@@ -366,15 +384,22 @@ NEW_BLOCK:
 				wordsToRead = words < _length ? words : _length;
 
 				if (_rle_mode) {
-					for (uint32_t i = 0u; i < wordsToRead; ++i) wordPtr[i] = _repeat_word;
+					if ANVIL_CONSTEXPR_VAR(sizeof(DataWord) == 1) {
+						memset(wordPtr, _repeat_word, wordsToRead);
+					} else {
+						for (uint32_t i = 0u; i < wordsToRead; ++i) wordPtr[i] = _repeat_word;
+					}
 				} else {
-					memcpy(wordPtr, _buffer, sizeof(DataWord) * wordsToRead);
+					memcpy(wordPtr, _buffer + _buffer_read_head, sizeof(DataWord) * wordsToRead);
+					_buffer_read_head += wordsToRead;
 				}
 
 				_length -= wordsToRead;
 				words -= wordsToRead;
 				wordPtr += wordsToRead;
 			}
+
+			if (_length == 0) read2_faster = 0;
 
 			return bytes;
 		}
@@ -399,14 +424,20 @@ NEW_BLOCK:
 				address = &_repeat_word;
 				wordsToRead = 1;
 			} else {
-				address = _buffer;
+				address = _buffer + _buffer_read_head;
+				_buffer_read_head += wordsToRead;
 			}
 
 			bytes_actual = sizeof(DataWord) * wordsToRead;
 
 			_length -= wordsToRead;
+			if (_length == 0) read2_faster = 0;
 
 			return address;
+		}
+
+		size_t GetBufferSize() const final {
+			return _length * sizeof(DataWord);
 		}
 	};
 

@@ -14,6 +14,8 @@
 
 #include "anvil/byte-pipe/BytePipePacket.hpp"
 
+#pragma optimize("", off)
+
 namespace anvil { namespace BytePipe {
 
 	static uint32_t PacketVersionFromSize(const uint64_t size) {
@@ -34,27 +36,30 @@ namespace anvil { namespace BytePipe {
 
 	// PacketInputPipe
 
-	PacketInputPipe::PacketInputPipe(InputPipe& downstream_pipe) :
+	PacketInputPipe::PacketInputPipe(InputPipe& downstream_pipe, int timeout_ms) :
 		_downstream_pipe(downstream_pipe),
-		_buffer_read_head(0u)
+		_payload(nullptr),
+		_payload_capacity(0u),
+		_payload_bytes(0u),
+		_payload_read_head(0u),
+		_timeout_ms(timeout_ms)
 	{
 		read2_faster = 1;
 	}
 
 	PacketInputPipe::~PacketInputPipe() {
-
+		if (_payload != nullptr) delete[] _payload;
 	}
 
 	void PacketInputPipe::ReadNextPacket() {
 
-		uint64_t used_bytes, packet_size;
+		size_t packet_size = 0u;
 
 		// Read the packet header version
 		PacketHeader header;
-		size_t read = _downstream_pipe.ReadBytes(&header, 1u);
+		_downstream_pipe.ReadBytesFast(&header, 1u, _timeout_ms);
 
 		// Error checking
-		if (read != 1u) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Failed to read packet version");
 		uint32_t version = header.v1.packet_version;
 		if (version >= 3u) version = header.v3.packet_version; // Read the extended version number
 		if (header.v1.packet_version == 0 || header.v1.packet_version > 3u) {
@@ -63,52 +68,36 @@ namespace anvil { namespace BytePipe {
 		}
 
 		// Read the rest of the header
-		const size_t header_size = g_header_sizes[header.v1.packet_version - 1u];
-		read = _downstream_pipe.ReadBytes(reinterpret_cast<uint8_t*>(&header) + 1u, header_size - 1u);
-
-		// Allocate a temporary buffer for the data
-		//! \bug Packets larger than UINT32_MAX will cause an integer overflow on the byte count
+		const size_t header_size = g_header_sizes[version - 1u];
+		_downstream_pipe.ReadBytesFast(reinterpret_cast<uint8_t*>(&header) + 1u, header_size - 1u, _timeout_ms);
 
 		if (version == 1u) {
-			used_bytes = header.v1.used_size;
-			packet_size = header.v1.packet_size;
-		}
-		else if (version == 2u) {
-			used_bytes = header.v2.used_size;
-			packet_size = header.v2.packet_size;
-		}
-		else if (version == 3u) {
-			used_bytes = header.v3.used_size;
-			packet_size = header.v3.packet_size;
-		}
-		else {
+			_payload_bytes = header.v1.payload_size + 1u;
+			packet_size = header.v1.packet_size + 1u;
+		} else if (version == 2u) {
+			_payload_bytes = header.v2.payload_size + 1u;
+			packet_size = header.v2.packet_size + 1u;
+		} else if (version == 3u) {
+			_payload_bytes = header.v3.payload_size + 1u;
+			packet_size = header.v3.packet_size + 1u;
+		} else {
 			goto BAD_VERSION; // This should never execute as version has already been checked
 		}
 
-		used_bytes += 1u;
-		packet_size += 1u;
+		if (_payload == nullptr) {
+			_payload = new uint8_t[packet_size];
+			_payload_capacity = packet_size;
 
-		// Align read head to start of buffer
-		if (_buffer_read_head != 0u) {
-			size_t bytes_in_buffer = _buffer_a.size() - _buffer_read_head;
-			_buffer_b.resize(bytes_in_buffer);
-			memcpy(_buffer_b.data(), _buffer_a.data() + _buffer_read_head, bytes_in_buffer);
-
-			std::swap(_buffer_a, _buffer_b);
-			_buffer_read_head = 0u;
+		} else if (_payload_capacity < packet_size) {
+			delete[] _payload;
+			_payload = new uint8_t[packet_size];
+			_payload_capacity = packet_size;
 		}
+		
+		if(_payload == nullptr) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Failed to allocate payload buffer");
 
-		// Make sure the buffer is big enough to stor the packet
-		const size_t prev_buffer_size = _buffer_a.size();
-		_buffer_a.resize(prev_buffer_size + packet_size);
-
-		// Read the data into the buffer
-		const uint64_t unused_bytes = (packet_size - used_bytes) - header_size;
-		read = _downstream_pipe.ReadBytes(_buffer_a.data() + prev_buffer_size, static_cast<uint32_t>(used_bytes + unused_bytes));
-		if (read != used_bytes + unused_bytes) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Failed reading used packet data");
-
-		// Remove unused bytes from the buffer
-		if(unused_bytes > 0) _buffer_a.resize(prev_buffer_size + used_bytes);
+		_downstream_pipe.ReadBytesFast(_payload, packet_size - header_size, _timeout_ms);
+		_payload_read_head = 0u;
 	}
 
 	size_t PacketInputPipe::ReadBytes(void* dst, const size_t bytes) {
@@ -125,113 +114,128 @@ NO_DATA:
 			return nullptr;
 		}
 
-		if (_buffer_a.empty()) ReadNextPacket();
-		if (_buffer_a.empty()) goto NO_DATA;
+		if (_payload_read_head >= _payload_bytes) ReadNextPacket();
+		if (_payload_bytes == 0u) goto NO_DATA;
 
-		bytes_actual = _buffer_a.size() - _buffer_read_head;
+		bytes_actual = _payload_bytes - _payload_read_head;
 		if (bytes_actual > bytes_requested) bytes_actual = bytes_requested;
 
-		void* address = _buffer_a.data() + _buffer_read_head;
-
-		_buffer_read_head += bytes_actual;
-		if (_buffer_read_head >= _buffer_a.size()) {
-			_buffer_read_head = 0u;
-			_buffer_a.clear();
-		}
+		const void* address = _payload + _payload_read_head;
+		_payload_read_head += bytes_actual;
 
 		return address;
+	}
+
+	size_t PacketInputPipe::GetBufferSize() const {
+		return _payload_bytes - _payload_read_head;
 	}
 
 	// PacketOutputPipe
 
 	PacketOutputPipe::PacketOutputPipe(OutputPipe& downstream_pipe, const size_t packet_size, bool fixed_sized_packets) :
 		_downstream_pipe(downstream_pipe),
-		_buffer(nullptr),
-		_max_packet_size(0u),
+		_payload(nullptr),
 		_current_packet_size(0u),
 		_fixed_size_packets(fixed_sized_packets)
 	{
-		uint32_t version = PacketVersionFromSize(packet_size);
-		uint32_t header_size = g_header_sizes[version - 1u];
-		_max_packet_size = packet_size - header_size;
-		_buffer = new uint8_t[packet_size]; // _max_packet_size + header_size
+		_packet_size = packet_size;
+		_version = PacketVersionFromSize(packet_size);
+		_header_size = g_header_sizes[_version - 1u];
+		_max_payload_size = packet_size - _header_size;
+		_payload = new uint8_t[_max_payload_size];
 	}
 
 	PacketOutputPipe::~PacketOutputPipe() {
-		 _Flush();
-		 delete[] _buffer;
-		 _buffer = nullptr;
+		_Flush(_payload, _current_packet_size);
+		 delete[] _payload;
+		 _payload = nullptr;
 	}
 
 	size_t PacketOutputPipe::WriteBytes(const void* src, const size_t bytes) {
-		const uint32_t version = PacketVersionFromSize(_max_packet_size);
-		const uint32_t header_size = g_header_sizes[version - 1u];
-
-		//PacketHeader& header = *reinterpret_cast<PacketHeader*>(_buffer);
-		uint8_t* payload = _buffer + header_size;
-
 		const uint8_t* data = static_cast<const uint8_t*>(src);
 		size_t b = bytes;
 
-		while (b != 0u) {
-			// Copy to the packet buffer
-			size_t bytes_to_buffer = _max_packet_size - _current_packet_size;
-			if (b < bytes_to_buffer) bytes_to_buffer = b;
 
-			memcpy(payload + _current_packet_size, data, bytes_to_buffer);
+		while (b > 0) {
+			// If there is data buffered in the current packet
+			if (_current_packet_size > 0) {
+WRITE_TO_BUFFER:
+				// Copy to the packet buffer
+				size_t bytes_to_buffer = _max_payload_size - _current_packet_size;
+				if (b < bytes_to_buffer) bytes_to_buffer = b;
 
-			data += bytes_to_buffer;
-			b -= bytes_to_buffer;
-			_current_packet_size += bytes_to_buffer;
+				memcpy(_payload + _current_packet_size, data, bytes_to_buffer);
 
-			// If the packet is ready then write it
-			if (_current_packet_size == _max_packet_size) _Flush();
+				data += bytes_to_buffer;
+				b -= bytes_to_buffer;
+				_current_packet_size += bytes_to_buffer;
+
+				// If the packet is full then write it
+				if (_current_packet_size == _max_payload_size) _Flush(_payload, _current_packet_size);
+
+			} else {
+				// If the input data is larger than a packet
+				if (b > _max_payload_size) {
+					// Send packet directly from input memory
+					_Flush(data, _max_payload_size);
+					data += _max_payload_size;
+					b -= _max_payload_size;
+
+				} else {
+					goto WRITE_TO_BUFFER;
+				}
+			}
 		}
 
 		return bytes;
 	}
 
-	void PacketOutputPipe::_Flush() {
-		if (_current_packet_size == 0u) return;
+	void PacketOutputPipe::_Flush(const void* buffer, size_t bytes_in_buffer) {
+		if (bytes_in_buffer == 0u) return;
 
-		const uint32_t version = PacketVersionFromSize(_max_packet_size);
-		const uint32_t header_size = g_header_sizes[version - 1u];
 
-		PacketHeader& header = *reinterpret_cast<PacketHeader*>(_buffer);
-		uint8_t* payload = _buffer + header_size;
+		const size_t packet_size = (_fixed_size_packets ? _packet_size : bytes_in_buffer + _header_size);
+		if (bytes_in_buffer > packet_size) throw std::runtime_error("PacketOutputPipe::_Flush : Packet is too large");
 
-		size_t packet_size = (_fixed_size_packets ? _max_packet_size : _current_packet_size) + header_size;
-
-		if (version == 1u) {
+		PacketHeader header;
+		if (_version == 1u) {
 			// Create the header
 			header.v1.packet_version = 1u;
 			header.v1.reseved = 0u;
-			header.v1.used_size = _current_packet_size - 1u;
+			header.v1.payload_size = bytes_in_buffer - 1u;
 			header.v1.packet_size = packet_size - 1u;
-		} else if (version == 2u) {
+		} else if (_version == 2u) {
 			// Create the header
 			header.v2.packet_version = 2u;
-			header.v2.used_size = _current_packet_size - 1u;
+			header.v2.payload_size = bytes_in_buffer - 1u;
 			header.v2.packet_size = packet_size - 1u;
-		} else if (version == 3u) {
+		} else if (_version == 3u) {
 			// Create the header
 			header.v3.packet_version = 3u;
 			header.v3.reseved = 0u;
-			header.v3.used_size = _current_packet_size - 1u;
+			header.v3.payload_size = bytes_in_buffer - 1u;
 			header.v3.packet_size = packet_size - 1u;
 		}
 
 		// Write the packet to the downstream pipe
-		//! \bug Packets larger than UINT32_MAX will cause an integer overflow on the byte count
-		if (_fixed_size_packets) memset(payload + _current_packet_size, 0, _max_packet_size - _current_packet_size); // 'Zero' unused data in the packet
-		_downstream_pipe.WriteBytes(_buffer, packet_size);
+		_downstream_pipe.WriteBytesFast(&header, _header_size);
+		_downstream_pipe.WriteBytesFast(buffer, bytes_in_buffer);
+
+		const size_t unused_bytes = packet_size - bytes_in_buffer;
+		if (unused_bytes > 0) {
+			void* tmp = _malloca(unused_bytes);
+			memset(tmp, 0, unused_bytes);
+			_downstream_pipe.WriteBytesFast(tmp, unused_bytes);
+			_freea(tmp);
+		}
+
 
 		// Reset the state of this pipe
-		_current_packet_size = 0u;
+		if(buffer == _payload) _current_packet_size = 0u;
 	}
 
 	void PacketOutputPipe::Flush() {
-		_Flush();
+		_Flush(_payload, _current_packet_size);
 		_downstream_pipe.Flush();
 	}
 

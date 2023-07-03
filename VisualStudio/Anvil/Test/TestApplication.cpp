@@ -306,9 +306,15 @@ static void TCPTest() {
 
 	std::thread server([port]()->void {
 		anvil::BytePipe::TCPServerPipe tcppipe(port);
-		anvil::BytePipe::PacketInputPipe pipe(tcppipe);
+		anvil::BytePipe::PacketInputPipe packetpipe1(tcppipe);
+		anvil::BytePipe::PacketInputPipe packetpipe2(packetpipe1);
+		//anvil::BytePipe::RLEDecoderPipe<> rlepipe(packetpipe2);
+		anvil::BytePipe::InputPipe& pipe = packetpipe2;
 
-		for (int i = 0; i < 100; ++i) {
+		int count = 0;
+		pipe.ReadBytesFast(&count, sizeof(count));
+
+		for (int i = 0; i < count; ++i) {
 			int j = 0;
 			pipe.ReadBytesFast(&j, sizeof(j));
 			std::cout << ("Server reading " + std::to_string(j) + "\n");
@@ -323,9 +329,16 @@ static void TCPTest() {
 		ip.u8[3] = 1;
 
 		anvil::BytePipe::TCPClientPipe tcppipe(ip, port);
-		anvil::BytePipe::PacketOutputPipe pipe(tcppipe, 4096, false);
+		anvil::BytePipe::PacketOutputPipe packetpipe1(tcppipe, 500, true);
+		anvil::BytePipe::PacketOutputPipe packetpipe2(packetpipe1, 1000, true);
+		//anvil::BytePipe::RLEEncoderPipe<> rlepipe(packetpipe2);
 
-		for (int i = 0; i < 100; ++i) {
+		anvil::BytePipe::OutputPipe& pipe = packetpipe2;
+
+		int count = 6000;
+		pipe.WriteBytesFast(&count, sizeof(count));
+
+		for (int i = 0; i < count; ++i) {
 			std::cout << ("Client writing " + std::to_string(i) + "\n");
 			pipe.WriteBytesFast(&i, sizeof(i));
 		}
