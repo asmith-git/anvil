@@ -149,7 +149,7 @@ NO_DATA:
 		 _payload = nullptr;
 	}
 
-	size_t PacketOutputPipe::WriteBytes(const void* src, const size_t bytes) {
+	void PacketOutputPipe::WriteBytesInternal(const void* src, const size_t bytes) {
 		const uint8_t* data = static_cast<const uint8_t*>(src);
 		size_t b = bytes;
 
@@ -184,8 +184,16 @@ WRITE_TO_BUFFER:
 				}
 			}
 		}
+	}
 
+	size_t PacketOutputPipe::WriteBytes(const void* src, const size_t bytes) {
+		WriteBytesInternal(src, bytes);
 		return bytes;
+	}
+
+	#pragma warning( disable : 4100) // timeout_ms is not used, name is retained to improve code readability
+	void PacketOutputPipe::WriteBytes(const void** src, const size_t* bytes, const size_t count, int timeout_ms) {
+		for (size_t i = 0; i < count; ++i) WriteBytesInternal(src[i], bytes[i]);
 	}
 
 	void PacketOutputPipe::_Flush(const void* buffer, size_t bytes_in_buffer) {
@@ -218,16 +226,19 @@ WRITE_TO_BUFFER:
 		}
 
 		// Write the packet to the downstream pipe
-		_downstream_pipe.WriteBytesFast(&header, _header_size);
-		_downstream_pipe.WriteBytesFast(buffer, bytes_in_buffer);
+		const void* addresses[3] = { &header, buffer, nullptr };
+		size_t bytes_to_write[3] = { _header_size, bytes_in_buffer, 0u };
 
-		const size_t unused_bytes = packet_size - (bytes_in_buffer + _header_size);
-		if (unused_bytes > 0) {
-			void* tmp = _malloca(unused_bytes);
-			memset(tmp, 0, unused_bytes);
-			_downstream_pipe.WriteBytesFast(tmp, unused_bytes);
-			_freea(tmp);
+		bytes_to_write[2] = packet_size - (bytes_in_buffer + _header_size);
+		if (bytes_to_write[2] > 0) {
+			addresses[2] = _malloca(bytes_to_write[2]);
+			ANVIL_RUNTIME_ASSERT(addresses[2] != nullptr, "PacketOutputPipe::_Flush : Failed to allocate padding");
+			memset(const_cast<void*>(addresses[2]), 0, bytes_to_write[2]);
 		}
+
+		_downstream_pipe.WriteBytes(addresses, bytes_to_write, 3);
+
+		if (addresses[2] != nullptr) _freea(const_cast<void*>(addresses[2]));
 
 
 		// Reset the state of this pipe

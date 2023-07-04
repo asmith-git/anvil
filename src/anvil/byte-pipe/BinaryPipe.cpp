@@ -1564,6 +1564,12 @@ OLD_COMPONENT_ID:
 	OutputPipe::~OutputPipe() {
 		
 	}
+
+	void OutputPipe::WriteBytes(const void** src, const size_t* bytes, const size_t count, int timeout_ms) {
+		for (size_t i = 0; i < count; ++i) {
+			WriteBytesFast(src[i], bytes[i], timeout_ms == -1 ? -1 : timeout_ms / static_cast<int>(count));
+		}
+	}
 	
 	/*!
 	*	\brief Write an exact ammount of data from the pipe.

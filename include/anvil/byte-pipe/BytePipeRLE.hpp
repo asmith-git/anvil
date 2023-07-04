@@ -108,15 +108,22 @@ NEW_BLOCK:
 
 			if (_length >= 8u) {
 				// If the word is the same as the last word in the buffer
-				if (
-					_buffer[_length - 7u] == word &&
-					_buffer[_length - 6u] == word &&
-					_buffer[_length - 5u] == word &&
-					_buffer[_length - 4u] == word &&
-					_buffer[_length - 3u] == word &&
-					_buffer[_length - 2u] == word && 
-					_buffer[_length - 1u] == word
-				) {
+
+				DataWord cmp1 = word ^ _buffer[_length - 1u];
+				DataWord cmp2 = word ^ _buffer[_length - 2u];
+				DataWord cmp3 = word ^ _buffer[_length - 3u];
+				DataWord cmp4 = word ^ _buffer[_length - 4u];
+				DataWord cmp5 = word ^ _buffer[_length - 5u];
+				DataWord cmp6 = word ^ _buffer[_length - 6u];
+				DataWord cmp7 = word ^ _buffer[_length - 7u];
+				cmp1 |= cmp2;
+				cmp3 |= cmp4;
+				cmp5 |= cmp6;
+				cmp1 |= cmp3;
+				cmp5 |= cmp7;
+				cmp1 |= cmp5;
+
+				if (cmp1 == 0) {
 					// Flush the current block except for the last word
 					_length -= 7u;
 					_Flush();
@@ -145,14 +152,19 @@ NEW_BLOCK:
 		void WriteWord4(const uint32_t word) {
 			if ANVIL_CONSTEXPR_VAR (std::is_same<DataWord, uint8_t>::value) {
 
-				const uint32_t w1 = word & 255u;
-				const uint32_t w2 = (word >> 8u) & 255u;
-				const uint32_t w3 = (word >> 16u) & 255u;
-				const uint32_t w4 = word >> 24u;
+				uint32_t w1 = word & 255u;
+				uint32_t w2 = (word >> 8u) & 255u;
+				uint32_t w3 = (word >> 16u) & 255u;
+				uint32_t w4 = word >> 24u;
 
+				w2 ^= w1;
+				w3 ^= w1;
+				w4 ^= w1;
+
+				w1 = w2 | w3 | w4;
 
 				// If all words are the same
-				if (((w1 ^ w2) | (w1 ^ w3) | (w1 ^ w4)) == 0u) {
+				if (w1 == 0u) {
 					// If the currently block isn't repeating or is repeating a different word then flush it
 					if (_length > 0u) {
 						if (_rle_mode) {
@@ -194,17 +206,31 @@ NEW_BLOCK:
 		void WriteWord8(const uint64_t word) {
 			if ANVIL_CONSTEXPR_VAR (std::is_same<DataWord, uint8_t>::value) {
 
-				const uint64_t w1 = word & 255ull;
-				const uint64_t w2 = (word >> 8ull) & 255ull;
-				const uint64_t w3 = (word >> 16ull) & 255ull;
-				const uint64_t w4 = (word >> 24ull) & 255ull;
-				const uint64_t w5 = (word >> 32ull) & 255ull;
-				const uint64_t w6 = (word >> 40ull) & 255ull;
-				const uint64_t w7 = (word >> 48ull) & 255ull;
-				const uint64_t w8 = word >> 56ull;
-
 				// If all words are the same
-				if (((w1 ^ w2) | (w1 ^ w3) | (w1 ^ w4) | (w1 ^ w5) | (w1 ^ w6) | (w1 ^ w7) | (w1 ^ w8)) == 0u) {
+				uint64_t w1 = word & 255ull;
+				uint64_t w2 = (word >> 8ull) & 255ull;
+				uint64_t w3 = (word >> 16ull) & 255ull;
+				uint64_t w4 = (word >> 24ull) & 255ull;
+				uint64_t w5 = (word >> 32ull) & 255ull;
+				uint64_t w6 = (word >> 40ull) & 255ull;
+				uint64_t w7 = (word >> 48ull) & 255ull;
+				uint64_t w8 = word >> 56ull;
+
+				w2 ^= w1;
+				w3 ^= w1;
+				w4 ^= w1;
+				w5 ^= w1;
+				w6 ^= w1;
+				w7 ^= w1;
+				w8 ^= w1;
+
+				w3 |= w4;
+				w5 |= w6;
+				w7 |= w8;
+				
+				w1 = w3 | w5 | w7;
+
+				if (w1 == 0u) {
 					// If the currently block isn't repeating or is repeating a different word then flush it
 					if (_length > 0u) {
 						if (_rle_mode) {
@@ -250,23 +276,8 @@ NEW_BLOCK:
 				throw std::runtime_error("RLEEncoderPipe::WriteWord8 : Only implemented for 1 byte words");
 			}
 		}
-	public:
-		RLEEncoderPipe(OutputPipe& output) :
-			_output(output),
-			_buffer(new DataWord[MAX_RLE_LENGTH]),
-			_current_word(0u),
-			_length(0u),
-			_rle_mode(false)
-		{}
 
-		~RLEEncoderPipe() {
-			if (_Flush()) _output.Flush();
-			delete[] _buffer;
-			_buffer = nullptr;
-		}
-
-
-		size_t WriteBytes(const void* src, const size_t bytes) final {
+		void WriteBytesInternal(const void* src, const size_t bytes) final {
 			size_t words = bytes / sizeof(DataWord);
 			if (words * sizeof(DataWord) != bytes) throw std::runtime_error("RLEEncoderPipe::WriteBytes : Byte count is not divisible by the word size");
 
@@ -293,8 +304,31 @@ NEW_BLOCK:
 			for (size_t i = 0; i < words; ++i) {
 				WriteWord(wordPtr[i]);
 			}
+		}
+	public:
+		RLEEncoderPipe(OutputPipe& output) :
+			_output(output),
+			_buffer(new DataWord[MAX_RLE_LENGTH]),
+			_current_word(0u),
+			_length(0u),
+			_rle_mode(false)
+		{}
 
+		~RLEEncoderPipe() {
+			if (_Flush()) _output.Flush();
+			delete[] _buffer;
+			_buffer = nullptr;
+		}
+
+
+		size_t WriteBytes(const void* src, const size_t bytes) final {
+			WriteBytesInternal(src, bytes);
 			return bytes;
+		}
+
+		#pragma warning( disable : 4100) // timeout_ms is not used, name is retained to improve code readability
+		void WriteBytes(const void** src, const size_t* bytes_requested, const size_t count, int timeout_ms = -1) final {
+			for (size_t i = 0u; i < count; ++i) WriteBytesInternal(src[i], bytes_requested[i]);
 		}
 
 		void Flush() final {

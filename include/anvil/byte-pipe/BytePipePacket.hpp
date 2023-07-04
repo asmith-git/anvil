@@ -98,10 +98,12 @@ namespace anvil { namespace BytePipe {
 		bool _fixed_size_packets;
 
 		void _Flush(const void* buffer, size_t bytes_in_buffer);
+		void WriteBytesInternal(const void* src, const size_t bytes);
 	public:
 		PacketOutputPipe(OutputPipe& downstream_pipe, const size_t packet_size, bool fixed_size_packets = true);
 		virtual ~PacketOutputPipe();
 		size_t WriteBytes(const void* src, const size_t bytes) final;
+		void WriteBytes(const void** src, const size_t* bytes, const size_t count, int timeout_ms = -1) final;
 		void Flush() final;
 	};
 
