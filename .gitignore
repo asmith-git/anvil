@@ -74,3 +74,10 @@ VisualStudio/Anvil/.vs/Anvil/v15/.suo
 *.vsidx
 *.recipe
 *.bin
+*.txt
+*.exp
+*.exp
+*.manifest
+*.testlog
+*.bin
+VisualStudio/Anvil/.vs/Anvil/v15/.suo

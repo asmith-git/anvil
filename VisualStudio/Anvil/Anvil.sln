@@ -1,14 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.33026.149
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Anvil", "Anvil\Anvil.vcxproj", "{30DA2E10-2ECA-4088-97CD-BB78F84F91CC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test.vcxproj", "Test\Test.vcxproj.vcxproj", "{8E91D3F3-6079-4F73-A674-B2E94EC4A26B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test", "Test\Test.vcxproj.vcxproj", "{8E91D3F3-6079-4F73-A674-B2E94EC4A26B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{30DA2E10-2ECA-4088-97CD-BB78F84F91CC} = {30DA2E10-2ECA-4088-97CD-BB78F84F91CC}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTests", "UnitTests\UnitTests.vcxproj", "{4157D547-3E95-4B7A-A0C8-AAFFF157B7D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +36,14 @@ Global
 		{8E91D3F3-6079-4F73-A674-B2E94EC4A26B}.Release|x64.Build.0 = Release|x64
 		{8E91D3F3-6079-4F73-A674-B2E94EC4A26B}.Release|x86.ActiveCfg = Release|Win32
 		{8E91D3F3-6079-4F73-A674-B2E94EC4A26B}.Release|x86.Build.0 = Release|Win32
+		{4157D547-3E95-4B7A-A0C8-AAFFF157B7D2}.Debug|x64.ActiveCfg = Debug|x64
+		{4157D547-3E95-4B7A-A0C8-AAFFF157B7D2}.Debug|x64.Build.0 = Debug|x64
+		{4157D547-3E95-4B7A-A0C8-AAFFF157B7D2}.Debug|x86.ActiveCfg = Debug|Win32
+		{4157D547-3E95-4B7A-A0C8-AAFFF157B7D2}.Debug|x86.Build.0 = Debug|Win32
+		{4157D547-3E95-4B7A-A0C8-AAFFF157B7D2}.Release|x64.ActiveCfg = Release|x64
+		{4157D547-3E95-4B7A-A0C8-AAFFF157B7D2}.Release|x64.Build.0 = Release|x64
+		{4157D547-3E95-4B7A-A0C8-AAFFF157B7D2}.Release|x86.ActiveCfg = Release|Win32
+		{4157D547-3E95-4B7A-A0C8-AAFFF157B7D2}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
