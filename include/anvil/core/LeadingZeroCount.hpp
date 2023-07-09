@@ -152,55 +152,117 @@ namespace anvil { namespace detail {
 		return count;
 	}
 
+	static size_t(*lzcount8_fn)(uint8_t) = ANVIL_HW_LZCNT ? detail::lzcount8_hw : detail::lzcount8_c;
+	static size_t(*lzcount16_fn)(uint16_t) = ANVIL_HW_LZCNT ? detail::lzcount16_hw : detail::lzcount16_c;
+	static size_t(*lzcount32_fn)(uint32_t) = ANVIL_HW_LZCNT ? detail::lzcount32_hw : detail::lzcount32_c;
+	static size_t(*lzcount64_fn)(uint64_t) = ANVIL_HW_LZCNT ? detail::lzcount64_hw : detail::lzcount64_c;
+
 }}
 
 
 namespace anvil {
 
+	/*!
+	*	\tparam T The data type
+	*	\tparam BRANCHING True if function should be inlined with a conditional branch, false for a function pointer call.
+	*/
+	template<class T, bool BRANCHING = false>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount(T aValue) throw();
+
 	// unsigned
 
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount(uint8_t aValue) throw() {
+	template<>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount<uint8_t, false>(uint8_t aValue) throw() {
+		return detail::lzcount8_fn(aValue);
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount<uint16_t, false>(uint16_t aValue) throw() {
+		return detail::lzcount16_fn(aValue);
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount<uint32_t, false>(uint32_t aValue) throw() {
+		return detail::lzcount32_fn(aValue);
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount<uint64_t, false>(uint64_t aValue) throw() {
+		return detail::lzcount64_fn(aValue);
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount<uint8_t, true>(uint8_t aValue) throw() {
 		return ANVIL_HW_LZCNT ? detail::lzcount8_hw(aValue) : detail::lzcount8_c(aValue);
 	}
 
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount(uint16_t aValue) throw() {
+	template<>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount<uint16_t, true>(uint16_t aValue) throw() {
 		return ANVIL_HW_LZCNT ? detail::lzcount16_hw(aValue) : detail::lzcount16_c(aValue);
 	}
 
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount(uint32_t aValue) throw() {
+	template<>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount<uint32_t, true>(uint32_t aValue) throw() {
 		return ANVIL_HW_LZCNT ? detail::lzcount32_hw(aValue) : detail::lzcount32_c(aValue);
 	}
 
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount(uint64_t aValue) throw() {
+	template<>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount<uint64_t, true>(uint64_t aValue) throw() {
 		return ANVIL_HW_LZCNT ? detail::lzcount64_hw(aValue) : detail::lzcount64_c(aValue);
 	}
 
 	// signed
 
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount(int8_t aValue) throw() {
-		return lzcount(numeric_reinterpret_cast<uint8_t>(aValue));
+	template<>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount<int8_t, false>(int8_t aValue) throw() {
+		return lzcount<uint8_t, false>(numeric_reinterpret_cast<uint8_t>(aValue));
 	}
 
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount(int16_t aValue) throw() {
-		return lzcount(numeric_reinterpret_cast<uint16_t>(aValue));
+	template<>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount<int8_t, true>(int8_t aValue) throw() {
+		return lzcount<uint8_t, true>(numeric_reinterpret_cast<uint8_t>(aValue));
 	}
 
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount(int32_t aValue) throw() {
-		return lzcount(numeric_reinterpret_cast<uint32_t>(aValue));
+	template<>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount<int16_t, false>(int16_t aValue) throw() {
+		return lzcount<uint16_t, false>(numeric_reinterpret_cast<uint16_t>(aValue));
 	}
 
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount(int64_t aValue) throw() {
-		return lzcount(numeric_reinterpret_cast<uint64_t>(aValue));
+	template<>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount<int16_t, true>(int16_t aValue) throw() {
+		return lzcount<uint16_t, true>(numeric_reinterpret_cast<uint16_t>(aValue));
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount<int32_t, false>(int32_t aValue) throw() {
+		return lzcount<uint32_t, false>(numeric_reinterpret_cast<uint32_t>(aValue));
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount<int32_t, true>(int32_t aValue) throw() {
+		return lzcount<uint32_t, true>(numeric_reinterpret_cast<uint32_t>(aValue));
 	}
 
 	// other types
 
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount(float aValue) throw() {
-		return lzcount(numeric_reinterpret_cast<uint32_t>(aValue));
+	template<>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount<float, false>(float aValue) throw() {
+		return lzcount<uint32_t, false>(numeric_reinterpret_cast<uint32_t>(aValue));
 	}
 
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount(double aValue) throw() {
-		return lzcount(numeric_reinterpret_cast<uint64_t>(aValue));
+	template<>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount<float, true>(float aValue) throw() {
+		return lzcount<uint32_t, true>(numeric_reinterpret_cast<uint32_t>(aValue));
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount<double, false>(double aValue) throw() {
+		return lzcount<uint64_t, false>(numeric_reinterpret_cast<uint64_t>(aValue));
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount<double, true>(double aValue) throw() {
+		return lzcount<uint64_t, true>(numeric_reinterpret_cast<uint64_t>(aValue));
 	}
 
 }

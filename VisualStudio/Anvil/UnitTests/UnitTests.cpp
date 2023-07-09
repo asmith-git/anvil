@@ -9,7 +9,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 namespace UnitTests
 {
 
-	TEST_CLASS(LeadingZero)
+	TEST_CLASS(LeadingZeroCount)
 	{
 	public:
 		size_t TestLZ(uint64_t val) {
@@ -27,7 +27,7 @@ namespace UnitTests
 			return result;
 		}
 		
-		TEST_METHOD(CppZeros)
+		TEST_METHOD(DoesCPPHandleZero)
 		{
 			uint64_t val = 0u;
 
@@ -44,7 +44,7 @@ namespace UnitTests
 			Assert::AreEqual(result, (size_t)64);
 		}
 
-		TEST_METHOD(CppIndividualBits)
+		TEST_METHOD(DoesCPPHandleAnyIndividualBit)
 		{
 			uint64_t val = 1u;
 			size_t correct = 0u;
@@ -73,8 +73,10 @@ namespace UnitTests
 				++correct;
 			}
 		}
-		TEST_METHOD(HwEqualCPP)
+		TEST_METHOD(DoesHWAccelerationHaveSameResultAsCpp)
 		{
+			if (!ANVIL_HW_LZCNT) Assert::Fail(L"CPU does not support HW LZCNT");
+
 			size_t c, hw;
 			for (uint64_t i = 0; i < UINT64_MAX; ++i) {
 				if (i <= UINT8_MAX) {
@@ -101,7 +103,7 @@ namespace UnitTests
 			}
 		}
 
-		TEST_METHOD(CppEqualTest)
+		TEST_METHOD(DoesCppHaveSameResultAsTestImplementation)
 		{
 			const auto TestFn = [this](uint64_t start, uint64_t end, uint64_t shift)->void {
 				try {
@@ -137,14 +139,10 @@ namespace UnitTests
 
 			for (std::thread& t : threads) t.join();
 		}
-
-		TEST_METHOD(CPUSupportsHW) {
-			Assert::AreEqual(ANVIL_HW_LZCNT, true);
-		}
 	};
 
 
-	TEST_CLASS(TrailingZero)
+	TEST_CLASS(TrailingZeroCount)
 	{
 	public:
 
@@ -167,7 +165,7 @@ namespace UnitTests
 
 			return result;
 		}
-		TEST_METHOD(CppZeros)
+		TEST_METHOD(DoesCppHandleZero)
 		{
 			uint64_t val = 0u;
 
@@ -184,7 +182,7 @@ namespace UnitTests
 			Assert::AreEqual(result, (size_t)64);
 		}
 
-		TEST_METHOD(CppIndividualBits8)
+		TEST_METHOD(DoesCppBitHandleAnyIndividualBit_8)
 		{
 			uint64_t val = 1u;
 			size_t correct = 7u;
@@ -198,7 +196,7 @@ namespace UnitTests
 				--correct;
 			}
 		}
-		TEST_METHOD(CppIndividualBits16)
+		TEST_METHOD(DoesCppBitHandleAnyIndividualBit_16)
 		{
 			uint64_t val = 1u;
 			size_t correct = 15u;
@@ -213,7 +211,7 @@ namespace UnitTests
 			}
 		}
 
-		TEST_METHOD(CppIndividualBits32)
+		TEST_METHOD(DoesCppBitHandleAnyIndividualBit_32)
 		{
 			uint64_t val = 1u;
 			size_t correct = 31u;
@@ -228,7 +226,7 @@ namespace UnitTests
 			}
 		}
 
-		TEST_METHOD(CppIndividualBits64)
+		TEST_METHOD(DoesCppBitHandleAnyIndividualBit_64)
 		{
 			uint64_t val = 1u;
 			size_t correct = 63u;
@@ -243,8 +241,10 @@ namespace UnitTests
 			}
 		}
 
-		TEST_METHOD(HwEqualCPP)
+		TEST_METHOD(DoesHWAccelerationHaveSameResultAsCpp)
 		{
+			if (!ANVIL_HW_TZCNT) Assert::Fail(L"CPU does not support HW LZCNT");
+
 			size_t c, hw;
 			for (uint64_t i = 0; i < UINT64_MAX; ++i) {
 				if (i <= UINT8_MAX) {
@@ -271,7 +271,7 @@ namespace UnitTests
 			}
 		}
 
-		TEST_METHOD(CppEqualTest)
+		TEST_METHOD(DoesCppHaveSameResultAsTestImplementation)
 		{
 			const auto TestFn = [this](uint64_t start, uint64_t end, uint64_t shift)->void {
 				try {
@@ -306,10 +306,6 @@ namespace UnitTests
 			}
 
 			for (std::thread& t : threads) t.join();
-		}
-
-		TEST_METHOD(CPUSupportsHW) {
-			Assert::AreEqual(ANVIL_HW_TZCNT, true);
 		}
 	};
 }
