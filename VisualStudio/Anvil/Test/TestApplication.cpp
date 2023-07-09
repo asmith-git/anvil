@@ -613,8 +613,20 @@ void XMLTest() {
 	std::this_thread::sleep_for(std::chrono::milliseconds(500));
 }
 
+void LZCNTTestA() {
+	
+	for (uint32_t i = 0; i < UINT16_MAX; ++i) {
+		uint32_t c = anvil::detail::lzcount32_c(i);
+		uint32_t a = anvil::detail::lzcount32_hwa(i);
+		if(a != c) std::cout << "Value = " << i << " C++ says " << c << " BSR says " << a << std::endl;
+	}
+}
+
 int main()
 {
+	LZCNTTestA();
+	return 0;
+
 	//SchedulerTest();
 	//return 0;
 
@@ -637,12 +649,12 @@ int main()
 	ConsoleTest();
 	return 0;
 
-	std::cout << "HW LZCNT : " << ANVIL_HW_LZCNT << std::endl;
+	std::cout << "HW LZCNT : " << ANVIL_HW_LZCNTB << std::endl;
 
 	for (uint32_t i = 0; i < 100; ++i) {
 		uint32_t x = i;
 
-		std::cout << x << "\t" << anvil::detail::lzcount32_hw((uint32_t)x) << "\t" << anvil::detail::lzcount32_c((uint32_t)x) << std::endl;
+		std::cout << x << "\t" << anvil::detail::lzcount32_hwb((uint32_t)x) << "\t" << anvil::detail::lzcount32_c((uint32_t)x) << std::endl;
 	}
 
 	std::cout << "HW TZCNT : " << ANVIL_HW_TZCNT << std::endl;
