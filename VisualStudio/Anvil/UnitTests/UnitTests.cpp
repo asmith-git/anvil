@@ -44,6 +44,38 @@ namespace UnitTests
 			Assert::AreEqual(result, (size_t)64);
 		}
 
+		void TestRange(const std::function<void(uint64_t)>& fn, uint64_t min, uint64_t max) {
+			uint64_t range = max - min;
+			if (range < UINT16_MAX) {
+				for (uint64_t i = min; i <= max; ++i) fn(i);
+			} else {
+				for (uint64_t i = 0u; i < UINT16_MAX; ++i) {
+					uint64_t val = i + min;
+					fn(val);
+					val <<= 4;
+					if(val < max) fn(val);
+					val <<= 4;
+					if (val < max) fn(val);
+					val <<= 4;
+					if (val < max) fn(val);
+					val <<= 4;
+					if (val < max) fn(val);
+					val <<= 4;
+					if (val < max) fn(val);
+					val <<= 4;
+					if (val < max) fn(val);
+					val <<= 4;
+					if (val < max) fn(val);
+					val <<= 4;
+					if (val < max) fn(val);
+				}
+			}
+		}
+
+		void TestRange(const std::function<void(uint64_t)>& fn) {
+			TestRange(fn, 0u, UINT64_MAX);
+		}
+
 		TEST_METHOD(DoesCPPHandleAnyIndividualBit)
 		{
 			uint64_t val = 1u;
@@ -77,8 +109,10 @@ namespace UnitTests
 		{
 			if (!ANVIL_HW_LZCNTA) Assert::Fail(L"CPU does not support HW LZCNT (A Implementation)");
 
-			size_t c, hw;
-			for (uint64_t i = 0; i < UINT16_MAX; ++i) {
+			TestRange([this](uint64_t i)->void {
+				uint64_t c;
+				uint64_t hw;
+
 				if (i <= UINT8_MAX) {
 					c = anvil::detail::lzcount8_c((uint8_t)i);
 					hw = anvil::detail::lzcount8_hwa((uint8_t)i);
@@ -100,15 +134,17 @@ namespace UnitTests
 				c = anvil::detail::lzcount64_c((uint64_t)i);
 				hw = anvil::detail::lzcount64_hwa((uint64_t)i);
 				Assert::AreEqual(c, hw);
-			}
+			});
 		}
 
 		TEST_METHOD(DoesHWAccelerationBHaveSameResultAsCpp)
 		{
 			if (!ANVIL_HW_LZCNTB) Assert::Fail(L"CPU does not support HW LZCNT (B Implementation)");
 
-			size_t c, hw;
-			for (uint64_t i = 0; i < UINT16_MAX; ++i) {
+			TestRange([this](uint64_t i)->void {
+				uint64_t c;
+				uint64_t hw;
+
 				if (i <= UINT8_MAX) {
 					c = anvil::detail::lzcount8_c((uint8_t)i);
 					hw = anvil::detail::lzcount8_hwb((uint8_t)i);
@@ -130,44 +166,20 @@ namespace UnitTests
 				c = anvil::detail::lzcount64_c((uint64_t)i);
 				hw = anvil::detail::lzcount64_hwb((uint64_t)i);
 				Assert::AreEqual(c, hw);
-			}
+			});
 		}
 
 		TEST_METHOD(DoesCppHaveSameResultAsTestImplementation)
 		{
-			const auto TestFn = [this](uint64_t start, uint64_t end, uint64_t shift)->void {
-				try {
-					size_t c, test;
-					for (uint64_t i = start; i < end; ++i) {
-						uint64_t val = static_cast<uint64_t>(i) << shift;
-						c = anvil::detail::lzcount64_c(val);
-						test = TestLZ(val);
-						Assert::AreEqual(c, test);
-					}
-				} catch (...) {
-					Assert::AreEqual(0, 1);
+			TestRange([this](uint64_t i)->void {
+
+				if (i <= UINT32_MAX) {
+					uint32_t c, test;
+					c = anvil::detail::lzcount32_c((uint32_t)i);
+					test = TestLZ((uint32_t)i);
+					Assert::AreEqual(c, test);
 				}
-			};
-
-			auto thread_count = std::thread::hardware_concurrency();
-			std::vector<std::thread> threads;
-
-			uint64_t offset = 0u;
-			uint64_t block_size = UINT16_MAX / (uint64_t)thread_count;
-			for (auto i = 0; i < thread_count; ++i) {
-				threads.push_back(std::thread([offset, block_size,&TestFn]()->void {
-					TestFn(offset, offset + block_size, 0);
-					TestFn(offset, offset + block_size, 8);
-					TestFn(offset, offset + block_size, 16);
-					TestFn(offset, offset + block_size, 24);
-					TestFn(offset, offset + block_size, 32);
-					TestFn(offset, offset + block_size, 48);
-					TestFn(offset, offset + block_size, 56);
-				}));
-				offset += block_size;
-			}
-
-			for (std::thread& t : threads) t.join();
+			});
 		}
 	};
 
@@ -175,6 +187,38 @@ namespace UnitTests
 	TEST_CLASS(TrailingZeroCount)
 	{
 	public:
+
+		void TestRange(const std::function<void(uint64_t)>& fn, uint64_t min, uint64_t max) {
+			uint64_t range = max - min;
+			if (range < UINT16_MAX) {
+				for (uint64_t i = min; i <= max; ++i) fn(i);
+			} else {
+				for (uint64_t i = 0u; i < UINT16_MAX; ++i) {
+					uint64_t val = i + min;
+					fn(val);
+					val <<= 4;
+					if (val < max) fn(val);
+					val <<= 4;
+					if (val < max) fn(val);
+					val <<= 4;
+					if (val < max) fn(val);
+					val <<= 4;
+					if (val < max) fn(val);
+					val <<= 4;
+					if (val < max) fn(val);
+					val <<= 4;
+					if (val < max) fn(val);
+					val <<= 4;
+					if (val < max) fn(val);
+					val <<= 4;
+					if (val < max) fn(val);
+				}
+			}
+		}
+
+		void TestRange(const std::function<void(uint64_t)>& fn) {
+			TestRange(fn, 0u, UINT64_MAX - 1ull);
+		}
 
 
 		size_t TestTZ(uint64_t val) {
@@ -275,8 +319,10 @@ namespace UnitTests
 		{
 			if (!ANVIL_HW_TZCNTA) Assert::Fail(L"CPU does not support HW LZCNT (A implementation)");
 
-			size_t c, hw;
-			for (uint64_t i = 0; i < UINT16_MAX; ++i) {
+			TestRange([this](uint64_t i)->void {
+				uint64_t c;
+				uint64_t hw;
+
 				if (i <= UINT8_MAX) {
 					c = anvil::detail::tzcount8_c((uint8_t)i);
 					hw = anvil::detail::tzcount8_hwa((uint8_t)i);
@@ -298,15 +344,17 @@ namespace UnitTests
 				c = anvil::detail::tzcount64_c((uint64_t)i);
 				hw = anvil::detail::tzcount64_hwa((uint64_t)i);
 				Assert::AreEqual(c, hw);
-			}
+			});
 		}
 
 		TEST_METHOD(DoesHWAccelerationBHaveSameResultAsCpp)
 		{
 			if (!ANVIL_HW_TZCNTB) Assert::Fail(L"CPU does not support HW LZCNT (B implementation)");
 
-			size_t c, hw;
-			for (uint64_t i = 0; i < UINT16_MAX; ++i) {
+			TestRange([this](uint64_t i)->void {
+				uint64_t c;
+				uint64_t hw;
+
 				if (i <= UINT8_MAX) {
 					c = anvil::detail::tzcount8_c((uint8_t)i);
 					hw = anvil::detail::tzcount8_hwb((uint8_t)i);
@@ -328,44 +376,20 @@ namespace UnitTests
 				c = anvil::detail::tzcount64_c((uint64_t)i);
 				hw = anvil::detail::tzcount64_hwb((uint64_t)i);
 				Assert::AreEqual(c, hw);
-			}
+			});
 		}
 
 		TEST_METHOD(DoesCppHaveSameResultAsTestImplementation)
 		{
-			const auto TestFn = [this](uint64_t start, uint64_t end, uint64_t shift)->void {
-				try {
-					size_t c, test;
-					for (uint64_t i = start; i < end; ++i) {
-						uint64_t val = static_cast<uint64_t>(i) << shift;
-						c = anvil::detail::lzcount64_c(val);
-						test = TestTZ(val);
-						Assert::AreEqual(c, test);
-					}
-				} catch (...) {
-					Assert::AreEqual(0, 1);
+			TestRange([this](uint64_t i)->void {
+
+				if (i <= UINT32_MAX) {
+					uint32_t c, test;
+					c = anvil::detail::tzcount32_c((uint32_t)i);
+					test = TestTZ((uint32_t)i);
+					Assert::AreEqual(c, test);
 				}
-			};
-
-			auto thread_count = std::thread::hardware_concurrency();
-			std::vector<std::thread> threads;
-
-			uint64_t offset = 0u;
-			uint64_t block_size = UINT16_MAX / (uint64_t)thread_count;
-			for (auto i = 0; i < thread_count; ++i) {
-				threads.push_back(std::thread([offset, block_size,&TestFn]()->void {
-					TestFn(offset, offset + block_size, 0);
-					TestFn(offset, offset + block_size, 8);
-					TestFn(offset, offset + block_size, 16);
-					TestFn(offset, offset + block_size, 24);
-					TestFn(offset, offset + block_size, 32);
-					TestFn(offset, offset + block_size, 48);
-					TestFn(offset, offset + block_size, 56);
-				}));
-				offset += block_size;
-			}
-
-			for (std::thread& t : threads) t.join();
+			});
 		}
 	};
 }

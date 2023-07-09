@@ -75,7 +75,7 @@ namespace anvil { namespace detail {
 		unsigned long idx = 0;
 
 		// Find the most significant bit
-		_BitScanReverse(&idx, aValue);
+		_BitScanReverse64(&idx, aValue);
 
 		return 63 - idx;
 #elif ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86
