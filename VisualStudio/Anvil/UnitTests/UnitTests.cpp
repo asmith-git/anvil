@@ -271,32 +271,62 @@ namespace UnitTests
 			}
 		}
 
-		TEST_METHOD(DoesHWAccelerationHaveSameResultAsCpp)
+		TEST_METHOD(DoesHWAccelerationAHaveSameResultAsCpp)
 		{
-			if (!ANVIL_HW_TZCNT) Assert::Fail(L"CPU does not support HW LZCNT");
+			if (!ANVIL_HW_TZCNTA) Assert::Fail(L"CPU does not support HW LZCNT (A implementation)");
 
 			size_t c, hw;
-			for (uint64_t i = 0; i < UINT64_MAX; ++i) {
+			for (uint64_t i = 0; i < UINT16_MAX; ++i) {
 				if (i <= UINT8_MAX) {
 					c = anvil::detail::tzcount8_c((uint8_t)i);
-					hw = anvil::detail::tzcount8_hw((uint8_t)i);
+					hw = anvil::detail::tzcount8_hwa((uint8_t)i);
 					Assert::AreEqual(c, hw);
 				}
 
 				if (i <= UINT16_MAX) {
 					c = anvil::detail::tzcount16_c((uint16_t)i);
-					hw = anvil::detail::tzcount16_hw((uint16_t)i);
+					hw = anvil::detail::tzcount16_hwa((uint16_t)i);
 					Assert::AreEqual(c, hw);
 				}
 
 				if (i <= UINT32_MAX) {
 					c = anvil::detail::tzcount32_c((uint32_t)i);
-					hw = anvil::detail::tzcount32_hw((uint32_t)i);
+					hw = anvil::detail::tzcount32_hwa((uint32_t)i);
 					Assert::AreEqual(c, hw);
 				}
 
 				c = anvil::detail::tzcount64_c((uint64_t)i);
-				hw = anvil::detail::tzcount64_hw((uint64_t)i);
+				hw = anvil::detail::tzcount64_hwa((uint64_t)i);
+				Assert::AreEqual(c, hw);
+			}
+		}
+
+		TEST_METHOD(DoesHWAccelerationBHaveSameResultAsCpp)
+		{
+			if (!ANVIL_HW_TZCNTB) Assert::Fail(L"CPU does not support HW LZCNT (B implementation)");
+
+			size_t c, hw;
+			for (uint64_t i = 0; i < UINT16_MAX; ++i) {
+				if (i <= UINT8_MAX) {
+					c = anvil::detail::tzcount8_c((uint8_t)i);
+					hw = anvil::detail::tzcount8_hwb((uint8_t)i);
+					Assert::AreEqual(c, hw);
+				}
+
+				if (i <= UINT16_MAX) {
+					c = anvil::detail::tzcount16_c((uint16_t)i);
+					hw = anvil::detail::tzcount16_hwb((uint16_t)i);
+					Assert::AreEqual(c, hw);
+				}
+
+				if (i <= UINT32_MAX) {
+					c = anvil::detail::tzcount32_c((uint32_t)i);
+					hw = anvil::detail::tzcount32_hwb((uint32_t)i);
+					Assert::AreEqual(c, hw);
+				}
+
+				c = anvil::detail::tzcount64_c((uint64_t)i);
+				hw = anvil::detail::tzcount64_hwb((uint64_t)i);
 				Assert::AreEqual(c, hw);
 			}
 		}
