@@ -24,6 +24,8 @@
 
 namespace anvil { namespace lutils {
 
+	static constexpr const uint64_t ASM_MINIMUM = ANVIL_MIN_INSTRUCTION_SET; // Placeholder
+
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 	template<size_t BYTES>
 	static inline void FastMemcpy_avx512(void* const dst, const void* src) throw() {
