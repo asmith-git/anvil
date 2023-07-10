@@ -22,17 +22,19 @@
 #include "anvil/core/LeadingZeroCount.hpp"
 
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-	static_assert(anvil::ASM_BMI1 == (1ull << 62ul), "BMI1 check is using the wrong value");
-	#if ANVIL_MIN_INSTRUCTION_SET & (1ull << 62ul)
+	#if ANVIL_MIN_INSTRUCTION_SET & ANVIL_ASM_BMI1
 		#define ANVIL_HW_TZCNTA false
 		#define ANVIL_HW_TZCNTB true
+		#define ANVIL_HW_TZCNT_COMPILETIME true
 	#else
 		#define ANVIL_HW_TZCNTA ANVIL_HW_LZCNTA
 		#define ANVIL_HW_TZCNTB ANVIL_HW_LZCNTB
+		#define ANVIL_HW_TZCNT_COMPILETIME ANVIL_HW_LZCNT_COMPILETIME
 	#endif
 #else
 	#define ANVIL_HW_TZCNTA false
 	#define ANVIL_HW_TZCNTB false
+	#define ANVIL_HW_TZCNT_COMPILETIME true
 #endif
 
 namespace anvil { namespace detail {
@@ -190,7 +192,7 @@ namespace anvil {
 	*	\tparam T The data type
 	*	\tparam BRANCHING True if function should be inlined with a conditional branch, false for a function pointer call.
 	*/
-	template<class T, bool BRANCHING = false>
+	template<class T, bool BRANCHING = ANVIL_HW_TZCNT_COMPILETIME>
 	ANVIL_STRONG_INLINE size_t ANVIL_CALL tzcount(T aValue) throw();
 
 	// unsigned

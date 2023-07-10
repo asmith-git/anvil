@@ -46,8 +46,8 @@ namespace anvil {
 
 			return (low << 4u) | high;
 		}
-
-		static ANVIL_CONSTEXPR_VAR const uint8_t g_bitwise_lut[256u * 3u] = {
+		
+		static ANVIL_CONSTEXPR_VAR const uint8_t g_reflect_lut[256u] = {
 			static_cast<uint8_t>(reflect_c(0)),
 			static_cast<uint8_t>(reflect_c(1)),
 			static_cast<uint8_t>(reflect_c(2)),
@@ -305,8 +305,6 @@ namespace anvil {
 			static_cast<uint8_t>(reflect_c(254)),
 			static_cast<uint8_t>(reflect_c(255))
 		};
-
-		static ANVIL_CONSTEXPR_FN const uint8_t* const g_reflect_lut = g_bitwise_lut;
 }
 
 }

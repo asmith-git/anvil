@@ -29,17 +29,19 @@
 #include "CpuRuntime.hpp"
 
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-	static_assert(anvil::ASM_BMI1 == (1ull << 62ul), "BMI1 check is using the wrong value");
-	#if ANVIL_MIN_INSTRUCTION_SET & (1ull << 62ul)
+	#if ANVIL_MIN_INSTRUCTION_SET & ANVIL_ASM_BMI1
 		#define ANVIL_HW_LZCNTA false
 		#define ANVIL_HW_LZCNTB true
+		#define ANVIL_HW_LZCNT_COMPILETIME true
 	#else
 		#define ANVIL_HW_LZCNTA true
 		#define ANVIL_HW_LZCNTB anvil::AreInstructionSetSupported(anvil::ASM_BMI1)
+		#define ANVIL_HW_LZCNT_COMPILETIME false
 	#endif
 #else
 	#define ANVIL_HW_LZCNTA false
 	#define ANVIL_HW_LZCNTB false
+	#define ANVIL_HW_LZCNT_COMPILETIME true
 #endif
 
 namespace anvil { namespace detail {
@@ -247,7 +249,7 @@ namespace anvil {
 	*	\tparam T The data type
 	*	\tparam BRANCHING True if function should be inlined with a conditional branch, false for a function pointer call.
 	*/
-	template<class T, bool BRANCHING = false>
+	template<class T, bool BRANCHING = ANVIL_HW_LZCNT_COMPILETIME>
 	ANVIL_STRONG_INLINE size_t ANVIL_CALL lzcount(T aValue) throw();
 
 	// unsigned
