@@ -32,6 +32,7 @@
 #include "anvil/core/Bitset256.hpp"
 #include "anvil/core/LeadingZeroCount.hpp"
 #include "anvil/core/TrailingZeroCount.hpp"
+#include "anvil/core/Popcount.hpp"
 #include "anvil/core/Base64.hpp"
 #include "anvil/core/Hexadecimal.hpp"
 
