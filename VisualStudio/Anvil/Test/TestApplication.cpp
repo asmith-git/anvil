@@ -631,11 +631,47 @@ void TZCNTTestA() {
 	}
 }
 
+void ReflectTest() {
+	for (uint32_t i = 0; i <= UINT8_MAX; ++i) {
+		uint8_t a = anvil::reflect((uint8_t)i);
+		uint8_t b = anvil::reflect((uint8_t)a);
+		if (b != i) std::cout << "Value = " << std::bitset<8>(i) << " A = " << std::bitset<8>(a) << " B = " << std::bitset<8>(b) << std::endl;
+	}
+
+	for (uint32_t i = 0; i <= UINT16_MAX; ++i) {
+		uint16_t a = anvil::reflect((uint16_t)i);
+		uint16_t b = anvil::reflect((uint16_t)a);
+		if (b != i) std::cout << "Value = " << std::bitset<16>(i) << " A = " << std::bitset<16>(a) << " B = " << std::bitset<16>(b) << std::endl;
+	}
+
+	for (uint32_t i = 0; i <= UINT16_MAX; ++i) {
+		uint32_t a = anvil::reflect((uint32_t)i);
+		uint32_t b = anvil::reflect((uint32_t)a);
+		if (b != i) std::cout << "Value = " << std::bitset<32>(i) << " A = " << std::bitset<32>(a) << " B = " << std::bitset<32>(b) << std::endl;
+	}
+
+	for (uint32_t i = 0; i <= UINT16_MAX; ++i) {
+		uint64_t a = anvil::reflect((uint64_t)i);
+		uint64_t b = anvil::reflect((uint64_t)a);
+		if (b != i) std::cout << "Value = " << std::bitset<64>(i) << " A = " << std::bitset<64>(a) << " B = " << std::bitset<64>(b) << std::endl;
+	}
+}
+
+void PopcountTest() {
+	for (uint32_t i = 0; i <= UINT8_MAX; ++i) {
+		std::cout << "Value = " << std::bitset<8>(i) << " Popcount = " << anvil::popcount((uint8_t)i) << std::endl;
+	}
+}
+
 int main()
 {
-	TZCNTTestA();
-	//LZCNTTestA();
+	//PopcountTest();
+	ReflectTest();
 	return 0;
+
+	//TZCNTTestA();
+	//LZCNTTestA();
+	//return 0;
 
 	//SchedulerTest();
 	//return 0;
