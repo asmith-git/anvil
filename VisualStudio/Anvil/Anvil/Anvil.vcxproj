@@ -249,6 +249,7 @@
     <ClInclude Include="..\..\..\include\anvil\core\OperatingSystem.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\PODAlgorithm.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\PODVector.hpp" />
+    <ClInclude Include="..\..\..\include\anvil\core\Popcount.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\Reflection.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\TrailingZeroCount.hpp" />
     <ClInclude Include="..\..\..\include\anvil\lutils\Message.hpp" />
