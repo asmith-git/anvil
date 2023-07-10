@@ -51,7 +51,7 @@ namespace anvil {
 		uint64_t b = aValue >> 32ull;
 		a = reflect(static_cast<uint32_t>(a));
 		b = reflect(static_cast<uint32_t>(b));
-		return (a << 16ull) | b;
+		return (a << 32ull) | b;
 	}
 
 	static ANVIL_STRONG_INLINE int8_t ANVIL_CALL reflect(int8_t aValue) throw() {
