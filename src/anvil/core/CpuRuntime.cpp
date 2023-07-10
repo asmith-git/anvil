@@ -90,6 +90,18 @@ namespace anvil {
 				if (CheckCPUID(ECX, 11)) tmp |= ASM_XOP;
 			}
 
+			//! \todo Check CPU type using the vendor string
+			bool intel = true;
+			bool amd = !intel;
+
+			if (intel) {
+				if (tmp & ASM_SSE42) tmp |= ASM_POPCNT;
+			}
+
+			if (amd) {
+				if (tmp & ASM_ABM) tmp |= ASM_POPCNT;
+			}
+
 			ANVIL_RUNTIME_ASSERT((tmp & ANVIL_MIN_INSTRUCTION_SET) == ANVIL_MIN_INSTRUCTION_SET, "anvil::CheckSupportedInstructionSets_Implement : Minimum instruction sets are not supported");
 
 			return static_cast<InstructionSets>(tmp);
