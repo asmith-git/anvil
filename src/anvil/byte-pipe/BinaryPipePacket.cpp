@@ -137,9 +137,11 @@ NO_DATA:
 		_fixed_size_packets(fixed_sized_packets)
 	{
 		_packet_size = packet_size;
-		_version = PacketVersionFromSize(packet_size);
+		if (_packet_size <= sizeof(PacketHeaderVersion1)) _packet_size = sizeof(PacketHeaderVersion1) + 1u;
+
+		_version = PacketVersionFromSize(_packet_size);
 		_header_size = g_header_sizes[_version - 1u];
-		_max_payload_size = packet_size - _header_size;
+		_max_payload_size = _packet_size - _header_size;
 		_payload = new uint8_t[_max_payload_size];
 	}
 

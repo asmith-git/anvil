@@ -21,6 +21,7 @@
 #include <deque>
 #include <list>
 #include <map>
+#include <unordered_map>
 #include "anvil/byte-pipe/BytePipeObjects.hpp"
 
 namespace anvil { namespace BytePipe {
