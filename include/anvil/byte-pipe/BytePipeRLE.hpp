@@ -40,21 +40,35 @@ namespace anvil { namespace BytePipe {
 		static_assert(std::is_unsigned<LengthWord>::value, "LengthWord must be an unsigned integer");
 		static_assert(std::is_unsigned<DataWord>::value, "DataWord must be an unsigned integer");
 
+		enum {
+			CAN_HAVE_PARTIAL = sizeof(DataWord) > 1
+		};
+
 		enum : LengthWord {
 			RLE_FLAG = 1 << (sizeof(LengthWord) * 8 - 1),
-			MAX_RLE_LENGTH = static_cast<LengthWord>(-1) >> 1
+			PARTIAL_FLAG = RLE_FLAG >> 1,
+			MAX_RLE_LENGTH = static_cast<LengthWord>(-1) >> (CAN_HAVE_PARTIAL ? 2 : 1)
 		};
 
 		OutputPipe& _output;
 		DataWord* _buffer;
 		DataWord _current_word;
 		LengthWord _length;
+		size_t _partial_bytes;
 		bool _rle_mode;
 
 		bool _Flush() {
 			if (_length > 0u) {
 				LengthWord len = _length;
-				if (_rle_mode) {
+
+				if (_partial_bytes) {
+					len |= PARTIAL_FLAG;
+
+					// Write the buffer
+					_output.WriteBytesFast(&len, sizeof(LengthWord));
+					_output.WriteBytesFast(_buffer, _partial_bytes);
+
+				} else if (_rle_mode) {
 					// Write the block
 					len |= RLE_FLAG;
 
@@ -62,14 +76,15 @@ namespace anvil { namespace BytePipe {
 					uint8_t mem[sizeof(LengthWord) + sizeof(DataWord)];
 					*reinterpret_cast<LengthWord*>(mem) = len;
 					*reinterpret_cast<DataWord*>(mem + sizeof(LengthWord)) = _current_word;
-					_output.WriteBytes(mem, sizeof(LengthWord) + sizeof(DataWord));
+					_output.WriteBytesFast(mem, sizeof(LengthWord) + sizeof(DataWord));
 				} else {
 					// Write the buffer
-					_output.WriteBytes(&len, sizeof(LengthWord));
-					_output.WriteBytes(_buffer, _length * sizeof(DataWord));
+					_output.WriteBytesFast(&len, sizeof(LengthWord));
+					_output.WriteBytesFast(_buffer, _length * sizeof(DataWord));
 				}
 
 				// Reset the encoder state
+				_partial_bytes = 0u;
 				_current_word = 0u;
 				_length = 0u;
 				_rle_mode = false;
@@ -147,6 +162,14 @@ NEW_BLOCK:
 			} else {
 				WriteWordNonRLE(word);
 			}
+		}
+
+		void WritePartialWord(const DataWord word, size_t bytes) {
+			_Flush();
+			_buffer[0u] = word;
+			_length = 1u;
+			_partial_bytes = bytes;
+			_Flush();
 		}
 
 		void WriteWord4(const uint32_t word) {
@@ -279,10 +302,7 @@ NEW_BLOCK:
 
 		void WriteBytesInternal(const void* src, const size_t bytes) {
 			size_t words = bytes / sizeof(DataWord);
-			if (words * sizeof(DataWord) != bytes) throw std::runtime_error("RLEEncoderPipe::WriteBytes : Byte count is not divisible by the word size");
-
 			const DataWord* wordPtr = static_cast<const DataWord*>(src);
-
 
 			// Optimise memory reads for 1 byte data
 			if ANVIL_CONSTEXPR_VAR (std::is_same<DataWord, uint8_t>::value) {
@@ -304,11 +324,19 @@ NEW_BLOCK:
 			for (size_t i = 0; i < words; ++i) {
 				WriteWord(wordPtr[i]);
 			}
+
+			size_t remaining_bytes = bytes - (words * sizeof(DataWord));
+			if (remaining_bytes > 0) {
+				DataWord word = 0;
+				memcpy(&word, wordPtr + words, remaining_bytes);
+				WritePartialWord(word, remaining_bytes);
+			}
 		}
 	public:
 		RLEEncoderPipe(OutputPipe& output) :
 			_output(output),
 			_buffer(new DataWord[MAX_RLE_LENGTH]),
+			_partial_bytes(0u),
 			_current_word(0u),
 			_length(0u),
 			_rle_mode(false)
@@ -344,9 +372,14 @@ NEW_BLOCK:
 		static_assert(std::is_unsigned<LengthWord>::value, "LengthWord must be an unsigned integer");
 		static_assert(std::is_unsigned<DataWord>::value, "DataWord must be an unsigned integer");
 
+		enum {
+			CAN_HAVE_PARTIAL = sizeof(DataWord) > 1
+		};
+
 		enum : LengthWord {
 			RLE_FLAG = 1 << (sizeof(LengthWord) * 8 - 1),
-			MAX_RLE_LENGTH = static_cast<LengthWord>(-1) >> 1
+			PARTIAL_FLAG = RLE_FLAG >> 1,
+			MAX_RLE_LENGTH = static_cast<LengthWord>(-1) >> (CAN_HAVE_PARTIAL ? 2 : 1)
 		};
 
 		InputPipe& _input;
@@ -354,6 +387,7 @@ NEW_BLOCK:
 		int _timeout_ms;
 		LengthWord _buffer_read_head;
 		LengthWord _length;
+		LengthWord _partial_bytes;
 		DataWord _repeat_word;
 		bool _rle_mode;
 
@@ -368,9 +402,18 @@ NEW_BLOCK:
 			_input.ReadBytesFast(&len, sizeof(LengthWord), _timeout_ms);
 
 			// If the block is repeated word
-			if (len & RLE_FLAG) {
+			if (CAN_HAVE_PARTIAL && (len & PARTIAL_FLAG)) {
+				len &= ~PARTIAL_FLAG;
+				_length = 1;
+				_partial_bytes = len;
+				read2_faster = 0;
+				_rle_mode = false;
+				_input.ReadBytesFast(&_repeat_word, len, _timeout_ms);
+
+			} else if (len & RLE_FLAG) {
 				len &= ~RLE_FLAG;
 				_length = len;
+				_partial_bytes = 0;
 
 				_rle_mode = true;
 				read2_faster = 0;
@@ -381,6 +424,7 @@ NEW_BLOCK:
 				_input.ReadBytesFast(&_repeat_word, bytes_read, _timeout_ms);
 			} else {
 				_length = len;
+				_partial_bytes = 0;
 				_rle_mode = false;
 				read2_faster = 1;
 				bytes_read = _length * sizeof(DataWord);
@@ -395,6 +439,7 @@ NEW_BLOCK:
 			_repeat_word(0u),
 			_buffer_read_head(0u),
 			_length(0u),
+			_partial_bytes(0u),
 			_rle_mode(false)
 		{}
 
@@ -405,14 +450,17 @@ NEW_BLOCK:
 
 
 		size_t ReadBytes(void* dst, const size_t bytes) final{
+
 			size_t words = bytes / sizeof(DataWord);
-			if (words * sizeof(DataWord) != bytes) throw std::runtime_error("RLEDecoderPipe::ReadBytes : Byte count is not divisible by the word size");
 
 			DataWord* wordPtr = static_cast<DataWord*>(dst);
 			size_t wordsToRead = 0u;
 
 			while (words != 0u) {
 				if (_length == 0u) ReadNextBlock();
+
+				if (_partial_bytes) throw std::runtime_error("RLEDecoderPipe::ReadBytes : Partial words not implemented");
+
 				wordsToRead = words < _length ? words : _length;
 
 				if (_rle_mode) {
@@ -443,14 +491,16 @@ NEW_BLOCK:
 			}
 
 			size_t words = bytes_requested / sizeof(DataWord);
-			if (words * sizeof(DataWord) != bytes_requested) throw std::runtime_error("RLEDecoderPipe::ReadBytes : Byte count is not divisible by the word size");
 
 			size_t wordsToRead = 0u;
 
 			void* address = nullptr;
 
 			if (_length == 0u) ReadNextBlock();
+
 			wordsToRead = words < _length ? words : _length;
+
+			if (_partial_bytes) throw std::runtime_error("RLEDecoderPipe::ReadBytes2 : Partial words not implemented");
 
 			if (_rle_mode) {
 				address = &_repeat_word;

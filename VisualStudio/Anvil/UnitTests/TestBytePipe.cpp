@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CppUnitTest.h"
+#include "anvil/Core.hpp"
 #include "anvil/BytePipe.hpp"
 #include <thread>
 #include <vector>
@@ -110,6 +111,17 @@ namespace anvil { namespace BytePipe {
 			if (data) delete[] data;
 		}
 	}
+
+	TEST_CLASS(DebugPipeTest)
+	{
+	public:
+		TEST_METHOD(SanityCheck)
+		{
+			DebugPipe debug_pipe;
+
+			RandomWriteTest(debug_pipe, debug_pipe);
+		}
+	};
 
 	TEST_CLASS(PacketPipe)
 	{
