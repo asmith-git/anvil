@@ -663,8 +663,32 @@ void PopcountTest() {
 	}
 }
 
+void Base64Test2() {
+	std::string src, encoded;
+	uint8_t src_bin;
+
+	src = "Many hands make light work.";
+	encoded = anvil::Base64::Encode((const uint8_t*)src.c_str(), src.size());
+
+	const char* correct = "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu";
+	for (size_t i = 0; i < encoded.size(); ++i) {
+		char a = encoded[i];
+		char b = correct[i];
+		if (a != b) 
+			throw 0;
+	}
+
+	auto decoded = anvil::Base64::Decode(encoded.c_str(), encoded.size());
+	if (memcmp(src.c_str(), decoded.data(), src.size()) != 0)
+		throw 0;
+	//if(i != 0) throw 0;
+}
+
 int main()
 {
+	Base64Test2();
+	return 0;
+
 	//PopcountTest();
 	ReflectTest();
 	return 0;

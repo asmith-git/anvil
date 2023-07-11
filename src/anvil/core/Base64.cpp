@@ -17,25 +17,41 @@
 
 namespace anvil {
 
-	static ANVIL_CONSTEXPR_VAR const char* const g_default_base64_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwzyz0123456789+/";
+	static ANVIL_CONSTEXPR_VAR const char* const g_default_base64_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 	static const ANVIL_CONSTEXPR_VAR uint8_t g_default_base64_reverse_table[] = { //!< Convert from ASCII to indices in g_default_base64_table
-		0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u,
-		0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u,
-		0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 62u, 0u, 0u, 0u, 63u,
-		52u, 53u, 54u, 55u, 56u, 57u, 58u, 59u, 60u, 61u, 0u, 0u, 0u, 0u, 0u, 0u,
-		0u, 0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u,
-		15u, 16u, 17u, 18u, 19u, 20u, 21u, 22u, 23u, 24u, 25u, 0u, 0u, 0u, 0u, 0u,
-		0u, 26u, 27u, 28u, 29u, 30u, 31u, 32u, 33u, 34u, 35u, 36u, 37u, 38u, 39u, 40u,
-		41u, 42u, 43u, 44u, 45u, 46u, 47u, 48u, 0u, 50u, 49u, 0u, 0u, 0u, 0u, 0u,
-		0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u,
-		0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u,
-		0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u,
-		0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u,
-		0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u,
-		0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u,
-		0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u,
-		0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u
+		0,      0,      0,      0,      0,      0,      0,      0,
+		0,      0,      0,      0,      0,      0,      0,		0,
+		0,      0,      0,      0,      0,      0,      0,      0,      
+		0,      0,      0,      0,      0,      0,		0,      0,      
+		0,      0,      0,      0,      0,      0,      0,      0,      
+		0,      0,      0,      62,     0,		0,      0,      63,     
+		52,     53,     54,     55,     56,     57,     58,     59,     
+		60,     61,     0,      0,     0,       0,      0,      0,      
+		0,      0,      1,      2,      3,      4,      5,      6,      
+		7,      8,      9,     10,      11,     12,     13,     14,     
+		15,     16,     17,     18,     19,     20,     21,     22,     
+		23,     24,		25,      0,      0,      0,      0,      0,     
+		0,      26,     27,     28,     29,     30,     31,     32,     
+		33,		34,     35,     36,     37,     38,     39,     40,     
+		41,     42,     43,     44,     45,     46,     47,     48,    
+		49,     50,     51,     0,      0,      0,      0,      0,      
+		0,      0,      0,      0,      0,      0,      0,		0,       
+		0,      0,      0,      0,      0,      0,      0,      0,      
+		0,      0,      0,      0,      0,      0,		0,      0,      
+		0,      0,      0,      0,      0,      0,      0,      0,      
+		0,      0,      0,      0,      0,		0,      0,		0,      
+		0,      0,      0,      0,      0,      0,      0,      0,      
+		0,      0,      0,      0,		0,      0,      0,      0,      
+		0,      0,      0,      0,      0,      0,      0,      0,      
+		0,      0,      0,		0,      0,      0,      0,      0,      
+		0,      0,      0,      0,      0,      0,      0,      0,      
+		0,      0,		0,      0,      0,      0,      0,      0,      
+		0,      0,      0,      0,      0,      0,      0,      0,      
+		0,		0,      0,     0,      0,      0,      0,      0,      
+		0,      0,      0,      0,      0,      0,      0,      0,     
+		0,      0,      0,      0,      0,      0,      0,      0,     
+		0,      0,      0,      0,      0,      0,      0,		0
 	};
 
 	// Base64
@@ -44,45 +60,70 @@ namespace anvil {
 		return g_default_base64_table;
 	}
 
+	union Bits {
+		uint32_t u32;
+		uint8_t u8[4];
+		struct {
+			uint32_t _0 : 6u;
+			uint32_t _1 : 6u;
+			uint32_t _2 : 6u;
+			uint32_t _3 : 6u;
+			uint32_t _4 : 6u;
+		} u6;
+	};
+
+	static_assert(sizeof(Bits) == 4u, "Expected Base64::Encode::Bits to be 4 bytes");
+	static_assert(offsetof(Bits, u32) == 0u, "Expected offset of Base64::Encode::Bits::u8 to be 0");
+	static_assert(offsetof(Bits, u8) == 0u, "Expected offset of Base64::Encode::Bits::u8 to be 0");
+	static_assert(offsetof(Bits, u6) == 0u, "Expected offset of Base64::Encode::Bits::u6 to be 0");
+
 	void Base64::Encode(const uint8_t* src, size_t bytes_in, char* dst, size_t& dst_len, const char* const table, char padding) {
 		dst_len = 0u;
 
+		Bits bits;
+
 		while (bytes_in >= 3u) {
-			const uint32_t tmp = static_cast<uint32_t>(src[0u]) | (static_cast<uint32_t>(src[1u]) << 8u) | (static_cast<uint32_t>(src[2u]) << 16u);
+			bits.u32 = 0u;
+			bits.u8[0u] = src[2u];
+			bits.u8[1u] = src[1u];
+			bits.u8[2u] = src[0u];
 			src += 3u;
 			bytes_in -= 3u;
 
-			dst[0u] = table[tmp & 63u];
-			dst[1u] = table[(tmp >> 6u) & 63u];
-			dst[2u] = table[(tmp >> 12u) & 63];
-			dst[3u] = table[tmp >> 18u];
+			dst[0u] = table[bits.u6._3];
+			dst[1u] = table[bits.u6._2];
+			dst[2u] = table[bits.u6._1];
+			dst[3u] = table[bits.u6._0];
 			dst += 4u;
 			dst_len += 4u;
 		}
 
 		if (bytes_in >= 2u) {
-			const uint32_t tmp = static_cast<uint32_t>(src[0u]) | (static_cast<uint32_t>(src[1u]) << 8u);
+			bits.u32 = 0u;
+			bits.u8[0u] = src[1u];
+			bits.u8[1u] = src[0u];
 			src += 2u;
 			bytes_in -= 2u;
 
-			dst[0u] = table[tmp & 63u];
-			dst[1u] = table[(tmp >> 6u) & 63u];
-			dst[2u] = table[(tmp >> 12u) & 63];
-			dst[3u] = table[tmp >> 18u];
+			dst[0u] = table[bits.u6._3];
+			dst[1u] = table[bits.u6._2];
+			dst[2u] = table[bits.u6._1];
+			dst[3u] = table[bits.u6._0];
 			dst[4u] = padding;
 
 			dst += 5u;
 			dst_len += 5u;
 
 		} else if (bytes_in >= 1u) {
-			const uint32_t tmp = static_cast<uint32_t>(src[0u]);
+			bits.u32 = 0u;
+			bits.u8[0u] = src[0u];
 			src += 1u;
 			bytes_in -= 1u;
 
-			dst[0u] = table[tmp & 63u];
-			dst[1u] = table[(tmp >> 6u) & 63u];
-			dst[2u] = table[(tmp >> 12u) & 63];
-			dst[3u] = table[tmp >> 18u];
+			dst[0u] = table[bits.u6._3];
+			dst[1u] = table[bits.u6._2];
+			dst[2u] = table[bits.u6._1];
+			dst[3u] = table[bits.u6._0];
 			dst[4u] = padding;
 			dst[5u] = padding;
 
@@ -120,9 +161,17 @@ namespace anvil {
 			reverse_table = g_default_base64_reverse_table;
 
 		} else {
+			// For each possible ASCII character
 			for (size_t c = 0u; c < 256u; ++c) {
-				for (uint32_t j = 0; j < 64u; ++j) if (c == table[j]) break; 
+				// Look for the character in the table
+				for (uint32_t j = 0; j < 64u; ++j) if (c == table[j]) {
+					// Put the table index into the lookup table for this character
+					stack_table[c] = static_cast<uint8_t>(j);
+					goto NEXT_CHAR;
+				}
 				stack_table[c] = 0;
+NEXT_CHAR:
+				continue;
 			}
 			reverse_table = stack_table;
 		}
@@ -140,43 +189,45 @@ namespace anvil {
 			src_len -= 5u;
 		}
 
+		Bits bits;
+
 		while (src_len >= 4u) {
 
-			const uint32_t a = reverse_table[src[0u]];
-			const uint32_t b = reverse_table[src[1u]];
-			const uint32_t c = reverse_table[src[2u]];
-			const uint32_t d = reverse_table[src[3u]];
+			bits.u32 = 0;
+			bits.u6._3 = reverse_table[src[0u]];
+			bits.u6._2 = reverse_table[src[1u]];
+			bits.u6._1 = reverse_table[src[2u]];
+			bits.u6._0 = reverse_table[src[3u]];
 
-			uint32_t tmp = a | (b << 6u) | (c << 12u) | (d << 18u);
 			src += 4u;
 			src_len -= 4u;
 
-			dst[0u] = static_cast<uint8_t>(tmp & 255u);
-			dst[1u] = static_cast<uint8_t>((tmp >> 8u) & 255u);
-			dst[2u] = static_cast<uint8_t>(tmp >> 16u);
+			dst[2u] = bits.u8[0u];
+			dst[1u] = bits.u8[1u];
+			dst[0u] = bits.u8[2u];
 			dst += 3u;
 			bytes_out += 3u;
 		}
 
 		if (padded_bytes > 0u) {
 
-			const uint32_t a = reverse_table[src[0u]];
-			const uint32_t b = reverse_table[src[1u]];
-			const uint32_t c = reverse_table[src[2u]];
-			const uint32_t d = reverse_table[src[3u]];
+			bits.u32 = 0;
+			bits.u6._3 = reverse_table[src[0u]];
+			bits.u6._2 = reverse_table[src[1u]];
+			bits.u6._1 = reverse_table[src[2u]];
+			bits.u6._0 = reverse_table[src[3u]];
 
-			uint32_t tmp = a | (b << 6u) | (c << 12u) | (d << 18u);
 			src += 4u;
 			src_len -= 4u;
 
 			if (padded_bytes == 1u) {
-				dst[0u] = static_cast<uint8_t>(tmp & 255u);
-				dst[1u] = static_cast<uint8_t>((tmp >> 8u) & 255u);
+				dst[0u] = bits.u8[1u];
+				dst[1u] = bits.u8[0u];
 				dst += 2u;
 				bytes_out += 2u;
 
 			} else if (padded_bytes == 2u) {
-				dst[0u] = static_cast<uint8_t>(tmp & 255u);
+				dst[0u] = bits.u8[0u];
 				dst += 1u;
 				bytes_out += 1u;
 			}

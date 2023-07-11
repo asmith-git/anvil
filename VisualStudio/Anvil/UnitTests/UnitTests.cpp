@@ -415,6 +415,16 @@ namespace anvil { namespace core {
 				Assert::IsTrue(memcmp(data_in, data_out, data_size_in) == 0, L"Decoded data was not the same as what was encoded");
 			}
 		}
+
+		TEST_METHOD(Strings)
+		{
+			std::string src, encoded;
+			uint8_t src_bin;
+
+			src = "Many hands make light work.";
+			encoded = anvil::Base64::Encode((const uint8_t*)src.c_str(), src.size());
+			Assert::IsTrue(encoded == "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
+		}
 	};
 
 	TEST_CLASS(Hexadecimal)
