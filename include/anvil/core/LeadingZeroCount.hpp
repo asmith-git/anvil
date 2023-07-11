@@ -160,8 +160,8 @@ namespace anvil { namespace detail {
 		if (aValue == 0u) return 64u;
 		return __lzcnt64(aValue);
 #elif ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86
-		size_t count = lzcount32_hw(static_cast<uint32_t>(aValue & UINT32_MAX));
-		if (count == 32u) count += lzcount32_hw(static_cast<uint32_t>(aValue >> 32ull));
+		size_t count = lzcount32_hwb(static_cast<uint32_t>(aValue & UINT32_MAX));
+		if (count == 32u) count += lzcount32_hwb(static_cast<uint32_t>(aValue >> 32ull));
 		return count;
 #else
 		return 0;
