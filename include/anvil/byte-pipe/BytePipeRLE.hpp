@@ -277,7 +277,7 @@ NEW_BLOCK:
 			}
 		}
 
-		void WriteBytesInternal(const void* src, const size_t bytes) final {
+		void WriteBytesInternal(const void* src, const size_t bytes) {
 			size_t words = bytes / sizeof(DataWord);
 			if (words * sizeof(DataWord) != bytes) throw std::runtime_error("RLEEncoderPipe::WriteBytes : Byte count is not divisible by the word size");
 

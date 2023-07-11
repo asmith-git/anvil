@@ -404,7 +404,7 @@ namespace anvil { namespace core {
 			enum { MAX_DATA_SIZE = 4096 };
 			uint8_t data_in[MAX_DATA_SIZE];
 			uint8_t data_out[MAX_DATA_SIZE];
-			for (int i = 0; i < 100; ++i) {
+			for (int i = 0; i < 100000; ++i) {
 				size_t data_size_in = rand() % MAX_DATA_SIZE;
 				for (size_t j = 0; j < data_size_in; ++j) data_in[i] = static_cast<uint8_t>(rand() % UINT8_MAX);
 
@@ -435,7 +435,7 @@ namespace anvil { namespace core {
 			enum { MAX_DATA_SIZE = 4096 };
 			uint8_t data_in[MAX_DATA_SIZE];
 			uint8_t data_out[MAX_DATA_SIZE];
-			for (int i = 0; i < 100; ++i) {
+			for (int i = 0; i < 100000; ++i) {
 				size_t data_size_in = rand() % MAX_DATA_SIZE;
 				for (size_t j = 0; j < data_size_in; ++j) data_in[i] = static_cast<uint8_t>(rand() % UINT8_MAX);
 
@@ -475,4 +475,5 @@ namespace anvil { namespace core {
 			Assert::IsTrue(encoded == "303132333435363738396162636465666768696A6B6C6D6E6F707172737475767778797A4142434445464748494A4B4C4D4E4F505152535455565758595A");
 		}
 	};
+
 }}
