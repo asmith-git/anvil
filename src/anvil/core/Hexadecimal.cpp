@@ -24,8 +24,8 @@ namespace anvil {
 	}
 
 	static inline void ToHex(uint32_t byte, char* out) {
-		out[0u] = ToHex(byte & 15u);
-		out[1u] = ToHex(byte >> 4u);
+		out[0u] = ToHex(byte >> 4u);
+		out[1u] = ToHex(byte & 15u);
 	}
 
 	static uint32_t HexNybbleToBin(char hex) {
@@ -51,7 +51,7 @@ namespace anvil {
 	void Hexadecimal::Decode(const char* src, size_t src_len, uint8_t* dst, size_t& bytes_out) {
 		bytes_out = src_len / 2u;
 		for (size_t i = 0u; i < bytes_out; ++i) {
-			*dst = static_cast<uint8_t>(HexNybbleToBin(src[0u]) | (HexNybbleToBin(src[1u]) << 4u));
+			*dst = static_cast<uint8_t>(HexNybbleToBin(src[1u]) | (HexNybbleToBin(src[0u]) << 4u));
 
 			src += 2u;
 			++dst;

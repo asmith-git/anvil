@@ -136,7 +136,6 @@ namespace anvil { namespace core {
 		}
 	};
 
-
 	TEST_CLASS(TrailingZeroCount)
 	{
 	public:
@@ -394,6 +393,76 @@ namespace anvil { namespace core {
 			Assert::AreEqual(anvil::detail::popcount8_c((uint8_t)255u), (size_t)8u,
 				L"C++ implementation of 8-bit popcount does not handle 255 correctly"
 			);
+		}
+	};
+
+	TEST_CLASS(Base64)
+	{
+	public:
+		TEST_METHOD(SameWhenReversed)
+		{
+			enum { MAX_DATA_SIZE = 4096 };
+			uint8_t data_in[MAX_DATA_SIZE];
+			uint8_t data_out[MAX_DATA_SIZE];
+			for (int i = 0; i < 100; ++i) {
+				size_t data_size_in = rand() % MAX_DATA_SIZE;
+				for (size_t j = 0; j < data_size_in; ++j) data_in[i] = static_cast<uint8_t>(rand() % UINT8_MAX);
+
+				std::string tmp = anvil::Base64::Encode(data_in, data_size_in);
+				size_t data_size_out = 0u;
+				anvil::Base64::Decode(tmp.c_str(), tmp.size(), data_out, data_size_out);
+				Assert::AreEqual(data_size_in, data_size_out, L"Decode size was different than what was encoded");
+				Assert::IsTrue(memcmp(data_in, data_out, data_size_in) == 0, L"Decoded data was not the same as what was encoded");
+			}
+		}
+	};
+
+	TEST_CLASS(Hexadecimal)
+	{
+	public:
+		TEST_METHOD(SameWhenReversed)
+		{
+			enum { MAX_DATA_SIZE = 4096 };
+			uint8_t data_in[MAX_DATA_SIZE];
+			uint8_t data_out[MAX_DATA_SIZE];
+			for (int i = 0; i < 100; ++i) {
+				size_t data_size_in = rand() % MAX_DATA_SIZE;
+				for (size_t j = 0; j < data_size_in; ++j) data_in[i] = static_cast<uint8_t>(rand() % UINT8_MAX);
+
+				std::string tmp = anvil::Hexadecimal::Encode(data_in, data_size_in);
+				size_t data_size_out = 0u;
+				anvil::Hexadecimal::Decode(tmp.c_str(), tmp.size(), data_out, data_size_out);
+				Assert::AreEqual(data_size_in, data_size_out, L"Decode size was different than what was encoded");
+				Assert::IsTrue(memcmp(data_in, data_out, data_size_in) == 0, L"Decoded data was not the same as what was encoded");
+			}
+		}
+
+		TEST_METHOD(AllUniqueBytes)
+		{
+			std::string encoded;
+			uint8_t src_bin;
+
+			const char* hex = "0123456789ABCDEF";
+			src_bin = 0;
+			for (int i = 0; i <= 15; ++i) {
+				for (int j = 0; j <= 15; ++j) {
+					std::string expected;
+					expected += hex[i];
+					expected += hex[j];
+					encoded = anvil::Hexadecimal::Encode(&src_bin, 1);
+					Assert::IsTrue(encoded == expected, std::to_wstring(src_bin).c_str());
+					++src_bin;
+				}
+			}
+		}
+		TEST_METHOD(Strings)
+		{
+			std::string src, encoded;
+			uint8_t src_bin;
+
+			src = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			encoded = anvil::Hexadecimal::Encode((const uint8_t*)src.c_str(), src.size());
+			Assert::IsTrue(encoded == "303132333435363738396162636465666768696A6B6C6D6E6F707172737475767778797A4142434445464748494A4B4C4D4E4F505152535455565758595A");
 		}
 	};
 }}
