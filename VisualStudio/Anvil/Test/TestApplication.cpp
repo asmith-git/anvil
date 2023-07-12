@@ -21,8 +21,12 @@ private:
 	std::mutex _lock;
 public:
 	std::deque<uint8_t> buffer;
-	DebugPipe() {
+	size_t bytes_written;
+	size_t bytes_read;
 
+	DebugPipe() {
+		bytes_written = 0;
+		bytes_read = 0;
 	}
 
 	virtual ~DebugPipe() {
@@ -37,12 +41,14 @@ public:
 			static_cast<uint8_t*>(dst)[i] = buffer.front();
 			buffer.pop_front();
 		}
+		bytes_read += to_read;
 		return to_read;
 	}
 
 	size_t WriteBytes(const void* src, const size_t bytes) final {
 		std::lock_guard<std::mutex> lock(_lock);
 		for (size_t i = 0u; i < bytes; ++i) buffer.push_back(static_cast<const uint8_t*>(src)[i]);
+		bytes_written += bytes;
 		return bytes;
 	}
 
@@ -685,10 +691,13 @@ void Base64Test2() {
 }
 
 void RLETest2() {
-	auto  WriteTest = [](anvil::BytePipe::OutputPipe & out, anvil::BytePipe::InputPipe & in, const void* src, size_t bytes, std::deque<uint8_t>& debug_buffer)->void {
+	auto  WriteTest = [](anvil::BytePipe::OutputPipe & out, anvil::BytePipe::InputPipe & in, const void* src, size_t bytes, DebugPipe& debug_buffer)->void {
 		try {
-			if(! debug_buffer.empty())
+			if(! debug_buffer.buffer.empty())
 				throw L"Buffer is not empty";
+
+			debug_buffer.bytes_read = 0;
+			debug_buffer.bytes_written = 0;
 
 			// Break into random sized writes
 			{
@@ -717,8 +726,11 @@ void RLETest2() {
 				}
 			}
 
-			if (!debug_buffer.empty())
+			if (!debug_buffer.buffer.empty())
 				throw L"Buffer is not empty";
+
+			if (debug_buffer.bytes_read != debug_buffer.bytes_written)
+				throw L"Number of bytes written does not match bytes read";
 
 			if(!std::memcmp(buffer, src, bytes) == 0) 
 				throw L"Memory read did not match what was written";
@@ -734,7 +746,7 @@ void RLETest2() {
 		}
 	};
 
-	auto RandomWriteTest = [&WriteTest](anvil::BytePipe::OutputPipe& out, anvil::BytePipe::InputPipe& in, std::deque<uint8_t>& debug_buffer)->void {
+	auto RandomWriteTest = [&WriteTest](anvil::BytePipe::OutputPipe& out, anvil::BytePipe::InputPipe& in, DebugPipe& debug_buffer)->void {
 		WriteTest(out, in, nullptr, 0, debug_buffer);
 
 		{
@@ -765,7 +777,7 @@ void RLETest2() {
 	anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
 	anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
 
-	RandomWriteTest(out, in, debug_pipe.buffer);
+	RandomWriteTest(out, in, debug_pipe);
 
 	//enum { SIZE = 512 };
 	//uint8_t buffer[SIZE];

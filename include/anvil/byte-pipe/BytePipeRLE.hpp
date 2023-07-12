@@ -19,8 +19,6 @@
 #include "anvil/byte-pipe/BytePipeReader.hpp"
 #include "anvil/byte-pipe/BytePipeWriter.hpp"
 
-#pragma optimize("", off)
-
 namespace anvil { namespace BytePipe {
 
 	/*!
@@ -75,10 +73,12 @@ namespace anvil { namespace BytePipe {
 					len |= RLE_FLAG;
 
 					// Combine the write into one call
-					uint8_t mem[sizeof(LengthWord) + sizeof(DataWord)];
-					*reinterpret_cast<LengthWord*>(mem) = len;
-					*reinterpret_cast<DataWord*>(mem + sizeof(LengthWord)) = _current_word;
-					_output.WriteBytesFast(mem, sizeof(LengthWord) + sizeof(DataWord));
+					uint8_t block[sizeof(LengthWord) + sizeof(DataWord)];
+					LengthWord& len2 = *reinterpret_cast<LengthWord*>(block);
+					DataWord& word2 = *reinterpret_cast<DataWord*>(block + sizeof(LengthWord));
+					len2 = len;
+					word2 = _current_word;
+					_output.WriteBytesFast(block, sizeof(LengthWord) + sizeof(DataWord));
 				} else {
 					// Write the buffer
 					_output.WriteBytesFast(&len, sizeof(LengthWord));
@@ -97,6 +97,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		void WriteWordRLE(const DataWord word) {
+
 			// If the current RLE block is full then flush the data
 			if (_length == MAX_RLE_LENGTH) {
 NEW_BLOCK:
@@ -327,7 +328,7 @@ NEW_BLOCK:
 		InputPipe& _input;
 		std::vector<uint8_t> _byte_buffer;
 		int _timeout_ms;
-		LengthWord _buffer_read_head;
+		size_t _buffer_read_head;
 		LengthWord _repeat_length;
 		DataWord _repeat_word;
 
@@ -405,6 +406,7 @@ NEW_BLOCK:
 			_repeat_length(0u)
 		{
 			_byte_buffer.reserve(MAX_RLE_LENGTH * sizeof(DataWord));
+			read2_faster = 0;
 		}
 
 		~RLEDecoderPipe() {
