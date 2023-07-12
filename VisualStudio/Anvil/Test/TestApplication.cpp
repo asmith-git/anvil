@@ -773,7 +773,7 @@ void RLETest2() {
 	DebugPipe debug_pipe;
 
 	typedef uint8_t RLEIndex;
-	typedef uint8_t RLEWord;
+	typedef uint32_t RLEWord;
 	anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
 	anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
 

@@ -19,6 +19,8 @@
 #include "anvil/byte-pipe/BytePipeReader.hpp"
 #include "anvil/byte-pipe/BytePipeWriter.hpp"
 
+#pragma optimize("", off)
+
 namespace anvil { namespace BytePipe {
 
 	/*!
@@ -344,7 +346,7 @@ NEW_BLOCK:
 			const uint8_t* u8 = reinterpret_cast<uint8_t*>(&_repeat_word);
 			for (LengthWord i = 0; i < _repeat_length; ++i) {
 				//! \todo Optimise writing multiple bytes to the buffer
-				for (size_t j = 0u; j < sizeof(LengthWord); ++j) {
+				for (size_t j = 0u; j < sizeof(DataWord); ++j) {
 					_byte_buffer.push_back(u8[j]);
 				}
 			}
