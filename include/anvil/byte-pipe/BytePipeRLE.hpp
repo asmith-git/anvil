@@ -19,8 +19,6 @@
 #include "anvil/byte-pipe/BytePipeReader.hpp"
 #include "anvil/byte-pipe/BytePipeWriter.hpp"
 
-#pragma optimize("", off)
-
 namespace anvil { namespace BytePipe {
 
 	/*!
@@ -48,29 +46,27 @@ namespace anvil { namespace BytePipe {
 
 		enum : LengthWord {
 			RLE_FLAG = 1 << (sizeof(LengthWord) * 8 - 1),
-			PARTIAL_FLAG = RLE_FLAG >> 1,
-			MAX_RLE_LENGTH = static_cast<LengthWord>(-1) >> (CAN_HAVE_PARTIAL ? 2 : 1)
+			MAX_BYTES_IN_BLOCK = static_cast<LengthWord>(-1) >> 1,
+			MAX_RLE_LENGTH = MAX_BYTES_IN_BLOCK / sizeof(DataWord)
 		};
 
 		OutputPipe& _output;
-		DataWord* _buffer;
-		DataWord _current_word;
-		LengthWord _length;
-		size_t _partial_bytes;
+		uint8_t* _byte_buffer;
+		union {
+			LengthWord _bytes_in_buffer;	//!< In RLE mode this is the number of words in the repeat, otherwise the number of bytes buffered
+			LengthWord _rle_length;			//!< In RLE mode this is the number of words in the repeat, otherwise the number of bytes buffered
+		};
 		bool _rle_mode;
 
+		inline DataWord& GetCurrentWord() {
+			return *reinterpret_cast<DataWord*>(_byte_buffer);
+		}
+
 		bool _Flush() {
-			if (_length > 0u) {
-				LengthWord len = _length;
+			if (_bytes_in_buffer > 0u) {
+				LengthWord len = _bytes_in_buffer;
 
-				if (_partial_bytes) {
-					len |= PARTIAL_FLAG;
-
-					// Write the buffer
-					_output.WriteBytesFast(&len, sizeof(LengthWord));
-					_output.WriteBytesFast(_buffer, _partial_bytes);
-
-				} else if (_rle_mode) {
+				if (_rle_mode) {
 					// Write the block
 					len |= RLE_FLAG;
 
@@ -79,18 +75,16 @@ namespace anvil { namespace BytePipe {
 					LengthWord& len2 = *reinterpret_cast<LengthWord*>(block);
 					DataWord& word2 = *reinterpret_cast<DataWord*>(block + sizeof(LengthWord));
 					len2 = len;
-					word2 = _current_word;
+					word2 = GetCurrentWord();
 					_output.WriteBytesFast(block, sizeof(LengthWord) + sizeof(DataWord));
 				} else {
 					// Write the buffer
 					_output.WriteBytesFast(&len, sizeof(LengthWord));
-					_output.WriteBytesFast(_buffer, _length * sizeof(DataWord));
+					_output.WriteBytesFast(_byte_buffer, _bytes_in_buffer);
 				}
 
 				// Reset the encoder state
-				_partial_bytes = 0u;
-				_current_word = 0u;
-				_length = 0u;
+				_bytes_in_buffer = 0u;
 				_rle_mode = false;
 				return true;
 			}
@@ -100,8 +94,10 @@ namespace anvil { namespace BytePipe {
 
 		void WriteWordRLE(const DataWord word) {
 
+			DataWord& current_word = GetCurrentWord();
+
 			// If the current RLE block is full then flush the data
-			if (_length == MAX_RLE_LENGTH) {
+			if (_rle_length == MAX_RLE_LENGTH) {
 NEW_BLOCK:
 				_Flush();
 				// Flush the current block and write as aif it was a non-repeating block
@@ -109,14 +105,21 @@ NEW_BLOCK:
 				return;
 			}
 			
-			if (_length == 0u) {
+			if (_rle_length == 0u) {
 				// Start a new repeating block
-				_current_word = word;
-				_length = 1u;
+				current_word = word;
+				_rle_length = 1u;
 				_rle_mode = true;
-			} else if (word == _current_word) {
+			} else if (word == current_word) {
+				if (!_rle_mode) {
+					if (_bytes_in_buffer != sizeof(DataWord)) goto NEW_BLOCK;
+
+					// Reinterpret as RLE block
+					_rle_mode = true;
+					_rle_length = 1u;
+				}
 				// Add the word to the repeat
-				++_length;
+				++_rle_length;
 			} else {
 				goto NEW_BLOCK;
 			}
@@ -124,18 +127,18 @@ NEW_BLOCK:
 
 		void WriteWordNonRLE(const DataWord word) {
 			// If the current RLE block is full then flush the data
-			if (_length == MAX_RLE_LENGTH) _Flush();
+			if (_bytes_in_buffer + sizeof(DataWord) > MAX_BYTES_IN_BLOCK) _Flush();
 
-			if (_length >= 7u) {
+			if (_bytes_in_buffer >= 7u * sizeof(DataWord)) {
 				// If the word is the same as the last words in the buffer
-
-				DataWord cmp1 = word ^ _buffer[_length - 1u];
-				DataWord cmp2 = word ^ _buffer[_length - 2u];
-				DataWord cmp3 = word ^ _buffer[_length - 3u];
-				DataWord cmp4 = word ^ _buffer[_length - 4u];
-				DataWord cmp5 = word ^ _buffer[_length - 5u];
-				DataWord cmp6 = word ^ _buffer[_length - 6u];
-				DataWord cmp7 = word ^ _buffer[_length - 7u];
+				DataWord* word_buffer = reinterpret_cast<DataWord*>(_byte_buffer + _bytes_in_buffer) - 7u * sizeof(DataWord);
+				DataWord cmp1 = word ^ word_buffer[0u];
+				DataWord cmp2 = word ^ word_buffer[1u];
+				DataWord cmp3 = word ^ word_buffer[2u];
+				DataWord cmp4 = word ^ word_buffer[3u];
+				DataWord cmp5 = word ^ word_buffer[4u];
+				DataWord cmp6 = word ^ word_buffer[5u];
+				DataWord cmp7 = word ^ word_buffer[6u];
 				cmp1 |= cmp2;
 				cmp3 |= cmp4;
 				cmp5 |= cmp6;
@@ -145,19 +148,20 @@ NEW_BLOCK:
 
 				if (cmp1 == 0) {
 					// Flush the current block except for the last word
-					_length -= 7u;
+					_bytes_in_buffer -= 7u * sizeof(DataWord);
 					_Flush();
 
 					// Start a new RLE block
-					_current_word = word;
-					_length = 8u;
+					GetCurrentWord() = word;
+					_rle_length = 8u;
 					_rle_mode = true;
 					return;
 				}
 			}
 
 			// Add word to buffer
-			_buffer[_length++] = word;
+			memcpy(_byte_buffer + _bytes_in_buffer, &word, sizeof(DataWord));
+			_bytes_in_buffer += sizeof(DataWord);
 		}
 
 		void WriteWord(const DataWord word) {
@@ -170,11 +174,9 @@ NEW_BLOCK:
 		}
 
 		void WritePartialWord(const DataWord word, size_t bytes) {
-			_Flush();
-			_buffer[0u] = word;
-			_length = 1u;
-			_partial_bytes = bytes;
-			_Flush();
+			if (_rle_mode || _bytes_in_buffer + bytes > MAX_BYTES_IN_BLOCK * sizeof(DataWord)) _Flush();
+			memcpy(_byte_buffer + _bytes_in_buffer, &word, bytes);
+			_bytes_in_buffer += bytes;
 		}
 
 		void WriteWord8(const uint64_t word) {
@@ -206,23 +208,33 @@ NEW_BLOCK:
 
 				if (mask_w3 == 0u) {
 					// If the currently block isn't repeating or is repeating a different word then flush it
-					if (_length > 0u) {
+					if (_bytes_in_buffer > 0u) {
 						if (_rle_mode) {
-							if (w1 != _current_word) {
+							if (w1 != GetCurrentWord()) {
 								// Flush the current block
 								_Flush();
 							}
 						} else {
-							// Flush the current block
-							_Flush();
+							if (_bytes_in_buffer == sizeof(DataWord)) {
+								// Act as if this was an RLE block
+								_rle_length = 1;
+								_rle_mode = true; 
+								if (w1 != GetCurrentWord()) {
+									// Flush the current block
+									_Flush();
+								}
+							} else {
+								// Flush the current block
+								_Flush();
+							}
 						}
 					}
 
 					_rle_mode = true;
-					_current_word = static_cast<DataWord>(w1);
-					if (_length < MAX_RLE_LENGTH - 8u) {
+					GetCurrentWord() = static_cast<DataWord>(w1);
+					if (_rle_length < MAX_RLE_LENGTH - 8u) {
 						// Add all 4 words to the block at once
-						_length += 8u;
+						_rle_length += 8u;
 					} else {
 						// Add the words individually
 						WriteWordRLE(static_cast<DataWord>(w1));
@@ -280,17 +292,15 @@ NEW_BLOCK:
 	public:
 		RLEEncoderPipe(OutputPipe& output) :
 			_output(output),
-			_buffer(new DataWord[MAX_RLE_LENGTH]),
-			_partial_bytes(0u),
-			_current_word(0u),
-			_length(0u),
+			_byte_buffer(new uint8_t[MAX_BYTES_IN_BLOCK]),
+			_bytes_in_buffer(0u),
 			_rle_mode(false)
 		{}
 
 		~RLEEncoderPipe() {
 			if (_Flush()) _output.Flush();
-			delete[] _buffer;
-			_buffer = nullptr;
+			delete[] _byte_buffer;
+			_byte_buffer = nullptr;
 		}
 
 
@@ -323,8 +333,8 @@ NEW_BLOCK:
 
 		enum : LengthWord {
 			RLE_FLAG = 1 << (sizeof(LengthWord) * 8 - 1),
-			PARTIAL_FLAG = RLE_FLAG >> 1,
-			MAX_RLE_LENGTH = static_cast<LengthWord>(-1) >> (CAN_HAVE_PARTIAL ? 2 : 1)
+			MAX_BYTES_IN_BLOCK = static_cast<LengthWord>(-1) >> 1,
+			MAX_RLE_LEN = MAX_BYTES_IN_BLOCK / sizeof(DataWord)
 		};
 
 		InputPipe& _input;
@@ -370,18 +380,7 @@ NEW_BLOCK:
 			_input.ReadBytesFast(&len, sizeof(LengthWord), _timeout_ms);
 
 			// If the block is repeated word
-			if (CAN_HAVE_PARTIAL && (len & PARTIAL_FLAG)) {
-				len &= ~PARTIAL_FLAG;
-				read2_faster = 1;
-				_input.ReadBytesFast(&_repeat_word, len, _timeout_ms);
-
-				const uint8_t* u8 = reinterpret_cast<uint8_t*>(&_repeat_word);
-				//! \todo Optimise writing multiple bytes to the buffer
-				for (LengthWord i = 0u; i < sizeof(LengthWord); ++i) {
-					_byte_buffer.push_back(u8[i]);
-				}
-
-			} else if (len & RLE_FLAG) {
+			if (len & RLE_FLAG) {
 				len &= ~RLE_FLAG;
 				_repeat_length = len;
 				read2_faster = 0;
@@ -395,8 +394,8 @@ NEW_BLOCK:
 			} else {
 				read2_faster = 1;
 				size_t offset = _byte_buffer.size();
-				_byte_buffer.resize(offset + len * sizeof(DataWord));
-				_input.ReadBytesFast(_byte_buffer.data() + offset, len * sizeof(DataWord), _timeout_ms);
+				_byte_buffer.resize(offset + len);
+				_input.ReadBytesFast(_byte_buffer.data() + offset, len, _timeout_ms);
 			}
 		}
 	public:
@@ -407,7 +406,7 @@ NEW_BLOCK:
 			_buffer_read_head(0u),
 			_repeat_length(0u)
 		{
-			_byte_buffer.reserve(MAX_RLE_LENGTH * sizeof(DataWord));
+			_byte_buffer.reserve(MAX_BYTES_IN_BLOCK);
 			read2_faster = 0;
 		}
 
