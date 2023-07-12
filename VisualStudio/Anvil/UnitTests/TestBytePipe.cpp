@@ -11,6 +11,8 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 namespace anvil { namespace BytePipe {
 
 	class DebugPipe final : public OutputPipe, public InputPipe {
+	private:
+		std::mutex _lock;
 	public:
 		std::deque<uint8_t> data;
 
@@ -27,6 +29,7 @@ namespace anvil { namespace BytePipe {
 		}
 		
 		size_t WriteBytes(const void* src, const size_t bytes) final {
+			std::lock_guard<std::mutex> lock(_lock);
 			const uint8_t* src8 = static_cast<const uint8_t*>(src); 
 			
 			for (size_t i = 0u; i < bytes; ++i) {
@@ -36,6 +39,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		size_t ReadBytes(void* dst, const size_t bytes) final {
+			std::lock_guard<std::mutex> lock(_lock);
 			size_t to_read = bytes;
 			if (to_read > data.size()) to_read = data.size();
 			uint8_t* dst8 = static_cast<uint8_t*>(dst);
@@ -49,8 +53,10 @@ namespace anvil { namespace BytePipe {
 		}
 	};
 
-	void WriteTest(anvil::BytePipe::OutputPipe& out, anvil::BytePipe::InputPipe& in, const void* src, size_t bytes) {
+	void WriteTest(anvil::BytePipe::OutputPipe& out, anvil::BytePipe::InputPipe& in, const void* src, size_t bytes, std::deque<uint8_t>& debug) {
 		try {
+			Assert::IsTrue(debug.empty(), L"Debug buffer started with data in it");
+
 			// Break into random sized writes
 			{
 				size_t bytes_left = bytes;
@@ -78,6 +84,7 @@ namespace anvil { namespace BytePipe {
 				}
 			}
 
+			Assert::IsTrue(debug.empty(), L"Data was left over in the buffer");
 			Assert::IsTrue(std::memcmp(buffer, src, bytes) == 0, L"Memory read did not match what was written");
 
 			delete[] buffer;
@@ -89,12 +96,12 @@ namespace anvil { namespace BytePipe {
 		}
 	}
 
-	void RandomWriteTest(anvil::BytePipe::OutputPipe& out, anvil::BytePipe::InputPipe& in) {
-		WriteTest(out, in, nullptr, 0);
+	void RandomWriteTest(anvil::BytePipe::OutputPipe& out, anvil::BytePipe::InputPipe& in, std::deque<uint8_t>& debug) {
+		WriteTest(out, in, nullptr, 0, debug);
 
 		{
 			uint32_t buffer = 12345678u;
-			WriteTest(out, in, &buffer, sizeof(buffer));
+			WriteTest(out, in, &buffer, sizeof(buffer), debug);
 		}
 
 		for (size_t i = 0; i < 10; ++i) {
@@ -106,7 +113,7 @@ namespace anvil { namespace BytePipe {
 				for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)rand() % 255;
 			}
 
-			WriteTest(out, in, data, bytes);
+			WriteTest(out, in, data, bytes, debug);
 
 			if (data) delete[] data;
 		}
@@ -119,7 +126,7 @@ namespace anvil { namespace BytePipe {
 		{
 			DebugPipe debug_pipe;
 
-			RandomWriteTest(debug_pipe, debug_pipe);
+			RandomWriteTest(debug_pipe, debug_pipe, debug_pipe.data);
 		}
 	};
 
@@ -134,7 +141,7 @@ namespace anvil { namespace BytePipe {
 				PacketInputPipe in(debug_pipe);
 				PacketOutputPipe out(debug_pipe, 1u, true);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 			{
 				DebugPipe debug_pipe;
@@ -142,7 +149,7 @@ namespace anvil { namespace BytePipe {
 				PacketInputPipe in(debug_pipe);
 				PacketOutputPipe out(debug_pipe, 111u, true);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 			{
 				DebugPipe debug_pipe;
@@ -150,7 +157,7 @@ namespace anvil { namespace BytePipe {
 				PacketInputPipe in(debug_pipe);
 				PacketOutputPipe out(debug_pipe, 1024u, true);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 			{
 				DebugPipe debug_pipe;
@@ -158,7 +165,7 @@ namespace anvil { namespace BytePipe {
 				PacketInputPipe in(debug_pipe);
 				PacketOutputPipe out(debug_pipe, 4096u, true);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 			{
 				DebugPipe debug_pipe;
@@ -166,7 +173,7 @@ namespace anvil { namespace BytePipe {
 				PacketInputPipe in(debug_pipe);
 				PacketOutputPipe out(debug_pipe, 1048576u, true);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 			{
 				DebugPipe debug_pipe;
@@ -174,7 +181,7 @@ namespace anvil { namespace BytePipe {
 				PacketInputPipe in(debug_pipe);
 				PacketOutputPipe out(debug_pipe, 1048576u * 10, true);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 		}
 		TEST_METHOD(BasicVariableSize)
@@ -185,7 +192,7 @@ namespace anvil { namespace BytePipe {
 				PacketInputPipe in(debug_pipe);
 				PacketOutputPipe out(debug_pipe, 1u, false);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 			{
 				DebugPipe debug_pipe;
@@ -193,7 +200,7 @@ namespace anvil { namespace BytePipe {
 				PacketInputPipe in(debug_pipe);
 				PacketOutputPipe out(debug_pipe, 111u, false);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 			{
 				DebugPipe debug_pipe;
@@ -201,7 +208,7 @@ namespace anvil { namespace BytePipe {
 				PacketInputPipe in(debug_pipe);
 				PacketOutputPipe out(debug_pipe, 1024u, false);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 			{
 				DebugPipe debug_pipe;
@@ -209,7 +216,7 @@ namespace anvil { namespace BytePipe {
 				PacketInputPipe in(debug_pipe);
 				PacketOutputPipe out(debug_pipe, 4096u, false);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 			{
 				DebugPipe debug_pipe;
@@ -217,7 +224,7 @@ namespace anvil { namespace BytePipe {
 				PacketInputPipe in(debug_pipe);
 				PacketOutputPipe out(debug_pipe, 1048576u, false);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 			{
 				DebugPipe debug_pipe;
@@ -225,7 +232,7 @@ namespace anvil { namespace BytePipe {
 				PacketInputPipe in(debug_pipe);
 				PacketOutputPipe out(debug_pipe, 1048576u * 10, false);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 		}
 
@@ -241,7 +248,7 @@ namespace anvil { namespace BytePipe {
 				PacketOutputPipe out2(out1, 8000, true);
 				PacketOutputPipe out3(out2, 2048, true);
 
-				RandomWriteTest(out3, in3);
+				RandomWriteTest(out3, in3, debug_pipe.data);
 			}
 		}
 
@@ -257,7 +264,7 @@ namespace anvil { namespace BytePipe {
 				PacketOutputPipe out2(out1, 8000, false);
 				PacketOutputPipe out3(out2, 2048, false);
 
-				RandomWriteTest(out3, in3);
+				RandomWriteTest(out3, in3, debug_pipe.data);
 			}
 		}
 	};
@@ -276,7 +283,7 @@ namespace anvil { namespace BytePipe {
 				RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
 				RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 		}
 
@@ -291,7 +298,7 @@ namespace anvil { namespace BytePipe {
 				RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
 				RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 		}
 
@@ -306,7 +313,7 @@ namespace anvil { namespace BytePipe {
 				RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
 				RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 		}
 
@@ -321,7 +328,7 @@ namespace anvil { namespace BytePipe {
 				RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
 				RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 		}
 
@@ -336,7 +343,7 @@ namespace anvil { namespace BytePipe {
 				RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
 				RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 		}
 
@@ -351,7 +358,7 @@ namespace anvil { namespace BytePipe {
 				RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
 				RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 		}
 
@@ -366,7 +373,7 @@ namespace anvil { namespace BytePipe {
 				RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
 				RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 		}
 
@@ -381,7 +388,7 @@ namespace anvil { namespace BytePipe {
 				RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
 				RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
 
-				RandomWriteTest(out, in);
+				RandomWriteTest(out, in, debug_pipe.data);
 			}
 		}
 	};

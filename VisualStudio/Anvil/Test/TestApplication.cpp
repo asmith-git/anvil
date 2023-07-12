@@ -18,9 +18,9 @@ static uint64_t CurrentTime() {
 
 class DebugPipe : public anvil::BytePipe::InputPipe, public anvil::BytePipe::OutputPipe {
 private:
-	std::deque<uint8_t> _buffer;
 	std::mutex _lock;
 public:
+	std::deque<uint8_t> buffer;
 	DebugPipe() {
 
 	}
@@ -31,18 +31,18 @@ public:
 
 	size_t ReadBytes(void* dst, const size_t bytes) final {
 		std::lock_guard<std::mutex> lock(_lock);
-		size_t to_read = _buffer.size();
+		size_t to_read = buffer.size();
 		if (to_read > bytes) to_read = bytes;
 		for (size_t i = 0u; i < to_read; ++i) {
-			static_cast<uint8_t*>(dst)[i] = _buffer.front();
-			_buffer.pop_front();
+			static_cast<uint8_t*>(dst)[i] = buffer.front();
+			buffer.pop_front();
 		}
 		return to_read;
 	}
 
 	size_t WriteBytes(const void* src, const size_t bytes) final {
 		std::lock_guard<std::mutex> lock(_lock);
-		for (size_t i = 0u; i < bytes; ++i) _buffer.push_back(static_cast<const uint8_t*>(src)[i]);
+		for (size_t i = 0u; i < bytes; ++i) buffer.push_back(static_cast<const uint8_t*>(src)[i]);
 		return bytes;
 	}
 
@@ -684,8 +684,111 @@ void Base64Test2() {
 	//if(i != 0) throw 0;
 }
 
+void RLETest2() {
+	auto  WriteTest = [](anvil::BytePipe::OutputPipe & out, anvil::BytePipe::InputPipe & in, const void* src, size_t bytes, std::deque<uint8_t>& debug_buffer)->void {
+		try {
+			if(! debug_buffer.empty())
+				throw L"Buffer is not empty";
+
+			// Break into random sized writes
+			{
+				size_t bytes_left = bytes;
+				const uint8_t* src8 = static_cast<const uint8_t*>(src);
+				while (bytes_left) {
+					size_t bytes_to_write = bytes_left < 10 ? bytes_left : rand() % bytes_left;
+					out.WriteBytesFast(src8, bytes_to_write, 10000);
+					bytes_left -= bytes_to_write;
+					src8 += bytes_to_write;
+				}
+			}
+			out.Flush();
+
+			uint8_t* buffer = new uint8_t[bytes];
+
+			// Break into random sized reads
+			{
+				size_t bytes_left = bytes;
+				uint8_t* buffer2 = buffer;
+				while (bytes_left) {
+					size_t bytes_to_write = bytes_left < 10 ? bytes_left : rand() % bytes_left;
+					in.ReadBytesFast(buffer2, bytes_to_write, 10000);
+					bytes_left -= bytes_to_write;
+					buffer2 += bytes_to_write;
+				}
+			}
+
+			if (!debug_buffer.empty())
+				throw L"Buffer is not empty";
+
+			if(!std::memcmp(buffer, src, bytes) == 0) 
+				throw L"Memory read did not match what was written";
+
+			delete[] buffer;
+
+		}
+		catch (std::exception& e) {
+			throw e;
+		}
+		catch (...) {
+			throw L"Caught something that wasn't a std::exception";
+		}
+	};
+
+	auto RandomWriteTest = [&WriteTest](anvil::BytePipe::OutputPipe& out, anvil::BytePipe::InputPipe& in, std::deque<uint8_t>& debug_buffer)->void {
+		WriteTest(out, in, nullptr, 0, debug_buffer);
+
+		{
+			uint32_t buffer = 12345678u;
+			WriteTest(out, in, &buffer, sizeof(buffer), debug_buffer);
+		}
+
+		for (size_t i = 0; i < 10; ++i) {
+			size_t bytes = rand() % 10000;
+			uint8_t* data = bytes == 0u ? nullptr : new uint8_t[bytes];
+			if ((rand() % 100) > 20) {
+				memset(data, 128, bytes);
+			}
+			else {
+				for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)rand() % 255;
+			}
+
+			WriteTest(out, in, data, bytes, debug_buffer);
+
+			if (data) delete[] data;
+		}
+	};
+
+	DebugPipe debug_pipe;
+
+	typedef uint8_t RLEIndex;
+	typedef uint8_t RLEWord;
+	anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+	anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+
+	RandomWriteTest(out, in, debug_pipe.buffer);
+
+	//enum { SIZE = 512 };
+	//uint8_t buffer[SIZE];
+	////memset(buffer, 128, SIZE);
+	//for (int i = 0; i < SIZE; ++i) buffer[i] = i % 255;
+
+	//out.WriteBytesFast(buffer, SIZE);
+	//out.Flush();
+
+	//uint8_t read_buffer[SIZE];
+	//in.ReadBytesFast(read_buffer, SIZE);
+
+	//if (memcmp(buffer, read_buffer, SIZE) != 0)
+	//	throw 0;
+
+	return;
+}
+
 int main()
 {
+	RLETest2();
+	return 0;
+
 	Base64Test2();
 	return 0;
 
