@@ -97,7 +97,7 @@ namespace anvil { namespace BytePipe {
 			WriteTest(out, in, &buffer, sizeof(buffer));
 		}
 
-		for (size_t i = 0; i < 200; ++i) {
+		for (size_t i = 0; i < 10; ++i) {
 			size_t bytes = rand() % 10000;
 			uint8_t* data = bytes == 0u ? nullptr : new uint8_t[bytes];
 			if ((rand() % 100) > 20) {

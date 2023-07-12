@@ -19,6 +19,8 @@
 #include "anvil/byte-pipe/BytePipeReader.hpp"
 #include "anvil/byte-pipe/BytePipeWriter.hpp"
 
+#pragma optimize("", off)
+
 namespace anvil { namespace BytePipe {
 
 	/*!
@@ -121,8 +123,8 @@ NEW_BLOCK:
 			// If the current RLE block is full then flush the data
 			if (_length == MAX_RLE_LENGTH) _Flush();
 
-			if (_length >= 8u) {
-				// If the word is the same as the last word in the buffer
+			if (_length >= 7u) {
+				// If the word is the same as the last words in the buffer
 
 				DataWord cmp1 = word ^ _buffer[_length - 1u];
 				DataWord cmp2 = word ^ _buffer[_length - 2u];
@@ -172,60 +174,6 @@ NEW_BLOCK:
 			_Flush();
 		}
 
-		void WriteWord4(const uint32_t word) {
-			if ANVIL_CONSTEXPR_VAR (std::is_same<DataWord, uint8_t>::value) {
-
-				uint32_t w1 = word & 255u;
-				uint32_t w2 = (word >> 8u) & 255u;
-				uint32_t w3 = (word >> 16u) & 255u;
-				uint32_t w4 = word >> 24u;
-
-				w2 ^= w1;
-				w3 ^= w1;
-				w4 ^= w1;
-
-				w1 = w2 | w3 | w4;
-
-				// If all words are the same
-				if (w1 == 0u) {
-					// If the currently block isn't repeating or is repeating a different word then flush it
-					if (_length > 0u) {
-						if (_rle_mode) {
-							if (w1 != _current_word) {
-								// Flush the current block
-								_Flush();
-							}
-						} else {
-							// Flush the current block
-							_Flush();
-						}
-					}
-
-					_rle_mode = true;
-					_current_word = static_cast<DataWord>(w1);
-					if (_length < MAX_RLE_LENGTH - 4u) {
-						// Add all 4 words to the block at once
-						_length += 4u;
-					} else {
-						// Add the words individually
-						WriteWordRLE(static_cast<DataWord>(w1));
-						WriteWordRLE(static_cast<DataWord>(w2));
-						WriteWordRLE(static_cast<DataWord>(w3));
-						WriteWordRLE(static_cast<DataWord>(w4));
-					}
-					return;
-				}
-
-				// Add the words individually
-				WriteWord(static_cast<DataWord>(w1));
-				WriteWord(static_cast<DataWord>(w2));
-				WriteWord(static_cast<DataWord>(w3));
-				WriteWord(static_cast<DataWord>(w4));
-			} else {
-				throw std::runtime_error("RLEEncoderPipe::WriteWord4 : Only implemented for 1 byte words");
-			}
-		}
-
 		void WriteWord8(const uint64_t word) {
 			if ANVIL_CONSTEXPR_VAR (std::is_same<DataWord, uint8_t>::value) {
 
@@ -239,21 +187,21 @@ NEW_BLOCK:
 				uint64_t w7 = (word >> 48ull) & 255ull;
 				uint64_t w8 = word >> 56ull;
 
-				w2 ^= w1;
-				w3 ^= w1;
-				w4 ^= w1;
-				w5 ^= w1;
-				w6 ^= w1;
-				w7 ^= w1;
-				w8 ^= w1;
+				uint64_t mask_w2 = w2 ^ w1;
+				uint64_t mask_w3 = w3 ^ w1;
+				uint64_t mask_w4 = w4 ^ w1;
+				uint64_t mask_w5 = w5 ^ w1;
+				uint64_t mask_w6 = w6 ^ w1;
+				uint64_t mask_w7 = w7 ^ w1;
+				uint64_t mask_w8 = w8 ^ w1;
 
-				w3 |= w4;
-				w5 |= w6;
-				w7 |= w8;
+				mask_w3 |= mask_w4;
+				mask_w5 |= mask_w6;
+				mask_w7 |= mask_w8;
 				
-				w1 = w3 | w5 | w7;
+				mask_w3 |= mask_w5 | mask_w7;
 
-				if (w1 == 0u) {
+				if (mask_w3 == 0u) {
 					// If the currently block isn't repeating or is repeating a different word then flush it
 					if (_length > 0u) {
 						if (_rle_mode) {
@@ -312,12 +260,6 @@ NEW_BLOCK:
 						wordPtr += 8u;
 						words -= 8u;
 					}
-				} else {
-					while (words >= 4u) {
-						WriteWord4(*reinterpret_cast<const uint32_t*>(wordPtr));
-						wordPtr += 4u;
-						words -= 4u;
-					}
 				}
 			}
 
@@ -325,7 +267,7 @@ NEW_BLOCK:
 				WriteWord(wordPtr[i]);
 			}
 
-			size_t remaining_bytes = bytes - (words * sizeof(DataWord));
+			size_t remaining_bytes = bytes - (bytes / sizeof(DataWord)) * sizeof(DataWord);
 			if (remaining_bytes > 0) {
 				DataWord word = 0;
 				memcpy(&word, wordPtr + words, remaining_bytes);
@@ -383,143 +325,152 @@ NEW_BLOCK:
 		};
 
 		InputPipe& _input;
-		DataWord* _buffer;
+		std::vector<uint8_t> _byte_buffer;
 		int _timeout_ms;
 		LengthWord _buffer_read_head;
-		LengthWord _length;
-		LengthWord _partial_bytes;
+		LengthWord _repeat_length;
 		DataWord _repeat_word;
-		bool _rle_mode;
+
+		inline bool InRepeatMode() const {
+			return _repeat_length > 0;
+		}
+
+		inline size_t BytesInBuffer() const {
+			return _byte_buffer.size() - _buffer_read_head;
+		}
+
+		void BufferCurrentRepeat() {
+			const uint8_t* u8 = reinterpret_cast<uint8_t*>(&_repeat_word);
+			for (LengthWord i = 0; i < _repeat_length; ++i) {
+				//! \todo Optimise writing multiple bytes to the buffer
+				for (size_t j = 0u; j < sizeof(LengthWord); ++j) {
+					_byte_buffer.push_back(u8[j]);
+				}
+			}
+			_repeat_length = 0;
+			_repeat_word = 0;
+			read2_faster = 1;
+		}
 
 		void ReadNextBlock() {
+			// Can't read block when in repeat mode
+			if (InRepeatMode()) BufferCurrentRepeat();
+
 			// Reset the buffer
-			if (_length != 0u) throw std::runtime_error("RLEDecoderPipe::ReadNextBlock : Buffer was not empty when trying to read new block");
-			_buffer_read_head = 0u;
+			if (_buffer_read_head == _byte_buffer.size()) {
+				_byte_buffer.clear();
+				_buffer_read_head = 0u;
+			}
 
 			// Read the length of the block
 			LengthWord len = 0u;
-			uint32_t bytes_read = sizeof(LengthWord);
 			_input.ReadBytesFast(&len, sizeof(LengthWord), _timeout_ms);
 
 			// If the block is repeated word
 			if (CAN_HAVE_PARTIAL && (len & PARTIAL_FLAG)) {
 				len &= ~PARTIAL_FLAG;
-				_length = 1;
-				_partial_bytes = len;
-				read2_faster = 0;
-				_rle_mode = false;
+				read2_faster = 1;
 				_input.ReadBytesFast(&_repeat_word, len, _timeout_ms);
+
+				const uint8_t* u8 = reinterpret_cast<uint8_t*>(&_repeat_word);
+				//! \todo Optimise writing multiple bytes to the buffer
+				for (LengthWord i = 0u; i < sizeof(LengthWord); ++i) {
+					_byte_buffer.push_back(u8[i]);
+				}
 
 			} else if (len & RLE_FLAG) {
 				len &= ~RLE_FLAG;
-				_length = len;
-				_partial_bytes = 0;
-
-				_rle_mode = true;
+				_repeat_length = len;
 				read2_faster = 0;
-				_repeat_word = 0u;
 				
 				// Read the word
-				bytes_read = sizeof(DataWord);
-				_input.ReadBytesFast(&_repeat_word, bytes_read, _timeout_ms);
+				_repeat_word = 0u;
+				_input.ReadBytesFast(&_repeat_word, sizeof(DataWord), _timeout_ms);
+
+				// If there is data in the buffer then this repeat needs to be added to it
+				if (BytesInBuffer() > 0) BufferCurrentRepeat();
 			} else {
-				_length = len;
-				_partial_bytes = 0;
-				_rle_mode = false;
 				read2_faster = 1;
-				bytes_read = _length * sizeof(DataWord);
-				_input.ReadBytesFast(_buffer, bytes_read, _timeout_ms);
+				size_t offset = _byte_buffer.size();
+				_byte_buffer.resize(offset + len * sizeof(DataWord));
+				_input.ReadBytesFast(_byte_buffer.data() + offset, len * sizeof(DataWord), _timeout_ms);
 			}
 		}
 	public:
 		RLEDecoderPipe(InputPipe& input, int timeout_ms = -1) :
 			_input(input),
-			_buffer(new DataWord[MAX_RLE_LENGTH]),
 			_timeout_ms(timeout_ms),
 			_repeat_word(0u),
 			_buffer_read_head(0u),
-			_length(0u),
-			_partial_bytes(0u),
-			_rle_mode(false)
-		{}
-
-		~RLEDecoderPipe() {
-			delete[] _buffer;
-			_buffer = nullptr;
+			_repeat_length(0u)
+		{
+			_byte_buffer.reserve(MAX_RLE_LENGTH * sizeof(DataWord));
 		}
 
+		~RLEDecoderPipe() {
+
+		}
 
 		size_t ReadBytes(void* dst, const size_t bytes) final{
+			size_t byte_remaining = bytes;
+			uint8_t* dst8 = static_cast<uint8_t*>(dst);
 
-			size_t words = bytes / sizeof(DataWord);
-
-			DataWord* wordPtr = static_cast<DataWord*>(dst);
-			size_t wordsToRead = 0u;
-
-			while (words != 0u) {
-				if (_length == 0u) ReadNextBlock();
-
-				if (_partial_bytes) throw std::runtime_error("RLEDecoderPipe::ReadBytes : Partial words not implemented");
-
-				wordsToRead = words < _length ? words : _length;
-
-				if (_rle_mode) {
-					if ANVIL_CONSTEXPR_VAR(sizeof(DataWord) == 1) {
-						memset(wordPtr, _repeat_word, wordsToRead);
-					} else {
-						for (uint32_t i = 0u; i < wordsToRead; ++i) wordPtr[i] = _repeat_word;
-					}
-				} else {
-					memcpy(wordPtr, _buffer + _buffer_read_head, sizeof(DataWord) * wordsToRead);
-					_buffer_read_head += wordsToRead;
+			// Start reading from a new block
+READ_NEW_BLOCK:
+			if (InRepeatMode()) {
+				// Read as many words as possible
+				while (byte_remaining >= sizeof(DataWord) && _repeat_length > 0u) {
+					*reinterpret_cast<DataWord*>(dst8) = _repeat_word;
+					dst8 += sizeof(DataWord);
+					byte_remaining -= sizeof(DataWord);
+					--_repeat_length;
 				}
 
-				_length -= wordsToRead;
-				words -= wordsToRead;
-				wordPtr += wordsToRead;
+				// If the number of bytes requested isn't a multiple of the word length then push the remaining words into the buffer
+				if(_repeat_length > 0 && byte_remaining > 0) BufferCurrentRepeat();
 			}
 
-			if (_length == 0) read2_faster = 0;
+			if (byte_remaining > 0) {
+				// If there are no bytes buffered then read a new block
+				const size_t bytes_in_buffer = BytesInBuffer();
+				if (bytes_in_buffer == 0u) {
+					ReadNextBlock();
+					goto READ_NEW_BLOCK;
+				}
 
-			return bytes;
+				// Read as many bytes as possible from the buffer
+				const uint8_t* read_head = _byte_buffer.data() + _buffer_read_head;
+				size_t bytes_to_read = bytes_in_buffer;
+				if (bytes_to_read > byte_remaining) bytes_to_read = byte_remaining;
+
+				memcpy(dst8, read_head, bytes_to_read);
+
+				_buffer_read_head += bytes_to_read;
+				dst8 += bytes_to_read;
+				byte_remaining -= bytes_to_read;
+			}
+
+			return bytes - byte_remaining;
 		}
 
 		const void* ReadBytes2(const size_t bytes_requested, size_t& bytes_actual) final {
-			if (bytes_requested == 0u) {
-				bytes_actual = 0u;
-				return nullptr;
+			// Try to fill the buffer with enough data
+			if (InRepeatMode()) BufferCurrentRepeat();
+			while (BytesInBuffer() < bytes_requested) { //! \bug Possible infinite loop
+				ReadNextBlock();
+				if (InRepeatMode()) BufferCurrentRepeat();
 			}
 
-			size_t words = bytes_requested / sizeof(DataWord);
+			// Update the current read position
+			bytes_actual = bytes_requested;
+			const uint8_t* read_head = _byte_buffer.data() + _buffer_read_head;
+			_buffer_read_head += bytes_actual;
 
-			size_t wordsToRead = 0u;
-
-			void* address = nullptr;
-
-			if (_length == 0u) ReadNextBlock();
-
-			wordsToRead = words < _length ? words : _length;
-
-			if (_partial_bytes) throw std::runtime_error("RLEDecoderPipe::ReadBytes2 : Partial words not implemented");
-
-			if (_rle_mode) {
-				address = &_repeat_word;
-				wordsToRead = 1;
-			} else {
-				address = _buffer + _buffer_read_head;
-				_buffer_read_head += wordsToRead;
-			}
-
-			bytes_actual = sizeof(DataWord) * wordsToRead;
-
-			_length -= wordsToRead;
-			if (_length == 0) read2_faster = 0;
-
-			return address;
+			return read_head;
 		}
 
 		size_t GetBufferSize() const final {
-			return _length * sizeof(DataWord);
+			return InRepeatMode() ? _repeat_length * sizeof(DataWord) : BytesInBuffer();
 		}
 	};
 
