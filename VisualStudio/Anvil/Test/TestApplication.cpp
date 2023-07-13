@@ -796,14 +796,85 @@ void RLETest2() {
 		}
 	};
 
-	DebugPipe debug_pipe;
+	{
+		DebugPipe debug_pipe;
+		typedef uint8_t RLEIndex;
+		typedef uint8_t RLEWord;
+		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
 
-	typedef uint8_t RLEIndex;
-	typedef uint32_t RLEWord;
-	anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
-	anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+		RandomWriteTest(out, in, debug_pipe);
+	}
 
-	RandomWriteTest(out, in, debug_pipe);
+	{
+		DebugPipe debug_pipe;
+		typedef uint8_t RLEIndex;
+		typedef uint16_t RLEWord;
+		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+
+		RandomWriteTest(out, in, debug_pipe);
+	}
+
+	{
+		DebugPipe debug_pipe;
+		typedef uint8_t RLEIndex;
+		typedef uint32_t RLEWord;
+		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+
+		RandomWriteTest(out, in, debug_pipe);
+	}
+
+	{
+		DebugPipe debug_pipe;
+		typedef uint8_t RLEIndex;
+		typedef uint64_t RLEWord;
+		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+
+		RandomWriteTest(out, in, debug_pipe);
+	}
+
+	{
+		DebugPipe debug_pipe;
+		typedef uint16_t RLEIndex;
+		typedef uint8_t RLEWord;
+		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+
+		RandomWriteTest(out, in, debug_pipe);
+	}
+
+	{
+		DebugPipe debug_pipe;
+		typedef uint16_t RLEIndex;
+		typedef uint16_t RLEWord;
+		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+
+		RandomWriteTest(out, in, debug_pipe);
+	}
+
+	{
+		DebugPipe debug_pipe;
+		typedef uint16_t RLEIndex;
+		typedef uint32_t RLEWord;
+		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+
+		RandomWriteTest(out, in, debug_pipe);
+	}
+
+	{
+		DebugPipe debug_pipe;
+		typedef uint16_t RLEIndex;
+		typedef uint64_t RLEWord;
+		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+
+		RandomWriteTest(out, in, debug_pipe);
+	}
 
 	//enum { SIZE = 512 };
 	//uint8_t buffer[SIZE];

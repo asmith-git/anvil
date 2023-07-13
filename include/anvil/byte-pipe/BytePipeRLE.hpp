@@ -115,9 +115,10 @@ namespace anvil { namespace BytePipe {
 				if (_rle_length == MAX_RLE_LENGTH) {
 					_Flush();
 					// Force into RLE mode
-					_rle_mode = true;
-					_rle_length = 0u;
-					GetCurrentWord() = word;
+					if (count > 0) {
+						NewRLEBlock(word);
+						--count;
+					}
 				}
 			}
 		}
