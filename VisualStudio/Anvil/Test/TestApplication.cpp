@@ -694,12 +694,16 @@ void Base64Test2() {
 }
 
 void RLETest2() {
-	auto  WriteTest = [](anvil::BytePipe::OutputPipe & out, anvil::BytePipe::InputPipe & in, const void* src, size_t bytes, DebugPipe& debug_buffer)->void {
-		bool split_writes = false;
-		bool split_reads = split_writes;
+	auto  WriteTest = [](anvil::BytePipe::OutputPipe & out, anvil::BytePipe::InputPipe & in, const void* src, size_t bytes, DebugPipe& debug_buffer, bool split_writes, bool split_reads)->void {
 		try {
 			if(! debug_buffer.buffer.empty())
 				throw L"Buffer is not empty";
+
+			//anvil::BytePipe::g_debug_rle = bytes == 6306;
+			//if (anvil::BytePipe::g_debug_rle) {
+			//	std::cout << "\x1B[2J\x1B[H";
+			//	std::cout << "---------------START-TEST---------------" << std::endl;
+			//}
 
 			debug_buffer.bytes_read = 0;
 			debug_buffer.bytes_written = 0;
@@ -782,15 +786,18 @@ void RLETest2() {
 
 			// Always RLE
 			memset(data, 128, bytes);
-			WriteTest(out, in, data, bytes, debug_buffer); 
+			WriteTest(out, in, data, bytes, debug_buffer, false, false);
+			WriteTest(out, in, data, bytes, debug_buffer, true, true);
 
 			// Never RLE
 			for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)j % 255;
-			WriteTest(out, in, data, bytes, debug_buffer);
+			WriteTest(out, in, data, bytes, debug_buffer, false, false);
+			WriteTest(out, in, data, bytes, debug_buffer, true, true);
 
 			// Random
 			for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)rand() % 255;
-			WriteTest(out, in, data, bytes, debug_buffer);
+			WriteTest(out, in, data, bytes, debug_buffer, false, false);
+			WriteTest(out, in, data, bytes, debug_buffer, true, true);
 
 			if (data) delete[] data;
 		}

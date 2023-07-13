@@ -19,6 +19,7 @@
 #include "anvil/byte-pipe/BytePipeReader.hpp"
 #include "anvil/byte-pipe/BytePipeWriter.hpp"
 
+
 namespace anvil { namespace BytePipe {
 
 	/*!
@@ -67,6 +68,7 @@ namespace anvil { namespace BytePipe {
 				LengthWord len = _bytes_in_buffer;
 
 				if (_rle_mode) {
+
 					// Write the block
 					len |= RLE_FLAG;
 
@@ -78,6 +80,7 @@ namespace anvil { namespace BytePipe {
 					word2 = GetCurrentWord();
 					_output.WriteBytesFast(block, sizeof(LengthWord) + sizeof(DataWord));
 				} else {
+
 					// Write the buffer
 					_output.WriteBytesFast(&len, sizeof(LengthWord));
 					_output.WriteBytesFast(_byte_buffer, _bytes_in_buffer);
@@ -124,6 +127,7 @@ namespace anvil { namespace BytePipe {
 		}
 
 		void WriteWordNonRLE(const DataWord word) {
+
 			// If the current RLE block is full then flush the data
 			if (_bytes_in_buffer + sizeof(DataWord) > MAX_BYTES_IN_BLOCK) _Flush();
 
@@ -271,7 +275,7 @@ NON_RLE:
 
 			size_t remaining_bytes = bytes - (bytes / sizeof(DataWord)) * sizeof(DataWord);
 			if (remaining_bytes > 0) {
-				if (_rle_mode || _bytes_in_buffer + remaining_bytes > MAX_BYTES_IN_BLOCK * sizeof(DataWord)) _Flush();
+				if (_rle_mode || _bytes_in_buffer + remaining_bytes > MAX_BYTES_IN_BLOCK) _Flush();
 				memcpy(_byte_buffer + _bytes_in_buffer, src, remaining_bytes);
 				_bytes_in_buffer += remaining_bytes;
 			}
