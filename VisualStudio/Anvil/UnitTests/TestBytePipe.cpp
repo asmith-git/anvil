@@ -39,7 +39,11 @@ namespace anvil { namespace BytePipe {
 		}
 
 		size_t ReadBytes(void* dst, const size_t bytes) final {
+			if (bytes == 0u) return 0u;
+
 			std::lock_guard<std::mutex> lock(_lock);
+			if (bytes > data.size()) Assert::Fail(L"Tried to read more data than was written");
+
 			size_t to_read = bytes;
 			if (to_read > data.size()) to_read = data.size();
 			uint8_t* dst8 = static_cast<uint8_t*>(dst);
@@ -53,12 +57,12 @@ namespace anvil { namespace BytePipe {
 		}
 	};
 
-	void WriteTest(anvil::BytePipe::OutputPipe& out, anvil::BytePipe::InputPipe& in, const void* src, size_t bytes, std::deque<uint8_t>& debug) {
+	void WriteTest(anvil::BytePipe::OutputPipe& out, anvil::BytePipe::InputPipe& in, const void* src, size_t bytes, std::deque<uint8_t>& debug, bool split_writes, bool split_reads) {
 		try {
 			Assert::IsTrue(debug.empty(), L"Debug buffer started with data in it");
 
 			// Break into random sized writes
-			{
+			if(split_writes) {
 				size_t bytes_left = bytes;
 				const uint8_t* src8 = static_cast<const uint8_t*>(src);
 				while (bytes_left) {
@@ -67,13 +71,15 @@ namespace anvil { namespace BytePipe {
 					bytes_left -= bytes_to_write;
 					src8 += bytes_to_write;
 				}
+			} else {
+				out.WriteBytesFast(src, bytes, 10000);
 			}
 			out.Flush();
 
 			uint8_t* buffer = new uint8_t[bytes];
 
 			// Break into random sized reads
-			{
+			if(split_reads) {
 				size_t bytes_left = bytes;
 				uint8_t* buffer2 = buffer;
 				while (bytes_left) {
@@ -82,6 +88,8 @@ namespace anvil { namespace BytePipe {
 					bytes_left -= bytes_to_write;
 					buffer2 += bytes_to_write;
 				}
+			} else {
+				in.ReadBytesFast(buffer, bytes, 10000);
 			}
 
 			Assert::IsTrue(debug.empty(), L"Data was left over in the buffer");
@@ -97,23 +105,32 @@ namespace anvil { namespace BytePipe {
 	}
 
 	void RandomWriteTest(anvil::BytePipe::OutputPipe& out, anvil::BytePipe::InputPipe& in, std::deque<uint8_t>& debug) {
-		WriteTest(out, in, nullptr, 0, debug);
+		WriteTest(out, in, nullptr, 0, debug, false, false);
 
 		{
 			uint32_t buffer = 12345678u;
-			WriteTest(out, in, &buffer, sizeof(buffer), debug);
+			WriteTest(out, in, &buffer, sizeof(buffer), debug, false, false);
 		}
 
-		for (size_t i = 0; i < 10; ++i) {
+		for (size_t i = 0; i < 1000; ++i) {
 			size_t bytes = rand() % 10000;
 			uint8_t* data = bytes == 0u ? nullptr : new uint8_t[bytes];
-			if ((rand() % 100) > 20) {
-				memset(data, 128, bytes);
-			} else {
-				for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)rand() % 255;
-			}
 
-			WriteTest(out, in, data, bytes, debug);
+			// Always RLE
+			memset(data, 128, bytes);
+			WriteTest(out, in, data, bytes, debug, false, false);
+			WriteTest(out, in, data, bytes, debug, true, true);
+
+			// NeverRLE
+			for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)rand() % 255;
+			WriteTest(out, in, data, bytes, debug, false, false);
+			WriteTest(out, in, data, bytes, debug, true, true);
+
+			// Random
+			for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)rand() % 255;
+			WriteTest(out, in, data, bytes, debug, false, false);
+			WriteTest(out, in, data, bytes, debug, true, true);
+
 
 			if (data) delete[] data;
 		}
