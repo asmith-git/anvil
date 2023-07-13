@@ -18,6 +18,7 @@
 #include <iostream>
 #include "anvil/byte-pipe/BytePipeReader.hpp"
 #include "anvil/byte-pipe/BytePipeWriter.hpp"
+#include "anvil/core/Common.hpp"
 
 
 namespace anvil { namespace BytePipe {
@@ -37,27 +38,42 @@ namespace anvil { namespace BytePipe {
 
 	template<class LengthWord = uint16_t, class DataWord = uint8_t>
 	class RLEEncoderPipe final : public OutputPipe {
+	public:
+		enum : LengthWord {
+			LENGTH_BITS = sizeof(LengthWord) * 8,
+			RLE_FLAG = 1 << (LENGTH_BITS - 1),
+			MAX_BYTES_IN_BLOCK = (anvil::ConstantPower<2, LENGTH_BITS>::value - 1) >> 1,
+			MAX_RLE_LENGTH = MAX_BYTES_IN_BLOCK//MAX_BYTES_IN_BLOCK / sizeof(DataWord)
+		};
 	private:
 		static_assert(std::is_unsigned<LengthWord>::value, "LengthWord must be an unsigned integer");
 		static_assert(std::is_unsigned<DataWord>::value, "DataWord must be an unsigned integer");
 
-		enum {
-			CAN_HAVE_PARTIAL = sizeof(DataWord) > 1
-		};
-
-		enum : LengthWord {
-			RLE_FLAG = 1 << (sizeof(LengthWord) * 8 - 1),
-			MAX_BYTES_IN_BLOCK = static_cast<LengthWord>(-1) >> 1,
-			MAX_RLE_LENGTH = MAX_BYTES_IN_BLOCK//MAX_BYTES_IN_BLOCK / sizeof(DataWord)
-		};
-
 		OutputPipe& _output;
 		uint8_t* _byte_buffer;
+		size_t _byte_buffer_capacity;
 		union {
 			LengthWord _bytes_in_buffer;	//!< In RLE mode this is the number of words in the repeat, otherwise the number of bytes buffered
 			LengthWord _rle_length;			//!< In RLE mode this is the number of words in the repeat, otherwise the number of bytes buffered
 		};
 		bool _rle_mode;
+
+		void ReserveBuffer(size_t bytes) {
+			if (bytes > _byte_buffer_capacity) {
+				if (bytes - _byte_buffer_capacity < 1024) bytes = _byte_buffer_capacity + 1024;
+				if (bytes > MAX_BYTES_IN_BLOCK) bytes = MAX_BYTES_IN_BLOCK;
+				
+				uint8_t* new_buffer = new uint8_t[bytes];
+				if (new_buffer == nullptr) throw std::runtime_error("anvil::BytePipe::RLEEncoderPipe : Failed to allocate buffer");
+
+				if (_byte_buffer) {
+					memcpy(new_buffer, _byte_buffer, _byte_buffer_capacity);
+					delete[] _byte_buffer;
+				}
+				_byte_buffer = new_buffer;
+				_byte_buffer_capacity = bytes;
+			}
+		}
 
 		inline DataWord& GetCurrentWord() {
 			return *reinterpret_cast<DataWord*>(_byte_buffer);
@@ -269,6 +285,7 @@ NON_RLE:
 			size_t words = bytes / sizeof(DataWord);
 			const DataWord* wordPtr = static_cast<const DataWord*>(src);
 
+			ReserveBuffer((_rle_mode ? 0 : _bytes_in_buffer) + bytes);
 			WriteWords(wordPtr, words);
 
 			src = wordPtr + words;
@@ -283,15 +300,18 @@ NON_RLE:
 	public:
 		RLEEncoderPipe(OutputPipe& output) :
 			_output(output),
-			_byte_buffer(new uint8_t[MAX_BYTES_IN_BLOCK]),
+			_byte_buffer(nullptr),
+			_byte_buffer_capacity(0u),
 			_bytes_in_buffer(0u),
 			_rle_mode(false)
 		{}
 
 		~RLEEncoderPipe() {
 			if (_Flush()) _output.Flush();
-			delete[] _byte_buffer;
-			_byte_buffer = nullptr;
+			if (_byte_buffer) {
+				delete[] _byte_buffer;
+				_byte_buffer = nullptr;
+			}
 		}
 
 
@@ -314,19 +334,16 @@ NON_RLE:
 
 	template<class LengthWord = uint16_t, class DataWord = uint8_t>
 	class RLEDecoderPipe final : public InputPipe {
+	public:
+		enum : LengthWord {
+			LENGTH_BITS = RLEEncoderPipe<LengthWord, DataWord>::LENGTH_BITS,
+			RLE_FLAG = RLEEncoderPipe<LengthWord, DataWord>::RLE_FLAG,
+			MAX_BYTES_IN_BLOCK = RLEEncoderPipe<LengthWord, DataWord>::MAX_BYTES_IN_BLOCK,
+			MAX_RLE_LENGTH = RLEEncoderPipe<LengthWord, DataWord>::MAX_RLE_LENGTH
+		};
 	private:
 		static_assert(std::is_unsigned<LengthWord>::value, "LengthWord must be an unsigned integer");
 		static_assert(std::is_unsigned<DataWord>::value, "DataWord must be an unsigned integer");
-
-		enum {
-			CAN_HAVE_PARTIAL = sizeof(DataWord) > 1
-		};
-
-		enum : LengthWord {
-			RLE_FLAG = 1 << (sizeof(LengthWord) * 8 - 1),
-			MAX_BYTES_IN_BLOCK = static_cast<LengthWord>(-1) >> 1,
-			MAX_RLE_LEN = MAX_BYTES_IN_BLOCK//MAX_BYTES_IN_BLOCK / sizeof(DataWord)
-		};
 
 		InputPipe& _input;
 		std::vector<uint8_t> _byte_buffer;
@@ -397,7 +414,7 @@ NON_RLE:
 			_buffer_read_head(0u),
 			_repeat_length(0u)
 		{
-			_byte_buffer.reserve(MAX_BYTES_IN_BLOCK);
+			_byte_buffer.reserve(MAX_BYTES_IN_BLOCK > (UINT16_MAX >> 1) ? (UINT16_MAX >> 1) : MAX_BYTES_IN_BLOCK);
 			read2_faster = 0;
 		}
 

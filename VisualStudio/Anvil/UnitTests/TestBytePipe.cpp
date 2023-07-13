@@ -393,13 +393,132 @@ namespace anvil { namespace BytePipe {
 				RandomWriteTest(out, in, debug_pipe.data);
 			}
 		}
-
 		TEST_METHOD(Index16Word64)
 		{
 			{
 				DebugPipe debug_pipe;
 
 				typedef uint16_t RLEIndex;
+				typedef uint64_t RLEWord;
+
+				RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+				RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+
+				RandomWriteTest(out, in, debug_pipe.data);
+			}
+		}
+
+		TEST_METHOD(Index32Word8)
+		{
+			{
+				DebugPipe debug_pipe;
+
+				typedef uint32_t RLEIndex;
+				typedef uint8_t RLEWord;
+
+				RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+				RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+
+				RandomWriteTest(out, in, debug_pipe.data);
+			}
+		}
+
+		TEST_METHOD(Index32Word16)
+		{
+			{
+				DebugPipe debug_pipe;
+
+				typedef uint32_t RLEIndex;
+				typedef uint16_t RLEWord;
+
+				RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+				RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+
+				RandomWriteTest(out, in, debug_pipe.data);
+			}
+		}
+
+		TEST_METHOD(Index32Word32)
+		{
+			{
+				DebugPipe debug_pipe;
+
+				typedef uint32_t RLEIndex;
+				typedef uint32_t RLEWord;
+
+				RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+				RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+
+				RandomWriteTest(out, in, debug_pipe.data);
+			}
+		}
+
+		TEST_METHOD(Index32Word64)
+		{
+			{
+				DebugPipe debug_pipe;
+
+				typedef uint32_t RLEIndex;
+				typedef uint64_t RLEWord;
+
+				RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+				RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+
+				RandomWriteTest(out, in, debug_pipe.data);
+			}
+		}
+
+		TEST_METHOD(Index64Word8)
+		{
+			{
+				DebugPipe debug_pipe;
+
+				typedef uint64_t RLEIndex;
+				typedef uint8_t RLEWord;
+
+				RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+				RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+
+				RandomWriteTest(out, in, debug_pipe.data);
+			}
+		}
+
+		TEST_METHOD(Index64Word16)
+		{
+			{
+				DebugPipe debug_pipe;
+
+				typedef uint64_t RLEIndex;
+				typedef uint16_t RLEWord;
+
+				RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+				RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+
+				RandomWriteTest(out, in, debug_pipe.data);
+			}
+		}
+
+		TEST_METHOD(Index64Word32)
+		{
+			{
+				DebugPipe debug_pipe;
+
+				typedef uint64_t RLEIndex;
+				typedef uint32_t RLEWord;
+
+				RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+				RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+
+				RandomWriteTest(out, in, debug_pipe.data);
+			}
+		}
+
+		TEST_METHOD(Index64Word64)
+		{
+			{
+				DebugPipe debug_pipe;
+
+				typedef uint64_t RLEIndex;
 				typedef uint64_t RLEWord;
 
 				RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
