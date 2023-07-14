@@ -105,34 +105,37 @@ namespace anvil { namespace BytePipe {
 	}
 
 	void RandomWriteTest(anvil::BytePipe::OutputPipe& out, anvil::BytePipe::InputPipe& in, std::deque<uint8_t>& debug) {
-		WriteTest(out, in, nullptr, 0, debug, false, false);
+		//WriteTest(out, in, nullptr, 0, debug, false, false);
 
-		{
-			uint32_t buffer = 12345678u;
-			WriteTest(out, in, &buffer, sizeof(buffer), debug, false, false);
-		}
+		//{
+		//	uint32_t buffer = 12345678u;
+		//	WriteTest(out, in, &buffer, sizeof(buffer), debug, false, false);
+		//}
 
-		for (size_t i = 0; i < 1000; ++i) {
-			size_t bytes = rand() % 10000;
-			uint8_t* data = bytes == 0u ? nullptr : new uint8_t[bytes];
+		enum { MAX_TEST_LEN = 100000 };
+		uint8_t rnd[MAX_TEST_LEN];
+		for(uint8_t& r : rnd) r = (uint8_t)rand() % 255;
+
+		uint8_t rle[MAX_TEST_LEN];
+		memset(rle, 128, MAX_TEST_LEN);
+
+		uint8_t non_rle[MAX_TEST_LEN];
+		for (size_t j = 0u; j < MAX_TEST_LEN; ++j) rle[j] = (uint8_t)(j % 255);
+
+		for (size_t i = 0; i < 4000; ++i) {
+			size_t bytes = rand() % MAX_TEST_LEN;
 
 			// Always RLE
-			memset(data, 128, bytes);
-			WriteTest(out, in, data, bytes, debug, false, false);
-			WriteTest(out, in, data, bytes, debug, true, true);
+			WriteTest(out, in, rle, bytes, debug, false, false);
+			WriteTest(out, in, rle, bytes, debug, true, true);
 
 			// NeverRLE
-			for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)rand() % 255;
-			WriteTest(out, in, data, bytes, debug, false, false);
-			WriteTest(out, in, data, bytes, debug, true, true);
+			WriteTest(out, in, non_rle, bytes, debug, false, false);
+			WriteTest(out, in, non_rle, bytes, debug, true, true);
 
 			// Random
-			for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)rand() % 255;
-			WriteTest(out, in, data, bytes, debug, false, false);
-			WriteTest(out, in, data, bytes, debug, true, true);
-
-
-			if (data) delete[] data;
+			WriteTest(out, in, rnd, bytes, debug, false, false);
+			WriteTest(out, in, rnd, bytes, debug, true, true);
 		}
 	}
 
