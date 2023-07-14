@@ -114,13 +114,13 @@ namespace anvil { namespace BytePipe {
 
 		enum { MAX_TEST_LEN = 100000 };
 		uint8_t rnd[MAX_TEST_LEN];
-		for(uint8_t& r : rnd) r = (uint8_t)rand() % 255;
+		for(uint8_t& r : rnd) r = (uint8_t)rand() % 256;
 
 		uint8_t rle[MAX_TEST_LEN];
 		memset(rle, 128, MAX_TEST_LEN);
 
 		uint8_t non_rle[MAX_TEST_LEN];
-		for (size_t j = 0u; j < MAX_TEST_LEN; ++j) rle[j] = (uint8_t)(j % 255);
+		for (size_t j = 0u; j < MAX_TEST_LEN; ++j) rle[j] = (uint8_t)(j % 256);
 
 		for (size_t i = 0; i < 4000; ++i) {
 			size_t bytes = rand() % MAX_TEST_LEN;

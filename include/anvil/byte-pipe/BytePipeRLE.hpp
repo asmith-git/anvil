@@ -20,7 +20,6 @@
 #include "anvil/byte-pipe/BytePipeWriter.hpp"
 #include "anvil/core/Common.hpp"
 
-
 namespace anvil { namespace BytePipe {
 
 	/*!
@@ -142,26 +141,22 @@ namespace anvil { namespace BytePipe {
 			}
 		}
 
-		void WriteWordNonRLE(const DataWord word) {
+		void WriteWordsNonRLE(const DataWord* words, size_t count) {
 
-			// If the current RLE block is full then flush the data
-			if (_bytes_in_buffer + sizeof(DataWord) > MAX_BYTES_IN_BLOCK) _Flush();
+			while (count > 0) {
+				size_t to_add = (MAX_BYTES_IN_BLOCK - _bytes_in_buffer) / sizeof(DataWord);
+				if (to_add > count) to_add = count;
 
-			if (_bytes_in_buffer >= sizeof(DataWord)) {
-				// If the word is the same as the last words in the buffer
-				DataWord previous_word = *(reinterpret_cast<DataWord*>(_byte_buffer + _bytes_in_buffer) - 1);
-				if (word == previous_word) {
-					// Flush the current block except for the last word
-					_bytes_in_buffer -=  sizeof(DataWord);
-					NewRLEBlock(word);
-					++_rle_length;
-					return;
+				if (to_add == 0) {
+					_Flush();
+				} else {
+					memcpy(_byte_buffer + _bytes_in_buffer, words, to_add * sizeof(DataWord));
+					_bytes_in_buffer += to_add * sizeof(DataWord);
 				}
-			}
 
-			// Add word to buffer
-			memcpy(_byte_buffer + _bytes_in_buffer, &word, sizeof(DataWord));
-			_bytes_in_buffer += sizeof(DataWord);
+				count -= to_add;
+				words += to_add;
+			}
 		}
 
 		void WriteWords(const DataWord* words, size_t count) {
@@ -190,9 +185,32 @@ RLE:
 					}
 				} else {
 NON_RLE:
-					WriteWordNonRLE(w);
-					++words;
-					--count;
+					size_t rle_block_length = 0u;
+					DataWord previous_word = _bytes_in_buffer < sizeof(DataWord) ? 0 : *(reinterpret_cast<DataWord*>(_byte_buffer + _bytes_in_buffer) - 1);
+					size_t non_rle_words = 0u;
+					for (size_t i = 0u; i < count; ++i) {
+						DataWord this_word = words[i];
+						if (non_rle_words > 0 && this_word == previous_word) {
+							rle_block_length = 2u;
+							--non_rle_words;
+							break;
+						}
+						previous_word = this_word;
+						++non_rle_words;
+					}
+
+					if (non_rle_words) {
+						WriteWordsNonRLE(words, non_rle_words);
+						words += non_rle_words;
+						count -= non_rle_words;
+					}
+
+					if (rle_block_length) {
+						NewRLEBlock(previous_word);
+						++_rle_length;
+						words += rle_block_length;
+						count -= rle_block_length;
+					}
 				}
 			}
 		}

@@ -791,12 +791,12 @@ void RLETest2() {
 			WriteTest(out, in, data, bytes, debug_buffer, true, true);
 
 			// Never RLE
-			for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)j % 255;
+			for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)j % 256;
 			WriteTest(out, in, data, bytes, debug_buffer, false, false);
 			WriteTest(out, in, data, bytes, debug_buffer, true, true);
 
 			// Random
-			for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)rand() % 255;
+			for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)rand() % 256;
 			WriteTest(out, in, data, bytes, debug_buffer, false, false);
 			WriteTest(out, in, data, bytes, debug_buffer, true, true);
 
