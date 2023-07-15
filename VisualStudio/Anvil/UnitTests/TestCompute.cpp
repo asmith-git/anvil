@@ -115,6 +115,32 @@ namespace anvil { namespace compute {
 			Assert::IsTrue(ref.GetRepresentation() == t.GetRepresentation(), L"Representation was corrupted");
 			Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
 		}
+
+		TEST_METHOD(OpenCV) 
+		{
+#if ANVIL_OPENCV_SUPPORT
+			int values[] = {
+				CV_8U, CV_8UC1, CV_8UC2, CV_8UC3, CV_8UC4,
+				CV_16U, CV_16UC1, CV_16UC2, CV_16UC3, CV_16UC4,
+				CV_8S, CV_8SC1, CV_8SC2, CV_8SC3, CV_8SC4,
+				CV_16S, CV_16SC1, CV_16SC2, CV_16SC3, CV_16SC4,
+				CV_32S, CV_32SC1, CV_32SC2, CV_32SC3, CV_32SC4,
+				CV_16F, CV_16FC1, CV_16FC2, CV_16FC3, CV_16FC4,
+				CV_32F, CV_32FC1, CV_32FC2, CV_32FC3, CV_32FC4,
+				CV_64F, CV_64FC1, CV_64FC2, CV_64FC3, CV_64FC4
+			};
+
+			try {
+				for(int i : values) {
+					Assert::AreEqual(i, anvil::Type::ToOpenCVType(anvil::Type::FromOpenCVType(i)));
+				}
+			} catch (std::exception& e) {
+				Assert::Fail(std::wstring_convert<std::codecvt<wchar_t, char, std::mbstate_t>>().from_bytes(e.what()).c_str());
+			}
+#else
+			Assert::Fail(L"OpenCV was not detected");
+#endif
+		}
 	}; 
 	
 	TEST_CLASS(TestLongType)
@@ -128,8 +154,7 @@ namespace anvil { namespace compute {
 					anvil::EnumeratedType t2 = anvil::LongType(t).GetEnumeratedType();
 					Assert::AreEqual((int)t, (int)t2);
 				}
-			}
-			catch (std::exception& e) {
+			} catch (std::exception& e) {
 				Assert::Fail(std::wstring_convert<std::codecvt<wchar_t, char, std::mbstate_t>>().from_bytes(e.what()).c_str());
 			}
 
