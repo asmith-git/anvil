@@ -25,13 +25,13 @@ namespace anvil { namespace compute {
 
 	class ANVIL_DLL_EXPORT Image {
 	private:
-		Image* _parent;
-		void* _data;
-		size_t _step;
-		size_t _width;
-		size_t _height;
-		Type _type;
-		bool _owned_memory;
+		Image* _parent;			//!< The parent if this image is an ROI, otherwise null.
+		void* _data;			//!< The address of pixel [0,0].
+		size_t _step;			//!< The distance between rows in bytes.
+		size_t _width;			//!< The size of a row in pixels.
+		size_t _height;			//!< The sizeo f a column in pixels.
+		Type _type;				//!< The data type of the pixels.
+		bool _owned_memory;		//!< If _data is managed by this object.
 	public:
 		Image();
 		~Image();
@@ -90,6 +90,9 @@ namespace anvil { namespace compute {
 		ANVIL_STRONG_INLINE bool operator!=(const Image& other) const throw() { return !operator==(other); }
 
 		ANVIL_STRONG_INLINE Type GetType() const throw() { return _type; }
+		ANVIL_STRONG_INLINE size_t GetWidth() const throw() { return _width; }
+		ANVIL_STRONG_INLINE size_t GetHeight() const throw() { return _height; }
+		ANVIL_STRONG_INLINE size_t GetStep() const throw() { return _step; }
 
 		ANVIL_STRONG_INLINE bool IsContiguous() const throw() {
 			return _step == _type.GetSizeInBytes() * _width;
