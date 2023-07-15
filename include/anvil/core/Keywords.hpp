@@ -75,6 +75,14 @@
 	#define ANVIL_RUNTIME_ASSERT(predicate, message) if(! (predicate)) throw std::runtime_error(message);
 #endif
 
+#ifndef ANVIL_DEBUG_ASSERT
+	#if _DEBUG	//! \todo Support for other compilers
+		#define ANVIL_DEBUG_ASSERT ANVIL_RUNTIME_ASSERT
+	#else
+		#define ANVIL_DEBUG_ASSERT(predicate, message) // Do nothing
+	#endif
+#endif
+
 namespace anvil {
 	// Define floating point types in the same style as stdint.h
 	typedef float float32_t;
