@@ -135,7 +135,7 @@ namespace anvil {
 	*	\tparam T The data type
 	*	\tparam BRANCHING True if function should be inlined with a conditional branch, false for a function pointer call.
 	*/
-	template<class T, bool BRANCHING = ANVIL_HW_TZCNT_COMPILETIME>
+	template<class T, bool BRANCHING = ANVIL_HW_POPCNT_COMPILETIME>
 	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount(T aValue) throw();
 
 	// unsigned
