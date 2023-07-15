@@ -223,4 +223,16 @@ namespace anvil { namespace compute {
 
 		return tmp;
 	}
+
+	void Image::GetRoiPosition(size_t& x, size_t& y) const {
+		x = 0u;
+		y = 0u;
+
+		if (!_parent) return;
+
+		size_t byte_offset = static_cast<const uint8_t*>(_data) - static_cast<const uint8_t*>(_parent->_data);
+
+		y = byte_offset / _row_step;
+		x = (byte_offset - (_row_step * y)) / _pixel_step;
+	}
 }}

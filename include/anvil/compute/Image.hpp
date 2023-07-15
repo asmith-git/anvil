@@ -199,6 +199,18 @@ namespace anvil { namespace compute {
 		ANVIL_STRONG_INLINE Image& GetParent() throw() {
 			return *_parent;
 		}
+
+		void GetRoiPosition(size_t& x, size_t& y) const;
+
+		ANVIL_STRONG_INLINE void GetRoiSize(size_t& w, size_t& h) const throw() {
+			w = _width;
+			h = _height;
+		}
+
+		ANVIL_STRONG_INLINE void GetRoiSize(size_t& x, size_t& y, size_t& w, size_t& h) const throw() {
+			GetRoiPosition(x, y);
+			GetRoiSize(w, h);
+		}
 	};
 }}
 

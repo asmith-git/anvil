@@ -76,6 +76,11 @@ namespace anvil { namespace compute {
 				Image roi = img.GetRoi(16, 16, 32, 32);
 				FillImage(roi, Vector(255, img.GetType()));
 
+				size_t roix, roiy;
+				roi.GetRoiPosition(roix, roiy);
+				Assert::AreEqual((size_t)16, roix, L"ROI has wrong X position");
+				Assert::AreEqual((size_t)16, roiy, L"ROI has wrong Y position");
+
 				size_t imgw = img.GetWidth();
 				size_t imgh = img.GetHeight();
 				size_t roiw = roi.GetWidth();
@@ -96,7 +101,7 @@ namespace anvil { namespace compute {
 					for (size_t x = 0u; x < imgw; ++x) {
 						uint8_t tmp;
 						img.ReadPixel(x, y, tmp);
-						if (x >= 16 && x < 16 + roih && y >= 16 && y < 16 + roih) {
+						if (x >= roix && x < roix + roih && y >= roiy && y < roiy + roih) {
 							Assert::AreEqual((uint8_t)255, tmp, (L"Inside ROI contained a pixel with a wrong value (before copy) " + std::to_wstring(x) + L"," + std::to_wstring(y)).c_str());
 						} else {
 							Assert::AreEqual((uint8_t)128, tmp, (L"Outside ROI contained a pixel with a wrong value (before copy) " + std::to_wstring(x) + L"," + std::to_wstring(y)).c_str());
