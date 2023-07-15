@@ -48,7 +48,7 @@ namespace anvil { namespace compute {
 
 		void Swap(Image& other);
 
-		void Allocate(Type type, size_t width, size_t height, bool allow_reinterpret = true);
+		void Allocate(Type type, size_t width, size_t height, bool allow_reinterpret = true, bool allow_reinterpret_as_smaller = false);
 		void Deallocate();
 
 		Image GetRoi(size_t x, size_t y, size_t width, size_t height);
@@ -72,7 +72,7 @@ namespace anvil { namespace compute {
 			return tmp;
 		}
 
-		bool TryReinterpretAs(Type type, size_t width, size_t height);
+		bool TryReinterpretAs(Type type, size_t width, size_t height, bool allow_reinterpret_as_smaller = false);
 
 		ANVIL_STRONG_INLINE bool TryReinterpretAs(Type type) {
 			return TryReinterpretAs(type, _width, _height);

@@ -70,8 +70,13 @@ namespace anvil { namespace compute {
 		memcpy(&other, buffer, sizeof(Image));
 	}
 
-	void Image::Allocate(Type type, size_t width, size_t height, bool allow_reinterpret) {
-		if (allow_reinterpret && TryReinterpretAs(type, width, height)) return;
+	void Image::Allocate(Type type, size_t width, size_t height, bool allow_reinterpret, bool allow_reinterpret_as_smaller) {
+		ANVIL_DEBUG_ASSERT(
+			allow_reinterpret_as_smaller ? allow_reinterpret : true, 
+			"anvil::compute::Image::Allocate : allow_reinterpret_as_smaller should not be true when allow_reinterpret is false"
+		);
+
+		if (allow_reinterpret && TryReinterpretAs(type, width, height, allow_reinterpret_as_smaller)) return;
 
 		Deallocate();
 		_data = operator new(type.GetPrimitiveSizeInBytes() * width * height);
@@ -92,27 +97,30 @@ namespace anvil { namespace compute {
 		_height = 0u;
 	}
 
-	bool Image::TryReinterpretAs(Type type, size_t width, size_t height) {
+	bool Image::TryReinterpretAs(Type type, size_t width, size_t height, bool allow_reinterpret_as_smaller) {
 		const size_t current_pixel_bytes = _type.GetSizeInBytes();
 		const size_t new_pixel_bytes = type.GetSizeInBytes();
 
-		// If 
+		size_t current_bytes = 0u;
+		size_t new_bytes = 0u;
+
 		if (_step == current_pixel_bytes * _width) {
 			// Can reinterpret whole image
-			if (current_pixel_bytes * _width * _height == new_pixel_bytes * width * height) {
-				_type = type;
-				_width = width;
-				_height = height;
-				return true;
-			}
+			current_bytes = current_pixel_bytes * _width * _height;
+			new_bytes = new_pixel_bytes * width * height;
+			
 		} else {
 			// Can only reinterpret rows
-			if (current_pixel_bytes * _width == new_pixel_bytes * width && _height == height) {
-				_type = type;
-				_width = width;
-				_height = height;
-				return true;
-			}
+			if (height > _height) return false;
+			current_bytes = current_pixel_bytes * _width;
+			new_bytes = new_pixel_bytes * width;
+		}
+
+		if (current_bytes == new_bytes || (allow_reinterpret_as_smaller && current_bytes > new_bytes)) {
+			_type = type;
+			_width = width;
+			_height = height;
+			return true;
 		}
 
 		return false;
