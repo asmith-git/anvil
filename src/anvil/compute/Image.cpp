@@ -21,7 +21,8 @@ namespace anvil { namespace compute {
 	Image::Image() :
 		_parent(nullptr),
 		_data(nullptr),
-		_step(0u),
+		_row_step(0u),
+		_pixel_step(0u),
 		_width(0u),
 		_height(0u),
 		_type(),
@@ -38,14 +39,19 @@ namespace anvil { namespace compute {
 		Allocate(type, width, height, false);
 	}
 
-	Image::Image(void* data, const Type type, size_t width, size_t height, size_t step) :
+	Image::Image(void* data, const Type type, size_t width, size_t height, size_t row_step, size_t pixel_step) :
 		_parent(nullptr),
 		_data(data),
-		_step(step),
+		_row_step(row_step),
+		_pixel_step(pixel_step),
 		_width(width),
 		_height(height),
 		_type(type),
 		_owned_memory(false)
+	{}
+
+	Image::Image(void* data, const Type type, size_t width, size_t height, size_t row_step) :
+		Image(data, type, width, height, row_step, 0u)
 	{}
 
 	Image::Image(void* data, const Type type, size_t width, size_t height) :
@@ -101,10 +107,12 @@ namespace anvil { namespace compute {
 		const size_t current_pixel_bytes = _type.GetSizeInBytes();
 		const size_t new_pixel_bytes = type.GetSizeInBytes();
 
+		if (_pixel_step > 0u) if (current_pixel_bytes != new_pixel_bytes) return false;
+
 		size_t current_bytes = 0u;
 		size_t new_bytes = 0u;
 
-		if (_step == current_pixel_bytes * _width) {
+		if (_row_step == current_pixel_bytes * _width) {
 			// Can reinterpret whole image
 			current_bytes = current_pixel_bytes * _width * _height;
 			new_bytes = new_pixel_bytes * width * height;
@@ -155,9 +163,18 @@ namespace anvil { namespace compute {
 		if (_type != other._type || _width != other._width || _height != other._height) return false;
 		if (_data == other._data) return true;
 
-		const size_t row_bytes = _type.GetSizeInBytes() * _width;
-		for (size_t y = 0u; y < _height; ++y) {
-			if (memcmp(other.GetPixelAddress(0, y), GetPixelAddress(0, y), row_bytes) != 0) return false;
+		if (_pixel_step == 0u && other._pixel_step == 0u) {
+			const size_t row_bytes = _type.GetSizeInBytes() * _width;
+			for (size_t y = 0u; y < _height; ++y) {
+				if (memcmp(other.GetRowAddress(y), GetRowAddress(0), row_bytes) != 0) return false;
+			}
+		} else {
+			size_t pixel_bytes = _type.GetSizeInBytes();
+			for (size_t y = 0u; y < _height; ++y) {
+				for (size_t x = 0u; x < _width; ++x) {
+					if (memcmp(GetPixelAddress(x, y), other.GetPixelAddress(x, y), pixel_bytes) != 0) return false;
+				}
+			}
 		}
 
 		return true;
@@ -173,7 +190,7 @@ namespace anvil { namespace compute {
 	Image Image::GetRoi(size_t x, size_t y, size_t width, size_t height) {
 		ANVIL_RUNTIME_ASSERT(width + x < _width, "anvil::Image::GetRoi : Out of bounds on X axis");
 		ANVIL_RUNTIME_ASSERT(height + y < _height, "anvil::Image::GetRoi : Out of bounds on Y axis");
-		Image tmp(static_cast<uint8_t*>(_data) + _step * y + _type.GetSizeInBytes() * x, _type, width, height, _step);
+		Image tmp(GetPixelAddress(x,y), _type, width, height, _row_step, _pixel_step);
 		tmp._parent = this;
 		return tmp;
 	}
