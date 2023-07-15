@@ -17,6 +17,7 @@
 
 #include <cstdint>
 #include <cmath>
+#include <string>
 #include "anvil/core/Keywords.hpp"
 #include "anvil/core/Popcount.hpp"
 #include "anvil/core/LeadingZeroCount.hpp"
@@ -628,7 +629,7 @@ namespace anvil {
 
 			size_t channels = anvil_type.GetNumberOfChannels();
 			if(channels > 4u) throw std::runtime_error("anvil::Type::ToOpenCVType : OpenCV only supports up to 4 channels");
-			return CV_MAKE_TYPE(cv_type, channels);
+			return CV_MAKE_TYPE(cv_type, static_cast<int>(channels));
 		}
 
 		ANVIL_STRONG_INLINE int GetOpenCVType() const {
