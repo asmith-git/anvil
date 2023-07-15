@@ -19,6 +19,7 @@ namespace anvil { namespace compute {
 	// Image 
 
 	Image::Image() :
+		_parent(nullptr),
 		_data(nullptr),
 		_step(0u),
 		_width(0u),
@@ -38,6 +39,7 @@ namespace anvil { namespace compute {
 	}
 
 	Image::Image(void* data, const Type type, size_t width, size_t height, size_t step) :
+		_parent(nullptr),
 		_data(data),
 		_step(step),
 		_width(width),
@@ -84,6 +86,7 @@ namespace anvil { namespace compute {
 		if (_owned_memory) {
 			if (_data) operator delete(_data);
 		}
+		_parent = nullptr;
 		_data = nullptr;
 		_width = 0u;
 		_height = 0u;
@@ -157,5 +160,13 @@ namespace anvil { namespace compute {
 
 		const size_t row_bytes = _type.GetSizeInBytes() * _width;
 		for (size_t y = 0u; y < _height; ++y) memcpy(other.GetPixelAddress(0, y), GetPixelAddress(0, y), row_bytes);
+	}
+
+	Image Image::GetRoi(size_t x, size_t y, size_t width, size_t height) {
+		ANVIL_RUNTIME_ASSERT(width + x < _width, "anvil::Image::GetRoi : Out of bounds on X axis");
+		ANVIL_RUNTIME_ASSERT(height + y < _height, "anvil::Image::GetRoi : Out of bounds on Y axis");
+		Image tmp(static_cast<uint8_t*>(_data) + _step * y + _type.GetSizeInBytes() * x, _type, width, height, _step);
+		tmp._parent = this;
+		return tmp;
 	}
 }}

@@ -25,6 +25,7 @@ namespace anvil { namespace compute {
 
 	class ANVIL_DLL_EXPORT Image {
 	private:
+		Image* _parent;
 		void* _data;
 		size_t _step;
 		size_t _width;
@@ -49,6 +50,11 @@ namespace anvil { namespace compute {
 
 		void Allocate(Type type, size_t width, size_t height, bool allow_reinterpret = true);
 		void Deallocate();
+
+		Image GetRoi(size_t x, size_t y, size_t width, size_t height);
+
+		ANVIL_STRONG_INLINE Image GetRow(size_t y) { return GetRoi(0u, y, _width, 1u); }
+		ANVIL_STRONG_INLINE Image GetCol(size_t x) { return GetRoi(x, 0u, 1u, _height); }
 
 		void CopyTo(Image& other) const;
 
@@ -163,6 +169,18 @@ namespace anvil { namespace compute {
 			} else {
 				memcpy(GetPixelAddress(x, y), pixel.ConvertTo(_type).GetData(), _type.GetSizeInBytes());
 			}
+		}
+		
+		ANVIL_STRONG_INLINE bool HasParent() const throw() {
+			return _parent != nullptr;
+		}
+
+		ANVIL_STRONG_INLINE const Image& GetParent() const throw() {
+			return *_parent;
+		}
+
+		ANVIL_STRONG_INLINE Image& GetParent() throw() {
+			return *_parent;
 		}
 	};
 }}
