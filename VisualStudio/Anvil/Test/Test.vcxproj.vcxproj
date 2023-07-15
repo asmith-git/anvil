@@ -100,7 +100,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\include;C:\C++\OpenCV_410\include;C:\C++\RapidXML\Include;C:\C++\json;C:\C++\GSL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\C++\FP16-master\include;$(ProjectDir)..\..\..\include;C:\C++\OpenCV_410\include;C:\C++\RapidXML\Include;C:\C++\json;C:\C++\GSL\include;C:\C++\half_float-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>false</OpenMPSupport>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -125,7 +125,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\include;C:\C++\OpenCV_410\include;C:\C++\RapidXML\Include;C:\C++\json;C:\C++\GSL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\C++\FP16-master\include;$(ProjectDir)..\..\..\include;C:\C++\OpenCV_410\include;C:\C++\RapidXML\Include;C:\C++\json;C:\C++\GSL\include;C:\C++\half_float-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>false</OpenMPSupport>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -152,7 +152,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\include;C:\C++\OpenCV_410\include;C:\C++\RapidXML\Include;C:\C++\json;C:\C++\GSL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\C++\FP16-master\include;$(ProjectDir)..\..\..\include;C:\C++\OpenCV_410\include;C:\C++\RapidXML\Include;C:\C++\json;C:\C++\GSL\include;C:\C++\half_float-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>false</OpenMPSupport>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -181,7 +181,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\include;C:\C++\OpenCV_410\include;C:\C++\RapidXML\Include;C:\C++\json;C:\C++\GSL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\C++\FP16-master\include;$(ProjectDir)..\..\..\include;C:\C++\OpenCV_410\include;C:\C++\RapidXML\Include;C:\C++\json;C:\C++\GSL\include;C:\C++\half_float-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>false</OpenMPSupport>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>

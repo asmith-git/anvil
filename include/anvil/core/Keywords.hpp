@@ -17,6 +17,7 @@
 
 #include "anvil/core/Compiler.hpp"
 #include "anvil/core/Cpu.hpp"
+#include "anvil/core/LibDetect.hpp"
 #include <cstdint>
 #include <stdexcept>
 
@@ -103,5 +104,60 @@ namespace anvil {
 		return *reinterpret_cast<const T_OUT*>(&value);
 	}
 }
+
+// 8-bit floating point
+#ifndef ANVIL_F8_SUPPORT
+	#define ANVIL_F8_SUPPORT 0
+#endif
+
+// 16-bit floating point
+#if ANVIL_CPP_VER >= 2023
+	#include <stdfloat>
+	#define ANVIL_F16_SUPPORT 1
+	namespace anvil {
+		typedef std::float16_t float16_t;
+	}
+
+#elif ANVIL_MARATYSZCZA_FP16_SUPPORT
+	#include <fp16.h>
+	#define ANVIL_F16_SUPPORT 1
+	namespace anvil {
+		class float16_t {
+		private:
+			uint16_t _value;
+		public:
+
+			float16_t() = default;
+			~float16_t() = default;
+			float16_t(float value) : _value(fp16_ieee_from_fp32_value(value)) {}
+
+			ANVIL_STRONG_INLINE operator float() const { return fp16_ieee_to_fp32_value(_value); }
+			
+			ANVIL_STRONG_INLINE bool operator==(const float16_t other) { return _value == other._value; }
+			ANVIL_STRONG_INLINE bool operator!=(const float16_t other) { return _value != other._value; }
+			ANVIL_STRONG_INLINE bool operator<(const float16_t other) { return static_cast<float>(*this) < static_cast<float>(other); }
+			ANVIL_STRONG_INLINE bool operator<=(const float16_t other) { return static_cast<float>(*this) <= static_cast<float>(other); }
+			ANVIL_STRONG_INLINE bool operator>(const float16_t other) { return static_cast<float>(*this) > static_cast<float>(other); }
+			ANVIL_STRONG_INLINE bool operator>=(const float16_t other) { return static_cast<float>(*this) >= static_cast<float>(other); }
+			
+			ANVIL_STRONG_INLINE float operator+(const float value) { return static_cast<float>(*this) + value; }
+			ANVIL_STRONG_INLINE float operator-(const float value) { return static_cast<float>(*this) - value; }
+			ANVIL_STRONG_INLINE float operator*(const float value) { return static_cast<float>(*this) * value; }
+			ANVIL_STRONG_INLINE float operator/(const float value) { return static_cast<float>(*this) / value; }
+			
+			ANVIL_STRONG_INLINE float16_t operator+=(const float value) { *this = static_cast<float>(*this) + value; return *this; }
+			ANVIL_STRONG_INLINE float16_t operator-=(const float value) { *this = static_cast<float>(*this) - value; return *this; }
+			ANVIL_STRONG_INLINE float16_t operator*=(const float value) { *this = static_cast<float>(*this) * value; return *this; }
+			ANVIL_STRONG_INLINE float16_t operator/=(const float value) { *this = static_cast<float>(*this) / value; return *this; }
+		};
+
+		static_assert(sizeof(float16_t) == 2u, "Expected float16_t to be 2 bytes");
+	}
+
+#endif
+
+#ifndef ANVIL_F16_SUPPORT
+	#define ANVIL_F16_SUPPORT 0
+#endif
 
 #endif

@@ -15,28 +15,39 @@
 #ifndef ANVIL_CORE_LIBDETECT_HPP
 #define ANVIL_CORE_LIBDETECT_HPP
 
+// https://github.com/microsoft/GSL
 #if __has_include(<gsl/gsl>) || __has_include(<gsl>)
 	#define ANVIL_GSL_SUPPORT 1
 #else
 	#define ANVIL_GSL_SUPPORT 0
 #endif
 
+// https://opencv.org
 #if __has_include(<opencv2/opencv.hpp>)
 	#define ANVIL_OPENCV_SUPPORT 1
 #else
 	#define ANVIL_OPENCV_SUPPORT 0
 #endif
 
+// https://rapidxml.sourceforge.net
 #if __has_include(<rapidxml.hpp>)
 	#define ANVIL_XML_SUPPORT 1
 #else
 	#define ANVIL_XML_SUPPORT 0
 #endif
 
+// https://github.com/nlohmann/json
 #if __has_include(<nlohmann/json.hpp>)
 	#define ANVIL_JSON_SUPPORT 1
 #else
 	#define ANVIL_JSON_SUPPORT 0
+#endif
+
+// https://github.com/Maratyszcza/FP16
+#if __has_include(<fp16.h>)
+	#define ANVIL_MARATYSZCZA_FP16_SUPPORT 1
+#else
+	#define ANVIL_MARATYSZCZA_FP16_SUPPORT 0
 #endif
 
 #endif

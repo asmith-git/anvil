@@ -654,8 +654,12 @@ namespace anvil {
 	template<> struct EnumFromType<int16_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_16SX1; };
 	template<> struct EnumFromType<int32_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_32SX1; };
 	template<> struct EnumFromType<int64_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_64SX1; };
-	//template<> struct EnumFromType<float8_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_8FX1; };
-	//template<> struct EnumFromType<float16_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_16FX1; };
+#if ANVIL_F8_SUPPORT
+	template<> struct EnumFromType<float8_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_8FX1; };
+#endif
+#if ANVIL_F16_SUPPORT
+	template<> struct EnumFromType<float16_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_16FX1; };
+#endif
 	template<> struct EnumFromType<float32_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_32FX1; };
 	template<> struct EnumFromType<float64_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_64FX1; };
 
@@ -671,8 +675,12 @@ namespace anvil {
 		template<> struct _WideType<int32_t> { typedef int32_t type; };
 		template<> struct _WideType<uint64_t> { typedef int64_t type; };
 		template<> struct _WideType<int64_t> { typedef int64_t type; };
-		//template<> struct _WideType<float8_t> { typedef float32_t type; };
-		//template<> struct _WideType<float16_t> { typedef float32_t type; };
+#if ANVIL_F8_SUPPORT
+		template<> struct _WideType<float8_t> { typedef float32_t type; };
+#endif
+#if ANVIL_F16_SUPPORT
+		template<> struct _WideType<float16_t> { typedef float32_t type; };
+#endif
 		template<> struct _WideType<float32_t> { typedef float32_t type; };
 		template<> struct _WideType<float64_t> { typedef float64_t type; };
 	}
@@ -688,14 +696,18 @@ namespace anvil {
 		struct ReinterpretType_<1u> {
 			typedef uint8_t unsigned_t;
 			typedef int8_t signed_t;
-			//typedef float8_t float_t;
+#if ANVIL_F8_SUPPORT
+			typedef float8_t float_t;
+#endif
 		};
 
 		template<>
 		struct ReinterpretType_<2u> {
 			typedef uint16_t unsigned_t;
 			typedef int16_t signed_t;
-			//typedef float16_t float_t;
+#if ANVIL_F16_SUPPORT
+			typedef float16_t float_t;
+#endif
 		};
 
 		template<>

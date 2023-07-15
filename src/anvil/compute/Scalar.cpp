@@ -79,14 +79,14 @@ namespace anvil {
 		_type(ANVIL_64SX1)
 	{}
 
-#if ANVIL_SCALAR_F8
+#if ANVIL_F8_SUPPORT
 	TypedScalar::TypedScalar(const float8_t value) :
 		_scalar(value),
 		_type(ANVIL_8FX1)
 	{}
 #endif
 
-#if ANVIL_SCALAR_F16
+#if ANVIL_F16_SUPPORT
 	TypedScalar::TypedScalar(const float16_t value) :
 		_scalar(value),
 		_type(ANVIL_16FX1)
@@ -142,11 +142,11 @@ namespace anvil {
 		case ANVIL_64SX1:
 			_scalar.s64 = tmp;
 			break;
-#if ANVIL_SCALAR_F8
+#if ANVIL_F8_SUPPORT
 		case ANVIL_8FX1:
 			_scalar.f8 = tmp;
 #endif
-#if ANVIL_SCALAR_F16
+#if ANVIL_F16_SUPPORT
 		case ANVIL_16FX1:
 			_scalar.f16 = tmp;
 #endif
@@ -189,11 +189,11 @@ namespace anvil {
 			return _scalar.s32 < 0 ? 0ull : static_cast<uint64_t>(_scalar.s32);
 		case ANVIL_64SX1:
 			return _scalar.s64 < 0 ? 0ull : static_cast<uint64_t>(_scalar.s64);
-#if ANVIL_SCALAR_F8
+#if ANVIL_F8_SUPPORT
 		case ANVIL_8FX1:
 			return _scalar.s64 < 0 ? 0ull : static_cast<uint64_t>(_scalar.f8);
 #endif
-#if ANVIL_SCALAR_F16
+#if ANVIL_F16_SUPPORT
 		case ANVIL_16FX1:
 			return _scalar.s64 < 0 ? 0ull : static_cast<uint64_t>(_scalar.f16);
 #endif
@@ -245,11 +245,11 @@ namespace anvil {
 			return _scalar.s32;
 		case ANVIL_64SX1:
 			return _scalar.s64;
-#if ANVIL_SCALAR_F8
+#if ANVIL_F8_SUPPORT
 		case ANVIL_8FX1:
 			return static_cast<int64_t>(_scalar.f8);
 #endif
-#if ANVIL_SCALAR_F16
+#if ANVIL_F16_SUPPORT
 		case ANVIL_16FX1:
 			return static_cast<int64_t>(_scalar.f16);
 #endif
@@ -261,6 +261,18 @@ namespace anvil {
 			return 0;
 		}
 	}
+
+#if ANVIL_F8_SUPPORT
+	TypedScalar::operator float8_t() const throw() {
+		return static_cast<float8_t>(static_cast<float>(*this));
+	}
+#endif
+
+#if ANVIL_F16_SUPPORT
+	TypedScalar::operator float16_t() const throw() {
+		return static_cast<float16_t>(static_cast<float>(*this));
+	}
+#endif
 
 	TypedScalar::operator float32_t() const throw() {
 		switch (_type.GetEnumeratedType()) {
@@ -280,11 +292,11 @@ namespace anvil {
 			return static_cast<float32_t>(_scalar.s32);
 		case ANVIL_64SX1:
 			return static_cast<float32_t>(_scalar.s64);
-#if ANVIL_SCALAR_F8
+#if ANVIL_F8_SUPPORT
 		case ANVIL_8FX1:
 			return static_cast<float32_t>(_scalar.f8);
 #endif
-#if ANVIL_SCALAR_F16
+#if ANVIL_F16_SUPPORT
 		case ANVIL_16FX1:
 			return static_cast<float32_t>(_scalar.f16);
 #endif
@@ -315,11 +327,11 @@ namespace anvil {
 			return _scalar.s32;
 		case ANVIL_64SX1:
 			return static_cast<float64_t>(_scalar.s64);
-#if ANVIL_SCALAR_F8
+#if ANVIL_F8_SUPPORT
 		case ANVIL_8FX1:
 			return static_cast<float64_t>(_scalar.f8);
 #endif
-#if ANVIL_SCALAR_F16
+#if ANVIL_F16_SUPPORT
 		case ANVIL_16FX1:
 			return static_cast<float64_t>(_scalar.f16);
 #endif
