@@ -235,4 +235,24 @@ namespace anvil { namespace compute {
 		y = byte_offset / _row_step;
 		x = (byte_offset - (_row_step * y)) / _pixel_step;
 	}
+
+	void Image::GetRoiPosition(const Image& img, size_t& x, size_t& y) const {
+		x = 0u;
+		y = 0u;
+
+		ANVIL_RUNTIME_ASSERT(_parent != nullptr, "anvil::Image::GetRoiPosition : Image is not a decendent of the provided image");
+
+		if (_parent == &img) {
+			GetRoiPosition(x, y);
+			return;
+		}
+
+		_parent->GetRoiPosition(img, x, y);
+
+		size_t x2, y2;
+		GetRoiPosition(x2, y2);
+
+		x += x2;
+		y += y2;
+	}
 }}
