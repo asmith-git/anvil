@@ -194,4 +194,19 @@ namespace anvil { namespace compute {
 		tmp._parent = this;
 		return tmp;
 	}
+
+	Image Image::GetChannel(size_t index) {
+		const size_t channels = _type.GetNumberOfChannels();
+		ANVIL_RUNTIME_ASSERT(index < channels, "anvil::Image::GetChannel : Index out of bounds");
+
+		// Make a 'reference' to this image
+		Image tmp = GetRoi(0u, 0u, _width, _height);
+
+		// Increase the pixel step
+		const size_t pixel_primitive_size = _type.GetPrimitiveSizeInBytes();
+		tmp._data = static_cast<uint8_t*>(tmp._data) + pixel_primitive_size * index;
+		tmp._pixel_step += (channels - 1) * pixel_primitive_size;
+
+		return tmp;
+	}
 }}

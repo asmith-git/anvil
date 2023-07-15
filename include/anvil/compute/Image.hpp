@@ -53,6 +53,7 @@ namespace anvil { namespace compute {
 		void Allocate(Type type, size_t width, size_t height, bool allow_reinterpret = true, bool allow_reinterpret_as_smaller = false);
 		void Deallocate();
 
+		Image GetChannel(size_t index);
 		Image GetRoi(size_t x, size_t y, size_t width, size_t height);
 
 		ANVIL_STRONG_INLINE Image GetRow(size_t y) { return GetRoi(0u, y, _width, 1u); }
