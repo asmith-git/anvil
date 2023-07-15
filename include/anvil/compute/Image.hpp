@@ -27,8 +27,8 @@ namespace anvil { namespace compute {
 	private:
 		Image* _parent;			//!< The parent if this image is an ROI, otherwise null.
 		void* _data;			//!< The address of pixel [0,0].
-		size_t _row_step;		//!< The gap between pixels in bytes.
-		size_t _pixel_step;		//!< The distance between pixel 0 of one row and pixel 0 of the next in bytes.
+		size_t _row_step;		//!< The distance between pixel 0 of one row and pixel 0 of the next in bytes.
+		size_t _pixel_step;		//!< The distance between the staring address of one pixel and the next in bytes.
 		size_t _width;			//!< The size of a row in pixels.
 		size_t _height;			//!< The sizeo f a column in pixels.
 		Type _type;				//!< The data type of the pixels.
@@ -99,7 +99,8 @@ namespace anvil { namespace compute {
 		ANVIL_STRONG_INLINE size_t GetPixelStep() const throw() { return _pixel_step; }
 
 		ANVIL_STRONG_INLINE bool IsContiguous() const throw() {
-			return _pixel_step == 0u && _row_step == _type.GetSizeInBytes() * _width;
+			size_t bytes = _type.GetSizeInBytes();
+			return _pixel_step == bytes && _row_step == _type.GetSizeInBytes() * _width;
 		}
 
 #if ANVIL_OPENCV_SUPPORT
@@ -108,7 +109,7 @@ namespace anvil { namespace compute {
 		{}
 
 		ANVIL_STRONG_INLINE operator cv::Mat() {
-			ANVIL_RUNTIME_ASSERT(_pixel_step == 0u, "anvil::compute::Image::operator cv::Mat : OpenCV does not support pixel stepping");
+			ANVIL_RUNTIME_ASSERT(_pixel_step == _type.GetSizeInBytes(), "anvil::compute::Image::operator cv::Mat : OpenCV does not support pixel stepping");
 			return cv::Mat((int)_height, (int)_width, _type.GetOpenCVType(), _data, _row_step);
 		}
 #endif
@@ -128,12 +129,12 @@ namespace anvil { namespace compute {
 
 		ANVIL_STRONG_INLINE void* GetPixelAddress(size_t x, size_t y) {
 			ANVIL_DEBUG_ASSERT(x < _width, "anvil::compute::Image::GetPixelAddress : X position is out of bounds");
-			return static_cast<uint8_t*>(GetRowAddress(y)) + x * (_type.GetSizeInBytes() + _pixel_step);
+			return static_cast<uint8_t*>(GetRowAddress(y)) + x * _pixel_step;
 		}
 
 		ANVIL_STRONG_INLINE const void* GetPixelAddress(size_t x, size_t y) const {
 			ANVIL_DEBUG_ASSERT(x < _width, "anvil::compute::Image::GetPixelAddress : X position is out of bounds");
-			return static_cast<const uint8_t*>(GetRowAddress(y)) + x * (_type.GetSizeInBytes() + _pixel_step);
+			return static_cast<const uint8_t*>(GetRowAddress(y)) + x * _pixel_step;
 		}
 
 		template<class T>

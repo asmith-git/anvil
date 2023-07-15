@@ -51,7 +51,7 @@ namespace anvil { namespace compute {
 	{}
 
 	Image::Image(void* data, const Type type, size_t width, size_t height, size_t row_step) :
-		Image(data, type, width, height, row_step, 0u)
+		Image(data, type, width, height, row_step, type.GetSizeInBytes())
 	{}
 
 	Image::Image(void* data, const Type type, size_t width, size_t height) :
@@ -107,7 +107,7 @@ namespace anvil { namespace compute {
 		const size_t current_pixel_bytes = _type.GetSizeInBytes();
 		const size_t new_pixel_bytes = type.GetSizeInBytes();
 
-		if (_pixel_step > 0u) if (current_pixel_bytes != new_pixel_bytes) return false;
+		if (_pixel_step != current_pixel_bytes) return false;
 
 		size_t current_bytes = 0u;
 		size_t new_bytes = 0u;
@@ -163,13 +163,13 @@ namespace anvil { namespace compute {
 		if (_type != other._type || _width != other._width || _height != other._height) return false;
 		if (_data == other._data) return true;
 
-		if (_pixel_step == 0u && other._pixel_step == 0u) {
+		size_t pixel_bytes = _type.GetSizeInBytes();
+		if (_pixel_step == pixel_bytes && other._pixel_step == pixel_bytes) {
 			const size_t row_bytes = _type.GetSizeInBytes() * _width;
 			for (size_t y = 0u; y < _height; ++y) {
 				if (memcmp(other.GetRowAddress(y), GetRowAddress(0), row_bytes) != 0) return false;
 			}
 		} else {
-			size_t pixel_bytes = _type.GetSizeInBytes();
 			for (size_t y = 0u; y < _height; ++y) {
 				for (size_t x = 0u; x < _width; ++x) {
 					if (memcmp(GetPixelAddress(x, y), other.GetPixelAddress(x, y), pixel_bytes) != 0) return false;
@@ -202,10 +202,9 @@ namespace anvil { namespace compute {
 		// Make a 'reference' to this image
 		Image tmp = GetRoi(0u, 0u, _width, _height);
 
-		// Increase the pixel step
-		const size_t pixel_primitive_size = _type.GetPrimitiveSizeInBytes();
-		tmp._data = static_cast<uint8_t*>(tmp._data) + pixel_primitive_size * index;
-		tmp._pixel_step += (channels - 1) * pixel_primitive_size;
+		// Move the start of the row to the correct channel
+		tmp._data = static_cast<uint8_t*>(tmp._data) + _type.GetPrimitiveSizeInBytes() * index;
+		tmp._type.SetNumberOfChannels(1u);
 
 		return tmp;
 	}
