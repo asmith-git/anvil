@@ -30,6 +30,8 @@ namespace anvil { namespace compute {
 		uint8_t _values[Type::MAX_CHANNELS * 8u];
 		Type _type;
 	public:
+		friend Image;
+
 		Vector();
 		~Vector() = default;
 
@@ -41,6 +43,9 @@ namespace anvil { namespace compute {
 			_type.SetNumberOfChannels(size);
 			memcpy(_values, src, sizeof(T) * size);
 		}
+
+		ANVIL_STRONG_INLINE void* GetData() throw() { return _values; }
+		ANVIL_STRONG_INLINE const void* GetData() const throw() { return _values; }
 
 		ANVIL_STRONG_INLINE Type GetType() const throw() { return _type; }
 		Vector ConvertTo(Type type) const;

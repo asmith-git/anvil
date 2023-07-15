@@ -43,6 +43,9 @@ namespace anvil { namespace compute {
 		UntypedScalar() = default;
 		~UntypedScalar() = default;
 
+		ANVIL_STRONG_INLINE void* GetData() throw() { return this; }
+		ANVIL_STRONG_INLINE const void* GetData() const throw() { return this; }
+
 		ANVIL_CONSTEXPR_FN UntypedScalar(const uint8_t value) :
 			u64(value)
 		{}
@@ -162,11 +165,15 @@ namespace anvil { namespace compute {
 		}
 	};
 
+	class Image;
+
 	class ANVIL_DLL_EXPORT TypedScalar {
 	private:
 		UntypedScalar _scalar;
 		Type _type;
 	public:
+		friend Image;
+
 		TypedScalar();
 		~TypedScalar() = default;
 
@@ -188,6 +195,9 @@ namespace anvil { namespace compute {
 #endif
 		TypedScalar(const float32_t value);
 		TypedScalar(const float64_t value);
+
+		ANVIL_STRONG_INLINE void* GetData() throw() { return _scalar.GetData(); }
+		ANVIL_STRONG_INLINE const void* GetData() const throw() { return _scalar.GetData(); }
 
 		Type GetType() const throw();
 		void SetType(Type type) throw();

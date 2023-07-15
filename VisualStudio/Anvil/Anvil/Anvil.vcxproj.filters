@@ -132,6 +132,12 @@
     <ClCompile Include="..\..\..\src\anvil\compute\Scalar.cpp">
       <Filter>Source Files\compute</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\compute\Vector.cpp">
+      <Filter>Source Files\compute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\compute\Image.cpp">
+      <Filter>Source Files\compute</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\anvil\core\Alignment.hpp">
@@ -315,6 +321,12 @@
       <Filter>Header Files\compute</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\anvil\compute\Type.hpp">
+      <Filter>Header Files\compute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\compute\Vector.hpp">
+      <Filter>Header Files\compute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\compute\Image.hpp">
       <Filter>Header Files\compute</Filter>
     </ClInclude>
   </ItemGroup>
