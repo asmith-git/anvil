@@ -18,7 +18,7 @@
 #include "anvil/core/Keywords.hpp"
 #include "anvil/compute/Type.hpp"
 
-namespace anvil {
+namespace anvil { namespace compute {
 
 	struct UntypedScalar {
 		union {
@@ -192,6 +192,9 @@ namespace anvil {
 		Type GetType() const throw();
 		void SetType(Type type) throw();
 
+		void ConvertToInPlace(Type type);
+		TypedScalar ConvertTo(Type type) const;
+
 		operator uint8_t() const throw();
 		operator uint16_t() const throw();
 		operator uint32_t() const throw();
@@ -254,6 +257,6 @@ namespace anvil {
 		a = a / b;
 		return a;
 	}
-}
+}}
 
 #endif

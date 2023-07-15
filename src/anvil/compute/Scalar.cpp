@@ -16,7 +16,7 @@
 #include "anvil/Core.hpp"
 #include "anvil/compute/Scalar.hpp"
 
-namespace anvil {
+namespace anvil { namespace compute {
 
 
 	// TypedScalar
@@ -379,4 +379,64 @@ namespace anvil {
 	bool TypedScalar::operator<=(const TypedScalar& other) const throw() {
 		return operator float64_t() <= static_cast<float64_t>(other);
 	}
-}
+
+	void TypedScalar::ConvertToInPlace(Type type) {
+		type.SetNumberOfChannels(1u);
+
+		switch (type.GetEnumeratedType()) {
+		case ANVIL_8UX1:
+			_scalar.u8 = static_cast<uint8_t>(*this);
+			break;
+		case ANVIL_16UX1:
+			_scalar.u16 = static_cast<uint16_t>(*this);
+			break;
+		case ANVIL_32UX1:
+			_scalar.u32 = static_cast<uint32_t>(*this);
+			break;
+		case ANVIL_64UX1:
+			_scalar.u64 = static_cast<uint64_t>(*this);
+			break;
+		case ANVIL_8SX1:
+			_scalar.s8 = static_cast<int8_t>(*this);
+			break;
+		case ANVIL_16SX1:
+			_scalar.s16 = static_cast<int16_t>(*this);
+			break;
+		case ANVIL_32SX1:
+			_scalar.s32 = static_cast<int32_t>(*this);
+			break;
+		case ANVIL_64SX1:
+			_scalar.s64 = static_cast<int64_t>(*this);
+			break;
+		case ANVIL_8FX1:
+#if ANVIL_F8_SUPPORT
+			_scalar.f8 = static_cast<float8_t>(*this);
+#else
+			throw std::runtime_error("anvil::Scalar::ConvertTo : float8_t is not supported");
+#endif
+			break;
+		case ANVIL_16FX1:
+#if ANVIL_F16_SUPPORT
+			_scalar.f16 = static_cast<float16_t>(*this);
+#else
+			throw std::runtime_error("anvil::Scalar::ConvertTo : float16_t is not supported");
+#endif
+			break;
+		case ANVIL_32FX1:
+			_scalar.f32 = static_cast<float>(*this);
+			break;
+		case ANVIL_64FX1:
+			_scalar.f64 = static_cast<double>(*this);
+			break;
+		default:
+			throw std::runtime_error("anvil::Scalar::ConvertTo : Unknown type");
+		}
+	}
+
+	TypedScalar TypedScalar::ConvertTo(Type type) const {
+		TypedScalar tmp = *this;
+		tmp.ConvertToInPlace(type);
+		return tmp;
+	}
+
+}}
