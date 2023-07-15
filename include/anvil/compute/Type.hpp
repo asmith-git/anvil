@@ -248,6 +248,7 @@ namespace anvil {
 	*/
 	class Type {
 	private:
+		#pragma warning( disable : 4201) // Unnamed struct. Should be fine as layout is checked by static asserts
 		union {
 			struct {
 				uint8_t _type : 2;		//!< Determines if this type is unsigned, signed or floating point. \see Representation
@@ -438,6 +439,7 @@ namespace anvil {
 	*/
 	class LongType {
 	private:
+		#pragma warning( disable : 4201) // Unnamed struct. Should be fine as layout is checked by static asserts
 		union {
 			struct {
 				uint16_t _type : 2;		//!< Determines if this type is unsigned, signed or floating point. \see Representation

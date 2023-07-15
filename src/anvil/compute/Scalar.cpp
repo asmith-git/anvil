@@ -12,8 +12,9 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#include "anvil/compute/Scalar.hpp"
 #include <algorithm>
+#include "anvil/Core.hpp"
+#include "anvil/compute/Scalar.hpp"
 
 namespace anvil {
 
@@ -78,6 +79,20 @@ namespace anvil {
 		_type(ANVIL_64SX1)
 	{}
 
+#if ANVIL_SCALAR_F8
+	TypedScalar::TypedScalar(const float8_t value) :
+		_scalar(value),
+		_type(ANVIL_8FX1)
+	{}
+#endif
+
+#if ANVIL_SCALAR_F16
+	TypedScalar::TypedScalar(const float16_t value) :
+		_scalar(value),
+		_type(ANVIL_16FX1)
+	{}
+#endif
+
 	TypedScalar::TypedScalar(const float32_t value) :
 		_scalar(value),
 		_type(ANVIL_32FX1)
@@ -127,6 +142,14 @@ namespace anvil {
 		case ANVIL_64SX1:
 			_scalar.s64 = tmp;
 			break;
+#if ANVIL_SCALAR_F8
+		case ANVIL_8FX1:
+			_scalar.f8 = tmp;
+#endif
+#if ANVIL_SCALAR_F16
+		case ANVIL_16FX1:
+			_scalar.f16 = tmp;
+#endif
 		case ANVIL_32FX1:
 			_scalar.f32 = tmp;
 			break;
@@ -166,6 +189,14 @@ namespace anvil {
 			return _scalar.s32 < 0 ? 0ull : static_cast<uint64_t>(_scalar.s32);
 		case ANVIL_64SX1:
 			return _scalar.s64 < 0 ? 0ull : static_cast<uint64_t>(_scalar.s64);
+#if ANVIL_SCALAR_F8
+		case ANVIL_8FX1:
+			return _scalar.s64 < 0 ? 0ull : static_cast<uint64_t>(_scalar.f8);
+#endif
+#if ANVIL_SCALAR_F16
+		case ANVIL_16FX1:
+			return _scalar.s64 < 0 ? 0ull : static_cast<uint64_t>(_scalar.f16);
+#endif
 		case ANVIL_32FX1:
 			return _scalar.f32 < 0.f ? 0ull : static_cast<uint64_t>(_scalar.f32);
 		case ANVIL_64FX1:
@@ -177,22 +208,22 @@ namespace anvil {
 
 	TypedScalar::operator int8_t() const throw() {
 		int64_t tmp = operator int64_t();
-		tmp = std::min<uint64_t>(tmp, INT8_MAX);
-		tmp = std::max<uint64_t>(tmp, INT8_MIN);
+		tmp = std::min<int64_t>(tmp, INT8_MAX);
+		tmp = std::max<int64_t>(tmp, INT8_MIN);
 		return static_cast<uint8_t>(tmp);
 	}
 
 	TypedScalar::operator int16_t() const throw() {
 		int64_t tmp = operator int64_t();
-		tmp = std::min<uint64_t>(tmp, INT16_MAX);
-		tmp = std::max<uint64_t>(tmp, INT16_MIN);
+		tmp = std::min<int64_t>(tmp, INT16_MAX);
+		tmp = std::max<int64_t>(tmp, INT16_MIN);
 		return static_cast<uint16_t>(tmp);
 	}
 
 	TypedScalar::operator int32_t() const throw() {
 		int64_t tmp = operator int64_t();
-		tmp = std::min<uint64_t>(tmp, INT32_MAX);
-		tmp = std::max<uint64_t>(tmp, INT32_MIN);
+		tmp = std::min<int64_t>(tmp, INT32_MAX);
+		tmp = std::max<int64_t>(tmp, INT32_MIN);
 		return static_cast<uint32_t>(tmp);
 	}
 
@@ -214,6 +245,14 @@ namespace anvil {
 			return _scalar.s32;
 		case ANVIL_64SX1:
 			return _scalar.s64;
+#if ANVIL_SCALAR_F8
+		case ANVIL_8FX1:
+			return static_cast<int64_t>(_scalar.f8);
+#endif
+#if ANVIL_SCALAR_F16
+		case ANVIL_16FX1:
+			return static_cast<int64_t>(_scalar.f16);
+#endif
 		case ANVIL_32FX1:
 			return static_cast<int64_t>(_scalar.f32);
 		case ANVIL_64FX1:
@@ -241,6 +280,14 @@ namespace anvil {
 			return static_cast<float32_t>(_scalar.s32);
 		case ANVIL_64SX1:
 			return static_cast<float32_t>(_scalar.s64);
+#if ANVIL_SCALAR_F8
+		case ANVIL_8FX1:
+			return static_cast<float32_t>(_scalar.f8);
+#endif
+#if ANVIL_SCALAR_F16
+		case ANVIL_16FX1:
+			return static_cast<float32_t>(_scalar.f16);
+#endif
 		case ANVIL_32FX1:
 			return static_cast<float32_t>(_scalar.f32);
 		case ANVIL_64FX1:
@@ -268,6 +315,14 @@ namespace anvil {
 			return _scalar.s32;
 		case ANVIL_64SX1:
 			return static_cast<float64_t>(_scalar.s64);
+#if ANVIL_SCALAR_F8
+		case ANVIL_8FX1:
+			return static_cast<float64_t>(_scalar.f8);
+#endif
+#if ANVIL_SCALAR_F16
+		case ANVIL_16FX1:
+			return static_cast<float64_t>(_scalar.f16);
+#endif
 		case ANVIL_32FX1:
 			return static_cast<float64_t>(_scalar.f32);
 		case ANVIL_64FX1:

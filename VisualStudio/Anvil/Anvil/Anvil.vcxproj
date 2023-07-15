@@ -192,6 +192,7 @@
     <ClCompile Include="..\..\..\src\anvil\byte-pipe\BinaryPipeXML.cpp" />
     <ClCompile Include="..\..\..\src\anvil\byte-pipe\BytePipeObjects.cpp" />
     <ClCompile Include="..\..\..\src\anvil\byte-pipe\BytePipeRepeater.cpp" />
+    <ClCompile Include="..\..\..\src\anvil\compute\Scalar.cpp" />
     <ClCompile Include="..\..\..\src\anvil\console\Console.cpp" />
     <ClCompile Include="..\..\..\src\anvil\core\Base64.cpp" />
     <ClCompile Include="..\..\..\src\anvil\core\CpuRuntime.cpp" />

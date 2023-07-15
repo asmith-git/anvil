@@ -52,6 +52,9 @@
     <Filter Include="Header Files\compute">
       <UniqueIdentifier>{3de5d6cc-a1ca-4915-887e-72955132fb27}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\compute">
+      <UniqueIdentifier>{a93d2cc0-593f-44d7-963f-d0fc1dc799e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -125,6 +128,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\anvil\scheduling\Task.cpp">
       <Filter>Source Files\scheduling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\compute\Scalar.cpp">
+      <Filter>Source Files\compute</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

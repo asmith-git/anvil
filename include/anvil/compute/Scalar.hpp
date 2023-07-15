@@ -18,6 +18,9 @@
 #include "anvil/core/Keywords.hpp"
 #include "anvil/compute/Type.hpp"
 
+#define ANVIL_SCALAR_F8 0
+#define ANVIL_SCALAR_F16 0
+
 namespace anvil {
 
 	struct UntypedScalar {
@@ -30,8 +33,12 @@ namespace anvil {
 			int16_t s16;
 			int32_t s32;
 			int64_t s64;
-			//float8_t f8;
-			//float16_t f16;
+#if ANVIL_SCALAR_F8
+			float8_t f8;
+#endif
+#if ANVIL_SCALAR_F16
+			float16_t f16;
+#endif
 			float32_t f32;
 			float64_t f64;
 		};
@@ -71,17 +78,21 @@ namespace anvil {
 			s64(value)
 		{}
 
-		//ANVIL_CONSTEXPR_FN UntypedScalar(const float8_t value) :
-		//	u64(0u)
-		//{
-		//	f8 = value;
-		//}
+#if ANVIL_SCALAR_F8
+		ANVIL_CONSTEXPR_FN UntypedScalar(const float8_t value) :
+			u64(0u)
+		{
+			f8 = value;
+		}
+#endif
 
-		//ANVIL_CONSTEXPR_FN UntypedScalar(const float16_t value) :
-		//	u64(0u)
-		//{
-		//	f16 = value;
-		//}
+#if ANVIL_SCALAR_F16
+		ANVIL_CONSTEXPR_FN UntypedScalar(const float16_t value) :
+			u64(0u)
+		{
+			f16 = value;
+		}
+#endif
 
 		ANVIL_CONSTEXPR_FN UntypedScalar(const float32_t value) :
 			u64(0u)
@@ -125,13 +136,17 @@ namespace anvil {
 			return s64;
 		}
 
-		//ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN operator float8_t() const throw() {
-		//	return f8;
-		//}
+#if ANVIL_SCALAR_F8
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN operator float8_t() const throw() {
+			return f8;
+		}
+#endif
 
-		//ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN operator float16_t() const throw() {
-		//	return f16;
-		//}
+#if ANVIL_SCALAR_F16
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN operator float16_t() const throw() {
+			return f16;
+		}
+#endif
 
 		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN operator float32_t() const throw() {
 			return f32;
@@ -150,7 +165,7 @@ namespace anvil {
 		}
 	};
 
-	class TypedScalar {
+	class ANVIL_DLL_EXPORT TypedScalar {
 	private:
 		UntypedScalar _scalar;
 		Type _type;
@@ -168,8 +183,12 @@ namespace anvil {
 		TypedScalar(const int16_t value);
 		TypedScalar(const int32_t value);
 		TypedScalar(const int64_t value);
-		//UntypedScalar(const float8_t value);
-		//UntypedScalar(const float16_t value);
+#if ANVIL_SCALAR_F8
+		TypedScalar(const float8_t value);
+#endif
+#if ANVIL_SCALAR_F16
+		TypedScalar(const float16_t value);
+#endif
 		TypedScalar(const float32_t value);
 		TypedScalar(const float64_t value);
 
@@ -184,8 +203,12 @@ namespace anvil {
 		operator int16_t() const throw();
 		operator int32_t() const throw();
 		operator int64_t() const throw();
-		//operator float8_t() const throw();
-		//operator float16_t() const throw();
+#if ANVIL_SCALAR_F8
+		operator float8_t() const throw();
+#endif
+#if ANVIL_SCALAR_F16
+		operator float16_t() const throw();
+#endif
 		operator float32_t() const throw();
 		operator float64_t() const throw();
 		operator UntypedScalar() const throw();
