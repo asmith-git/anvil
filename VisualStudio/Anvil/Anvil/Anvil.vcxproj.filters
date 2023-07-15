@@ -49,6 +49,9 @@
     <Filter Include="Source Files\scheduling">
       <UniqueIdentifier>{aa1c2e66-7d1a-4515-a6a1-f71964d8d9c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\compute">
+      <UniqueIdentifier>{3de5d6cc-a1ca-4915-887e-72955132fb27}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -301,6 +304,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\anvil\core\Popcount.hpp">
       <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\compute\Scalar.hpp">
+      <Filter>Header Files\compute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\compute\Type.hpp">
+      <Filter>Header Files\compute</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

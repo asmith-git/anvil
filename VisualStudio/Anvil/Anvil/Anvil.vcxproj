@@ -225,6 +225,8 @@
     <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeXML.hpp" />
     <ClInclude Include="..\..\..\include\anvil\BytePipe.hpp" />
     <ClInclude Include="..\..\..\include\anvil\Compute.hpp" />
+    <ClInclude Include="..\..\..\include\anvil\compute\Scalar.hpp" />
+    <ClInclude Include="..\..\..\include\anvil\compute\Type.hpp" />
     <ClInclude Include="..\..\..\include\anvil\Console.hpp" />
     <ClInclude Include="..\..\..\include\anvil\console\Console.hpp" />
     <ClInclude Include="..\..\..\include\anvil\Core.hpp" />
