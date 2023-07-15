@@ -20,13 +20,27 @@ namespace anvil { namespace compute {
 
 	// Vector
 
-	Vector::Vector() {
-
-	}
-
-	Vector::Vector(const Type type) :
-		_type(type)
+	Vector::Vector() :
+		_type(),
+		_values{}
 	{}
+
+	Vector::Vector(Type type) :
+		_type(type),
+		_values{}
+	{}
+
+	Vector::Vector(UntypedScalar value, Type type) :
+		Vector(type)
+	{
+		const size_t size = type.GetPrimitiveSizeInBytes();
+		const size_t count = type.GetNumberOfChannels();
+		uint8_t* tmp = _values;
+		for (size_t i = 0u; i < count; ++i) {
+			memcpy(tmp, value.GetData(), size);
+			tmp += size;
+		}
+	}
 
 	void Vector::ConvertToInPlace(Type type) {
 		if (_type == type) return;

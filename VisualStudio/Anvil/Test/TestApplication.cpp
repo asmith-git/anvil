@@ -9,6 +9,7 @@
 #include "anvil/Console.hpp"
 #include "anvil/RPC.hpp"
 #include "anvil/Scheduling.hpp"
+#include "anvil/Compute.hpp"
 
 static uint64_t CurrentTime() {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -911,8 +912,98 @@ void RLETest2() {
 	return;
 }
 
+void FillImage(anvil::compute::Image& img, anvil::compute::Vector value) {
+	size_t w = img.GetHeight();
+	size_t h = img.GetHeight();
+	for (size_t y = 0u; y < h; ++y) {
+		for (size_t x = 0u; x < w; ++x) {
+			img.WritePixel(x, y, value);
+		}
+	}
+}
+
+void ImageRoiTest() {
+	try {
+		using namespace anvil::compute;
+
+		Image img;
+		img.Allocate(anvil::ANVIL_8UX4, 64, 64);
+		volatile uint8_t* img_dat = (uint8_t*)img.GetData();
+		FillImage(img, Vector(128, img.GetType()));
+
+
+		Image r = img.GetChannel(0);
+		FillImage(r, Vector(0, img.GetType()));
+		Image g = img.GetChannel(1);
+		FillImage(g, Vector(1, img.GetType()));
+		Image b = img.GetChannel(2);
+		FillImage(b, Vector(2, img.GetType()));
+		Image a = img.GetChannel(3);
+		FillImage(a, Vector(3, img.GetType()));
+
+		size_t w = r.GetWidth();
+		size_t h = r.GetHeight();
+		size_t s = w * h;
+		ANVIL_RUNTIME_ASSERT(img.GetWidth()== w, "R channel has wrong width");
+		ANVIL_RUNTIME_ASSERT(img.GetHeight()== w, "R channel has wrong width");
+		ANVIL_RUNTIME_ASSERT((int)anvil::ANVIL_8UX1== (int)r.GetType().GetEnumeratedType(), "R channel has wrong type");
+
+		for (size_t y = 0u; y < h; ++y) for (size_t x = 0u; x < w; ++x) {
+			uint8_t tmp;
+			r.ReadPixel(x, y, tmp);
+			ANVIL_RUNTIME_ASSERT((uint8_t)0 == tmp, "R channel contained a pixel with a wrong value (before copy)");
+		}
+
+		for (size_t y = 0u; y < h; ++y) for (size_t x = 0u; x < w; ++x) {
+			uint8_t tmp;
+			g.ReadPixel(x, y, tmp);
+			ANVIL_RUNTIME_ASSERT((uint8_t)1 == tmp, "G channel contained a pixel with a wrong value (before copy)");
+		}
+
+		for (size_t y = 0u; y < h; ++y) for (size_t x = 0u; x < w; ++x) {
+			uint8_t tmp;
+			b.ReadPixel(x, y, tmp);
+			ANVIL_RUNTIME_ASSERT((uint8_t)2 == tmp, "B channel contained a pixel with a wrong value (before copy)");
+		}
+
+		for (size_t y = 0u; y < h; ++y) for (size_t x = 0u; x < w; ++x) {
+			uint8_t tmp;
+			a.ReadPixel(x, y, tmp);
+			ANVIL_RUNTIME_ASSERT((uint8_t)3 == tmp, "A channel contained a pixel with a wrong value (before copy)");
+		}
+
+		r = r.Copy();
+		g = g.Copy();
+		b = b.Copy();
+		a = a.Copy();
+
+		uint8_t* tmp;
+
+		tmp = (uint8_t*)r.GetData();
+		for (size_t i = 0u; i < s; ++i) ANVIL_RUNTIME_ASSERT((uint8_t)0 == tmp[i], "R channel contained a pixel with a wrong value (after copy) " + std::to_string(i));
+
+		tmp = (uint8_t*)g.GetData();
+		for (size_t i = 0u; i < s; ++i) ANVIL_RUNTIME_ASSERT((uint8_t)1 == tmp[i], "G channel contained a pixel with a wrong value (after copy) " + std::to_string(i));
+
+		tmp = (uint8_t*)b.GetData();
+		for (size_t i = 0u; i < s; ++i) ANVIL_RUNTIME_ASSERT((uint8_t)2 == tmp[i], "B channel contained a pixel with a wrong value (after copy) " + std::to_string(i));
+
+		tmp = (uint8_t*)a.GetData();
+		for (size_t i = 0u; i < s; ++i) ANVIL_RUNTIME_ASSERT((uint8_t)3 == tmp[i], "A channel contained a pixel with a wrong value (after copy) " + std::to_string(i));
+
+	} catch (std::exception& e) {
+		std::cerr << e.what() << std::endl;
+		throw e;
+	}
+
+	return;
+}
+
 int main()
 {
+	ImageRoiTest();
+	return 0;
+
 	RLETest2();
 	return 0;
 

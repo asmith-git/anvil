@@ -35,7 +35,13 @@ namespace anvil { namespace compute {
 		Vector();
 		~Vector() = default;
 
-		Vector(const Type type);
+		Vector(Type type);
+
+		Vector(UntypedScalar value, Type type);
+
+		Vector(TypedScalar value, size_t channels) :
+			Vector(value._scalar, Type(value._type.GetRepresentation(), value._type.GetPrimitiveSizeInBytes(), channels))
+		{}
 
 		template<class T>
 		Vector(const T* src, size_t size) {

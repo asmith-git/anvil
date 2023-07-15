@@ -1,13 +1,205 @@
 #include "pch.h"
 #include "CppUnitTest.h"
 #include "anvil/Core.hpp"
-#include "anvil/compute/Type.hpp"
+#include "anvil/compute.hpp"
 #include <locale>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace anvil { namespace compute {
 
+	TEST_CLASS(TestImage)
+	{
+	public:
+		void FillImage(Image& img, Vector value) {
+			size_t w = img.GetHeight();
+			size_t h = img.GetHeight();
+			for (size_t y = 0u; y < h; ++y) {
+				for (size_t x = 0u; x < w; ++x) {
+					img.WritePixel(x, y, value);
+				}
+			}
+		}
+
+		TEST_METHOD(RowAddress)
+		{
+			try {
+
+				Image img;
+				img.Allocate(ANVIL_8UX4, 512, 512);
+				Assert::IsTrue(img.IsContiguous(), L"Allocated memory was not contiguous");
+
+				uint32_t* tmp = (uint32_t*)img.GetData();
+				size_t w = img.GetHeight();
+				size_t h = img.GetHeight();
+				for (size_t y = 0u; y < h; ++y) {
+					Assert::IsTrue(tmp == img.GetRowAddress(y), L"Calculated the wrong address");
+					tmp += w;
+				}
+
+			}
+			catch (std::exception& e) {
+				Assert::Fail(std::wstring_convert<std::codecvt<wchar_t, char, std::mbstate_t>>().from_bytes(e.what()).c_str());
+			}
+		}
+		TEST_METHOD(PixelAddress)
+		{
+			try {
+
+				Image img;
+				img.Allocate(ANVIL_8UX4, 512, 512);
+				Assert::IsTrue(img.IsContiguous(), L"Allocated memory was not contiguous");
+
+				uint32_t* tmp = (uint32_t*)img.GetData();
+				size_t w = img.GetHeight();
+				size_t h = img.GetHeight();
+				for (size_t y = 0u; y < h; ++y) {
+					for (size_t x = 0u; x < w; ++x) {
+						Assert::IsTrue(tmp == img.GetPixelAddress(x, y), L"Calculated the wrong address");
+						++tmp;
+					}
+				}
+
+			}
+			catch (std::exception& e) {
+				Assert::Fail(std::wstring_convert<std::codecvt<wchar_t, char, std::mbstate_t>>().from_bytes(e.what()).c_str());
+			}
+		}
+		TEST_METHOD(Roi)
+		{
+				try {
+
+				Image img;
+				img.Allocate(ANVIL_8UX1, 64, 64);
+				FillImage(img, Vector(128, img.GetType()));
+
+				Image roi = img.GetRoi(16, 16, 32, 32);
+				FillImage(roi, Vector(255, img.GetType()));
+
+				size_t imgw = img.GetWidth();
+				size_t imgh = img.GetHeight();
+				size_t roiw = roi.GetWidth();
+				size_t roih = roi.GetHeight();
+				Assert::AreEqual((size_t) 32, roiw, L"ROI has wrong width");
+				Assert::AreEqual((size_t) 32, roih, L"ROI has wrong height");
+				Assert::AreEqual((int)img.GetType().GetEnumeratedType(), (int)roi.GetType().GetEnumeratedType(), L"ROI has wrong type");
+
+				for (size_t y = 0u; y < roih; ++y) {
+					for (size_t x = 0u; x < roiw; ++x) {
+						uint8_t tmp;
+						roi.ReadPixel(x, y, tmp);
+						Assert::AreEqual((uint8_t)255, tmp, (L"ROI  contained a pixel with a wrong value (before copy) " + std::to_wstring(x) + L"," + std::to_wstring(y)).c_str());
+					}
+				}
+
+				for (size_t y = 0u; y < imgh; ++y) { 
+					for (size_t x = 0u; x < imgw; ++x) {
+						uint8_t tmp;
+						img.ReadPixel(x, y, tmp);
+						if (x >= 16 && x < 16 + roih && y >= 16 && y < 16 + roih) {
+							Assert::AreEqual((uint8_t)255, tmp, (L"Inside ROI contained a pixel with a wrong value (before copy) " + std::to_wstring(x) + L"," + std::to_wstring(y)).c_str());
+						} else {
+							Assert::AreEqual((uint8_t)128, tmp, (L"Outside ROI contained a pixel with a wrong value (before copy) " + std::to_wstring(x) + L"," + std::to_wstring(y)).c_str());
+						}
+					}
+				}
+
+				roi = roi.Copy();
+
+				for (size_t y = 0u; y < roih; ++y) {
+					for (size_t x = 0u; x < roiw; ++x) {
+						uint8_t tmp;
+						roi.ReadPixel(x, y, tmp);
+						Assert::AreEqual((uint8_t)255, tmp, (L"ROI  contained a pixel with a wrong value (after copy)" + std::to_wstring(x) + L"," + std::to_wstring(y)).c_str());
+					}
+				}
+
+			} catch (std::exception& e) {
+				Assert::Fail(std::wstring_convert<std::codecvt<wchar_t, char, std::mbstate_t>>().from_bytes(e.what()).c_str());
+			}
+		}
+
+		TEST_METHOD(ChannelPixelStep)
+		{
+			try {
+
+				Image img;
+				img.Allocate(ANVIL_8UX4, 64, 64);
+				FillImage(img, Vector(128, img.GetType()));
+
+				Image r = img.GetChannel(0);
+				FillImage(r, Vector(0, img.GetType()));
+				Image g = img.GetChannel(1);
+				FillImage(g, Vector(1, img.GetType()));
+				Image b = img.GetChannel(2);
+				FillImage(b, Vector(2, img.GetType()));
+				Image a = img.GetChannel(3);
+				FillImage(a, Vector(3, img.GetType()));
+
+				{
+					// Check channels in the correct order
+					uint8_t* tmp = (uint8_t*)img.GetData();
+					Assert::AreEqual((uint8_t)0, tmp[0], L"R channel contained a pixel with a wrong value (order check)");
+					Assert::AreEqual((uint8_t)1, tmp[1], L"G channel contained a pixel with a wrong value (order check)");
+					Assert::AreEqual((uint8_t)2, tmp[2], L"B channel contained a pixel with a wrong value (order check)");
+					Assert::AreEqual((uint8_t)3, tmp[3], L"A channel contained a pixel with a wrong value (order check)");
+				}
+
+				size_t w = r.GetWidth();
+				size_t h = r.GetHeight();
+				size_t s = w * h;
+				Assert::AreEqual(img.GetWidth(), w, L"R channel has wrong width");
+				Assert::AreEqual(img.GetHeight(), w, L"R channel has wrong height");
+				Assert::AreEqual((int)ANVIL_8UX1, (int)r.GetType().GetEnumeratedType(), L"R channel has wrong type");
+
+				for (size_t y = 0u; y < h; ++y) for (size_t x = 0u; x < w; ++x) {
+					uint8_t tmp;
+					r.ReadPixel(x, y, tmp);
+					Assert::AreEqual((uint8_t)0, tmp, L"R channel contained a pixel with a wrong value (before copy)");
+				}
+
+				for (size_t y = 0u; y < h; ++y) for (size_t x = 0u; x < w; ++x) {
+					uint8_t tmp;
+					g.ReadPixel(x, y, tmp);
+					Assert::AreEqual((uint8_t)1, tmp, L"G channel contained a pixel with a wrong value (before copy)");
+				}
+
+				for (size_t y = 0u; y < h; ++y) for (size_t x = 0u; x < w; ++x) {
+					uint8_t tmp;
+					b.ReadPixel(x, y, tmp);
+					Assert::AreEqual((uint8_t)2, tmp, L"B channel contained a pixel with a wrong value (before copy)");
+				}
+
+				for (size_t y = 0u; y < h; ++y) for (size_t x = 0u; x < w; ++x) {
+					uint8_t tmp;
+					a.ReadPixel(x, y, tmp);
+					Assert::AreEqual((uint8_t)3, tmp, L"A channel contained a pixel with a wrong value (before copy)");
+				}
+
+				r = r.Copy();
+				g = g.Copy();
+				b = b.Copy();
+				a = a.Copy();
+
+				uint8_t* tmp;
+
+				tmp = (uint8_t*) r.GetData();
+				for (size_t i = 0u; i < s; ++i) Assert::AreEqual((uint8_t)0, tmp[i], L"R channel contained a pixel with a wrong value (after copy)");
+
+				tmp = (uint8_t*)g.GetData();
+				for (size_t i = 0u; i < s; ++i) Assert::AreEqual((uint8_t)1, tmp[i], L"G channel contained a pixel with a wrong value (after copy)");
+
+				tmp = (uint8_t*)b.GetData();
+				for (size_t i = 0u; i < s; ++i) Assert::AreEqual((uint8_t)2, tmp[i], L"B channel contained a pixel with a wrong value (after copy)");
+
+				tmp = (uint8_t*)a.GetData();
+				for (size_t i = 0u; i < s; ++i) Assert::AreEqual((uint8_t)3, tmp[i], L"A channel contained a pixel with a wrong value (after copy)");
+
+			} catch (std::exception& e) {
+				Assert::Fail(std::wstring_convert<std::codecvt<wchar_t, char, std::mbstate_t>>().from_bytes(e.what()).c_str());
+			}
+		}
+	};
 
 	TEST_CLASS(TestShortType)
 	{

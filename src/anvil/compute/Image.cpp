@@ -85,7 +85,9 @@ namespace anvil { namespace compute {
 		if (allow_reinterpret && TryReinterpretAs(type, width, height, allow_reinterpret_as_smaller)) return;
 
 		Deallocate();
-		_data = operator new(type.GetPrimitiveSizeInBytes() * width * height);
+		_pixel_step = type.GetSizeInBytes();
+		_row_step = _pixel_step * width;
+		_data = operator new(_row_step * height);
 		ANVIL_RUNTIME_ASSERT(_data, "anvil::compute::Image::Allocate : Failed to allocate memory");
 		_owned_memory = true;
 		_width = width;
@@ -183,13 +185,26 @@ namespace anvil { namespace compute {
 	void Image::CopyTo(Image& other) const {
 		other.Allocate(_type, _width, _height, true);
 
-		const size_t row_bytes = _type.GetSizeInBytes() * _width;
-		for (size_t y = 0u; y < _height; ++y) memcpy(other.GetPixelAddress(0, y), GetPixelAddress(0, y), row_bytes);
+		const size_t pixel_bytes = _type.GetSizeInBytes();
+		const size_t row_bytes = pixel_bytes * _width;
+		if (_pixel_step == pixel_bytes) {
+			for (size_t y = 0u; y < _height; ++y) memcpy(other.GetPixelAddress(0, y), GetPixelAddress(0, y), row_bytes);
+
+		} else {
+			//! \todo Optimise
+			for (size_t y = 0u; y < _height; ++y) {
+				for (size_t x = 0u; x < _height; ++x) {
+					Vector tmp;
+					ReadPixel(x, y, tmp);
+					other.WritePixel(x, y, tmp);
+				}
+			}
+		}
 	}
 
 	Image Image::GetRoi(size_t x, size_t y, size_t width, size_t height) {
-		ANVIL_RUNTIME_ASSERT(width + x < _width, "anvil::Image::GetRoi : Out of bounds on X axis");
-		ANVIL_RUNTIME_ASSERT(height + y < _height, "anvil::Image::GetRoi : Out of bounds on Y axis");
+		ANVIL_RUNTIME_ASSERT(width + x <= _width, "anvil::Image::GetRoi : Out of bounds on X axis");
+		ANVIL_RUNTIME_ASSERT(height + y <= _height, "anvil::Image::GetRoi : Out of bounds on Y axis");
 		Image tmp(GetPixelAddress(x,y), _type, width, height, _row_step, _pixel_step);
 		tmp._parent = this;
 		return tmp;
@@ -203,8 +218,8 @@ namespace anvil { namespace compute {
 		Image tmp = GetRoi(0u, 0u, _width, _height);
 
 		// Move the start of the row to the correct channel
-		tmp._data = static_cast<uint8_t*>(tmp._data) + _type.GetPrimitiveSizeInBytes() * index;
 		tmp._type.SetNumberOfChannels(1u);
+		tmp._data = static_cast<uint8_t*>(tmp._data) + tmp._type.GetSizeInBytes() * index;
 
 		return tmp;
 	}

@@ -11,6 +11,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test", "Test\Test.vcxproj.v
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTests", "UnitTests\UnitTests.vcxproj", "{4157D547-3E95-4B7A-A0C8-AAFFF157B7D2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{30DA2E10-2ECA-4088-97CD-BB78F84F91CC} = {30DA2E10-2ECA-4088-97CD-BB78F84F91CC}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

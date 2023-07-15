@@ -19,6 +19,7 @@
 #include "anvil/compute/Type.hpp"
 #include "anvil/compute/Scalar.hpp"
 #include "anvil/compute/Vector.hpp"
+#include "anvil/compute/Image.hpp"
 
 //#include "anvil/compute/simd/Blend.hpp"
 //#include "anvil/compute/simd/Add.hpp"

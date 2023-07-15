@@ -166,6 +166,7 @@ namespace anvil { namespace compute {
 	};
 
 	class Image;
+	class Vector;
 
 	class ANVIL_DLL_EXPORT TypedScalar {
 	private:
@@ -173,6 +174,7 @@ namespace anvil { namespace compute {
 		Type _type;
 	public:
 		friend Image;
+		friend Vector;
 
 		TypedScalar();
 		~TypedScalar() = default;
