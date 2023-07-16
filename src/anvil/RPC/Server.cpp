@@ -14,6 +14,10 @@
 
 #include "anvil/RPC/Server.hpp"
 
+#if ANVIL_OPENCV_SUPPORT
+#include <opencv2/opencv.hpp>
+#endif
+
 namespace anvil { namespace RPC {
 
 	// Server

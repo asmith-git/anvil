@@ -217,7 +217,6 @@ namespace anvil { namespace compute {
 		}
 	}
 
-	#pragma warning( disable : 4714) // DeepCopy not inlined. Should be fine.
 	Image Image::ConvertTo(Type type) const {
 		// Only copy the image once
 		Image tmp = _type.GetSizeInBytes() == type.GetSizeInBytes() ? DeepCopy() : const_cast<Image*>(this)->ShallowCopy();

@@ -510,11 +510,9 @@ namespace anvil { namespace BytePipe {
 		SetPod() = value;
 	}
 
-#if ANVIL_OPENCV_SUPPORT
-	Value::Value(const cv::Mat& img) :
-		Value(Pod::CreatePODFromCVMat(img))
+	Value::Value(const compute::Image& img) :
+		Value(Pod::CreatePODFromImage(img))
 	{}
-#endif
 
 	Value::~Value() {
 		SetNull();

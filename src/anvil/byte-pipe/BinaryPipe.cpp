@@ -15,6 +15,9 @@
 #include <cstddef>
 #include "anvil/byte-pipe/BytePipeWriter.hpp"
 #include "anvil/byte-pipe/BytePipeEndian.hpp"
+#if ANVIL_OPENCV_SUPPORT
+#include<opencv2/opencv.hpp>
+#endif
 
 namespace anvil { namespace BytePipe {
 
@@ -1282,94 +1285,130 @@ OLD_COMPONENT_ID:
 
 	}
 
-#if ANVIL_OPENCV_SUPPORT
 
-	struct OpenCVHeader {
+	struct ImageHeader {
 		uint32_t width;
 		uint32_t height;
-		uint16_t type;
-		uint16_t compression_format;
+		uint8_t compression_format;
+		uint8_t type;
 	};
 
-	static_assert(sizeof(OpenCVHeader) == 12, "anvil/BytePipeParser.cpp : Expected OpenCVHeader to be 12 bytes");
+	static_assert(sizeof(ImageHeader) == 12, "anvil/BytePipeParser.cpp : Expected ImageHeader to be 12 bytes");
 
-	cv::Mat Value::Pod::CreateOpenCVMatFromPOD(const void* data, const size_t bytes) {
-		const OpenCVHeader* header = static_cast<const OpenCVHeader*>(data);
+	compute::Image Value::Pod::CreateImageFromPOD(const void* data, const size_t bytes) {
+		const ImageHeader* header = static_cast<const ImageHeader*>(data);
 
+#if ANVIL_OPENCV_SUPPORT
+		// IMAGE_BIN is already defined in header file
+		static_assert(IMAGE_BIN == 0, "Expected IMAGE_BIN to be 0");
+#else
+		enum { IMAGE_BIN = 0 };
+#endif
 		if (header->compression_format == IMAGE_BIN) {
-			return cv::Mat(
-				cv::Size(header->width, header->height),
-				static_cast<int>(header->type),
-				const_cast<uint8_t*>(static_cast<const uint8_t*>(data) + sizeof(OpenCVHeader))
-			).clone();
+			return compute::Image(
+				const_cast<uint8_t*>(static_cast<const uint8_t*>(data) + sizeof(ImageHeader)),
+				static_cast<EnumeratedType>(header->type), header->width, header->height).DeepCopy();
 		} else {
-			const uint8_t* img_data = static_cast<const uint8_t*>(data) + sizeof(OpenCVHeader);
-			std::vector<uint8_t> tmp(img_data, img_data + (bytes - sizeof(OpenCVHeader)));
+#if ANVIL_OPENCV_SUPPORT
+			const uint8_t* img_data = static_cast<const uint8_t*>(data) + sizeof(ImageHeader);
+			std::vector<uint8_t> tmp(img_data, img_data + (bytes - sizeof(ImageHeader)));
 			return cv::imdecode(tmp, 0);
+#else
+			throw std::runtime_error("anvil::BytePipe::Value::Pod::CreateImageFromPod : OpenCV is required for image compression");
+#endif
 		}
 	}
 
-	Value::Pod Value::Pod::CreatePODFromCVMat(const cv::Mat& value, ImageFormat compression_format, float quality) {
+#if ANVIL_OPENCV_SUPPORT
+	Value::Pod _CreatePODFromImage(const compute::Image& value_in, ImageFormat compression_format, float quality) {
+#else
+	Value::Pod _CreatePODFromImage(const compute::Image & value_in, int compression_format, float quality) {
+#endif
+		compute::Image buffer_image;
+		const compute::Image* value = &value_in;
+		if (!value_in.IsContiguous()) {
+			buffer_image = value_in.DeepCopy();
+			value = &buffer_image;
+		}
 
-		Pod pod;
-		pod.type = POD_OPENCV_IMAGE;
+		Value::Pod pod;
+		pod.type = POD_IMAGE;
 
-		OpenCVHeader header;
-		header.width = static_cast<uint32_t>(value.cols);
-		header.height = static_cast<uint32_t>(value.rows);
-		header.type = static_cast<uint16_t>(value.type());
-		header.compression_format = static_cast<uint16_t>(compression_format);
+		ImageHeader header;
+		header.width = static_cast<uint32_t>(value->GetWidth());
+		header.height = static_cast<uint32_t>(value->GetHeight());
+		header.type = static_cast<uint16_t>(value->GetType().GetEnumeratedType());
+		header.compression_format = static_cast<uint8_t>(compression_format);
 
 		if (compression_format == IMAGE_BIN) {
-			uint32_t bytes = static_cast<uint32_t>(value.elemSize());
-			bytes *= static_cast<uint32_t>(value.rows * value.cols);
-			bytes += sizeof(OpenCVHeader);
+			uint32_t bytes = static_cast<uint32_t>(value->GetType().GetSizeInBytes());
+			bytes *= header.width * header.height;
+			bytes += sizeof(ImageHeader);
 
 			pod.data.resize(bytes);
 			void* data = pod.data.data();
-			memcpy(data, &header, sizeof(OpenCVHeader));
-			memcpy(static_cast<uint8_t*>(data) + sizeof(OpenCVHeader), value.data, bytes - sizeof(OpenCVHeader));
+			memcpy(data, &header, sizeof(ImageHeader));
+			memcpy(static_cast<uint8_t*>(data) + sizeof(ImageHeader), value->GetData(), bytes - sizeof(ImageHeader));
 		} else {
+#if ANVIL_OPENCV_SUPPORT
 			std::vector<uint8_t> tmp;
+
+			cv::Mat mat = *const_cast<compute::Image*>(value);
 
 			switch (compression_format) {
 			case IMAGE_JPEG:
-				cv::imencode(".jpg", value, tmp, { cv::IMWRITE_JPEG_QUALITY , static_cast<int>(std::round(quality))});
+				cv::imencode(".jpg", mat, tmp, { cv::IMWRITE_JPEG_QUALITY , static_cast<int>(std::round(quality)) });
 				break;
 			case IMAGE_JPEG2000:
-				cv::imencode(".jp2", value, tmp, { cv::IMWRITE_JPEG2000_COMPRESSION_X1000, static_cast<int>(std::round(quality * 10.f)) });
+				cv::imencode(".jp2", mat, tmp, { cv::IMWRITE_JPEG2000_COMPRESSION_X1000, static_cast<int>(std::round(quality * 10.f)) });
 				break;
 			case IMAGE_BMP:
-				cv::imencode(".bmp", value, tmp);
+				cv::imencode(".bmp", mat, tmp);
 				break;
 			case IMAGE_PNG:
-				cv::imencode(".jpg", value, tmp/*, { cv::IMWRITE_PNG_COMPRESSION , static_cast<int>(std::round(quality / 100.f) * 9.f) }*/);
+				cv::imencode(".jpg", mat, tmp/*, { cv::IMWRITE_PNG_COMPRESSION , static_cast<int>(std::round(quality / 100.f) * 9.f) }*/);
 				break;
 			case IMAGE_TIFF:
-				cv::imencode(".tiff", value, tmp);
+				cv::imencode(".tiff", mat, tmp);
 				break;
 			case IMAGE_WEBP:
-				cv::imencode(".webp", value, tmp);
+				cv::imencode(".webp", mat, tmp);
 				break;
 			case IMAGE_EXR:
-				cv::imencode(".exr", value, tmp);
+				cv::imencode(".exr", mat, tmp);
 				break;
 			case IMAGE_HDR:
-				cv::imencode(".hdr", value, tmp);
+				cv::imencode(".hdr", mat, tmp);
 				break;
 			}
 
-			size_t bytes = sizeof(OpenCVHeader) + tmp.size();
+			size_t bytes = sizeof(ImageHeader) + tmp.size();
 
 			pod.data.resize(bytes);
 			void* data = pod.data.data();
-			memcpy(data, &header, sizeof(OpenCVHeader));
-			memcpy(static_cast<uint8_t*>(data) + sizeof(OpenCVHeader), tmp.data(), bytes - sizeof(OpenCVHeader));
+			memcpy(data, &header, sizeof(ImageHeader));
+			memcpy(static_cast<uint8_t*>(data) + sizeof(ImageHeader), tmp.data(), bytes - sizeof(ImageHeader));
+#else
+			throw std::runtime_error("anvil::BytePipe::Value::Pod::CreatePODFromImage : OpenCV is required for image compression");
+#endif
 		}
 
 		return pod;
 	}
+
+#if ANVIL_OPENCV_SUPPORT
+	Value::Pod Value::Pod::CreatePODFromImage(const compute::Image& value, ImageFormat compression_format, float quality) {
+		return _CreatePODFromImage(value, compression_format, quality);
+	}
 #endif
+
+	Value::Pod Value::Pod::CreatePODFromImage(const compute::Image& value) {
+#if ANVIL_OPENCV_SUPPORT
+		return _CreatePODFromImage(value, IMAGE_BIN, 100.f);
+#else
+		return _CreatePODFromImage(value, 0, 100.f);
+#endif
+	}
 
 	void Parser::OnValue(const Value& value) {
 		switch (value.GetType()) {

@@ -24,14 +24,12 @@
 #include <memory>
 #include "anvil/byte-pipe/BytePipeCore.hpp"
 #include "anvil/core/LibDetect.hpp"
-#if ANVIL_OPENCV_SUPPORT
-#include <opencv2/opencv.hpp>
-#endif
+#include "anvil/compute/Image.hpp"
 
 namespace anvil { namespace BytePipe {
 
 	enum PodType : uint32_t {
-		POD_OPENCV_IMAGE = 1u
+		POD_IMAGE = 1u
 	};
 
 #if ANVIL_OPENCV_SUPPORT
@@ -283,10 +281,10 @@ namespace anvil { namespace BytePipe {
 			std::vector<uint8_t> data;
 			PodType type;
 
-
+			static compute::Image CreateImageFromPOD(const void* data, const size_t bytes);
+			static Pod CreatePODFromImage(const compute::Image& img);
 #if ANVIL_OPENCV_SUPPORT
-			static cv::Mat CreateOpenCVMatFromPOD(const void* data, const size_t bytes);
-			static Pod CreatePODFromCVMat(const cv::Mat& img, ImageFormat compression_format = IMAGE_BIN, float compression_quality = 100.f);
+			static Pod CreatePODFromImage(const compute::Image& img, ImageFormat compression_format, float compression_quality = 100.f);
 #endif
 		};
 
@@ -406,24 +404,20 @@ namespace anvil { namespace BytePipe {
 		std::string* GetString(bool convert = false);
 		const std::string* GetString() const;
 
-#if ANVIL_OPENCV_SUPPORT
 		ANVIL_STRONG_INLINE Pod& SetImage() {
 			Pod& pod = SetPod();
-			pod.type = POD_OPENCV_IMAGE;
+			pod.type = POD_IMAGE;
 			return pod;
 		}
-#endif
 
 		ANVIL_STRONG_INLINE Pod* GetPod() { return _primitive.type == TYPE_POD ? static_cast<Pod*>(_primitive.ptr) : nullptr; }
 		ANVIL_STRONG_INLINE const Pod* GetPod() const { return _primitive.type == TYPE_POD ? static_cast<const Pod*>(_primitive.ptr) : nullptr; }
 
-#if ANVIL_OPENCV_SUPPORT
-		ANVIL_STRONG_INLINE cv::Mat GetImage() const {
+		ANVIL_STRONG_INLINE compute::Image GetImage() const {
 			const Pod* pod = GetPod();
-			if (pod == nullptr || pod->type != POD_OPENCV_IMAGE) throw std::runtime_error("Value::GetImage : Value is not an image");
-			return Pod::CreateOpenCVMatFromPOD(pod->data.data(), pod->data.size());
+			if (pod == nullptr || pod->type != POD_IMAGE) throw std::runtime_error("Value::GetImage : Value is not an image");
+			return Pod::CreateImageFromPOD(pod->data.data(), pod->data.size());
 		}
-#endif
 	public:
 		Value();
 		Value(Value&& other);
@@ -453,9 +447,7 @@ namespace anvil { namespace BytePipe {
 		Value(Pod&& value);
 		Value(const Pod& value);
 
-#if ANVIL_OPENCV_SUPPORT
-		Value(const cv::Mat& img);
-#endif
+		Value(const compute::Image& img);
 
 		~Value();
 
@@ -595,9 +587,7 @@ namespace anvil { namespace BytePipe {
 		ANVIL_STRONG_INLINE bool IsObject() const { return GetType() == TYPE_OBJECT; }
 		ANVIL_STRONG_INLINE bool IsPod() const { return GetType() == TYPE_POD; }
 
-#if ANVIL_OPENCV_SUPPORT
-		ANVIL_STRONG_INLINE bool IsImage() const { return IsPod() && GetPod()->type == POD_OPENCV_IMAGE;}
-#endif
+		ANVIL_STRONG_INLINE bool IsImage() const { return IsPod() && GetPod()->type == POD_IMAGE;}
 
 		ANVIL_STRONG_INLINE bool IsPrimitiveArray() const { return _primitive_array_type != TYPE_BOOL && GetType() == TYPE_ARRAY; }
 		ANVIL_STRONG_INLINE Type GetPrimitiveArrayType() const { return _primitive_array_type; }
@@ -616,12 +606,18 @@ namespace anvil { namespace BytePipe {
 		explicit ANVIL_STRONG_INLINE operator float() const { return GetF32(); }
 		explicit ANVIL_STRONG_INLINE operator double() const { return GetF64(); }
 
+		explicit ANVIL_STRONG_INLINE operator compute::Image() const { return GetImage(); }
 #if ANVIL_OPENCV_SUPPORT
-		explicit ANVIL_STRONG_INLINE operator cv::Mat() const { return GetImage(); }
+		explicit ANVIL_STRONG_INLINE operator cv::Mat() const { return static_cast<cv::Mat>(GetImage()).clone(); }
 #endif
 	};
 
 	namespace detail {
+
+		template<>
+		struct ValueSetReturn<compute::Image> {
+			typedef Value::Pod& type;
+		};
 
 #if ANVIL_OPENCV_SUPPORT
 		template<>
@@ -944,6 +940,11 @@ namespace anvil { namespace BytePipe {
 	template<>
 	ANVIL_STRONG_INLINE void Value::Set<Value::Null>() {
 		return SetNull();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE Value::Pod& Value::Set<compute::Image>() {
+		return SetImage();
 	}
 
 #if ANVIL_OPENCV_SUPPORT
