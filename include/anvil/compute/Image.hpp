@@ -16,6 +16,7 @@
 #define ANVIL_COMPUTE_IMAGE_HPP
 
 #include <memory>
+#include <list>
 #include <functional>
 #include "anvil/compute/Vector.hpp"
 #if ANVIL_OPENCV_SUPPORT
@@ -69,6 +70,11 @@ namespace anvil { namespace compute {
 		*/
 		void Allocate(Type type, size_t width, size_t height, bool force = true);
 
+		/*!
+		*	\brief Deallocate memory that was previously allocated.
+		*	\details Child images will not be effected by the deallocation of a parent as the memory is reference counted.
+		*	\see Image::Allocate
+		*/
 		void Deallocate();
 
 		/*!
@@ -78,45 +84,124 @@ namespace anvil { namespace compute {
 		*/
 		Image* GetParent() throw();
 
-		Image GetChannel(size_t index);
+		/*!
+		*	\brief Return a child image that only references one or more adjacent channels of this image.
+		*	\details Call Image::DeepCopy on the returned image if pixel stepping is not desirable.
+		*	\param index The index of the first channel that should be referenced.
+		*	\param count The number of adjacent channels to referenced.
+		*	\return The child image.
+		*	\see Image::GetChannel
+		*	\see Image::GetAllChannels
+		*/
+		Image GetChannels(size_t index, size_t count);
+
+		/*!
+		*	\brief Return a child image that only references one channel of this image.
+		*	\details Call Image::DeepCopy on the returned image if pixel stepping is not desirable.
+		*	\param index The index of the channel that should be referenced.
+		*	\return The child image.
+		*	\see Image::GetChannels
+		*	\see Image::GetAllChannels
+		*/
+		ANVIL_STRONG_INLINE Image GetChannel(size_t index) {
+			return GetChannels(index, 1u);
+		}
+
+		/*!
+		*	\brief Return child images that reference each channel of this image.
+		*	\details Call Image::DeepCopy on the returned images if pixel stepping is not desirable.
+		*	\return The child images, each referencing a different channel sequentially.
+		*	\see Image::GetChannel
+		*	\see Image::GetChannels
+		*/
+		std::list<Image> GetAllChannels();
+
+		/*!
+		*	\brief Return a child image that references only a region of interest (ROI) of this image.
+		*	\param x The X position of the first pixel inside the ROI
+		*	\param y The Y position of the tirst pixel inside the ROI
+		*	\param width The number of pixels in each row of the ROI
+		*	\param height The number of pixels in each column of the ROI
+		*	\return The child image
+		*/
 		Image GetRoi(size_t x, size_t y, size_t width, size_t height);
 
-		ANVIL_STRONG_INLINE Image GetRow(size_t y) { return GetRoi(0u, y, _width, 1u); }
-		ANVIL_STRONG_INLINE Image GetCol(size_t x) { return GetRoi(x, 0u, 1u, _height); }
+		/*!
+		*	\brief Return a child image that references only one row of this image.
+		*	\details This function just calls Image::GetROI.
+		*	\param y The index of the row to reference.
+		*	\return The child image.
+		*	\see Image::GetROI
+		*	\see Image::GetCol
+		*/
+		ANVIL_STRONG_INLINE Image GetRow(size_t y) { 
+			return GetRoi(0u, y, _width, 1u); 
+		}
+		
+		/*!
+		*	\brief Return a child image that references only one column of this image.
+		*	\details This function just calls Image::GetROI.
+		*	\param y The index of the column to reference.
+		*	\return The child image.
+		*	\see Image::GetROI
+		*	\see Image::GetRow
+		*/
+		ANVIL_STRONG_INLINE Image GetCol(size_t x) { 
+			return GetRoi(x, 0u, 1u, _height); 
+		}
 
+		/*!
+		*	\brief Copy the pixels from this image into a different one.
+		*	\details If the target image is a different size then it will be re-allocated.
+		*	\param other The image to copy into.
+		*	\see Image::DeepCopy
+		*/
 		void DeepCopyTo(Image& other) const;
 
+		/*!
+		*	\brief Copy all of this pixel values in this image into a new image.
+		*	\return The copied image.
+		*/
 		ANVIL_STRONG_INLINE Image DeepCopy() const {
 			Image tmp;
 			DeepCopyTo(tmp);
 			return tmp;
 		}
 
+		/*!
+		*	\brief Create a child image that references all pixels in this image.
+		*	\details This function just calls Image::GetRoi.
+		*	\return The child image.
+		*/
 		ANVIL_STRONG_INLINE Image ShallowCopy() { 
 			return GetRoi(0u, 0u, _width, _height); 
 		}
 
+		/*!
+		*	\param Convert the pixels in this image to a diffrent data type.
+		*	\details If the new type is a different size then the image memory will be re-allocated.
+		*	\param type The type to convert to.	
+		*	\see Image::ConvertTo
+		*/
 		void ConvertToInPlace(Type type);
 
-		ANVIL_STRONG_INLINE Image ConvertTo(Type type) const {
-			Image tmp = DeepCopy();
-			tmp.ConvertToInPlace(type);
-			return tmp;
-		}
+		/*!
+		*	\param Copy and convert the pixels values of this image to a different data type.
+		*	\param type The type to convert to.
+		*	\return The converted image
+		*	\see Image::ConvertToInPlace
+		*/
+		Image ConvertTo(Type type) const;
 
+		/*!
+		*	\param Try to reinterpret what the memory of this image represents without changing the values of any pixels.
+		*	\details An example of how this function might be used is to reinterpret a single precision floating point image as 32-bit integer to perform a bitwise masking operation on it.
+		*	\param type The data type to reinterpret the memory as.
+		*	\param width The number of pixels in each row of the reinterpreted image.
+		*	\param height The number of pixels in each column of the reinterpreted image.
+		*	\return True if the image memory was reinterpreted successfully.
+		*/
 		bool TryReinterpretAs(Type type, size_t width, size_t height, bool allow_reinterpret_as_smaller = false);
-
-		ANVIL_STRONG_INLINE bool TryReinterpretAs(Type type) {
-			return TryReinterpretAs(type, _width, _height);
-		}
-
-		ANVIL_STRONG_INLINE void ReinterpretAs(Type type, size_t width, size_t height) { 
-			ANVIL_RUNTIME_ASSERT(TryReinterpretAs(type, width, height), "anvil::Image::ReinterpretAs : Could not reinterpret image"); 
-		}
-
-		ANVIL_STRONG_INLINE void ReinterpretAs(Type type) {
-			ReinterpretAs(type, _width, _height);
-		}
 
 		bool operator==(const Image& other) const throw();
 		ANVIL_STRONG_INLINE bool operator!=(const Image& other) const throw() { return !operator==(other); }

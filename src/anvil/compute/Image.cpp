@@ -90,14 +90,6 @@ namespace anvil { namespace compute {
 		memcpy(&other, buffer, sizeof(Image));
 	}
 
-	/*!
-	*	\brief
-	*	\param type The data type of the pixels in the new image.
-	*	\param width The number of pixels in each row.
-	*	\param height The number of pixels in each column.
-	*	\param force Will force allocation of a new block of memory if the current memory is shared by a parent or child image.
-	*	\see Image::Deallocate
-	*/
 	void Image::Allocate(Type type, size_t width, size_t height, bool force) {
 		// Check if the requested image is the same as the current one and the allocation isn't forced
 		if (type == _type && _width == width && _height == height && !force) {
@@ -197,26 +189,42 @@ namespace anvil { namespace compute {
 	void Image::ConvertToInPlace(Type type) {
 		if (_type == type) return;
 
-		//! \todo Optimise
-		if (_type.GetNumberOfChannels() == 1u) {
+		if (_type.GetSizeInBytes() != type.GetSizeInBytes()) {
+			Image tmp(type, _width, _height);
+
+			//! \todo Optimise
 			for (size_t y = 0u; y < _height; ++y) {
 				for (size_t x = 0u; x < _width; ++x) {
-					TypedScalar tmp;
-					ReadPixel(x, y, tmp);
-					tmp.ConvertToInPlace(type);
-					WritePixel(x, y, tmp);
+					Vector pixel;
+					ReadPixel(x, y, pixel);
+					pixel.ConvertToInPlace(type);
+					tmp.WritePixel(x, y, pixel);
 				}
 			}
+
+			Swap(tmp);
+
 		} else {
+			//! \todo Optimise
 			for (size_t y = 0u; y < _height; ++y) {
 				for (size_t x = 0u; x < _width; ++x) {
-					Vector tmp;
-					ReadPixel(x, y, tmp);
-					tmp.ConvertToInPlace(type);
-					WritePixel(x, y, tmp);
+					Vector pixel;
+					ReadPixel(x, y, pixel);
+					pixel.ConvertToInPlace(type);
+					WritePixel(x, y, pixel);
 				}
 			}
 		}
+	}
+
+	#pragma warning( disable : 4714) // DeepCopy not inlined. Should be fine.
+	Image Image::ConvertTo(Type type) const {
+		// Only copy the image once
+		Image tmp = _type.GetSizeInBytes() == type.GetSizeInBytes() ? DeepCopy() : const_cast<Image*>(this)->ShallowCopy();
+		
+		// Perform conversion
+		tmp.ConvertToInPlace(type);
+		return tmp;
 	}
 
 	bool Image::operator==(const Image& other) const throw() {
@@ -268,17 +276,27 @@ namespace anvil { namespace compute {
 		return tmp;
 	}
 
-	Image Image::GetChannel(size_t index) {
+	Image Image::GetChannels(size_t index, size_t count) {
 		const size_t channels = _type.GetNumberOfChannels();
-		ANVIL_RUNTIME_ASSERT(index < channels, "anvil::Image::GetChannel : Index out of bounds");
+		ANVIL_DEBUG_ASSERT(count > 0, "anvil::Image::GetChannels : Channel count cannot be 0");
+		ANVIL_RUNTIME_ASSERT(index + count <= channels, "anvil::Image::GetChannels : Index out of bounds");
 
 		Image tmp = ShallowCopy();
 
 		// Move the start of the row to the correct channel
-		tmp._type.SetNumberOfChannels(1u);
+		tmp._type.SetNumberOfChannels(count);
 		tmp._data = static_cast<uint8_t*>(tmp._data) + tmp._type.GetSizeInBytes() * index;
 
 		return tmp;
+	}
+
+	std::list<Image> Image::GetAllChannels() {
+		std::list<Image> channels;
+		size_t count = _type.GetNumberOfChannels();
+		for (size_t i = 0u; i < count; ++i) {
+			channels.push_back(GetChannel(i));
+		}
+		return channels;
 	}
 
 	void Image::GetRoiPosition(size_t& x, size_t& y) const {
