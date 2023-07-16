@@ -16,6 +16,22 @@
 
 namespace anvil { namespace compute {
 
+	Image::MemoryBlock::MemoryBlock(size_t a_bytes) :
+		data(operator new (a_bytes)),
+		bytes(a_bytes)
+	{
+		ANVIL_RUNTIME_ASSERT(data, "anvil::compute::Image::Allocate : Failed to allocate memory");
+	}
+
+	Image::MemoryBlock::~MemoryBlock() {
+		if (data) {
+			operator delete(data);
+			data = nullptr;
+			bytes = 0u;
+		}
+	}
+
+
 	// Image 
 
 	Image::Image() :
@@ -25,8 +41,7 @@ namespace anvil { namespace compute {
 		_pixel_step(0u),
 		_width(0u),
 		_height(0u),
-		_type(),
-		_owned_memory(false)
+		_type()
 	{}
 
 	Image::~Image() {
@@ -36,7 +51,7 @@ namespace anvil { namespace compute {
 	Image::Image(const Type type, size_t width, size_t height) :
 		Image()
 	{
-		Allocate(type, width, height, false);
+		Allocate(type, width, height);
 	}
 
 	Image::Image(void* data, const Type type, size_t width, size_t height, size_t row_step, size_t pixel_step) :
@@ -46,8 +61,7 @@ namespace anvil { namespace compute {
 		_pixel_step(pixel_step),
 		_width(width),
 		_height(height),
-		_type(type),
-		_owned_memory(false)
+		_type(type)
 	{}
 
 	Image::Image(void* data, const Type type, size_t width, size_t height, size_t row_step) :
@@ -76,28 +90,60 @@ namespace anvil { namespace compute {
 		memcpy(&other, buffer, sizeof(Image));
 	}
 
-	void Image::Allocate(Type type, size_t width, size_t height, bool allow_reinterpret, bool allow_reinterpret_as_smaller) {
-		ANVIL_DEBUG_ASSERT(
-			allow_reinterpret_as_smaller ? allow_reinterpret : true, 
-			"anvil::compute::Image::Allocate : allow_reinterpret_as_smaller should not be true when allow_reinterpret is false"
-		);
+	/*!
+	*	\brief
+	*	\param type The data type of the pixels in the new image.
+	*	\param width The number of pixels in each row.
+	*	\param height The number of pixels in each column.
+	*	\param force Will force allocation of a new block of memory if the current memory is shared by a parent or child image.
+	*	\see Image::Deallocate
+	*/
+	void Image::Allocate(Type type, size_t width, size_t height, bool force) {
+		// Check if the requested image is the same as the current one and the allocation isn't forced
+		if (type == _type && _width == width && _height == height && !force) {
+			return;
+		}
 
-		if (allow_reinterpret && TryReinterpretAs(type, width, height, allow_reinterpret_as_smaller)) return;
+		// If this is the only image using the memory block then don't need to worry about parent/child images
+		if (_memory_manager.use_count() == 1u) {
+			// If the current memory is large enough then we can re-use it efficently
+			size_t pixel_bytes = type.GetSizeInBytes();
+			if (_memory_manager->bytes >= pixel_bytes * width * height) {
+				_parent = nullptr;
+				_pixel_step = pixel_bytes;
+				_row_step = _pixel_step * width;
+				_data = _memory_manager->data;
+				_width = width;
+				_height = height;
+				_type = type;
+				return;
+			}
+		}
 
-		Deallocate();
+		// If this isn't a forced allcoation we can try to reinterpret the pixel type
+		if ((!force) && _type.GetSizeInBytes() == type.GetSizeInBytes()) {
+			if (TryReinterpretAs(type, width, height, true)) return;
+		}
+
+		// Otherwise we need to deallocate the current block and allocate a new one
+		if (_memory_manager) {
+			std::shared_ptr<MemoryBlock> tmp;
+			_memory_manager.swap(tmp);
+		}
+		_parent = nullptr;
 		_pixel_step = type.GetSizeInBytes();
 		_row_step = _pixel_step * width;
-		_data = operator new(_row_step * height);
-		ANVIL_RUNTIME_ASSERT(_data, "anvil::compute::Image::Allocate : Failed to allocate memory");
-		_owned_memory = true;
+		_memory_manager.reset(new MemoryBlock(_row_step * height));
+		_data = _memory_manager->data;
 		_width = width;
 		_height = height;
 		_type = type;
 	}
 
 	void Image::Deallocate() {
-		if (_owned_memory) {
-			if (_data) operator delete(_data);
+		if (_memory_manager) {
+			std::shared_ptr<MemoryBlock> tmp;
+			_memory_manager.swap(tmp);
 		}
 		_parent = nullptr;
 		_data = nullptr;
@@ -137,6 +183,15 @@ namespace anvil { namespace compute {
 		}
 
 		return false;
+	}
+
+	Image* Image::GetParent() throw() {
+		// Check if the parent has been destroyed or reallocated
+		if (_parent && (_memory_manager.use_count() <= 1 || _parent->_memory_manager != _memory_manager)) {
+			_parent = nullptr;
+		}
+
+		return _parent;
 	}
 
 	void Image::ConvertToInPlace(Type type) {
@@ -186,7 +241,7 @@ namespace anvil { namespace compute {
 	}
 
 	void Image::DeepCopyTo(Image& other) const {
-		other.Allocate(_type, _width, _height, true);
+		other.Allocate(_type, _width, _height, false);
 
 		const size_t pixel_bytes = _type.GetSizeInBytes();
 		const size_t row_bytes = pixel_bytes * _width;

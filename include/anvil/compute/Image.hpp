@@ -16,6 +16,7 @@
 #define ANVIL_COMPUTE_IMAGE_HPP
 
 #include <memory>
+#include <functional>
 #include "anvil/compute/Vector.hpp"
 #if ANVIL_OPENCV_SUPPORT
 #include<opencv2/core/mat.hpp>
@@ -25,6 +26,14 @@ namespace anvil { namespace compute {
 
 	class ANVIL_DLL_EXPORT Image {
 	private:
+		struct MemoryBlock {
+			void* data;
+			size_t bytes;
+
+			MemoryBlock(size_t bytes);
+			~MemoryBlock();
+		};
+		std::shared_ptr<MemoryBlock> _memory_manager;	//!< Reference counts memory allocated by this class.
 		Image* _parent;			//!< The parent if this image is an ROI, otherwise null.
 		void* _data;			//!< The address of pixel [0,0].
 		size_t _row_step;		//!< The distance between pixel 0 of one row and pixel 0 of the next in bytes.
@@ -32,7 +41,6 @@ namespace anvil { namespace compute {
 		size_t _width;			//!< The size of a row in pixels.
 		size_t _height;			//!< The sizeo f a column in pixels.
 		Type _type;				//!< The data type of the pixels.
-		bool _owned_memory;		//!< If _data is managed by this object.
 	public:
 		Image();
 		~Image();
@@ -50,8 +58,25 @@ namespace anvil { namespace compute {
 
 		void Swap(Image& other);
 
-		void Allocate(Type type, size_t width, size_t height, bool allow_reinterpret = true, bool allow_reinterpret_as_smaller = false);
+		/*!
+		*	\brief Allocate a new image.
+		*	\details Will try to re-use existing allocation if possible.
+		*	\param type The data type of the pixels in the new image.
+		*	\param width The number of pixels in each row.
+		*	\param height The number of pixels in each column.
+		*	\param force Will force allocation of a new block of memory if the current memory is shared by a parent or child image.
+		*	\see Image::Deallocate
+		*/
+		void Allocate(Type type, size_t width, size_t height, bool force = true);
+
 		void Deallocate();
+
+		/*!
+		*	\param If this image is an ROI or a channel of another image then return that image.
+		*	\details This function should be called before each use of the parent to check that it hasn't been deallocated.
+		*	\return The parent image or null if there isn't one
+		*/
+		Image* GetParent() throw();
 
 		Image GetChannel(size_t index);
 		Image GetRoi(size_t x, size_t y, size_t width, size_t height);
@@ -190,18 +215,6 @@ namespace anvil { namespace compute {
 			} else {
 				memcpy(GetPixelAddress(x, y), pixel.ConvertTo(_type).GetData(), _type.GetSizeInBytes());
 			}
-		}
-		
-		ANVIL_STRONG_INLINE bool HasParent() const throw() {
-			return _parent != nullptr;
-		}
-
-		ANVIL_STRONG_INLINE const Image& GetParent() const throw() {
-			return *_parent;
-		}
-
-		ANVIL_STRONG_INLINE Image& GetParent() throw() {
-			return *_parent;
 		}
 
 		void GetRoiPosition(const Image& img, size_t& x, size_t& y) const;
