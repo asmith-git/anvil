@@ -182,7 +182,7 @@ namespace anvil { namespace compute {
 		return true;
 	}
 
-	void Image::CopyTo(Image& other) const {
+	void Image::DeepCopyTo(Image& other) const {
 		other.Allocate(_type, _width, _height, true);
 
 		const size_t pixel_bytes = _type.GetSizeInBytes();
@@ -214,8 +214,7 @@ namespace anvil { namespace compute {
 		const size_t channels = _type.GetNumberOfChannels();
 		ANVIL_RUNTIME_ASSERT(index < channels, "anvil::Image::GetChannel : Index out of bounds");
 
-		// Make a 'reference' to this image
-		Image tmp = GetRoi(0u, 0u, _width, _height);
+		Image tmp = ShallowCopy();
 
 		// Move the start of the row to the correct channel
 		tmp._type.SetNumberOfChannels(1u);

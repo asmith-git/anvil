@@ -59,18 +59,22 @@ namespace anvil { namespace compute {
 		ANVIL_STRONG_INLINE Image GetRow(size_t y) { return GetRoi(0u, y, _width, 1u); }
 		ANVIL_STRONG_INLINE Image GetCol(size_t x) { return GetRoi(x, 0u, 1u, _height); }
 
-		void CopyTo(Image& other) const;
+		void DeepCopyTo(Image& other) const;
 
-		ANVIL_STRONG_INLINE Image Copy() const {
+		ANVIL_STRONG_INLINE Image DeepCopy() const {
 			Image tmp;
-			CopyTo(tmp);
+			DeepCopyTo(tmp);
 			return tmp;
+		}
+
+		ANVIL_STRONG_INLINE Image ShallowCopy() { 
+			return GetRoi(0u, 0u, _width, _height); 
 		}
 
 		void ConvertToInPlace(Type type);
 
 		ANVIL_STRONG_INLINE Image ConvertTo(Type type) const {
-			Image tmp = Copy();
+			Image tmp = DeepCopy();
 			tmp.ConvertToInPlace(type);
 			return tmp;
 		}

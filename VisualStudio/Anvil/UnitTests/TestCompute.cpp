@@ -109,7 +109,7 @@ namespace anvil { namespace compute {
 					}
 				}
 
-				roi = roi.Copy();
+				roi = roi.DeepCopy();
 
 				for (size_t y = 0u; y < roih; ++y) {
 					for (size_t x = 0u; x < roiw; ++x) {
@@ -181,10 +181,10 @@ namespace anvil { namespace compute {
 					Assert::AreEqual((uint8_t)3, tmp, L"A channel contained a pixel with a wrong value (before copy)");
 				}
 
-				r = r.Copy();
-				g = g.Copy();
-				b = b.Copy();
-				a = a.Copy();
+				r = r.DeepCopy();
+				g = g.DeepCopy();
+				b = b.DeepCopy();
+				a = a.DeepCopy();
 
 				uint8_t* tmp;
 

@@ -972,10 +972,10 @@ void ImageRoiTest() {
 			ANVIL_RUNTIME_ASSERT((uint8_t)3 == tmp, "A channel contained a pixel with a wrong value (before copy)");
 		}
 
-		r = r.Copy();
-		g = g.Copy();
-		b = b.Copy();
-		a = a.Copy();
+		r = r.DeepCopy();
+		g = g.DeepCopy();
+		b = b.DeepCopy();
+		a = a.DeepCopy();
 
 		uint8_t* tmp;
 
