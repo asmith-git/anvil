@@ -16,9 +16,19 @@
 
 namespace anvil { namespace compute {
 
+#if ANVIL_OPENCV_SUPPORT
+	Image::MemoryBlock::MemoryBlock(cv::Mat mat) :
+		data(nullptr),
+		bytes(0u),
+		cv_mat(mat),
+		mode(OCV_BLOCK)
+	{}
+#endif
+
 	Image::MemoryBlock::MemoryBlock(size_t a_bytes) :
 		data(operator new (a_bytes)),
-		bytes(a_bytes)
+		bytes(a_bytes),
+		mode(ANVIL_BLOCK)
 	{
 		ANVIL_RUNTIME_ASSERT(data, "anvil::compute::Image::Allocate : Failed to allocate memory");
 	}
@@ -78,6 +88,14 @@ namespace anvil { namespace compute {
 		Swap(other);
 	}
 
+#if ANVIL_OPENCV_SUPPORT
+	Image::Image(const cv::Mat& mat) :
+		Image(mat.data, Type::FromOpenCVType(mat.type()), (size_t)mat.cols, (size_t)mat.rows, (size_t)mat.step1())
+	{
+		_memory_manager.reset(new MemoryBlock(mat));
+	}
+#endif
+
 	Image& Image::operator=(Image&& other) {
 		Swap(other);
 		return *this;
@@ -97,7 +115,7 @@ namespace anvil { namespace compute {
 		}
 
 		// If this is the only image using the memory block then don't need to worry about parent/child images
-		if (_memory_manager.use_count() == 1u) {
+		if (_memory_manager.use_count() == 1u && _memory_manager->mode == MemoryBlock::ANVIL_BLOCK) {
 			// If the current memory is large enough then we can re-use it efficently
 			size_t pixel_bytes = type.GetSizeInBytes();
 			if (_memory_manager->bytes >= pixel_bytes * width * height) {

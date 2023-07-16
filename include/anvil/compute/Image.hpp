@@ -34,8 +34,17 @@ namespace anvil { namespace compute {
 	class ANVIL_DLL_EXPORT Image {
 	private:
 		struct MemoryBlock {
+			enum Mode {
+				ANVIL_BLOCK,
+				OCV_BLOCK
+			};
 			void* data;
 			size_t bytes;
+#if ANVIL_OPENCV_SUPPORT
+			cv::Mat cv_mat;
+			MemoryBlock(cv::Mat);
+#endif
+			uint8_t mode;
 
 			MemoryBlock(size_t bytes);
 			~MemoryBlock();
@@ -256,12 +265,9 @@ namespace anvil { namespace compute {
 #if ANVIL_OPENCV_SUPPORT
 		/*!
 		*	\brief Create an image that references an OpenCV image.
-		*	\bug If the OpenCV image is deallocated then this class will not be able to tell and may attempt to access invalid memory addresses.
 		*	\param mat The image to reference.
 		*/
-		Image(const cv::Mat& mat) :
-			Image(mat.data, Type::FromOpenCVType(mat.type()), (size_t) mat.cols, (size_t) mat.rows, (size_t) mat.step1())
-		{}
+		Image(const cv::Mat& mat);
 
 		/*!
 		*	\brief Create an OpenCV image that references this image
