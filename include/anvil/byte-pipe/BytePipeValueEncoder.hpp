@@ -485,7 +485,7 @@ namespace anvil { namespace BytePipe {
 
 		static inline Value Encode(const type& value) {
 			Value tmp;
-			Value::Array& a = value.set<Value::Array>();
+			Value::Array& a = tmp.Set<Value::Array>();
 			a.push_back(ValueEncoder<A>::Encode(value.first));
 			a.push_back(ValueEncoder<B>::Encode(value.second));
 			return tmp;
