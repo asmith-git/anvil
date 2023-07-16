@@ -62,9 +62,91 @@ namespace anvil { namespace compute {
 
 		ANVIL_STRONG_INLINE size_t Size() const throw() { return _type.GetNumberOfChannels(); }
 
-		UntypedScalar& operator[](const size_t i);
-		TypedScalar operator[](const size_t i) const;
+		void Read(size_t i, UntypedScalar& value) const;
+
+		ANVIL_STRONG_INLINE void Read(size_t i, TypedScalar& value) const {
+			value._type = _type;
+			Read(i, value._scalar);
+		}
+
+		void Write(size_t i, UntypedScalar value);
+
+		ANVIL_STRONG_INLINE void Write(size_t i, TypedScalar value) {
+			Write(i, value.ConvertTo(_type)._scalar);
+		}
 	};
+
+	inline Vector& operator+=(Vector& a, const Vector& b) throw() {
+		//! \todo Optmimise
+		const size_t s = a.Size();
+		TypedScalar a_tmp, b_tmp;
+		for (size_t i = 0u; i < s; ++i) {
+			a.Read(i, a_tmp);
+			b.Read(i, b_tmp);
+			a.Write(i, a_tmp + b_tmp);
+		}
+		return a;
+	}
+
+	inline Vector& operator-=(Vector& a, const Vector& b) throw() {
+		//! \todo Optmimise
+		const size_t s = a.Size();
+		TypedScalar a_tmp, b_tmp;
+		for (size_t i = 0u; i < s; ++i) {
+			a.Read(i, a_tmp);
+			b.Read(i, b_tmp);
+			a.Write(i, a_tmp - b_tmp);
+		}
+		return a;
+	}
+
+	inline Vector& operator*=(Vector& a, const Vector& b) throw() {
+		//! \todo Optmimise
+		const size_t s = a.Size();
+		TypedScalar a_tmp, b_tmp;
+		for (size_t i = 0u; i < s; ++i) {
+			a.Read(i, a_tmp);
+			b.Read(i, b_tmp);
+			a.Write(i, a_tmp * b_tmp);
+		}
+		return a;
+	}
+
+	inline Vector& operator/=(Vector& a, const Vector& b) throw() {
+		//! \todo Optmimise
+		const size_t s = a.Size();
+		TypedScalar a_tmp, b_tmp;
+		for (size_t i = 0u; i < s; ++i) {
+			a.Read(i, a_tmp);
+			b.Read(i, b_tmp);
+			a.Write(i, a_tmp / b_tmp);
+		}
+		return a;
+	}
+
+	inline Vector operator+(const Vector& a, const Vector& b) throw() {
+		Vector tmp = a;
+		tmp += b;
+		return tmp;
+	}
+
+	inline Vector operator-(const Vector& a, const Vector& b) throw() {
+		Vector tmp = a;
+		tmp -= b;
+		return tmp;
+	}
+
+	inline Vector operator*(const Vector& a, const Vector& b) throw() {
+		Vector tmp = a;
+		tmp *= b;
+		return tmp;
+	}
+
+	inline Vector operator/(const Vector& a, const Vector& b) throw() {
+		Vector tmp = a;
+		tmp /= b;
+		return tmp;
+	}
 
 }}
 
