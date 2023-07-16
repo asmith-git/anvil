@@ -232,13 +232,25 @@ namespace anvil { namespace BytePipe {
 			OnPrimitiveS64(value);
 		}
 
+#if ANVIL_F8_SUPPORT
+		/*!
+			\brief Handle a primitive value (8-bit floating point)
+			\param value The value
+		*/
+		virtual void OnPrimitiveF8(const float8_t value) {
+			OnPrimitiveF32(static_cast<float>(value));
+		}
+#endif
+
+#if ANVIL_F16_SUPPORT
 		/*!
 			\brief Handle a primitive value (16-bit floating point)
 			\param value The value
 		*/
-		virtual void OnPrimitiveF16(const half value) {
-			OnPrimitiveF32(static_cast<float>(value));  //! \bug half to float conversion not implemented
+		virtual void OnPrimitiveF16(const float16_t value) {
+			OnPrimitiveF32(static_cast<float>(value));
 		}
+#endif
 
 		// Object Support
 
@@ -434,6 +446,26 @@ namespace anvil { namespace BytePipe {
 			OnArrayEnd();
 		}
 
+#if ANVIL_F8_SUPPORT
+		/*!
+			\brief Handle an array of primitive values (8-bit floating point)
+			\details This is the same as the following code, but is a special case that could be optimised :
+			\code{.cpp}
+			OnArrayBegin(size);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveF16(src[i]);
+			OnArrayEnd();
+			\endcode
+			\param src The address of the first value
+			\param size The number of values in the array
+		*/
+		virtual void OnPrimitiveArrayF8(const float8_t* src, const size_t size) {
+			OnArrayBegin(size);
+			for (size_t i = 0u; i < size; ++i) OnPrimitiveF8(src[i]);
+			OnArrayEnd();
+		}
+#endif
+
+#if ANVIL_F16_SUPPORT
 		/*!
 			\brief Handle an array of primitive values (16-bit floating point)
 			\details This is the same as the following code, but is a special case that could be optimised :
@@ -445,11 +477,12 @@ namespace anvil { namespace BytePipe {
 			\param src The address of the first value
 			\param size The number of values in the array
 		*/
-		virtual void OnPrimitiveArrayF16(const half* src, const size_t size) {
+		virtual void OnPrimitiveArrayF16(const float16_t* src, const size_t size) {
 			OnArrayBegin(size);
 			for (size_t i = 0u; i < size; ++i) OnPrimitiveF16(src[i]);
 			OnArrayEnd();
 		}
+#endif
 
 		/*!
 			\brief Handle an array of primitive values (bool)
@@ -573,8 +606,14 @@ public:
     template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<int32_t>(const int32_t* values, const size_t size) { OnPrimitiveArrayS32(values, size); }
     template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<int64_t>(const int64_t value) { OnPrimitiveS64(value); }
     template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<int64_t>(const int64_t* values, const size_t size) { OnPrimitiveArrayS64(values, size); }
-    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<half>(const half value) { OnPrimitiveF16(value); }
-    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<half>(const half* values, const size_t size) { OnPrimitiveArrayF16(values, size); }
+#if ANVIL_F8_SUPPORT
+	template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<float8_t>(const float8_t value) { OnPrimitiveF8(value); }
+	template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<float8_t>(const float8_t* values, const size_t size) { OnPrimitiveArrayF8(values, size); }
+#endif
+#if ANVIL_F16_SUPPORT
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<float16_t>(const float16_t value) { OnPrimitiveF16(value); }
+    template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<float16_t>(const float16_t* values, const size_t size) { OnPrimitiveArrayF16(values, size); }
+#endif
     template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<float>(const float value) { OnPrimitiveF32(value); }
     template<> ANVIL_STRONG_INLINE void Parser::OnPrimitiveArray<float>(const float* values, const size_t size) { OnPrimitiveArrayF32(values, size); }
     template<> ANVIL_STRONG_INLINE void Parser::OnPrimitive<double>(const double value) { OnPrimitiveF64(value); }
@@ -590,7 +629,12 @@ public:
     template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<int16_t>(const int16_t& value) { OnPrimitive<int16_t>(value); }
     template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<int32_t>(const int32_t& value) { OnPrimitive<int32_t>(value); }
     template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<int64_t>(const int64_t& value) { OnPrimitive<int64_t>(value); }
-    template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<half>(const half& value) { OnPrimitive<half>(value); }
+#if ANVIL_F8_SUPPORT
+	template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<float8_t>(const float8_t& value) { OnPrimitive<float8_t>(value); }
+#endif
+#if ANVIL_F16_SUPPORT
+    template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<float16_t>(const float16_t& value) { OnPrimitive<float16_t>(value); }
+#endif
     template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<float>(const float& value) { OnPrimitive<float>(value); }
     template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<double>(const double& value) { OnPrimitive<double>(value); }
     template<> ANVIL_STRONG_INLINE void Parser::_EncodeImplement<std::string>(const std::string& value) { OnPrimitiveString(value.c_str(), value.size()); }
@@ -660,7 +704,12 @@ public:
 		void OnPrimitiveS8(const int8_t value) final;
 		void OnPrimitiveS16(const int16_t value) final;
 		void OnPrimitiveS32(const int32_t value) final;
-		void OnPrimitiveF16(const half value) final;
+#if ANVIL_F8_SUPPORT
+		void OnPrimitiveF8(const float8_t value) final;
+#endif
+#if ANVIL_F16_SUPPORT
+		void OnPrimitiveF16(const float16_t value) final;
+#endif
 
 		void OnPrimitiveArrayC8(const char* src, const size_t size) final;
 		void OnPrimitiveArrayBool (const bool* src, const size_t size) final;
@@ -672,7 +721,12 @@ public:
 		void OnPrimitiveArrayS16(const int16_t* src, const size_t size) final;
 		void OnPrimitiveArrayS32(const int32_t* src, const size_t size) final;
 		void OnPrimitiveArrayS64(const int64_t* src, const size_t size) final;
-		void OnPrimitiveArrayF16(const half* src, const size_t size) final;
+#if ANVIL_F8_SUPPORT
+		void OnPrimitiveArrayF8(const float8_t* src, const size_t size) final;
+#endif
+#if ANVIL_F16_SUPPORT
+		void OnPrimitiveArrayF16(const float16_t* src, const size_t size) final;
+#endif
 		void OnPrimitiveArrayF32(const float* src, const size_t size) final;
 		void OnPrimitiveArrayF64(const double* src, const size_t size) final;
 	};

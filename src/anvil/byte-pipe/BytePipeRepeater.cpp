@@ -132,10 +132,6 @@ namespace anvil { namespace BytePipe {
 		for (Parser* parser : _parsers) parser->OnPrimitiveS32(value);
 	}
 
-	void Repeater::OnPrimitiveF16(const half value) {
-		for (Parser* parser : _parsers) parser->OnPrimitiveF16(value);
-	}
-
 	void Repeater::OnPrimitiveArrayU8(const uint8_t* src, const size_t size) {
 		for (Parser* parser : _parsers) parser->OnPrimitiveArrayU8(src, size);
 	}
@@ -180,12 +176,28 @@ namespace anvil { namespace BytePipe {
 		for (Parser* parser : _parsers) parser->OnPrimitiveArrayC8(src, size);
 	}
 
-	void Repeater::OnPrimitiveArrayF16(const half* src, const size_t size) {
-		for (Parser* parser : _parsers) parser->OnPrimitiveArrayF16(src, size);
-	}
-
 	void Repeater::OnPrimitiveArrayBool(const bool* src, const size_t size) {
 		for(Parser* parser : _parsers) parser->OnPrimitiveArrayBool(src, size);
 	}
+
+#if ANVIL_F8_SUPPORT
+	void Repeater::OnPrimitiveF8(const float8_t value) {
+		for (Parser* parser : _parsers) parser->OnPrimitiveF16(value);
+	}
+
+	void Repeater::OnPrimitiveArrayF8(const float8_t* src, const size_t size) {
+		for (Parser* parser : _parsers) parser->OnPrimitiveArrayF16(src, size);
+	}
+#endif
+
+#if ANVIL_F16_SUPPORT
+	void Repeater::OnPrimitiveF16(const float16_t value) {
+		for (Parser* parser : _parsers) parser->OnPrimitiveF16(value);
+	}
+
+	void Repeater::OnPrimitiveArrayF16(const float16_t* src, const size_t size) {
+		for (Parser* parser : _parsers) parser->OnPrimitiveArrayF16(src, size);
+	}
+#endif
 
 }}

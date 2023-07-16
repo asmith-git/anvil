@@ -47,11 +47,15 @@ namespace anvil { namespace compute {
 
 		//! \todo Optimise
 		const size_t s = Size();
+		Vector tmp(type);
+		TypedScalar scalar;
 		for (size_t i = 0; i < s; ++i) {
-			UntypedScalar& tmp = operator[](i);
-			tmp = TypedScalar(_type, tmp).ConvertTo(type);
+			Read(i, scalar);
+			scalar.ConvertToInPlace(type);
+			tmp.Write(i, scalar._scalar);
 		}
-		_type = type;
+
+		*this = tmp;
 	}
 
 	Vector Vector::ConvertTo(Type type) const {
@@ -70,12 +74,14 @@ namespace anvil { namespace compute {
 		return memcmp(_values, other._values, _type.GetSizeInBytes()) != 0;
 	}
 
-	UntypedScalar& Vector::operator[](const size_t i) {
-		return *reinterpret_cast<UntypedScalar*>(_values + i * _type.GetPrimitiveSizeInBytes()); 
+	void Vector::Read(size_t i, UntypedScalar& value) const {
+		const size_t bytes = _type.GetPrimitiveSizeInBytes();
+		memcpy(value.GetData(), _values + i * bytes, bytes);
 	}
 
-	TypedScalar Vector::operator[](const size_t i) const {
-		return TypedScalar(_type, *reinterpret_cast<const UntypedScalar*>(_values + i * _type.GetPrimitiveSizeInBytes()));
+	void Vector::Write(size_t i, UntypedScalar value) {
+		const size_t bytes = _type.GetPrimitiveSizeInBytes();
+		memcpy(_values + i * bytes, value.GetData(), bytes);
 	}
 
 }}

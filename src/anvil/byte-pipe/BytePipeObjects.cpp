@@ -36,6 +36,7 @@ namespace anvil { namespace BytePipe {
 			11,//TYPE_OBJECT
 			12,//TYPE_BOOL
 			13,//TYPE_POD
+			6//TYPE_F8
 		};
 		
 		return g_table[a];
@@ -193,9 +194,16 @@ namespace anvil { namespace BytePipe {
 		case TYPE_S64:
 			s64 = static_cast<int64_t>(*this);
 			break;
-		case TYPE_F16:
-			f16 = static_cast<half>(*this);
+#if ANVIL_F8_SUPPORT
+		case TYPE_F8:
+			f8 = static_cast<float8_t>(*this);
 			break;
+#endif
+#if ANVIL_F16_SUPPORT
+		case TYPE_F16:
+			f16 = static_cast<float16_t>(*this);
+			break;
+#endif
 		case TYPE_F32:
 			f32 = static_cast<float>(*this);
 			break;
@@ -248,6 +256,14 @@ namespace anvil { namespace BytePipe {
 			return s32 < 0 ? 0 : static_cast<uint64_t>(s32);
 		case TYPE_S64:
 			return s64 < 0 ? 0 : static_cast<uint64_t>(s64);
+#if ANVIL_F8_SUPPORT
+		case TYPE_F8:
+			return f8 < 0.f ? 0 : static_cast<uint64_t>(std::round(f8));
+#endif
+#if ANVIL_F16_SUPPORT
+		case TYPE_F16:
+			return f16 < 0.f ? 0 : static_cast<uint64_t>(std::round(f16));
+#endif
 		case TYPE_F32:
 			return f32 < 0.f ? 0 : static_cast<uint64_t>(std::round(f32));
 		case TYPE_F64:
@@ -278,6 +294,14 @@ namespace anvil { namespace BytePipe {
 			return s16 < 0 ? 0 : static_cast<uint64_t>(s16);
 		case TYPE_S32:
 			return s32 < 0 ? 0 : static_cast<uint64_t>(s32);
+#if ANVIL_F8_SUPPORT
+		case TYPE_F8:
+			return f8 < 0.f ? 0 : static_cast<uint64_t>(std::round(f8));
+#endif
+#if ANVIL_F16_SUPPORT
+		case TYPE_F16:
+			return f16 < 0.f ? 0 : static_cast<uint64_t>(std::round(f16));
+#endif
 		case TYPE_F32:
 			return f32 < 0.f ? 0 : static_cast<uint64_t>(std::round(f32));
 		case TYPE_F64:
@@ -289,14 +313,25 @@ namespace anvil { namespace BytePipe {
 		}
 	}
 
-	PrimitiveValue::operator half() const {
+#if ANVIL_F8_SUPPORT
+	PrimitiveValue::operator float8_t() const {
+		if (type == TYPE_F8) {
+			return f8;
+		} else {
+			return static_cast<float8_t>(static_cast<float>(*this));
+		}
+	}
+#endif
+
+#if ANVIL_F16_SUPPORT
+	PrimitiveValue::operator float16_t() const {
 		if (type == TYPE_F16) {
 			return f16;
 		} else {
-			//! \bug f16 conversion is not implented
-			throw std::runtime_error("PrimitiveValue::operator half : 16-bit floating point is not implemented");
+			return static_cast<float16_t>(static_cast<float>(*this));
 		}
 	}
+#endif
 
 	PrimitiveValue::operator double() const {
 		switch (type) {
@@ -321,8 +356,14 @@ namespace anvil { namespace BytePipe {
 			return static_cast<double>(s32);
 		case TYPE_S64:
 			return static_cast<double>(s64);
+#if ANVIL_F8_SUPPORT
+		case TYPE_F8:
+			return static_cast<double>(f8);
+#endif
+#if ANVIL_F16_SUPPORT
 		case TYPE_F16:
 			return static_cast<double>(f16);
+#endif
 		case TYPE_F32:
 			return static_cast<double>(f32);
 		case TYPE_F64:
@@ -389,9 +430,16 @@ namespace anvil { namespace BytePipe {
 		case TYPE_S64:
 			Set<int64_t>();
 			break;
-		case TYPE_F16:
-			Set<half>();
+#if ANVIL_F8_SUPPORT
+		case TYPE_F8:
+			Set<float8_t>();
 			break;
+#endif
+#if ANVIL_F16_SUPPORT
+		case TYPE_F16:
+			Set<float16_t>();
+			break;
+#endif
 		case TYPE_F32:
 			Set<float>();
 			break;
@@ -466,10 +514,19 @@ namespace anvil { namespace BytePipe {
 		_primitive_array_type(TYPE_NULL)
 	{}
 
-	Value::Value(half value) :
+#if ANVIL_F8_SUPPORT
+	Value::Value(float8_t value) :
 		_primitive(value),
 		_primitive_array_type(TYPE_NULL)
 	{}
+#endif
+
+#if ANVIL_F16_SUPPORT
+	Value::Value(float16_t value) :
+		_primitive(value),
+		_primitive_array_type(TYPE_NULL)
+	{}
+#endif
 
 	Value::Value(float value) :
 		_primitive(value),
@@ -810,9 +867,16 @@ namespace anvil { namespace BytePipe {
 		case TYPE_S64:
 			ConvertToValueVector<int64_t>(new_array, tmp);
 			break;
-		case TYPE_F16:
-			ConvertToValueVector<half>(new_array, tmp);
+#if ANVIL_F8_SUPPORT
+		case TYPE_F8:
+			ConvertToValueVector<float8_t>(new_array, tmp);
 			break;
+#endif
+#if ANVIL_F16_SUPPORT
+		case TYPE_F16:
+			ConvertToValueVector<float16_t>(new_array, tmp);
+			break;
+#endif
 		case TYPE_F32:
 			ConvertToValueVector<float>(new_array, tmp);
 			break;
@@ -918,9 +982,16 @@ namespace anvil { namespace BytePipe {
 			case TYPE_S64:
 				str = std::to_string(_primitive.s64);
 				return true;
+#if ANVIL_F8_SUPPORT
+			case TYPE_F8:
+				str = std::to_string(Get<float>());
+				return true;
+#endif
+#if ANVIL_F16_SUPPORT
 			case TYPE_F16:
 				str = std::to_string(Get<float>());
 				return true;
+#endif
 			case TYPE_F32:
 				str = std::to_string(_primitive.f32);
 				return true;
@@ -1294,7 +1365,7 @@ namespace anvil { namespace BytePipe {
 	}
 
 	size_t GetSizeOfPrimitiveType(const Type t) {
-		static const uint8_t g_sizes[TYPE_POD + 1] = {
+		static const uint8_t g_sizes[TYPE_F8 + 1] = {
 			0u,					//TYPE_NULL
 			sizeof(char),		//TYPE_C8
 			sizeof(uint8_t),	//TYPE_U8
@@ -1305,14 +1376,15 @@ namespace anvil { namespace BytePipe {
 			sizeof(int16_t),	//TYPE_S16
 			sizeof(int32_t),	//TYPE_S32
 			sizeof(int64_t),	//TYPE_S64
-			sizeof(half),		//TYPE_F16
+			2u,					//TYPE_F16
 			sizeof(float),		//TYPE_F32
 			sizeof(double),		//TYPE_F64
 			0u,					//TYPE_STRING
 			0u,					//TYPE_ARRAY
 			0u,					//TYPE_OBJECT
 			sizeof(bool),		//TYPE_BOOL
-			0u					//TYPE_POD
+			0u,					//TYPE_POD
+			1u					//TYPE_F8
 		};
 
 		return g_sizes[t];

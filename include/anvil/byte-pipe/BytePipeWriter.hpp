@@ -104,7 +104,12 @@ namespace anvil { namespace BytePipe {
 		void OnPrimitiveS16(const int16_t value) final;
 		void OnPrimitiveS32(const int32_t value) final;
 		void OnPrimitiveC8(const char value) final;
-		void OnPrimitiveF16(const half value) final;
+#if ANVIL_F8_SUPPORT
+		void OnPrimitiveF8(const float8_t value) final;
+#endif
+#if ANVIL_F16_SUPPORT
+		void OnPrimitiveF16(const float16_t value) final;
+#endif
 		void OnPrimitiveBool(const bool value) final;
 
 		void OnPrimitiveArrayU8(const uint8_t* src, const size_t size) final;
@@ -118,7 +123,12 @@ namespace anvil { namespace BytePipe {
 		void OnPrimitiveArrayF32(const float* src, const size_t size) final;
 		void OnPrimitiveArrayF64(const double* src, const size_t size) final;
 		void OnPrimitiveArrayC8(const char* src, const size_t size) final;
-		void OnPrimitiveArrayF16(const half* src, const size_t size) final;
+#if ANVIL_F8_SUPPORT
+		void OnPrimitiveArrayF16(const float8_t* src, const size_t size) final;
+#endif
+#if ANVIL_F16_SUPPORT
+		void OnPrimitiveArrayF16(const float16_t* src, const size_t size) final;
+#endif
 		void OnPrimitiveArrayBool(const bool* src, const size_t size) final;
 
 		void OnUserPOD(const PodType type, const size_t bytes, const void* data) final;

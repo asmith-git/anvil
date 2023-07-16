@@ -59,7 +59,8 @@ namespace anvil { namespace BytePipe {
 		SID_F64,
 		SID_C8,
 		SID_F16,
-		SID_B
+		SID_B,
+		SID_F8
 	};
 
 	// Header definitions
@@ -122,7 +123,12 @@ namespace anvil { namespace BytePipe {
 				float f32;
 				double f64;
 				char c8;
-				half f16;
+#if ANVIL_F8_SUPPORT
+				float8_t f8;
+#endif
+#if ANVIL_F16_SUPPORT
+				float16_t f16;
+#endif
 			} primitive_v1;
 
 			struct {
@@ -145,7 +151,12 @@ namespace anvil { namespace BytePipe {
         float f32;
         double f64;
         char c8;
-        half f16;
+#if ANVIL_F8_SUPPORT
+		float16_t f8;
+#endif
+#if ANVIL_F16_SUPPORT
+        float16_t f16;
+#endif
     };
 #pragma pack(pop)
 
@@ -376,7 +387,12 @@ namespace anvil { namespace BytePipe {
 	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<int16_t>() { return SID_S16; }
 	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<int32_t>() { return SID_S32; }
 	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<int64_t>() { return SID_S64; }
-	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<half>() { return SID_F16; }
+#if ANVIL_F8_SUPPORT
+	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<float8_t>() { return SID_F8; }
+#endif
+#if ANVIL_F16_SUPPORT
+	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<float16_t>() { return SID_F16; }
+#endif
 	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<float>() { return SID_F32; }
 	template<> ANVIL_CONSTEXPR_FN SecondaryID GetSecondaryID<double>() { return SID_F64; }
 
@@ -645,10 +661,19 @@ namespace anvil { namespace BytePipe {
 		_OnPrimitive32(static_cast<uint32_t>(GetRaw<T, uint32_t>(value)), GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimitiveF16(const half value) {
+#if ANVIL_F8_SUPPORT
+	void Writer::OnPrimitiveF8(const float8_t value) {
 		typedef std::remove_const<decltype(value)>::type T;
 		_OnPrimitive32(static_cast<uint32_t>(GetRaw<T, uint32_t>(value)), GetSecondaryID<T>());
 	}
+#endif
+
+#if ANVIL_F16_SUPPORT
+	void Writer::OnPrimitiveF16(const float16_t value) {
+		typedef std::remove_const<decltype(value)>::type T;
+		_OnPrimitive32(static_cast<uint32_t>(GetRaw<T, uint32_t>(value)), GetSecondaryID<T>());
+	}
+#endif
 
 	void Writer::OnPrimitiveString(const char* value, const size_t length) {
 		ValueHeader header;
@@ -757,10 +782,19 @@ namespace anvil { namespace BytePipe {
 		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
 
-	void Writer::OnPrimitiveArrayF16(const half* ptr, const size_t size) {
+#if ANVIL_F8_SUPPORT
+	void Writer::OnPrimitiveArrayF8(const float8_t * ptr, const size_t size) {
 		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
 		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
 	}
+#endif
+
+#if ANVIL_F16_SUPPORT
+	void Writer::OnPrimitiveArrayF16(const float16_t* ptr, const size_t size) {
+		typedef std::remove_const<std::remove_pointer<decltype(ptr)>::type>::type T;
+		_OnPrimitiveArray(ptr, size, GetSecondaryID<T>());
+	}
+#endif
 
 	void Writer::OnUserPOD(const PodType type, const size_t bytes, const void* data) {
 		ANVIL_CONTRACT(type <= 1048575u, "Type must be <= 1048575u");
@@ -1182,9 +1216,17 @@ OLD_COMPONENT_ID:
 		NextValue().Set<int32_t>() = value;
 	}
 
-	void ValueParser::OnPrimitiveF16(const half value) {
-		NextValue().Set<half>() = value;
+#if ANVIL_F8_SUPPORT
+	void ValueParser::OnPrimitiveF8(const float8_t value) {
+		NextValue().Set<float8_t>() = value;
 	}
+#endif
+
+#if ANVIL_F16_SUPPORT
+	void ValueParser::OnPrimitiveF16(const float16_t value) {
+		NextValue().Set<float16_t>() = value;
+	}
+#endif
 
 	void ValueParser::OnPrimitiveBool(const bool value) {
 		NextValue().Set<bool>() = value;
@@ -1236,9 +1278,17 @@ OLD_COMPONENT_ID:
 		CopyToPrimitiveArray(src, size, sizeof(int64_t), NextValue().Set<Value::PrimitiveArray>(TYPE_S64));
 	}
 
-	void ValueParser::OnPrimitiveArrayF16(const half* src, const size_t size) {
-		CopyToPrimitiveArray(src, size, sizeof(half), NextValue().Set<Value::PrimitiveArray>(TYPE_F16));
+#if ANVIL_F8_SUPPORT
+	void ValueParser::OnPrimitiveArrayF8(const float8_t* src, const size_t size) {
+		CopyToPrimitiveArray(src, size, sizeof(float8_t), NextValue().Set<Value::PrimitiveArray>(TYPE_F8));
 	}
+#endif
+
+#if ANVIL_F16_SUPPORT
+	void ValueParser::OnPrimitiveArrayF16(const float16_t* src, const size_t size) {
+		CopyToPrimitiveArray(src, size, sizeof(float16_t), NextValue().Set<Value::PrimitiveArray>(TYPE_F16));
+	}
+#endif
 
 	void ValueParser::OnPrimitiveArrayF32(const float* src, const size_t size) {
 		CopyToPrimitiveArray(src, size, sizeof(float), NextValue().Set<Value::PrimitiveArray>(TYPE_F32));
@@ -1298,12 +1348,6 @@ OLD_COMPONENT_ID:
 	compute::Image Value::Pod::CreateImageFromPOD(const void* data, const size_t bytes) {
 		const ImageHeader* header = static_cast<const ImageHeader*>(data);
 
-#if ANVIL_OPENCV_SUPPORT
-		// IMAGE_BIN is already defined in header file
-		static_assert(IMAGE_BIN == 0, "Expected IMAGE_BIN to be 0");
-#else
-		enum { IMAGE_BIN = 0 };
-#endif
 		if (header->compression_format == IMAGE_BIN) {
 			return compute::Image(
 				const_cast<uint8_t*>(static_cast<const uint8_t*>(data) + sizeof(ImageHeader)),
@@ -1319,11 +1363,7 @@ OLD_COMPONENT_ID:
 		}
 	}
 
-#if ANVIL_OPENCV_SUPPORT
-	Value::Pod _CreatePODFromImage(const compute::Image& value_in, ImageFormat compression_format, float quality) {
-#else
-	Value::Pod _CreatePODFromImage(const compute::Image & value_in, int compression_format, float quality) {
-#endif
+	Value::Pod Value::Pod::CreatePODFromImage(const compute::Image& value_in, ImageFormat compression_format, float quality) {
 		compute::Image buffer_image;
 		const compute::Image* value = &value_in;
 		if (!value_in.IsContiguous()) {
@@ -1396,20 +1436,6 @@ OLD_COMPONENT_ID:
 		return pod;
 	}
 
-#if ANVIL_OPENCV_SUPPORT
-	Value::Pod Value::Pod::CreatePODFromImage(const compute::Image& value, ImageFormat compression_format, float quality) {
-		return _CreatePODFromImage(value, compression_format, quality);
-	}
-#endif
-
-	Value::Pod Value::Pod::CreatePODFromImage(const compute::Image& value) {
-#if ANVIL_OPENCV_SUPPORT
-		return _CreatePODFromImage(value, IMAGE_BIN, 100.f);
-#else
-		return _CreatePODFromImage(value, 0, 100.f);
-#endif
-	}
-
 	void Parser::OnValue(const Value& value) {
 		switch (value.GetType()) {
 		case TYPE_STRING:
@@ -1451,9 +1477,16 @@ OLD_COMPONENT_ID:
 					case TYPE_S64:
 						OnPrimitiveArrayS64(reinterpret_cast<const int64_t*>(pa->data()), size);
 						break;
-					case TYPE_F16:
-						OnPrimitiveArrayF16(reinterpret_cast<const half*>(pa->data()), size);
+#if ANVIL_F8_SUPPORT
+					case TYPE_F8:
+						OnPrimitiveArrayF8(reinterpret_cast<const float8_t*>(pa->data()), size);
 						break;
+#endif
+#if ANVIL_F16_SUPPORT
+					case TYPE_F16:
+						OnPrimitiveArrayF16(reinterpret_cast<const float16_t*>(pa->data()), size);
+						break;
+#endif
 					case TYPE_F32:
 						OnPrimitiveArrayF32(reinterpret_cast<const float*>(pa->data()), size);
 						break;

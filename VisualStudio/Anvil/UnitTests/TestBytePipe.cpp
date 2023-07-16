@@ -5,6 +5,7 @@
 #include <thread>
 #include <vector>
 #include <locale>
+#include <mutex>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

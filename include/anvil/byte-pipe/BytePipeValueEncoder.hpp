@@ -166,9 +166,10 @@ namespace anvil { namespace BytePipe {
 
 	};
 
+#if ANVIL_F8_SUPPORT
 	template<>
-	struct ValueEncoder<half> {
-		typedef half type;
+	struct ValueEncoder<float8_t> {
+		typedef float8_t type;
 
 		static ANVIL_STRONG_INLINE Value Encode(const type value) {
 			return Value(value);
@@ -179,6 +180,23 @@ namespace anvil { namespace BytePipe {
 		}
 
 	};
+#endif
+
+#if ANVIL_F16_SUPPORT
+	template<>
+	struct ValueEncoder<float16_t> {
+		typedef float16_t type;
+
+		static ANVIL_STRONG_INLINE Value Encode(const type value) {
+			return Value(value);
+		}
+
+		static ANVIL_STRONG_INLINE type Decode(const Value& value) {
+			return value.Get<type>();
+		}
+
+	};
+#endif
 
 	template<>
 	struct ValueEncoder<float> {
@@ -482,6 +500,171 @@ namespace anvil { namespace BytePipe {
 
 	};
 
+	template<>
+	struct ValueEncoder<compute::TypedScalar> {
+		typedef compute::TypedScalar type;
+
+		static Value Encode(const type& value, ImageFormat format = IMAGE_BIN, float quality = 100.f) {
+			Value tmp;
+			
+			switch (value.GetType().GetEnumeratedType()) {
+			case ANVIL_8UX1:
+				tmp.Set<uint8_t>(value);
+				break;
+			case ANVIL_16UX1:
+				tmp.Set<uint16_t>(value);
+				break;
+			case ANVIL_32UX1:
+				tmp.Set<uint32_t>(value);
+				break;
+			case ANVIL_64UX1:
+				tmp.Set<uint64_t>(value);
+				break;
+			case ANVIL_8SX1:
+				tmp.Set<int8_t>(value);
+				break;
+			case ANVIL_16SX1:
+				tmp.Set<int16_t>(value);
+				break;
+			case ANVIL_32SX1:
+				tmp.Set<int32_t>(value);
+				break;
+			case ANVIL_64SX1:
+				tmp.Set<int64_t>(value);
+				break;
+#if ANVIL_F8_SUPPORT
+			case ANVIL_8FX1:
+				tmp.Set<float8_t>(value);
+				break;
+#endif
+#if ANVIL_F16_SUPPORT
+			case ANVIL_16FX1:
+				tmp.Set<float16_t>(value);
+				break;
+#endif
+			case ANVIL_32FX1:
+				tmp.Set<float>(value);
+				break;
+			case ANVIL_64FX1:
+				tmp.Set<double>(value);
+				break;
+			}
+
+			return tmp;
+		}
+
+		static type Decode(const Value& value) {
+			switch (value.GetType()) {
+			case TYPE_BOOL:
+			case TYPE_U8:
+				return compute::TypedScalar(static_cast<uint8_t>(value));
+			case TYPE_U16:
+				return compute::TypedScalar(static_cast<uint16_t>(value));
+			case TYPE_U32:
+				return compute::TypedScalar(static_cast<uint32_t>(value));
+			case TYPE_U64:
+				return compute::TypedScalar(static_cast<uint64_t>(value));
+			case TYPE_S8:
+				return compute::TypedScalar(static_cast<int8_t>(value));
+			case TYPE_S16:
+				return compute::TypedScalar(static_cast<int16_t>(value));
+			case TYPE_S32:
+				return compute::TypedScalar(static_cast<int32_t>(value));
+			case TYPE_S64:
+				return compute::TypedScalar(static_cast<int64_t>(value));
+#if ANVIL_F8_SUPPORT
+			case TYPE_F8:
+				return compute::TypedScalar(static_cast<float8_t>(value));
+#endif
+#if ANVIL_F16_SUPPORT
+			case TYPE_F16:
+				return compute::TypedScalar(static_cast<float16_t>(value));
+#endif
+			case TYPE_F32:
+				return compute::TypedScalar(static_cast<float>(value));
+			case TYPE_F64:
+				return compute::TypedScalar(static_cast<double>(value));
+			}
+			throw std::runtime_error("anvil::ValueEncoder<compute::TypedScalar>::Decode : Invalid type");
+		}
+
+	};
+
+	template<>
+	struct ValueEncoder<compute::Vector> {
+		typedef compute::Vector type;
+
+		static Value Encode(const type& value, ImageFormat format = IMAGE_BIN, float quality = 100.f) {
+			const size_t s = value.GetType().GetNumberOfChannels();
+			if (s == 1u) {
+				compute::TypedScalar scalar;
+				value.Read(0u, scalar);
+				return ValueEncoder<compute::TypedScalar>::Encode(scalar);
+			}
+
+			Value tmp;
+			Value::Array& a = tmp.Set<Value::Array>();
+
+			compute::TypedScalar scalar;
+			for (size_t i = 0u; i < s; ++i) {
+				value.Read(i, scalar);
+				a.push_back(ValueEncoder<compute::TypedScalar>::Encode(scalar));
+			}
+
+			tmp.Optimise();
+			return tmp;
+		}
+
+		static type Decode(const Value& value) {
+			if (value.IsArray()) {
+				const Value::Array& a = *value.Get<Value::Array>();
+				size_t s = a.size();
+
+				compute::TypedScalar scalar = ValueEncoder<compute::TypedScalar>::Decode(a[0]);
+
+				anvil::Type t = scalar.GetType();
+				t.SetNumberOfChannels(s);
+
+				type tmp(t);
+				tmp.Write(0u, scalar);
+
+				for (size_t i = 1u; i < s; ++i) {
+					scalar = ValueEncoder<compute::TypedScalar>::Decode(a[i]);
+					tmp.Write(i, scalar);
+				}
+				
+				return tmp;
+
+			} else {
+				compute::TypedScalar scalar = ValueEncoder<compute::TypedScalar>::Decode(value);
+				type tmp(scalar.GetType());
+				tmp.Write(0u, scalar);
+				return tmp;
+			}
+		}
+
+	};
+
+	template<>
+	struct ValueEncoder<compute::Image> {
+		typedef compute::Image type;
+
+		static inline Value Encode(const type& value, ImageFormat format = IMAGE_BIN, float quality = 100.f) {
+			Value tmp;
+			tmp.Set<Value::Pod>() = Value::Pod::CreatePODFromImage(value, format, quality);
+
+			return tmp;
+		}
+
+		static inline type Decode(const Value& value) {
+			if (!value.IsPod()) throw std::runtime_error("ValueEncoder<cv::Mat>::Decode : Value is not a POD");
+			const Value::Pod* pod = value.Get<Value::Pod>();
+			if (pod == nullptr || pod->type != POD_IMAGE) throw std::runtime_error("ValueEncoder<cv::Mat>::Decode : POD is not an image");
+			return Value::Pod::CreateImageFromPOD(pod->data.data(), pod->data.size());
+		}
+
+	};
+
 #if ANVIL_OPENCV_SUPPORT
 
 	template<>
@@ -489,17 +672,11 @@ namespace anvil { namespace BytePipe {
 		typedef cv::Mat type;
 
 		static inline Value Encode(const type& value, ImageFormat format = IMAGE_BIN, float quality = 100.f) {
-			Value tmp;
-			tmp.Set<Value::Pod>() = Value::Pod::CreatePODFromCVMat(value, format, quality);
-			
-			return tmp;
+			return ValueEncoder<compute::Image>::Encode(value, format, quality);
 		}
 
 		static inline type Decode(const Value& value) {
-			if (!value.IsPod()) throw std::runtime_error("ValueEncoder<cv::Mat>::Decode : Value is not a POD");
-			const Value::Pod* pod= value.Get<Value::Pod>();
-			if (pod == nullptr || pod->type != POD_OPENCV_IMAGE) throw std::runtime_error("ValueEncoder<cv::Mat>::Decode : POD is not an image");
-			return Value::Pod::CreateOpenCVMatFromPOD(pod->data.data(), pod->data.size());
+			return ValueEncoder<compute::Image>::Decode(value).DeepCopy();
 		}
 
 	};

@@ -32,7 +32,6 @@ namespace anvil { namespace BytePipe {
 		POD_IMAGE = 1u
 	};
 
-#if ANVIL_OPENCV_SUPPORT
 	enum ImageFormat {
 		IMAGE_BIN,
 		IMAGE_JPEG,
@@ -44,7 +43,6 @@ namespace anvil { namespace BytePipe {
 		IMAGE_EXR,
 		IMAGE_HDR
 	};
-#endif
 
 	enum Type : uint8_t {
 		TYPE_NULL,
@@ -64,7 +62,8 @@ namespace anvil { namespace BytePipe {
 		TYPE_ARRAY,
 		TYPE_OBJECT,
 		TYPE_BOOL,
-		TYPE_POD
+		TYPE_POD,
+		TYPE_F8 //! \todo Implement
 	};
 
 	static ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN bool IsUnsigned(const Type t) { return t >= TYPE_U8 && t <= TYPE_U64; }
@@ -75,8 +74,6 @@ namespace anvil { namespace BytePipe {
 	static ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN bool IsPrimitive(const Type t) { return (t >= TYPE_C8 && t <= TYPE_F64) || t == TYPE_BOOL; }
 
 	typedef uint16_t ComponentID;
-
-	enum half : uint16_t {};
 
 	size_t ANVIL_DLL_EXPORT GetSizeOfPrimitiveType(const Type t);
 
@@ -97,7 +94,12 @@ namespace anvil { namespace BytePipe {
 	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<int16_t>() { return TYPE_S16; }
 	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<int32_t>() { return TYPE_S32; }
 	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<int64_t>() { return TYPE_S64; }
-	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<half>() { return TYPE_F16; }
+#if ANVIL_F8_SUPPORT
+	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<float8_t>() { return TYPE_F8; }
+#endif
+#if ANVIL_F16_SUPPORT
+	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<float16_t>() { return TYPE_F16; }
+#endif
 	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<float>() { return TYPE_F32; }
 	template<> ANVIL_CONSTEXPR_FN Type GetTypeID<double>() { return TYPE_F64; }
 
@@ -130,7 +132,12 @@ namespace anvil { namespace BytePipe {
 			int16_t s16;
 			int32_t s32;
 			int64_t s64;
-			half f16;
+#if ANVIL_F8_SUPPORT
+			float8_t f8;
+#endif
+#if ANVIL_F16_SUPPORT
+			float16_t f16;
+#endif
 			float f32;
 			double f64;
 		};
@@ -193,9 +200,17 @@ namespace anvil { namespace BytePipe {
 			PrimitiveValue(TYPE_U64, details::PrimitiveValueGetRaw<int64_t>(value))
 		{}
 
-		PrimitiveValue(half value) :
-			PrimitiveValue(TYPE_F16, details::PrimitiveValueGetRaw<half>(value))
+#if ANVIL_F8_SUPPORT
+		PrimitiveValue(float8_t value) :
+			PrimitiveValue(TYPE_F8, details::PrimitiveValueGetRaw<float8_t>(value))
 		{}
+#endif
+
+#if ANVIL_F16_SUPPORT
+		PrimitiveValue(float16_t value) :
+			PrimitiveValue(TYPE_F16, details::PrimitiveValueGetRaw<float16_t>(value))
+		{}
+#endif
 
 		PrimitiveValue(float value) :
 			PrimitiveValue(TYPE_F32, details::PrimitiveValueGetRaw<float>(value))
@@ -215,7 +230,12 @@ namespace anvil { namespace BytePipe {
 		operator char() const;
 		operator uint64_t() const;
 		operator int64_t() const;
-		operator half() const;
+#if ANVIL_F8_SUPPORT
+		operator float8_t() const;
+#endif
+#if ANVIL_F16_SUPPORT
+		operator float16_t() const;
+#endif
 		operator double() const;
 
 		ANVIL_STRONG_INLINE operator bool() const {
@@ -282,10 +302,7 @@ namespace anvil { namespace BytePipe {
 			PodType type;
 
 			static compute::Image CreateImageFromPOD(const void* data, const size_t bytes);
-			static Pod CreatePODFromImage(const compute::Image& img);
-#if ANVIL_OPENCV_SUPPORT
-			static Pod CreatePODFromImage(const compute::Image& img, ImageFormat compression_format, float compression_quality = 100.f);
-#endif
+			static Pod CreatePODFromImage(const compute::Image& img, ImageFormat compression_format = IMAGE_BIN, float compression_quality = 100.f);
 		};
 
 		template<class T>
@@ -435,7 +452,12 @@ namespace anvil { namespace BytePipe {
 		Value(int16_t value);
 		Value(int32_t value);
 		Value(int64_t value);
-		Value(half value);
+#if ANVIL_F8_SUPPORT
+		Value(float8_t value);
+#endif
+#if ANVIL_F16_SUPPORT
+		Value(float16_t value);
+#endif
 		Value(float value);
 		Value(double value);
 
@@ -534,10 +556,19 @@ namespace anvil { namespace BytePipe {
 			throw std::runtime_error("Value::GetS64 : Value cannot be converted to 64-bit signed integer");
 		}
 
-		ANVIL_STRONG_INLINE half GetF16() const {
+#if ANVIL_F8_SUPPORT
+		ANVIL_STRONG_INLINE float8_t GetF8() const {
+			if (IsPrimitive()) return _primitive;
+			throw std::runtime_error("Value::GetF8 : Value cannot be converted to 8-bit floating point");
+		}
+#endif
+
+#if ANVIL_F16_SUPPORT
+		ANVIL_STRONG_INLINE float16_t GetF16() const {
 			if (IsPrimitive()) return _primitive;
 			throw std::runtime_error("Value::GetF16 : Value cannot be converted to 16-bit floating point");
 		}
+#endif
 
 		ANVIL_STRONG_INLINE float GetF32() const {
 			if (IsPrimitive()) return _primitive;
@@ -602,7 +633,12 @@ namespace anvil { namespace BytePipe {
 		explicit ANVIL_STRONG_INLINE operator int16_t() const { return GetS16(); }
 		explicit ANVIL_STRONG_INLINE operator int32_t() const { return GetS32(); }
 		explicit ANVIL_STRONG_INLINE operator int64_t() const { return GetS64(); }
-		explicit ANVIL_STRONG_INLINE operator half() const { return GetF16(); }
+#if ANVIL_F8_SUPPORT
+		explicit ANVIL_STRONG_INLINE operator float8_t() const { return GetF8(); }
+#endif
+#if ANVIL_F16_SUPPORT
+		explicit ANVIL_STRONG_INLINE operator float16_t() const { return GetF16(); }
+#endif
 		explicit ANVIL_STRONG_INLINE operator float() const { return GetF32(); }
 		explicit ANVIL_STRONG_INLINE operator double() const { return GetF64(); }
 
@@ -808,23 +844,45 @@ namespace anvil { namespace BytePipe {
 		return Set<T>() = const_cast<const Value*>(this)->Get<T>();
 	}
 
+#if ANVIL_F8_SUPPORT
 	template<>
-	ANVIL_STRONG_INLINE half& Value::Set<half>() {
+	ANVIL_STRONG_INLINE float8_t& Value::Set<float8_t>() {
 		SetNull();
-		_primitive.type = GetTypeID<half>();
+		_primitive.type = GetTypeID<float8_t>();
+		return _primitive.f8;
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE float8_t Value::Get<float8_t>() const {
+		return GetF8();
+	}
+
+	template<>
+	ANVIL_STRONG_INLINE float8_t& Value::Get<float8_t>() {
+		typedef float8_t T;
+		return Set<T>() = const_cast<const Value*>(this)->Get<T>();
+	}
+#endif
+
+#if ANVIL_F16_SUPPORT
+	template<>
+	ANVIL_STRONG_INLINE float16_t& Value::Set<float16_t>() {
+		SetNull();
+		_primitive.type = GetTypeID<float16_t>();
 		return _primitive.f16;
 	}
 
 	template<>
-	ANVIL_STRONG_INLINE half Value::Get<half>() const {
+	ANVIL_STRONG_INLINE float16_t Value::Get<float16_t>() const {
 		return GetF16();
 	}
 
 	template<>
-	ANVIL_STRONG_INLINE half& Value::Get<half>() {
-		typedef half T;
+	ANVIL_STRONG_INLINE float16_t& Value::Get<float16_t>() {
+		typedef float16_t T;
 		return Set<T>() = const_cast<const Value*>(this)->Get<T>();
 	}
+#endif
 
 	template<>
 	ANVIL_STRONG_INLINE float& Value::Set<float>() {
