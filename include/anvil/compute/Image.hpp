@@ -25,6 +25,12 @@
 
 namespace anvil { namespace compute {
 
+	/*!
+	*	\class Image
+	*	\brief Can represent 2D image data.
+	*	\date July 2023
+	*	\author Adam Smith
+	*/
 	class ANVIL_DLL_EXPORT Image {
 	private:
 		struct MemoryBlock {
@@ -162,7 +168,7 @@ namespace anvil { namespace compute {
 		*	\brief Copy all of this pixel values in this image into a new image.
 		*	\return The copied image.
 		*/
-		ANVIL_STRONG_INLINE Image DeepCopy() const {
+		inline Image DeepCopy() const {
 			Image tmp;
 			DeepCopyTo(tmp);
 			return tmp;
@@ -206,86 +212,175 @@ namespace anvil { namespace compute {
 		bool operator==(const Image& other) const throw();
 		ANVIL_STRONG_INLINE bool operator!=(const Image& other) const throw() { return !operator==(other); }
 
+		/*!
+		*	\brief Return the data type of pixels in this image.
+		*	\return The data type.
+		*/
 		ANVIL_STRONG_INLINE Type GetType() const throw() { return _type; }
+
+		/*!
+		*	\brief Return the width of this image.
+		*	\return The number of pixels in each row.
+		*/
 		ANVIL_STRONG_INLINE size_t GetWidth() const throw() { return _width; }
+
+		/*!
+		*	\brief Return the height of this image.
+		*	\return The number of pixels in each column.
+		*/
 		ANVIL_STRONG_INLINE size_t GetHeight() const throw() { return _height; }
+
+		/*!
+		*	\brief Return the row step for this image.
+		*	\return The number of bytes between the start of each row.
+		*	\see Image::_row_step
+		*/
 		ANVIL_STRONG_INLINE size_t GetRowStep() const throw() { return _row_step; }
+
+		/*!
+		*	\brief Return the pixel step for this image.
+		*	\return The number of bytes between the start of each pixel.
+		*	\see Image::_pixel_step
+		*/
 		ANVIL_STRONG_INLINE size_t GetPixelStep() const throw() { return _pixel_step; }
 
+		/*!
+		*	\brief Check if all pixel values in this image are contiguous within memory.
+		*	\return True if the image is contiguous.
+		*/
 		ANVIL_STRONG_INLINE bool IsContiguous() const throw() {
 			size_t bytes = _type.GetSizeInBytes();
-			return _pixel_step == bytes && _row_step == _type.GetSizeInBytes() * _width;
+			return _pixel_step == bytes && _row_step == bytes * _width;
 		}
 
 #if ANVIL_OPENCV_SUPPORT
+		/*!
+		*	\brief Create an image that references an OpenCV image.
+		*	\bug If the OpenCV image is deallocated then this class will not be able to tell and may attempt to access invalid memory addresses.
+		*	\param mat The image to reference.
+		*/
 		Image(const cv::Mat& mat) :
 			Image(mat.data, Type::FromOpenCVType(mat.type()), (size_t) mat.cols, (size_t) mat.rows, (size_t) mat.step1())
 		{}
 
+		/*!
+		*	\brief Create an OpenCV image that references this image
+		*	\details Will throw an exception if the image format is not supported by OpenCV.
+		*	<br/> This will be because either the image uses pixel stepping, the data type is not supported by OpenCV or there are too many channels.
+		*	\bug If this image is deallocated before the returned OpenCV one then it may attempt to access invalid memory addresses.
+		*	\return An OpenCV image that references this one.
+		*/
 		ANVIL_STRONG_INLINE operator cv::Mat() {
 			ANVIL_RUNTIME_ASSERT(_pixel_step == _type.GetSizeInBytes(), "anvil::compute::Image::operator cv::Mat : OpenCV does not support pixel stepping");
 			return cv::Mat((int)_height, (int)_width, _type.GetOpenCVType(), _data, _row_step);
 		}
 #endif
 
+		/*!	
+		*	\brief Return the address of the first pixel in this image.
+		*	\return The adddress of pixel [0,0].
+		*/
 		ANVIL_STRONG_INLINE void* GetData() throw() { return _data; }
+
+		/*!
+		*	\brief Return the address of the first pixel in this image.
+		*	\return The adddress of pixel [0,0].
+		*/
 		ANVIL_STRONG_INLINE const void* GetData() const throw() { return _data; }
 
+		/*!
+		*	\brief Return the address of the first pixel in a row.
+		*	\param y The index of the row to get
+		*	\return The adddress of pixel [0,y].
+		*/
 		ANVIL_STRONG_INLINE void* GetRowAddress(size_t y) {
 			ANVIL_DEBUG_ASSERT(y < _height, "anvil::compute::Image::GetRowAddress : Y position is out of bounds");
 			return static_cast<uint8_t*>(_data) + _row_step * y;
 		}
 
+		/*!
+		*	\brief Return the address of the first pixel in a row.
+		*	\param y The index of the row to get
+		*	\return The adddress of pixel [0,y].
+		*/
 		ANVIL_STRONG_INLINE const void* GetRowAddress(size_t y) const {
 			ANVIL_DEBUG_ASSERT(y < _height, "anvil::compute::Image::GetRowAddress : Y position is out of bounds");
 			return static_cast<uint8_t*>(_data) + _row_step * y;
 		}
 
+		/*!
+		*	\brief Return the address of a specific pixel.
+		*	\param x The index of the row to get.
+		*	\param y The index of the column to get.
+		*	\return The adddress of pixel [x,y].
+		*/
 		ANVIL_STRONG_INLINE void* GetPixelAddress(size_t x, size_t y) {
 			ANVIL_DEBUG_ASSERT(x < _width, "anvil::compute::Image::GetPixelAddress : X position is out of bounds");
 			return static_cast<uint8_t*>(GetRowAddress(y)) + x * _pixel_step;
 		}
 
+		/*!
+		*	\brief Return the address of a specific pixel.
+		*	\param x The index of the row to get.
+		*	\param y The index of the column to get.
+		*	\return The adddress of pixel [x,y].
+		*/
 		ANVIL_STRONG_INLINE const void* GetPixelAddress(size_t x, size_t y) const {
 			ANVIL_DEBUG_ASSERT(x < _width, "anvil::compute::Image::GetPixelAddress : X position is out of bounds");
 			return static_cast<const uint8_t*>(GetRowAddress(y)) + x * _pixel_step;
 		}
 
+		/*!
+		*	\brief Read the value of a pixel.
+		*	\details This function will not check if the requested position is valid or if the value is the correct type.
+		*	\param x The index of the row to read.
+		*	\param y The index of the column to read.
+		*	\param pixel The value that is read from the image.
+		*	\tparam T The type to interpret the pixel data as.
+		*/
 		template<class T>
-		ANVIL_STRONG_INLINE void ReadPixel(size_t x, size_t y, T& pixel) const {
+		inline void ReadPixel(size_t x, size_t y, T& pixel) const {
 			pixel = *reinterpret_cast<T*>(const_cast<void*>(GetPixelAddress(x, y)));
 		}
 
 		template<>
-		ANVIL_STRONG_INLINE void ReadPixel<UntypedScalar>(size_t x, size_t y, UntypedScalar& pixel) const {
+		inline void ReadPixel<UntypedScalar>(size_t x, size_t y, UntypedScalar& pixel) const {
 			ANVIL_DEBUG_ASSERT(_type.GetNumberOfChannels() == 1u, "anvil::Image::ReadPixel (UntypedScalar) : Type has more than one channel");
 			memcpy(pixel.GetData(), GetPixelAddress(x, y), _type.GetSizeInBytes());
 		}
 
 		template<>
-		ANVIL_STRONG_INLINE void ReadPixel<TypedScalar>(size_t x, size_t y, TypedScalar& pixel) const {
+		inline void ReadPixel<TypedScalar>(size_t x, size_t y, TypedScalar& pixel) const {
 			ReadPixel(x, y, pixel._scalar);
 			pixel._type = _type;
 		}
 
 		template<>
-		ANVIL_STRONG_INLINE void ReadPixel<Vector>(size_t x, size_t y, Vector& pixel) const {
+		inline void ReadPixel<Vector>(size_t x, size_t y, Vector& pixel) const {
 			memcpy(pixel.GetData(), GetPixelAddress(x, y), _type.GetSizeInBytes());
 			pixel._type = _type;
 		}
-
+		
+		/*!
+		*	\brief Write the value of a pixel into the image.
+		*	\details This function will not check if the requested position is valid or if the value is the correct type.
+		*	\param x The index of the row to write.
+		*	\param y The index of the column to write.
+		*	\param pixel The value to write to the image.
+		*	\tparam T The type to interpret the pixel data as.
+		*/
 		template<class T>
-		ANVIL_STRONG_INLINE void WritePixel(size_t x, size_t y, const T pixel) {
+		inline void WritePixel(size_t x, size_t y, const T pixel) {
 			ReadPixel<T>(x, y) = pixel;
 		}
 
 		template<>
-		ANVIL_STRONG_INLINE void WritePixel<UntypedScalar>(size_t x, size_t y, const UntypedScalar pixel) {
+		inline void WritePixel<UntypedScalar>(size_t x, size_t y, const UntypedScalar pixel) {
 			memcpy(GetPixelAddress(x, y), pixel.GetData(), _type.GetSizeInBytes());
 		}
 
 		template<>
-		ANVIL_STRONG_INLINE void WritePixel<TypedScalar>(size_t x, size_t y, const TypedScalar pixel) {
+		inline void WritePixel<TypedScalar>(size_t x, size_t y, const TypedScalar pixel) {
 			if (pixel._type == _type) {
 				WritePixel<UntypedScalar>(x, y, pixel._scalar);
 			} else {
@@ -294,7 +389,7 @@ namespace anvil { namespace compute {
 		}
 
 		template<>
-		ANVIL_STRONG_INLINE void WritePixel<Vector>(size_t x, size_t y, const Vector pixel) {
+		inline void WritePixel<Vector>(size_t x, size_t y, const Vector pixel) {
 			if (pixel._type == _type) {
 				memcpy(GetPixelAddress(x, y), pixel.GetData(), _type.GetSizeInBytes());
 			} else {
@@ -302,18 +397,20 @@ namespace anvil { namespace compute {
 			}
 		}
 
-		void GetRoiPosition(const Image& img, size_t& x, size_t& y) const;
+		/*!
+		*	\brief If this image is an ROI then calculate the X and Y position within the parent image.
+		*	\param x The X position of this image's pixel [0,0] with the parent image.
+		*	\param y The Y position of this image's pixel [0,0] with the parent image.
+		*/
 		void GetRoiPosition(size_t& x, size_t& y) const;
 
-		ANVIL_STRONG_INLINE void GetRoiSize(size_t& w, size_t& h) const throw() {
-			w = _width;
-			h = _height;
-		}
-
-		ANVIL_STRONG_INLINE void GetRoiSize(size_t& x, size_t& y, size_t& w, size_t& h) const throw() {
-			GetRoiPosition(x, y);
-			GetRoiSize(w, h);
-		}
+		/*!
+		*	\brief If this image is an ROI then calculate the X and Y position within another image.
+		*	\detail Will throw an exception if this image is not a decendent of the one provided.
+		*	\param x The X position of this image's pixel [0,0] with the parent image.
+		*	\param y The Y position of this image's pixel [0,0] with the parent image.
+		*/
+		void GetRoiPosition(const Image& img, size_t& x, size_t& y) const;
 	};
 }}
 
