@@ -109,21 +109,24 @@ namespace anvil { namespace compute {
 		const size_t current_pixel_bytes = _type.GetSizeInBytes();
 		const size_t new_pixel_bytes = type.GetSizeInBytes();
 
-		if (_pixel_step != current_pixel_bytes) return false;
-
 		size_t current_bytes = 0u;
 		size_t new_bytes = 0u;
 
-		if (_row_step == current_pixel_bytes * _width) {
-			// Can reinterpret whole image
-			current_bytes = current_pixel_bytes * _width * _height;
-			new_bytes = new_pixel_bytes * width * height;
-			
-		} else {
+		if (_pixel_step != current_bytes) {
+			// Can only reinterpret pixels
+			current_bytes = current_pixel_bytes;
+			new_bytes = new_pixel_bytes;
+
+		} else if (_row_step != current_pixel_bytes * _width) {
 			// Can only reinterpret rows
 			if (height > _height) return false;
 			current_bytes = current_pixel_bytes * _width;
 			new_bytes = new_pixel_bytes * width;
+
+		} else {
+			// Can reinterpret whole image
+			current_bytes = current_pixel_bytes * _width * _height;
+			new_bytes = new_pixel_bytes * width * height;
 		}
 
 		if (current_bytes == new_bytes || (allow_reinterpret_as_smaller && current_bytes > new_bytes)) {
