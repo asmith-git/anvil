@@ -50,13 +50,13 @@ namespace anvil { namespace compute {
 			~MemoryBlock();
 		};
 		std::shared_ptr<MemoryBlock> _memory_manager;	//!< Reference counts memory allocated by this class.
-		Image* _parent;			//!< The parent if this image is an ROI, otherwise null.
-		void* _data;			//!< The address of pixel [0,0].
-		size_t _row_step;		//!< The distance between pixel 0 of one row and pixel 0 of the next in bytes.
-		size_t _pixel_step;		//!< The distance between the staring address of one pixel and the next in bytes.
-		size_t _width;			//!< The size of a row in pixels.
-		size_t _height;			//!< The sizeo f a column in pixels.
-		Type _type;				//!< The data type of the pixels.
+		Image* _parent;									//!< The parent if this image is an ROI, otherwise null.
+		void* _data;									//!< The address of pixel [0,0].
+		size_t _row_step;								//!< The number of bytes from the starting address of one row and the next.
+		size_t _pixel_step;								//!< The number of bytes from the starting address of one pixel and the next.
+		size_t _width;									//!< The size of a row in pixels.
+		size_t _height;									//!< The sizeo f a column in pixels.
+		Type _type;										//!< The data type of the pixels.
 	public:
 		Image();
 		~Image();
@@ -338,7 +338,7 @@ namespace anvil { namespace compute {
 
 		/*!
 		*	\brief Read the value of a pixel.
-		*	\details This function will not check if the requested position is valid or if the value is the correct type.
+		*	\details This function will not check if the requested position is valid or if the value is the correct type unless in debug mode.
 		*	\param x The index of the row to read.
 		*	\param y The index of the column to read.
 		*	\param pixel The value that is read from the image.
@@ -346,6 +346,7 @@ namespace anvil { namespace compute {
 		*/
 		template<class T>
 		inline void ReadPixel(size_t x, size_t y, T& pixel) const {
+			//ANVIL_DEBUG_ASSERT(EnumFromType<T>::value == _type.GetEnumeratedType(), "anvil::Image::ReadPixel : Template type is different that the type of the image");
 			pixel = *reinterpret_cast<T*>(const_cast<void*>(GetPixelAddress(x, y)));
 		}
 
@@ -369,7 +370,7 @@ namespace anvil { namespace compute {
 		
 		/*!
 		*	\brief Write the value of a pixel into the image.
-		*	\details This function will not check if the requested position is valid or if the value is the correct type.
+		*	\details This function will not check if the requested position is valid or if the value is the correct type unless in debug mode.
 		*	\param x The index of the row to write.
 		*	\param y The index of the column to write.
 		*	\param pixel The value to write to the image.
@@ -377,11 +378,13 @@ namespace anvil { namespace compute {
 		*/
 		template<class T>
 		inline void WritePixel(size_t x, size_t y, const T pixel) {
+			//ANVIL_DEBUG_ASSERT(EnumFromType<T>::value == _type.GetEnumeratedType(), "anvil::Image::WritePixel : Template type is different that the type of the image");
 			ReadPixel<T>(x, y) = pixel;
 		}
 
 		template<>
 		inline void WritePixel<UntypedScalar>(size_t x, size_t y, const UntypedScalar pixel) {
+			ANVIL_DEBUG_ASSERT(_type.GetNumberOfChannels() == 1u, "anvil::Image::WritePixel (UntypedScalar) : Type has more than one channel");
 			memcpy(GetPixelAddress(x, y), pixel.GetData(), _type.GetSizeInBytes());
 		}
 
