@@ -29,6 +29,10 @@ namespace anvil { namespace compute { namespace details {
 			return count * (_type.GetNumberOfChannels() + 1);
 		}
 
+		void FixMask1(const uint8_t* src, uint8_t* dst, size_t count) const {
+			memcpy(dst, src, (count / 8) + ((count % 8) == 0 ? 0 : 1));
+		}
+
 		void FixMask2(const uint8_t* src, uint8_t* dst, size_t count) const {
 			//! \todo Optimise
 			while (count >= 8u) {
@@ -84,6 +88,9 @@ namespace anvil { namespace compute { namespace details {
 			_parent(parent)
 		{
 			switch (_type.GetNumberOfChannels()) {
+			case 1u:
+				FixMask = &ArithmeticOperationsMultiChannel::FixMask1;
+				break;
 			case 2u:
 				FixMask = &ArithmeticOperationsMultiChannel::FixMask2;
 				break;

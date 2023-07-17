@@ -999,8 +999,29 @@ void ImageRoiTest() {
 	return;
 }
 
+#pragma optimize("", off)
+void ArithmeticMaskTest() {
+	using namespace anvil::compute;
+
+	ArithmeticOperations* operations = ArithmeticOperations::GetArithmeticOperations(anvil::ANVIL_32FX1, 0u);
+
+	float a[4];
+	float b[4];
+	float c[4];
+	uint8_t mask;
+
+	for (float& val : a) val = 1.f;
+	for (float& val : b) val = 2.f;
+
+	mask = 0u;
+	operations->Mask(a, b, c, 4u, &mask);
+}
+
 int main()
 {
+	ArithmeticMaskTest();
+	return 0;
+
 	ImageRoiTest();
 	return 0;
 

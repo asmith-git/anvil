@@ -20,33 +20,34 @@ namespace anvil { namespace compute {
 
 	// ArithmeticOperations 
 
-	ArithmeticOperations* ArithmeticOperations::GetArithmeticOperations(Type type, uint64_t instruction_set) {
-		//! \todo Implement optimisations for different instruction sets (SSE, AVX, AVX-512, ect)
-		instruction_set = 0u;
-
-		static details::ArithmeticOperationsCpp<uint8_t> u8;
-		static details::ArithmeticOperationsCpp<uint16_t> u16;
-		static details::ArithmeticOperationsCpp<uint32_t> u32;
-		static details::ArithmeticOperationsCpp<uint64_t> u64;
-		static details::ArithmeticOperationsCpp<int8_t> s8;
-		static details::ArithmeticOperationsCpp<int16_t> s16;
-		static details::ArithmeticOperationsCpp<int32_t> s32;
-		static details::ArithmeticOperationsCpp<int64_t> s64;
+	static details::ArithmeticOperationsCpp<uint8_t> g_arithmetic_op_u8;
+	static details::ArithmeticOperationsCpp<uint16_t> g_arithmetic_op_u16;
+	static details::ArithmeticOperationsCpp<uint32_t> g_arithmetic_op_u32;
+	static details::ArithmeticOperationsCpp<uint64_t> g_arithmetic_op_u64;
+	static details::ArithmeticOperationsCpp<int8_t> g_arithmetic_op_s8;
+	static details::ArithmeticOperationsCpp<int16_t> g_arithmetic_op_s16;
+	static details::ArithmeticOperationsCpp<int32_t> g_arithmetic_op_s32;
+	static details::ArithmeticOperationsCpp<int64_t> g_arithmetic_op_s64;
 #if ANVIL_F8_SUPPORT
-		static details::ArithmeticOperationsCpp<float8_t> f8;
+	static details::ArithmeticOperationsCpp<float8_t> g_arithmetic_op_f8;
 #endif
 #if ANVIL_F16_SUPPORT
-		static details::ArithmeticOperationsCpp<float16_t> f16;
+	static details::ArithmeticOperationsCpp<float16_t> g_arithmetic_op_f16;
 #endif
-		static details::ArithmeticOperationsCpp<float> f32;
-		static details::ArithmeticOperationsCpp<double> f64;
+	static details::ArithmeticOperationsCpp<float> g_arithmetic_op_f32;
+	static details::ArithmeticOperationsCpp<double> g_arithmetic_op_f64;
 
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-		static details::ArithmeticOperationsSseF32 f32_sse;
-		static details::ArithmeticOperationsSse4F32 f32_sse41;
-		static details::ArithmeticOperationsFmaF32 f32_fma3;
-		static details::ArithmeticOperationsAvx512F32 f32_avx512;
+	static ArithmeticOperations* g_arithmetic_op_f32_sse = new details::ArithmeticOperationsSseF32();
+	static ArithmeticOperations* g_arithmetic_op_f32_sse41 = new details::ArithmeticOperationsSse4F32();
+	static ArithmeticOperations* g_arithmetic_op_f32_fma3 = new details::ArithmeticOperationsFmaF32();
+	static ArithmeticOperations* g_arithmetic_op_f32_avx512 = new details::ArithmeticOperationsAvx512F32();
 #endif
+
+	ArithmeticOperations* ArithmeticOperations::GetArithmeticOperations(Type type, uint64_t instruction_set) {
+		//! \todo Implement optimisations for different instruction sets (SSE, AVX, AVX-512, ect)
+
+
 
 		ArithmeticOperations* ops = nullptr;
 
@@ -54,56 +55,56 @@ namespace anvil { namespace compute {
 		t1.SetNumberOfChannels(1u);
 		switch (t1.GetEnumeratedType()) {
 		case ANVIL_8UX1:
-			ops = &u8;
+			ops = &g_arithmetic_op_u8;
 			break;
 		case ANVIL_16UX1:
-			ops = &u16;
+			ops = &g_arithmetic_op_u16;
 			break;
 		case ANVIL_32UX1:
-			ops = &u32;
+			ops = &g_arithmetic_op_u32;
 			break;
 		case ANVIL_64UX1:
-			ops = &u64;
+			ops = &g_arithmetic_op_u64;
 			break;
 		case ANVIL_8SX1:
-			ops = &s8;
+			ops = &g_arithmetic_op_s8;
 			break;
 		case ANVIL_16SX1:
-			ops = &s16;
+			ops = &g_arithmetic_op_s16;
 			break;
 		case ANVIL_32SX1:
-			ops = &s32;
+			ops = &g_arithmetic_op_s32;
 			break;
 		case ANVIL_64SX1:
-			ops = &s64;
+			ops = &g_arithmetic_op_s64;
 			break;
 #if ANVIL_F8_SUPPORT
 		case ANVIL_8FX1:
-			ops = &f8;
+			ops = &g_arithmetic_op_f8;
 			break;
 #endif
 #if ANVIL_F16_SUPPORT
 		case ANVIL_16FX1:
-			ops = &f16;
+			ops = &g_arithmetic_op_f16;
 			break;
 #endif
 		case ANVIL_32FX1:
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 			enum { AVX512_FLAGS = ASM_AVX512F | ASM_AVX512VL };
 			if ((instruction_set & AVX512_FLAGS) == AVX512_FLAGS) {
-				ops = &f32_avx512;
+				ops = g_arithmetic_op_f32_avx512;
 			} else if (instruction_set & ASM_FMA3) {
-				ops = &f32_fma3;
+				ops = g_arithmetic_op_f32_fma3;
 			} else if (instruction_set & ASM_SSE41) {
-				ops = &f32_sse41;
+				ops = g_arithmetic_op_f32_sse41;
 			} else if (instruction_set & ASM_SSE) {
-				ops = &f32_sse;
+				ops = g_arithmetic_op_f32_sse;
 			} else
 #endif
-			ops = &f32;
+			ops = &g_arithmetic_op_f32;
 			break;
 		case ANVIL_64FX1:
-			ops = &f64;
+			ops = &g_arithmetic_op_f64;
 			break;
 		}
 	

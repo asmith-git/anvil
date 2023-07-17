@@ -27,7 +27,7 @@ namespace anvil {namespace compute {
 	*	\date July 2023
 	*	\author Adam Smith
 	*/
-	class ArithmeticOperations {
+	class ANVIL_DLL_EXPORT ArithmeticOperations {
 	protected:
 		const Type _type;
 		ArithmeticOperations* _multi_channel_implementation;

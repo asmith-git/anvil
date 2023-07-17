@@ -29,7 +29,7 @@
 
 namespace anvil {
 
-#define ANVIL_ENCODE_TYPE_ENUMERATION(TY, BY, CH) (TY | (BY << 3u) | (CH << 4u))
+#define ANVIL_ENCODE_TYPE_ENUMERATION(TY, BY, CH) (TY | (BY << 2u) | (CH << 4u))
 
 	/*!
 	*	\brief Types representable by anvil::Type in a compile time constant format.

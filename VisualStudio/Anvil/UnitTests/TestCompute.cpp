@@ -209,6 +209,63 @@ namespace anvil { namespace compute {
 	TEST_CLASS(TestShortType)
 	{
 	public:
+
+		TEST_METHOD(EnumerationConstants) {
+			Assert::AreEqual((int)Type::TYPE_UNSIGNED, (int)Type(ANVIL_8UX1).GetRepresentation(),L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_UNSIGNED, (int)Type(ANVIL_16UX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_UNSIGNED, (int)Type(ANVIL_32UX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_UNSIGNED, (int)Type(ANVIL_64UX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_SIGNED, (int)Type(ANVIL_8SX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_SIGNED, (int)Type(ANVIL_16SX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_SIGNED, (int)Type(ANVIL_32SX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_SIGNED, (int)Type(ANVIL_64SX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_FLOATING_POINT, (int)Type(ANVIL_8FX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_FLOATING_POINT, (int)Type(ANVIL_16FX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_FLOATING_POINT, (int)Type(ANVIL_32FX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_FLOATING_POINT, (int)Type(ANVIL_64FX1).GetRepresentation(), L"Representation is wrong");
+
+			Assert::AreEqual((int)1, (int)Type(ANVIL_8UX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)Type(ANVIL_16UX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)Type(ANVIL_32UX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)Type(ANVIL_64UX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)Type(ANVIL_8SX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)Type(ANVIL_16SX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)Type(ANVIL_32SX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)Type(ANVIL_64SX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)Type(ANVIL_8FX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)Type(ANVIL_16FX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)Type(ANVIL_32FX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)Type(ANVIL_64FX1).GetNumberOfChannels(), L"Number of channels is wrong");
+
+			Assert::AreEqual((int)1, (int)Type(ANVIL_8UX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)2, (int)Type(ANVIL_16UX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)4, (int)Type(ANVIL_32UX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)8, (int)Type(ANVIL_64UX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)1, (int)Type(ANVIL_8SX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)2, (int)Type(ANVIL_16SX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)4, (int)Type(ANVIL_32SX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)8, (int)Type(ANVIL_64SX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)1, (int)Type(ANVIL_8FX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)2, (int)Type(ANVIL_16FX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)4, (int)Type(ANVIL_32FX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)8, (int)Type(ANVIL_64FX1).GetSizeInBytes(), L"Size in bytes is wrong");
+
+			Assert::AreEqual((int)2, (int)Type(ANVIL_8UX2).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)3, (int)Type(ANVIL_8UX3).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)4, (int)Type(ANVIL_8UX4).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)5, (int)Type(ANVIL_8UX5).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)6, (int)Type(ANVIL_8UX6).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)7, (int)Type(ANVIL_8UX7).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)8, (int)Type(ANVIL_8UX8).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)9, (int)Type(ANVIL_8UX9).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)10, (int)Type(ANVIL_8UX10).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)11, (int)Type(ANVIL_8UX11).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)12, (int)Type(ANVIL_8UX12).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)13, (int)Type(ANVIL_8UX13).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)14, (int)Type(ANVIL_8UX14).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)15, (int)Type(ANVIL_8UX15).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)16, (int)Type(ANVIL_8UX16).GetNumberOfChannels(), L"Number of channels is wrong");
+		}
 		TEST_METHOD(Enumerations)
 		{
 			for (size_t i = 0u; i < 256u; ++i) {
@@ -343,6 +400,62 @@ namespace anvil { namespace compute {
 	TEST_CLASS(TestLongType)
 	{
 	public:
+		TEST_METHOD(EnumerationConstants) {
+			Assert::AreEqual((int)Type::TYPE_UNSIGNED, (int)LongType(ANVIL_8UX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_UNSIGNED, (int)LongType(ANVIL_16UX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_UNSIGNED, (int)LongType(ANVIL_32UX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_UNSIGNED, (int)LongType(ANVIL_64UX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_SIGNED, (int)LongType(ANVIL_8SX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_SIGNED, (int)LongType(ANVIL_16SX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_SIGNED, (int)LongType(ANVIL_32SX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_SIGNED, (int)LongType(ANVIL_64SX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_FLOATING_POINT, (int)LongType(ANVIL_8FX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_FLOATING_POINT, (int)LongType(ANVIL_16FX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_FLOATING_POINT, (int)LongType(ANVIL_32FX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_FLOATING_POINT, (int)LongType(ANVIL_64FX1).GetRepresentation(), L"Representation is wrong");
+
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_8UX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_16UX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_32UX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_64UX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_8SX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_16SX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_32SX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_64SX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_8FX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_16FX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_32FX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_64FX1).GetNumberOfChannels(), L"Number of channels is wrong");
+
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_8UX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)2, (int)LongType(ANVIL_16UX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)4, (int)LongType(ANVIL_32UX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)8, (int)LongType(ANVIL_64UX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_8SX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)2, (int)LongType(ANVIL_16SX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)4, (int)LongType(ANVIL_32SX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)8, (int)LongType(ANVIL_64SX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_8FX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)2, (int)LongType(ANVIL_16FX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)4, (int)LongType(ANVIL_32FX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)8, (int)LongType(ANVIL_64FX1).GetSizeInBytes(), L"Size in bytes is wrong");
+
+			Assert::AreEqual((int)2, (int)LongType(ANVIL_8UX2).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)3, (int)LongType(ANVIL_8UX3).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)4, (int)LongType(ANVIL_8UX4).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)5, (int)LongType(ANVIL_8UX5).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)6, (int)LongType(ANVIL_8UX6).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)7, (int)LongType(ANVIL_8UX7).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)8, (int)LongType(ANVIL_8UX8).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)9, (int)LongType(ANVIL_8UX9).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)10, (int)LongType(ANVIL_8UX10).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)11, (int)LongType(ANVIL_8UX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)12, (int)LongType(ANVIL_8UX12).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)13, (int)LongType(ANVIL_8UX13).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)14, (int)LongType(ANVIL_8UX14).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)15, (int)LongType(ANVIL_8UX15).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)16, (int)LongType(ANVIL_8UX16).GetNumberOfChannels(), L"Number of channels is wrong");
+		}
 		TEST_METHOD(Enumerations)
 		{
 			try {
@@ -411,6 +524,116 @@ namespace anvil { namespace compute {
 				Assert::IsTrue(ref.GetRepresentation() == t.GetRepresentation(), L"Representation was corrupted");
 				Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
 			}
+		}
+	};
+
+
+	TEST_CLASS(ArithmeticF32)
+	{
+	public:
+		void TestMasking(uint64_t instruction_set) {
+			try {
+				ArithmeticOperations* operations = ArithmeticOperations::GetArithmeticOperations(ANVIL_32FX1, instruction_set);
+				Assert::IsNotNull(operations, L"No operations implementation detected");
+
+				float a[4];
+				float b[4];
+				float c[4];
+				uint8_t mask;
+
+				for (float& val : a) val = 1.f;
+				for (float& val : b) val = 0.f;
+
+				mask = 0u;
+				operations->Mask(a, b, c, 4u, &mask);
+				for (float val : c) Assert::AreEqual(0.f, val, L"Mask with all zeros failed");
+
+				mask = 15u;
+				operations->Mask(a, b, c, 4u, &mask);
+				for (float val : c) Assert::AreEqual(1.f, val, L"Mask with all ones failed");
+
+				mask = 1u | 4u;
+				operations->Mask(a, b, c, 4u, &mask);
+				Assert::AreEqual(1.f, c[0u], L"Mask 1010 failed");
+				Assert::AreEqual(0.f, c[1u], L"Mask 1010 failed");
+				Assert::AreEqual(1.f, c[2u], L"Mask 1010 failed");
+				Assert::AreEqual(0.f, c[3u], L"Mask 1010 failed");
+
+				for (float& val : a) val = 0.f;
+				for (float& val : b) val = 1.f;
+				mask = 1u | 4u;
+				operations->AddMask(a, b, c, 4u, &mask);
+				Assert::AreEqual(1.f, c[0u], L"AddMask 1010 failed");
+				Assert::AreEqual(0.f, c[1u], L"AddMask 1010 failed");
+				Assert::AreEqual(1.f, c[2u], L"AddMask 1010 failed");
+				Assert::AreEqual(0.f, c[3u], L"AddMask 1010 failed");
+
+				for (float& val : a) val = 3.f;
+				for (float& val : b) val = 1.f;
+				mask = 1u | 4u;
+				operations->SubtractMask(a, b, c, 4u, &mask);
+				Assert::AreEqual(2.f, c[0u], L"SubtractMask 1010 failed");
+				Assert::AreEqual(3.f, c[1u], L"SubtractMask 1010 failed");
+				Assert::AreEqual(2.f, c[2u], L"SubtractMask 1010 failed");
+				Assert::AreEqual(3.f, c[3u], L"SubtractMask 1010 failed");
+
+				for (float& val : a) val = 3.f;
+				for (float& val : b) val = 2.f;
+				mask = 1u | 4u;
+				operations->MultiplyMask(a, b, c, 4u, &mask);
+				Assert::AreEqual(6.f, c[0u], L"MultiplyMask 1010 failed");
+				Assert::AreEqual(3.f, c[1u], L"MultiplyMask 1010 failed");
+				Assert::AreEqual(6.f, c[2u], L"MultiplyMask 1010 failed");
+				Assert::AreEqual(3.f, c[3u], L"MultiplyMask 1010 failed");
+
+				for (float& val : a) val = 6.f;
+				for (float& val : b) val = 2.f;
+				mask = 1u | 4u;
+				operations->DivideMask(a, b, c, 4u, &mask);
+				Assert::AreEqual(3.f, c[0u], L"DivideMask 1010 failed");
+				Assert::AreEqual(6.f, c[1u], L"DivideMask 1010 failed");
+				Assert::AreEqual(3.f, c[2u], L"DivideMask 1010 failed");
+				Assert::AreEqual(6.f, c[3u], L"DivideMask 1010 failed");
+			
+			} catch (std::exception& e) {
+				Assert::Fail(std::wstring_convert<std::codecvt<wchar_t, char, std::mbstate_t>>().from_bytes(e.what()).c_str());
+			}
+		}
+
+
+
+		TEST_METHOD(MaskCpp)
+		{
+			TestMasking(0u);
+		}
+
+		TEST_METHOD(MaskSSE)
+		{
+			enum { IS = ASM_SSE | ASM_SSE2};
+			Assert::IsTrue((SupportedInstructionSets& IS) == IS, L"CPU does not support SSE instruction set");
+			TestMasking(IS);
+
+		}
+
+		TEST_METHOD(MaskSSE4)
+		{
+			enum { IS = ASM_SSE | ASM_SSE2 | ASM_SSE41 };
+			Assert::IsTrue((SupportedInstructionSets & IS) == IS, L"CPU does not support SSE 4.1 instruction set");
+			TestMasking(IS);
+		}
+
+		TEST_METHOD(MaskFMA3)
+		{
+			enum { IS = ASM_SSE41 | ASM_FMA3 };
+			Assert::IsTrue((SupportedInstructionSets & IS) == IS, L"CPU does not support FMA3 instruction set");
+			TestMasking(IS);
+		}
+
+		TEST_METHOD(MaskAVX512)
+		{
+			enum { IS = ASM_AVX512F | ASM_AVX512VL };
+			Assert::IsTrue((SupportedInstructionSets & IS) == IS, L"CPU does not support AVX-512F/VL instruction set");
+			TestMasking(IS);
 		}
 	};
 }}
