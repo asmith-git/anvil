@@ -232,6 +232,7 @@
     <ClInclude Include="..\..\..\include\anvil\compute\Arithmetic.hpp" />
     <ClInclude Include="..\..\..\include\anvil\compute\details\ArithmeticCpp.hpp" />
     <ClInclude Include="..\..\..\include\anvil\compute\details\ArithmeticMultiChannel.hpp" />
+    <ClInclude Include="..\..\..\include\anvil\compute\details\ArithmeticSseF32.hpp" />
     <ClInclude Include="..\..\..\include\anvil\compute\Image.hpp" />
     <ClInclude Include="..\..\..\include\anvil\compute\Scalar.hpp" />
     <ClInclude Include="..\..\..\include\anvil\compute\Type.hpp" />

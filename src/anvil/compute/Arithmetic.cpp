@@ -14,6 +14,7 @@
 
 #include "anvil/compute/Arithmetic.hpp"
 #include "anvil/compute/details/ArithmeticCpp.hpp"
+#include "anvil/compute/details/ArithmeticSseF32.hpp"
 
 namespace anvil { namespace compute {
 
@@ -39,6 +40,13 @@ namespace anvil { namespace compute {
 #endif
 		static details::ArithmeticOperationsCpp<float> f32;
 		static details::ArithmeticOperationsCpp<double> f64;
+
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+		static details::ArithmeticOperationsSseF32 f32_sse;
+		static details::ArithmeticOperationsSse4F32 f32_sse41;
+		static details::ArithmeticOperationsFmaF32 f32_fma3;
+		static details::ArithmeticOperationsAvx512F32 f32_avx512;
+#endif
 
 		ArithmeticOperations* ops = nullptr;
 
@@ -80,6 +88,18 @@ namespace anvil { namespace compute {
 			break;
 #endif
 		case ANVIL_32FX1:
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+			enum { AVX512_FLAGS = ASM_AVX512F | ASM_AVX512VL };
+			if ((instruction_set & AVX512_FLAGS) == AVX512_FLAGS) {
+				ops = &f32_avx512;
+			} else if (instruction_set & ASM_FMA3) {
+				ops = &f32_fma3;
+			} else if (instruction_set & ASM_SSE41) {
+				ops = &f32_sse41;
+			} else if (instruction_set & ASM_SSE) {
+				ops = &f32_sse;
+			} else
+#endif
 			ops = &f32;
 			break;
 		case ANVIL_64FX1:
