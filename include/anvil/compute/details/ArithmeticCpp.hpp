@@ -32,48 +32,48 @@ namespace anvil { namespace compute { namespace details {
 	public:
 		typedef typename ArithOpBitwiseType<BYTES>::type T;
 
-		static void Not(const void* src, void* dst, size_t count) {
+		static void Not(const void* src, void* dst, size_t count) const {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = ~src2[i];
 		}
 
-		static void And(const void* lhs, const void* rhs, void* dst, size_t count) {
+		static void And(const void* lhs, const void* rhs, void* dst, size_t count) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = lhs2[i] & rhs2[i];
 		}
 
-		static void Or(const void* lhs, const void* rhs, void* dst, size_t count) {
+		static void Or(const void* lhs, const void* rhs, void* dst, size_t count) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = lhs2[i] | rhs2[i];
 		}
 
-		static void Xor(const void* lhs, const void* rhs, void* dst, size_t count) {
+		static void Xor(const void* lhs, const void* rhs, void* dst, size_t count) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = lhs2[i] ^ rhs2[i];
 		}
 
-		static void Nand(const void* lhs, const void* rhs, void* dst, size_t count) {
+		static void Nand(const void* lhs, const void* rhs, void* dst, size_t count) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = ~(lhs2[i] & rhs2[i]);
 		}
 
-		static void Nor(const void* lhs, const void* rhs, void* dst, size_t count) {
+		static void Nor(const void* lhs, const void* rhs, void* dst, size_t count) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = ~(lhs2[i] | rhs2[i]);
 		}
 
-		static void Xnor(const void* lhs, const void* rhs, void* dst, size_t count) {
+		static void Xnor(const void* lhs, const void* rhs, void* dst, size_t count) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -95,26 +95,26 @@ namespace anvil { namespace compute { namespace details {
 
 		// 1 input
 
-		void Sqrt(const void* src, void* dst, size_t count) final {
+		void Sqrt(const void* src, void* dst, size_t count) const final {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) { dst2[i] = std::sqrt(src2[i]); }
 		}
 
-		void Cbrt(const void* src, void* dst, size_t count) final {
+		void Cbrt(const void* src, void* dst, size_t count) const final {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) { dst2[i] = std::cbrt(src2[i]); }
 		}
 
 
-		void Not(const void* src, void* dst, size_t count) final {
+		void Not(const void* src, void* dst, size_t count) const final {
 			ArithOpBitwise<sizeof(T)>::Not(src, dst, count);
 		}
 
 		// 2 inputs
 
-		void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) final {
+		void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -144,61 +144,61 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		void Add(const void* lhs, const void* rhs, void* dst, size_t count) final {
+		void Add(const void* lhs, const void* rhs, void* dst, size_t count) const final {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = lhs2[i] + rhs2[i];
 		}
 
-		void Subtract(const void* lhs, const void* rhs, void* dst, size_t count) final {
+		void Subtract(const void* lhs, const void* rhs, void* dst, size_t count) const final {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = lhs2[i] - rhs2[i];
 		}
 
-		void Multiply(const void* lhs, const void* rhs, void* dst, size_t count) final {
+		void Multiply(const void* lhs, const void* rhs, void* dst, size_t count) const final {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = lhs2[i] * rhs2[i];
 		}
 
-		void Divide(const void* lhs, const void* rhs, void* dst, size_t count) final {
+		void Divide(const void* lhs, const void* rhs, void* dst, size_t count) const final {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = lhs2[i] / rhs2[i];
 		}
 
-		void And(const void* lhs, const void* rhs, void* dst, size_t count) final {
+		void And(const void* lhs, const void* rhs, void* dst, size_t count) const final {
 			ArithOpBitwise<sizeof(T)>::And(lhs, rhs, dst, count);
 		}
 
-		void Or(const void* lhs, const void* rhs, void* dst, size_t count) final {
+		void Or(const void* lhs, const void* rhs, void* dst, size_t count) const final {
 			ArithOpBitwise<sizeof(T)>::Or(lhs, rhs, dst, count);
 		}
 
-		void Xor(const void* lhs, const void* rhs, void* dst, size_t count) final {
+		void Xor(const void* lhs, const void* rhs, void* dst, size_t count) const final {
 			ArithOpBitwise<sizeof(T)>::Xor(lhs, rhs, dst, count);
 		}
 
-		void Nand(const void* lhs, const void* rhs, void* dst, size_t count) final {
+		void Nand(const void* lhs, const void* rhs, void* dst, size_t count) const final {
 			ArithOpBitwise<sizeof(T)>::Nand(lhs, rhs, dst, count);
 		}
 
-		void Nor(const void* lhs, const void* rhs, void* dst, size_t count) final {
+		void Nor(const void* lhs, const void* rhs, void* dst, size_t count) const final {
 			ArithOpBitwise<sizeof(T)>::Nor(lhs, rhs, dst, count);
 		}
 
-		void Xnor(const void* lhs, const void* rhs, void* dst, size_t count) final {
+		void Xnor(const void* lhs, const void* rhs, void* dst, size_t count) const final {
 			ArithOpBitwise<sizeof(T)>::Xnor(lhs, rhs, dst, count);
 		}
 
 		// 3 inputs
 
-		void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count) final {
+		void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count) const final {
 			const T* a2 = static_cast<const T*>(a);
 			const T* b2 = static_cast<const T*>(b);
 			const T* c2 = static_cast<const T*>(c);
@@ -206,7 +206,7 @@ namespace anvil { namespace compute { namespace details {
 			for (size_t i = 0u; i < count; ++i) dst2[i] = (a2[i] * b2[i]) + c2[i];
 		}
 
-		void MultiplySubtract(const void* a, const void* b, const void* c, void* dst, size_t count) final {
+		void MultiplySubtract(const void* a, const void* b, const void* c, void* dst, size_t count) const final {
 			const T* a2 = static_cast<const T*>(a);
 			const T* b2 = static_cast<const T*>(b);
 			const T* c2 = static_cast<const T*>(c);

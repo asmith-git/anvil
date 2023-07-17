@@ -39,60 +39,60 @@ namespace anvil {namespace compute {
 
 		// 1 input
 
-		virtual void Sqrt(const void* src, void* dst, size_t count) = 0;
-		virtual void SqrtMask(const void* src, void* dst, size_t count, const uint8_t* mask);
+		virtual void Sqrt(const void* src, void* dst, size_t count) const = 0;
+		virtual void SqrtMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
 
-		virtual void Cbrt(const void* src, void* dst, size_t count) = 0;
-		virtual void CbrtMask(const void* src, void* dst, size_t count, const uint8_t* mask);
+		virtual void Cbrt(const void* src, void* dst, size_t count) const = 0;
+		virtual void CbrtMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
 
-		virtual void Not(const void* src, void* dst, size_t count) = 0;
-		virtual void NotMask(const void* src, void* dst, size_t count, const uint8_t* mask);
+		virtual void Not(const void* src, void* dst, size_t count) const = 0;
+		virtual void NotMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
 
 		// 2 inputs
 
-		virtual void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask);
+		virtual void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 
-		virtual void Add(const void* lhs, const void* rhs, void* dst, size_t count) = 0;
-		virtual void AddMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask);
+		virtual void Add(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
+		virtual void AddMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 
-		virtual void Subtract(const void* lhs, const void* rhs, void* dst, size_t count) = 0;
-		virtual void SubtractMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask);
+		virtual void Subtract(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
+		virtual void SubtractMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 
-		virtual void Multiply(const void* lhs, const void* rhs, void* dst, size_t count) = 0;
-		virtual void MultiplyMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask);
+		virtual void Multiply(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
+		virtual void MultiplyMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 
-		virtual void Divide(const void* lhs, const void* rhs, void* dst, size_t count) = 0;
-		virtual void DivideMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask);
+		virtual void Divide(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
+		virtual void DivideMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 
-		virtual void And(const void* lhs, const void* rhs, void* dst, size_t count) = 0;
-		virtual void AndMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask);
+		virtual void And(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
+		virtual void AndMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 
-		virtual void Or(const void* lhs, const void* rhs, void* dst, size_t count) = 0;
-		virtual void OrMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask);
+		virtual void Or(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
+		virtual void OrMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 
-		virtual void Xor(const void* lhs, const void* rhs, void* dst, size_t count) = 0;
-		virtual void XorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask);
+		virtual void Xor(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
+		virtual void XorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 
-		virtual void Nand(const void* lhs, const void* rhs, void* dst, size_t count);
-		virtual void NandMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask);
+		virtual void Nand(const void* lhs, const void* rhs, void* dst, size_t count) const;
+		virtual void NandMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 
-		virtual void Nor(const void* lhs, const void* rhs, void* dst, size_t count);
-		virtual void NorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask);
+		virtual void Nor(const void* lhs, const void* rhs, void* dst, size_t count) const;
+		virtual void NorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 
-		virtual void Xnor(const void* lhs, const void* rhs, void* dst, size_t count);
-		virtual void XnorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask);
+		virtual void Xnor(const void* lhs, const void* rhs, void* dst, size_t count) const;
+		virtual void XnorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 
 		// 3 inputs
 
 		//! \brief dst = a * b + c
-		virtual void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count);
+		virtual void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count) const;
 		//! \brief dst = m ? a * b + c : a
-		virtual void MultiplyAddMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask);
+		virtual void MultiplyAddMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const;
 
 		//! \brief dst = a * b - c
-		virtual void MultiplySubtract(const void* a, const void* b, const void* c, void* dst, size_t count);
+		virtual void MultiplySubtract(const void* a, const void* b, const void* c, void* dst, size_t count) const;
 		//! \brief dst = m ? a * b - c : a
-		virtual void SubtractAddMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask);
+		virtual void SubtractAddMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const;
 	};
 
 }}

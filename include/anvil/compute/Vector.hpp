@@ -77,50 +77,51 @@ namespace anvil { namespace compute {
 	};
 
 	inline Vector& operator+=(Vector& a, const Vector& b) throw() {
-		//! \todo Optmimise
-		const size_t s = a.Size();
-		TypedScalar a_tmp, b_tmp;
-		for (size_t i = 0u; i < s; ++i) {
-			a.Read(i, a_tmp);
-			b.Read(i, b_tmp);
-			a.Write(i, a_tmp + b_tmp);
-		}
+		const Type bt = b.GetType();
+		if (a.GetType() != bt) a.ConvertTo(bt);
+		ArithmeticOperations::GetArithmeticOperations(bt)->Add(a.GetData(), b.GetData(), a.GetData(), bt.GetNumberOfChannels());
 		return a;
 	}
 
 	inline Vector& operator-=(Vector& a, const Vector& b) throw() {
-		//! \todo Optmimise
-		const size_t s = a.Size();
-		TypedScalar a_tmp, b_tmp;
-		for (size_t i = 0u; i < s; ++i) {
-			a.Read(i, a_tmp);
-			b.Read(i, b_tmp);
-			a.Write(i, a_tmp - b_tmp);
-		}
+		const Type bt = b.GetType();
+		if (a.GetType() != bt) a.ConvertTo(bt);
+		ArithmeticOperations::GetArithmeticOperations(bt)->Subtract(a.GetData(), b.GetData(), a.GetData(), bt.GetNumberOfChannels());
 		return a;
 	}
 
 	inline Vector& operator*=(Vector& a, const Vector& b) throw() {
-		//! \todo Optmimise
-		const size_t s = a.Size();
-		TypedScalar a_tmp, b_tmp;
-		for (size_t i = 0u; i < s; ++i) {
-			a.Read(i, a_tmp);
-			b.Read(i, b_tmp);
-			a.Write(i, a_tmp * b_tmp);
-		}
+		const Type bt = b.GetType();
+		if (a.GetType() != bt) a.ConvertTo(bt);
+		ArithmeticOperations::GetArithmeticOperations(bt)->Multiply(a.GetData(), b.GetData(), a.GetData(), bt.GetNumberOfChannels());
 		return a;
 	}
 
 	inline Vector& operator/=(Vector& a, const Vector& b) throw() {
-		//! \todo Optmimise
-		const size_t s = a.Size();
-		TypedScalar a_tmp, b_tmp;
-		for (size_t i = 0u; i < s; ++i) {
-			a.Read(i, a_tmp);
-			b.Read(i, b_tmp);
-			a.Write(i, a_tmp / b_tmp);
-		}
+		const Type bt = b.GetType();
+		if (a.GetType() != bt) a.ConvertTo(bt);
+		ArithmeticOperations::GetArithmeticOperations(bt)->Divide(a.GetData(), b.GetData(), a.GetData(), bt.GetNumberOfChannels());
+		return a;
+	}
+
+	inline Vector& operator&=(Vector& a, const Vector& b) throw() {
+		const Type bt = b.GetType();
+		if (a.GetType() != bt) a.ConvertTo(bt);
+		ArithmeticOperations::GetArithmeticOperations(bt)->And(a.GetData(), b.GetData(), a.GetData(), bt.GetNumberOfChannels());
+		return a;
+	}
+
+	inline Vector& operator|=(Vector& a, const Vector& b) throw() {
+		const Type bt = b.GetType();
+		if (a.GetType() != bt) a.ConvertTo(bt);
+		ArithmeticOperations::GetArithmeticOperations(bt)->Or(a.GetData(), b.GetData(), a.GetData(), bt.GetNumberOfChannels());
+		return a;
+	}
+
+	inline Vector& operator^=(Vector& a, const Vector& b) throw() {
+		const Type bt = b.GetType();
+		if (a.GetType() != bt) a.ConvertTo(bt);
+		ArithmeticOperations::GetArithmeticOperations(bt)->Xor(a.GetData(), b.GetData(), a.GetData(), bt.GetNumberOfChannels());
 		return a;
 	}
 
@@ -145,6 +146,24 @@ namespace anvil { namespace compute {
 	inline Vector operator/(const Vector& a, const Vector& b) throw() {
 		Vector tmp = a;
 		tmp /= b;
+		return tmp;
+	}
+
+	inline Vector operator&(const Vector& a, const Vector& b) throw() {
+		Vector tmp = a;
+		tmp &= b;
+		return tmp;
+	}
+
+	inline Vector operator|(const Vector& a, const Vector& b) throw() {
+		Vector tmp = a;
+		tmp |= b;
+		return tmp;
+	}
+
+	inline Vector operator^(const Vector& a, const Vector& b) throw() {
+		Vector tmp = a;
+		tmp ^= b;
 		return tmp;
 	}
 
