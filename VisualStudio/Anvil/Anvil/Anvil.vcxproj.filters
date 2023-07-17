@@ -55,6 +55,9 @@
     <Filter Include="Source Files\compute">
       <UniqueIdentifier>{a93d2cc0-593f-44d7-963f-d0fc1dc799e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\compute\details">
+      <UniqueIdentifier>{5cc6010b-ecc4-4ae0-9182-e611e2378da1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -136,6 +139,9 @@
       <Filter>Source Files\compute</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\anvil\compute\Image.cpp">
+      <Filter>Source Files\compute</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\compute\Arithmetic.cpp">
       <Filter>Source Files\compute</Filter>
     </ClCompile>
   </ItemGroup>
@@ -328,6 +334,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\anvil\compute\Image.hpp">
       <Filter>Header Files\compute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\compute\Arithmetic.hpp">
+      <Filter>Header Files\compute</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\compute\details\ArithmeticCpp.hpp">
+      <Filter>Header Files\compute\details</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

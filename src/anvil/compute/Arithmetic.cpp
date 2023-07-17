@@ -13,15 +13,66 @@
 //limitations under the License.
 
 #include "anvil/compute/Arithmetic.hpp"
+#include "anvil/compute/details/ArithmeticCpp.hpp"
 
 namespace anvil { namespace compute {
 
 	// ArithmeticOperations 
 
-	ArithmeticOperations* ArithmeticOperations::GetArithmeticOperations(Type type, uint64_t instruction_set = SupportedInstructionSets) {
+	ArithmeticOperations* ArithmeticOperations::GetArithmeticOperations(Type type, uint64_t instruction_set) {
 		type.SetNumberOfChannels(1u);
 
-		//! \todo Implement
+		//! \todo Implement optimisations for different instruction sets (SSE, AVX, AVX-512, ect)
+		instruction_set = 0u;
+
+		static details::ArithmeticOperationsCpp<uint8_t> u8;
+		static details::ArithmeticOperationsCpp<uint16_t> u16;
+		static details::ArithmeticOperationsCpp<uint32_t> u32;
+		static details::ArithmeticOperationsCpp<uint64_t> u64;
+		static details::ArithmeticOperationsCpp<int8_t> s8;
+		static details::ArithmeticOperationsCpp<int16_t> s16;
+		static details::ArithmeticOperationsCpp<int32_t> s32;
+		static details::ArithmeticOperationsCpp<int64_t> s64;
+#if ANVIL_F8_SUPPORT
+		static details::ArithmeticOperationsCpp<float8_t> f8;
+#endif
+#if ANVIL_F16_SUPPORT
+		static details::ArithmeticOperationsCpp<float16_t> f16;
+#endif
+		static details::ArithmeticOperationsCpp<float> f32;
+		static details::ArithmeticOperationsCpp<double> f64;
+
+		switch (type.GetEnumeratedType()) {
+		case ANVIL_8UX1:
+			return &u8;
+		case ANVIL_16UX1:
+			return &u16;
+		case ANVIL_32UX1:
+			return &u32;
+		case ANVIL_64UX1:
+			return &u64;
+		case ANVIL_8SX1:
+			return &s8;
+		case ANVIL_16SX1:
+			return &s16;
+		case ANVIL_32SX1:
+			return &s32;
+		case ANVIL_64SX1:
+			return &s64;
+#if ANVIL_F8_SUPPORT
+		case ANVIL_8FX1:
+			return &f8;
+#endif
+#if ANVIL_F16_SUPPORT
+		case ANVIL_16FX1:
+			return &f16;
+#endif
+		case ANVIL_32FX1:
+			return &f32;
+		case ANVIL_64FX1:
+			return &f64;
+		}
+	
 		return nullptr;
 	}
 

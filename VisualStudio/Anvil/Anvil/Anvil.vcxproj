@@ -192,6 +192,7 @@
     <ClCompile Include="..\..\..\src\anvil\byte-pipe\BinaryPipeXML.cpp" />
     <ClCompile Include="..\..\..\src\anvil\byte-pipe\BytePipeObjects.cpp" />
     <ClCompile Include="..\..\..\src\anvil\byte-pipe\BytePipeRepeater.cpp" />
+    <ClCompile Include="..\..\..\src\anvil\compute\Arithmetic.cpp" />
     <ClCompile Include="..\..\..\src\anvil\compute\Image.cpp" />
     <ClCompile Include="..\..\..\src\anvil\compute\Scalar.cpp" />
     <ClCompile Include="..\..\..\src\anvil\compute\Vector.cpp" />
@@ -228,6 +229,8 @@
     <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeXML.hpp" />
     <ClInclude Include="..\..\..\include\anvil\BytePipe.hpp" />
     <ClInclude Include="..\..\..\include\anvil\Compute.hpp" />
+    <ClInclude Include="..\..\..\include\anvil\compute\Arithmetic.hpp" />
+    <ClInclude Include="..\..\..\include\anvil\compute\details\ArithmeticCpp.hpp" />
     <ClInclude Include="..\..\..\include\anvil\compute\Image.hpp" />
     <ClInclude Include="..\..\..\include\anvil\compute\Scalar.hpp" />
     <ClInclude Include="..\..\..\include\anvil\compute\Type.hpp" />
