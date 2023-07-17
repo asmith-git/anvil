@@ -18,6 +18,7 @@
 #include "anvil/core/Keywords.hpp"
 #include "anvil/Core/CpuRuntime.hpp"
 #include "anvil/compute/Type.hpp"
+#include <memory>
 
 namespace anvil {namespace compute {
 
@@ -29,11 +30,19 @@ namespace anvil {namespace compute {
 	class ArithmeticOperations {
 	protected:
 		const Type _type;
+		ArithmeticOperations* _multi_channel_implementation;
 	public:
 		static ArithmeticOperations* GetArithmeticOperations(Type type, uint64_t instruction_set = SupportedInstructionSets);
+		static Type PreferedOutputType(Type input_type1, Type input_type2);
+		static Type PreferedBitwiseOutputType(Type input_type1, Type input_type2);
 
 		ArithmeticOperations(Type type);
 		virtual ~ArithmeticOperations();
+
+		ArithmeticOperations(ArithmeticOperations&&) = delete;
+		ArithmeticOperations(const ArithmeticOperations&) = delete;
+		ArithmeticOperations& operator=(ArithmeticOperations&&) = delete;
+		ArithmeticOperations& operator=(const ArithmeticOperations&) = delete;
 
 		ANVIL_STRONG_INLINE Type GetType() const { return _type; }
 
@@ -92,7 +101,7 @@ namespace anvil {namespace compute {
 		//! \brief dst = a * b - c
 		virtual void MultiplySubtract(const void* a, const void* b, const void* c, void* dst, size_t count) const;
 		//! \brief dst = m ? a * b - c : a
-		virtual void SubtractAddMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void MultiplySubtractMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const;
 	};
 
 }}

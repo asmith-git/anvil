@@ -341,5 +341,8 @@
     <ClInclude Include="..\..\..\include\anvil\compute\details\ArithmeticCpp.hpp">
       <Filter>Header Files\compute\details</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\compute\details\ArithmeticMultiChannel.hpp">
+      <Filter>Header Files\compute\details</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

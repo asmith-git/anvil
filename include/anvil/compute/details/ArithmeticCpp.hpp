@@ -16,6 +16,7 @@
 #define ANVIL_COMPUTE_ARITHMETIC_CPP_HPP
 
 #include "anvil/compute/Arithmetic.hpp"
+#include "anvil/compute/details/ArithmeticMultiChannel.hpp"
 #include <cmath>
 
 namespace anvil { namespace compute { namespace details {
@@ -32,48 +33,48 @@ namespace anvil { namespace compute { namespace details {
 	public:
 		typedef typename ArithOpBitwiseType<BYTES>::type T;
 
-		static void Not(const void* src, void* dst, size_t count) const {
+		static void Not(const void* src, void* dst, size_t count) {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = ~src2[i];
 		}
 
-		static void And(const void* lhs, const void* rhs, void* dst, size_t count) const {
+		static void And(const void* lhs, const void* rhs, void* dst, size_t count) {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = lhs2[i] & rhs2[i];
 		}
 
-		static void Or(const void* lhs, const void* rhs, void* dst, size_t count) const {
+		static void Or(const void* lhs, const void* rhs, void* dst, size_t count) {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = lhs2[i] | rhs2[i];
 		}
 
-		static void Xor(const void* lhs, const void* rhs, void* dst, size_t count) const {
+		static void Xor(const void* lhs, const void* rhs, void* dst, size_t count) {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = lhs2[i] ^ rhs2[i];
 		}
 
-		static void Nand(const void* lhs, const void* rhs, void* dst, size_t count) const {
+		static void Nand(const void* lhs, const void* rhs, void* dst, size_t count) {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = ~(lhs2[i] & rhs2[i]);
 		}
 
-		static void Nor(const void* lhs, const void* rhs, void* dst, size_t count) const {
+		static void Nor(const void* lhs, const void* rhs, void* dst, size_t count) {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = ~(lhs2[i] | rhs2[i]);
 		}
 
-		static void Xnor(const void* lhs, const void* rhs, void* dst, size_t count) const {
+		static void Xnor(const void* lhs, const void* rhs, void* dst, size_t count) {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -83,11 +84,16 @@ namespace anvil { namespace compute { namespace details {
 
 	template<class T>
 	class ArithmeticOperationsCpp final : public ArithmeticOperations {
+	private:
+		ArithmeticOperationsMultiChannel _multi_channel;
 	public:
 
 		ArithmeticOperationsCpp() :
-			ArithmeticOperations(EnumFromType<T>::value)
-		{}
+			ArithmeticOperations(EnumFromType<T>::value),
+			_multi_channel(*this)
+		{
+			_multi_channel_implementation = &_multi_channel;
+		}
 
 		virtual ~ArithmeticOperationsCpp() {
 

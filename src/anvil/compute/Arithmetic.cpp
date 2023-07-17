@@ -20,8 +20,6 @@ namespace anvil { namespace compute {
 	// ArithmeticOperations 
 
 	ArithmeticOperations* ArithmeticOperations::GetArithmeticOperations(Type type, uint64_t instruction_set) {
-		type.SetNumberOfChannels(1u);
-
 		//! \todo Implement optimisations for different instruction sets (SSE, AVX, AVX-512, ect)
 		instruction_set = 0u;
 
@@ -42,42 +40,90 @@ namespace anvil { namespace compute {
 		static details::ArithmeticOperationsCpp<float> f32;
 		static details::ArithmeticOperationsCpp<double> f64;
 
-		switch (type.GetEnumeratedType()) {
+		ArithmeticOperations* ops = nullptr;
+
+		Type t1 = type;
+		t1.SetNumberOfChannels(1u);
+		switch (t1.GetEnumeratedType()) {
 		case ANVIL_8UX1:
-			return &u8;
+			ops = &u8;
+			break;
 		case ANVIL_16UX1:
-			return &u16;
+			ops = &u16;
+			break;
 		case ANVIL_32UX1:
-			return &u32;
+			ops = &u32;
+			break;
 		case ANVIL_64UX1:
-			return &u64;
+			ops = &u64;
+			break;
 		case ANVIL_8SX1:
-			return &s8;
+			ops = &s8;
+			break;
 		case ANVIL_16SX1:
-			return &s16;
+			ops = &s16;
+			break;
 		case ANVIL_32SX1:
-			return &s32;
+			ops = &s32;
+			break;
 		case ANVIL_64SX1:
-			return &s64;
+			ops = &s64;
+			break;
 #if ANVIL_F8_SUPPORT
 		case ANVIL_8FX1:
-			return &f8;
+			ops = &f8;
+			break;
 #endif
 #if ANVIL_F16_SUPPORT
 		case ANVIL_16FX1:
-			return &f16;
+			ops = &f16;
+			break;
 #endif
 		case ANVIL_32FX1:
-			return &f32;
+			ops = &f32;
+			break;
 		case ANVIL_64FX1:
-			return &f64;
+			ops = &f64;
+			break;
 		}
 	
-		return nullptr;
+		return ops == nullptr ? nullptr : type.GetNumberOfChannels() == 1u ? ops : ops->_multi_channel_implementation;
+	}
+
+	Type ArithmeticOperations::PreferedOutputType(Type input_type1, Type input_type2) {
+		const size_t b1 = input_type1.GetSizeInBytes();
+		const size_t b2 = input_type2.GetSizeInBytes();
+		const Type::Representation r1 = input_type1.GetRepresentation();
+		const Type::Representation r2 = input_type2.GetRepresentation();
+
+		return Type(
+			r1 == Type::TYPE_FLOATING_POINT || r2 == Type::TYPE_FLOATING_POINT ? Type::TYPE_FLOATING_POINT :
+			r2 == Type::TYPE_SIGNED || r2 == Type::TYPE_SIGNED ? Type::TYPE_SIGNED :
+			Type::TYPE_UNSIGNED,
+
+			b1 == 1u && b2 == 1 ? 2u : std::max(b1, b2),
+
+			std::max(input_type1.GetNumberOfChannels(), input_type2.GetNumberOfChannels())
+		);
+	}
+
+	Type ArithmeticOperations::PreferedBitwiseOutputType(Type input_type1, Type input_type2) {
+		const Type::Representation r1 = input_type1.GetRepresentation();
+		const Type::Representation r2 = input_type2.GetRepresentation();
+
+		return Type(
+			r1 == Type::TYPE_FLOATING_POINT || r2 == Type::TYPE_FLOATING_POINT ? Type::TYPE_FLOATING_POINT :
+			r2 == Type::TYPE_SIGNED || r2 == Type::TYPE_SIGNED ? Type::TYPE_SIGNED :
+			Type::TYPE_UNSIGNED,
+
+			std::max(input_type1.GetSizeInBytes(), input_type2.GetSizeInBytes()),
+			std::max(input_type1.GetNumberOfChannels(), input_type2.GetNumberOfChannels())
+		);
 	}
 
 	ArithmeticOperations::ArithmeticOperations(Type type) :
-		_type(type)
+		_type(type),
+		_multi_channel_implementation(this)
 	{}
 
 	ArithmeticOperations::~ArithmeticOperations() {
@@ -244,7 +290,7 @@ namespace anvil { namespace compute {
 		Subtract(dst, c, dst, count);
 	}
 
-	void ArithmeticOperations::SubtractAddMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::MultiplySubtractMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
 		MultiplySubtract(a, b, c, dst, count);
 		Mask(dst, a, dst, count, mask);
 	}
