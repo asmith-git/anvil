@@ -15,8 +15,8 @@
 #ifndef ANVIL_COMPUTE_INC_HPP
 #define ANVIL_COMPUTE_INC_HPP
 
-//#include "anvil/compute/Arithmetic.hpp"
 #include "anvil/compute/Type.hpp"
+#include "anvil/compute/Arithmetic.hpp"
 #include "anvil/compute/Scalar.hpp"
 #include "anvil/compute/Vector.hpp"
 #include "anvil/compute/Image.hpp"
