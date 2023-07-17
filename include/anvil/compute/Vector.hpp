@@ -76,52 +76,59 @@ namespace anvil { namespace compute {
 		}
 	};
 
-	inline Vector& operator+=(Vector& a, const Vector& b) throw() {
-		const Type bt = b.GetType();
-		if (a.GetType() != bt) a.ConvertTo(bt);
-		ArithmeticOperations::GetArithmeticOperations(bt)->Add(a.GetData(), b.GetData(), a.GetData(), bt.GetNumberOfChannels());
+	inline Vector& operator+=(Vector& a, Vector b) throw() {
+		const Type t = ArithmeticOperations::PreferedOutputType(a.GetType(), b.GetType());
+		if (a.GetType() != t) a.ConvertToInPlace(t);
+		if (b.GetType() != t) b.ConvertToInPlace(t);
+		ArithmeticOperations::GetArithmeticOperations(t)->Add(a.GetData(), b.GetData(), a.GetData(), t.GetNumberOfChannels());
 		return a;
 	}
 
-	inline Vector& operator-=(Vector& a, const Vector& b) throw() {
-		const Type bt = b.GetType();
-		if (a.GetType() != bt) a.ConvertTo(bt);
-		ArithmeticOperations::GetArithmeticOperations(bt)->Subtract(a.GetData(), b.GetData(), a.GetData(), bt.GetNumberOfChannels());
+	inline Vector& operator-=(Vector& a, Vector b) throw() {
+		const Type t = ArithmeticOperations::PreferedOutputType(a.GetType(), b.GetType());
+		if (a.GetType() != t) a.ConvertToInPlace(t);
+		if (b.GetType() != t) b.ConvertToInPlace(t);
+		ArithmeticOperations::GetArithmeticOperations(t)->Subtract(a.GetData(), b.GetData(), a.GetData(), t.GetNumberOfChannels());
 		return a;
 	}
 
-	inline Vector& operator*=(Vector& a, const Vector& b) throw() {
-		const Type bt = b.GetType();
-		if (a.GetType() != bt) a.ConvertTo(bt);
-		ArithmeticOperations::GetArithmeticOperations(bt)->Multiply(a.GetData(), b.GetData(), a.GetData(), bt.GetNumberOfChannels());
+	inline Vector& operator*=(Vector& a, Vector b) throw() {
+		const Type t = ArithmeticOperations::PreferedOutputType(a.GetType(), b.GetType());
+		if (a.GetType() != t) a.ConvertToInPlace(t);
+		if (b.GetType() != t) b.ConvertToInPlace(t);
+		ArithmeticOperations::GetArithmeticOperations(t)->Multiply(a.GetData(), b.GetData(), a.GetData(), t.GetNumberOfChannels());
 		return a;
 	}
 
-	inline Vector& operator/=(Vector& a, const Vector& b) throw() {
-		const Type bt = b.GetType();
-		if (a.GetType() != bt) a.ConvertTo(bt);
-		ArithmeticOperations::GetArithmeticOperations(bt)->Divide(a.GetData(), b.GetData(), a.GetData(), bt.GetNumberOfChannels());
+	inline Vector& operator/=(Vector& a, Vector b) throw() {
+		const Type t = ArithmeticOperations::PreferedOutputType(a.GetType(), b.GetType());
+		if (a.GetType() != t) a.ConvertToInPlace(t);
+		if (b.GetType() != t) b.ConvertToInPlace(t);
+		ArithmeticOperations::GetArithmeticOperations(t)->Divide(a.GetData(), b.GetData(), a.GetData(), t.GetNumberOfChannels());
 		return a;
 	}
 
-	inline Vector& operator&=(Vector& a, const Vector& b) throw() {
-		const Type bt = b.GetType();
-		if (a.GetType() != bt) a.ConvertTo(bt);
-		ArithmeticOperations::GetArithmeticOperations(bt)->And(a.GetData(), b.GetData(), a.GetData(), bt.GetNumberOfChannels());
+	inline Vector& operator&=(Vector& a, Vector b) throw() {
+		const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
+		if (a.GetType() != t) a.ConvertToInPlace(t);
+		if (b.GetType() != t) b.ConvertToInPlace(t);
+		ArithmeticOperations::GetArithmeticOperations(t)->And(a.GetData(), b.GetData(), a.GetData(), t.GetNumberOfChannels());
 		return a;
 	}
 
-	inline Vector& operator|=(Vector& a, const Vector& b) throw() {
-		const Type bt = b.GetType();
-		if (a.GetType() != bt) a.ConvertTo(bt);
-		ArithmeticOperations::GetArithmeticOperations(bt)->Or(a.GetData(), b.GetData(), a.GetData(), bt.GetNumberOfChannels());
+	inline Vector& operator|=(Vector& a, Vector b) throw() {
+		const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
+		if (a.GetType() != t) a.ConvertToInPlace(t);
+		if (b.GetType() != t) b.ConvertToInPlace(t);
+		ArithmeticOperations::GetArithmeticOperations(t)->Or(a.GetData(), b.GetData(), a.GetData(), t.GetNumberOfChannels());
 		return a;
 	}
 
-	inline Vector& operator^=(Vector& a, const Vector& b) throw() {
-		const Type bt = b.GetType();
-		if (a.GetType() != bt) a.ConvertTo(bt);
-		ArithmeticOperations::GetArithmeticOperations(bt)->Xor(a.GetData(), b.GetData(), a.GetData(), bt.GetNumberOfChannels());
+	inline Vector& operator^=(Vector& a, Vector b) throw() {
+		const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
+		if (a.GetType() != t) a.ConvertToInPlace(t);
+		if (b.GetType() != t) b.ConvertToInPlace(t);
+		ArithmeticOperations::GetArithmeticOperations(t)->Xor(a.GetData(), b.GetData(), a.GetData(), t.GetNumberOfChannels());
 		return a;
 	}
 
