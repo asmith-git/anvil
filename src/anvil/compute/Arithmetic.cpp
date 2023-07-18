@@ -15,27 +15,28 @@
 #include "anvil/compute/Arithmetic.hpp"
 #include "anvil/compute/details/ArithmeticCpp.hpp"
 #include "anvil/compute/details/ArithmeticSseF32.hpp"
+#include "anvil/compute/details/ArithmeticF16.hpp"
 
 namespace anvil { namespace compute {
 
 	// ArithmeticOperations 
 
-	static details::ArithmeticOperationsCpp<uint8_t> g_arithmetic_op_u8;
-	static details::ArithmeticOperationsCpp<uint16_t> g_arithmetic_op_u16;
-	static details::ArithmeticOperationsCpp<uint32_t> g_arithmetic_op_u32;
-	static details::ArithmeticOperationsCpp<uint64_t> g_arithmetic_op_u64;
-	static details::ArithmeticOperationsCpp<int8_t> g_arithmetic_op_s8;
-	static details::ArithmeticOperationsCpp<int16_t> g_arithmetic_op_s16;
-	static details::ArithmeticOperationsCpp<int32_t> g_arithmetic_op_s32;
-	static details::ArithmeticOperationsCpp<int64_t> g_arithmetic_op_s64;
+	static ArithmeticOperations* g_arithmetic_op_u8 = new details::ArithmeticOperationsCpp<uint8_t>();
+	static ArithmeticOperations* g_arithmetic_op_u16 = new details::ArithmeticOperationsCpp<uint16_t>();
+	static ArithmeticOperations* g_arithmetic_op_u32 = new details::ArithmeticOperationsCpp<uint32_t>();
+	static ArithmeticOperations* g_arithmetic_op_u64 = new details::ArithmeticOperationsCpp<uint64_t>();
+	static ArithmeticOperations* g_arithmetic_op_s8 = new details::ArithmeticOperationsCpp<int8_t>();
+	static ArithmeticOperations* g_arithmetic_op_s16 = new details::ArithmeticOperationsCpp<int16_t>();
+	static ArithmeticOperations* g_arithmetic_op_s32 = new details::ArithmeticOperationsCpp<int32_t>();
+	static ArithmeticOperations* g_arithmetic_op_s64 = new details::ArithmeticOperationsCpp<int64_t>();
 #if ANVIL_F8_SUPPORT
-	static details::ArithmeticOperationsCpp<float8_t> g_arithmetic_op_f8;
+	static ArithmeticOperations* g_arithmetic_op_f8 = new details::ArithmeticOperationsCpp<float8_t>();
 #endif
 #if ANVIL_F16_SUPPORT
-	static details::ArithmeticOperationsCpp<float16_t> g_arithmetic_op_f16;
+	static ArithmeticOperations* g_arithmetic_op_f16 = new details::ArithmeticOperationsCpp<float16_t>();
 #endif
-	static details::ArithmeticOperationsCpp<float> g_arithmetic_op_f32;
-	static details::ArithmeticOperationsCpp<double> g_arithmetic_op_f64;
+	static ArithmeticOperations* g_arithmetic_op_f32 = new details::ArithmeticOperationsCpp<float>();
+	static ArithmeticOperations* g_arithmetic_op_f64 = new details::ArithmeticOperationsCpp<double>();
 
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 	static ArithmeticOperations* g_arithmetic_op_f32_sse = new details::ArithmeticOperationsSseF32();
@@ -47,7 +48,7 @@ namespace anvil { namespace compute {
 	ArithmeticOperations* ArithmeticOperations::GetArithmeticOperations(Type type, uint64_t instruction_set) {
 		//! \todo Implement optimisations for different instruction sets (SSE, AVX, AVX-512, ect)
 
-
+		//! \bug g_arithmetic_op_f32, ect will be null if called from within the constructor of another ArithmeticOperations
 
 		ArithmeticOperations* ops = nullptr;
 
@@ -55,37 +56,37 @@ namespace anvil { namespace compute {
 		t1.SetNumberOfChannels(1u);
 		switch (t1.GetEnumeratedType()) {
 		case ANVIL_8UX1:
-			ops = &g_arithmetic_op_u8;
+			ops = g_arithmetic_op_u8;
 			break;
 		case ANVIL_16UX1:
-			ops = &g_arithmetic_op_u16;
+			ops = g_arithmetic_op_u16;
 			break;
 		case ANVIL_32UX1:
-			ops = &g_arithmetic_op_u32;
+			ops = g_arithmetic_op_u32;
 			break;
 		case ANVIL_64UX1:
-			ops = &g_arithmetic_op_u64;
+			ops = g_arithmetic_op_u64;
 			break;
 		case ANVIL_8SX1:
-			ops = &g_arithmetic_op_s8;
+			ops = g_arithmetic_op_s8;
 			break;
 		case ANVIL_16SX1:
-			ops = &g_arithmetic_op_s16;
+			ops = g_arithmetic_op_s16;
 			break;
 		case ANVIL_32SX1:
-			ops = &g_arithmetic_op_s32;
+			ops = g_arithmetic_op_s32;
 			break;
 		case ANVIL_64SX1:
-			ops = &g_arithmetic_op_s64;
+			ops = g_arithmetic_op_s64;
 			break;
 #if ANVIL_F8_SUPPORT
 		case ANVIL_8FX1:
-			ops = &g_arithmetic_op_f8;
+			ops = g_arithmetic_op_f8;
 			break;
 #endif
 #if ANVIL_F16_SUPPORT
 		case ANVIL_16FX1:
-			ops = &g_arithmetic_op_f16;
+			ops = g_arithmetic_op_f16;
 			break;
 #endif
 		case ANVIL_32FX1:
@@ -101,10 +102,10 @@ namespace anvil { namespace compute {
 				ops = g_arithmetic_op_f32_sse;
 			} else
 #endif
-			ops = &g_arithmetic_op_f32;
+			ops = g_arithmetic_op_f32;
 			break;
 		case ANVIL_64FX1:
-			ops = &g_arithmetic_op_f64;
+			ops = g_arithmetic_op_f64;
 			break;
 		}
 	
@@ -119,7 +120,7 @@ namespace anvil { namespace compute {
 
 		return Type(
 			r1 == Type::TYPE_FLOATING_POINT || r2 == Type::TYPE_FLOATING_POINT ? Type::TYPE_FLOATING_POINT :
-			r2 == Type::TYPE_SIGNED || r2 == Type::TYPE_SIGNED ? Type::TYPE_SIGNED :
+			r1 == Type::TYPE_SIGNED || r2 == Type::TYPE_SIGNED ? Type::TYPE_SIGNED :
 			Type::TYPE_UNSIGNED,
 
 			b1 == 1u && b2 == 1 ? 2u : std::max(b1, b2),
@@ -134,7 +135,7 @@ namespace anvil { namespace compute {
 
 		return Type(
 			r1 == Type::TYPE_FLOATING_POINT || r2 == Type::TYPE_FLOATING_POINT ? Type::TYPE_FLOATING_POINT :
-			r2 == Type::TYPE_SIGNED || r2 == Type::TYPE_SIGNED ? Type::TYPE_SIGNED :
+			r1 == Type::TYPE_SIGNED || r2 == Type::TYPE_SIGNED ? Type::TYPE_SIGNED :
 			Type::TYPE_UNSIGNED,
 
 			std::max(input_type1.GetSizeInBytes(), input_type2.GetSizeInBytes()),

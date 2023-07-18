@@ -120,7 +120,7 @@ namespace anvil { namespace compute { namespace details {
 
 		void SqrtMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
 			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_alloca(NewMaskSize(count)));
+			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
 			(this->*FixMask)(mask, mask2, count);
 			_parent.SqrtMask(src, dst, count * c, mask2);
 			_freea(mask2);
@@ -132,7 +132,7 @@ namespace anvil { namespace compute { namespace details {
 
 		void CbrtMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
 			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_alloca(NewMaskSize(count)));
+			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
 			(this->*FixMask)(mask, mask2, count);
 			_parent.CbrtMask(src, dst, count * c, mask2);
 			_freea(mask2);
@@ -144,7 +144,7 @@ namespace anvil { namespace compute { namespace details {
 
 		void NotMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
 			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_alloca(NewMaskSize(count)));
+			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
 			(this->*FixMask)(mask, mask2, count);
 			_parent.NotMask(src, dst, count * c, mask2);
 			_freea(mask2);
@@ -162,7 +162,7 @@ namespace anvil { namespace compute { namespace details {
 
 		void AddMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
 			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_alloca(NewMaskSize(count)));
+			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
 			(this->*FixMask)(mask, mask2, count);
 			_parent.AddMask(lhs, rhs, dst, count * c, mask2);
 			_freea(mask2);
@@ -174,7 +174,7 @@ namespace anvil { namespace compute { namespace details {
 
 		void SubtractMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
 			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_alloca(NewMaskSize(count)));
+			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
 			(this->*FixMask)(mask, mask2, count);
 			_parent.SubtractMask(lhs, rhs, dst, count * c, mask2);
 			_freea(mask2);
@@ -186,7 +186,7 @@ namespace anvil { namespace compute { namespace details {
 
 		void MultiplyMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
 			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_alloca(NewMaskSize(count)));
+			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
 			(this->*FixMask)(mask, mask2, count);
 			_parent.MultiplyMask(lhs, rhs, dst, count * c, mask2);
 			_freea(mask2);
@@ -198,7 +198,7 @@ namespace anvil { namespace compute { namespace details {
 
 		void DivideMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
 			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_alloca(NewMaskSize(count)));
+			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
 			(this->*FixMask)(mask, mask2, count);
 			_parent.DivideMask(lhs, rhs, dst, count * c, mask2);
 			_freea(mask2);
@@ -210,7 +210,7 @@ namespace anvil { namespace compute { namespace details {
 
 		void AndMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
 			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_alloca(NewMaskSize(count)));
+			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
 			(this->*FixMask)(mask, mask2, count);
 			_parent.AndMask(lhs, rhs, dst, count * c, mask2);
 			_freea(mask2);
@@ -222,7 +222,7 @@ namespace anvil { namespace compute { namespace details {
 
 		void OrMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
 			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_alloca(NewMaskSize(count)));
+			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
 			(this->*FixMask)(mask, mask2, count);
 			_parent.OrMask(lhs, rhs, dst, count * c, mask2);
 			_freea(mask2);
@@ -234,7 +234,7 @@ namespace anvil { namespace compute { namespace details {
 
 		void XorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
 			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_alloca(NewMaskSize(count)));
+			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
 			(this->*FixMask)(mask, mask2, count);
 			_parent.XorMask(lhs, rhs, dst, count * c, mask2);
 			_freea(mask2);
@@ -246,7 +246,7 @@ namespace anvil { namespace compute { namespace details {
 
 		void NandMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
 			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_alloca(NewMaskSize(count)));
+			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
 			(this->*FixMask)(mask, mask2, count);
 			_parent.NandMask(lhs, rhs, dst, count * c, mask2);
 			_freea(mask2);
@@ -258,7 +258,7 @@ namespace anvil { namespace compute { namespace details {
 
 		void NorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
 			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_alloca(NewMaskSize(count)));
+			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
 			(this->*FixMask)(mask, mask2, count);
 			_parent.NorMask(lhs, rhs, dst, count * c, mask2);
 			_freea(mask2);
@@ -270,7 +270,7 @@ namespace anvil { namespace compute { namespace details {
 
 		void XnorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
 			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_alloca(NewMaskSize(count)));
+			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
 			(this->*FixMask)(mask, mask2, count);
 			_parent.XnorMask(lhs, rhs, dst, count * c, mask2);
 			_freea(mask2);
@@ -284,7 +284,7 @@ namespace anvil { namespace compute { namespace details {
 
 		void MultiplyAddMask(const void* a, const void* b, const void* c2, void* dst, size_t count, const uint8_t* mask) const final {
 			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_alloca(NewMaskSize(count)));
+			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
 			(this->*FixMask)(mask, mask2, count);
 			_parent.MultiplyAddMask(a, b, c2, dst, count * c, mask2);
 			_freea(mask2);
@@ -296,7 +296,7 @@ namespace anvil { namespace compute { namespace details {
 
 		void MultiplySubtractMask(const void* a, const void* b, const void* c2, void* dst, size_t count, const uint8_t* mask) const final {
 			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_alloca(NewMaskSize(count)));
+			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
 			(this->*FixMask)(mask, mask2, count);
 			_parent.MultiplySubtractMask(a, b, c2, dst, count * c, mask2);
 			_freea(mask2);

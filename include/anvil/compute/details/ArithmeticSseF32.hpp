@@ -25,10 +25,8 @@ namespace anvil { namespace compute { namespace details {
 
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 
-	class ArithmeticOperationsSseF32 : public ArithmeticOperations {
+	class ArithmeticOperationsSseF32 : public ArithmeticOperationsCpp<float> {
 	protected:
-		ArithmeticOperationsMultiChannel _multi_channel;
-		ArithmeticOperations* _cpp;
 
 		static ANVIL_STRONG_INLINE void ExpandMaskSSE(uint8_t mask, __m128& lo, __m128& hi) {
 			lo = _mm_castsi128_ps(_mm_set_epi32(mask & 8u, mask & 4u, mask & 2u, mask & 1u));
@@ -53,12 +51,8 @@ namespace anvil { namespace compute { namespace details {
 		typedef float T;
 
 		ArithmeticOperationsSseF32() :
-			ArithmeticOperations(EnumFromType<T>::value),
-			_multi_channel(*this)
-		{
-			_multi_channel_implementation = &_multi_channel;
-			_cpp = GetArithmeticOperations(_type, 0u);
-		}
+			ArithmeticOperationsCpp()
+		{}
 
 		virtual ~ArithmeticOperationsSseF32() {
 
@@ -118,10 +112,6 @@ namespace anvil { namespace compute { namespace details {
 				SqrtMask(src_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
-		}
-
-		void Cbrt(const void* src, void* dst, size_t count) const {
-			_cpp->Cbrt(src, dst, count);
 		}
 
 		void Not(const void* src, void* dst, size_t count) const {
