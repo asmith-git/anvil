@@ -28,6 +28,22 @@ namespace anvil {namespace compute {
 	*	\author Adam Smith
 	*/
 	class ANVIL_DLL_EXPORT ArithmeticOperations {
+	private:
+
+		void CallDefaultMaskedOperation(
+			const void* src, void* dst, size_t count, const uint8_t* mask,
+			void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count) const
+		) const;
+
+		void CallDefaultMaskedOperation(
+			const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask,
+			void(ArithmeticOperations::* Function)(const void* lhs, const void* rhs, void* dst, size_t count) const
+		) const;
+
+		void CallDefaultMaskedOperation(
+			const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask,
+			void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count) const
+		) const;
 	protected:
 		const Type _type;
 

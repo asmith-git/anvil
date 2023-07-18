@@ -80,42 +80,8 @@ namespace anvil { namespace compute { namespace details {
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = ~(lhs2[i] ^ rhs2[i]);
 		}
-	};
 
-	template<class T>
-	class ArithmeticOperationsCpp : public ArithmeticOperations {
-	public:
-
-		ArithmeticOperationsCpp() :
-			ArithmeticOperations(EnumFromType<T>::value)
-		{}
-
-		virtual ~ArithmeticOperationsCpp() {
-
-		}
-
-		// 1 input
-
-		void Sqrt(const void* src, void* dst, size_t count) const {
-			const T* src2 = static_cast<const T*>(src);
-			T* dst2 = static_cast<T*>(dst);
-			for (size_t i = 0u; i < count; ++i) { dst2[i] = std::sqrt(src2[i]); }
-		}
-
-		void Cbrt(const void* src, void* dst, size_t count) const {
-			const T* src2 = static_cast<const T*>(src);
-			T* dst2 = static_cast<T*>(dst);
-			for (size_t i = 0u; i < count; ++i) { dst2[i] = std::cbrt(src2[i]); }
-		}
-
-
-		void Not(const void* src, void* dst, size_t count) const {
-			ArithOpBitwise<sizeof(T)>::Not(src, dst, count);
-		}
-
-		// 2 inputs
-
-		void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		static void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -143,6 +109,70 @@ namespace anvil { namespace compute { namespace details {
 				dst2[i] = (m & 1u ? lhs2 : rhs2)[i];
 				m >>= 1u;
 			}
+		}
+	};
+
+	template<class T>
+	class ArithmeticOperationsCpp : public ArithmeticOperations {
+	public:
+
+		ArithmeticOperationsCpp() :
+			ArithmeticOperations(EnumFromType<T>::value)
+		{}
+
+		virtual ~ArithmeticOperationsCpp() {
+
+		}
+
+		// 1 input
+
+		void Sqrt(const void* src, void* dst, size_t count) const {
+			const T* src2 = static_cast<const T*>(src);
+			T* dst2 = static_cast<T*>(dst);
+
+			if constexpr (std::is_integral<T>::value) {
+				for (size_t i = 0u; i < count; ++i) { 
+					dst2[i] = static_cast<T>(std::roundf(std::sqrtf(static_cast<float>(src2[i])))); 
+				}
+			} else if constexpr (std::is_same<T, double>::value) {
+				for (size_t i = 0u; i < count; ++i) {
+					dst2[i] = std::sqrt(src2[i]);
+				}
+			} else {
+				for (size_t i = 0u; i < count; ++i) {
+					dst2[i] = static_cast<T>(std::sqrtf(static_cast<float>(src2[i])));
+				}
+			}
+		}
+
+		void Cbrt(const void* src, void* dst, size_t count) const {
+			const T* src2 = static_cast<const T*>(src);
+			T* dst2 = static_cast<T*>(dst);
+
+			if constexpr (std::is_integral<T>::value) {
+				for (size_t i = 0u; i < count; ++i) { 
+					dst2[i] = static_cast<T>(std::roundf(std::cbrtf(static_cast<float>(src2[i])))); 
+				}
+			} else if constexpr (std::is_same<T, double>::value) {
+				for (size_t i = 0u; i < count; ++i) {
+					dst2[i] = std::cbrt(src2[i]);
+				}
+			} else {
+				for (size_t i = 0u; i < count; ++i) {
+					dst2[i] = static_cast<T>(std::cbrtf(static_cast<float>(src2[i])));
+				}
+			}
+		}
+
+
+		void Not(const void* src, void* dst, size_t count) const {
+			ArithOpBitwise<sizeof(T)>::Not(src, dst, count);
+		}
+
+		// 2 inputs
+
+		void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+			ArithOpBitwise<sizeof(T)>::Mask(lhs, rhs, dst, count, mask);
 		}
 
 		void Add(const void* lhs, const void* rhs, void* dst, size_t count) const {

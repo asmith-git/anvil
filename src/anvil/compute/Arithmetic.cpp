@@ -267,54 +267,92 @@ namespace anvil { namespace compute {
 		}
 	}
 
+	void ArithmeticOperations::CallDefaultMaskedOperation(
+		const void* src, void* dst, size_t count, const uint8_t* mask,
+		void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count) const
+	) const {
+		if (src == dst) {
+			void* buffer = _malloca(_type.GetSizeInBytes() * count);
+			ANVIL_RUNTIME_ASSERT(buffer != nullptr, "Anvil::ArithmeticOperations::CallDefaultMaskedOperation : Failed to allocate buffer for masked operation");
+			(this->*Function)(src, buffer, count);
+			Mask(buffer, src, dst, count, mask);
+			_freea(buffer);
+		} else {
+			(this->*Function)(src, dst, count);
+			Mask(dst, src, dst, count, mask);
+		}
+	}
+
+	void ArithmeticOperations::CallDefaultMaskedOperation(
+		const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask,
+		void(ArithmeticOperations::* Function)(const void* lhs, const void* rhs, void* dst, size_t count) const
+	) const {
+		if (lhs == dst) {
+			void* buffer = _malloca(_type.GetSizeInBytes() * count);
+			ANVIL_RUNTIME_ASSERT(buffer != nullptr, "Anvil::ArithmeticOperations::CallDefaultMaskedOperation : Failed to allocate buffer for masked operation");
+			(this->*Function)(lhs, rhs, buffer, count);
+			Mask(buffer, lhs, dst, count, mask);
+			_freea(buffer);
+		} else {
+			(this->*Function)(lhs, rhs, dst, count);
+			Mask(dst, lhs, dst, count, mask);
+		}
+	}
+
+	void ArithmeticOperations::CallDefaultMaskedOperation(
+		const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask,
+		void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count) const
+	) const {
+		if (a == dst) {
+			void* buffer = _malloca(_type.GetSizeInBytes() * count);
+			ANVIL_RUNTIME_ASSERT(buffer != nullptr, "Anvil::ArithmeticOperations::CallDefaultMaskedOperation : Failed to allocate buffer for masked operation");
+			(this->*Function)(a, b, c, buffer, count);
+			Mask(buffer, a, dst, count, mask);
+			_freea(buffer);
+		} else {
+			(this->*Function)(a, b, c, dst, count);
+			Mask(dst, a, dst, count, mask);
+		}
+	}
+
 	void ArithmeticOperations::SqrtMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
-		Sqrt(src, dst, count);
-		Mask(dst, src, dst, count, mask);
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Sqrt);
 	}
 
 	void ArithmeticOperations::CbrtMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
-		Cbrt(src, dst, count);
-		Mask(dst, src, dst, count, mask);
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Cbrt);
 	}
 
 	void ArithmeticOperations::NotMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
-		Not(src, dst, count);
-		Mask(dst, src, dst, count, mask);
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Not);
 	}
 
 	void ArithmeticOperations::AddMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
-		Add(lhs, rhs, dst, count);
-		Mask(dst, lhs, dst, count, mask);
+		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Add);
 	}
 
 	void ArithmeticOperations::SubtractMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
-		Subtract(lhs, rhs, dst, count);
-		Mask(dst, lhs, dst, count, mask);
+		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Subtract);
 	}
 
 	void ArithmeticOperations::MultiplyMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
-		Multiply(lhs, rhs, dst, count);
-		Mask(dst, lhs, dst, count, mask);
+		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Multiply);
 	}
 
 	void ArithmeticOperations::DivideMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
-		Divide(lhs, rhs, dst, count);
-		Mask(dst, lhs, dst, count, mask);
+		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Divide);
 	}
 
 	void ArithmeticOperations::AndMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
-		And(lhs, rhs, dst, count);
-		Mask(dst, lhs, dst, count, mask);
+		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::And);
 	}
 
 	void ArithmeticOperations::OrMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
-		Or(lhs, rhs, dst, count);
-		Mask(dst, lhs, dst, count, mask);
+		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Or);
 	}
 
 	void ArithmeticOperations::XorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
-		Xor(lhs, rhs, dst, count);
-		Mask(dst, lhs, dst, count, mask);
+		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Xor);
 	}
 
 	void ArithmeticOperations::Nand(const void* lhs, const void* rhs, void* dst, size_t count) const {
@@ -323,8 +361,7 @@ namespace anvil { namespace compute {
 	}
 
 	void ArithmeticOperations::NandMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
-		Nand(lhs, rhs, dst, count);
-		Mask(dst, lhs, dst, count, mask);
+		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Nand);
 	}
 
 	void ArithmeticOperations::Nor(const void* lhs, const void* rhs, void* dst, size_t count) const {
@@ -333,8 +370,7 @@ namespace anvil { namespace compute {
 	}
 
 	void ArithmeticOperations::NorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
-		Nor(lhs, rhs, dst, count);
-		Mask(dst, lhs, dst, count, mask);
+		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Nor);
 	}
 
 	void ArithmeticOperations::Xnor(const void* lhs, const void* rhs, void* dst, size_t count) const {
@@ -343,8 +379,7 @@ namespace anvil { namespace compute {
 	}
 
 	void ArithmeticOperations::XnorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
-		Xnor(lhs, rhs, dst, count);
-		Mask(dst, lhs, dst, count, mask);
+		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Xnor);
 	}
 
 	void ArithmeticOperations::MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count) const {
@@ -353,8 +388,7 @@ namespace anvil { namespace compute {
 	}
 
 	void ArithmeticOperations::MultiplyAddMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
-		MultiplyAdd(a, b, c, dst, count);
-		Mask(dst, a, dst, count, mask);
+		CallDefaultMaskedOperation(a, b, c, dst, count, mask, &ArithmeticOperations::MultiplyAdd);
 	}
 
 	void ArithmeticOperations::MultiplySubtract(const void* a, const void* b, const void* c, void* dst, size_t count) const {
@@ -363,8 +397,7 @@ namespace anvil { namespace compute {
 	}
 
 	void ArithmeticOperations::MultiplySubtractMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
-		MultiplySubtract(a, b, c, dst, count);
-		Mask(dst, a, dst, count, mask);
+		CallDefaultMaskedOperation(a, b, c, dst, count, mask, &ArithmeticOperations::MultiplySubtract);
 	}
 
 

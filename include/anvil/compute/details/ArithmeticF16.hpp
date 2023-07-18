@@ -77,7 +77,7 @@ namespace anvil { namespace compute { namespace details {
 			const void* src, void* dst, size_t count,
 			void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count) const
 		) const {
-			float* buffer_a = static_cast<float*>(_malloca(sizeof(T) * count));
+			float* buffer_a = static_cast<float*>(_malloca(sizeof(float) * count));
 			ANVIL_RUNTIME_ASSERT(buffer_a != nullptr, "anvil::compute::details::ArithmeticOperationsCpp<float16_t>::Call1Input : Failed to allocate memory");
 			(*ConvertToF32)(static_cast<const float16_t*>(src), buffer_a, count);
 
@@ -91,7 +91,7 @@ namespace anvil { namespace compute { namespace details {
 			const void* src, void* dst, size_t count, const uint8_t* mask,
 			void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count, const uint8_t* mask) const
 		) const {
-			float* buffer_a = static_cast<float*>(_malloca(sizeof(T) * count));
+			float* buffer_a = static_cast<float*>(_malloca(sizeof(float) * count));
 			ANVIL_RUNTIME_ASSERT(buffer_a != nullptr, "anvil::compute::details::ArithmeticOperationsCpp<float16_t>::Call1Input : Failed to allocate memory");
 			(*ConvertToF32)(static_cast<const float16_t*>(src), buffer_a, count);
 
@@ -105,7 +105,7 @@ namespace anvil { namespace compute { namespace details {
 			const void* lhs, const void* rhs, void* dst, size_t count, 
 			void(ArithmeticOperations::*Function)(const void* lhs, const void* rhs, void* dst, size_t count) const
 		) const {
-			float* buffer_a = static_cast<float*>(_malloca(sizeof(T) * count * 2));
+			float* buffer_a = static_cast<float*>(_malloca(sizeof(float) * count * 2));
 			ANVIL_RUNTIME_ASSERT(buffer_a != nullptr, "anvil::compute::details::ArithmeticOperationsCpp<float16_t>::Call2Inputs : Failed to allocate memory");
 			float* buffer_b = buffer_a + count;
 			(*ConvertToF32)(static_cast<const float16_t*>(lhs), buffer_a, count);
@@ -121,7 +121,7 @@ namespace anvil { namespace compute { namespace details {
 			const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask,
 			void(ArithmeticOperations::* Function)(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const
 		) const {
-			float* buffer_a = static_cast<float*>(_malloca(sizeof(T) * count * 2));
+			float* buffer_a = static_cast<float*>(_malloca(sizeof(float) * count * 2));
 			ANVIL_RUNTIME_ASSERT(buffer_a != nullptr, "anvil::compute::details::ArithmeticOperationsCpp<float16_t>::Call2Inputs : Failed to allocate memory");
 			float* buffer_b = buffer_a + count;
 			(*ConvertToF32)(static_cast<const float16_t*>(lhs), buffer_a, count);
@@ -137,7 +137,7 @@ namespace anvil { namespace compute { namespace details {
 			const void* a, const void* b, const void* c, void* dst, size_t count,
 			void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count) const
 		) const {
-			float* buffer_a = static_cast<float*>(_malloca(sizeof(T) * count * 3));
+			float* buffer_a = static_cast<float*>(_malloca(sizeof(float) * count * 3));
 			ANVIL_RUNTIME_ASSERT(buffer_a != nullptr, "anvil::compute::details::ArithmeticOperationsCpp<float16_t>::Call3Inputs : Failed to allocate memory");
 			float* buffer_b = buffer_a + count;
 			float* buffer_c = buffer_b + count;
@@ -155,7 +155,7 @@ namespace anvil { namespace compute { namespace details {
 			const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask,
 			void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const
 		) const {
-			float* buffer_a = static_cast<float*>(_malloca(sizeof(T) * count * 3));
+			float* buffer_a = static_cast<float*>(_malloca(sizeof(float) * count * 3));
 			ANVIL_RUNTIME_ASSERT(buffer_a != nullptr, "anvil::compute::details::ArithmeticOperationsCpp<float16_t>::Call3Inputs : Failed to allocate memory");
 			float* buffer_b = buffer_a + count;
 			float* buffer_c = buffer_b + count;

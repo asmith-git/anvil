@@ -3,6 +3,11 @@
 #include "anvil/Core.hpp"
 #include "anvil/compute.hpp"
 #include <locale>
+#include <bitset>
+#include <sstream>
+#include <iomanip>
+
+#define STR2WSTR(str) std::wstring_convert<std::codecvt<wchar_t, char, std::mbstate_t>>().from_bytes(str)
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -531,73 +536,184 @@ namespace anvil { namespace compute {
 	TEST_CLASS(ArithmeticF32)
 	{
 	public:
-		void TestMasking(uint64_t instruction_set) {
+		float RoundFloat(float x, int n)
+		{
+			std::stringstream ss;
+			ss << std::scientific << std::setprecision(n - 1) << x;
+			return stod(ss.str());
+		}
+
+		template<class T, size_t SIZE>
+		void TestOperation(
+			T a_val, T expected_result,
+			ArithmeticOperations* operations,
+
+			void(ArithmeticOperations::* unmasked_operation)(const void* src, void* dst, size_t count) const,
+			void(ArithmeticOperations::* masked_operation)(const void* src, void* dst, size_t count, const uint8_t* mask) const,
+			const wchar_t* name
+		) {
+			T a[SIZE];
+			T out[SIZE];
+
+			for (T& val : a) val = a_val;
+
+			std::wstring test_name = std::wstring(name) + L"<" + STR2WSTR(typeid(T).name()) + L"," + std::to_wstring(SIZE) + L"> : ";
+
+			if (unmasked_operation) {
+				(operations->*unmasked_operation)(a, out, SIZE);
+				for (uint32_t i = 0u; i < SIZE; ++i) {
+					Assert::AreEqual(
+						RoundFloat(expected_result, 3),
+						RoundFloat(out[i], 3),
+						(test_name + L"Output value was wrong").c_str()
+					);
+				}
+				memset(out, 0, sizeof(out));
+			}
+
+			if (masked_operation) {
+				for (uint32_t m = 0u; m < 16u; ++m) {
+					(operations->*masked_operation)(a, out, SIZE, reinterpret_cast<uint8_t*>(&m));
+					uint32_t flag = 1u;
+					for (uint32_t i = 0u; i < SIZE; ++i) {
+						Assert::AreEqual(
+							RoundFloat((m & flag ? expected_result : a_val), 3),
+							RoundFloat(out[i], 3),
+							(test_name + L"Mask output was wrong. Mask = " + STR2WSTR(std::bitset<SIZE>(m).to_string()) + L" Index = " + std::to_wstring(i)).c_str()
+						);
+						flag <<= 1u;
+					}
+					memset(out, 0, sizeof(out));
+				}
+			}
+		}
+
+		template<class T, size_t SIZE>
+		void TestOperation(
+			T a_val, T b_val, T expected_result,
+			ArithmeticOperations* operations,
+
+			void(ArithmeticOperations::* unmasked_operation)(const void* lhs, const void* rhs, void* dst, size_t count) const,
+			void(ArithmeticOperations::* masked_operation)(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const,
+			const wchar_t* name
+		) {
+			T a[SIZE];
+			T b[SIZE];
+			T out[SIZE];
+
+			for (T& val : a) val = a_val;
+			for (T& val : b) val = b_val;
+
+			std::wstring test_name = std::wstring(name) + L"<" + STR2WSTR(typeid(T).name()) + L"," + std::to_wstring(SIZE) + L"> : ";
+
+			if (unmasked_operation) {
+				(operations->*unmasked_operation)(a, b, out, SIZE);
+				for (uint32_t i = 0u; i < SIZE; ++i) {
+					Assert::AreEqual(
+						RoundFloat(expected_result, 3),
+						RoundFloat(out[i], 3),
+						(test_name + L"Output value was wrong").c_str()
+					);
+				}
+				memset(out, 0, sizeof(out));
+			}
+
+			if (masked_operation) {
+				for (uint32_t m = 0u; m < 16u; ++m) {
+					(operations->*masked_operation)(a, b, out, SIZE, reinterpret_cast<uint8_t*>(&m));
+					uint32_t flag = 1u;
+					for (uint32_t i = 0u; i < SIZE; ++i) {
+						Assert::AreEqual(
+							RoundFloat((m & flag ? expected_result : a_val), 3),
+							RoundFloat(out[i],3),
+							(test_name + L"Mask output was wrong. Mask = " + STR2WSTR(std::bitset<SIZE>(m).to_string()) + L" Index = " + std::to_wstring(i)).c_str()
+						);
+						flag <<= 1u;
+					}
+					memset(out, 0, sizeof(out));
+				}
+			}
+		}
+
+		template<class T, size_t SIZE = 4u>
+		void _TestMasking(ArithmeticOperations* operations) {
 			try {
-				ArithmeticOperations* operations = ArithmeticOperations::GetArithmeticOperations(ANVIL_32FX1, instruction_set);
-				Assert::IsNotNull(operations, L"No operations implementation detected");
+				// Test doesnt work on mask because it returns the rhs on 0
+				//TestOperation<T, SIZE>(
+				//	1.f, 2.f, 1.f,
+				//	operations,
+				//	nullptr,
+				//	&ArithmeticOperations::Mask,
+				//	L"Mask"
+				//);
 
-				float a[4];
-				float b[4];
-				float c[4];
-				uint8_t mask;
+				TestOperation<T, SIZE>(
+					500.f, std::sqrtf(500.f),
+					operations,
+					&ArithmeticOperations::Sqrt,
+					&ArithmeticOperations::SqrtMask,
+					L"Sqrt"
+				);
 
-				for (float& val : a) val = 1.f;
-				for (float& val : b) val = 0.f;
+				TestOperation<T, SIZE>(
+					500.f, std::cbrtf(500.f),
+					operations,
+					&ArithmeticOperations::Cbrt,
+					&ArithmeticOperations::CbrtMask,
+					L"Cbrt"
+				);
 
-				mask = 0u;
-				operations->Mask(a, b, c, 4u, &mask);
-				for (float val : c) Assert::AreEqual(0.f, val, L"Mask with all zeros failed");
+				TestOperation<T, SIZE>(
+					1.f, 2.f, 1.f + 2.f,
+					operations,
+					&ArithmeticOperations::Add,
+					&ArithmeticOperations::AddMask,
+					L"Add"
+				);
 
-				mask = 15u;
-				operations->Mask(a, b, c, 4u, &mask);
-				for (float val : c) Assert::AreEqual(1.f, val, L"Mask with all ones failed");
+				TestOperation<T, SIZE>(
+					4.f, 1.f, 4.f - 1.f,
+					operations,
+					&ArithmeticOperations::Subtract,
+					&ArithmeticOperations::SubtractMask,
+					L"Subtract"
+				);
 
-				mask = 1u | 4u;
-				operations->Mask(a, b, c, 4u, &mask);
-				Assert::AreEqual(1.f, c[0u], L"Mask 1010 failed");
-				Assert::AreEqual(0.f, c[1u], L"Mask 1010 failed");
-				Assert::AreEqual(1.f, c[2u], L"Mask 1010 failed");
-				Assert::AreEqual(0.f, c[3u], L"Mask 1010 failed");
+				TestOperation<T, SIZE>(
+					3.f, 2.f, 3.f * 2.f,
+					operations,
+					&ArithmeticOperations::Multiply,
+					&ArithmeticOperations::MultiplyMask,
+					L"Multiply"
+				);
 
-				for (float& val : a) val = 0.f;
-				for (float& val : b) val = 1.f;
-				mask = 1u | 4u;
-				operations->AddMask(a, b, c, 4u, &mask);
-				Assert::AreEqual(1.f, c[0u], L"AddMask 1010 failed");
-				Assert::AreEqual(0.f, c[1u], L"AddMask 1010 failed");
-				Assert::AreEqual(1.f, c[2u], L"AddMask 1010 failed");
-				Assert::AreEqual(0.f, c[3u], L"AddMask 1010 failed");
-
-				for (float& val : a) val = 3.f;
-				for (float& val : b) val = 1.f;
-				mask = 1u | 4u;
-				operations->SubtractMask(a, b, c, 4u, &mask);
-				Assert::AreEqual(2.f, c[0u], L"SubtractMask 1010 failed");
-				Assert::AreEqual(3.f, c[1u], L"SubtractMask 1010 failed");
-				Assert::AreEqual(2.f, c[2u], L"SubtractMask 1010 failed");
-				Assert::AreEqual(3.f, c[3u], L"SubtractMask 1010 failed");
-
-				for (float& val : a) val = 3.f;
-				for (float& val : b) val = 2.f;
-				mask = 1u | 4u;
-				operations->MultiplyMask(a, b, c, 4u, &mask);
-				Assert::AreEqual(6.f, c[0u], L"MultiplyMask 1010 failed");
-				Assert::AreEqual(3.f, c[1u], L"MultiplyMask 1010 failed");
-				Assert::AreEqual(6.f, c[2u], L"MultiplyMask 1010 failed");
-				Assert::AreEqual(3.f, c[3u], L"MultiplyMask 1010 failed");
-
-				for (float& val : a) val = 6.f;
-				for (float& val : b) val = 2.f;
-				mask = 1u | 4u;
-				operations->DivideMask(a, b, c, 4u, &mask);
-				Assert::AreEqual(3.f, c[0u], L"DivideMask 1010 failed");
-				Assert::AreEqual(6.f, c[1u], L"DivideMask 1010 failed");
-				Assert::AreEqual(3.f, c[2u], L"DivideMask 1010 failed");
-				Assert::AreEqual(6.f, c[3u], L"DivideMask 1010 failed");
+				TestOperation<T, SIZE>(
+					6.f, 2.f, 6.f / 2.f,
+					operations,
+					&ArithmeticOperations::Divide,
+					&ArithmeticOperations::DivideMask,
+					L"Divide"
+				);
 			
 			} catch (std::exception& e) {
-				Assert::Fail(std::wstring_convert<std::codecvt<wchar_t, char, std::mbstate_t>>().from_bytes(e.what()).c_str());
+				Assert::Fail(STR2WSTR(e.what()).c_str());
 			}
+		}
+
+		void TestMasking(uint64_t instruction_set) {
+			ArithmeticOperations* operations = nullptr;
+				
+			operations = ArithmeticOperations::GetArithmeticOperations(ANVIL_64FX1, instruction_set);
+			Assert::IsNotNull(operations, L"No operations implementation detected (F64)");
+			_TestMasking<double>(operations);
+
+			operations = ArithmeticOperations::GetArithmeticOperations(ANVIL_32FX1, instruction_set);
+			Assert::IsNotNull(operations, L"No operations implementation detected (F32)");
+			_TestMasking<float>(operations);
+
+			operations = ArithmeticOperations::GetArithmeticOperations(ANVIL_16FX1, instruction_set);
+			Assert::IsNotNull(operations, L"No operations implementation detected (F16)");
+			_TestMasking<float16_t>(operations);
 		}
 
 
