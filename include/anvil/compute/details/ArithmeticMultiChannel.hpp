@@ -16,6 +16,7 @@
 #define ANVIL_COMPUTE_ARITHMETIC_MULTICHANNEL_HPP
 
 #include "anvil/compute/Arithmetic.hpp"
+#include "anvil/byte-pipe/BytePipeBits.hpp"
 #include <cmath>
 
 namespace anvil { namespace compute { namespace details {
@@ -25,61 +26,99 @@ namespace anvil { namespace compute { namespace details {
 		ArithmeticOperations& _parent;
 		void (ArithmeticOperationsMultiChannel::* FixMask)(const uint8_t* src, uint8_t* dst, size_t count) const;
 
-		size_t NewMaskSize(size_t count) const {
+		inline size_t NewMaskSize(size_t count) const {
 			return count * (_type.GetNumberOfChannels() + 1);
+		}
+
+		void FixMaskUnoptimised(const uint8_t* src, uint8_t* dst, size_t count) const {
+			BytePipe::BitOutputStream bitstream(dst);
+			const size_t channels = _type.GetNumberOfChannels();
+
+			while (count >= 8u) {
+				uint32_t m = *src;
+				bitstream.WriteBits(m & 1u ? UINT32_MAX : 0u, channels);
+				bitstream.WriteBits(m & 2u ? UINT32_MAX : 0u, channels);
+				bitstream.WriteBits(m & 4u ? UINT32_MAX : 0u, channels);
+				bitstream.WriteBits(m & 8u ? UINT32_MAX : 0u, channels);
+				bitstream.WriteBits(m & 16u ? UINT32_MAX : 0u, channels);
+				bitstream.WriteBits(m & 32u ? UINT32_MAX : 0u, channels);
+				bitstream.WriteBits(m & 64u ? UINT32_MAX : 0u, channels);
+				bitstream.WriteBits(m & 128u ? UINT32_MAX : 0u, channels);
+				count -= 8u;
+				++src;
+			}
+
+			if (count > 0) {
+				uint32_t m = *src;
+				for (size_t i = 0u; i < count; ++i) {
+					bitstream.WriteBits(m & 1u ? UINT32_MAX : 0u, channels);
+					m >>= 1u;
+				}
+			}
 		}
 
 		void FixMask1(const uint8_t* src, uint8_t* dst, size_t count) const {
 			memcpy(dst, src, (count / 8) + ((count % 8) == 0 ? 0 : 1));
 		}
 
-		void FixMask2(const uint8_t* src, uint8_t* dst, size_t count) const {
-			//! \todo Optimise
-			while (count >= 8u) {
-				uint8_t m = *src;
-				uint16_t m2 = 0u;
-
-				m2 |= m & 1u ? 3u : 0u;
-				m2 |= m & 2u ? (3u << 2u) : 0u;
-				m2 |= m & 4u ? (3u << 4u) : 0u;
-				m2 |= m & 8u ? (3u << 6u) : 0u;
-				m2 |= m & 16u ? (3u << 8u) : 0u;
-				m2 |= m & 32u ? (3u << 10u) : 0u;
-				m2 |= m & 64u ? (3u << 12u) : 0u;
-				m2 |= m & 128u ? (3u << 14u) : 0u;
-
-				*reinterpret_cast<uint16_t*>(dst) = m2;
-
-				src += 1u;
-				dst += 2u;
-				count -= 8u;
-			}
-			
-			if (count > 0u) {
-				uint8_t m = *src;
-				uint16_t m2 = 0u;
-
-				m2 |= m & 1u ? 3u : 0u;
-				m2 |= m & 2u ? (3u << 2u) : 0u;
-				m2 |= m & 4u ? (3u << 4u) : 0u;
-				m2 |= m & 8u ? (3u << 6u) : 0u;
-				m2 |= m & 16u ? (3u << 8u) : 0u;
-				m2 |= m & 32u ? (3u << 10u) : 0u;
-				m2 |= m & 64u ? (3u << 12u) : 0u;
-				m2 |= m & 128u ? (3u << 14u) : 0u;
-
-				*reinterpret_cast<uint16_t*>(dst) = m2;
-			}
+		inline void CallOperation(
+			const void* src, void* dst, size_t count,
+			void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count) const
+		) const {
+			(_parent.*Function)(src, dst, count * _type.GetNumberOfChannels());;
 		}
 
-		void FixMask4(const uint8_t* src, uint8_t* dst, size_t count) const {
-			FixMask2(src, dst, count);
-			FixMask2(src, dst, count * 2);
+		void CallOperation(
+			const void* src, void* dst, size_t count, const uint8_t* mask,
+			void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count, const uint8_t* mask) const
+		) const {
+			const size_t channels = _type.GetNumberOfChannels();
+			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
+			(this->*FixMask)(mask, mask2, count);
+
+			(_parent.*Function)(src, dst, count * channels, mask2);
+
+			_freea(mask2);
 		}
 
-		void FixMask8(const uint8_t* src, uint8_t* dst, size_t count) const {
-			FixMask4(src, dst, count);
-			FixMask4(src, dst, count * 2);
+		inline void CallOperation(
+			const void* lhs, const void* rhs, void* dst, size_t count,
+			void(ArithmeticOperations::* Function)(const void* lhs, const void* rhs, void* dst, size_t count) const
+		) const {
+			(_parent.*Function)(lhs, rhs, dst, count * _type.GetNumberOfChannels());
+		}
+
+		void CallOperation(
+			const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask,
+			void(ArithmeticOperations::* Function)(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const
+		) const {
+			const size_t channels = _type.GetNumberOfChannels();
+			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
+			(this->*FixMask)(mask, mask2, count);
+
+			(_parent.*Function)(lhs, rhs, dst, count * channels, mask2);
+
+			_freea(mask2);
+		}
+
+		inline void CallOperation(
+			const void* a, const void* b, const void* c, void* dst, size_t count,
+			void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count) const
+		) const {
+			(_parent.*Function)(a, b, c, dst, count * _type.GetNumberOfChannels());;
+		}
+
+		void CallOperation(
+			const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask,
+			void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const
+		) const {
+			const size_t channels = _type.GetNumberOfChannels();
+			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
+			(this->*FixMask)(mask, mask2, count);
+
+			(_parent.*Function)(a, b, c, dst, count * channels, mask2);
+
+			_freea(mask2);
 		}
 
 	public:
@@ -91,19 +130,8 @@ namespace anvil { namespace compute { namespace details {
 			case 1u:
 				FixMask = &ArithmeticOperationsMultiChannel::FixMask1;
 				break;
-			case 2u:
-				FixMask = &ArithmeticOperationsMultiChannel::FixMask2;
-				break;
-			case 4u:
-				FixMask = &ArithmeticOperationsMultiChannel::FixMask4;
-				break;
-			case 8u:
-				FixMask = &ArithmeticOperationsMultiChannel::FixMask8;
-				break;
 			default:
-				FixMask = nullptr;
-				//! \todo Implement masks for non power of 2 masks
-				//throw std::runtime_error("anvil::compute::ArithmeticOperationsMultiChannel : Unsupported channel count");
+				FixMask = &ArithmeticOperationsMultiChannel::FixMaskUnoptimised;
 				break;
 			}
 		}
@@ -115,165 +143,113 @@ namespace anvil { namespace compute { namespace details {
 		// 1 input
 
 		void Sqrt(const void* src, void* dst, size_t count) const final {
-			_parent.Sqrt(src, dst, count * _type.GetNumberOfChannels());
+			CallOperation(src, dst, count, &ArithmeticOperations::Sqrt);
 		}
 
 		void SqrtMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
-			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
-			(this->*FixMask)(mask, mask2, count);
-			_parent.SqrtMask(src, dst, count * c, mask2);
-			_freea(mask2);
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::SqrtMask);
 		}
 
 		void Cbrt(const void* src, void* dst, size_t count) const final {
-			_parent.Cbrt(src, dst, count * _type.GetNumberOfChannels());
+			CallOperation(src, dst, count, &ArithmeticOperations::Cbrt);
 		}
 
 		void CbrtMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
-			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
-			(this->*FixMask)(mask, mask2, count);
-			_parent.CbrtMask(src, dst, count * c, mask2);
-			_freea(mask2);
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::CbrtMask);
 		}
 
 		void Not(const void* src, void* dst, size_t count) const final {
-			_parent.Not(src, dst, count * _type.GetNumberOfChannels());
+			CallOperation(src, dst, count, &ArithmeticOperations::Not);
 		}
 
 		void NotMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
-			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
-			(this->*FixMask)(mask, mask2, count);
-			_parent.NotMask(src, dst, count * c, mask2);
-			_freea(mask2);
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::NotMask);
 		}
 
 		// 2 inputs
 
 		void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
-			_parent.Mask(lhs, rhs, dst, count * _type.GetNumberOfChannels(), mask);
+			CallOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Mask);
 		}
 
 		void Add(const void* lhs, const void* rhs, void* dst, size_t count) const final {
-			_parent.Add(lhs, rhs, dst, count * _type.GetNumberOfChannels());
+			CallOperation(lhs, rhs, dst, count, &ArithmeticOperations::Add);
 		}
 
 		void AddMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
-			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
-			(this->*FixMask)(mask, mask2, count);
-			_parent.AddMask(lhs, rhs, dst, count * c, mask2);
-			_freea(mask2);
+			CallOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::AddMask);
 		}
 
 		void Subtract(const void* lhs, const void* rhs, void* dst, size_t count) const final {
-			_parent.Subtract(lhs, rhs, dst, count * _type.GetNumberOfChannels());
+			CallOperation(lhs, rhs, dst, count, &ArithmeticOperations::Subtract);
 		}
 
 		void SubtractMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
-			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
-			(this->*FixMask)(mask, mask2, count);
-			_parent.SubtractMask(lhs, rhs, dst, count * c, mask2);
-			_freea(mask2);
+			CallOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::SubtractMask);
 		}
 
 		void Multiply(const void* lhs, const void* rhs, void* dst, size_t count) const final {
-			_parent.Multiply(lhs, rhs, dst, count * _type.GetNumberOfChannels());
+			CallOperation(lhs, rhs, dst, count, &ArithmeticOperations::Multiply);
 		}
 
 		void MultiplyMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
-			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
-			(this->*FixMask)(mask, mask2, count);
-			_parent.MultiplyMask(lhs, rhs, dst, count * c, mask2);
-			_freea(mask2);
+			CallOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::MultiplyMask);
 		}
 
 		void Divide(const void* lhs, const void* rhs, void* dst, size_t count) const final {
-			_parent.Divide(lhs, rhs, dst, count * _type.GetNumberOfChannels());
+			CallOperation(lhs, rhs, dst, count, &ArithmeticOperations::Divide);
 		}
 
 		void DivideMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
-			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
-			(this->*FixMask)(mask, mask2, count);
-			_parent.DivideMask(lhs, rhs, dst, count * c, mask2);
-			_freea(mask2);
+			CallOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::DivideMask);
 		}
 
 		void And(const void* lhs, const void* rhs, void* dst, size_t count) const final {
-			_parent.And(lhs, rhs, dst, count * _type.GetNumberOfChannels());
+			CallOperation(lhs, rhs, dst, count, &ArithmeticOperations::And);
 		}
 
 		void AndMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
-			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
-			(this->*FixMask)(mask, mask2, count);
-			_parent.AndMask(lhs, rhs, dst, count * c, mask2);
-			_freea(mask2);
+			CallOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::AndMask);
 		}
 
 		void Or(const void* lhs, const void* rhs, void* dst, size_t count) const final {
-			_parent.Or(lhs, rhs, dst, count * _type.GetNumberOfChannels());
+			CallOperation(lhs, rhs, dst, count, &ArithmeticOperations::Or);
 		}
 
 		void OrMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
-			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
-			(this->*FixMask)(mask, mask2, count);
-			_parent.OrMask(lhs, rhs, dst, count * c, mask2);
-			_freea(mask2);
+			CallOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::OrMask);
 		}
 
 		void Xor(const void* lhs, const void* rhs, void* dst, size_t count) const final {
-			_parent.Xor(lhs, rhs, dst, count * _type.GetNumberOfChannels());
+			CallOperation(lhs, rhs, dst, count, &ArithmeticOperations::Xor);
 		}
 
 		void XorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
-			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
-			(this->*FixMask)(mask, mask2, count);
-			_parent.XorMask(lhs, rhs, dst, count * c, mask2);
-			_freea(mask2);
+			CallOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::XorMask);
 		}
 
 		void Nand(const void* lhs, const void* rhs, void* dst, size_t count) const final {
-			_parent.Nand(lhs, rhs, dst, count * _type.GetNumberOfChannels());
+			CallOperation(lhs, rhs, dst, count, &ArithmeticOperations::Nand);
 		}
 
 		void NandMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
-			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
-			(this->*FixMask)(mask, mask2, count);
-			_parent.NandMask(lhs, rhs, dst, count * c, mask2);
-			_freea(mask2);
+			CallOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::NandMask);
 		}
 
 		void Nor(const void* lhs, const void* rhs, void* dst, size_t count) const final {
-			_parent.Nor(lhs, rhs, dst, count * _type.GetNumberOfChannels());
+			CallOperation(lhs, rhs, dst, count, &ArithmeticOperations::Nor);
 		}
 
 		void NorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
-			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
-			(this->*FixMask)(mask, mask2, count);
-			_parent.NorMask(lhs, rhs, dst, count * c, mask2);
-			_freea(mask2);
+			CallOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::NorMask);
 		}
 
 		void Xnor(const void* lhs, const void* rhs, void* dst, size_t count) const final {
-			_parent.Xnor(lhs, rhs, dst, count * _type.GetNumberOfChannels());
+			CallOperation(lhs, rhs, dst, count, &ArithmeticOperations::Xnor);
 		}
 
 		void XnorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
-			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
-			(this->*FixMask)(mask, mask2, count);
-			_parent.XnorMask(lhs, rhs, dst, count * c, mask2);
-			_freea(mask2);
+			CallOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::XnorMask);
 		}
 
 		// 3 inputs

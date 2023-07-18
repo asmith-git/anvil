@@ -73,7 +73,7 @@ namespace anvil { namespace compute { namespace details {
 		ArithmeticOperations* _u16;
 		ArithmeticOperations* _f32;
 
-		void CallF32Operation(
+		void CallOperation(
 			const void* src, void* dst, size_t count,
 			void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count) const
 		) const {
@@ -87,7 +87,7 @@ namespace anvil { namespace compute { namespace details {
 			_freea(buffer_a);
 		}
 
-		void CallF32Operation(
+		void CallOperation(
 			const void* src, void* dst, size_t count, const uint8_t* mask,
 			void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count, const uint8_t* mask) const
 		) const {
@@ -101,7 +101,7 @@ namespace anvil { namespace compute { namespace details {
 			_freea(buffer_a);
 		}
 
-		void CallF32Operation(
+		void CallOperation(
 			const void* lhs, const void* rhs, void* dst, size_t count, 
 			void(ArithmeticOperations::*Function)(const void* lhs, const void* rhs, void* dst, size_t count) const
 		) const {
@@ -117,7 +117,7 @@ namespace anvil { namespace compute { namespace details {
 			_freea(buffer_a);
 		}
 
-		void CallF32Operation(
+		void CallOperation(
 			const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask,
 			void(ArithmeticOperations::* Function)(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const
 		) const {
@@ -133,7 +133,7 @@ namespace anvil { namespace compute { namespace details {
 			_freea(buffer_a);
 		}
 
-		void CallF32Operation(
+		void CallOperation(
 			const void* a, const void* b, const void* c, void* dst, size_t count,
 			void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count) const
 		) const {
@@ -151,7 +151,7 @@ namespace anvil { namespace compute { namespace details {
 			_freea(buffer_a);
 		}
 
-		void CallF32Operation(
+		void CallOperation(
 			const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask,
 			void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const
 		) const {
@@ -198,65 +198,65 @@ namespace anvil { namespace compute { namespace details {
 		// 1 input
 
 		void Sqrt(const void* src, void* dst, size_t count) const final {
-			CallF32Operation(src, dst, count, &ArithmeticOperations::Sqrt);
+			CallOperation(src, dst, count, &ArithmeticOperations::Sqrt);
 		}
 
 		void SqrtMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
-			CallF32Operation(src, dst, count, mask, &ArithmeticOperations::SqrtMask);
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::SqrtMask);
 		}
 
 		void Cbrt(const void* src, void* dst, size_t count) const final {
-			CallF32Operation(src, dst, count, &ArithmeticOperations::Cbrt);
+			CallOperation(src, dst, count, &ArithmeticOperations::Cbrt);
 		}
 
 		void CbrtMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
-			CallF32Operation(src, dst, count, mask, &ArithmeticOperations::CbrtMask);
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::CbrtMask);
 		}
 
 		void Not(const void* src, void* dst, size_t count) const final {
-			CallF32Operation(src, dst, count, &ArithmeticOperations::Not);
+			CallOperation(src, dst, count, &ArithmeticOperations::Not);
 		}
 
 		void NotMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
-			CallF32Operation(src, dst, count, mask, &ArithmeticOperations::NotMask);
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::NotMask);
 		}
 
 		// 2 inputs
 
 		void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
-			CallF32Operation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Mask);
+			CallOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Mask);
 		}
 
 		void Add(const void* lhs, const void* rhs, void* dst, size_t count) const final {
-			CallF32Operation(lhs, rhs, dst, count, &ArithmeticOperations::Add);
+			CallOperation(lhs, rhs, dst, count, &ArithmeticOperations::Add);
 		}
 
 		void AddMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
-			CallF32Operation(lhs, rhs, dst, count, mask, &ArithmeticOperations::AddMask);
+			CallOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::AddMask);
 		}
 
 		void Subtract(const void* lhs, const void* rhs, void* dst, size_t count) const final {
-			CallF32Operation(lhs, rhs, dst, count, &ArithmeticOperations::Subtract);
+			CallOperation(lhs, rhs, dst, count, &ArithmeticOperations::Subtract);
 		}
 
 		void SubtractMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
-			CallF32Operation(lhs, rhs, dst, count, mask, &ArithmeticOperations::SubtractMask);
+			CallOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::SubtractMask);
 		}
 
 		void Multiply(const void* lhs, const void* rhs, void* dst, size_t count) const final {
-			CallF32Operation(lhs, rhs, dst, count, &ArithmeticOperations::Multiply);
+			CallOperation(lhs, rhs, dst, count, &ArithmeticOperations::Multiply);
 		}
 
 		void MultiplyMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
-			CallF32Operation(lhs, rhs, dst, count, mask, &ArithmeticOperations::MultiplyMask);
+			CallOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::MultiplyMask);
 		}
 
 		void Divide(const void* lhs, const void* rhs, void* dst, size_t count) const final {
-			CallF32Operation(lhs, rhs, dst, count, &ArithmeticOperations::Divide);
+			CallOperation(lhs, rhs, dst, count, &ArithmeticOperations::Divide);
 		}
 
 		void DivideMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {
-			CallF32Operation(lhs, rhs, dst, count, mask, &ArithmeticOperations::DivideMask);
+			CallOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::DivideMask);
 		}
 
 		void And(const void* lhs, const void* rhs, void* dst, size_t count) const final {
@@ -310,19 +310,19 @@ namespace anvil { namespace compute { namespace details {
 		// 3 inputs
 
 		void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count) const final {
-			CallF32Operation(a, b, c, dst, count, &ArithmeticOperations::MultiplyAdd);
+			CallOperation(a, b, c, dst, count, &ArithmeticOperations::MultiplyAdd);
 		}
 
 		void MultiplyAddMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const final {
-			CallF32Operation(a, b, c, dst, count, mask, &ArithmeticOperations::MultiplyAddMask);
+			CallOperation(a, b, c, dst, count, mask, &ArithmeticOperations::MultiplyAddMask);
 		}
 
 		void MultiplySubtract(const void* a, const void* b, const void* c, void* dst, size_t count) const final {
-			CallF32Operation(a, b, c, dst, count, &ArithmeticOperations::MultiplySubtract);
+			CallOperation(a, b, c, dst, count, &ArithmeticOperations::MultiplySubtract);
 		}
 
 		void MultiplySubtractMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const final {
-			CallF32Operation(a, b, c, dst, count, mask, &ArithmeticOperations::MultiplySubtractMask);
+			CallOperation(a, b, c, dst, count, mask, &ArithmeticOperations::MultiplySubtractMask);
 		}
 
 	};
