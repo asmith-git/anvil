@@ -24,13 +24,16 @@ namespace anvil { namespace compute { namespace details {
 	class ArithmeticOperationsMultiChannel final : public ArithmeticOperations {
 	private:
 		ArithmeticOperations& _parent;
-		void (ArithmeticOperationsMultiChannel::* FixMask)(const uint8_t* src, uint8_t* dst, size_t count) const;
+		void (ArithmeticOperationsMultiChannel::* ExpandMask)(const uint8_t* src, uint8_t* dst, size_t count) const;
 
 		inline size_t NewMaskSize(size_t count) const {
 			return count * (_type.GetNumberOfChannels() + 1);
 		}
 
-		void FixMaskUnoptimised(const uint8_t* src, uint8_t* dst, size_t count) const {
+		/*!	
+		*	\brief Duplicate each bit in the mask for the number of channels
+		*/
+		void ExpandMaskUnoptimised(const uint8_t* src, uint8_t* dst, size_t count) const {
 			BytePipe::BitOutputStream bitstream(dst);
 			const size_t channels = _type.GetNumberOfChannels();
 
@@ -57,7 +60,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		void FixMask1(const uint8_t* src, uint8_t* dst, size_t count) const {
+		void ExpandMask1(const uint8_t* src, uint8_t* dst, size_t count) const {
 			memcpy(dst, src, (count / 8) + ((count % 8) == 0 ? 0 : 1));
 		}
 
@@ -65,6 +68,7 @@ namespace anvil { namespace compute { namespace details {
 			const void* src, void* dst, size_t count,
 			void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count) const
 		) const {
+			// Call the parent function but with a higher count
 			(_parent.*Function)(src, dst, count * _type.GetNumberOfChannels());;
 		}
 
@@ -72,12 +76,15 @@ namespace anvil { namespace compute { namespace details {
 			const void* src, void* dst, size_t count, const uint8_t* mask,
 			void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count, const uint8_t* mask) const
 		) const {
+			// Expand the mask to the correct size
 			const size_t channels = _type.GetNumberOfChannels();
 			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
-			(this->*FixMask)(mask, mask2, count);
+			(this->*ExpandMask)(mask, mask2, count);
 
+			// Call the parent function but with a higher count
 			(_parent.*Function)(src, dst, count * channels, mask2);
 
+			// Free any memory that might have been allocted for the mask
 			_freea(mask2);
 		}
 
@@ -85,6 +92,7 @@ namespace anvil { namespace compute { namespace details {
 			const void* lhs, const void* rhs, void* dst, size_t count,
 			void(ArithmeticOperations::* Function)(const void* lhs, const void* rhs, void* dst, size_t count) const
 		) const {
+			// Call the parent function but with a higher count
 			(_parent.*Function)(lhs, rhs, dst, count * _type.GetNumberOfChannels());
 		}
 
@@ -92,12 +100,15 @@ namespace anvil { namespace compute { namespace details {
 			const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask,
 			void(ArithmeticOperations::* Function)(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const
 		) const {
+			// Expand the mask to the correct size
 			const size_t channels = _type.GetNumberOfChannels();
 			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
-			(this->*FixMask)(mask, mask2, count);
+			(this->*ExpandMask)(mask, mask2, count);
 
+			// Call the parent function but with a higher count
 			(_parent.*Function)(lhs, rhs, dst, count * channels, mask2);
 
+			// Free any memory that might have been allocted for the mask
 			_freea(mask2);
 		}
 
@@ -105,6 +116,7 @@ namespace anvil { namespace compute { namespace details {
 			const void* a, const void* b, const void* c, void* dst, size_t count,
 			void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count) const
 		) const {
+			// Call the parent function but with a higher count
 			(_parent.*Function)(a, b, c, dst, count * _type.GetNumberOfChannels());;
 		}
 
@@ -112,12 +124,15 @@ namespace anvil { namespace compute { namespace details {
 			const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask,
 			void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const
 		) const {
+			// Expand the mask to the correct size
 			const size_t channels = _type.GetNumberOfChannels();
 			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
-			(this->*FixMask)(mask, mask2, count);
+			(this->*ExpandMask)(mask, mask2, count);
 
+			// Call the parent function but with a higher count
 			(_parent.*Function)(a, b, c, dst, count * channels, mask2);
 
+			// Free any memory that might have been allocted for the mask
 			_freea(mask2);
 		}
 
@@ -128,10 +143,10 @@ namespace anvil { namespace compute { namespace details {
 		{
 			switch (_type.GetNumberOfChannels()) {
 			case 1u:
-				FixMask = &ArithmeticOperationsMultiChannel::FixMask1;
+				ExpandMask = &ArithmeticOperationsMultiChannel::ExpandMask1;
 				break;
 			default:
-				FixMask = &ArithmeticOperationsMultiChannel::FixMaskUnoptimised;
+				ExpandMask = &ArithmeticOperationsMultiChannel::ExpandMaskUnoptimised;
 				break;
 			}
 		}
@@ -255,27 +270,19 @@ namespace anvil { namespace compute { namespace details {
 		// 3 inputs
 
 		void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count) const final {
-			_parent.MultiplyAdd(a, b, c, dst, count * _type.GetNumberOfChannels());
+			CallOperation(a, b, c, dst, count, &ArithmeticOperations::MultiplyAdd);
 		}
 
-		void MultiplyAddMask(const void* a, const void* b, const void* c2, void* dst, size_t count, const uint8_t* mask) const final {
-			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
-			(this->*FixMask)(mask, mask2, count);
-			_parent.MultiplyAddMask(a, b, c2, dst, count * c, mask2);
-			_freea(mask2);
+		void MultiplyAddMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const final {
+			CallOperation(a, b, c, dst, count, mask, &ArithmeticOperations::MultiplyAddMask);
 		}
 
 		void MultiplySubtract(const void* a, const void* b, const void* c, void* dst, size_t count) const final {
-			_parent.MultiplySubtract(a, b, c, dst, count * _type.GetNumberOfChannels());
+			CallOperation(a, b, c, dst, count, &ArithmeticOperations::MultiplySubtract);
 		}
 
-		void MultiplySubtractMask(const void* a, const void* b, const void* c2, void* dst, size_t count, const uint8_t* mask) const final {
-			const size_t c = _type.GetNumberOfChannels();
-			uint8_t* mask2 = static_cast<uint8_t*>(_malloca(NewMaskSize(count)));
-			(this->*FixMask)(mask, mask2, count);
-			_parent.MultiplySubtractMask(a, b, c2, dst, count * c, mask2);
-			_freea(mask2);
+		void MultiplySubtractMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const final {
+			CallOperation(a, b, c, dst, count, mask, &ArithmeticOperations::MultiplySubtractMask);
 		}
 
 	};
