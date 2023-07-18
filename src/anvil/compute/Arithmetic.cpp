@@ -144,7 +144,7 @@ namespace anvil { namespace compute {
 				ops = &g_arithmetic_op_f32_fma3;
 			} else if (instruction_set & ASM_SSE41) {
 				ops =& g_arithmetic_op_f32_sse41;
-			} else if (instruction_set & ASM_SSE) {
+			} else if (instruction_set & ASM_SSE2) {
 				ops = &g_arithmetic_op_f32_sse;
 			} else
 #endif

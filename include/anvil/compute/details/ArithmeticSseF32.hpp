@@ -29,11 +29,11 @@ namespace anvil { namespace compute { namespace details {
 	protected:
 
 		static ANVIL_STRONG_INLINE void ExpandMaskSSE(uint8_t mask, __m128& lo, __m128& hi) {
-			lo = _mm_castsi128_ps(_mm_set_epi32(mask & 8u, mask & 4u, mask & 2u, mask & 1u));
-			hi = _mm_castsi128_ps(_mm_set_epi32(mask & 128u, mask & 64u, mask & 32u, mask & 16u));
-			__m128 zeros = _mm_xor_ps(lo, lo);
-			lo = _mm_cmpneq_ps(lo, zeros);
-			hi = _mm_cmpneq_ps(hi, zeros);
+			const __m128i bitslo = _mm_set_epi32(8, 4, 2, 1);
+			const __m128i bitshi = _mm_set_epi32(128, 64, 32, 16);
+			const __m128i m = _mm_set1_epi32(mask);
+			lo = _mm_castsi128_ps(_mm_cmpeq_epi32(_mm_and_si128(m, bitslo), bitslo));
+			hi = _mm_castsi128_ps(_mm_cmpeq_epi32(_mm_and_si128(m, bitshi), bitshi));
 		}
 
 		static ANVIL_STRONG_INLINE void MaskSSE(__m128 lhslo, __m128 lhshi, __m128 rhslo, __m128 rhshi, uint8_t mask, __m128& outlo, __m128& outhi) {
