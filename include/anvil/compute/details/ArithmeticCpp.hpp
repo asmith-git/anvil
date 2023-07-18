@@ -84,16 +84,11 @@ namespace anvil { namespace compute { namespace details {
 
 	template<class T>
 	class ArithmeticOperationsCpp : public ArithmeticOperations {
-	private:
-		ArithmeticOperationsMultiChannel _multi_channel;
 	public:
 
 		ArithmeticOperationsCpp() :
-			ArithmeticOperations(EnumFromType<T>::value),
-			_multi_channel(*this)
-		{
-			_multi_channel_implementation = &_multi_channel;
-		}
+			ArithmeticOperations(EnumFromType<T>::value)
+		{}
 
 		virtual ~ArithmeticOperationsCpp() {
 

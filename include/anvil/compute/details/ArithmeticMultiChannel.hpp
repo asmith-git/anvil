@@ -83,8 +83,8 @@ namespace anvil { namespace compute { namespace details {
 		}
 
 	public:
-		ArithmeticOperationsMultiChannel(ArithmeticOperations& parent) :
-			ArithmeticOperations(parent.GetType()),
+		ArithmeticOperationsMultiChannel(const Type type, ArithmeticOperations& parent) :
+			ArithmeticOperations(type),
 			_parent(parent)
 		{
 			switch (_type.GetNumberOfChannels()) {
@@ -103,7 +103,7 @@ namespace anvil { namespace compute { namespace details {
 			default:
 				FixMask = nullptr;
 				//! \todo Implement masks for non power of 2 masks
-				throw std::runtime_error("anvil::compute::ArithmeticOperationsMultiChannel : Unsupported channel count");
+				//throw std::runtime_error("anvil::compute::ArithmeticOperationsMultiChannel : Unsupported channel count");
 				break;
 			}
 		}

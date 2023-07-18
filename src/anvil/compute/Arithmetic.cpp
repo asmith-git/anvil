@@ -16,34 +16,64 @@
 #include "anvil/compute/details/ArithmeticCpp.hpp"
 #include "anvil/compute/details/ArithmeticSseF32.hpp"
 #include "anvil/compute/details/ArithmeticF16.hpp"
-#include <atomic>
+#include <vector>
 
 namespace anvil { namespace compute {
 
-	// ArithmeticOperations 
+	// ArithmeticOperations
 
-	static ArithmeticOperations* g_arithmetic_op_u8 = new details::ArithmeticOperationsCpp<uint8_t>();
-	static ArithmeticOperations* g_arithmetic_op_u16 = new details::ArithmeticOperationsCpp<uint16_t>();
-	static ArithmeticOperations* g_arithmetic_op_u32 = new details::ArithmeticOperationsCpp<uint32_t>();
-	static ArithmeticOperations* g_arithmetic_op_u64 = new details::ArithmeticOperationsCpp<uint64_t>();
-	static ArithmeticOperations* g_arithmetic_op_s8 = new details::ArithmeticOperationsCpp<int8_t>();
-	static ArithmeticOperations* g_arithmetic_op_s16 = new details::ArithmeticOperationsCpp<int16_t>();
-	static ArithmeticOperations* g_arithmetic_op_s32 = new details::ArithmeticOperationsCpp<int32_t>();
-	static ArithmeticOperations* g_arithmetic_op_s64 = new details::ArithmeticOperationsCpp<int64_t>();
+	struct StaticArithmeticOperations;
+
+	static std::vector< StaticArithmeticOperations*> g_static_objects;
+
+	struct StaticArithmeticOperations{
+
+		ArithmeticOperations* channels[Type::MAX_CHANNELS];
+
+		StaticArithmeticOperations(ArithmeticOperations* single_channel) {
+			g_static_objects.push_back(this);
+
+			channels[0u] = single_channel;
+
+			Type type = single_channel->GetType();
+			for (size_t i = 1u; i < Type::MAX_CHANNELS; ++i) {
+				type.SetNumberOfChannels(i + 1);
+				channels[i] = new details::ArithmeticOperationsMultiChannel(type, *single_channel);
+			}
+		}
+
+		~StaticArithmeticOperations() {
+			//! \bug Should really be erased from g_static_objects but this destructor should only be called at program termination anyway
+		
+			for (size_t i = 0u; i < Type::MAX_CHANNELS; ++i) {
+				delete channels[i];
+				channels[i] = nullptr;
+			}
+		}
+	};
+
+	static StaticArithmeticOperations g_arithmetic_op_u8(new details::ArithmeticOperationsCpp<uint8_t>());
+	static StaticArithmeticOperations g_arithmetic_op_u16(new details::ArithmeticOperationsCpp<uint16_t>());
+	static StaticArithmeticOperations g_arithmetic_op_u32(new details::ArithmeticOperationsCpp<uint32_t>());
+	static StaticArithmeticOperations g_arithmetic_op_u64(new details::ArithmeticOperationsCpp<uint64_t>());
+	static StaticArithmeticOperations g_arithmetic_op_s8(new details::ArithmeticOperationsCpp<int8_t>());
+	static StaticArithmeticOperations g_arithmetic_op_s16(new details::ArithmeticOperationsCpp<int16_t>());
+	static StaticArithmeticOperations g_arithmetic_op_s32(new details::ArithmeticOperationsCpp<int32_t>());
+	static StaticArithmeticOperations g_arithmetic_op_s64(new details::ArithmeticOperationsCpp<int64_t>());
 #if ANVIL_F8_SUPPORT
-	static ArithmeticOperations* g_arithmetic_op_f8 = new details::ArithmeticOperationsCpp<float8_t>();
+	static StaticArithmeticOperations g_arithmetic_op_f8(new details::ArithmeticOperationsCpp<float8_t>());
 #endif
 #if ANVIL_F16_SUPPORT
-	static ArithmeticOperations* g_arithmetic_op_f16 = new details::ArithmeticOperationsCpp<float16_t>();
+	static StaticArithmeticOperations g_arithmetic_op_f16(new details::ArithmeticOperationsCpp<float16_t>());
 #endif
-	static ArithmeticOperations* g_arithmetic_op_f32 = new details::ArithmeticOperationsCpp<float>();
-	static ArithmeticOperations* g_arithmetic_op_f64 = new details::ArithmeticOperationsCpp<double>();
+	static StaticArithmeticOperations g_arithmetic_op_f32(new details::ArithmeticOperationsCpp<float>());
+	static StaticArithmeticOperations g_arithmetic_op_f64(new details::ArithmeticOperationsCpp<double>());
 
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-	static ArithmeticOperations* g_arithmetic_op_f32_sse = new details::ArithmeticOperationsSseF32();
-	static ArithmeticOperations* g_arithmetic_op_f32_sse41 = new details::ArithmeticOperationsSse4F32();
-	static ArithmeticOperations* g_arithmetic_op_f32_fma3 = new details::ArithmeticOperationsFmaF32();
-	static ArithmeticOperations* g_arithmetic_op_f32_avx512 = new details::ArithmeticOperationsAvx512F32();
+	static StaticArithmeticOperations g_arithmetic_op_f32_sse(new details::ArithmeticOperationsSseF32());
+	static StaticArithmeticOperations g_arithmetic_op_f32_sse41(new details::ArithmeticOperationsSse4F32());
+	static StaticArithmeticOperations g_arithmetic_op_f32_fma3(new details::ArithmeticOperationsFmaF32());
+	static StaticArithmeticOperations g_arithmetic_op_f32_avx512(new details::ArithmeticOperationsAvx512F32());
 #endif
 
 	bool ArithmeticOperations::SetupStaticObjects() {
@@ -51,34 +81,10 @@ namespace anvil { namespace compute {
 		if (g_once) {
 			g_once = false;
 
-			ArithmeticOperations* static_objects[] = {
-#if ANVIL_F8_SUPPORT
-				g_arithmetic_op_f8,
-#endif
-#if ANVIL_F16_SUPPORT
-				g_arithmetic_op_f16,
-#endif
-
-#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-				g_arithmetic_op_f32_sse,
-				g_arithmetic_op_f32_sse41,
-				g_arithmetic_op_f32_fma3,
-				g_arithmetic_op_f32_avx512,
-#endif
-				g_arithmetic_op_u8,
-				g_arithmetic_op_u16,
-				g_arithmetic_op_u32,
-				g_arithmetic_op_u64,
-				g_arithmetic_op_s8,
-				g_arithmetic_op_s16,
-				g_arithmetic_op_s32,
-				g_arithmetic_op_s64,
-				g_arithmetic_op_f32,
-				g_arithmetic_op_f64
-			};
-
-			for (ArithmeticOperations* obj : static_objects) {
-				obj->Initialise();
+			for (StaticArithmeticOperations* static_obj : g_static_objects) {
+				for (ArithmeticOperations* obj : static_obj->channels) {
+					obj->Initialise();
+				}
 			}
 		}
 
@@ -90,66 +96,67 @@ namespace anvil { namespace compute {
 	ArithmeticOperations* ArithmeticOperations::GetArithmeticOperations(Type type, uint64_t instruction_set) {
 		//! \todo Implement optimisations for different instruction sets (SSE, AVX, AVX-512, ect)
 
-		ArithmeticOperations* ops = nullptr;
+		StaticArithmeticOperations* ops = nullptr;
 
-		Type t1 = type;
-		t1.SetNumberOfChannels(1u);
-		switch (t1.GetEnumeratedType()) {
+		const size_t channels = type.GetNumberOfChannels();
+		type.SetNumberOfChannels(1u);
+		switch (type.GetEnumeratedType()) {
 		case ANVIL_8UX1:
-			ops = g_arithmetic_op_u8;
+			ops = &g_arithmetic_op_u8;
 			break;
 		case ANVIL_16UX1:
-			ops = g_arithmetic_op_u16;
+			ops = &g_arithmetic_op_u16;
 			break;
 		case ANVIL_32UX1:
-			ops = g_arithmetic_op_u32;
+			ops = &g_arithmetic_op_u32;
 			break;
 		case ANVIL_64UX1:
-			ops = g_arithmetic_op_u64;
+			ops = &g_arithmetic_op_u64;
 			break;
 		case ANVIL_8SX1:
-			ops = g_arithmetic_op_s8;
+			ops = &g_arithmetic_op_s8;
 			break;
 		case ANVIL_16SX1:
-			ops = g_arithmetic_op_s16;
+			ops = &g_arithmetic_op_s16;
 			break;
 		case ANVIL_32SX1:
-			ops = g_arithmetic_op_s32;
+			ops = &g_arithmetic_op_s32;
 			break;
 		case ANVIL_64SX1:
-			ops = g_arithmetic_op_s64;
+			ops = &g_arithmetic_op_s64;
 			break;
 #if ANVIL_F8_SUPPORT
 		case ANVIL_8FX1:
-			ops = g_arithmetic_op_f8;
+			ops = &g_arithmetic_op_f8;
 			break;
 #endif
 #if ANVIL_F16_SUPPORT
 		case ANVIL_16FX1:
-			ops = g_arithmetic_op_f16;
+			ops = &g_arithmetic_op_f16;
 			break;
 #endif
 		case ANVIL_32FX1:
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 			enum { AVX512_FLAGS = ASM_AVX512F | ASM_AVX512VL };
 			if ((instruction_set & AVX512_FLAGS) == AVX512_FLAGS) {
-				ops = g_arithmetic_op_f32_avx512;
+				ops = &g_arithmetic_op_f32_avx512;
 			} else if (instruction_set & ASM_FMA3) {
-				ops = g_arithmetic_op_f32_fma3;
+				ops = &g_arithmetic_op_f32_fma3;
 			} else if (instruction_set & ASM_SSE41) {
-				ops = g_arithmetic_op_f32_sse41;
+				ops =& g_arithmetic_op_f32_sse41;
 			} else if (instruction_set & ASM_SSE) {
-				ops = g_arithmetic_op_f32_sse;
+				ops = &g_arithmetic_op_f32_sse;
 			} else
 #endif
-			ops = g_arithmetic_op_f32;
+			ops = &g_arithmetic_op_f32;
 			break;
 		case ANVIL_64FX1:
-			ops = g_arithmetic_op_f64;
+			ops = &g_arithmetic_op_f64;
 			break;
 		}
-	
-		return ops == nullptr ? nullptr : type.GetNumberOfChannels() == 1u ? ops : ops->_multi_channel_implementation;
+
+		if (ops == nullptr) return nullptr;
+		return ops->channels[channels - 1u];
 	}
 
 	Type ArithmeticOperations::PreferedOutputType(Type input_type1, Type input_type2) {
@@ -184,8 +191,7 @@ namespace anvil { namespace compute {
 	}
 
 	ArithmeticOperations::ArithmeticOperations(Type type) :
-		_type(type),
-		_multi_channel_implementation(this)
+		_type(type)
 	{}
 
 	ArithmeticOperations::~ArithmeticOperations() {

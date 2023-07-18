@@ -27,7 +27,6 @@ namespace anvil { namespace compute { namespace details {
 	template<>
 	class ArithmeticOperationsCpp<float16_t> final : public ArithmeticOperations {
 	private:
-		ArithmeticOperationsMultiChannel _multi_channel;
 
 		static void ConvertToF32_Cpp(const float16_t* src, float* dst, const size_t size) {
 			for (size_t i = 0u; i < size; ++i) dst[i] = static_cast<float>(src[i]);
@@ -173,11 +172,8 @@ namespace anvil { namespace compute { namespace details {
 		typedef float16_t T;
 
 		ArithmeticOperationsCpp() :
-			ArithmeticOperations(EnumFromType<T>::value),
-			_multi_channel(*this)
+			ArithmeticOperations(EnumFromType<T>::value)
 		{
-			_multi_channel_implementation = &_multi_channel;
-
 			ConvertToF32 = &ConvertToF32_Cpp;
 			ConvertToF16 = &ConvertToF16_Cpp;
 
