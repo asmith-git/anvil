@@ -16,6 +16,7 @@
 #include "anvil/compute/details/ArithmeticCpp.hpp"
 #include "anvil/compute/details/ArithmeticSseF32.hpp"
 #include "anvil/compute/details/ArithmeticF16.hpp"
+#include <atomic>
 
 namespace anvil { namespace compute {
 
@@ -45,10 +46,49 @@ namespace anvil { namespace compute {
 	static ArithmeticOperations* g_arithmetic_op_f32_avx512 = new details::ArithmeticOperationsAvx512F32();
 #endif
 
+	bool ArithmeticOperations::SetupStaticObjects() {
+		static bool g_once = true;
+		if (g_once) {
+			g_once = false;
+
+			ArithmeticOperations* static_objects[] = {
+#if ANVIL_F8_SUPPORT
+				g_arithmetic_op_f8,
+#endif
+#if ANVIL_F16_SUPPORT
+				g_arithmetic_op_f16,
+#endif
+
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+				g_arithmetic_op_f32_sse,
+				g_arithmetic_op_f32_sse41,
+				g_arithmetic_op_f32_fma3,
+				g_arithmetic_op_f32_avx512,
+#endif
+				g_arithmetic_op_u8,
+				g_arithmetic_op_u16,
+				g_arithmetic_op_u32,
+				g_arithmetic_op_u64,
+				g_arithmetic_op_s8,
+				g_arithmetic_op_s16,
+				g_arithmetic_op_s32,
+				g_arithmetic_op_s64,
+				g_arithmetic_op_f32,
+				g_arithmetic_op_f64
+			};
+
+			for (ArithmeticOperations* obj : static_objects) {
+				obj->Initialise();
+			}
+		}
+
+		return true;
+	}
+
+	static const bool g_arithmetic_operations_initialised = ArithmeticOperations::SetupStaticObjects(); //!< This variable doesn't do anything except making sure that ArithmeticOperations::SetupStaticObjects is called
+
 	ArithmeticOperations* ArithmeticOperations::GetArithmeticOperations(Type type, uint64_t instruction_set) {
 		//! \todo Implement optimisations for different instruction sets (SSE, AVX, AVX-512, ect)
-
-		//! \bug g_arithmetic_op_f32, ect will be null if called from within the constructor of another ArithmeticOperations
 
 		ArithmeticOperations* ops = nullptr;
 
@@ -150,6 +190,10 @@ namespace anvil { namespace compute {
 
 	ArithmeticOperations::~ArithmeticOperations() {
 
+	}
+	
+	void ArithmeticOperations::Initialise() {
+		// Doesn't do anything in the base class
 	}
 
 	void ArithmeticOperations::Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {

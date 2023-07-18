@@ -187,12 +187,16 @@ namespace anvil { namespace compute { namespace details {
 				ConvertToF16 = &ConvertToF16_FP16;
 			}
 #endif
-			_u16 = GetArithmeticOperations(ANVIL_16UX1);
-			_f32 = GetArithmeticOperations(ANVIL_32FX1);
 		}
 
 		virtual ~ArithmeticOperationsCpp() {
 
+		}
+
+		virtual void Initialise() {
+			ArithmeticOperations::Initialise();
+			_u16 = GetArithmeticOperations(ANVIL_16UX1);
+			_f32 = GetArithmeticOperations(ANVIL_32FX1);
 		}
 
 		// 1 input

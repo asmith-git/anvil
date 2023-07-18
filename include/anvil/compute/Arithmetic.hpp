@@ -31,7 +31,10 @@ namespace anvil {namespace compute {
 	protected:
 		const Type _type;
 		ArithmeticOperations* _multi_channel_implementation;
+
+		virtual void Initialise();
 	public:
+		static bool SetupStaticObjects();
 		static ArithmeticOperations* GetArithmeticOperations(Type type, uint64_t instruction_set = SupportedInstructionSets);
 		static Type PreferedOutputType(Type input_type1, Type input_type2);
 		static Type PreferedBitwiseOutputType(Type input_type1, Type input_type2);
