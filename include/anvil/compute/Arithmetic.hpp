@@ -75,6 +75,15 @@ namespace anvil {namespace compute {
 		virtual void Not(const void* src, void* dst, size_t count) const = 0;
 		virtual void NotMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
 
+		virtual void Round(const void* src, void* dst, size_t count) const = 0;
+		virtual void RoundMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+
+		virtual void Floor(const void* src, void* dst, size_t count) const = 0;
+		virtual void FloorMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+
+		virtual void Ceil(const void* src, void* dst, size_t count) const = 0;
+		virtual void CeilMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+
 		// 2 inputs
 
 		virtual void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;

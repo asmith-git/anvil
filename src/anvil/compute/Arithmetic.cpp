@@ -400,5 +400,18 @@ namespace anvil { namespace compute {
 		CallDefaultMaskedOperation(a, b, c, dst, count, mask, &ArithmeticOperations::MultiplySubtract);
 	}
 
+	void ArithmeticOperations::RoundMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Round);
+	}
+
+	void ArithmeticOperations::FloorMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Floor);
+	}
+
+
+	void ArithmeticOperations::CeilMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Ceil);
+	}
+
 
 }}

@@ -221,6 +221,18 @@ namespace anvil { namespace compute { namespace details {
 			CallOperation(src, dst, count, mask, &ArithmeticOperations::NotMask);
 		}
 
+		void Round(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::Round);
+		}
+
+		void Floor(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::Floor);
+		}
+
+		void Ceil(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::Ceil);
+		}
+
 		// 2 inputs
 
 		void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {

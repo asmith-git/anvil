@@ -648,6 +648,30 @@ namespace anvil { namespace compute {
 				//);
 
 				TestOperation<T, SIZE>(
+					1.5f, 2.f,
+					operations,
+					&ArithmeticOperations::Round,
+					&ArithmeticOperations::RoundMask,
+					L"Round"
+				);
+
+				TestOperation<T, SIZE>(
+					1.5f, 1.f,
+					operations,
+					&ArithmeticOperations::Floor,
+					&ArithmeticOperations::FloorMask,
+					L"Floor"
+				);
+
+				TestOperation<T, SIZE>(
+					1.3f, 2.f,
+					operations,
+					&ArithmeticOperations::Ceil,
+					&ArithmeticOperations::CeilMask,
+					L"Ceil"
+				);
+
+				TestOperation<T, SIZE>(
 					500.f, std::sqrtf(500.f),
 					operations,
 					&ArithmeticOperations::Sqrt,

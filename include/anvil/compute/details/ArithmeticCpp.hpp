@@ -126,7 +126,7 @@ namespace anvil { namespace compute { namespace details {
 
 		// 1 input
 
-		void Sqrt(const void* src, void* dst, size_t count) const {
+		virtual void Sqrt(const void* src, void* dst, size_t count) const {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 
@@ -145,7 +145,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		void Cbrt(const void* src, void* dst, size_t count) const {
+		virtual void Cbrt(const void* src, void* dst, size_t count) const {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 
@@ -165,71 +165,123 @@ namespace anvil { namespace compute { namespace details {
 		}
 
 
-		void Not(const void* src, void* dst, size_t count) const {
+		virtual void Not(const void* src, void* dst, size_t count) const {
 			ArithOpBitwise<sizeof(T)>::Not(src, dst, count);
 		}
+		
+		virtual void Round(const void* src, void* dst, size_t count) const {
+			const T* src2 = static_cast<const T*>(src);
+			T* dst2 = static_cast<T*>(dst);
+
+			if constexpr (std::is_integral<T>::value) {
+				memcpy(dst, src, sizeof(T) * count);
+			} else if constexpr (std::is_same<T, double>::value) {
+				for (size_t i = 0u; i < count; ++i) {
+					dst2[i] = std::round(src2[i]);
+				}
+			} else {
+				for (size_t i = 0u; i < count; ++i) {
+					dst2[i] = static_cast<T>(std::roundf(static_cast<float>(src2[i])));
+				}
+			}
+		}
+
+		virtual void Floor(const void* src, void* dst, size_t count) const {
+			const T* src2 = static_cast<const T*>(src);
+			T* dst2 = static_cast<T*>(dst);
+
+			if constexpr (std::is_integral<T>::value) {
+				memcpy(dst, src, sizeof(T) * count);
+			} else if constexpr (std::is_same<T, double>::value) {
+				for (size_t i = 0u; i < count; ++i) {
+					dst2[i] = std::floor(src2[i]);
+				}
+			} else {
+				for (size_t i = 0u; i < count; ++i) {
+					dst2[i] = static_cast<T>(std::floorf(static_cast<float>(src2[i])));
+				}
+			}
+		}
+
+		virtual void Ceil(const void* src, void* dst, size_t count) const {
+			const T* src2 = static_cast<const T*>(src);
+			T* dst2 = static_cast<T*>(dst);
+
+			if constexpr (std::is_integral<T>::value) {
+				memcpy(dst, src, sizeof(T) * count);
+			} else if constexpr (std::is_same<T, double>::value) {
+				for (size_t i = 0u; i < count; ++i) {
+					dst2[i] = std::ceil(src2[i]);
+				}
+			} else {
+				for (size_t i = 0u; i < count; ++i) {
+					dst2[i] = static_cast<T>(std::ceilf(static_cast<float>(src2[i])));
+				}
+			}
+		}
+
 
 		// 2 inputs
 
-		void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			ArithOpBitwise<sizeof(T)>::Mask(lhs, rhs, dst, count, mask);
 		}
 
-		void Add(const void* lhs, const void* rhs, void* dst, size_t count) const {
+		virtual void Add(const void* lhs, const void* rhs, void* dst, size_t count) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = lhs2[i] + rhs2[i];
 		}
 
-		void Subtract(const void* lhs, const void* rhs, void* dst, size_t count) const {
+		virtual void Subtract(const void* lhs, const void* rhs, void* dst, size_t count) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = lhs2[i] - rhs2[i];
 		}
 
-		void Multiply(const void* lhs, const void* rhs, void* dst, size_t count) const {
+		virtual void Multiply(const void* lhs, const void* rhs, void* dst, size_t count) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = lhs2[i] * rhs2[i];
 		}
 
-		void Divide(const void* lhs, const void* rhs, void* dst, size_t count) const {
+		virtual void Divide(const void* lhs, const void* rhs, void* dst, size_t count) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 			for (size_t i = 0u; i < count; ++i) dst2[i] = lhs2[i] / rhs2[i];
 		}
 
-		void And(const void* lhs, const void* rhs, void* dst, size_t count) const {
+		virtual void And(const void* lhs, const void* rhs, void* dst, size_t count) const {
 			ArithOpBitwise<sizeof(T)>::And(lhs, rhs, dst, count);
 		}
 
-		void Or(const void* lhs, const void* rhs, void* dst, size_t count) const {
+		virtual void Or(const void* lhs, const void* rhs, void* dst, size_t count) const {
 			ArithOpBitwise<sizeof(T)>::Or(lhs, rhs, dst, count);
 		}
 
-		void Xor(const void* lhs, const void* rhs, void* dst, size_t count) const {
+		virtual void Xor(const void* lhs, const void* rhs, void* dst, size_t count) const {
 			ArithOpBitwise<sizeof(T)>::Xor(lhs, rhs, dst, count);
 		}
 
-		void Nand(const void* lhs, const void* rhs, void* dst, size_t count) const {
+		virtual void Nand(const void* lhs, const void* rhs, void* dst, size_t count) const {
 			ArithOpBitwise<sizeof(T)>::Nand(lhs, rhs, dst, count);
 		}
 
-		void Nor(const void* lhs, const void* rhs, void* dst, size_t count) const {
+		virtual void Nor(const void* lhs, const void* rhs, void* dst, size_t count) const {
 			ArithOpBitwise<sizeof(T)>::Nor(lhs, rhs, dst, count);
 		}
 
-		void Xnor(const void* lhs, const void* rhs, void* dst, size_t count) const {
+		virtual void Xnor(const void* lhs, const void* rhs, void* dst, size_t count) const {
 			ArithOpBitwise<sizeof(T)>::Xnor(lhs, rhs, dst, count);
 		}
 
 		// 3 inputs
 
-		void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count) const {
+		virtual void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count) const {
 			const T* a2 = static_cast<const T*>(a);
 			const T* b2 = static_cast<const T*>(b);
 			const T* c2 = static_cast<const T*>(c);
@@ -237,7 +289,7 @@ namespace anvil { namespace compute { namespace details {
 			for (size_t i = 0u; i < count; ++i) dst2[i] = (a2[i] * b2[i]) + c2[i];
 		}
 
-		void MultiplySubtract(const void* a, const void* b, const void* c, void* dst, size_t count) const {
+		virtual void MultiplySubtract(const void* a, const void* b, const void* c, void* dst, size_t count) const {
 			const T* a2 = static_cast<const T*>(a);
 			const T* b2 = static_cast<const T*>(b);
 			const T* c2 = static_cast<const T*>(c);
