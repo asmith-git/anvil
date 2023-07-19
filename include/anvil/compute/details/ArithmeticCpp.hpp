@@ -114,6 +114,30 @@ namespace anvil { namespace compute { namespace details {
 
 	template<class T>
 	class ArithmeticOperationsCpp : public ArithmeticOperations {
+	private:
+		template<bool APPLY_TO_INTEGER>
+		static void CallCMathOperation(const void* src, void* dst, size_t count, float(*f32)(float), double(*f64)(double)) {
+			const T* src2 = static_cast<const T*>(src);
+			T* dst2 = static_cast<T*>(dst);
+
+			if ANVIL_CONSTEXPR_VAR (std::is_integral<T>::value) {
+				if ANVIL_CONSTEXPR_VAR(APPLY_TO_INTEGER) {
+					for (size_t i = 0u; i < count; ++i) {
+						dst2[i] = static_cast<T>(std::round(f32(static_cast<float>(src2[i]))));
+					}
+				} else {
+					memcpy(dst, src, sizeof(T) * count);
+				}
+			} else if ANVIL_CONSTEXPR_VAR(std::is_same<T, double>::value) {
+				for (size_t i = 0u; i < count; ++i) {
+					dst2[i] = f64(src2[i]);
+				}
+			} else {
+				for (size_t i = 0u; i < count; ++i) {
+					dst2[i] = static_cast<T>(f32(static_cast<float>(src2[i])));
+				}
+			}
+		}
 	public:
 
 		ArithmeticOperationsCpp() :
@@ -127,41 +151,11 @@ namespace anvil { namespace compute { namespace details {
 		// 1 input
 
 		virtual void Sqrt(const void* src, void* dst, size_t count) const {
-			const T* src2 = static_cast<const T*>(src);
-			T* dst2 = static_cast<T*>(dst);
-
-			if constexpr (std::is_integral<T>::value) {
-				for (size_t i = 0u; i < count; ++i) { 
-					dst2[i] = static_cast<T>(std::roundf(std::sqrtf(static_cast<float>(src2[i])))); 
-				}
-			} else if constexpr (std::is_same<T, double>::value) {
-				for (size_t i = 0u; i < count; ++i) {
-					dst2[i] = std::sqrt(src2[i]);
-				}
-			} else {
-				for (size_t i = 0u; i < count; ++i) {
-					dst2[i] = static_cast<T>(std::sqrtf(static_cast<float>(src2[i])));
-				}
-			}
+			CallCMathOperation<true>(src, dst, count, &std::sqrtf, &std::sqrt);
 		}
 
 		virtual void Cbrt(const void* src, void* dst, size_t count) const {
-			const T* src2 = static_cast<const T*>(src);
-			T* dst2 = static_cast<T*>(dst);
-
-			if constexpr (std::is_integral<T>::value) {
-				for (size_t i = 0u; i < count; ++i) { 
-					dst2[i] = static_cast<T>(std::roundf(std::cbrtf(static_cast<float>(src2[i])))); 
-				}
-			} else if constexpr (std::is_same<T, double>::value) {
-				for (size_t i = 0u; i < count; ++i) {
-					dst2[i] = std::cbrt(src2[i]);
-				}
-			} else {
-				for (size_t i = 0u; i < count; ++i) {
-					dst2[i] = static_cast<T>(std::cbrtf(static_cast<float>(src2[i])));
-				}
-			}
+			CallCMathOperation<true>(src, dst, count, &std::cbrtf, &std::cbrt);
 		}
 
 
@@ -170,54 +164,15 @@ namespace anvil { namespace compute { namespace details {
 		}
 		
 		virtual void Round(const void* src, void* dst, size_t count) const {
-			const T* src2 = static_cast<const T*>(src);
-			T* dst2 = static_cast<T*>(dst);
-
-			if constexpr (std::is_integral<T>::value) {
-				memcpy(dst, src, sizeof(T) * count);
-			} else if constexpr (std::is_same<T, double>::value) {
-				for (size_t i = 0u; i < count; ++i) {
-					dst2[i] = std::round(src2[i]);
-				}
-			} else {
-				for (size_t i = 0u; i < count; ++i) {
-					dst2[i] = static_cast<T>(std::roundf(static_cast<float>(src2[i])));
-				}
-			}
+			CallCMathOperation<false>(src, dst, count, &std::roundf, &std::round);
 		}
 
 		virtual void Floor(const void* src, void* dst, size_t count) const {
-			const T* src2 = static_cast<const T*>(src);
-			T* dst2 = static_cast<T*>(dst);
-
-			if constexpr (std::is_integral<T>::value) {
-				memcpy(dst, src, sizeof(T) * count);
-			} else if constexpr (std::is_same<T, double>::value) {
-				for (size_t i = 0u; i < count; ++i) {
-					dst2[i] = std::floor(src2[i]);
-				}
-			} else {
-				for (size_t i = 0u; i < count; ++i) {
-					dst2[i] = static_cast<T>(std::floorf(static_cast<float>(src2[i])));
-				}
-			}
+			CallCMathOperation<false>(src, dst, count, &std::floorf, &std::floor);
 		}
 
 		virtual void Ceil(const void* src, void* dst, size_t count) const {
-			const T* src2 = static_cast<const T*>(src);
-			T* dst2 = static_cast<T*>(dst);
-
-			if constexpr (std::is_integral<T>::value) {
-				memcpy(dst, src, sizeof(T) * count);
-			} else if constexpr (std::is_same<T, double>::value) {
-				for (size_t i = 0u; i < count; ++i) {
-					dst2[i] = std::ceil(src2[i]);
-				}
-			} else {
-				for (size_t i = 0u; i < count; ++i) {
-					dst2[i] = static_cast<T>(std::ceilf(static_cast<float>(src2[i])));
-				}
-			}
+			CallCMathOperation<false>(src, dst, count, &std::ceilf, &std::ceil);
 		}
 
 
