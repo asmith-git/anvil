@@ -233,6 +233,55 @@ namespace anvil { namespace compute { namespace details {
 			CallOperation(src, dst, count, &ArithmeticOperations::Ceil);
 		}
 
+		virtual void Cos(const void* src, void* dst, size_t count) const {
+			CallOperation(src, dst, count, &ArithmeticOperations::Cos);
+		}
+
+		virtual void Sin(const void* src, void* dst, size_t count) const {
+			CallOperation(src, dst, count, &ArithmeticOperations::Sin);
+		}
+
+		virtual void Tan(const void* src, void* dst, size_t count) const {
+			CallOperation(src, dst, count, &ArithmeticOperations::Tan);
+		}
+
+		virtual void Acos(const void* src, void* dst, size_t count) const {
+			CallOperation(src, dst, count, &ArithmeticOperations::Acos);
+		}
+
+		virtual void Asin(const void* src, void* dst, size_t count) const {
+			CallOperation(src, dst, count, &ArithmeticOperations::Asin);
+		}
+
+		virtual void Atan(const void* src, void* dst, size_t count) const {
+			CallOperation(src, dst, count, &ArithmeticOperations::Atan);
+		}
+
+		virtual void Cosh(const void* src, void* dst, size_t count) const {
+			CallOperation(src, dst, count, &ArithmeticOperations::Cosh);
+		}
+
+		virtual void Sinh(const void* src, void* dst, size_t count) const {
+			CallOperation(src, dst, count, &ArithmeticOperations::Sinh);
+		}
+
+		virtual void Tanh(const void* src, void* dst, size_t count) const {
+			CallOperation(src, dst, count, &ArithmeticOperations::Tanh);
+		}
+
+		virtual void Acosh(const void* src, void* dst, size_t count) const {
+			CallOperation(src, dst, count, &ArithmeticOperations::Acosh);
+		}
+
+		virtual void Asinh(const void* src, void* dst, size_t count) const {
+			CallOperation(src, dst, count, &ArithmeticOperations::Asinh);
+		}
+
+		virtual void Atanh(const void* src, void* dst, size_t count) const {
+			CallOperation(src, dst, count, &ArithmeticOperations::Atanh);
+		}
+
+
 		// 2 inputs
 
 		void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {

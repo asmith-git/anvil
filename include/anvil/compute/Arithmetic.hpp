@@ -84,6 +84,42 @@ namespace anvil {namespace compute {
 		virtual void Ceil(const void* src, void* dst, size_t count) const = 0;
 		virtual void CeilMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
 
+		virtual void Cos(const void* src, void* dst, size_t count) const = 0;
+		virtual void CosMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+
+		virtual void Sin(const void* src, void* dst, size_t count) const = 0;
+		virtual void SinMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+
+		virtual void Tan(const void* src, void* dst, size_t count) const = 0;
+		virtual void TanMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+
+		virtual void Acos(const void* src, void* dst, size_t count) const = 0;
+		virtual void AcosMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+
+		virtual void Asin(const void* src, void* dst, size_t count) const = 0;
+		virtual void AsinMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+
+		virtual void Atan(const void* src, void* dst, size_t count) const = 0;
+		virtual void AtanMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+
+		virtual void Cosh(const void* src, void* dst, size_t count) const = 0;
+		virtual void CoshMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+
+		virtual void Sinh(const void* src, void* dst, size_t count) const = 0;
+		virtual void SinhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+
+		virtual void Tanh(const void* src, void* dst, size_t count) const = 0;
+		virtual void TanhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+
+		virtual void Acosh(const void* src, void* dst, size_t count) const = 0;
+		virtual void AcoshMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+
+		virtual void Asinh(const void* src, void* dst, size_t count) const = 0;
+		virtual void AsinhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+
+		virtual void Atanh(const void* src, void* dst, size_t count) const = 0;
+		virtual void AtanhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+
 		// 2 inputs
 
 		virtual void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;

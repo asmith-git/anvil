@@ -205,6 +205,103 @@ namespace anvil { namespace compute { namespace details {
 			CallOperation(src, dst, count, mask, &ArithmeticOperations::CeilMask);
 		}
 
+		void Cos(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::Cos);
+		}
+
+		void CosMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::CosMask);
+		}
+
+		void Sin(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::Sin);
+		}
+
+		void SinMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::SinMask);
+		}
+
+		void Tan(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::Tan);
+		}
+
+		void TanMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::TanMask);
+		}
+
+		void Acos(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::Acos);
+		}
+
+		void AcosMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::AcosMask);
+		}
+
+		void Asin(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::Asin);
+		}
+
+		void AsinMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::AsinMask);
+		}
+
+		void Atan(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::Atan);
+		}
+
+		void AtanMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::AtanMask);
+		}
+
+		void Cosh(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::Cosh);
+		}
+
+		void CoshMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::CoshMask);
+		}
+
+		void Sinh(const void* src, void* dst, size_t count) const final{
+			CallOperation(src, dst, count, &ArithmeticOperations::Sinh);
+		}
+
+		void SinhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::SinhMask);
+		}
+
+		void Tanh(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::Tanh);
+		}
+
+		void TanhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::TanhMask);
+		}
+
+		void Acosh(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::Acosh);
+		}
+
+		void AcoshMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::AcoshMask);
+		}
+
+		void Asinh(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::Asinh);
+		}
+
+		void AsinhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::AsinhMask);
+		}
+
+		void Atanh(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::Atanh);
+		}
+
+		void AtanhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::AtanhMask);
+		}
+
+
 		// 2 inputs
 
 		void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const final {

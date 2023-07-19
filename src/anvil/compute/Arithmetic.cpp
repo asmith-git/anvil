@@ -413,5 +413,53 @@ namespace anvil { namespace compute {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Ceil);
 	}
 
+	void ArithmeticOperations::CosMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Cos);
+	}
+
+	void ArithmeticOperations::SinMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Sin);
+	}
+
+	void ArithmeticOperations::TanMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Tan);
+	}
+
+	void ArithmeticOperations::AcosMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Acos);
+	}
+
+	void ArithmeticOperations::AsinMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Asin);
+	}
+
+	void ArithmeticOperations::AtanMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Atan);
+	}
+
+	void ArithmeticOperations::CoshMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Cosh);
+	}
+
+	void ArithmeticOperations::SinhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Sinh);
+	}
+
+	void ArithmeticOperations::TanhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Tanh);
+	}
+
+	void ArithmeticOperations::AcoshMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Acosh);
+	}
+
+	void ArithmeticOperations::AsinhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Asinh);
+	}
+
+	void ArithmeticOperations::AtanhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Atanh);
+	}
+
 
 }}

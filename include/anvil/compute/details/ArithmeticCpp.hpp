@@ -175,6 +175,54 @@ namespace anvil { namespace compute { namespace details {
 			CallCMathOperation<false>(src, dst, count, &std::ceilf, &std::ceil);
 		}
 
+		virtual void Cos(const void* src, void* dst, size_t count) const {
+			CallCMathOperation<true>(src, dst, count, &std::cosf, &std::cos);
+		}
+
+		virtual void Sin(const void* src, void* dst, size_t count) const {
+			CallCMathOperation<true>(src, dst, count, &std::sinf, &std::sin);
+		}
+
+		virtual void Tan(const void* src, void* dst, size_t count) const {
+			CallCMathOperation<true>(src, dst, count, &std::tanf, &std::tan);
+		}
+
+		virtual void Acos(const void* src, void* dst, size_t count) const {
+			CallCMathOperation<true>(src, dst, count, &std::acosf, &std::acos);
+		}
+
+		virtual void Asin(const void* src, void* dst, size_t count) const {
+			CallCMathOperation<true>(src, dst, count, &std::asinf, &std::asin);
+		}
+
+		virtual void Atan(const void* src, void* dst, size_t count) const {
+			CallCMathOperation<true>(src, dst, count, &std::atanf, &std::atan);
+		}
+
+		virtual void Cosh(const void* src, void* dst, size_t count) const {
+			CallCMathOperation<true>(src, dst, count, &std::coshf, &std::cosh);
+		}
+
+		virtual void Sinh(const void* src, void* dst, size_t count) const {
+			CallCMathOperation<true>(src, dst, count, &std::sinhf, &std::sinh);
+		}
+
+		virtual void Tanh(const void* src, void* dst, size_t count) const {
+			CallCMathOperation<true>(src, dst, count, &std::tanhf, &std::tanh);
+		}
+
+		virtual void Acosh(const void* src, void* dst, size_t count) const {
+			CallCMathOperation<true>(src, dst, count, &std::acoshf, &std::acosh);
+		}
+
+		virtual void Asinh(const void* src, void* dst, size_t count) const {
+			CallCMathOperation<true>(src, dst, count, &std::asinhf, &std::asinh);
+		}
+
+		virtual void Atanh(const void* src, void* dst, size_t count) const {
+			CallCMathOperation<true>(src, dst, count, &std::atanhf, &std::atanh);
+		}
+
 
 		// 2 inputs
 
