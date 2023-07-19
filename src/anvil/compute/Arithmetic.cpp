@@ -461,5 +461,9 @@ namespace anvil { namespace compute {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Atanh);
 	}
 
+	void ArithmeticOperations::AbsMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Abs);
+	}
+
 
 }}

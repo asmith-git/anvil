@@ -223,6 +223,29 @@ namespace anvil { namespace compute { namespace details {
 			CallCMathOperation<true>(src, dst, count, &std::atanhf, &std::atanh);
 		}
 
+		virtual void Abs(const void* src, void* dst, size_t count) const {
+			const T* src2 = static_cast<const T*>(src);
+			T* dst2 = static_cast<T*>(dst);
+
+			if ANVIL_CONSTEXPR_VAR (std::is_integral<T>::value) {
+				if ANVIL_CONSTEXPR_VAR(std::is_signed<T>::value) {
+					for (size_t i = 0u; i < count; ++i) {
+						dst2[i] = static_cast<T>(std::abs(src2[i]));
+					}
+				} else {
+					memcpy(dst, src, sizeof(T) * count);
+				}
+			} else if ANVIL_CONSTEXPR_VAR(std::is_same<T, double>::value) {
+				for (size_t i = 0u; i < count; ++i) {
+					dst2[i] = fabs(src2[i]);
+				}
+			} else {
+				for (size_t i = 0u; i < count; ++i) {
+					dst2[i] = static_cast<T>(fabsf(static_cast<float>(src2[i])));
+				}
+			}
+		}
+
 
 		// 2 inputs
 

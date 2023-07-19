@@ -120,6 +120,9 @@ namespace anvil {namespace compute {
 		virtual void Atanh(const void* src, void* dst, size_t count) const = 0;
 		virtual void AtanhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
 
+		virtual void Abs(const void* src, void* dst, size_t count) const = 0;
+		virtual void AbsMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+
 		// 2 inputs
 
 		virtual void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;

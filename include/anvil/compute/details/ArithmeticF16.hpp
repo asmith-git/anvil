@@ -281,6 +281,10 @@ namespace anvil { namespace compute { namespace details {
 			CallOperation(src, dst, count, &ArithmeticOperations::Atanh);
 		}
 
+		virtual void Abs(const void* src, void* dst, size_t count) const {
+			CallOperation(src, dst, count, &ArithmeticOperations::Abs);
+		}
+
 
 		// 2 inputs
 

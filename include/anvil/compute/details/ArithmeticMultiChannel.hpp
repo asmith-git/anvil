@@ -301,6 +301,14 @@ namespace anvil { namespace compute { namespace details {
 			CallOperation(src, dst, count, mask, &ArithmeticOperations::AtanhMask);
 		}
 
+		void Abs(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::Abs);
+		}
+
+		void AbsMask(const void* src, void* dst, size_t count, const uint8_t* mask) const final {
+			CallOperation(src, dst, count, mask, &ArithmeticOperations::AbsMask);
+		}
+
 
 		// 2 inputs
 
