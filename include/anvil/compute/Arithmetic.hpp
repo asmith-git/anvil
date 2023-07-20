@@ -351,11 +351,13 @@ namespace anvil {namespace compute {
 
 		// 2 inputs
 
+		//! \brief dst = mask ? lhs : rhs
 		virtual void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 		ANVIL_STRONG_INLINE void Mask(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Mask, instruction_set, true); }
 		ANVIL_STRONG_INLINE void Mask(const Vector& a, const Vector& b, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Mask, instruction_set, true); }
 		ANVIL_STRONG_INLINE void Mask(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Mask, instruction_set, true); }
 
+		//! \brief dst = lhs + rhs
 		virtual void Add(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
 		virtual void Add(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 		ANVIL_STRONG_INLINE void Add(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Add, instruction_set, false); }
@@ -365,6 +367,7 @@ namespace anvil {namespace compute {
 		ANVIL_STRONG_INLINE void Add(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Add, instruction_set, false); }
 		ANVIL_STRONG_INLINE void Add(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Add, instruction_set, false); }
 
+		//! \brief dst = lhs - rhs
 		virtual void Subtract(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
 		virtual void Subtract(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 		ANVIL_STRONG_INLINE void Subtract(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Subtract, instruction_set, false); }
@@ -374,6 +377,7 @@ namespace anvil {namespace compute {
 		ANVIL_STRONG_INLINE void Subtract(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Subtract, instruction_set, false); }
 		ANVIL_STRONG_INLINE void Subtract(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Subtract, instruction_set, false); }
 
+		//! \brief dst = lhs * rhs
 		virtual void Multiply(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
 		virtual void Multiply(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 		ANVIL_STRONG_INLINE void Multiply(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Multiply, instruction_set, false); }
@@ -383,6 +387,7 @@ namespace anvil {namespace compute {
 		ANVIL_STRONG_INLINE void Multiply(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Multiply, instruction_set, false); }
 		ANVIL_STRONG_INLINE void Multiply(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Multiply, instruction_set, false); }
 
+		//! \brief dst = lhs / rhs
 		virtual void Divide(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
 		virtual void Divide(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 		ANVIL_STRONG_INLINE void Divide(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Divide, instruction_set, false); }
@@ -392,6 +397,7 @@ namespace anvil {namespace compute {
 		ANVIL_STRONG_INLINE void Divide(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Divide, instruction_set, false); }
 		ANVIL_STRONG_INLINE void Divide(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Divide, instruction_set, false); }
 
+		//! \brief dst = lhs & rhs
 		virtual void And(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
 		virtual void And(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 		ANVIL_STRONG_INLINE void And(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::And, instruction_set, true); }
@@ -401,6 +407,7 @@ namespace anvil {namespace compute {
 		ANVIL_STRONG_INLINE void And(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::And, instruction_set, true); }
 		ANVIL_STRONG_INLINE void And(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::And, instruction_set, true); }
 
+		//! \brief dst = lhs | rhs
 		virtual void Or(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
 		virtual void Or(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 		ANVIL_STRONG_INLINE void Or(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Or, instruction_set, true); }
@@ -410,6 +417,7 @@ namespace anvil {namespace compute {
 		ANVIL_STRONG_INLINE void Or(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Or, instruction_set, true); }
 		ANVIL_STRONG_INLINE void Or(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Or, instruction_set, true); }
 
+		//! \brief dst = lhs ^ rhs
 		virtual void Xor(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
 		virtual void Xor(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 		ANVIL_STRONG_INLINE void Xor(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Xor, instruction_set, true); }
@@ -419,6 +427,7 @@ namespace anvil {namespace compute {
 		ANVIL_STRONG_INLINE void Xor(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Xor, instruction_set, true); }
 		ANVIL_STRONG_INLINE void Xor(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Xor, instruction_set, true); }
 
+		//! \brief dst = ~(lhs & rhs)
 		virtual void Nand(const void* lhs, const void* rhs, void* dst, size_t count) const;
 		virtual void Nand(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 		ANVIL_STRONG_INLINE void Nand(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Nand, instruction_set, true); }
@@ -428,6 +437,7 @@ namespace anvil {namespace compute {
 		ANVIL_STRONG_INLINE void Nand(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Nand, instruction_set, true); }
 		ANVIL_STRONG_INLINE void Nand(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Nand, instruction_set, true); }
 
+		//! \brief dst = ~(lhs | rhs)
 		virtual void Nor(const void* lhs, const void* rhs, void* dst, size_t count) const;
 		virtual void Nor(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 		ANVIL_STRONG_INLINE void Nor(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Nor, instruction_set, true); }
@@ -437,6 +447,7 @@ namespace anvil {namespace compute {
 		ANVIL_STRONG_INLINE void Nor(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Nor, instruction_set, true); }
 		ANVIL_STRONG_INLINE void Nor(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Nor, instruction_set, true); }
 
+		//! \brief dst = ~(lhs ^ rhs)
 		virtual void Xnor(const void* lhs, const void* rhs, void* dst, size_t count) const;
 		virtual void Xnor(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
 		ANVIL_STRONG_INLINE void Xnor(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Xnor, instruction_set, true); }
