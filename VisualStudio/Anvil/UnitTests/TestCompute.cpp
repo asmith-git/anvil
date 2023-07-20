@@ -651,7 +651,7 @@ namespace anvil { namespace compute {
 					1.5f, 2.f,
 					operations,
 					&ArithmeticOperations::Round,
-					&ArithmeticOperations::RoundMask,
+					&ArithmeticOperations::Round,
 					L"Round"
 				);
 
@@ -659,7 +659,7 @@ namespace anvil { namespace compute {
 					1.5f, 1.f,
 					operations,
 					&ArithmeticOperations::Floor,
-					&ArithmeticOperations::FloorMask,
+					&ArithmeticOperations::Floor,
 					L"Floor"
 				);
 
@@ -667,7 +667,7 @@ namespace anvil { namespace compute {
 					1.3f, 2.f,
 					operations,
 					&ArithmeticOperations::Ceil,
-					&ArithmeticOperations::CeilMask,
+					&ArithmeticOperations::Ceil,
 					L"Ceil"
 				);
 
@@ -675,7 +675,7 @@ namespace anvil { namespace compute {
 					500.f, std::sqrtf(500.f),
 					operations,
 					&ArithmeticOperations::Sqrt,
-					&ArithmeticOperations::SqrtMask,
+					&ArithmeticOperations::Sqrt,
 					L"Sqrt"
 				);
 
@@ -683,7 +683,7 @@ namespace anvil { namespace compute {
 					500.f, std::cbrtf(500.f),
 					operations,
 					&ArithmeticOperations::Cbrt,
-					&ArithmeticOperations::CbrtMask,
+					&ArithmeticOperations::Cbrt,
 					L"Cbrt"
 				);
 
@@ -691,7 +691,7 @@ namespace anvil { namespace compute {
 					1.f, 2.f, 1.f + 2.f,
 					operations,
 					&ArithmeticOperations::Add,
-					&ArithmeticOperations::AddMask,
+					&ArithmeticOperations::Add,
 					L"Add"
 				);
 
@@ -699,7 +699,7 @@ namespace anvil { namespace compute {
 					4.f, 1.f, 4.f - 1.f,
 					operations,
 					&ArithmeticOperations::Subtract,
-					&ArithmeticOperations::SubtractMask,
+					&ArithmeticOperations::Subtract,
 					L"Subtract"
 				);
 
@@ -707,7 +707,7 @@ namespace anvil { namespace compute {
 					3.f, 2.f, 3.f * 2.f,
 					operations,
 					&ArithmeticOperations::Multiply,
-					&ArithmeticOperations::MultiplyMask,
+					&ArithmeticOperations::Multiply,
 					L"Multiply"
 				);
 
@@ -715,7 +715,7 @@ namespace anvil { namespace compute {
 					6.f, 2.f, 6.f / 2.f,
 					operations,
 					&ArithmeticOperations::Divide,
-					&ArithmeticOperations::DivideMask,
+					&ArithmeticOperations::Divide,
 					L"Divide"
 				);
 			

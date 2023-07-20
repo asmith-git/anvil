@@ -424,187 +424,82 @@ namespace anvil { namespace compute {
 		void GetRoiPosition(const Image& img, size_t& x, size_t& y) const;
 	};
 
-	//inline Image& operator+=(Image& a, const Image& b) {
-	//	const size_t w = a.GetWidth();
-	//	const size_t h = b.GetWidth();
-	//	ANVIL_RUNTIME_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "anvil::compute::Image::operator+= : Image sizes do not match");
+	ANVIL_STRONG_INLINE Image& operator+=(Image& a, const Image& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Add(a, b, a);
+		return a;
+	}
 
-	//	const Type t = ArithmeticOperations::PreferedOutputType(a.GetType(), b.GetType());
-	//	if (a.GetType() != t) a.ConvertToInPlace(t);
-	//	Image b2 =  b.GetType() == t ? const_cast<Image&>(b).ShallowCopy() : b.ConvertTo(t);
-	//	ArithmeticOperations::GetArithmeticOperations(t)->Add(a.GetData(), b2.GetData(), a.GetData(), w * h);
-	//	return a;
-	//}
+	ANVIL_STRONG_INLINE Image& operator-=(Image& a, const Image& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Subtract(a, b, a);
+		return a;
+	}
 
-	//inline Image& operator-=(Image& a, const Image& b) {
-	//	const size_t w = a.GetWidth();
-	//	const size_t h = b.GetWidth();
-	//	ANVIL_RUNTIME_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "anvil::compute::Image::operator-= : Image sizes do not match");
+	ANVIL_STRONG_INLINE Image& operator*=(Image& a, const Image& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Multiply(a, b, a);
+		return a;
+	}
 
-	//	const Type t = ArithmeticOperations::PreferedOutputType(a.GetType(), b.GetType());
-	//	if (a.GetType() != t) a.ConvertToInPlace(t);
-	//	Image b2 = b.GetType() == t ? const_cast<Image&>(b).ShallowCopy() : b.ConvertTo(t);
-	//	ArithmeticOperations::GetArithmeticOperations(t)->Subtract(a.GetData(), b2.GetData(), a.GetData(), w * h);
-	//	return a;
-	//}
+	ANVIL_STRONG_INLINE Image& operator/=(Image& a, const Image& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Divide(a, b, a);
+		return a;
+	}
 
-	//inline Image& operator*=(Image& a, const Image& b) {
-	//	const size_t w = a.GetWidth();
-	//	const size_t h = b.GetWidth();
-	//	ANVIL_RUNTIME_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "anvil::compute::Image::operator*= : Image sizes do not match");
+	ANVIL_STRONG_INLINE Image& operator&=(Image& a, const Image& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->And(a, b, a);
+		return a;
+	}
 
-	//	const Type t = ArithmeticOperations::PreferedOutputType(a.GetType(), b.GetType());
-	//	if (a.GetType() != t) a.ConvertToInPlace(t);
-	//	Image b2 = b.GetType() == t ? const_cast<Image&>(b).ShallowCopy() : b.ConvertTo(t);
-	//	ArithmeticOperations::GetArithmeticOperations(t)->Multiply(a.GetData(), b2.GetData(), a.GetData(), w * h);
-	//	return a;
-	//}
+	ANVIL_STRONG_INLINE Image& operator|=(Image& a, const Image& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Or(a, b, a);
+		return a;
+	}
 
-	//inline Image& operator/=(Image& a, const Image& b) {
-	//	const size_t w = a.GetWidth();
-	//	const size_t h = b.GetWidth();
-	//	ANVIL_RUNTIME_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "anvil::compute::Image::operator/= : Image sizes do not match");
+	ANVIL_STRONG_INLINE Image& operator^=(Image& a, const Image& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Xor(a, b, a);
+		return a;
+	}
 
-	//	const Type t = ArithmeticOperations::PreferedOutputType(a.GetType(), b.GetType());
-	//	if (a.GetType() != t) a.ConvertToInPlace(t);
-	//	Image b2 = b.GetType() == t ? const_cast<Image&>(b).ShallowCopy() : b.ConvertTo(t);
-	//	ArithmeticOperations::GetArithmeticOperations(t)->Divide(a.GetData(), b2.GetData(), a.GetData(), w * h);
-	//	return a;
-	//}
+	ANVIL_STRONG_INLINE Image operator+(const Image& a, const Image& b) {
+		Image dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Add(a, b, dst);
+		return dst;
+	}
 
-	//inline Image& operator&=(Image& a, const Image& b) {
-	//	const size_t w = a.GetWidth();
-	//	const size_t h = b.GetWidth();
-	//	ANVIL_RUNTIME_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "anvil::compute::Image::operator&= : Image sizes do not match");
+	ANVIL_STRONG_INLINE Image operator-(const Image& a, const Image& b) {
+		Image dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Subtract(a, b, dst);
+		return dst;
+	}
 
-	//	const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
-	//	if (a.GetType() != t) a.ConvertToInPlace(t);
-	//	Image b2 = b.GetType() == t ? const_cast<Image&>(b).ShallowCopy() : b.ConvertTo(t);
-	//	ArithmeticOperations::GetArithmeticOperations(t)->And(a.GetData(), b2.GetData(), a.GetData(), w * h);
-	//	return a;
-	//}
+	ANVIL_STRONG_INLINE Image operator*(const Image& a, const Image& b) {
+		Image dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Multiply(a, b, dst);
+		return dst;
+	}
 
-	//inline Image& operator|=(Image& a, const Image& b) {
-	//	const size_t w = a.GetWidth();
-	//	const size_t h = b.GetWidth();
-	//	ANVIL_RUNTIME_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "anvil::compute::Image::operator|= : Image sizes do not match");
+	ANVIL_STRONG_INLINE Image operator/(const Image& a, const Image& b) {
+		Image dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Divide(a, b, dst);
+		return dst;
+	}
 
-	//	const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
-	//	if (a.GetType() != t) a.ConvertToInPlace(t);
-	//	Image b2 = b.GetType() == t ? const_cast<Image&>(b).ShallowCopy() : b.ConvertTo(t);
-	//	ArithmeticOperations::GetArithmeticOperations(t)->Or(a.GetData(), b2.GetData(), a.GetData(), w * h);
-	//	return a;
-	//}
+	ANVIL_STRONG_INLINE Image operator&(const Image& a, const Image& b) {
+		Image dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->And(a, b, dst);
+		return dst;
+	}
 
-	//inline Image& operator^=(Image& a, const Image& b) {
-	//	const size_t w = a.GetWidth();
-	//	const size_t h = b.GetWidth();
-	//	ANVIL_RUNTIME_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "anvil::compute::Image::operator^= : Image sizes do not match");
+	ANVIL_STRONG_INLINE Image operator|(const Image& a, const Image& b) {
+		Image dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Or(a, b, dst);
+		return dst;
+	}
 
-	//	const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
-	//	if (a.GetType() != t) a.ConvertToInPlace(t);
-	//	Image b2 = b.GetType() == t ? const_cast<Image&>(b).ShallowCopy() : b.ConvertTo(t);
-	//	ArithmeticOperations::GetArithmeticOperations(t)->Xor(a.GetData(), b2.GetData(), a.GetData(), w * h);
-	//	return a;
-	//}
-
-	//inline Image operator+(const Image& a, const Image& b) {
-	//	const size_t w = a.GetWidth();
-	//	const size_t h = b.GetWidth();
-	//	ANVIL_RUNTIME_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "anvil::compute::Image::operator+ : Image sizes do not match");
-
-	//	const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
-	//	Image a2 = a.GetType() == t ? const_cast<Image&>(a).ShallowCopy() : a.ConvertTo(t);
-	//	Image b2 = b.GetType() == t ? const_cast<Image&>(b).ShallowCopy() : b.ConvertTo(t);
-
-	//	Image out(t, w, h);
-	//	ArithmeticOperations::GetArithmeticOperations(t)->Add(a2.GetData(), b2.GetData(), out.GetData(), w * h);
-	//	return out;
-	//}
-
-	//inline Image operator-(const Image& a, const Image& b) {
-	//	const size_t w = a.GetWidth();
-	//	const size_t h = b.GetWidth();
-	//	ANVIL_RUNTIME_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "anvil::compute::Image::operator- : Image sizes do not match");
-
-	//	const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
-	//	Image a2 = a.GetType() == t ? const_cast<Image&>(a).ShallowCopy() : a.ConvertTo(t);
-	//	Image b2 = b.GetType() == t ? const_cast<Image&>(b).ShallowCopy() : b.ConvertTo(t);
-
-	//	Image out(t, w, h);
-	//	ArithmeticOperations::GetArithmeticOperations(t)->Subtract(a2.GetData(), b2.GetData(), out.GetData(), w * h);
-	//	return out;
-	//}
-
-	//inline Image operator*(const Image& a, const Image& b) {
-	//	const size_t w = a.GetWidth();
-	//	const size_t h = b.GetWidth();
-	//	ANVIL_RUNTIME_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "anvil::compute::Image::operator* : Image sizes do not match");
-
-	//	const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
-	//	Image a2 = a.GetType() == t ? const_cast<Image&>(a).ShallowCopy() : a.ConvertTo(t);
-	//	Image b2 = b.GetType() == t ? const_cast<Image&>(b).ShallowCopy() : b.ConvertTo(t);
-
-	//	Image out(t, w, h);
-	//	ArithmeticOperations::GetArithmeticOperations(t)->Multiply(a2.GetData(), b2.GetData(), out.GetData(), w * h);
-	//	return out;
-	//}
-
-	//inline Image operator/(const Image& a, const Image& b) {
-	//	const size_t w = a.GetWidth();
-	//	const size_t h = b.GetWidth();
-	//	ANVIL_RUNTIME_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "anvil::compute::Image::operator/ : Image sizes do not match");
-
-	//	const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
-	//	Image a2 = a.GetType() == t ? const_cast<Image&>(a).ShallowCopy() : a.ConvertTo(t);
-	//	Image b2 = b.GetType() == t ? const_cast<Image&>(b).ShallowCopy() : b.ConvertTo(t);
-
-	//	Image out(t, w, h);
-	//	ArithmeticOperations::GetArithmeticOperations(t)->Divide(a2.GetData(), b2.GetData(), out.GetData(), w * h);
-	//	return out;
-	//}
-
-	//inline Image operator&(const Image& a, const Image& b) {
-	//	const size_t w = a.GetWidth();
-	//	const size_t h = b.GetWidth();
-	//	ANVIL_RUNTIME_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "anvil::compute::Image::operator& : Image sizes do not match");
-
-	//	const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
-	//	Image a2 = a.GetType() == t ? const_cast<Image&>(a).ShallowCopy() : a.ConvertTo(t);
-	//	Image b2 = b.GetType() == t ? const_cast<Image&>(b).ShallowCopy() : b.ConvertTo(t);
-
-	//	Image out(t, w, h);
-	//	ArithmeticOperations::GetArithmeticOperations(t)->And(a2.GetData(), b2.GetData(), out.GetData(), w * h);
-	//	return out;
-	//}
-
-	//inline Image operator|(const Image& a, const Image& b) {
-	//	const size_t w = a.GetWidth();
-	//	const size_t h = b.GetWidth();
-	//	ANVIL_RUNTIME_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "anvil::compute::Image::operator| : Image sizes do not match");
-
-	//	const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
-	//	Image a2 = a.GetType() == t ? const_cast<Image&>(a).ShallowCopy() : a.ConvertTo(t);
-	//	Image b2 = b.GetType() == t ? const_cast<Image&>(b).ShallowCopy() : b.ConvertTo(t);
-
-	//	Image out(t, w, h);
-	//	ArithmeticOperations::GetArithmeticOperations(t)->Or(a2.GetData(), b2.GetData(), out.GetData(), w * h);
-	//	return out;
-	//}
-
-	//inline Image operator^(const Image& a, const Image& b) {
-	//	const size_t w = a.GetWidth();
-	//	const size_t h = b.GetWidth();
-	//	ANVIL_RUNTIME_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "anvil::compute::Image::operator^ : Image sizes do not match");
-
-	//	const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
-	//	Image a2 = a.GetType() == t ? const_cast<Image&>(a).ShallowCopy() : a.ConvertTo(t);
-	//	Image b2 = b.GetType() == t ? const_cast<Image&>(b).ShallowCopy() : b.ConvertTo(t);
-
-	//	Image out(t, w, h);
-	//	ArithmeticOperations::GetArithmeticOperations(t)->Xor(a2.GetData(), b2.GetData(), out.GetData(), w * h);
-	//	return out;
-	//}
+	ANVIL_STRONG_INLINE Image operator^(const Image& a, const Image& b) {
+		Image dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Xor(a, b, dst);
+		return dst;
+	}
 }}
 
 #endif

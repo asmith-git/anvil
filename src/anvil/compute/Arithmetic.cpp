@@ -17,6 +17,7 @@
 #include "anvil/compute/details/ArithmeticSseF32.hpp"
 #include "anvil/compute/details/ArithmeticF16.hpp"
 #include <vector>
+#include "anvil/compute/Image.hpp"
 
 namespace anvil { namespace compute {
 
@@ -315,43 +316,43 @@ namespace anvil { namespace compute {
 		}
 	}
 
-	void ArithmeticOperations::SqrtMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Sqrt(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Sqrt);
 	}
 
-	void ArithmeticOperations::CbrtMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Cbrt(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Cbrt);
 	}
 
-	void ArithmeticOperations::NotMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Not(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Not);
 	}
 
-	void ArithmeticOperations::AddMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Add(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Add);
 	}
 
-	void ArithmeticOperations::SubtractMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Subtract(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Subtract);
 	}
 
-	void ArithmeticOperations::MultiplyMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Multiply(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Multiply);
 	}
 
-	void ArithmeticOperations::DivideMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Divide(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Divide);
 	}
 
-	void ArithmeticOperations::AndMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::And(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::And);
 	}
 
-	void ArithmeticOperations::OrMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Or(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Or);
 	}
 
-	void ArithmeticOperations::XorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Xor(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Xor);
 	}
 
@@ -360,7 +361,7 @@ namespace anvil { namespace compute {
 		Not(dst, dst, count);
 	}
 
-	void ArithmeticOperations::NandMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Nand(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Nand);
 	}
 
@@ -369,7 +370,7 @@ namespace anvil { namespace compute {
 		Not(dst, dst, count);
 	}
 
-	void ArithmeticOperations::NorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Nor(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Nor);
 	}
 
@@ -378,7 +379,7 @@ namespace anvil { namespace compute {
 		Not(dst, dst, count);
 	}
 
-	void ArithmeticOperations::XnorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Xnor(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Xnor);
 	}
 
@@ -387,7 +388,7 @@ namespace anvil { namespace compute {
 		Add(dst, c, dst, count);
 	}
 
-	void ArithmeticOperations::MultiplyAddMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(a, b, c, dst, count, mask, &ArithmeticOperations::MultiplyAdd);
 	}
 
@@ -396,74 +397,336 @@ namespace anvil { namespace compute {
 		Subtract(dst, c, dst, count);
 	}
 
-	void ArithmeticOperations::MultiplySubtractMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::MultiplySubtract(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(a, b, c, dst, count, mask, &ArithmeticOperations::MultiplySubtract);
 	}
 
-	void ArithmeticOperations::RoundMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Round(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Round);
 	}
 
-	void ArithmeticOperations::FloorMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Floor(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Floor);
 	}
 
 
-	void ArithmeticOperations::CeilMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Ceil(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Ceil);
 	}
 
-	void ArithmeticOperations::CosMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Cos(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Cos);
 	}
 
-	void ArithmeticOperations::SinMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Sin(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Sin);
 	}
 
-	void ArithmeticOperations::TanMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Tan(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Tan);
 	}
 
-	void ArithmeticOperations::AcosMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Acos(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Acos);
 	}
 
-	void ArithmeticOperations::AsinMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Asin(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Asin);
 	}
 
-	void ArithmeticOperations::AtanMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Atan(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Atan);
 	}
 
-	void ArithmeticOperations::CoshMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Cosh(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Cosh);
 	}
 
-	void ArithmeticOperations::SinhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Sinh(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Sinh);
 	}
 
-	void ArithmeticOperations::TanhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Tanh(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Tanh);
 	}
 
-	void ArithmeticOperations::AcoshMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Acosh(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Acosh);
 	}
 
-	void ArithmeticOperations::AsinhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Asinh(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Asinh);
 	}
 
-	void ArithmeticOperations::AtanhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Atanh(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Atanh);
 	}
 
-	void ArithmeticOperations::AbsMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+	void ArithmeticOperations::Abs(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(src, dst, count, mask, &ArithmeticOperations::Abs);
 	}
+	
+	////
+
+	#pragma warning( disable : 4100) // is_bitwise is not used, Currently not needed for single input operations
+	void ArithmeticOperations::CallOperation(
+		const TypedScalar& src, TypedScalar& dst,
+		void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count) const,
+		uint64_t instruction_set, bool is_bitwise
+	) const {
+		const Type type = src.GetType();
+		dst.ForceSetType(type);
+		(GetArithmeticOperations(type, instruction_set)->*Function)(src.GetData(), dst.GetData(), 1u);
+	}
+	
+	#pragma warning( disable : 4100) // is_bitwise is not used, Currently not needed for single input operations
+	void ArithmeticOperations::CallOperation(
+		const Vector& src, Vector& dst,
+		void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count) const,
+		uint64_t instruction_set, bool is_bitwise
+	) const {
+		const Type type = src.GetType();
+		dst.ForceSetType(type);
+		(GetArithmeticOperations(src.GetType(), instruction_set)->*Function)(src.GetData(), dst.GetData(), 1u);
+	}
+	
+	#pragma warning( disable : 4100) // is_bitwise is not used, Currently not needed for single input operations
+	void ArithmeticOperations::CallOperation(
+		const Image& src, Image& dst,
+		void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count) const,
+		uint64_t instruction_set, bool is_bitwise
+	) const {
+		const Type type = src.GetType();
+		const size_t w = src.GetWidth();
+		const size_t h = src.GetHeight();
+		dst.Allocate(type, w, h);
+		(GetArithmeticOperations(src.GetType(), instruction_set)->*Function)(src.GetData(), dst.GetData(), w * h);
+	}
+	
+	#pragma warning( disable : 4100) // is_bitwise is not used, Currently not needed for single input operations
+	void ArithmeticOperations::CallOperation(
+		const TypedScalar& src, TypedScalar& dst, const uint8_t* mask,
+		void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count, const uint8_t* mask) const,
+		uint64_t instruction_set, bool is_bitwise
+	) const {
+		const Type type = src.GetType();
+		dst.ForceSetType(type);
+		(GetArithmeticOperations(type, instruction_set)->*Function)(src.GetData(), dst.GetData(), 1u, mask);
+	}
+	
+	#pragma warning( disable : 4100) // is_bitwise is not used, Currently not needed for single input operations
+	void ArithmeticOperations::CallOperation(
+		const Vector& src, Vector& dst, const uint8_t* mask,
+		void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count, const uint8_t* mask) const,
+		uint64_t instruction_set, bool is_bitwise
+	) const {
+		const Type type = src.GetType();
+		dst.ForceSetType(type);
+		(GetArithmeticOperations(src.GetType(), instruction_set)->*Function)(src.GetData(), dst.GetData(), 1u, mask);
+	}
+	
+	#pragma warning( disable : 4100) // is_bitwise is not used, Currently not needed for single input operations
+	void ArithmeticOperations::CallOperation(
+		const Image& src, Image& dst, const uint8_t* mask,
+		void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count, const uint8_t* mask) const,
+		uint64_t instruction_set, bool is_bitwise
+	) const {
+		const Type type = src.GetType();
+		const size_t w = src.GetWidth();
+		const size_t h = src.GetHeight();
+		dst.Allocate(type, w, h);
+		(GetArithmeticOperations(src.GetType(), instruction_set)->*Function)(src.GetData(), dst.GetData(),  w * h, mask);
+	}
+
+	////
+
+	void ArithmeticOperations::CallOperation(
+		const TypedScalar& a, const TypedScalar& b, TypedScalar& dst,
+		void(ArithmeticOperations::* Function)(const void* a, const void* b, void* dst, size_t count) const,
+		uint64_t instruction_set, bool is_bitwise
+	) const {
+		const Type t1 = a.GetType();
+		const Type t2 = b.GetType();
+		const Type type = is_bitwise ? PreferedBitwiseOutputType(t1, t2) : PreferedOutputType(t1, t2);
+		dst.ForceSetType(type);
+		(GetArithmeticOperations(type, instruction_set)->*Function)(a.ConvertTo(type).GetData(), b.ConvertTo(type).GetData(), dst.GetData(), 1u);
+	}
+
+	void ArithmeticOperations::CallOperation(
+		const Vector& a, const Vector& b, Vector& dst,
+		void(ArithmeticOperations::* Function)(const void* a, const void* b, void* dst, size_t count) const,
+		uint64_t instruction_set, bool is_bitwise
+	) const {
+		const Type t1 = a.GetType();
+		const Type t2 = b.GetType();
+		const Type type = is_bitwise ? PreferedBitwiseOutputType(t1, t2) : PreferedOutputType(t1, t2);
+		dst.ForceSetType(type);
+		(GetArithmeticOperations(type, instruction_set)->*Function)(a.ConvertTo(type).GetData(), b.ConvertTo(type).GetData(), dst.GetData(), 1u);
+	}
+
+	void ArithmeticOperations::CallOperation(
+		const Image& a, const Image& b, Image& dst,
+		void(ArithmeticOperations::* Function)(const void* a, const void* b, void* dst, size_t count) const,
+		uint64_t instruction_set, bool is_bitwise
+	) const {
+		const Type t1 = a.GetType();
+		const Type t2 = b.GetType();
+		const Type type = is_bitwise ? PreferedBitwiseOutputType(t1, t2) : PreferedOutputType(t1, t2);
+		const size_t w = a.GetWidth();
+		const size_t h = a.GetHeight();
+		ANVIL_DEBUG_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "ArithmeticOperations::CallOperation : Input images must be same size");
+		dst.Allocate(type, w, h);
+		(GetArithmeticOperations(type, instruction_set)->*Function)(
+			const_cast<Image&>(a).ConvertTo(type).GetData(), 
+			const_cast<Image&>(b).ConvertTo(type).GetData(), 
+			dst.GetData(), w * h
+		);
+	}
+
+	void ArithmeticOperations::CallOperation(
+		const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, const uint8_t* mask,
+		void(ArithmeticOperations::* Function)(const void* a, const void* b, void* dst, size_t count, const uint8_t* mask) const,
+		uint64_t instruction_set, bool is_bitwise
+	) const {
+		const Type t1 = a.GetType();
+		const Type t2 = b.GetType();
+		const Type type = is_bitwise ? PreferedBitwiseOutputType(t1, t2) : PreferedOutputType(t1, t2);
+		dst.ForceSetType(type);
+		(GetArithmeticOperations(type, instruction_set)->*Function)(a.ConvertTo(type).GetData(), b.ConvertTo(type).GetData(), dst.GetData(), 1u, mask);
+	}
+
+	void ArithmeticOperations::CallOperation(
+		const Vector& a, const Vector& b, Vector& dst, const uint8_t* mask,
+		void(ArithmeticOperations::* Function)(const void* a, const void* b, void* dst, size_t count, const uint8_t* mask) const,
+		uint64_t instruction_set, bool is_bitwise
+	) const {
+		const Type t1 = a.GetType();
+		const Type t2 = b.GetType();
+		const Type type = is_bitwise ? PreferedBitwiseOutputType(t1, t2) : PreferedOutputType(t1, t2);
+		dst.ForceSetType(type);
+		(GetArithmeticOperations(type, instruction_set)->*Function)(a.ConvertTo(type).GetData(), b.ConvertTo(type).GetData(), dst.GetData(), 1u, mask);
+	}
+
+	void ArithmeticOperations::CallOperation(
+		const Image& a, const Image& b, Image& dst, const uint8_t* mask,
+		void(ArithmeticOperations::* Function)(const void* a, const void* b, void* dst, size_t count, const uint8_t* mask) const,
+		uint64_t instruction_set, bool is_bitwise
+	) const {
+		const Type t1 = a.GetType();
+		const Type t2 = b.GetType();
+		const Type type = is_bitwise ? PreferedBitwiseOutputType(t1, t2) : PreferedOutputType(t1, t2);
+		const size_t w = a.GetWidth();
+		const size_t h = a.GetHeight();
+		ANVIL_DEBUG_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "ArithmeticOperations::CallOperation : Input images must be same size");
+		dst.Allocate(type, w, h);
+		(GetArithmeticOperations(type, instruction_set)->*Function)(
+			const_cast<Image&>(a).ConvertTo(type).GetData(), 
+			const_cast<Image&>(b).ConvertTo(type).GetData(), 
+			dst.GetData(), w * h, mask
+		);
+	}
+
+
+
+	////
+
+	void ArithmeticOperations::CallOperation(
+		const TypedScalar& a, const TypedScalar& b, const TypedScalar& c, TypedScalar& dst,
+		void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count) const,
+		uint64_t instruction_set, bool is_bitwise
+	) const {
+		const Type t1 = a.GetType();
+		const Type t2 = b.GetType();
+		const Type t3 = c.GetType();
+		const Type type = is_bitwise ? PreferedBitwiseOutputType(PreferedBitwiseOutputType(t1, t2), t3) : PreferedOutputType(PreferedOutputType(t1, t2), t3);
+		dst.ForceSetType(type);
+		(GetArithmeticOperations(type, instruction_set)->*Function)(a.ConvertTo(type).GetData(), b.ConvertTo(type).GetData(), c.ConvertTo(type).GetData(), dst.GetData(), 1u);
+	}
+
+	void ArithmeticOperations::CallOperation(
+		const Vector& a, const Vector& b, const Vector& c, Vector& dst,
+		void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count) const,
+		uint64_t instruction_set, bool is_bitwise
+	) const {
+		const Type t1 = a.GetType();
+		const Type t2 = b.GetType();
+		const Type t3 = c.GetType();
+		const Type type = is_bitwise ? PreferedBitwiseOutputType(PreferedBitwiseOutputType(t1, t2), t3) : PreferedOutputType(PreferedOutputType(t1, t2), t3);
+		dst.ForceSetType(type);
+		(GetArithmeticOperations(type, instruction_set)->*Function)(a.ConvertTo(type).GetData(), b.ConvertTo(type).GetData(), c.ConvertTo(type).GetData(), dst.GetData(), 1u);
+	}
+
+	void ArithmeticOperations::CallOperation(
+		const Image& a, const Image& b, const Image& c, Image& dst,
+		void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count) const,
+		uint64_t instruction_set, bool is_bitwise
+	) const {
+		const Type t1 = a.GetType();
+		const Type t2 = b.GetType();
+		const Type t3 = c.GetType();
+		const Type type = is_bitwise ? PreferedBitwiseOutputType(PreferedBitwiseOutputType(t1, t2), t3) : PreferedOutputType(PreferedOutputType(t1, t2), t3);
+		const size_t w = a.GetWidth();
+		const size_t h = a.GetHeight();
+		ANVIL_DEBUG_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "ArithmeticOperations::CallOperation : Input images must be same size");
+		dst.Allocate(type, w, h);
+		(GetArithmeticOperations(type, instruction_set)->*Function)(
+			const_cast<Image&>(a).ConvertTo(type).GetData(), 
+			const_cast<Image&>(b).ConvertTo(type).GetData(), 
+			const_cast<Image&>(c).ConvertTo(type).GetData(), 
+			dst.GetData(), w * h
+		);
+	}
+
+	void ArithmeticOperations::CallOperation(
+		const TypedScalar& a, const TypedScalar& b, const TypedScalar& c, TypedScalar& dst, const uint8_t* mask,
+		void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const,
+		uint64_t instruction_set, bool is_bitwise
+	) const {
+		const Type t1 = a.GetType();
+		const Type t2 = b.GetType();
+		const Type t3 = c.GetType();
+		const Type type = is_bitwise ? PreferedBitwiseOutputType(PreferedBitwiseOutputType(t1, t2), t3) : PreferedOutputType(PreferedOutputType(t1, t2), t3);
+		dst.ForceSetType(type);
+		(GetArithmeticOperations(type, instruction_set)->*Function)(a.ConvertTo(type).GetData(), b.ConvertTo(type).GetData(), c.ConvertTo(type).GetData(), dst.GetData(), 1u, mask);
+	}
+
+	void ArithmeticOperations::CallOperation(
+		const Vector& a, const Vector& b, const Vector& c, Vector& dst, const uint8_t* mask,
+		void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const,
+		uint64_t instruction_set, bool is_bitwise
+	) const {
+		const Type t1 = a.GetType();
+		const Type t2 = b.GetType();
+		const Type t3 = c.GetType();
+		const Type type = is_bitwise ? PreferedBitwiseOutputType(PreferedBitwiseOutputType(t1, t2), t3) : PreferedOutputType(PreferedOutputType(t1, t2), t3);
+		dst.ForceSetType(type);
+		(GetArithmeticOperations(type, instruction_set)->*Function)(a.ConvertTo(type).GetData(), b.ConvertTo(type).GetData(), c.ConvertTo(type).GetData(), dst.GetData(), 1u, mask);
+	}
+
+	void ArithmeticOperations::CallOperation(
+		const Image& a, const Image& b, const Image& c, Image& dst, const uint8_t* mask,
+		void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const,
+		uint64_t instruction_set, bool is_bitwise
+	) const {
+		const Type t1 = a.GetType();
+		const Type t2 = b.GetType();
+		const Type t3 = c.GetType();
+		const Type type = is_bitwise ? PreferedBitwiseOutputType(PreferedBitwiseOutputType(t1, t2), t3) : PreferedOutputType(PreferedOutputType(t1, t2), t3);
+		const size_t w = a.GetWidth();
+		const size_t h = a.GetHeight();
+		ANVIL_DEBUG_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "ArithmeticOperations::CallOperation : Input images must be same size");
+		dst.Allocate(type, w, h);
+		(GetArithmeticOperations(type, instruction_set)->*Function)(
+			const_cast<Image&>(a).ConvertTo(type).GetData(), 
+			const_cast<Image&>(b).ConvertTo(type).GetData(),
+			const_cast<Image&>(c).ConvertTo(type).GetData(),
+			dst.GetData(),
+			w * h,
+			mask
+		);
+	}
+
+	////
 
 
 }}

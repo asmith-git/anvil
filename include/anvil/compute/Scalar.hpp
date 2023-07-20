@@ -202,6 +202,8 @@ namespace anvil { namespace compute {
 		ANVIL_STRONG_INLINE void* GetData() throw() { return _scalar.GetData(); }
 		ANVIL_STRONG_INLINE const void* GetData() const throw() { return _scalar.GetData(); }
 
+		ANVIL_STRONG_INLINE void ForceSetType(Type type) throw() { _type = type; }
+
 		Type GetType() const throw();
 		void SetType(Type type) throw();
 
@@ -235,109 +237,81 @@ namespace anvil { namespace compute {
 		bool operator<=(const TypedScalar& other) const throw();
 	};
 
-	inline TypedScalar& operator+=(TypedScalar& a, TypedScalar b) throw() {
-		const Type t = ArithmeticOperations::PreferedOutputType(a.GetType(), b.GetType());
-		ANVIL_DEBUG_ASSERT(t.GetNumberOfChannels() == 1u, "anvil::compute::TypedScalar::operator+= : TypedScalar only has 1 channel");
-		if (a.GetType() != t) a.ConvertToInPlace(t);
-		if (b.GetType() != t) b.ConvertToInPlace(t);
-		ArithmeticOperations::GetArithmeticOperations(t)->Add(a.GetData(), b.GetData(), a.GetData(), 1u);
+	ANVIL_STRONG_INLINE TypedScalar& operator+=(TypedScalar& a, const TypedScalar& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Add(a, b, a);
 		return a;
 	}
 
-	inline TypedScalar& operator-=(TypedScalar& a, TypedScalar b) throw() {
-		const Type t = ArithmeticOperations::PreferedOutputType(a.GetType(), b.GetType());
-		ANVIL_DEBUG_ASSERT(t.GetNumberOfChannels() == 1u, "anvil::compute::TypedScalar::operator-= : TypedScalar only has 1 channel");
-		if (a.GetType() != t) a.ConvertToInPlace(t);
-		if (b.GetType() != t) b.ConvertToInPlace(t);
-		ArithmeticOperations::GetArithmeticOperations(t)->Subtract(a.GetData(), b.GetData(), a.GetData(), 1u);
+	ANVIL_STRONG_INLINE TypedScalar& operator-=(TypedScalar& a, const TypedScalar& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Subtract(a, b, a);
 		return a;
 	}
 
-	inline TypedScalar& operator*=(TypedScalar& a, TypedScalar b) throw() {
-		const Type t = ArithmeticOperations::PreferedOutputType(a.GetType(), b.GetType());
-		ANVIL_DEBUG_ASSERT(t.GetNumberOfChannels() == 1u, "anvil::compute::TypedScalar::operator*= : TypedScalar only has 1 channel");
-		if (a.GetType() != t) a.ConvertToInPlace(t);
-		if (b.GetType() != t) b.ConvertToInPlace(t);
-		ArithmeticOperations::GetArithmeticOperations(t)->Multiply(a.GetData(), b.GetData(), a.GetData(), 1u);
+	ANVIL_STRONG_INLINE TypedScalar& operator*=(TypedScalar& a, const TypedScalar& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Multiply(a, b, a);
 		return a;
 	}
 
-	inline TypedScalar& operator/=(TypedScalar& a, TypedScalar b) throw() {
-		const Type t = ArithmeticOperations::PreferedOutputType(a.GetType(), b.GetType());
-		ANVIL_DEBUG_ASSERT(t.GetNumberOfChannels() == 1u, "anvil::compute::TypedScalar::operator/= : TypedScalar only has 1 channel");
-		if (a.GetType() != t) a.ConvertToInPlace(t);
-		if (b.GetType() != t) b.ConvertToInPlace(t);
-		ArithmeticOperations::GetArithmeticOperations(t)->Divide(a.GetData(), b.GetData(), a.GetData(), 1u);
+	ANVIL_STRONG_INLINE TypedScalar& operator/=(TypedScalar& a, const TypedScalar& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Divide(a, b, a);
 		return a;
 	}
 
-	inline TypedScalar& operator&=(TypedScalar& a, TypedScalar b) throw() {
-		const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
-		ANVIL_DEBUG_ASSERT(t.GetNumberOfChannels() == 1u, "anvil::compute::TypedScalar::operator&= : TypedScalar only has 1 channel");
-		if (a.GetType() != t) a.ConvertToInPlace(t);
-		if (b.GetType() != t) b.ConvertToInPlace(t);
-		ArithmeticOperations::GetArithmeticOperations(t)->And(a.GetData(), b.GetData(), a.GetData(), 1u);
+	ANVIL_STRONG_INLINE TypedScalar& operator&=(TypedScalar& a, const TypedScalar& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->And(a, b, a);
 		return a;
 	}
 
-	inline TypedScalar& operator|=(TypedScalar& a, TypedScalar b) throw() {
-		const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
-		ANVIL_DEBUG_ASSERT(t.GetNumberOfChannels() == 1u, "anvil::compute::TypedScalar::operator|= : TypedScalar only has 1 channel");
-		if (a.GetType() != t) a.ConvertToInPlace(t);
-		if (b.GetType() != t) b.ConvertToInPlace(t);
-		ArithmeticOperations::GetArithmeticOperations(t)->Or(a.GetData(), b.GetData(), a.GetData(), 1u);
+	ANVIL_STRONG_INLINE TypedScalar& operator|=(TypedScalar& a, const TypedScalar& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Or(a, b, a);
 		return a;
 	}
 
-	inline TypedScalar& operator^=(TypedScalar& a, TypedScalar b) throw() {
-		const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
-		ANVIL_DEBUG_ASSERT(t.GetNumberOfChannels() == 1u, "anvil::compute::TypedScalar::operator^= : TypedScalar only has 1 channel");
-		if (a.GetType() != t) a.ConvertToInPlace(t);
-		if (b.GetType() != t) b.ConvertToInPlace(t);
-		ArithmeticOperations::GetArithmeticOperations(t)->Xor(a.GetData(), b.GetData(), a.GetData(), 1u);
+	ANVIL_STRONG_INLINE TypedScalar& operator^=(TypedScalar& a, const TypedScalar& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Xor(a, b, a);
 		return a;
 	}
 
-	inline TypedScalar operator+(const TypedScalar& a, const TypedScalar& b) throw() {
-		TypedScalar tmp = a;
-		tmp += b;
-		return tmp;
+	ANVIL_STRONG_INLINE TypedScalar operator+(const TypedScalar& a, const TypedScalar& b) {
+		TypedScalar dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Add(a, b, dst);
+		return dst;
 	}
 
-	inline TypedScalar operator-(const TypedScalar& a, const TypedScalar& b) throw() {
-		TypedScalar tmp = a;
-		tmp -= b;
-		return tmp;
+	ANVIL_STRONG_INLINE TypedScalar operator-(const TypedScalar& a, const TypedScalar& b) {
+		TypedScalar dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Subtract(a, b, dst);
+		return dst;
 	}
 
-	inline TypedScalar operator*(const TypedScalar& a, const TypedScalar& b) throw() {
-		TypedScalar tmp = a;
-		tmp *= b;
-		return tmp;
+	ANVIL_STRONG_INLINE TypedScalar operator*(const TypedScalar& a, const TypedScalar& b) {
+		TypedScalar dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Multiply(a, b, dst);
+		return dst;
 	}
 
-	inline TypedScalar operator/(const TypedScalar& a, const TypedScalar& b) throw() {
-		TypedScalar tmp = a;
-		tmp /= b;
-		return tmp;
+	ANVIL_STRONG_INLINE TypedScalar operator/(const TypedScalar& a, const TypedScalar& b) {
+		TypedScalar dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Divide(a, b, dst);
+		return dst;
 	}
 
-	inline TypedScalar operator&(const TypedScalar& a, const TypedScalar& b) throw() {
-		TypedScalar tmp = a;
-		tmp &= b;
-		return tmp;
+	ANVIL_STRONG_INLINE TypedScalar operator&(const TypedScalar& a, const TypedScalar& b) {
+		TypedScalar dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->And(a, b, dst);
+		return dst;
 	}
 
-	inline TypedScalar operator|(const TypedScalar& a, const TypedScalar& b) throw() {
-		TypedScalar tmp = a;
-		tmp |= b;
-		return tmp;
+	ANVIL_STRONG_INLINE TypedScalar operator|(const TypedScalar& a, const TypedScalar& b) {
+		TypedScalar dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Or(a, b, dst);
+		return dst;
 	}
 
-	inline TypedScalar operator^(const TypedScalar& a, const TypedScalar& b) throw() {
-		TypedScalar tmp = a;
-		tmp ^= b;
-		return tmp;
+	ANVIL_STRONG_INLINE TypedScalar operator^(const TypedScalar& a, const TypedScalar& b) {
+		TypedScalar dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Xor(a, b, dst);
+		return dst;
 	}
 }}
 

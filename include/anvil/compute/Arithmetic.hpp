@@ -22,6 +22,10 @@
 
 namespace anvil {namespace compute {
 
+	class TypedScalar;
+	class Vector;
+	class Image;
+
 	/*!
 	*	\class ArithmeticOperations
 	*	\date July 2023
@@ -43,6 +47,114 @@ namespace anvil {namespace compute {
 		void CallDefaultMaskedOperation(
 			const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask,
 			void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count) const
+		) const;
+
+		void CallOperation(
+			const TypedScalar& src, TypedScalar& dst,
+			void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count) const,
+			uint64_t instruction_set, bool is_bitwise
+		) const;
+
+		void CallOperation(
+			const TypedScalar& src, TypedScalar& dst, const uint8_t* mask,
+			void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count, const uint8_t* mask) const,
+			uint64_t instruction_set, bool is_bitwise
+		) const;
+
+		void CallOperation(
+			const TypedScalar& lhs, const TypedScalar& rhs, TypedScalar& dst,
+			void(ArithmeticOperations::* Function)(const void* lhs, const void* rhs, void* dst, size_t count) const,
+			uint64_t instruction_set, bool is_bitwise
+		) const;
+
+		void CallOperation(
+			const TypedScalar& lhs, const TypedScalar& rhs, TypedScalar& dst, const uint8_t* mask,
+			void(ArithmeticOperations::* Function)(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const,
+			uint64_t instruction_set, bool is_bitwise
+		) const;
+
+		void CallOperation(
+			const TypedScalar& a, const TypedScalar& b, const TypedScalar& c, TypedScalar& dst,
+			void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count) const,
+			uint64_t instruction_set, bool is_bitwise
+		) const;
+
+		void CallOperation(
+			const TypedScalar& a, const TypedScalar& b, const TypedScalar& c, TypedScalar& dst, const uint8_t* mask,
+			void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const,
+			uint64_t instruction_set, bool is_bitwise
+		) const;
+
+		void CallOperation(
+			const Vector& src, Vector& dst,
+			void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count) const,
+			uint64_t instruction_set, bool is_bitwise
+		) const;
+
+		void CallOperation(
+			const Vector& src, Vector& dst, const uint8_t* mask,
+			void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count, const uint8_t* mask) const,
+			uint64_t instruction_set, bool is_bitwise
+		) const;
+
+		void CallOperation(
+			const Vector& lhs, const Vector& rhs, Vector& dst,
+			void(ArithmeticOperations::* Function)(const void* lhs, const void* rhs, void* dst, size_t count) const,
+			uint64_t instruction_set, bool is_bitwise
+		) const;
+
+		void CallOperation(
+			const Vector& lhs, const Vector& rhs, Vector& dst, const uint8_t* mask,
+			void(ArithmeticOperations::* Function)(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const,
+			uint64_t instruction_set, bool is_bitwise
+		) const;
+
+		void CallOperation(
+			const Vector& a, const Vector& b, const Vector& c, Vector& dst,
+			void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count) const,
+			uint64_t instruction_set, bool is_bitwise
+		) const;
+
+		void CallOperation(
+			const Vector& a, const Vector& b, const Vector& c, Vector& dst, const uint8_t* mask,
+			void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const,
+			uint64_t instruction_set, bool is_bitwise
+		) const;
+
+		void CallOperation(
+			const Image& src, Image& dst,
+			void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count) const,
+			uint64_t instruction_set, bool is_bitwise
+		) const;
+
+		void CallOperation(
+			const Image& src, Image& dst, const uint8_t* mask,
+			void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count, const uint8_t* mask) const,
+			uint64_t instruction_set, bool is_bitwise
+		) const;
+
+		void CallOperation(
+			const Image& lhs, const Image& rhs, Image& dst,
+			void(ArithmeticOperations::* Function)(const void* lhs, const void* rhs, void* dst, size_t count) const,
+			uint64_t instruction_set, bool is_bitwise
+		) const;
+
+		void CallOperation(
+			const Image& lhs, const Image& rhs, Image& dst, const uint8_t* mask,
+			void(ArithmeticOperations::* Function)(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const,
+			uint64_t instruction_set, bool is_bitwise
+		) const;
+
+		void CallOperation(
+			const Image& a, const Image& b, const Image& c, Image& dst,
+			void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count) const,
+			uint64_t instruction_set, bool is_bitwise
+		) const;
+
+		void CallOperation(
+			const Image& a, const Image& b, const Image& c, Image& dst, const uint8_t* mask,
+			void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const,
+			uint64_t instruction_set, bool is_bitwise
 		) const;
 	protected:
 		const Type _type;
@@ -67,107 +179,294 @@ namespace anvil {namespace compute {
 		// 1 input
 
 		virtual void Sqrt(const void* src, void* dst, size_t count) const = 0;
-		virtual void SqrtMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Sqrt(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Sqrt(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Sqrt, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Sqrt(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Sqrt, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Sqrt(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Sqrt, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Sqrt(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Sqrt, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Sqrt(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Sqrt, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Sqrt(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Sqrt, instruction_set, false); }
 
 		virtual void Cbrt(const void* src, void* dst, size_t count) const = 0;
-		virtual void CbrtMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Cbrt(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Cbrt(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Cbrt, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Cbrt(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Cbrt, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Cbrt(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Cbrt, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Cbrt(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Cbrt, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Cbrt(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Cbrt, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Cbrt(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Cbrt, instruction_set, false); }
 
 		virtual void Not(const void* src, void* dst, size_t count) const = 0;
-		virtual void NotMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Not(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Not(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Not, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Not(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Not, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Not(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Not, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Not(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Not, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Not(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Not, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Not(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Not, instruction_set, true); }
 
 		virtual void Round(const void* src, void* dst, size_t count) const = 0;
-		virtual void RoundMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Round(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Round(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Round, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Round(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Round, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Round(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Round, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Round(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Round, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Round(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Round, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Round(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Round, instruction_set, false); }
 
 		virtual void Floor(const void* src, void* dst, size_t count) const = 0;
-		virtual void FloorMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Floor(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Floor(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Floor, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Floor(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Floor, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Floor(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Floor, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Floor(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Floor, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Floor(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Floor, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Floor(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Floor, instruction_set, false); }
 
 		virtual void Ceil(const void* src, void* dst, size_t count) const = 0;
-		virtual void CeilMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Ceil(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Ceil(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Ceil, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Ceil(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Ceil, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Ceil(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Ceil, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Ceil(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Ceil, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Ceil(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Ceil, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Ceil(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Ceil, instruction_set, false); }
 
 		virtual void Cos(const void* src, void* dst, size_t count) const = 0;
-		virtual void CosMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Cos(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Cos(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Cos, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Cos(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Cos, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Cos(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Cos, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Cos(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Cos, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Cos(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Cos, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Cos(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Cos, instruction_set, false); }
 
 		virtual void Sin(const void* src, void* dst, size_t count) const = 0;
-		virtual void SinMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Sin(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Sin(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Sin, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Sin(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Sin, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Sin(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Sin, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Sin(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Sin, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Sin(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Sin, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Sin(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Sin, instruction_set, false); }
 
 		virtual void Tan(const void* src, void* dst, size_t count) const = 0;
-		virtual void TanMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Tan(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Tan(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Tan, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Tan(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Tan, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Tan(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Tan, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Tan(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Tan, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Tan(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Tan, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Tan(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Tan, instruction_set, false); }
 
 		virtual void Acos(const void* src, void* dst, size_t count) const = 0;
-		virtual void AcosMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Acos(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Acos(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Acos, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Acos(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Acos, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Acos(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Acos, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Acos(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Acos, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Acos(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Acos, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Acos(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Acos, instruction_set, false); }
 
 		virtual void Asin(const void* src, void* dst, size_t count) const = 0;
-		virtual void AsinMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Asin(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Asin(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Asin, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Asin(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Asin, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Asin(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Asin, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Asin(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Asin, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Asin(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Asin, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Asin(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Asin, instruction_set, false); }
 
 		virtual void Atan(const void* src, void* dst, size_t count) const = 0;
-		virtual void AtanMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Atan(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Atan(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Atan, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Atan(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Atan, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Atan(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Atan, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Atan(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Atan, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Atan(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Atan, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Atan(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Atan, instruction_set, false); }
 
 		virtual void Cosh(const void* src, void* dst, size_t count) const = 0;
-		virtual void CoshMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Cosh(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Cosh(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Cosh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Cosh(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Cosh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Cosh(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Cosh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Cosh(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Cosh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Cosh(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Cosh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Cosh(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Cosh, instruction_set, false); }
 
 		virtual void Sinh(const void* src, void* dst, size_t count) const = 0;
-		virtual void SinhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Sinh(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Sinh(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Sinh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Sinh(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Sinh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Sinh(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Sinh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Sinh(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Sinh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Sinh(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Sinh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Sinh(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Sinh, instruction_set, false); }
 
 		virtual void Tanh(const void* src, void* dst, size_t count) const = 0;
-		virtual void TanhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Tanh(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Tanh(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Tanh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Tanh(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Tanh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Tanh(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Tanh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Tanh(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Tanh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Tanh(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Tanh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Tanh(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Tanh, instruction_set, false); }
 
 		virtual void Acosh(const void* src, void* dst, size_t count) const = 0;
-		virtual void AcoshMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Acosh(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Acosh(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Acosh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Acosh(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Acosh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Acosh(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Acosh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Acosh(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Acosh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Acosh(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Acosh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Acosh(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Acosh, instruction_set, false); }
 
 		virtual void Asinh(const void* src, void* dst, size_t count) const = 0;
-		virtual void AsinhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Asinh(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Asinh(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Asinh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Asinh(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Asinh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Asinh(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Asinh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Asinh(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Asinh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Asinh(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Asinh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Asinh(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Asinh, instruction_set, false); }
 
 		virtual void Atanh(const void* src, void* dst, size_t count) const = 0;
-		virtual void AtanhMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Atanh(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Atanh(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Atanh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Atanh(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Atanh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Atanh(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Atanh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Atanh(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Atanh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Atanh(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Atanh, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Atanh(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Atanh, instruction_set, false); }
 
 		virtual void Abs(const void* src, void* dst, size_t count) const = 0;
-		virtual void AbsMask(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Abs(const void* src, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Abs(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Abs, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Abs(const TypedScalar& src, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Abs, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Abs(const Vector& src, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Abs, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Abs(const Vector& src, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Abs, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Abs(const Image& src, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Abs, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Abs(const Image& src, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, mask, &ArithmeticOperations::Abs, instruction_set, false); }
 
 		// 2 inputs
 
 		virtual void Mask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Mask(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Mask, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Mask(const Vector& a, const Vector& b, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Mask, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Mask(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Mask, instruction_set, true); }
 
 		virtual void Add(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
-		virtual void AddMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Add(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Add(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Add, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Add(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Add, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Add(const Vector& a, const Vector& b, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Add, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Add(const Vector& a, const Vector& b, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Add, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Add(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Add, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Add(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Add, instruction_set, false); }
 
 		virtual void Subtract(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
-		virtual void SubtractMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Subtract(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Subtract(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Subtract, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Subtract(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Subtract, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Subtract(const Vector& a, const Vector& b, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Subtract, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Subtract(const Vector& a, const Vector& b, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Subtract, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Subtract(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Subtract, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Subtract(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Subtract, instruction_set, false); }
 
 		virtual void Multiply(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
-		virtual void MultiplyMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Multiply(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Multiply(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Multiply, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Multiply(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Multiply, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Multiply(const Vector& a, const Vector& b, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Multiply, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Multiply(const Vector& a, const Vector& b, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Multiply, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Multiply(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Multiply, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Multiply(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Multiply, instruction_set, false); }
 
 		virtual void Divide(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
-		virtual void DivideMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Divide(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Divide(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Divide, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Divide(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Divide, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Divide(const Vector& a, const Vector& b, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Divide, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Divide(const Vector& a, const Vector& b, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Divide, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Divide(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Divide, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Divide(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Divide, instruction_set, false); }
 
 		virtual void And(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
-		virtual void AndMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void And(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void And(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::And, instruction_set, true); }
+		ANVIL_STRONG_INLINE void And(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::And, instruction_set, true); }
+		ANVIL_STRONG_INLINE void And(const Vector& a, const Vector& b, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::And, instruction_set, true); }
+		ANVIL_STRONG_INLINE void And(const Vector& a, const Vector& b, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::And, instruction_set, true); }
+		ANVIL_STRONG_INLINE void And(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::And, instruction_set, true); }
+		ANVIL_STRONG_INLINE void And(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::And, instruction_set, true); }
 
 		virtual void Or(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
-		virtual void OrMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Or(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Or(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Or, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Or(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Or, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Or(const Vector& a, const Vector& b, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Or, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Or(const Vector& a, const Vector& b, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Or, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Or(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Or, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Or(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Or, instruction_set, true); }
 
 		virtual void Xor(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
-		virtual void XorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Xor(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Xor(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Xor, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Xor(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Xor, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Xor(const Vector& a, const Vector& b, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Xor, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Xor(const Vector& a, const Vector& b, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Xor, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Xor(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Xor, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Xor(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Xor, instruction_set, true); }
 
 		virtual void Nand(const void* lhs, const void* rhs, void* dst, size_t count) const;
-		virtual void NandMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Nand(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Nand(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Nand, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Nand(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Nand, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Nand(const Vector& a, const Vector& b, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Nand, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Nand(const Vector& a, const Vector& b, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Nand, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Nand(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Nand, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Nand(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Nand, instruction_set, true); }
 
 		virtual void Nor(const void* lhs, const void* rhs, void* dst, size_t count) const;
-		virtual void NorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Nor(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Nor(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Nor, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Nor(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Nor, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Nor(const Vector& a, const Vector& b, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Nor, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Nor(const Vector& a, const Vector& b, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Nor, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Nor(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Nor, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Nor(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Nor, instruction_set, true); }
 
 		virtual void Xnor(const void* lhs, const void* rhs, void* dst, size_t count) const;
-		virtual void XnorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void Xnor(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Xnor(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Xnor, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Xnor(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Xnor, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Xnor(const Vector& a, const Vector& b, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Xnor, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Xnor(const Vector& a, const Vector& b, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Xnor, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Xnor(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Xnor, instruction_set, true); }
+		ANVIL_STRONG_INLINE void Xnor(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Xnor, instruction_set, true); }
 
 		// 3 inputs
 
 		//! \brief dst = a * b + c
 		virtual void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count) const;
-		//! \brief dst = m ? a * b + c : a
-		virtual void MultiplyAddMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void MultiplyAdd(const TypedScalar& a, const TypedScalar& b, const TypedScalar& c, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, c, dst, &ArithmeticOperations::MultiplyAdd, instruction_set, false); }
+		ANVIL_STRONG_INLINE void MultiplyAdd(const TypedScalar& a, const TypedScalar& b, const TypedScalar& c, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, c, dst, mask, &ArithmeticOperations::MultiplyAdd, instruction_set, false); }
+		ANVIL_STRONG_INLINE void MultiplyAdd(const Vector& a, const Vector& b, const Vector& c, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, c, dst, &ArithmeticOperations::MultiplyAdd, instruction_set, false); }
+		ANVIL_STRONG_INLINE void MultiplyAdd(const Vector& a, const Vector& b, const Vector& c, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, c, dst, mask, &ArithmeticOperations::MultiplyAdd, instruction_set, false); }
+		ANVIL_STRONG_INLINE void MultiplyAdd(const Image& a, const Image& b, const Image& c, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, c, dst, &ArithmeticOperations::MultiplyAdd, instruction_set, false); }
+		ANVIL_STRONG_INLINE void MultiplyAdd(const Image& a, const Image& b, const Image& c, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, c, dst, mask, &ArithmeticOperations::MultiplyAdd, instruction_set, false); }
 
 		//! \brief dst = a * b - c
 		virtual void MultiplySubtract(const void* a, const void* b, const void* c, void* dst, size_t count) const;
-		//! \brief dst = m ? a * b - c : a
-		virtual void MultiplySubtractMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const;
+		virtual void MultiplySubtract(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void MultiplySubtract(const TypedScalar& a, const TypedScalar& b, const TypedScalar& c, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, c, dst, &ArithmeticOperations::MultiplySubtract, instruction_set, false); }
+		ANVIL_STRONG_INLINE void MultiplySubtract(const TypedScalar& a, const TypedScalar& b, const TypedScalar& c, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, c, dst, mask, &ArithmeticOperations::MultiplySubtract, instruction_set, false); }
+		ANVIL_STRONG_INLINE void MultiplySubtract(const Vector& a, const Vector& b, const Vector& c, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, c, dst, &ArithmeticOperations::MultiplySubtract, instruction_set, false); }
+		ANVIL_STRONG_INLINE void MultiplySubtract(const Vector& a, const Vector& b, const Vector& c, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, c, dst, mask, &ArithmeticOperations::MultiplySubtract, instruction_set, false); }
+		ANVIL_STRONG_INLINE void MultiplySubtract(const Image& a, const Image& b, const Image& c, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, c, dst, &ArithmeticOperations::MultiplySubtract, instruction_set, false); }
+		ANVIL_STRONG_INLINE void MultiplySubtract(const Image& a, const Image& b, const Image& c, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, c, dst, mask, &ArithmeticOperations::MultiplySubtract, instruction_set, false); }
 	};
 
 }}

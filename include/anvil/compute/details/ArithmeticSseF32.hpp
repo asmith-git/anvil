@@ -80,7 +80,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		virtual void SqrtMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Sqrt(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 
@@ -109,7 +109,7 @@ namespace anvil { namespace compute { namespace details {
 				float src_buffer[8u];
 				float dst_buffer[8u];
 				memcpy(src_buffer, src2, sizeof(T) * count);
-				SqrtMask(src_buffer, dst_buffer, 8u, mask);
+				Sqrt(src_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -136,7 +136,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		virtual void NotMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Not(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 
@@ -168,7 +168,7 @@ namespace anvil { namespace compute { namespace details {
 				float src_buffer[8u];
 				float dst_buffer[8u];
 				memcpy(src_buffer, src2, sizeof(T) * count);
-				NotMask(src_buffer, dst_buffer, 8u, mask);
+				Not(src_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -236,7 +236,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		virtual void AddMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Add(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -271,7 +271,7 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				AddMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Add(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -299,7 +299,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		virtual void SubtractMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Subtract(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -334,7 +334,7 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				SubtractMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Subtract(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -362,7 +362,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		virtual void MultiplyMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Multiply(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -397,7 +397,7 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				MultiplyMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Multiply(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -425,7 +425,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		virtual void DivideMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Divide(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -460,7 +460,7 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				DivideMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Divide(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -488,7 +488,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		virtual void AndMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void And(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -523,7 +523,7 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				AndMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				And(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -551,7 +551,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		virtual void OrMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Or(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -586,7 +586,7 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				OrMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Or(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -614,7 +614,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		virtual void XorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Xor(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -649,7 +649,7 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				XorMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Xor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -682,7 +682,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		virtual void NandMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Nand(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -722,7 +722,7 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				NandMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Nand(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -755,7 +755,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		virtual void NorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Nor(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -795,7 +795,7 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				NorMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Nor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -828,7 +828,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		virtual void XnorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Xnor(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -868,7 +868,7 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				XnorMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Xnor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -903,7 +903,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		virtual void MultiplyAddMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
 			const T* a2 = static_cast<const T*>(a);
 			const T* b2 = static_cast<const T*>(b);
 			const T* c2 = static_cast<const T*>(c);
@@ -944,7 +944,7 @@ namespace anvil { namespace compute { namespace details {
 				memcpy(a_buffer, a2, sizeof(T) * count);
 				memcpy(b_buffer, b2, sizeof(T) * count);
 				memcpy(c_buffer, c2, sizeof(T) * count);
-				MultiplyAddMask(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
+				MultiplyAdd(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -977,7 +977,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		virtual void MultiplySubtractMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void MultiplySubtract(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
 			const T* a2 = static_cast<const T*>(a);
 			const T* b2 = static_cast<const T*>(b);
 			const T* c2 = static_cast<const T*>(c);
@@ -1018,7 +1018,7 @@ namespace anvil { namespace compute { namespace details {
 				memcpy(a_buffer, a2, sizeof(T) * count);
 				memcpy(b_buffer, b2, sizeof(T) * count);
 				memcpy(c_buffer, c2, sizeof(T) * count);
-				MultiplySubtractMask(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
+				MultiplySubtract(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1057,7 +1057,7 @@ namespace anvil { namespace compute { namespace details {
 		}
 
 		template<int ROUNDING_MODE>
-		static void RoundMaskSSE4(const void* src, void* dst, size_t count, const uint8_t* mask) {
+		static void RoundSSE4(const void* src, void* dst, size_t count, const uint8_t* mask) {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 
@@ -1086,7 +1086,7 @@ namespace anvil { namespace compute { namespace details {
 				float src_buffer[8u];
 				float dst_buffer[8u];
 				memcpy(src_buffer, src2, sizeof(T) * count);
-				RoundMaskSSE4<ROUNDING_MODE>(src_buffer, dst_buffer, 8u, mask);
+				RoundSSE4<ROUNDING_MODE>(src_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1101,7 +1101,7 @@ namespace anvil { namespace compute { namespace details {
 
 		// 1 input
 
-		virtual void SqrtMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Sqrt(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 
@@ -1130,12 +1130,12 @@ namespace anvil { namespace compute { namespace details {
 				float src_buffer[8u];
 				float dst_buffer[8u];
 				memcpy(src_buffer, src2, sizeof(T) * count);
-				SqrtMask(src_buffer, dst_buffer, 8u, mask);
+				Sqrt(src_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void NotMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Not(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 
@@ -1167,7 +1167,7 @@ namespace anvil { namespace compute { namespace details {
 				float src_buffer[8u];
 				float dst_buffer[8u];
 				memcpy(src_buffer, src2, sizeof(T) * count);
-				NotMask(src_buffer, dst_buffer, 8u, mask);
+				Not(src_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1176,24 +1176,24 @@ namespace anvil { namespace compute { namespace details {
 			RoundSSE4<_MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC>(src, dst, count);
 		}
 
-		virtual void RoundMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
-			RoundMaskSSE4<_MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC>(src, dst, count, mask);
+		virtual void Round(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+			RoundSSE4<_MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC>(src, dst, count, mask);
 		}
 
 		virtual void Floor(const void* src, void* dst, size_t count) const {
 			RoundSSE4<_MM_FROUND_TO_NEG_INF | _MM_FROUND_NO_EXC>(src, dst, count);
 		}
 
-		virtual void FloorMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
-			RoundMaskSSE4<_MM_FROUND_TO_NEG_INF | _MM_FROUND_NO_EXC>(src, dst, count, mask);
+		virtual void Floor(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+			RoundSSE4<_MM_FROUND_TO_NEG_INF | _MM_FROUND_NO_EXC>(src, dst, count, mask);
 		}
 
 		virtual void Ceil(const void* src, void* dst, size_t count) const {
 			RoundSSE4<_MM_FROUND_TO_POS_INF | _MM_FROUND_NO_EXC>(src, dst, count);
 		}
 
-		virtual void CeilMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
-			RoundMaskSSE4<_MM_FROUND_TO_POS_INF | _MM_FROUND_NO_EXC>(src, dst, count, mask);
+		virtual void Ceil(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+			RoundSSE4<_MM_FROUND_TO_POS_INF | _MM_FROUND_NO_EXC>(src, dst, count, mask);
 		}
 
 		// 2 inputs
@@ -1236,7 +1236,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		virtual void AddMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Add(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -1271,12 +1271,12 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				AddMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Add(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void SubtractMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Subtract(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -1311,12 +1311,12 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				SubtractMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Subtract(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void MultiplyMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Multiply(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -1351,12 +1351,12 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				MultiplyMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Multiply(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void DivideMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Divide(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -1391,12 +1391,12 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				DivideMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Divide(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void AndMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void And(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -1431,12 +1431,12 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				AndMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				And(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void OrMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Or(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -1471,12 +1471,12 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				OrMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Or(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void XorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Xor(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -1511,12 +1511,12 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				XorMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Xor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void NandMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Nand(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -1556,12 +1556,12 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				NandMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Nand(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void NorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Nor(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -1601,12 +1601,12 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				NorMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Nor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void XnorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Xnor(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -1646,14 +1646,14 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				XnorMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Xnor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
 		// 3 inputs
 
-		virtual void MultiplyAddMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
 			const T* a2 = static_cast<const T*>(a);
 			const T* b2 = static_cast<const T*>(b);
 			const T* c2 = static_cast<const T*>(c);
@@ -1694,12 +1694,12 @@ namespace anvil { namespace compute { namespace details {
 				memcpy(a_buffer, a2, sizeof(T) * count);
 				memcpy(b_buffer, b2, sizeof(T) * count);
 				memcpy(c_buffer, c2, sizeof(T) * count);
-				MultiplyAddMask(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
+				MultiplyAdd(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void MultiplySubtractMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void MultiplySubtract(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
 			const T* a2 = static_cast<const T*>(a);
 			const T* b2 = static_cast<const T*>(b);
 			const T* c2 = static_cast<const T*>(c);
@@ -1740,7 +1740,7 @@ namespace anvil { namespace compute { namespace details {
 				memcpy(a_buffer, a2, sizeof(T) * count);
 				memcpy(b_buffer, b2, sizeof(T) * count);
 				memcpy(c_buffer, c2, sizeof(T) * count);
-				MultiplySubtractMask(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
+				MultiplySubtract(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1785,7 +1785,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		virtual void MultiplyAddMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
 			const T* a2 = static_cast<const T*>(a);
 			const T* b2 = static_cast<const T*>(b);
 			const T* c2 = static_cast<const T*>(c);
@@ -1824,7 +1824,7 @@ namespace anvil { namespace compute { namespace details {
 				memcpy(a_buffer, a2, sizeof(T) * count);
 				memcpy(b_buffer, b2, sizeof(T) * count);
 				memcpy(c_buffer, c2, sizeof(T) * count);
-				MultiplyAddMask(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
+				MultiplyAdd(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1855,7 +1855,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		virtual void MultiplySubtractMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void MultiplySubtract(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
 			const T* a2 = static_cast<const T*>(a);
 			const T* b2 = static_cast<const T*>(b);
 			const T* c2 = static_cast<const T*>(c);
@@ -1894,7 +1894,7 @@ namespace anvil { namespace compute { namespace details {
 				memcpy(a_buffer, a2, sizeof(T) * count);
 				memcpy(b_buffer, b2, sizeof(T) * count);
 				memcpy(c_buffer, c2, sizeof(T) * count);
-				MultiplySubtractMask(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
+				MultiplySubtract(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1903,7 +1903,7 @@ namespace anvil { namespace compute { namespace details {
 	class ArithmeticOperationsAvx512F32 : public ArithmeticOperationsFmaF32 {
 	private:
 		template<int ROUNDING_MODE>
-		static void RoundMaskAVX512(const void* src, void* dst, size_t count, const uint8_t* mask) {
+		static void RoundAVX512(const void* src, void* dst, size_t count, const uint8_t* mask) {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 
@@ -1926,7 +1926,7 @@ namespace anvil { namespace compute { namespace details {
 				float src_buffer[8u];
 				float dst_buffer[8u];
 				memcpy(src_buffer, src2, sizeof(T) * count);
-				RoundMaskAVX512<ROUNDING_MODE>(src_buffer, dst_buffer, 8u, mask);
+				RoundAVX512<ROUNDING_MODE>(src_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1940,7 +1940,7 @@ namespace anvil { namespace compute { namespace details {
 		}
 		// 1 input
 
-		virtual void SqrtMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Sqrt(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 
@@ -1962,12 +1962,12 @@ namespace anvil { namespace compute { namespace details {
 				float src_buffer[8u];
 				float dst_buffer[8u];
 				memcpy(src_buffer, src2, sizeof(T) * count);
-				SqrtMask(src_buffer, dst_buffer, 8u, mask);
+				Sqrt(src_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void NotMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Not(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 
@@ -1992,21 +1992,21 @@ namespace anvil { namespace compute { namespace details {
 				float src_buffer[8u];
 				float dst_buffer[8u];
 				memcpy(src_buffer, src2, sizeof(T) * count);
-				NotMask(src_buffer, dst_buffer, 8u, mask);
+				Not(src_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void RoundMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
-			RoundMaskAVX512<_MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC>(src, dst, count, mask);
+		virtual void Round(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+			RoundAVX512<_MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC>(src, dst, count, mask);
 		}
 
-		virtual void FloorMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
-			RoundMaskAVX512<_MM_FROUND_TO_NEG_INF | _MM_FROUND_NO_EXC>(src, dst, count, mask);
+		virtual void Floor(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+			RoundAVX512<_MM_FROUND_TO_NEG_INF | _MM_FROUND_NO_EXC>(src, dst, count, mask);
 		}
 
-		virtual void RCeilMask(const void* src, void* dst, size_t count, const uint8_t* mask) const {
-			RoundMaskAVX512<_MM_FROUND_TO_POS_INF | _MM_FROUND_NO_EXC>(src, dst, count, mask);
+		virtual void RCeil(const void* src, void* dst, size_t count, const uint8_t* mask) const {
+			RoundAVX512<_MM_FROUND_TO_POS_INF | _MM_FROUND_NO_EXC>(src, dst, count, mask);
 		}
 
 		// 2 inputs
@@ -2046,7 +2046,7 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		virtual void AddMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Add(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -2075,12 +2075,12 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				AddMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Add(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void SubtractMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Subtract(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -2109,12 +2109,12 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				SubtractMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Subtract(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void MultiplyMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Multiply(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -2143,12 +2143,12 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				MultiplyMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Multiply(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void DivideMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Divide(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -2177,12 +2177,12 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				DivideMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Divide(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void AndMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void And(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -2211,12 +2211,12 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				AndMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				And(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void OrMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Or(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -2245,12 +2245,12 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				OrMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Or(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void XorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Xor(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -2279,12 +2279,12 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				XorMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Xor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void NandMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Nand(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -2318,12 +2318,12 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				NandMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Nand(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void NorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Nor(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -2357,12 +2357,12 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				NorMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Nor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void XnorMask(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void Xnor(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 			const T* lhs2 = static_cast<const T*>(lhs);
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
@@ -2396,14 +2396,14 @@ namespace anvil { namespace compute { namespace details {
 				float dst_buffer[8u];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				XnorMask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Xnor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
 		// 3 inputs
 
-		virtual void MultiplyAddMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
 			const T* a2 = static_cast<const T*>(a);
 			const T* b2 = static_cast<const T*>(b);
 			const T* c2 = static_cast<const T*>(c);
@@ -2444,12 +2444,12 @@ namespace anvil { namespace compute { namespace details {
 				memcpy(a_buffer, a2, sizeof(T) * count);
 				memcpy(b_buffer, b2, sizeof(T) * count);
 				memcpy(c_buffer, c2, sizeof(T) * count);
-				MultiplyAddMask(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
+				MultiplyAdd(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
 
-		virtual void MultiplySubtractMask(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
+		virtual void MultiplySubtract(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
 			const T* a2 = static_cast<const T*>(a);
 			const T* b2 = static_cast<const T*>(b);
 			const T* c2 = static_cast<const T*>(c);
@@ -2489,7 +2489,7 @@ namespace anvil { namespace compute { namespace details {
 				memcpy(a_buffer, a2, sizeof(T) * count);
 				memcpy(b_buffer, b2, sizeof(T) * count);
 				memcpy(c_buffer, c2, sizeof(T) * count);
-				MultiplySubtractMask(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
+				MultiplySubtract(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}

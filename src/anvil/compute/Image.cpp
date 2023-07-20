@@ -235,9 +235,11 @@ namespace anvil { namespace compute {
 		}
 	}
 
-	Image Image::ConvertTo(Type type) const {
+	Image Image::ConvertTo(Type type) {
+		if (type == _type) return ShallowCopy();
+
 		// Only copy the image once
-		Image tmp = _type.GetSizeInBytes() == type.GetSizeInBytes() ? DeepCopy() : const_cast<Image*>(this)->ShallowCopy();
+		Image tmp = _type.GetSizeInBytes() == type.GetSizeInBytes() ? DeepCopy() : ShallowCopy();
 		
 		// Perform conversion
 		tmp.ConvertToInPlace(type);

@@ -74,104 +74,85 @@ namespace anvil { namespace compute {
 		ANVIL_STRONG_INLINE void Write(size_t i, TypedScalar value) {
 			Write(i, value.ConvertTo(_type)._scalar);
 		}
+
+		ANVIL_STRONG_INLINE void ForceSetType(Type type) throw() { _type = type; }
 	};
 
-	inline Vector& operator+=(Vector& a, Vector b) throw() {
-		const Type t = ArithmeticOperations::PreferedOutputType(a.GetType(), b.GetType());
-		if (a.GetType() != t) a.ConvertToInPlace(t);
-		if (b.GetType() != t) b.ConvertToInPlace(t);
-		ArithmeticOperations::GetArithmeticOperations(t)->Add(a.GetData(), b.GetData(), a.GetData(), t.GetNumberOfChannels());
+	ANVIL_STRONG_INLINE Vector& operator+=(Vector& a, const Vector& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Add(a, b, a);
 		return a;
 	}
 
-	inline Vector& operator-=(Vector& a, Vector b) throw() {
-		const Type t = ArithmeticOperations::PreferedOutputType(a.GetType(), b.GetType());
-		if (a.GetType() != t) a.ConvertToInPlace(t);
-		if (b.GetType() != t) b.ConvertToInPlace(t);
-		ArithmeticOperations::GetArithmeticOperations(t)->Subtract(a.GetData(), b.GetData(), a.GetData(), t.GetNumberOfChannels());
+	ANVIL_STRONG_INLINE Vector& operator-=(Vector& a, const Vector& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Subtract(a, b, a);
 		return a;
 	}
 
-	inline Vector& operator*=(Vector& a, Vector b) throw() {
-		const Type t = ArithmeticOperations::PreferedOutputType(a.GetType(), b.GetType());
-		if (a.GetType() != t) a.ConvertToInPlace(t);
-		if (b.GetType() != t) b.ConvertToInPlace(t);
-		ArithmeticOperations::GetArithmeticOperations(t)->Multiply(a.GetData(), b.GetData(), a.GetData(), t.GetNumberOfChannels());
+	ANVIL_STRONG_INLINE Vector& operator*=(Vector& a, const Vector& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Multiply(a, b, a);
 		return a;
 	}
 
-	inline Vector& operator/=(Vector& a, Vector b) throw() {
-		const Type t = ArithmeticOperations::PreferedOutputType(a.GetType(), b.GetType());
-		if (a.GetType() != t) a.ConvertToInPlace(t);
-		if (b.GetType() != t) b.ConvertToInPlace(t);
-		ArithmeticOperations::GetArithmeticOperations(t)->Divide(a.GetData(), b.GetData(), a.GetData(), t.GetNumberOfChannels());
+	ANVIL_STRONG_INLINE Vector& operator/=(Vector& a, const Vector& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Divide(a, b, a);
 		return a;
 	}
 
-	inline Vector& operator&=(Vector& a, Vector b) throw() {
-		const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
-		if (a.GetType() != t) a.ConvertToInPlace(t);
-		if (b.GetType() != t) b.ConvertToInPlace(t);
-		ArithmeticOperations::GetArithmeticOperations(t)->And(a.GetData(), b.GetData(), a.GetData(), t.GetNumberOfChannels());
+	ANVIL_STRONG_INLINE Vector& operator&=(Vector& a, const Vector& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->And(a, b, a);
 		return a;
 	}
 
-	inline Vector& operator|=(Vector& a, Vector b) throw() {
-		const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
-		if (a.GetType() != t) a.ConvertToInPlace(t);
-		if (b.GetType() != t) b.ConvertToInPlace(t);
-		ArithmeticOperations::GetArithmeticOperations(t)->Or(a.GetData(), b.GetData(), a.GetData(), t.GetNumberOfChannels());
+	ANVIL_STRONG_INLINE Vector& operator|=(Vector& a, const Vector& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Or(a, b, a);
 		return a;
 	}
 
-	inline Vector& operator^=(Vector& a, Vector b) throw() {
-		const Type t = ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType());
-		if (a.GetType() != t) a.ConvertToInPlace(t);
-		if (b.GetType() != t) b.ConvertToInPlace(t);
-		ArithmeticOperations::GetArithmeticOperations(t)->Xor(a.GetData(), b.GetData(), a.GetData(), t.GetNumberOfChannels());
+	ANVIL_STRONG_INLINE Vector& operator^=(Vector& a, const Vector& b) {
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Xor(a, b, a);
 		return a;
 	}
 
-	inline Vector operator+(const Vector& a, const Vector& b) throw() {
-		Vector tmp = a;
-		tmp += b;
-		return tmp;
+	ANVIL_STRONG_INLINE Vector operator+(const Vector& a, const Vector& b) {
+		Vector dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Add(a, b, dst);
+		return dst;
 	}
 
-	inline Vector operator-(const Vector& a, const Vector& b) throw() {
-		Vector tmp = a;
-		tmp -= b;
-		return tmp;
+	ANVIL_STRONG_INLINE Vector operator-(const Vector& a, const Vector& b) {
+		Vector dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Subtract(a, b, dst);
+		return dst;
 	}
 
-	inline Vector operator*(const Vector& a, const Vector& b) throw() {
-		Vector tmp = a;
-		tmp *= b;
-		return tmp;
+	ANVIL_STRONG_INLINE Vector operator*(const Vector& a, const Vector& b) {
+		Vector dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Multiply(a, b, dst);
+		return dst;
 	}
 
-	inline Vector operator/(const Vector& a, const Vector& b) throw() {
-		Vector tmp = a;
-		tmp /= b;
-		return tmp;
+	ANVIL_STRONG_INLINE Vector operator/(const Vector& a, const Vector& b) {
+		Vector dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Divide(a, b, dst);
+		return dst;
 	}
 
-	inline Vector operator&(const Vector& a, const Vector& b) throw() {
-		Vector tmp = a;
-		tmp &= b;
-		return tmp;
+	ANVIL_STRONG_INLINE Vector operator&(const Vector& a, const Vector& b) {
+		Vector dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->And(a, b, dst);
+		return dst;
 	}
 
-	inline Vector operator|(const Vector& a, const Vector& b) throw() {
-		Vector tmp = a;
-		tmp |= b;
-		return tmp;
+	ANVIL_STRONG_INLINE Vector operator|(const Vector& a, const Vector& b) {
+		Vector dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Or(a, b, dst);
+		return dst;
 	}
 
-	inline Vector operator^(const Vector& a, const Vector& b) throw() {
-		Vector tmp = a;
-		tmp ^= b;
-		return tmp;
+	ANVIL_STRONG_INLINE Vector operator^(const Vector& a, const Vector& b) {
+		Vector dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Xor(a, b, dst);
+		return dst;
 	}
 
 }}
