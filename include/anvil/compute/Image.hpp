@@ -411,7 +411,7 @@ namespace anvil { namespace compute {
 		template<class T>
 		inline void WritePixel(size_t x, size_t y, const T pixel) {
 			//ANVIL_DEBUG_ASSERT(EnumFromType<T>::value == _type.GetEnumeratedType(), "anvil::Image::WritePixel : Template type is different that the type of the image");
-			ReadPixel<T>(x, y) = pixel;
+			*reinterpret_cast<T*>(GetPixelAddress(x, y)) = pixel;
 		}
 
 		template<>
