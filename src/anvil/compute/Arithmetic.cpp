@@ -15,6 +15,7 @@
 #include "anvil/compute/Arithmetic.hpp"
 #include "anvil/compute/details/ArithmeticCpp.hpp"
 #include "anvil/compute/details/ArithmeticSseF32.hpp"
+#include "anvil/compute/details/ArithmeticSseF64.hpp"
 #include "anvil/compute/details/ArithmeticF16.hpp"
 #include <vector>
 #include "anvil/compute/Image.hpp"
@@ -75,6 +76,12 @@ namespace anvil { namespace compute {
 	static StaticArithmeticOperations g_arithmetic_op_f32_sse41(new details::ArithmeticOperationsSse4F32());
 	static StaticArithmeticOperations g_arithmetic_op_f32_fma3(new details::ArithmeticOperationsFmaF32());
 	static StaticArithmeticOperations g_arithmetic_op_f32_avx512(new details::ArithmeticOperationsAvx512F32());
+#endif
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+	static StaticArithmeticOperations g_arithmetic_op_f64_sse(new details::ArithmeticOperationsSseF64());
+	static StaticArithmeticOperations g_arithmetic_op_f64_sse41(new details::ArithmeticOperationsSse4F64());
+	static StaticArithmeticOperations g_arithmetic_op_f64_fma3(new details::ArithmeticOperationsFmaF64());
+	static StaticArithmeticOperations g_arithmetic_op_f64_avx512(new details::ArithmeticOperationsAvx512F64());
 #endif
 
 	bool ArithmeticOperations::SetupStaticObjects() {
@@ -138,8 +145,8 @@ namespace anvil { namespace compute {
 #endif
 		case ANVIL_32FX1:
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-			enum { AVX512_FLAGS = ASM_AVX512F | ASM_AVX512VL };
-			if ((instruction_set & AVX512_FLAGS) == AVX512_FLAGS) {
+			enum { F32_AVX512_FLAGS = ASM_AVX512F | ASM_AVX512VL };
+			if ((instruction_set & F32_AVX512_FLAGS) == F32_AVX512_FLAGS) {
 				ops = &g_arithmetic_op_f32_avx512;
 			} else if (instruction_set & ASM_FMA3) {
 				ops = &g_arithmetic_op_f32_fma3;
@@ -152,6 +159,17 @@ namespace anvil { namespace compute {
 			ops = &g_arithmetic_op_f32;
 			break;
 		case ANVIL_64FX1:
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+			if ((instruction_set & F32_AVX512_FLAGS) == F32_AVX512_FLAGS) {
+				ops = &g_arithmetic_op_f64_avx512;
+			} else if (instruction_set & ASM_FMA3) {
+				ops = &g_arithmetic_op_f64_fma3;
+			} else if (instruction_set & ASM_SSE41) {
+				ops =& g_arithmetic_op_f64_sse41;
+			} else if (instruction_set & ASM_SSE2) {
+				ops = &g_arithmetic_op_f64_sse;
+			} else
+#endif
 			ops = &g_arithmetic_op_f64;
 			break;
 		}

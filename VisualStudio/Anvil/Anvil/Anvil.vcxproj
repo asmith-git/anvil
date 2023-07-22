@@ -235,6 +235,7 @@
     <ClInclude Include="..\..\..\include\anvil\compute\details\ArithmeticF16.hpp" />
     <ClInclude Include="..\..\..\include\anvil\compute\details\ArithmeticMultiChannel.hpp" />
     <ClInclude Include="..\..\..\include\anvil\compute\details\ArithmeticSseF32.hpp" />
+    <ClInclude Include="..\..\..\include\anvil\compute\details\ArithmeticSseF64.hpp" />
     <ClInclude Include="..\..\..\include\anvil\compute\Image.hpp" />
     <ClInclude Include="..\..\..\include\anvil\compute\Scalar.hpp" />
     <ClInclude Include="..\..\..\include\anvil\compute\Type.hpp" />

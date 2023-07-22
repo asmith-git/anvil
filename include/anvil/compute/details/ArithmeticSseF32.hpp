@@ -25,6 +25,11 @@ namespace anvil { namespace compute { namespace details {
 
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 
+	enum {
+		F32_VLEN_1X = 4,
+		F32_VLEN_2X = F32_VLEN_1X * 2
+	};
+
 	class ArithmeticOperationsSseF32 : public ArithmeticOperationsCpp<float> {
 	protected:
 
@@ -71,10 +76,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(src2 + i);
 				xmm0 = _mm_sqrt_ps(xmm0);
 				_mm_storeu_ps(dst2 + i, xmm0);
@@ -91,12 +96,12 @@ namespace anvil { namespace compute { namespace details {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(src2 + i);
-				__m128 xmm1 = _mm_loadu_ps(src2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(src2 + i + F32_VLEN_1X);
 
 				__m128 xmm2 = _mm_sqrt_ps(xmm0);
 				__m128 xmm3 = _mm_sqrt_ps(xmm1);
@@ -104,7 +109,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -113,10 +118,10 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float src_buffer[8u];
-				float dst_buffer[8u];
+				T src_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(src_buffer, src2, sizeof(T) * count);
-				Sqrt(src_buffer, dst_buffer, 8u, mask);
+				Sqrt(src_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -127,10 +132,10 @@ namespace anvil { namespace compute { namespace details {
 			__m128 ones = _mm_setzero_ps();
 			ones = _mm_cmpeq_ps(ones, ones);
 			
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(src2 + i);
 				xmm0 = _mm_xor_ps(xmm0, ones);
 				_mm_storeu_ps(dst2 + i, xmm0);
@@ -150,12 +155,12 @@ namespace anvil { namespace compute { namespace details {
 			__m128 ones = _mm_setzero_ps();
 			ones = _mm_cmpeq_ps(ones, ones);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(src2 + i);
-				__m128 xmm1 = _mm_loadu_ps(src2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(src2 + i + F32_VLEN_1X);
 
 				__m128 xmm2 = _mm_xor_ps(xmm0, ones);
 				__m128 xmm3 = _mm_xor_ps(xmm1, ones);
@@ -163,7 +168,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -172,10 +177,10 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float src_buffer[8u];
-				float dst_buffer[8u];
+				T src_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(src_buffer, src2, sizeof(T) * count);
-				Not(src_buffer, dst_buffer, 8u, mask);
+				Not(src_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -188,19 +193,19 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst); 
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				MaskSSE(xmm0, xmm1, xmm2, xmm3, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -210,12 +215,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Mask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Mask(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -225,10 +230,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
 				__m128 xmm1 = _mm_loadu_ps(rhs2 + i);
 				xmm0 = _mm_add_ps(xmm0, xmm1);
@@ -248,14 +253,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_add_ps(xmm0, xmm2);
 				xmm3 = _mm_add_ps(xmm1, xmm3);
@@ -263,7 +268,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -273,12 +278,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Add(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Add(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -288,10 +293,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
 				__m128 xmm1 = _mm_loadu_ps(rhs2 + i);
 				xmm0 = _mm_sub_ps(xmm0, xmm1);
@@ -311,14 +316,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_sub_ps(xmm0, xmm2);
 				xmm3 = _mm_sub_ps(xmm1, xmm3);
@@ -326,7 +331,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -336,12 +341,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Subtract(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Subtract(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -351,10 +356,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
 				__m128 xmm1 = _mm_loadu_ps(rhs2 + i);
 				xmm0 = _mm_mul_ps(xmm0, xmm1);
@@ -374,14 +379,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_mul_ps(xmm0, xmm2);
 				xmm3 = _mm_mul_ps(xmm1, xmm3); 
@@ -389,7 +394,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -399,12 +404,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Multiply(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Multiply(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -414,10 +419,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
 				__m128 xmm1 = _mm_loadu_ps(rhs2 + i);
 				xmm0 = _mm_div_ps(xmm0, xmm1);
@@ -437,14 +442,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_div_ps(xmm0, xmm2);
 				xmm3 = _mm_div_ps(xmm1, xmm3);
@@ -452,7 +457,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -462,12 +467,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Divide(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Divide(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -477,10 +482,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
 				__m128 xmm1 = _mm_loadu_ps(rhs2 + i);
 				xmm0 = _mm_and_ps(xmm0, xmm1);
@@ -500,14 +505,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_and_ps(xmm0, xmm2);
 				xmm3 = _mm_and_ps(xmm1, xmm3);
@@ -515,7 +520,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -525,12 +530,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				And(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				And(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -540,10 +545,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
 				__m128 xmm1 = _mm_loadu_ps(rhs2 + i);
 				xmm0 = _mm_or_ps(xmm0, xmm1);
@@ -563,14 +568,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_or_ps(xmm0, xmm2);
 				xmm3 = _mm_or_ps(xmm1, xmm3);
@@ -578,7 +583,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -588,12 +593,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Or(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Or(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -603,10 +608,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
 				__m128 xmm1 = _mm_loadu_ps(rhs2 + i);
 				xmm0 = _mm_xor_ps(xmm0, xmm1);
@@ -626,14 +631,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_xor_ps(xmm0, xmm2);
 				xmm3 = _mm_xor_ps(xmm1, xmm3);
@@ -641,7 +646,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -651,12 +656,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Xor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Xor(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -669,10 +674,10 @@ namespace anvil { namespace compute { namespace details {
 			__m128 ones = _mm_setzero_ps();
 			ones = _mm_cmpeq_ps(ones, ones);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
 				__m128 xmm1 = _mm_loadu_ps(rhs2 + i);
 				xmm0 = _mm_and_ps(xmm0, xmm1);
@@ -697,14 +702,14 @@ namespace anvil { namespace compute { namespace details {
 			__m128 ones = _mm_setzero_ps();
 			ones = _mm_cmpeq_ps(ones, ones);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_and_ps(xmm0, xmm2);
 				xmm3 = _mm_and_ps(xmm1, xmm3);
@@ -714,7 +719,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -724,12 +729,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Nand(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Nand(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -742,10 +747,10 @@ namespace anvil { namespace compute { namespace details {
 			__m128 ones = _mm_setzero_ps();
 			ones = _mm_cmpeq_ps(ones, ones);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
 				__m128 xmm1 = _mm_loadu_ps(rhs2 + i);
 				xmm0 = _mm_or_ps(xmm0, xmm1);
@@ -770,14 +775,14 @@ namespace anvil { namespace compute { namespace details {
 			__m128 ones = _mm_setzero_ps();
 			ones = _mm_cmpeq_ps(ones, ones);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_or_ps(xmm0, xmm2);
 				xmm3 = _mm_or_ps(xmm1, xmm3);
@@ -787,7 +792,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -797,12 +802,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Nor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Nor(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -815,10 +820,10 @@ namespace anvil { namespace compute { namespace details {
 			__m128 ones = _mm_setzero_ps();
 			ones = _mm_cmpeq_ps(ones, ones);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
 				__m128 xmm1 = _mm_loadu_ps(rhs2 + i);
 				xmm0 = _mm_xor_ps(xmm0, xmm1);
@@ -843,14 +848,14 @@ namespace anvil { namespace compute { namespace details {
 			__m128 ones = _mm_setzero_ps();
 			ones = _mm_cmpeq_ps(ones, ones);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_xor_ps(xmm0, xmm2);
 				xmm3 = _mm_xor_ps(xmm1, xmm3);
@@ -860,7 +865,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -870,12 +875,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Xnor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Xnor(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -885,10 +890,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
 				__m128 xmm1 = _mm_loadu_ps(rhs2 + i);
 				xmm0 = HypotSSE(xmm0, xmm1);
@@ -908,14 +913,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = HypotSSE(xmm0, xmm2);
 				xmm3 = HypotSSE(xmm1, xmm3);
@@ -923,7 +928,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -933,12 +938,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Hypotenuse(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Hypotenuse(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -948,10 +953,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
 				__m128 xmm1 = _mm_loadu_ps(rhs2 + i);
 				xmm0 = _mm_min_ps(xmm0, xmm1);
@@ -971,14 +976,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_min_ps(xmm0, xmm2);
 				xmm3 = _mm_min_ps(xmm1, xmm3);
@@ -986,7 +991,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -996,12 +1001,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Minimum(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Minimum(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1011,10 +1016,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
 				__m128 xmm1 = _mm_loadu_ps(rhs2 + i);
 				xmm0 = _mm_max_ps(xmm0, xmm1);
@@ -1034,14 +1039,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_max_ps(xmm0, xmm2);
 				xmm3 = _mm_max_ps(xmm1, xmm3);
@@ -1049,7 +1054,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1059,12 +1064,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Maximum(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Maximum(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1077,10 +1082,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* c2 = static_cast<const T*>(c);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(a2 + i);
 				__m128 xmm1 = _mm_loadu_ps(b2 + i);
 				__m128 xmm2 = _mm_loadu_ps(c2 + i);
@@ -1105,24 +1110,24 @@ namespace anvil { namespace compute { namespace details {
 			const T* c2 = static_cast<const T*>(c);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(a2 + i);
-				__m128 xmm1 = _mm_loadu_ps(a2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(a2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(b2 + i);
-				__m128 xmm3 = _mm_loadu_ps(b2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(b2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_mul_ps(xmm0, xmm2);
 				xmm3 = _mm_mul_ps(xmm1, xmm3);
 				xmm2 = _mm_add_ps(xmm0, _mm_loadu_ps(c2 + i));
-				xmm3 = _mm_add_ps(xmm1, _mm_loadu_ps(c2 + i + 4));
+				xmm3 = _mm_add_ps(xmm1, _mm_loadu_ps(c2 + i + F32_VLEN_1X));
 
 				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1133,14 +1138,14 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float a_buffer[8u];
-				float b_buffer[8u];
-				float c_buffer[8u];
-				float dst_buffer[8u];
+				T a_buffer[F32_VLEN_2X];
+				T b_buffer[F32_VLEN_2X];
+				T c_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(a_buffer, a2, sizeof(T) * count);
 				memcpy(b_buffer, b2, sizeof(T) * count);
 				memcpy(c_buffer, c2, sizeof(T) * count);
-				MultiplyAdd(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
+				MultiplyAdd(a_buffer, b_buffer, c_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1151,10 +1156,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* c2 = static_cast<const T*>(c);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(a2 + i);
 				__m128 xmm1 = _mm_loadu_ps(b2 + i);
 				__m128 xmm2 = _mm_loadu_ps(c2 + i);
@@ -1179,24 +1184,24 @@ namespace anvil { namespace compute { namespace details {
 			const T* c2 = static_cast<const T*>(c);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(a2 + i);
-				__m128 xmm1 = _mm_loadu_ps(a2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(a2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(b2 + i);
-				__m128 xmm3 = _mm_loadu_ps(b2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(b2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_mul_ps(xmm0, xmm2);
 				xmm3 = _mm_mul_ps(xmm1, xmm3);
 				xmm2 = _mm_sub_ps(xmm0, _mm_loadu_ps(c2 + i));
-				xmm3 = _mm_sub_ps(xmm1, _mm_loadu_ps(c2 + i + 4));
+				xmm3 = _mm_sub_ps(xmm1, _mm_loadu_ps(c2 + i + F32_VLEN_1X));
 
 				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1207,14 +1212,14 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float a_buffer[8u];
-				float b_buffer[8u];
-				float c_buffer[8u];
-				float dst_buffer[8u];
+				T a_buffer[F32_VLEN_2X];
+				T b_buffer[F32_VLEN_2X];
+				T c_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(a_buffer, a2, sizeof(T) * count);
 				memcpy(b_buffer, b2, sizeof(T) * count);
 				memcpy(c_buffer, c2, sizeof(T) * count);
-				MultiplySubtract(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
+				MultiplySubtract(a_buffer, b_buffer, c_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1236,10 +1241,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(src2 + i);
 				xmm0 = _mm_round_ps(xmm0, ROUNDING_MODE);
 				_mm_storeu_ps(dst2 + i, xmm0);
@@ -1257,12 +1262,12 @@ namespace anvil { namespace compute { namespace details {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(src2 + i);
-				__m128 xmm1 = _mm_loadu_ps(src2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(src2 + i + F32_VLEN_1X);
 
 				__m128 xmm2 = _mm_round_ps(xmm0, ROUNDING_MODE);
 				__m128 xmm3 = _mm_round_ps(xmm1, ROUNDING_MODE);
@@ -1270,7 +1275,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1279,10 +1284,10 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float src_buffer[8u];
-				float dst_buffer[8u];
+				T src_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(src_buffer, src2, sizeof(T) * count);
-				RoundSSE4<ROUNDING_MODE>(src_buffer, dst_buffer, 8u, mask);
+				RoundSSE4<ROUNDING_MODE>(src_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1301,12 +1306,12 @@ namespace anvil { namespace compute { namespace details {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(src2 + i);
-				__m128 xmm1 = _mm_loadu_ps(src2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(src2 + i + F32_VLEN_1X);
 
 				__m128 xmm2 = _mm_sqrt_ps(xmm0);
 				__m128 xmm3 = _mm_sqrt_ps(xmm1);
@@ -1314,7 +1319,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1323,10 +1328,10 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float src_buffer[8u];
-				float dst_buffer[8u];
+				T src_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(src_buffer, src2, sizeof(T) * count);
-				Sqrt(src_buffer, dst_buffer, 8u, mask);
+				Sqrt(src_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1338,12 +1343,12 @@ namespace anvil { namespace compute { namespace details {
 			__m128 ones = _mm_setzero_ps();
 			ones = _mm_cmpeq_ps(ones, ones);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(src2 + i);
-				__m128 xmm1 = _mm_loadu_ps(src2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(src2 + i + F32_VLEN_1X);
 
 				__m128 xmm2 = _mm_xor_ps(xmm0, ones);
 				__m128 xmm3 = _mm_xor_ps(xmm1, ones);
@@ -1351,7 +1356,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1360,10 +1365,10 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float src_buffer[8u];
-				float dst_buffer[8u];
+				T src_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(src_buffer, src2, sizeof(T) * count);
-				Not(src_buffer, dst_buffer, 8u, mask);
+				Not(src_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1400,19 +1405,19 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				MaskSSE4(xmm0, xmm1, xmm2, xmm3, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1422,12 +1427,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Mask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Mask(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1437,14 +1442,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_add_ps(xmm0, xmm2);
 				xmm3 = _mm_add_ps(xmm1, xmm3);
@@ -1452,7 +1457,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1462,12 +1467,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Add(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Add(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1477,14 +1482,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_sub_ps(xmm0, xmm2);
 				xmm3 = _mm_sub_ps(xmm1, xmm3);
@@ -1492,7 +1497,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1502,12 +1507,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Subtract(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Subtract(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1517,14 +1522,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_mul_ps(xmm0, xmm2);
 				xmm3 = _mm_mul_ps(xmm1, xmm3);
@@ -1532,7 +1537,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1542,12 +1547,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Multiply(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Multiply(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1557,14 +1562,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_div_ps(xmm0, xmm2);
 				xmm3 = _mm_div_ps(xmm1, xmm3);
@@ -1572,7 +1577,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1582,12 +1587,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Divide(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Divide(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1597,14 +1602,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_and_ps(xmm0, xmm2);
 				xmm3 = _mm_and_ps(xmm1, xmm3);
@@ -1612,7 +1617,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1622,12 +1627,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				And(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				And(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1637,14 +1642,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_or_ps(xmm0, xmm2);
 				xmm3 = _mm_or_ps(xmm1, xmm3);
@@ -1652,7 +1657,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1662,12 +1667,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Or(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Or(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1677,14 +1682,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_xor_ps(xmm0, xmm2);
 				xmm3 = _mm_xor_ps(xmm1, xmm3);
@@ -1692,7 +1697,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1702,12 +1707,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Xor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Xor(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1720,14 +1725,14 @@ namespace anvil { namespace compute { namespace details {
 			__m128 ones = _mm_setzero_ps();
 			ones = _mm_cmpeq_ps(ones, ones);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_and_ps(xmm0, xmm2);
 				xmm3 = _mm_and_ps(xmm1, xmm3);
@@ -1737,7 +1742,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1747,12 +1752,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Nand(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Nand(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1765,14 +1770,14 @@ namespace anvil { namespace compute { namespace details {
 			__m128 ones = _mm_setzero_ps();
 			ones = _mm_cmpeq_ps(ones, ones);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_or_ps(xmm0, xmm2);
 				xmm3 = _mm_or_ps(xmm1, xmm3);
@@ -1782,7 +1787,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1792,12 +1797,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Nor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Nor(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1810,14 +1815,14 @@ namespace anvil { namespace compute { namespace details {
 			__m128 ones = _mm_setzero_ps();
 			ones = _mm_cmpeq_ps(ones, ones);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_xor_ps(xmm0, xmm2);
 				xmm3 = _mm_xor_ps(xmm1, xmm3);
@@ -1827,7 +1832,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1837,12 +1842,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Xnor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Xnor(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1852,14 +1857,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = HypotSSE(xmm0, xmm2);
 				xmm3 = HypotSSE(xmm1, xmm3);
@@ -1867,7 +1872,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1877,12 +1882,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Hypotenuse(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Hypotenuse(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1892,14 +1897,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_min_ps(xmm0, xmm2);
 				xmm3 = _mm_min_ps(xmm1, xmm3);
@@ -1907,7 +1912,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1917,12 +1922,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Minimum(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Minimum(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1932,14 +1937,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_max_ps(xmm0, xmm2);
 				xmm3 = _mm_max_ps(xmm1, xmm3);
@@ -1947,7 +1952,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -1957,12 +1962,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Maximum(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Maximum(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -1976,24 +1981,24 @@ namespace anvil { namespace compute { namespace details {
 			const T* c2 = static_cast<const T*>(c);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(a2 + i);
-				__m128 xmm1 = _mm_loadu_ps(a2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(a2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(b2 + i);
-				__m128 xmm3 = _mm_loadu_ps(b2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(b2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_mul_ps(xmm0, xmm2);
 				xmm3 = _mm_mul_ps(xmm1, xmm3);
 				xmm2 = _mm_add_ps(xmm0, _mm_loadu_ps(c2 + i));
-				xmm3 = _mm_add_ps(xmm1, _mm_loadu_ps(c2 + i + 4));
+				xmm3 = _mm_add_ps(xmm1, _mm_loadu_ps(c2 + i + F32_VLEN_1X));
 
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -2004,14 +2009,14 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float a_buffer[8u];
-				float b_buffer[8u];
-				float c_buffer[8u];
-				float dst_buffer[8u];
+				T a_buffer[F32_VLEN_2X];
+				T b_buffer[F32_VLEN_2X];
+				T c_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(a_buffer, a2, sizeof(T) * count);
 				memcpy(b_buffer, b2, sizeof(T) * count);
 				memcpy(c_buffer, c2, sizeof(T) * count);
-				MultiplyAdd(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
+				MultiplyAdd(a_buffer, b_buffer, c_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2022,24 +2027,24 @@ namespace anvil { namespace compute { namespace details {
 			const T* c2 = static_cast<const T*>(c);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(a2 + i);
-				__m128 xmm1 = _mm_loadu_ps(a2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(a2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(b2 + i);
-				__m128 xmm3 = _mm_loadu_ps(b2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(b2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_mul_ps(xmm0, xmm2);
 				xmm3 = _mm_mul_ps(xmm1, xmm3);
 				xmm2 = _mm_sub_ps(xmm0, _mm_loadu_ps(c2 + i));
-				xmm3 = _mm_sub_ps(xmm1, _mm_loadu_ps(c2 + i + 4));
+				xmm3 = _mm_sub_ps(xmm1, _mm_loadu_ps(c2 + i + F32_VLEN_1X));
 
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -2050,14 +2055,14 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float a_buffer[8u];
-				float b_buffer[8u];
-				float c_buffer[8u];
-				float dst_buffer[8u];
+				T a_buffer[F32_VLEN_2X];
+				T b_buffer[F32_VLEN_2X];
+				T c_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(a_buffer, a2, sizeof(T) * count);
 				memcpy(b_buffer, b2, sizeof(T) * count);
 				memcpy(c_buffer, c2, sizeof(T) * count);
-				MultiplySubtract(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
+				MultiplySubtract(a_buffer, b_buffer, c_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2086,10 +2091,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
 				__m128 xmm1 = _mm_loadu_ps(rhs2 + i);
 				xmm0 = HypotFMA(xmm0, xmm1);
@@ -2109,14 +2114,14 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
-				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
-				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + F32_VLEN_1X);
 
 				xmm2 = HypotFMA(xmm0, xmm2);
 				xmm3 = HypotFMA(xmm1, xmm3);
@@ -2124,7 +2129,7 @@ namespace anvil { namespace compute { namespace details {
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -2134,12 +2139,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Hypotenuse(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Hypotenuse(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2153,10 +2158,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* c2 = static_cast<const T*>(c);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(a2 + i);
 				__m128 xmm1 = _mm_loadu_ps(b2 + i);
 				__m128 xmm2 = _mm_loadu_ps(c2 + i);
@@ -2179,22 +2184,22 @@ namespace anvil { namespace compute { namespace details {
 			const T* c2 = static_cast<const T*>(c);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(a2 + i);
-				__m128 xmm1 = _mm_loadu_ps(a2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(a2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(b2 + i);
-				__m128 xmm3 = _mm_loadu_ps(b2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(b2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_fmadd_ps(xmm0, xmm2, _mm_loadu_ps(c2 + i));
-				xmm3 = _mm_fmadd_ps(xmm1, xmm3, _mm_loadu_ps(c2 + i + 4));
+				xmm3 = _mm_fmadd_ps(xmm1, xmm3, _mm_loadu_ps(c2 + i + F32_VLEN_1X));
 
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -2205,14 +2210,14 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float a_buffer[8u];
-				float b_buffer[8u];
-				float c_buffer[8u];
-				float dst_buffer[8u];
+				T a_buffer[F32_VLEN_2X];
+				T b_buffer[F32_VLEN_2X];
+				T c_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(a_buffer, a2, sizeof(T) * count);
 				memcpy(b_buffer, b2, sizeof(T) * count);
 				memcpy(c_buffer, c2, sizeof(T) * count);
-				MultiplyAdd(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
+				MultiplyAdd(a_buffer, b_buffer, c_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2223,10 +2228,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* c2 = static_cast<const T*>(c);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 4u) * 4u;
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 4u) {
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
 				__m128 xmm0 = _mm_loadu_ps(a2 + i);
 				__m128 xmm1 = _mm_loadu_ps(b2 + i);
 				__m128 xmm2 = _mm_loadu_ps(c2 + i);
@@ -2249,22 +2254,22 @@ namespace anvil { namespace compute { namespace details {
 			const T* c2 = static_cast<const T*>(c);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m128 xmm0 = _mm_loadu_ps(a2 + i);
-				__m128 xmm1 = _mm_loadu_ps(a2 + i + 4);
+				__m128 xmm1 = _mm_loadu_ps(a2 + i + F32_VLEN_1X);
 				__m128 xmm2 = _mm_loadu_ps(b2 + i);
-				__m128 xmm3 = _mm_loadu_ps(b2 + i + 4);
+				__m128 xmm3 = _mm_loadu_ps(b2 + i + F32_VLEN_1X);
 
 				xmm2 = _mm_fmsub_ps(xmm0, xmm2, _mm_loadu_ps(c2 + i));
-				xmm3 = _mm_fmsub_ps(xmm1, xmm3, _mm_loadu_ps(c2 + i + 4));
+				xmm3 = _mm_fmsub_ps(xmm1, xmm3, _mm_loadu_ps(c2 + i + F32_VLEN_1X));
 
 				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
 
 				_mm_storeu_ps(dst2 + i, xmm0);
-				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				_mm_storeu_ps(dst2 + i + F32_VLEN_1X, xmm1);
 				++mask;
 			}
 
@@ -2275,14 +2280,14 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float a_buffer[8u];
-				float b_buffer[8u];
-				float c_buffer[8u];
-				float dst_buffer[8u];
+				T a_buffer[F32_VLEN_2X];
+				T b_buffer[F32_VLEN_2X];
+				T c_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(a_buffer, a2, sizeof(T) * count);
 				memcpy(b_buffer, b2, sizeof(T) * count);
 				memcpy(c_buffer, c2, sizeof(T) * count);
-				MultiplySubtract(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
+				MultiplySubtract(a_buffer, b_buffer, c_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2295,10 +2300,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(src2 + i);
 				xmm0 = _mm256_round_ps(xmm0, ROUNDING_MODE);
 				xmm0 = _mm256_mask_and_ps(xmm0, *mask, xmm0, xmm0);
@@ -2311,10 +2316,10 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float src_buffer[8u];
-				float dst_buffer[8u];
+				T src_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(src_buffer, src2, sizeof(T) * count);
-				RoundAVX512<ROUNDING_MODE>(src_buffer, dst_buffer, 8u, mask);
+				RoundAVX512<ROUNDING_MODE>(src_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2339,10 +2344,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(src2 + i);
 				xmm0 = _mm256_mask_sqrt_ps(xmm0, *mask, xmm0);
 				_mm256_storeu_ps(dst2 + i, xmm0);
@@ -2354,10 +2359,10 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float src_buffer[8u];
-				float dst_buffer[8u];
+				T src_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(src_buffer, src2, sizeof(T) * count);
-				Sqrt(src_buffer, dst_buffer, 8u, mask);
+				Sqrt(src_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2369,10 +2374,10 @@ namespace anvil { namespace compute { namespace details {
 			__m256 ones = _mm256_setzero_ps();
 			ones = _mm256_cmp_ps(ones, ones, _CMP_EQ_OQ);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(src2 + i);
 				xmm0 = _mm256_mask_xor_ps(xmm0, *mask, xmm0, ones);
 				_mm256_storeu_ps(dst2 + i, xmm0);
@@ -2384,10 +2389,10 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float src_buffer[8u];
-				float dst_buffer[8u];
+				T src_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(src_buffer, src2, sizeof(T) * count);
-				Not(src_buffer, dst_buffer, 8u, mask);
+				Not(src_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2412,10 +2417,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(lhs2 + i);
 				__m256 xmm2 = _mm256_loadu_ps(rhs2 + i);
 
@@ -2431,12 +2436,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Mask(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Mask(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2446,10 +2451,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(lhs2 + i);
 				__m256 xmm2 = _mm256_loadu_ps(rhs2 + i);
 
@@ -2465,12 +2470,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Add(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Add(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2480,10 +2485,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(lhs2 + i);
 				__m256 xmm2 = _mm256_loadu_ps(rhs2 + i);
 
@@ -2499,12 +2504,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Subtract(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Subtract(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2514,10 +2519,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(lhs2 + i);
 				__m256 xmm2 = _mm256_loadu_ps(rhs2 + i);
 
@@ -2533,12 +2538,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Multiply(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Multiply(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2548,10 +2553,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(lhs2 + i);
 				__m256 xmm2 = _mm256_loadu_ps(rhs2 + i);
 
@@ -2567,12 +2572,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Divide(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Divide(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2582,10 +2587,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(lhs2 + i);
 				__m256 xmm2 = _mm256_loadu_ps(rhs2 + i);
 
@@ -2601,12 +2606,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				And(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				And(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2616,10 +2621,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(lhs2 + i);
 				__m256 xmm2 = _mm256_loadu_ps(rhs2 + i);
 
@@ -2635,12 +2640,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Or(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Or(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2650,10 +2655,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(lhs2 + i);
 				__m256 xmm2 = _mm256_loadu_ps(rhs2 + i);
 
@@ -2669,12 +2674,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Xor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Xor(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2687,10 +2692,10 @@ namespace anvil { namespace compute { namespace details {
 			__m256 ones = _mm256_setzero_ps();
 			ones = _mm256_cmp_ps(ones, ones, _CMP_EQ_OQ);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(lhs2 + i);
 				__m256 xmm2 = _mm256_loadu_ps(rhs2 + i);
 
@@ -2708,12 +2713,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Nand(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Nand(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2726,10 +2731,10 @@ namespace anvil { namespace compute { namespace details {
 			__m256 ones = _mm256_setzero_ps();
 			ones = _mm256_cmp_ps(ones, ones, _CMP_EQ_OQ);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(lhs2 + i);
 				__m256 xmm2 = _mm256_loadu_ps(rhs2 + i);
 
@@ -2747,12 +2752,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Nor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Nor(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2765,10 +2770,10 @@ namespace anvil { namespace compute { namespace details {
 			__m256 ones = _mm256_setzero_ps();
 			ones = _mm256_cmp_ps(ones, ones, _CMP_EQ_OQ);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(lhs2 + i);
 				__m256 xmm2 = _mm256_loadu_ps(rhs2 + i);
 
@@ -2786,12 +2791,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Xnor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Xnor(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2801,10 +2806,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(lhs2 + i);
 				__m256 xmm2 = _mm256_loadu_ps(rhs2 + i);
 
@@ -2820,12 +2825,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Hypotenuse(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Hypotenuse(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2835,10 +2840,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(lhs2 + i);
 				__m256 xmm2 = _mm256_loadu_ps(rhs2 + i);
 
@@ -2854,12 +2859,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Minimum(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Minimum(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2869,10 +2874,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* rhs2 = static_cast<const T*>(rhs);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(lhs2 + i);
 				__m256 xmm2 = _mm256_loadu_ps(rhs2 + i);
 
@@ -2888,12 +2893,12 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float lhs_buffer[8u];
-				float rhs_buffer[8u];
-				float dst_buffer[8u];
+				T lhs_buffer[F32_VLEN_2X];
+				T rhs_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
-				Maximum(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				Maximum(lhs_buffer, rhs_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2906,10 +2911,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* c2 = static_cast<const T*>(c);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(a2 + i);
 				__m256 xmm1 = _mm256_loadu_ps(b2 + i);
 				__m256 xmm2 = _mm256_loadu_ps(c2 + i);
@@ -2934,14 +2939,14 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float a_buffer[8u];
-				float b_buffer[8u];
-				float c_buffer[8u];
-				float dst_buffer[8u];
+				T a_buffer[F32_VLEN_2X];
+				T b_buffer[F32_VLEN_2X];
+				T c_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(a_buffer, a2, sizeof(T) * count);
 				memcpy(b_buffer, b2, sizeof(T) * count);
 				memcpy(c_buffer, c2, sizeof(T) * count);
-				MultiplyAdd(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
+				MultiplyAdd(a_buffer, b_buffer, c_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
@@ -2952,10 +2957,10 @@ namespace anvil { namespace compute { namespace details {
 			const T* c2 = static_cast<const T*>(c);
 			T* dst2 = static_cast<T*>(dst);
 
-			size_t aligned_size = (count / 8u) * 8u;
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
 			size_t i = 0u;
 
-			for (i; i < aligned_size; i += 8u) {
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
 				__m256 xmm0 = _mm256_loadu_ps(a2 + i);
 				__m256 xmm1 = _mm256_loadu_ps(b2 + i);
 				__m256 xmm2 = _mm256_loadu_ps(c2 + i);
@@ -2979,14 +2984,14 @@ namespace anvil { namespace compute { namespace details {
 				dst2 += aligned_size;
 				count -= aligned_size;
 
-				float a_buffer[8u];
-				float b_buffer[8u];
-				float c_buffer[8u];
-				float dst_buffer[8u];
+				T a_buffer[F32_VLEN_2X];
+				T b_buffer[F32_VLEN_2X];
+				T c_buffer[F32_VLEN_2X];
+				T dst_buffer[F32_VLEN_2X];
 				memcpy(a_buffer, a2, sizeof(T) * count);
 				memcpy(b_buffer, b2, sizeof(T) * count);
 				memcpy(c_buffer, c2, sizeof(T) * count);
-				MultiplySubtract(a_buffer, b_buffer, c_buffer, dst_buffer, 8u, mask);
+				MultiplySubtract(a_buffer, b_buffer, c_buffer, dst_buffer, F32_VLEN_2X, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
