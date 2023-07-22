@@ -384,6 +384,21 @@ namespace anvil { namespace compute {
 			memcpy(pixel.GetData(), GetPixelAddress(x, y), _type.GetSizeInBytes());
 			pixel._type = _type;
 		}
+
+		/*!
+		*	\brief Read the value of a pixel.
+		*	\details This function will not check if the requested position is valid or if the value is the correct type unless in debug mode.
+		*	\param x The index of the row to read.
+		*	\param y The index of the column to read.
+		*	\return pixel The value that is read from the image.
+		*	\tparam T The type to interpret the pixel data as.
+		*/
+		template<class T>
+		ANVIL_STRONG_INLINE T ReadPixel(size_t x, size_t y) const {
+			T pixel;
+			ReadPixel<T>(x, y, pixel);
+			return pixel;
+		}
 		
 		/*!
 		*	\brief Write the value of a pixel into the image.
