@@ -123,7 +123,7 @@ namespace anvil { namespace compute { namespace details {
 			if ANVIL_CONSTEXPR_VAR (std::is_integral<T>::value) {
 				if ANVIL_CONSTEXPR_VAR(APPLY_TO_INTEGER) {
 					for (size_t i = 0u; i < count; ++i) {
-						dst2[i] = static_cast<T>(std::round(f32(static_cast<float>(src2[i]))));
+						dst2[i] = static_cast<T>(std::roundf(f32(static_cast<float>(src2[i]))));
 					}
 				} else {
 					memcpy(dst, src, sizeof(T) * count);
@@ -135,6 +135,26 @@ namespace anvil { namespace compute { namespace details {
 			} else {
 				for (size_t i = 0u; i < count; ++i) {
 					dst2[i] = static_cast<T>(f32(static_cast<float>(src2[i])));
+				}
+			}
+		}
+
+		static void CallCMathOperation(const void* a, const void* b, void* dst, size_t count, float(*f32)(float,float), double(*f64)(double,double)) {
+			const T* a2 = static_cast<const T*>(a);
+			const T* b2 = static_cast<const T*>(b);
+			T* dst2 = static_cast<T*>(dst);
+
+			if ANVIL_CONSTEXPR_VAR (std::is_integral<T>::value) {
+				for (size_t i = 0u; i < count; ++i) {
+					dst2[i] = static_cast<T>(std::roundf(f32(static_cast<float>(a2[i]), static_cast<float>(b2[i]))));
+				}
+			} else if ANVIL_CONSTEXPR_VAR(std::is_same<T, double>::value) {
+				for (size_t i = 0u; i < count; ++i) {
+					dst2[i] = f64(a2[i], b2[i]);
+				}
+			} else {
+				for (size_t i = 0u; i < count; ++i) {
+					dst2[i] = static_cast<T>(f32(static_cast<float>(a2[i]), static_cast<float>(b2[i])));
 				}
 			}
 		}
@@ -303,6 +323,10 @@ namespace anvil { namespace compute { namespace details {
 
 		virtual void Xnor(const void* lhs, const void* rhs, void* dst, size_t count) const {
 			ArithOpBitwise<sizeof(T)>::Xnor(lhs, rhs, dst, count);
+		}
+		
+		virtual void Power(const void* a, const void* b, void* dst, size_t count) const {
+			CallCMathOperation(a, b, dst, count, &std::powf, &std::pow);
 		}
 
 		// 3 inputs
