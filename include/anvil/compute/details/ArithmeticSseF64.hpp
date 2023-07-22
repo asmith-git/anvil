@@ -26,7 +26,7 @@ namespace anvil { namespace compute { namespace details {
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 
 	enum {
-		F64_VLEN_1X = 4,
+		F64_VLEN_1X = 2,
 		//F64_VLEN_2X = F64_VLEN_1X * 2,
 		F64_VLEN_4X = F64_VLEN_1X * 4
 	};
@@ -40,10 +40,10 @@ namespace anvil { namespace compute { namespace details {
 			const __m128i bitsc = _mm_set_epi64x(32, 16);
 			const __m128i bitsd = _mm_set_epi64x(128, 64);
 			const __m128i m = _mm_set1_epi64x(mask);
-			a = _mm_castsi128_pd(_mm_cmpeq_epi32(_mm_and_si128(m, bitsa), bitsa));
-			b = _mm_castsi128_pd(_mm_cmpeq_epi32(_mm_and_si128(m, bitsb), bitsb));
-			c = _mm_castsi128_pd(_mm_cmpeq_epi32(_mm_and_si128(m, bitsc), bitsc));
-			d = _mm_castsi128_pd(_mm_cmpeq_epi32(_mm_and_si128(m, bitsd), bitsd));
+			a = _mm_castsi128_pd(_mm_cmpeq_epi64(_mm_and_si128(m, bitsa), bitsa));
+			b = _mm_castsi128_pd(_mm_cmpeq_epi64(_mm_and_si128(m, bitsb), bitsb));
+			c = _mm_castsi128_pd(_mm_cmpeq_epi64(_mm_and_si128(m, bitsc), bitsc));
+			d = _mm_castsi128_pd(_mm_cmpeq_epi64(_mm_and_si128(m, bitsd), bitsd));
 		}
 
 		static ANVIL_STRONG_INLINE void MaskSSE(
@@ -56,9 +56,9 @@ namespace anvil { namespace compute { namespace details {
 			ExpandMaskSSE(mask, maska, maskb, maskc, maskd);
 
 			lhsa = _mm_and_pd(lhsa, maska);
-			lhsb = _mm_and_pd(lhsa, maskb);
-			lhsc = _mm_and_pd(lhsa, maskc);
-			lhsd = _mm_and_pd(lhsa, maskd);
+			lhsb = _mm_and_pd(lhsb, maskb);
+			lhsc = _mm_and_pd(lhsc, maskc);
+			lhsd = _mm_and_pd(lhsd, maskd);
 			rhsa = _mm_andnot_pd(maska, rhsa);
 			rhsb = _mm_andnot_pd(maskb, rhsb);
 			rhsc = _mm_andnot_pd(maskc, rhsc);
