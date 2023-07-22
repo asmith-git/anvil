@@ -125,10 +125,13 @@ namespace anvil { namespace compute {
 	}
 
 	void Image::Swap(Image& other) {
-		uint8_t buffer[sizeof(Image)];
-		memcpy(buffer, this, sizeof(Image));
-		memcpy(this, &other, sizeof(Image));
-		memcpy(&other, buffer, sizeof(Image));
+		std::swap(_memory_manager, other._memory_manager);
+		std::swap(_parent, other._parent);
+		std::swap(_data, other._data);
+		std::swap(_row_step, other._row_step);
+		std::swap(_pixel_step, other._pixel_step);
+		std::swap(_width, other._width);
+		std::swap(_height, other._height);
 	}
 
 	void Image::Allocate(Type type, size_t width, size_t height, bool force) {
