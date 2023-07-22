@@ -47,6 +47,13 @@ namespace anvil { namespace compute { namespace details {
 			outlo = _mm_or_ps(lhslo, rhslo);
 			outhi = _mm_or_ps(rhslo, rhshi);
 		}
+
+		static ANVIL_STRONG_INLINE __m128 HypotSSE(__m128 a, __m128 b) {
+			a = _mm_mul_ps(a, a);
+			b = _mm_mul_ps(b, b);
+			a = _mm_add_ps(a, b);
+			return _mm_sqrt_ps(a);
+		}
 	public:
 		typedef float T;
 
@@ -873,6 +880,195 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
+		virtual void Hypotenuse(const void* lhs, const void* rhs, void* dst, size_t count) const {
+			const T* lhs2 = static_cast<const T*>(lhs);
+			const T* rhs2 = static_cast<const T*>(rhs);
+			T* dst2 = static_cast<T*>(dst);
+
+			size_t aligned_size = (count / 4u) * 4u;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += 4u) {
+				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
+				__m128 xmm1 = _mm_loadu_ps(rhs2 + i);
+				xmm0 = HypotSSE(xmm0, xmm1);
+				_mm_storeu_ps(dst2 + i, xmm0);
+			}
+
+			for (i; i < count; ++i) {
+				__m128 xmm0 = _mm_load_ss(lhs2 + i);
+				__m128 xmm1 = _mm_load_ss(rhs2 + i);
+				xmm0 = HypotSSE(xmm0, xmm1);
+				_mm_store_ss(dst2 + i, xmm0);
+			}
+		}
+
+		virtual void Hypotenuse(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+			const T* lhs2 = static_cast<const T*>(lhs);
+			const T* rhs2 = static_cast<const T*>(rhs);
+			T* dst2 = static_cast<T*>(dst);
+
+			size_t aligned_size = (count / 8u) * 8u;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += 8u) {
+				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+
+				xmm2 = HypotSSE(xmm0, xmm2);
+				xmm3 = HypotSSE(xmm1, xmm3);
+
+				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
+
+				_mm_storeu_ps(dst2 + i, xmm0);
+				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				++mask;
+			}
+
+			if (aligned_size != count) {
+				lhs2 += aligned_size;
+				rhs2 += aligned_size;
+				dst2 += aligned_size;
+				count -= aligned_size;
+
+				float lhs_buffer[8u];
+				float rhs_buffer[8u];
+				float dst_buffer[8u];
+				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
+				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
+				Hypotenuse(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				memcpy(dst, dst_buffer, sizeof(T) * count);
+			}
+		}
+
+		virtual void Minimum(const void* lhs, const void* rhs, void* dst, size_t count) const {
+			const T* lhs2 = static_cast<const T*>(lhs);
+			const T* rhs2 = static_cast<const T*>(rhs);
+			T* dst2 = static_cast<T*>(dst);
+
+			size_t aligned_size = (count / 4u) * 4u;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += 4u) {
+				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
+				__m128 xmm1 = _mm_loadu_ps(rhs2 + i);
+				xmm0 = _mm_min_ps(xmm0, xmm1);
+				_mm_storeu_ps(dst2 + i, xmm0);
+			}
+
+			for (i; i < count; ++i) {
+				__m128 xmm0 = _mm_load_ss(lhs2 + i);
+				__m128 xmm1 = _mm_load_ss(rhs2 + i);
+				xmm0 = _mm_min_ss(xmm0, xmm1);
+				_mm_store_ss(dst2 + i, xmm0);
+			}
+		}
+
+		virtual void Minimum(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+			const T* lhs2 = static_cast<const T*>(lhs);
+			const T* rhs2 = static_cast<const T*>(rhs);
+			T* dst2 = static_cast<T*>(dst);
+
+			size_t aligned_size = (count / 8u) * 8u;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += 8u) {
+				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+
+				xmm2 = _mm_min_ps(xmm0, xmm2);
+				xmm3 = _mm_min_ps(xmm1, xmm3);
+
+				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
+
+				_mm_storeu_ps(dst2 + i, xmm0);
+				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				++mask;
+			}
+
+			if (aligned_size != count) {
+				lhs2 += aligned_size;
+				rhs2 += aligned_size;
+				dst2 += aligned_size;
+				count -= aligned_size;
+
+				float lhs_buffer[8u];
+				float rhs_buffer[8u];
+				float dst_buffer[8u];
+				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
+				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
+				Minimum(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				memcpy(dst, dst_buffer, sizeof(T) * count);
+			}
+		}
+
+		virtual void Maximum(const void* lhs, const void* rhs, void* dst, size_t count) const {
+			const T* lhs2 = static_cast<const T*>(lhs);
+			const T* rhs2 = static_cast<const T*>(rhs);
+			T* dst2 = static_cast<T*>(dst);
+
+			size_t aligned_size = (count / 4u) * 4u;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += 4u) {
+				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
+				__m128 xmm1 = _mm_loadu_ps(rhs2 + i);
+				xmm0 = _mm_max_ps(xmm0, xmm1);
+				_mm_storeu_ps(dst2 + i, xmm0);
+			}
+
+			for (i; i < count; ++i) {
+				__m128 xmm0 = _mm_load_ss(lhs2 + i);
+				__m128 xmm1 = _mm_load_ss(rhs2 + i);
+				xmm0 = _mm_max_ss(xmm0, xmm1);
+				_mm_store_ss(dst2 + i, xmm0);
+			}
+		}
+
+		virtual void Maximum(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+			const T* lhs2 = static_cast<const T*>(lhs);
+			const T* rhs2 = static_cast<const T*>(rhs);
+			T* dst2 = static_cast<T*>(dst);
+
+			size_t aligned_size = (count / 8u) * 8u;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += 8u) {
+				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+
+				xmm2 = _mm_max_ps(xmm0, xmm2);
+				xmm3 = _mm_max_ps(xmm1, xmm3);
+
+				MaskSSE(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
+
+				_mm_storeu_ps(dst2 + i, xmm0);
+				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				++mask;
+			}
+
+			if (aligned_size != count) {
+				lhs2 += aligned_size;
+				rhs2 += aligned_size;
+				dst2 += aligned_size;
+				count -= aligned_size;
+
+				float lhs_buffer[8u];
+				float rhs_buffer[8u];
+				float dst_buffer[8u];
+				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
+				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
+				Maximum(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				memcpy(dst, dst_buffer, sizeof(T) * count);
+			}
+		}
+
 		// 3 inputs
 
 		virtual void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count) const {
@@ -1651,6 +1847,127 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
+		virtual void Hypotenuse(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+			const T* lhs2 = static_cast<const T*>(lhs);
+			const T* rhs2 = static_cast<const T*>(rhs);
+			T* dst2 = static_cast<T*>(dst);
+
+			size_t aligned_size = (count / 8u) * 8u;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += 8u) {
+				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+
+				xmm2 = HypotSSE(xmm0, xmm2);
+				xmm3 = HypotSSE(xmm1, xmm3);
+
+				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
+
+				_mm_storeu_ps(dst2 + i, xmm0);
+				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				++mask;
+			}
+
+			if (aligned_size != count) {
+				lhs2 += aligned_size;
+				rhs2 += aligned_size;
+				dst2 += aligned_size;
+				count -= aligned_size;
+
+				float lhs_buffer[8u];
+				float rhs_buffer[8u];
+				float dst_buffer[8u];
+				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
+				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
+				Hypotenuse(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				memcpy(dst, dst_buffer, sizeof(T) * count);
+			}
+		}
+		
+		virtual void Minimum(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+			const T* lhs2 = static_cast<const T*>(lhs);
+			const T* rhs2 = static_cast<const T*>(rhs);
+			T* dst2 = static_cast<T*>(dst);
+
+			size_t aligned_size = (count / 8u) * 8u;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += 8u) {
+				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+
+				xmm2 = _mm_min_ps(xmm0, xmm2);
+				xmm3 = _mm_min_ps(xmm1, xmm3);
+
+				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
+
+				_mm_storeu_ps(dst2 + i, xmm0);
+				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				++mask;
+			}
+
+			if (aligned_size != count) {
+				lhs2 += aligned_size;
+				rhs2 += aligned_size;
+				dst2 += aligned_size;
+				count -= aligned_size;
+
+				float lhs_buffer[8u];
+				float rhs_buffer[8u];
+				float dst_buffer[8u];
+				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
+				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
+				Minimum(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				memcpy(dst, dst_buffer, sizeof(T) * count);
+			}
+		}
+
+		virtual void Maximum(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+			const T* lhs2 = static_cast<const T*>(lhs);
+			const T* rhs2 = static_cast<const T*>(rhs);
+			T* dst2 = static_cast<T*>(dst);
+
+			size_t aligned_size = (count / 8u) * 8u;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += 8u) {
+				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+
+				xmm2 = _mm_max_ps(xmm0, xmm2);
+				xmm3 = _mm_max_ps(xmm1, xmm3);
+
+				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
+
+				_mm_storeu_ps(dst2 + i, xmm0);
+				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				++mask;
+			}
+
+			if (aligned_size != count) {
+				lhs2 += aligned_size;
+				rhs2 += aligned_size;
+				dst2 += aligned_size;
+				count -= aligned_size;
+
+				float lhs_buffer[8u];
+				float rhs_buffer[8u];
+				float dst_buffer[8u];
+				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
+				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
+				Maximum(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				memcpy(dst, dst_buffer, sizeof(T) * count);
+			}
+		}
+
+
 		// 3 inputs
 
 		virtual void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const {
@@ -1747,6 +2064,12 @@ namespace anvil { namespace compute { namespace details {
 	};
 
 	class ArithmeticOperationsFmaF32 : public ArithmeticOperationsSse4F32 {
+	private:
+		static ANVIL_STRONG_INLINE __m128 HypotFMA(__m128 a, __m128 b) {
+			a = _mm_mul_ps(a, a);
+			b = _mm_fmadd_ps(b, b, a);
+			return _mm_sqrt_ps(b);
+		}
 	public:
 		ArithmeticOperationsFmaF32() :
 			ArithmeticOperationsSse4F32()
@@ -1754,6 +2077,71 @@ namespace anvil { namespace compute { namespace details {
 
 		virtual ~ArithmeticOperationsFmaF32() {
 
+		}
+
+		// 2 inputs
+
+		virtual void Hypotenuse(const void* lhs, const void* rhs, void* dst, size_t count) const {
+			const T* lhs2 = static_cast<const T*>(lhs);
+			const T* rhs2 = static_cast<const T*>(rhs);
+			T* dst2 = static_cast<T*>(dst);
+
+			size_t aligned_size = (count / 4u) * 4u;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += 4u) {
+				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
+				__m128 xmm1 = _mm_loadu_ps(rhs2 + i);
+				xmm0 = HypotFMA(xmm0, xmm1);
+				_mm_storeu_ps(dst2 + i, xmm0);
+			}
+
+			for (i; i < count; ++i) {
+				__m128 xmm0 = _mm_load_ss(lhs2 + i);
+				__m128 xmm1 = _mm_load_ss(rhs2 + i);
+				xmm0 = HypotFMA(xmm0, xmm1);
+				_mm_store_ss(dst2 + i, xmm0);
+			}
+		}
+
+		virtual void Hypotenuse(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+			const T* lhs2 = static_cast<const T*>(lhs);
+			const T* rhs2 = static_cast<const T*>(rhs);
+			T* dst2 = static_cast<T*>(dst);
+
+			size_t aligned_size = (count / 8u) * 8u;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += 8u) {
+				__m128 xmm0 = _mm_loadu_ps(lhs2 + i);
+				__m128 xmm1 = _mm_loadu_ps(lhs2 + i + 4);
+				__m128 xmm2 = _mm_loadu_ps(rhs2 + i);
+				__m128 xmm3 = _mm_loadu_ps(rhs2 + i + 4);
+
+				xmm2 = HypotFMA(xmm0, xmm2);
+				xmm3 = HypotFMA(xmm1, xmm3);
+
+				MaskSSE4(xmm2, xmm3, xmm0, xmm1, *mask, xmm0, xmm1);
+
+				_mm_storeu_ps(dst2 + i, xmm0);
+				_mm_storeu_ps(dst2 + i + 4, xmm1);
+				++mask;
+			}
+
+			if (aligned_size != count) {
+				lhs2 += aligned_size;
+				rhs2 += aligned_size;
+				dst2 += aligned_size;
+				count -= aligned_size;
+
+				float lhs_buffer[8u];
+				float rhs_buffer[8u];
+				float dst_buffer[8u];
+				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
+				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
+				Hypotenuse(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				memcpy(dst, dst_buffer, sizeof(T) * count);
+			}
 		}
 
 
@@ -1930,6 +2318,12 @@ namespace anvil { namespace compute { namespace details {
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}
+
+		static ANVIL_STRONG_INLINE __m256 HypotAVX512(__m256 a, __m256 b, __mmask8 mask) {
+			a = _mm256_mul_ps(a, a);
+			b = _mm256_fmadd_ps(b, b, a);
+			return _mm256_mask_sqrt_ps(a, mask, b);
+		}
 	public:
 		ArithmeticOperationsAvx512F32() :
 			ArithmeticOperationsFmaF32()
@@ -1938,6 +2332,7 @@ namespace anvil { namespace compute { namespace details {
 		virtual ~ArithmeticOperationsAvx512F32() {
 
 		}
+
 		// 1 input
 
 		virtual void Sqrt(const void* src, void* dst, size_t count, const uint8_t* mask) const {
@@ -2397,6 +2792,108 @@ namespace anvil { namespace compute { namespace details {
 				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
 				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
 				Xnor(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				memcpy(dst, dst_buffer, sizeof(T) * count);
+			}
+		}
+
+		virtual void Hypotenuse(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+			const T* lhs2 = static_cast<const T*>(lhs);
+			const T* rhs2 = static_cast<const T*>(rhs);
+			T* dst2 = static_cast<T*>(dst);
+
+			size_t aligned_size = (count / 8u) * 8u;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += 8u) {
+				__m256 xmm0 = _mm256_loadu_ps(lhs2 + i);
+				__m256 xmm2 = _mm256_loadu_ps(rhs2 + i);
+
+				xmm0 = HypotAVX512(xmm0, xmm2, *mask);
+
+				_mm256_storeu_ps(dst2 + i, xmm0);
+				++mask;
+			}
+
+			if (aligned_size != count) {
+				lhs2 += aligned_size;
+				rhs2 += aligned_size;
+				dst2 += aligned_size;
+				count -= aligned_size;
+
+				float lhs_buffer[8u];
+				float rhs_buffer[8u];
+				float dst_buffer[8u];
+				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
+				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
+				Hypotenuse(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				memcpy(dst, dst_buffer, sizeof(T) * count);
+			}
+		}
+
+		virtual void Minimum(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+			const T* lhs2 = static_cast<const T*>(lhs);
+			const T* rhs2 = static_cast<const T*>(rhs);
+			T* dst2 = static_cast<T*>(dst);
+
+			size_t aligned_size = (count / 8u) * 8u;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += 8u) {
+				__m256 xmm0 = _mm256_loadu_ps(lhs2 + i);
+				__m256 xmm2 = _mm256_loadu_ps(rhs2 + i);
+
+				xmm0 = _mm256_mask_min_ps(xmm0, *mask, xmm0, xmm2);
+
+				_mm256_storeu_ps(dst2 + i, xmm0);
+				++mask;
+			}
+
+			if (aligned_size != count) {
+				lhs2 += aligned_size;
+				rhs2 += aligned_size;
+				dst2 += aligned_size;
+				count -= aligned_size;
+
+				float lhs_buffer[8u];
+				float rhs_buffer[8u];
+				float dst_buffer[8u];
+				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
+				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
+				Minimum(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
+				memcpy(dst, dst_buffer, sizeof(T) * count);
+			}
+		}
+
+		virtual void Maximum(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+			const T* lhs2 = static_cast<const T*>(lhs);
+			const T* rhs2 = static_cast<const T*>(rhs);
+			T* dst2 = static_cast<T*>(dst);
+
+			size_t aligned_size = (count / 8u) * 8u;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += 8u) {
+				__m256 xmm0 = _mm256_loadu_ps(lhs2 + i);
+				__m256 xmm2 = _mm256_loadu_ps(rhs2 + i);
+
+				xmm0 = _mm256_mask_max_ps(xmm0, *mask, xmm0, xmm2);
+
+				_mm256_storeu_ps(dst2 + i, xmm0);
+				++mask;
+			}
+
+			if (aligned_size != count) {
+				lhs2 += aligned_size;
+				rhs2 += aligned_size;
+				dst2 += aligned_size;
+				count -= aligned_size;
+
+				float lhs_buffer[8u];
+				float rhs_buffer[8u];
+				float dst_buffer[8u];
+				memcpy(lhs_buffer, lhs2, sizeof(T) * count);
+				memcpy(rhs_buffer, rhs2, sizeof(T) * count);
+				Maximum(lhs_buffer, rhs_buffer, dst_buffer, 8u, mask);
 				memcpy(dst, dst_buffer, sizeof(T) * count);
 			}
 		}

@@ -543,6 +543,11 @@ namespace anvil { namespace compute {
 			return stod(ss.str());
 		}
 
+		template<class T>
+		static std::wstring GetTestOperationName(ArithmeticOperations& op, const std::wstring fn_name) {
+			return STR2WSTR(typeid(op).name())+ L"::" + std::wstring(fn_name) + L" (" + STR2WSTR(typeid(T).name()) + L") : ";
+		}
+
 		template<class T, size_t SIZE>
 		void TestOperation(
 			T a_val, T expected_result,
@@ -557,7 +562,7 @@ namespace anvil { namespace compute {
 
 			for (T& val : a) val = a_val;
 
-			std::wstring test_name = std::wstring(name) + L"<" + STR2WSTR(typeid(T).name()) + L"," + std::to_wstring(SIZE) + L"> : ";
+			std::wstring test_name = GetTestOperationName<T>(*operations, name);
 
 			if (unmasked_operation) {
 				(operations->*unmasked_operation)(a, out, SIZE);
@@ -604,7 +609,7 @@ namespace anvil { namespace compute {
 			for (T& val : a) val = a_val;
 			for (T& val : b) val = b_val;
 
-			std::wstring test_name = std::wstring(name) + L"<" + STR2WSTR(typeid(T).name()) + L"," + std::to_wstring(SIZE) + L"> : ";
+			std::wstring test_name = GetTestOperationName<T>(*operations, name);
 
 			if (unmasked_operation) {
 				(operations->*unmasked_operation)(a, b, out, SIZE);
@@ -717,6 +722,30 @@ namespace anvil { namespace compute {
 					&ArithmeticOperations::Divide,
 					&ArithmeticOperations::Divide,
 					L"Divide"
+				);
+
+				TestOperation<T, SIZE>(
+					6.f, 2.f, 2.f,
+					operations,
+					&ArithmeticOperations::Minimum,
+					&ArithmeticOperations::Minimum,
+					L"Minimum"
+				);
+
+				TestOperation<T, SIZE>(
+					6.f, 2.f, 6.f,
+					operations,
+					&ArithmeticOperations::Maximum,
+					&ArithmeticOperations::Maximum,
+					L"Maximum"
+				);
+
+				TestOperation<T, SIZE>(
+					6.f, 2.f, std::hypotf(6.f, 2.f),
+					operations,
+					&ArithmeticOperations::Hypotenuse,
+					&ArithmeticOperations::Hypotenuse,
+					L"Hypotenuse"
 				);
 			
 			} catch (std::exception& e) {
