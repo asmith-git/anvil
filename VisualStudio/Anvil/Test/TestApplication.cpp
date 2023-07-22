@@ -1017,8 +1017,149 @@ void ArithmeticMaskTest() {
 	operations->Mask(a, b, c, 4u, &mask);
 }
 
+
+#pragma optimize("", off)
+
+static size_t Bits2Bytes(size_t bits) {
+	size_t bytes = bits / 8u;
+	if (bytes == 0u) bytes = 1u;
+	{
+		// Round up the the nearest multiple of 8
+		size_t mod8 = bits % 8u;
+		if (mod8 > 0) ++bytes;
+	}
+	return bytes;
+}
+
+static void _MultiChannelExpandMaskReference(const uint8_t* src, uint8_t* dst, size_t count, size_t channels) {
+	using namespace anvil;
+
+	{
+		// Round up the the nearest multiple of 8
+		size_t mod8 = count % 8u;
+		if (mod8 > 0) count += 8u - mod8;
+	}
+
+	BytePipe::BitOutputStream bitstream(dst);
+
+	while (count >= 8u) {
+		uint32_t m = *src;
+		bitstream.WriteBits(m & 1u ? UINT32_MAX : 0u, channels);
+		bitstream.WriteBits(m & 2u ? UINT32_MAX : 0u, channels);
+		bitstream.WriteBits(m & 4u ? UINT32_MAX : 0u, channels);
+		bitstream.WriteBits(m & 8u ? UINT32_MAX : 0u, channels);
+		bitstream.WriteBits(m & 16u ? UINT32_MAX : 0u, channels);
+		bitstream.WriteBits(m & 32u ? UINT32_MAX : 0u, channels);
+		bitstream.WriteBits(m & 64u ? UINT32_MAX : 0u, channels);
+		bitstream.WriteBits(m & 128u ? UINT32_MAX : 0u, channels);
+		count -= 8u;
+		++src;
+	}
+
+	if (count > 0) {
+		uint32_t m = *src;
+		for (size_t i = 0u; i < count; ++i) {
+			bitstream.WriteBits(m & 1u ? UINT32_MAX : 0u, channels);
+			m >>= 1u;
+		}
+	}
+}
+
+static void _MultiChannelExpandMask2(const uint8_t* src, uint8_t* dst, size_t count) {
+	using namespace anvil;
+
+	{
+		// Round up the the nearest multiple of 8
+		size_t mod8 = count % 8u;
+		if (mod8 > 0) count += 8u - mod8;
+	}
+
+	while (count > 0) {
+		uint32_t mask_in = *src;
+
+		uint32_t mask_bit_0 = mask_in & 1u;
+		uint32_t mask_bit_1 = mask_in & 2u;
+		uint32_t mask_bit_2 = mask_in & 4u;
+		uint32_t mask_bit_3 = mask_in & 8u;
+		uint32_t mask_bit_4 = mask_in & 16u;
+		uint32_t mask_bit_5 = mask_in & 32u;
+		uint32_t mask_bit_6 = mask_in & 64u;
+		uint32_t mask_bit_7 = mask_in & 128u;
+
+		mask_bit_1 <<= 1u;
+		mask_bit_2 <<= 2u;
+		mask_bit_3 <<= 3u;
+		mask_bit_4 <<= 4u;
+		mask_bit_5 <<= 5u;
+		mask_bit_6 <<= 6u;
+		mask_bit_7 <<= 7u;
+
+		mask_bit_0 |= mask_bit_1;
+		mask_bit_2 |= mask_bit_3;
+		mask_bit_4 |= mask_bit_5;
+		mask_bit_6 |= mask_bit_7;
+
+		mask_bit_0 |= mask_bit_2;
+		mask_bit_4 |= mask_bit_6;
+
+		mask_bit_0 |= mask_bit_4;
+
+		mask_bit_0 |= mask_bit_0 << 1u;
+
+		*reinterpret_cast<uint16_t*>(dst) = static_cast<uint16_t>(mask_bit_0);
+
+		count -= 8u;
+		++src;
+		dst += 2u;
+	}
+}
+
+static void _MultiChannelExpandMask4(const uint8_t* src, uint8_t* dst, size_t count) {
+	uint8_t* buffer = (uint8_t*) _malloca(Bits2Bytes(count * 2));
+	_MultiChannelExpandMask2(src, buffer, count);
+	_MultiChannelExpandMask2(buffer, dst, count * 2u);
+	_freea(buffer);
+}
+
+void TestExpandMask() {
+	size_t in_size = 8;
+	uint8_t* mask = new uint8_t[Bits2Bytes(in_size)];
+	for (size_t i = 0u; i < Bits2Bytes(in_size); ++i) mask[i] = 255u;
+
+	std::cout << "Input Mask :\t\t\t" << std::bitset<8>(*mask).to_string() << std::endl;
+
+	size_t size2 = in_size * 2;
+	uint8_t* mask2_reference = new uint8_t[Bits2Bytes(size2)];
+	uint8_t* mask2_fast = new uint8_t[Bits2Bytes(size2)];
+
+	_MultiChannelExpandMaskReference(mask, mask2_reference, in_size, 2u);
+	_MultiChannelExpandMask2(mask, mask2_fast, in_size);
+
+	std::cout << "Reference mask (2 channels) :\t" << std::bitset<16>(*(uint16_t*)mask2_reference).to_string() << std::endl;
+	std::cout << "Fast mask (2 channels) :\t" << std::bitset<16>(*(uint16_t*)mask2_fast).to_string() << std::endl;
+
+	if (memcmp(mask2_reference, mask2_fast, Bits2Bytes(size2)) != 0)
+		throw 0;
+
+	size_t size4 = in_size * 4;
+	uint8_t* mask4_reference = new uint8_t[Bits2Bytes(size4)];
+	uint8_t* mask4_fast = new uint8_t[Bits2Bytes(size4)];
+
+	_MultiChannelExpandMaskReference(mask, mask4_reference, in_size, 4u);
+	_MultiChannelExpandMask4(mask, mask4_fast, in_size);
+
+	std::cout << "Reference mask (4 channels) :\t" << std::bitset<32>(*(uint32_t*)mask4_reference).to_string() << std::endl;
+	std::cout << "Fast mask (4 channels) :\t" << std::bitset<32>(*(uint32_t*)mask4_fast).to_string() << std::endl;
+
+	if (memcmp(mask4_reference, mask4_fast, Bits2Bytes(size4)) != 0)
+		throw 0;
+}
+
 int main()
 {
+	TestExpandMask();
+	return 0;
+
 	ArithmeticMaskTest();
 	return 0;
 

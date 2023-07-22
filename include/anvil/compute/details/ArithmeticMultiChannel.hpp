@@ -26,14 +26,31 @@ namespace anvil { namespace compute { namespace details {
 		ArithmeticOperations& _parent;
 		void (ArithmeticOperationsMultiChannel::* ExpandMask)(const uint8_t* src, uint8_t* dst, size_t count) const;
 
+		static size_t Bits2Bytes(size_t bits) {
+			size_t bytes = bits / 8u;
+			if (bytes == 0u) bytes = 1u;
+			{
+				// Round up the the nearest multiple of 8
+				size_t mod8 = bits % 8u;
+				if (mod8 > 0) ++bytes;
+			}
+			return bytes;
+		}
+
 		inline size_t NewMaskSize(size_t count) const {
-			return count * (_type.GetNumberOfChannels() + 1);
+			return Bits2Bytes(count * _type.GetNumberOfChannels()) * 8u;
 		}
 
 		/*!	
 		*	\brief Duplicate each bit in the mask for the number of channels
 		*/
 		void ExpandMaskUnoptimised(const uint8_t* src, uint8_t* dst, size_t count) const {
+			{
+				// Round up the the nearest multiple of 8
+				size_t mod8 = count % 8u;
+				if (mod8 > 0) count += 8u - mod8;
+			}
+
 			BytePipe::BitOutputStream bitstream(dst);
 			const size_t channels = _type.GetNumberOfChannels();
 
@@ -61,7 +78,81 @@ namespace anvil { namespace compute { namespace details {
 		}
 
 		void ExpandMask1(const uint8_t* src, uint8_t* dst, size_t count) const {
-			memcpy(dst, src, (count / 8) + ((count % 8) == 0 ? 0 : 1));
+			memcpy(dst, src, Bits2Bytes(count));
+		}
+
+		void ExpandMask2(const uint8_t* src, uint8_t* dst, size_t count) const {
+			{
+				// Round up the the nearest multiple of 8
+				size_t mod8 = count % 8u;
+				if (mod8 > 0) count += 8u - mod8;
+			}
+
+			// For each byte
+			while (count > 0) {
+				uint32_t mask_in = *src;
+
+				// Extract each bit
+				uint32_t mask_bit_0 = mask_in & 1u;
+				uint32_t mask_bit_1 = mask_in & 2u;
+				uint32_t mask_bit_2 = mask_in & 4u;
+				uint32_t mask_bit_3 = mask_in & 8u;
+				uint32_t mask_bit_4 = mask_in & 16u;
+				uint32_t mask_bit_5 = mask_in & 32u;
+				uint32_t mask_bit_6 = mask_in & 64u;
+				uint32_t mask_bit_7 = mask_in & 128u;
+
+				// Add 1 bit of padding (with a value of 0) between each bit
+				mask_bit_1 <<= 1u;
+				mask_bit_2 <<= 2u;
+				mask_bit_3 <<= 3u;
+				mask_bit_4 <<= 4u;
+				mask_bit_5 <<= 5u;
+				mask_bit_6 <<= 6u;
+				mask_bit_7 <<= 7u;
+
+				// Recombine the bits
+				mask_bit_0 |= mask_bit_1;
+				mask_bit_2 |= mask_bit_3;
+				mask_bit_4 |= mask_bit_5;
+				mask_bit_6 |= mask_bit_7;
+
+				mask_bit_0 |= mask_bit_2;
+				mask_bit_4 |= mask_bit_6;
+
+				mask_bit_0 |= mask_bit_4;
+
+				// Duplicate the bit values into the padding
+				mask_bit_0 |= mask_bit_0 << 1u;
+
+				*reinterpret_cast<uint16_t*>(dst) = static_cast<uint16_t>(mask_bit_0);
+
+				// Move to the next byte
+				count -= 8u;
+				++src;
+				dst += 2u;
+			}
+		}
+
+		void ExpandMask4(const uint8_t* src, uint8_t* dst, size_t count) const {
+			uint8_t* buffer = static_cast<uint8_t*>(_malloca(Bits2Bytes(count * 2)));
+			ExpandMask2(src, buffer, count);
+			ExpandMask2(buffer, dst, count * 2u);
+			_freea(buffer);
+		}
+
+		void ExpandMask8(const uint8_t* src, uint8_t* dst, size_t count) const {
+			uint8_t* buffer = static_cast<uint8_t*>(_malloca(Bits2Bytes(count * 4)));
+			ExpandMask4(src, buffer, count);
+			ExpandMask4(buffer, dst, count * 4u);
+			_freea(buffer);
+		}
+
+		void ExpandMask16(const uint8_t* src, uint8_t* dst, size_t count) const {
+			uint8_t* buffer = static_cast<uint8_t*>(_malloca(Bits2Bytes(count * 8)));
+			ExpandMask8(src, buffer, count);
+			ExpandMask8(buffer, dst, count * 8u);
+			_freea(buffer);
 		}
 
 		inline void CallOperation(
@@ -144,6 +235,18 @@ namespace anvil { namespace compute { namespace details {
 			switch (_type.GetNumberOfChannels()) {
 			case 1u:
 				ExpandMask = &ArithmeticOperationsMultiChannel::ExpandMask1;
+				break;
+			case 2u:
+				ExpandMask = &ArithmeticOperationsMultiChannel::ExpandMask2;
+				break;
+			case 4u:
+				ExpandMask = &ArithmeticOperationsMultiChannel::ExpandMask4;
+				break;
+			case 8u:
+				ExpandMask = &ArithmeticOperationsMultiChannel::ExpandMask8;
+				break;
+			case 16u:
+				ExpandMask = &ArithmeticOperationsMultiChannel::ExpandMask16;
 				break;
 			default:
 				ExpandMask = &ArithmeticOperationsMultiChannel::ExpandMaskUnoptimised;
