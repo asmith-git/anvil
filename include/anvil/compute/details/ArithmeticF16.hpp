@@ -440,6 +440,10 @@ namespace anvil { namespace compute { namespace details {
 			CallOperation(lhs, rhs, dst, count, &ArithmeticOperations::Power);
 		}
 
+		void Hypotenuse(const void* lhs, const void* rhs, void* dst, size_t count) const final {
+			CallOperation(lhs, rhs, dst, count, &ArithmeticOperations::Hypotenuse);
+		}
+
 		// 3 inputs
 
 		void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count) const final {

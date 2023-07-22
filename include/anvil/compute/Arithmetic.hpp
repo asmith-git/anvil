@@ -467,6 +467,16 @@ namespace anvil {namespace compute {
 		ANVIL_STRONG_INLINE void Power(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Power, instruction_set, false); }
 		ANVIL_STRONG_INLINE void Power(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Power, instruction_set, false); }
 
+		//! \brief dst = std::hypot(lhs, rhs)
+		virtual void Hypotenuse(const void* lhs, const void* rhs, void* dst, size_t count) const = 0;
+		virtual void Hypotenuse(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const;
+		ANVIL_STRONG_INLINE void Hypotenuse(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Hypotenuse, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Hypotenuse(const TypedScalar& a, const TypedScalar& b, TypedScalar& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Hypotenuse, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Hypotenuse(const Vector& a, const Vector& b, Vector& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Hypotenuse, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Hypotenuse(const Vector& a, const Vector& b, Vector& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Hypotenuse, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Hypotenuse(const Image& a, const Image& b, Image& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, &ArithmeticOperations::Hypotenuse, instruction_set, false); }
+		ANVIL_STRONG_INLINE void Hypotenuse(const Image& a, const Image& b, Image& dst, const uint8_t* mask, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(a, b, dst, mask, &ArithmeticOperations::Hypotenuse, instruction_set, false); }
+
 		// 3 inputs
 
 		//! \brief dst = a * b + c

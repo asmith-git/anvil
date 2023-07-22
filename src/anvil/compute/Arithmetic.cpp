@@ -469,6 +469,10 @@ namespace anvil { namespace compute {
 	void ArithmeticOperations::Power(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Power);
 	}
+
+	void ArithmeticOperations::Hypotenuse(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Hypotenuse);
+	}
 	
 	////
 

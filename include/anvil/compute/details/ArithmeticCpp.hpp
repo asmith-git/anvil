@@ -329,6 +329,10 @@ namespace anvil { namespace compute { namespace details {
 			CallCMathOperation(a, b, dst, count, &std::powf, &std::pow);
 		}
 
+		virtual void Hypotenuse(const void* a, const void* b, void* dst, size_t count) const {
+			CallCMathOperation(a, b, dst, count, &std::hypotf, &std::hypot);
+		}
+
 		// 3 inputs
 
 		virtual void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count) const {
