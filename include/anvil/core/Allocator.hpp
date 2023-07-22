@@ -21,6 +21,9 @@ namespace anvil {
 	
 	class ANVIL_DLL_EXPORT Allocator {
 	public:
+		static Allocator* GetDefaultAllocator();
+		static void SetDefaultAllocator(Allocator* allocator);
+
 		Allocator();
 		virtual ~Allocator();
 
@@ -52,8 +55,6 @@ namespace anvil {
 		void Deallocate(void* address) final;
 	};
 
-	ANVIL_DLL_EXPORT Allocator* GetDefaultAllocator();
-	ANVIL_DLL_EXPORT void SetDefaultAllocator(Allocator* allocator);
 
 }
 

@@ -47,7 +47,7 @@ namespace anvil { namespace compute {
 	static Allocator* g_image_allocator_override = nullptr;
 
 	Allocator* Image::GetAllocator() {
-		return g_image_allocator_override ? g_image_allocator_override : GetDefaultAllocator();
+		return g_image_allocator_override ? g_image_allocator_override : Allocator::GetDefaultAllocator();
 	}
 
 	void Image::SetAllocator(Allocator* allocator) {

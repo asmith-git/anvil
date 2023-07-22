@@ -19,15 +19,15 @@ namespace anvil {
 	static AllocatorCPP g_default_allocator;
 	static Allocator* g_default_allocator_override = nullptr;
 
-	Allocator* GetDefaultAllocator() {
+	// Allocator
+
+	Allocator* Allocator::GetDefaultAllocator() {
 		return g_default_allocator_override ? g_default_allocator_override : &g_default_allocator;
 	}
 
-	void SetDefaultAllocator(Allocator* allocator) {
+	void Allocator::SetDefaultAllocator(Allocator* allocator) {
 		g_default_allocator_override = allocator;
 	}
-
-	// Allocator
 
 	Allocator::Allocator() {
 
