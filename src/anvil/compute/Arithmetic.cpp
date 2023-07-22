@@ -473,6 +473,14 @@ namespace anvil { namespace compute {
 	void ArithmeticOperations::Hypotenuse(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
 		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Hypotenuse);
 	}
+
+	void ArithmeticOperations::Minimum(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Minimum);
+	}
+
+	void ArithmeticOperations::Maximum(const void* lhs, const void* rhs, void* dst, size_t count, const uint8_t* mask) const {
+		CallDefaultMaskedOperation(lhs, rhs, dst, count, mask, &ArithmeticOperations::Maximum);
+	}
 	
 	////
 

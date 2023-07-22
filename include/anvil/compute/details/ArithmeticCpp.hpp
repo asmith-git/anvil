@@ -333,6 +333,20 @@ namespace anvil { namespace compute { namespace details {
 			CallCMathOperation(a, b, dst, count, &std::hypotf, &std::hypot);
 		}
 
+		virtual void Minimum(const void* a, const void* b, void* dst, size_t count) const {
+			const T* a2 = static_cast<const T*>(a);
+			const T* b2 = static_cast<const T*>(b);
+			T* dst2 = static_cast<T*>(dst);
+			for (size_t i = 0u; i < count; ++i) dst2[i] = std::min<T>(a2[i], b2[i]);
+		}
+
+		virtual void Maximum(const void* a, const void* b, void* dst, size_t count) const {
+			const T* a2 = static_cast<const T*>(a);
+			const T* b2 = static_cast<const T*>(b);
+			T* dst2 = static_cast<T*>(dst);
+			for (size_t i = 0u; i < count; ++i) dst2[i] = std::max<T>(a2[i], b2[i]);
+		}
+
 		// 3 inputs
 
 		virtual void MultiplyAdd(const void* a, const void* b, const void* c, void* dst, size_t count) const {
