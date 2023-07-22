@@ -87,6 +87,13 @@ namespace anvil { namespace compute {
 	{
 		Swap(other);
 	}
+	
+	Image::Image(Image& other) :
+		Image()
+	{
+		Image tmp = other.ShallowCopy();
+		Swap(tmp);
+	}
 
 #if ANVIL_OPENCV_SUPPORT
 	Image::Image(const cv::Mat& mat) :
@@ -98,6 +105,12 @@ namespace anvil { namespace compute {
 
 	Image& Image::operator=(Image&& other) {
 		Swap(other);
+		return *this;
+	}
+
+	Image& Image::operator=(Image& other) {
+		Image tmp = other.ShallowCopy();
+		Swap(tmp);
 		return *this;
 	}
 

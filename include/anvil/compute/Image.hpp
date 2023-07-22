@@ -67,10 +67,21 @@ namespace anvil { namespace compute {
 		Image(void* data, const Type type, size_t width, size_t height, size_t row_step, size_t pixel_step);
 
 		Image(Image&& other);
-		Image(const Image&) = delete;
-
 		Image& operator=(Image&& other);
-		Image& operator=(const Image&) = delete;
+
+		/*!
+		*	\brief This image becomes a shallow copy of another image.
+		*	\param other The image to copy.
+		*	\see Image::ShallowCopy
+		*/
+		Image(Image&);
+		
+		/*!
+		*	\brief This image becomes a shallow copy of another image.
+		*	\param other The image to copy.
+		*	\see Image::ShallowCopy
+		*/
+		Image& operator=(Image&);
 
 		void Swap(Image& other);
 
