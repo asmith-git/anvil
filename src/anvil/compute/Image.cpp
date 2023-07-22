@@ -26,7 +26,7 @@ namespace anvil { namespace compute {
 #endif
 
 	Image::MemoryBlock::MemoryBlock(size_t a_bytes) :
-		data(operator new (a_bytes)),
+		data(Image::GetAllocator()->Allocate(a_bytes)),
 		bytes(a_bytes),
 		mode(ANVIL_BLOCK)
 	{
@@ -35,14 +35,24 @@ namespace anvil { namespace compute {
 
 	Image::MemoryBlock::~MemoryBlock() {
 		if (data) {
-			operator delete(data);
+			Image::GetAllocator()->Deallocate(data);
 			data = nullptr;
 			bytes = 0u;
 		}
 	}
 
 
-	// Image 
+	// Image 	
+	
+	static Allocator* g_image_allocator_override = nullptr;
+
+	Allocator* Image::GetAllocator() {
+		return g_image_allocator_override ? g_image_allocator_override : GetDefaultAllocator();
+	}
+
+	void Image::SetAllocator(Allocator* allocator) {
+		g_image_allocator_override = allocator;
+	}
 
 	Image::Image() :
 		_parent(nullptr),

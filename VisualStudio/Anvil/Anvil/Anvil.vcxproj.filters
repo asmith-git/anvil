@@ -144,6 +144,9 @@
     <ClCompile Include="..\..\..\src\anvil\compute\Arithmetic.cpp">
       <Filter>Source Files\compute</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\core\Allocator.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\anvil\core\Alignment.hpp">
@@ -349,6 +352,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\anvil\compute\details\ArithmeticF16.hpp">
       <Filter>Header Files\compute\details</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\Allocator.hpp">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

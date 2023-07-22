@@ -197,6 +197,7 @@
     <ClCompile Include="..\..\..\src\anvil\compute\Scalar.cpp" />
     <ClCompile Include="..\..\..\src\anvil\compute\Vector.cpp" />
     <ClCompile Include="..\..\..\src\anvil\console\Console.cpp" />
+    <ClCompile Include="..\..\..\src\anvil\core\Allocator.cpp" />
     <ClCompile Include="..\..\..\src\anvil\core\Base64.cpp" />
     <ClCompile Include="..\..\..\src\anvil\core\CpuRuntime.cpp" />
     <ClCompile Include="..\..\..\src\anvil\core\Hexadecimal.cpp" />
@@ -242,6 +243,7 @@
     <ClInclude Include="..\..\..\include\anvil\console\Console.hpp" />
     <ClInclude Include="..\..\..\include\anvil\Core.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\Alignment.hpp" />
+    <ClInclude Include="..\..\..\include\anvil\core\Allocator.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\Assert.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\Base64.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\Bitset128.hpp" />

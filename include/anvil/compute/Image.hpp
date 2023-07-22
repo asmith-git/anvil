@@ -18,6 +18,7 @@
 #include <memory>
 #include <list>
 #include <functional>
+#include "anvil/core/Allocator.hpp"
 #include "anvil/compute/Vector.hpp"
 #if ANVIL_OPENCV_SUPPORT
 #include<opencv2/core/mat.hpp>
@@ -58,6 +59,9 @@ namespace anvil { namespace compute {
 		size_t _height;									//!< The sizeo f a column in pixels.
 		Type _type;										//!< The data type of the pixels.
 	public:
+		static Allocator* GetAllocator();
+		static void SetAllocator(Allocator* allocator);
+
 		Image();
 		~Image();
 
