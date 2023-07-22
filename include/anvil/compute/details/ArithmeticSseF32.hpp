@@ -2319,10 +2319,10 @@ namespace anvil { namespace compute { namespace details {
 			}
 		}
 
-		static ANVIL_STRONG_INLINE __m256 HypotAVX512(__m256 a, __m256 b, __mmask8 mask) {
+		static ANVIL_STRONG_INLINE __m256 HypotAVX512(__m256 src, __m256 a, __m256 b, __mmask8 mask) {
 			a = _mm256_mul_ps(a, a);
 			b = _mm256_fmadd_ps(b, b, a);
-			return _mm256_mask_sqrt_ps(a, mask, b);
+			return _mm256_mask_sqrt_ps(src, mask, b);
 		}
 	public:
 		ArithmeticOperationsAvx512F32() :
@@ -2808,7 +2808,7 @@ namespace anvil { namespace compute { namespace details {
 				__m256 xmm0 = _mm256_loadu_ps(lhs2 + i);
 				__m256 xmm2 = _mm256_loadu_ps(rhs2 + i);
 
-				xmm0 = HypotAVX512(xmm0, xmm2, *mask);
+				xmm0 = HypotAVX512(xmm0, xmm0, xmm2, *mask);
 
 				_mm256_storeu_ps(dst2 + i, xmm0);
 				++mask;
