@@ -530,6 +530,12 @@ namespace anvil { namespace compute {
 		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Xor(a, b, dst);
 		return dst;
 	}
+
+	ANVIL_STRONG_INLINE Image operator~(const Image& a) {
+		Image dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Not(a, dst);
+		return dst;
+	}
 }}
 
 #endif

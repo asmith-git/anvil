@@ -313,6 +313,12 @@ namespace anvil { namespace compute {
 		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Xor(a, b, dst);
 		return dst;
 	}
+
+	ANVIL_STRONG_INLINE TypedScalar operator~(const TypedScalar& a) {
+		TypedScalar dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Not(a, dst);
+		return dst;
+	}
 }}
 
 #endif

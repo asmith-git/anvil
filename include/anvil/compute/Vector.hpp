@@ -155,6 +155,12 @@ namespace anvil { namespace compute {
 		return dst;
 	}
 
+	ANVIL_STRONG_INLINE Vector operator~(const Vector& a) {
+		Vector dst;
+		ArithmeticOperations::GetArithmeticOperations(ANVIL_8UX1)->Not(a, dst);
+		return dst;
+	}
+
 }}
 
 //	namespace detail {
