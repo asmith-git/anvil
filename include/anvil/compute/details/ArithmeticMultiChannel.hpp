@@ -26,19 +26,26 @@ namespace anvil { namespace compute { namespace details {
 		ArithmeticOperations& _parent;
 		void (ArithmeticOperationsMultiChannel::* ExpandMask)(const uint8_t* src, uint8_t* dst, size_t count) const;
 
+		/*!
+		*	\brief Calculates how many bytes are needed to store a number of bits.
+		*	\param bits The number of bits.
+		*	\return The number of bytes needed.
+		*/
 		static size_t Bits2Bytes(size_t bits) {
 			size_t bytes = bits / 8u;
 			if (bytes == 0u) bytes = 1u;
-			{
-				// Round up the the nearest multiple of 8
-				size_t mod8 = bits % 8u;
-				if (mod8 > 0) ++bytes;
-			}
+			size_t mod8 = bits % 8u;
+			if (mod8 > 0) ++bytes;
 			return bytes;
 		}
 
+		/*!
+		*	\brief Calculates how many bytes are needed to store a number of bits multiplied by the number of channels of this data type.
+		*	\param count The number of bits.
+		*	\return The number of bytes needed.
+		*/
 		inline size_t NewMaskSize(size_t count) const {
-			return Bits2Bytes(count * _type.GetNumberOfChannels()) * 8u;
+			return Bits2Bytes(count * _type.GetNumberOfChannels());
 		}
 
 		/*!	
