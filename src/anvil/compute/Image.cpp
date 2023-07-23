@@ -296,18 +296,16 @@ namespace anvil { namespace compute {
 	void Image::DeepCopyTo(Image& other) const {
 		other.Allocate(_type, _width, _height, false);
 
-		const size_t pixel_bytes = _type.GetSizeInBytes();
-		const size_t row_bytes = pixel_bytes * _width;
-		if (_pixel_step == pixel_bytes) {
-			for (size_t y = 0u; y < _height; ++y) memcpy(other.GetPixelAddress(0, y), GetPixelAddress(0, y), row_bytes);
+		if (IsRowContiguous() && other.IsRowContiguous()) {
+			const size_t pixel_bytes = _type.GetSizeInBytes();
+			const size_t row_bytes = pixel_bytes * _width;
+			for (size_t y = 0u; y < _height; ++y) memcpy(other.GetRowAddress(y), GetRowAddress(y), row_bytes);
 
 		} else {
 			//! \todo Optimise
 			for (size_t y = 0u; y < _height; ++y) {
 				for (size_t x = 0u; x < _height; ++x) {
-					Vector tmp;
-					ReadPixel(x, y, tmp);
-					other.WritePixel(x, y, tmp);
+					other.WritePixel(x, y, GetPixelAddress(x, y));
 				}
 			}
 		}

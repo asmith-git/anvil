@@ -394,6 +394,15 @@ namespace anvil { namespace compute {
 			pixel._type = _type;
 		}
 
+		template<>
+		inline void ReadPixel<void*>(size_t x, size_t y, void*& pixel) const {
+			memcpy(pixel, GetPixelAddress(x, y), _type.GetSizeInBytes());
+		}
+
+		ANVIL_STRONG_INLINE void ReadPixel(size_t x, size_t y, void* pixel) const {
+			memcpy(pixel, GetPixelAddress(x, y), _type.GetSizeInBytes());
+		}
+
 		/*!
 		*	\brief Read the value of a pixel.
 		*	\details This function will not check if the requested position is valid or if the value is the correct type unless in debug mode.
@@ -445,6 +454,16 @@ namespace anvil { namespace compute {
 			} else {
 				memcpy(GetPixelAddress(x, y), pixel.ConvertTo(_type).GetData(), _type.GetSizeInBytes());
 			}
+		}
+
+		template<>
+		inline void WritePixel<const void*>(size_t x, size_t y, const void* const pixel) {
+			memcpy(GetPixelAddress(x, y), pixel, _type.GetSizeInBytes());
+		}
+
+		template<>
+		inline void WritePixel<void*>(size_t x, size_t y, void* const pixel) {
+			memcpy(GetPixelAddress(x, y), pixel, _type.GetSizeInBytes());
 		}
 
 		/*!

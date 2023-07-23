@@ -540,23 +540,38 @@ namespace anvil { namespace compute {
 		
 		ArithmeticOperations* operations = ArithmeticOperations::GetArithmeticOperations(a.GetType(), instruction_set);
 
+		enum {
+			AC = 1u,	//!< All pixels in A are contiguous
+			BC = 2u,	//!< All pixels in B are contiguous
+			CC = 4u,	//!< All pixels in C are contiguous
+			DC = 8u,	//!< All pixels in DST are contiguous
+			ARC = 16u,	//!< All rows in A are contiguous
+			BRC = 32u,	//!< All rows in B are contiguous
+			CRC = 64u,	//!< All rows in C are contiguous
+			DRC = 128u,	//!< All rows in DST are contiguous
 
-		const bool ac = a2->IsContiguous();
-		const bool bc = b2->IsContiguous();
-		const bool cc = c2->IsContiguous();
-		const bool dc = dst.IsContiguous();
-		const bool arc = a2->IsRowContiguous();
-		const bool brc = b2->IsRowContiguous();
-		const bool crc = c2->IsRowContiguous();
-		const bool drc = dst.IsRowContiguous();
+			ALL_CONTIGUOUS = AC | BC | CC | DC,
+			ALL_ROW_CONTIGUOUS = ARC | BRC | CRC | DRC,
+			ALL_INPUTS_ROW_CONTIGUOUS = ARC | BRC | CRC,
+		};
+
+		uint32_t flags = 0u;
+		flags |= a2->IsContiguous() ? AC : 0;
+		flags |= b2->IsContiguous() ? BC : 0;
+		flags |= c2->IsContiguous() ? CC : 0;
+		flags |= dst.IsContiguous() ? DC : 0;
+		flags |= a2->IsRowContiguous() ? ARC : 0;
+		flags |= b2->IsRowContiguous() ? BRC : 0;
+		flags |= c2->IsRowContiguous() ? CRC : 0;
+		flags |= dst.IsRowContiguous() ? DRC : 0;
 
 		// Apply to the whole image at once
-		if (ac && bc && cc && dc) {
+		if ((flags & ALL_CONTIGUOUS) == ALL_CONTIGUOUS) {
 APPLY_WHOLE_IMAGE:
 			operation(*operations, a2->GetData(), b2->GetData(), c2->GetData(), dst.GetData(), w * h, mask);
 
 		// Apply row by row
-		} else if (arc && brc && crc && drc) {
+		} else if ((flags & ALL_ROW_CONTIGUOUS) == ALL_ROW_CONTIGUOUS) {
 APPLY_ROW_BY_ROW:
 			if (mask == nullptr ) {
 				for (size_t y = 0u; y < h; ++y) {
@@ -593,14 +608,14 @@ APPLY_ROW_BY_ROW:
 			// Copy the images instead, it's most likely faster
 
 
-			if (dc) {
-				if (arc || brc || crc) goto RETRY_WITH_ROW_BY_ROW;
+			if (flags & DC) {
+				if (flags & ALL_INPUTS_ROW_CONTIGUOUS) goto RETRY_WITH_ROW_BY_ROW; // If any input image is row contiguous
 
-				if (!ac) {
+				if ((flags & AC) == 0) {
 					buffer_a = a2->DeepCopy();
 					a2 = &buffer_a;
 				}
-				if (!bc) {
+				if ((flags & BC) == 0) {
 					if (a2 == b2) {
 						b2 = a2;
 					} else {
@@ -608,7 +623,7 @@ APPLY_ROW_BY_ROW:
 						b2 = &buffer_b;
 					}
 				}
-				if (!cc) {
+				if ((flags & CC) == 0) {
 					if (a2 == c2) {
 						c2 = a2;
 					} else {
@@ -618,13 +633,13 @@ APPLY_ROW_BY_ROW:
 				}
 				goto APPLY_WHOLE_IMAGE;
 
-			} else if (drc) {
+			} else if (flags & DRC) {
 RETRY_WITH_ROW_BY_ROW:
-				if (!arc) {
+				if ((flags & ARC) == 0) {
 					buffer_a = a2->DeepCopy();
 					a2 = &buffer_a;
 				}
-				if (!brc) {
+				if ((flags & BRC) == 0) {
 					if (a2 == b2) {
 						b2 = a2;
 					} else {
@@ -632,7 +647,7 @@ RETRY_WITH_ROW_BY_ROW:
 						b2 = &buffer_b;
 					}
 				}
-				if (!crc) {
+				if ((flags & CRC) == 0) {
 					if (a2 == c2) {
 						c2 = a2;
 					} else {
