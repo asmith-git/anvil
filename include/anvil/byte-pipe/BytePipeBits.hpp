@@ -31,6 +31,8 @@ namespace anvil { namespace BytePipe {
 
 		void WriteBits(const uint8_t* src, size_t bit_count);
 		void WriteBits(const uintptr_t bits, size_t bit_count);
+
+		void Flush();
 	};
 
 	struct ANVIL_DLL_EXPORT BitInputStream {

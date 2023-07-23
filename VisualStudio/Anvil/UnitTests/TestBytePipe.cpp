@@ -532,4 +532,96 @@ namespace anvil { namespace BytePipe {
 			}
 		}
 	};
+
+
+	TEST_CLASS(BitPipes)
+	{
+	public:
+		TEST_METHOD(AlignedWrite)
+		{
+			enum {
+				BUFFER_SIZE_BYTES = 512,
+				BUFFER_SIZE_BITS = BUFFER_SIZE_BYTES * 8
+			};
+			uint8_t buffer[BUFFER_SIZE_BYTES];
+			for (uint8_t& val : buffer) val = (uint8_t)(rand() % 256);
+
+			uint8_t results_buffer[BUFFER_SIZE_BYTES];
+			memset(results_buffer, 0, sizeof(BUFFER_SIZE_BYTES));
+
+			BitOutputStream stream(results_buffer);
+			stream.WriteBits(buffer, BUFFER_SIZE_BITS);
+			stream.Flush();
+
+			Assert::IsTrue(memcmp(buffer, results_buffer, BUFFER_SIZE_BYTES) == 0, L"Data written did not match source");
+		}
+
+		TEST_METHOD(UnalignedWrite)
+		{
+			enum {
+				BUFFER_SIZE_BYTES = 512,
+				BUFFER_SIZE_BITS = BUFFER_SIZE_BYTES * 8
+			};
+			uint8_t buffer[BUFFER_SIZE_BYTES];
+			for (uint8_t& val : buffer) val = (uint8_t)(rand() % 256);
+
+			uint8_t results_buffer[BUFFER_SIZE_BYTES];
+			memset(results_buffer, 0, sizeof(BUFFER_SIZE_BYTES));
+
+			BitOutputStream stream(results_buffer);
+			for (size_t i = 0u; i < BUFFER_SIZE_BYTES; ++i) {
+				uint32_t tmp = buffer[i];
+				size_t bits = rand() % 8;
+
+				stream.WriteBits(tmp, bits);
+				stream.WriteBits(tmp >> bits, 8u - bits);
+			}
+			stream.Flush();
+
+			Assert::IsTrue(memcmp(buffer, results_buffer, BUFFER_SIZE_BYTES) == 0, L"Data written did not match source");
+		}
+
+		TEST_METHOD(AlignedRead)
+		{
+			enum {
+				BUFFER_SIZE_BYTES = 512,
+				BUFFER_SIZE_BITS = BUFFER_SIZE_BYTES * 8
+			};
+			uint8_t buffer[BUFFER_SIZE_BYTES];
+			for (uint8_t& val : buffer) val = (uint8_t)(rand() % 256);
+
+			uint8_t results_buffer[BUFFER_SIZE_BYTES];
+			memset(results_buffer, 0, sizeof(BUFFER_SIZE_BYTES));
+
+			BitInputStream stream(buffer);
+			stream.ReadBits(results_buffer, BUFFER_SIZE_BITS);
+
+			Assert::IsTrue(memcmp(buffer, results_buffer, BUFFER_SIZE_BYTES) == 0, L"Data read did not match source");
+		}
+
+		TEST_METHOD(UnalignedRead)
+		{
+			enum {
+				BUFFER_SIZE_BYTES = 512,
+				BUFFER_SIZE_BITS = BUFFER_SIZE_BYTES * 8
+			};
+			uint8_t buffer[BUFFER_SIZE_BYTES];
+			for (uint8_t& val : buffer) val = (uint8_t)(rand() % 256);
+
+			uint8_t results_buffer[BUFFER_SIZE_BYTES];
+			memset(results_buffer, 0, sizeof(BUFFER_SIZE_BYTES));
+
+			BitInputStream stream(buffer);
+			for (size_t i = 0u; i < BUFFER_SIZE_BYTES; ++i) {
+				size_t bits = rand() % 8;
+
+				uint32_t tmp = stream.ReadBits(bits);
+				uint32_t tmp2 = stream.ReadBits(8u - bits);
+
+				results_buffer[i] = static_cast<uint8_t>(tmp | (tmp2 << bits));
+			}
+
+			Assert::IsTrue(memcmp(buffer, results_buffer, BUFFER_SIZE_BYTES) == 0, L"Data read did not match source");
+		}
+	};
 }}

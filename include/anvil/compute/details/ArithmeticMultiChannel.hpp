@@ -69,6 +69,8 @@ namespace anvil { namespace compute { namespace details {
 					m >>= 1u;
 				}
 			}
+
+			bitstream.Flush();
 		}
 
 		void ExpandMask1(const uint8_t* src, uint8_t* dst, size_t count) const {
