@@ -24,9 +24,13 @@ namespace anvil { namespace BytePipe {
 		uint8_t* _out;				//!< The location that the next complete byte will be written to
 		uint32_t _buffer;			//!< The bits that were leftover from the last write
 		uint32_t _buffered_bits;	//!< How many bits were leftover from the last write
+	private:
+		void _WriteBits(const uint32_t bits, size_t bit_count);
 	public:
 		BitOutputStream(uint8_t* o);
-		void WriteBits(uint32_t bits, size_t bit_count);
+
+		void WriteBits(const uint8_t* src, size_t bit_count);
+		void WriteBits(const uintptr_t bits, size_t bit_count);
 	};
 
 	struct ANVIL_DLL_EXPORT BitInputStream {
@@ -35,11 +39,18 @@ namespace anvil { namespace BytePipe {
 		uint32_t _buffer;			//!< The bits that were leftover from the last read
 		uint32_t _buffered_bits;	//!< How many bits were leftover from the last read
 
-		void NextByte();
+		void BufferNextByte();
 		uint32_t _ReadBits(size_t bit_count);
 	public:
 		BitInputStream(const uint8_t* i);
-		uint32_t ReadBits(size_t bit_count);
+		void ReadBits(uint8_t* dst, size_t bit_count);
+
+		ANVIL_STRONG_INLINE uintptr_t ReadBits(size_t bit_count) {
+			ANVIL_DEBUG_ASSERT(bit_count <= (sizeof(uintptr_t) * 8u), "anvil::BytePipe::BitInputStream::ReadBits : Bit count is too high");
+			uintptr_t tmp = 0u;
+			ReadBits(reinterpret_cast<uint8_t*>(&tmp), bit_count);
+			return tmp;
+		}
 	};
 
 

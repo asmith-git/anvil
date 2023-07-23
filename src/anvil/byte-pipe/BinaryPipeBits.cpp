@@ -24,7 +24,9 @@ namespace anvil { namespace BytePipe {
 		_buffered_bits(0u)
 	{}
 
-	void BitOutputStream::WriteBits(uint32_t bits, size_t bit_count2) {
+	void BitOutputStream::_WriteBits(uint32_t bits, size_t bit_count2) {
+		ANVIL_DEBUG_ASSERT(bit_count2 <= 32u, "anvil::BytePipe::BitOutputStream::_WriteBits : Bit count is too high");
+
 		uint32_t bit_count = static_cast<uint32_t>(bit_count2);
 		while(bit_count > 0u) {
 			if (_buffered_bits == 0u) {
@@ -67,12 +69,53 @@ namespace anvil { namespace BytePipe {
 		}
 	}
 
+	void BitOutputStream::WriteBits(const uint8_t* src, size_t bit_count) {
+		if (_buffered_bits == 0u) {
+			while (bit_count >= 32u) {
+				*reinterpret_cast<uint32_t*>(_out) = *reinterpret_cast<const uint32_t*>(src);
+				src += 4u;
+				_out += 4u;
+				bit_count -= 32u;
+			}
+			while (bit_count >= 8u) {
+				*_out = *src;
+				++src;
+				++_out;
+				bit_count -= 8u;
+			}
+		}
+
+		while (bit_count >= 32u) {
+			_WriteBits(*reinterpret_cast<const uint32_t*>(src), 32u);
+			src += 4u;
+			bit_count -= 32u;
+		}
+
+		while (bit_count >= 8u) {
+			_WriteBits(*src, 8u);
+			++src;
+			bit_count -= 8u;
+		}
+
+		if (bit_count > 0u) _WriteBits(*src, bit_count);
+	}
+
+	void BitOutputStream::WriteBits(const uintptr_t bits, size_t bit_count) {
+		_WriteBits(static_cast<uint32_t>(bits), bit_count);
+		if ANVIL_CONSTEXPR_VAR(sizeof(uintptr_t) > sizeof(uint32_t)) {
+			if (bit_count > 32u) {
+				_WriteBits(static_cast<uint32_t>(bits >> 32u), bit_count - 32u);
+			}
+		}
+	}
+
 	// BitInputStream
 
-	void BitInputStream::NextByte() {
-		_buffer = *_in;
+	void BitInputStream::BufferNextByte() {
+		_buffer <<= 8u;
+		_buffer |= *_in;
 		++_in;
-		_buffered_bits = 8u;
+		_buffered_bits += 8u;
 	}
 
 	uint32_t BitInputStream::_ReadBits(size_t bit_count2) {
@@ -87,7 +130,7 @@ namespace anvil { namespace BytePipe {
 
 			if (count < bit_count) {
 				// Read the next byte
-				NextByte();
+				BufferNextByte();
 
 				// Read more bits
 				const uint32_t bits_remaining = bit_count - count;
@@ -112,9 +155,32 @@ namespace anvil { namespace BytePipe {
 		_buffered_bits(0u)
 	{}
 
-	uint32_t BitInputStream::ReadBits(size_t bit_count) {
-		if (_buffered_bits == 0u) NextByte();
-		return _ReadBits(bit_count);
+	void BitInputStream::ReadBits(uint8_t* dst, size_t bit_count) {
+		if (_buffered_bits == 0u) {
+			enum { WORD_BITS = sizeof(uintptr_t) * 8u };
+			while (bit_count >= WORD_BITS) {
+				*reinterpret_cast<uintptr_t*>(dst) = *reinterpret_cast<const uintptr_t*>(_in);
+				bit_count -= WORD_BITS;
+				dst += sizeof(uintptr_t);
+			}
+
+			while (bit_count >= 8u) {
+				*dst = *_in;
+				bit_count -= 8u;
+				++dst;
+			}
+		}
+
+		while (bit_count >= 8u) {
+			*dst = static_cast<uint8_t>(_ReadBits(8u));
+			++dst;
+			bit_count -= 8u;
+		}
+
+		if (bit_count > 0u) {
+			*dst = static_cast<uint8_t>(_ReadBits(bit_count));
+			++dst;
+		}
 	}
 
 }}

@@ -579,21 +579,7 @@ APPLY_ROW_BY_ROW:
 
 				for (size_t y = 0u; y < h; ++y) {
 					// Extract the mask for this row
-					{
-						uint8_t* row_mask_2 = row_mask;
-						size_t bits_left = w;
-						while (bits_left >= 32u) {
-							*reinterpret_cast<uint32_t*>(row_mask_2) = bit_stream.ReadBits(32u);
-							bits_left -= 32u;
-							row_mask_2 += 4u;
-						}
-						while (bits_left >= 8u) {
-							*row_mask_2 = static_cast<uint8_t>(bit_stream.ReadBits(8u));
-							bits_left -= 8u;
-							++row_mask_2;
-						}
-						if (bits_left > 0) *row_mask_2 = static_cast<uint8_t>(bit_stream.ReadBits(bits_left));
-					}
+					bit_stream.ReadBits(row_mask, w);
 
 					// Call the operation for this row
 					operation(*operations, a2->GetRowAddress(y), b2->GetRowAddress(y), c2->GetRowAddress(y), dst.GetRowAddress(y), w, row_mask);
