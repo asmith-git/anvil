@@ -298,11 +298,16 @@ namespace anvil { namespace compute {
 		if (_data == other._data) return true;
 
 		size_t pixel_bytes = _type.GetSizeInBytes();
-		if (_pixel_step == pixel_bytes && other._pixel_step == pixel_bytes) {
+		if (IsContiguous() && other.IsContiguous()) {
+			const size_t img_bytes = _type.GetSizeInBytes() * _width * _height;
+			if (memcmp(other.GetData(), GetData(), img_bytes) != 0) return false;
+
+		} else if (IsRowContiguous() && other.IsRowContiguous()) {
 			const size_t row_bytes = _type.GetSizeInBytes() * _width;
 			for (size_t y = 0u; y < _height; ++y) {
-				if (memcmp(other.GetRowAddress(y), GetRowAddress(0), row_bytes) != 0) return false;
+				if (memcmp(other.GetRowAddress(y), GetRowAddress(y), row_bytes) != 0) return false;
 			}
+
 		} else {
 			for (size_t y = 0u; y < _height; ++y) {
 				for (size_t x = 0u; x < _width; ++x) {

@@ -45,6 +45,8 @@ namespace anvil { namespace compute {
 	void Vector::ConvertToInPlace(Type type) {
 		if (_type == type) return;
 
+		ANVIL_RUNTIME_ASSERT(_type.GetNumberOfChannels() == type.GetNumberOfChannels(), "anvil::compute::Vector::ConvertToInPlace : Cannot change number of channels during conversion");
+
 		//! \todo Optimise
 		const size_t s = Size();
 		Vector tmp(type);

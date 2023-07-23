@@ -138,13 +138,18 @@ namespace anvil { namespace compute {
 				FillImage(img, Vector(128, img.GetType()));
 
 				Image r = img.GetChannel(0);
-				FillImage(r, Vector(0, img.GetType()));
+				FillImage(r, Vector(0, r.GetType()));
 				Image g = img.GetChannel(1);
-				FillImage(g, Vector(1, img.GetType()));
+				FillImage(g, Vector(1, g.GetType()));
 				Image b = img.GetChannel(2);
-				FillImage(b, Vector(2, img.GetType()));
+				FillImage(b, Vector(2, b.GetType()));
 				Image a = img.GetChannel(3);
-				FillImage(a, Vector(3, img.GetType()));
+				FillImage(a, Vector(3, a.GetType()));
+
+				Assert::AreEqual(img.GetData(), r.GetData(), L"R image data should start at the same location as the RGBA source image");
+				Assert::AreEqual(static_cast<uint8_t*>(r.GetData()) + 1, static_cast<uint8_t*>(g.GetData()), L"G image data should start at R + 1");
+				Assert::AreEqual(static_cast<uint8_t*>(r.GetData()) + 2, static_cast<uint8_t*>(b.GetData()), L"B image data should start at R + 2");
+				Assert::AreEqual(static_cast<uint8_t*>(r.GetData()) + 3, static_cast<uint8_t*>(a.GetData()), L"A image data should start at R + 3");
 
 				{
 					// Check channels in the correct order
@@ -206,7 +211,63 @@ namespace anvil { namespace compute {
 				for (size_t i = 0u; i < s; ++i) Assert::AreEqual((uint8_t)3, tmp[i], L"A channel contained a pixel with a wrong value (after copy)");
 
 			} catch (std::exception& e) {
-				Assert::Fail(std::wstring_convert<std::codecvt<wchar_t, char, std::mbstate_t>>().from_bytes(e.what()).c_str());
+				Assert::Fail(STR2WSTR(e.what()).c_str());
+			}
+		}	
+
+		TEST_METHOD(EqualsOperator)
+		{
+			try {
+				// Create a random image
+				Image a(ANVIL_8UX1, 64, 64);
+				Image b(ANVIL_8UX1, 64, 64);
+				size_t s = 64 * 64;
+				{
+					uint8_t* adata = (uint8_t*)a.GetData();
+					uint8_t* bdata = (uint8_t*)b.GetData();
+					for (size_t i = 0u; i < s; ++i) {
+						adata[i] = rand() % 256;
+						bdata[i] = adata[i];
+					}
+				}
+
+				Assert::IsTrue(a == b, L"Comparing two equal images returned false");
+
+				FillImage(b, Vector(0, b.GetType()));
+
+				Assert::IsFalse(a == b, L"Comparing two different images return true");
+
+			} catch (std::runtime_error& e) {
+				Assert::Fail(STR2WSTR(e.what()).c_str());
+			}
+		}
+		TEST_METHOD(Transpose)
+		{
+			try {
+				// Create a random image
+				Image a(ANVIL_8UX1, 64, 64);
+				size_t s = 64 * 64;
+				{
+					uint8_t* data = (uint8_t*) a.GetData();
+					for (size_t i = 0u; i < s; ++i) data[i] = rand() % 256;
+				}
+
+				// Check that the transposed image is correct
+				Image b = a.Transpose();
+				for (size_t y = 0; y < 64; ++y) {
+					for (size_t x = 0; x < 64; ++x) {
+						Vector a_pixel, b_pixel;
+						a.ReadPixel(x, y, a_pixel);
+						b.ReadPixel(y, x, b_pixel);
+						Assert::IsTrue(a_pixel == b_pixel, L"Pixel value in transposed image was not as expected");
+					}
+				}
+
+				// Check if transposing it back produces an identical image to the original
+				b = b.Transpose();
+				Assert::IsTrue(a == b, L"Double transposed image is not equal the the original");
+			} catch (std::runtime_error& e) {
+				Assert::Fail(STR2WSTR(e.what()).c_str());
 			}
 		}
 	};
