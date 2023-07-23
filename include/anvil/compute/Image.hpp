@@ -225,6 +225,9 @@ namespace anvil { namespace compute {
 		*/
 		Image ConvertTo(Type type);
 
+		void TransposeInPlace();
+		Image Transpose() const;
+
 		/*!
 		*	\param Try to reinterpret what the memory of this image represents without changing the values of any pixels.
 		*	\details An example of how this function might be used is to reinterpret a single precision floating point image as 32-bit integer to perform a bitwise masking operation on it.

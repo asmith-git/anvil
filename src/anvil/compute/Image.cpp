@@ -272,6 +272,27 @@ namespace anvil { namespace compute {
 		return tmp;
 	}
 
+	void Image::TransposeInPlace() {
+		if (_width <= 1u || _height <= 1u) {
+			if (TryReinterpretAs(_type, _height, _width, true)) return;
+		}
+
+		//! \todo Optimise
+		Image tmp(_type, _height, _width);
+		for (size_t y = 0u; y < _height; ++y) {
+			for (size_t x = 0u; x < _width; ++x) {
+				tmp.WritePixel(y, x, GetPixelAddress(x, y));
+			}
+		}
+		Swap(tmp);
+	}
+
+	Image Image::Transpose() const {
+		Image tmp = DeepCopy();
+		tmp.TransposeInPlace();
+		return tmp;
+	}
+
 	bool Image::operator==(const Image& other) const throw() {
 		if (_type != other._type || _width != other._width || _height != other._height) return false;
 		if (_data == other._data) return true;
