@@ -474,6 +474,15 @@ namespace anvil { namespace compute {
 		return channels;
 	}
 
+	std::list<Image> Image::GetAllChannels() const {
+		std::list<Image> channels;
+		size_t count = _type.GetNumberOfChannels();
+		for (size_t i = 0u; i < count; ++i) {
+			channels.push_back(GetChannel(i));
+		}
+		return channels;
+	}
+
 	void Image::GetRoiPosition(size_t& x, size_t& y) const {
 		x = 0u;
 		y = 0u;

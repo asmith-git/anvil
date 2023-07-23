@@ -162,6 +162,9 @@ namespace anvil { namespace compute {
 		*	\see Image::GetAllChannels
 		*/
 		Image GetChannels(size_t index, size_t count);
+		ANVIL_STRONG_INLINE Image GetChannels(size_t index, size_t count) const {
+			return const_cast<Image*>(this)->GetChannels(index, count).DeepCopy();
+		}
 
 		/*!
 		*	\brief Return a child image that only references one channel of this image.
@@ -174,6 +177,9 @@ namespace anvil { namespace compute {
 		ANVIL_STRONG_INLINE Image GetChannel(size_t index) {
 			return GetChannels(index, 1u);
 		}
+		ANVIL_STRONG_INLINE Image GetChannel(size_t index) const {
+			return GetChannels(index, 1u);
+		}
 
 		/*!
 		*	\brief Return child images that reference each channel of this image.
@@ -183,6 +189,7 @@ namespace anvil { namespace compute {
 		*	\see Image::GetChannels
 		*/
 		std::list<Image> GetAllChannels();
+		std::list<Image> GetAllChannels() const;
 
 		/*!
 		*	\brief Return a child image that references only a region of interest (ROI) of this image.
@@ -193,6 +200,9 @@ namespace anvil { namespace compute {
 		*	\return The child image
 		*/
 		Image GetRoi(size_t x, size_t y, size_t width, size_t height);
+		ANVIL_STRONG_INLINE Image GetRoi(size_t x, size_t y, size_t width, size_t height) const {
+			return const_cast<Image*>(this)->GetRoi(x, y, width, height).DeepCopy();
+		}
 
 		/*!
 		*	\brief Return a child image that references only one row of this image.
@@ -205,6 +215,10 @@ namespace anvil { namespace compute {
 		ANVIL_STRONG_INLINE Image GetRow(size_t y) { 
 			return GetRoi(0u, y, _width, 1u); 
 		}
+
+		ANVIL_STRONG_INLINE Image GetRow(size_t y) const {
+			return GetRoi(0u, y, _width, 1u);
+		}
 		
 		/*!
 		*	\brief Return a child image that references only one column of this image.
@@ -216,6 +230,10 @@ namespace anvil { namespace compute {
 		*/
 		ANVIL_STRONG_INLINE Image GetCol(size_t x) { 
 			return GetRoi(x, 0u, 1u, _height); 
+		}
+
+		ANVIL_STRONG_INLINE Image GetCol(size_t x) const {
+			return GetRoi(x, 0u, 1u, _height);
 		}
 
 		/*!
