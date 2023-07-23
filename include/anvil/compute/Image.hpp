@@ -274,6 +274,15 @@ namespace anvil { namespace compute {
 		*	\brief Check if all pixel values in this image are contiguous within memory.
 		*	\return True if the image is contiguous.
 		*/
+		ANVIL_STRONG_INLINE bool IsRowContiguous() const throw() {
+			size_t bytes = _type.GetSizeInBytes();
+			return _row_step == bytes * _width;
+		}
+
+		/*!
+		*	\brief Check if all pixel values in this image are contiguous within memory.
+		*	\return True if the image is contiguous.
+		*/
 		ANVIL_STRONG_INLINE bool IsContiguous() const throw() {
 			size_t bytes = _type.GetSizeInBytes();
 			return _pixel_step == bytes && _row_step == bytes * _width;

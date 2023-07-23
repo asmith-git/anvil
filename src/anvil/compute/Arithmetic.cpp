@@ -19,6 +19,7 @@
 #include "anvil/compute/details/ArithmeticF16.hpp"
 #include <vector>
 #include "anvil/compute/Image.hpp"
+#include "anvil/byte-pipe/BytePipeBits.hpp"
 
 namespace anvil { namespace compute {
 
@@ -502,6 +503,169 @@ namespace anvil { namespace compute {
 	
 	////
 
+	static void CallImageOperation(
+		const Image& a, const Image& b, const Image& c, Image& dst, const uint8_t* mask,
+		uint64_t instruction_set, bool is_bitiwse,
+		const std::function<void(ArithmeticOperations& operations, const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask)>& operation
+	) {
+		const size_t w = a.GetWidth();
+		const size_t h = a.GetHeight();
+		ANVIL_DEBUG_ASSERT(w == b.GetWidth(), "A and B images must be the same width");
+		ANVIL_DEBUG_ASSERT(w == c.GetWidth(), "A and C images must be the same width");
+		ANVIL_DEBUG_ASSERT(w == b.GetHeight(), "A and B images must be the same height");
+		ANVIL_DEBUG_ASSERT(w == c.GetHeight(), "A and C images must be the same height");
+
+		Image buffer_a, buffer_b, buffer_c;
+		const Image *a2, *b2, *c2;
+		Type type;
+		if (&a != &b || &a != &c) {
+			type = is_bitiwse ?
+				ArithmeticOperations::PreferedBitwiseOutputType(ArithmeticOperations::PreferedBitwiseOutputType(a.GetType(), b.GetType()), c.GetType()) :
+				ArithmeticOperations::PreferedOutputType(ArithmeticOperations::PreferedOutputType(a.GetType(), b.GetType()), c.GetType());
+
+			buffer_a = const_cast<Image&>(a).ConvertTo(type);
+			buffer_b = const_cast<Image&>(b).ConvertTo(type);
+			buffer_c = const_cast<Image&>(c).ConvertTo(type);
+			a2 = &buffer_a;
+			b2 = &buffer_b;
+			c2 = &buffer_c;
+		} else {
+			type = a.GetType();
+			a2 = &a;
+			b2 = &a;
+			c2 = &a;
+		}
+
+		dst.Allocate(type, w, h, false);		
+		
+		ArithmeticOperations* operations = ArithmeticOperations::GetArithmeticOperations(a.GetType(), instruction_set);
+
+
+		const bool ac = a2->IsContiguous();
+		const bool bc = b2->IsContiguous();
+		const bool cc = c2->IsContiguous();
+		const bool dc = dst.IsContiguous();
+		const bool arc = a2->IsRowContiguous();
+		const bool brc = b2->IsRowContiguous();
+		const bool crc = c2->IsRowContiguous();
+		const bool drc = dst.IsRowContiguous();
+
+		// Apply to the whole image at once
+		if (ac && bc && cc && dc) {
+APPLY_WHOLE_IMAGE:
+			operation(*operations, a2->GetData(), b2->GetData(), c2->GetData(), dst.GetData(), w * h, mask);
+
+		// Apply row by row
+		} else if (arc && brc && crc && drc) {
+APPLY_ROW_BY_ROW:
+			if (mask == nullptr ) {
+				for (size_t y = 0u; y < h; ++y) {
+					operation(*operations, a2->GetRowAddress(y), b2->GetRowAddress(y), c2->GetRowAddress(y), dst.GetRowAddress(y), w, nullptr);
+				}
+
+			} else if ((w % 8) == 0) {
+				const size_t row_mask_bytes = ArithmeticOperations::CalculateMaskBytes(w);
+				for (size_t y = 0u; y < h; ++y) {
+					operation(*operations, a2->GetRowAddress(y), b2->GetRowAddress(y), c2->GetRowAddress(y), dst.GetRowAddress(y), w, mask);
+					mask += row_mask_bytes;
+				}
+
+			} else {
+				// Allocate a buffer to store the mask for a row
+				const size_t row_mask_bytes = ArithmeticOperations::CalculateMaskBytes(w);
+				uint8_t* row_mask = static_cast<uint8_t*>(_malloca(row_mask_bytes));
+				ANVIL_RUNTIME_ASSERT(row_mask, "anvil::CallImageOperation : Failed to allocate buffer for row mask");
+				BytePipe::BitInputStream bit_stream(mask);
+
+				for (size_t y = 0u; y < h; ++y) {
+					// Extract the mask for this row
+					{
+						uint8_t* row_mask_2 = row_mask;
+						size_t bits_left = w;
+						while (bits_left >= 32u) {
+							*reinterpret_cast<uint32_t*>(row_mask_2) = bit_stream.ReadBits(32u);
+							bits_left -= 32u;
+							row_mask_2 += 4u;
+						}
+						while (bits_left >= 8u) {
+							*row_mask_2 = static_cast<uint8_t>(bit_stream.ReadBits(8u));
+							bits_left -= 8u;
+							++row_mask_2;
+						}
+						if (bits_left > 0) *row_mask_2 = static_cast<uint8_t>(bit_stream.ReadBits(bits_left));
+					}
+
+					// Call the operation for this row
+					operation(*operations, a2->GetRowAddress(y), b2->GetRowAddress(y), c2->GetRowAddress(y), dst.GetRowAddress(y), w, row_mask);
+				}
+
+				_freea(row_mask);
+			}
+
+		// Apply pixel by pixel
+		} else {
+			// Copy the images instead, it's most likely faster
+
+
+			if (dc) {
+				if (arc || brc || crc) goto RETRY_WITH_ROW_BY_ROW;
+
+				if (!ac) {
+					buffer_a = a2->DeepCopy();
+					a2 = &buffer_a;
+				}
+				if (!bc) {
+					if (a2 == b2) {
+						b2 = a2;
+					} else {
+						buffer_b = b2->DeepCopy();
+						b2 = &buffer_b;
+					}
+				}
+				if (!cc) {
+					if (a2 == c2) {
+						c2 = a2;
+					} else {
+						buffer_c = c2->DeepCopy();
+						c2 = &buffer_c;
+					}
+				}
+				goto APPLY_WHOLE_IMAGE;
+
+			} else if (drc) {
+RETRY_WITH_ROW_BY_ROW:
+				if (!arc) {
+					buffer_a = a2->DeepCopy();
+					a2 = &buffer_a;
+				}
+				if (!brc) {
+					if (a2 == b2) {
+						b2 = a2;
+					} else {
+						buffer_b = b2->DeepCopy();
+						b2 = &buffer_b;
+					}
+				}
+				if (!crc) {
+					if (a2 == c2) {
+						c2 = a2;
+					} else {
+						buffer_c = c2->DeepCopy();
+						c2 = &buffer_c;
+					}
+				}
+				goto APPLY_ROW_BY_ROW;
+
+			} else {
+				// Output needs to be copied into place
+				Image dst_buffer;
+				dst.Allocate(type, w, h, true);
+				CallImageOperation(*a2, *b2, *c2, dst_buffer, mask, instruction_set, is_bitiwse, operation);
+				dst_buffer.DeepCopyTo(dst);
+			}
+		}
+	}
+
 	#pragma warning( disable : 4100) // is_bitwise is not used, Currently not needed for single input operations
 	void ArithmeticOperations::CallOperation(
 		const TypedScalar& src, TypedScalar& dst,
@@ -524,17 +688,17 @@ namespace anvil { namespace compute {
 		(GetArithmeticOperations(src.GetType(), instruction_set)->*Function)(src.GetData(), dst.GetData(), 1u);
 	}
 	
-	#pragma warning( disable : 4100) // is_bitwise is not used, Currently not needed for single input operations
 	void ArithmeticOperations::CallOperation(
 		const Image& src, Image& dst,
 		void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count) const,
 		uint64_t instruction_set, bool is_bitwise
 	) const {
-		const Type type = src.GetType();
-		const size_t w = src.GetWidth();
-		const size_t h = src.GetHeight();
-		dst.Allocate(type, w, h);
-		(GetArithmeticOperations(src.GetType(), instruction_set)->*Function)(src.GetData(), dst.GetData(), w * h);
+		CallImageOperation(
+			src, src, src, dst, nullptr, instruction_set, is_bitwise,
+			[Function](ArithmeticOperations& operations, const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask)->void {
+				(operations.*Function)(a, dst, count);
+			}
+		);
 	}
 	
 	#pragma warning( disable : 4100) // is_bitwise is not used, Currently not needed for single input operations
@@ -559,17 +723,17 @@ namespace anvil { namespace compute {
 		(GetArithmeticOperations(src.GetType(), instruction_set)->*Function)(src.GetData(), dst.GetData(), 1u, mask);
 	}
 	
-	#pragma warning( disable : 4100) // is_bitwise is not used, Currently not needed for single input operations
 	void ArithmeticOperations::CallOperation(
 		const Image& src, Image& dst, const uint8_t* mask,
 		void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count, const uint8_t* mask) const,
 		uint64_t instruction_set, bool is_bitwise
 	) const {
-		const Type type = src.GetType();
-		const size_t w = src.GetWidth();
-		const size_t h = src.GetHeight();
-		dst.Allocate(type, w, h);
-		(GetArithmeticOperations(src.GetType(), instruction_set)->*Function)(src.GetData(), dst.GetData(),  w * h, mask);
+		CallImageOperation(
+			src, src, src, dst, mask, instruction_set, is_bitwise,
+			[Function](ArithmeticOperations& operations, const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask)->void {
+				(operations.*Function)(a, dst, count, mask);
+			}
+		);
 	}
 
 	////
@@ -603,17 +767,11 @@ namespace anvil { namespace compute {
 		void(ArithmeticOperations::* Function)(const void* a, const void* b, void* dst, size_t count) const,
 		uint64_t instruction_set, bool is_bitwise
 	) const {
-		const Type t1 = a.GetType();
-		const Type t2 = b.GetType();
-		const Type type = is_bitwise ? PreferedBitwiseOutputType(t1, t2) : PreferedOutputType(t1, t2);
-		const size_t w = a.GetWidth();
-		const size_t h = a.GetHeight();
-		ANVIL_DEBUG_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "ArithmeticOperations::CallOperation : Input images must be same size");
-		dst.Allocate(type, w, h);
-		(GetArithmeticOperations(type, instruction_set)->*Function)(
-			const_cast<Image&>(a).ConvertTo(type).GetData(), 
-			const_cast<Image&>(b).ConvertTo(type).GetData(), 
-			dst.GetData(), w * h
+		CallImageOperation(
+			a, b, a, dst, nullptr, instruction_set, is_bitwise,
+			[Function](ArithmeticOperations& operations, const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask)->void {
+				(operations.*Function)(a, b, dst, count);
+			}
 		);
 	}
 
@@ -646,17 +804,11 @@ namespace anvil { namespace compute {
 		void(ArithmeticOperations::* Function)(const void* a, const void* b, void* dst, size_t count, const uint8_t* mask) const,
 		uint64_t instruction_set, bool is_bitwise
 	) const {
-		const Type t1 = a.GetType();
-		const Type t2 = b.GetType();
-		const Type type = is_bitwise ? PreferedBitwiseOutputType(t1, t2) : PreferedOutputType(t1, t2);
-		const size_t w = a.GetWidth();
-		const size_t h = a.GetHeight();
-		ANVIL_DEBUG_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "ArithmeticOperations::CallOperation : Input images must be same size");
-		dst.Allocate(type, w, h);
-		(GetArithmeticOperations(type, instruction_set)->*Function)(
-			const_cast<Image&>(a).ConvertTo(type).GetData(), 
-			const_cast<Image&>(b).ConvertTo(type).GetData(), 
-			dst.GetData(), w * h, mask
+		CallImageOperation(
+			a, b, a, dst, mask, instruction_set, is_bitwise,
+			[Function](ArithmeticOperations& operations, const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask)->void {
+				(operations.*Function)(a, b, dst, count, mask);
+			}
 		);
 	}
 
@@ -695,19 +847,11 @@ namespace anvil { namespace compute {
 		void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count) const,
 		uint64_t instruction_set, bool is_bitwise
 	) const {
-		const Type t1 = a.GetType();
-		const Type t2 = b.GetType();
-		const Type t3 = c.GetType();
-		const Type type = is_bitwise ? PreferedBitwiseOutputType(PreferedBitwiseOutputType(t1, t2), t3) : PreferedOutputType(PreferedOutputType(t1, t2), t3);
-		const size_t w = a.GetWidth();
-		const size_t h = a.GetHeight();
-		ANVIL_DEBUG_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "ArithmeticOperations::CallOperation : Input images must be same size");
-		dst.Allocate(type, w, h);
-		(GetArithmeticOperations(type, instruction_set)->*Function)(
-			const_cast<Image&>(a).ConvertTo(type).GetData(), 
-			const_cast<Image&>(b).ConvertTo(type).GetData(), 
-			const_cast<Image&>(c).ConvertTo(type).GetData(), 
-			dst.GetData(), w * h
+		CallImageOperation(
+			a, b, c, dst, nullptr, instruction_set, is_bitwise,
+			[Function](ArithmeticOperations& operations, const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask)->void {
+				(operations.*Function)(a, b, c, dst, count);
+			}
 		);
 	}
 
@@ -742,21 +886,11 @@ namespace anvil { namespace compute {
 		void(ArithmeticOperations::* Function)(const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask) const,
 		uint64_t instruction_set, bool is_bitwise
 	) const {
-		const Type t1 = a.GetType();
-		const Type t2 = b.GetType();
-		const Type t3 = c.GetType();
-		const Type type = is_bitwise ? PreferedBitwiseOutputType(PreferedBitwiseOutputType(t1, t2), t3) : PreferedOutputType(PreferedOutputType(t1, t2), t3);
-		const size_t w = a.GetWidth();
-		const size_t h = a.GetHeight();
-		ANVIL_DEBUG_ASSERT(w == b.GetWidth() && h == b.GetHeight(), "ArithmeticOperations::CallOperation : Input images must be same size");
-		dst.Allocate(type, w, h);
-		(GetArithmeticOperations(type, instruction_set)->*Function)(
-			const_cast<Image&>(a).ConvertTo(type).GetData(), 
-			const_cast<Image&>(b).ConvertTo(type).GetData(),
-			const_cast<Image&>(c).ConvertTo(type).GetData(),
-			dst.GetData(),
-			w * h,
-			mask
+		CallImageOperation(
+			a, b, c, dst, mask, instruction_set, is_bitwise,
+			[Function](ArithmeticOperations& operations, const void* a, const void* b, const void* c, void* dst, size_t count, const uint8_t* mask)->void {
+				(operations.*Function)(a, b, c, dst, count, mask);
+			}
 		);
 	}
 

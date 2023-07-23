@@ -161,6 +161,20 @@ namespace anvil {namespace compute {
 
 		virtual void Initialise();
 	public:
+
+		/*!
+		*	\brief Calculates how many bytes are needed to store a number of bits.
+		*	\param bits The number of bits.
+		*	\return The number of bytes needed.
+		*/
+		static inline size_t CalculateMaskBytes(size_t bits) {
+			size_t bytes = bits / 8u;
+			if (bytes == 0u) bytes = 1u;
+			size_t mod8 = bits % 8u;
+			if (mod8 > 0) ++bytes;
+			return bytes;
+		}
+
 		static bool SetupStaticObjects();
 		static ArithmeticOperations* GetArithmeticOperations(Type type, uint64_t instruction_set = SupportedInstructionSets);
 		static Type PreferedOutputType(Type input_type1, Type input_type2);

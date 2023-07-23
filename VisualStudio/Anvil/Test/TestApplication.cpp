@@ -1017,9 +1017,6 @@ void ArithmeticMaskTest() {
 	operations->Mask(a, b, c, 4u, &mask);
 }
 
-
-#pragma optimize("", off)
-
 static size_t Bits2Bytes(size_t bits) {
 	size_t bytes = bits / 8u;
 	if (bytes == 0u) bytes = 1u;

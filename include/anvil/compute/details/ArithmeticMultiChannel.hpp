@@ -27,25 +27,12 @@ namespace anvil { namespace compute { namespace details {
 		void (ArithmeticOperationsMultiChannel::* ExpandMask)(const uint8_t* src, uint8_t* dst, size_t count) const;
 
 		/*!
-		*	\brief Calculates how many bytes are needed to store a number of bits.
-		*	\param bits The number of bits.
-		*	\return The number of bytes needed.
-		*/
-		static size_t Bits2Bytes(size_t bits) {
-			size_t bytes = bits / 8u;
-			if (bytes == 0u) bytes = 1u;
-			size_t mod8 = bits % 8u;
-			if (mod8 > 0) ++bytes;
-			return bytes;
-		}
-
-		/*!
 		*	\brief Calculates how many bytes are needed to store a number of bits multiplied by the number of channels of this data type.
 		*	\param count The number of bits.
 		*	\return The number of bytes needed.
 		*/
 		inline size_t NewMaskSize(size_t count) const {
-			return Bits2Bytes(count * _type.GetNumberOfChannels());
+			return CalculateMaskBytes(count * _type.GetNumberOfChannels());
 		}
 
 		/*!	
@@ -85,7 +72,7 @@ namespace anvil { namespace compute { namespace details {
 		}
 
 		void ExpandMask1(const uint8_t* src, uint8_t* dst, size_t count) const {
-			memcpy(dst, src, Bits2Bytes(count));
+			memcpy(dst, src, CalculateMaskBytes(count));
 		}
 
 		void ExpandMask2(const uint8_t* src, uint8_t* dst, size_t count) const {
@@ -142,21 +129,21 @@ namespace anvil { namespace compute { namespace details {
 		}
 
 		void ExpandMask4(const uint8_t* src, uint8_t* dst, size_t count) const {
-			uint8_t* buffer = static_cast<uint8_t*>(_malloca(Bits2Bytes(count * 2)));
+			uint8_t* buffer = static_cast<uint8_t*>(_malloca(CalculateMaskBytes(count * 2)));
 			ExpandMask2(src, buffer, count);
 			ExpandMask2(buffer, dst, count * 2u);
 			_freea(buffer);
 		}
 
 		void ExpandMask8(const uint8_t* src, uint8_t* dst, size_t count) const {
-			uint8_t* buffer = static_cast<uint8_t*>(_malloca(Bits2Bytes(count * 4)));
+			uint8_t* buffer = static_cast<uint8_t*>(_malloca(CalculateMaskBytes(count * 4)));
 			ExpandMask4(src, buffer, count);
 			ExpandMask4(buffer, dst, count * 4u);
 			_freea(buffer);
 		}
 
 		void ExpandMask16(const uint8_t* src, uint8_t* dst, size_t count) const {
-			uint8_t* buffer = static_cast<uint8_t*>(_malloca(Bits2Bytes(count * 8)));
+			uint8_t* buffer = static_cast<uint8_t*>(_malloca(CalculateMaskBytes(count * 8)));
 			ExpandMask8(src, buffer, count);
 			ExpandMask8(buffer, dst, count * 8u);
 			_freea(buffer);
