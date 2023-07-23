@@ -119,8 +119,8 @@ namespace anvil { namespace compute {
 	}
 
 	Image& Image::operator=(Image& other) {
-		Image tmp = other.ShallowCopy();
-		Swap(tmp);
+		Deallocate();
+		Swap(other);
 		return *this;
 	}
 
