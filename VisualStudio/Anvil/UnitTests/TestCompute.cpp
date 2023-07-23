@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "CppUnitTest.h"
 #include "anvil/Core.hpp"
 #include "anvil/compute.hpp"

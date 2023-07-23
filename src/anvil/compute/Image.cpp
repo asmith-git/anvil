@@ -134,14 +134,15 @@ namespace anvil { namespace compute {
 		std::swap(_height, other._height);
 	}
 
-	void Image::Allocate(Type type, size_t width, size_t height, bool force) {
+	uint32_t Image::Allocate(Type type, size_t width, size_t height, uint32_t flags) {
+
 		// Check if the requested image is the same as the current one and the allocation isn't forced
-		if (type == _type && _width == width && _height == height && !force) {
-			return;
+		if (type == _type && _width == width && _height == height && (flags & ALLOW_REINTERPRET)) {
+			return REINTERPRETED;
 		}
 
 		// If this is the only image using the memory block then don't need to worry about parent/child images
-		if (_memory_manager.use_count() == 1u && _memory_manager->mode == MemoryBlock::ANVIL_BLOCK) {
+		if (_memory_manager.use_count() == 1u && _memory_manager->mode == MemoryBlock::ANVIL_BLOCK && (flags && ALLOW_REALLOCATE)) {
 			// If the current memory is large enough then we can re-use it efficently
 			size_t pixel_bytes = type.GetSizeInBytes();
 			if (_memory_manager->bytes >= pixel_bytes * width * height) {
@@ -152,28 +153,35 @@ namespace anvil { namespace compute {
 				_width = width;
 				_height = height;
 				_type = type;
-				return;
+				return REALLOCATED;// Technically a reinterpretation but should be treated by external code as a reallocation
 			}
 		}
 
 		// If this isn't a forced allcoation we can try to reinterpret the pixel type
-		if ((!force) && _type.GetSizeInBytes() == type.GetSizeInBytes()) {
-			if (TryReinterpretAs(type, width, height, true)) return;
+		if ((flags & ALLOW_REINTERPRET) && _type.GetSizeInBytes() == type.GetSizeInBytes()) {
+			if (ReinterpretAsInPlace(type, width, height, ALLOW_REINTERPRET) & REINTERPRETED) {
+				return REINTERPRETED;
+			}
 		}
 
 		// Otherwise we need to deallocate the current block and allocate a new one
-		if (_memory_manager) {
-			std::shared_ptr<MemoryBlock> tmp;
-			_memory_manager.swap(tmp);
+		if (flags & ALLOW_REALLOCATE) {
+			if (_memory_manager) {
+				std::shared_ptr<MemoryBlock> tmp;
+				_memory_manager.swap(tmp);
+			}
+			_parent = nullptr;
+			_pixel_step = type.GetSizeInBytes();
+			_row_step = _pixel_step * width;
+			_memory_manager.reset(new MemoryBlock(_row_step * height));
+			_data = _memory_manager->data;
+			_width = width;
+			_height = height;
+			_type = type;
+			return REALLOCATED;
 		}
-		_parent = nullptr;
-		_pixel_step = type.GetSizeInBytes();
-		_row_step = _pixel_step * width;
-		_memory_manager.reset(new MemoryBlock(_row_step * height));
-		_data = _memory_manager->data;
-		_width = width;
-		_height = height;
-		_type = type;
+
+		throw std::runtime_error("anvil::compute::Image::Allocate : Failed to allocate image");
 	}
 
 	void Image::Deallocate() {
@@ -187,38 +195,77 @@ namespace anvil { namespace compute {
 		_height = 0u;
 	}
 
-	bool Image::TryReinterpretAs(Type type, size_t width, size_t height, bool allow_reinterpret_as_smaller) {
+	uint32_t Image::ReinterpretAsInPlace(Type type, size_t width, size_t height, uint32_t flags) {
 		const size_t current_pixel_bytes = _type.GetSizeInBytes();
 		const size_t new_pixel_bytes = type.GetSizeInBytes();
 
-		size_t current_bytes = 0u;
-		size_t new_bytes = 0u;
+		if(flags & ALLOW_REINTERPRET) {
+			size_t current_bytes = 0u;
+			size_t new_bytes = 0u;
 
-		if (_pixel_step != current_bytes) {
-			// Can only reinterpret pixels
-			current_bytes = current_pixel_bytes;
-			new_bytes = new_pixel_bytes;
+			if (_pixel_step != current_bytes) {
+				// Can only reinterpret pixels
+				current_bytes = current_pixel_bytes;
+				new_bytes = new_pixel_bytes;
 
-		} else if (_row_step != current_pixel_bytes * _width) {
-			// Can only reinterpret rows
-			if (height > _height) return false;
-			current_bytes = current_pixel_bytes * _width;
-			new_bytes = new_pixel_bytes * width;
+			} else if (_row_step != current_pixel_bytes * _width) {
+				// Can only reinterpret rows
+				if (height > _height) return false;
+				current_bytes = current_pixel_bytes * _width;
+				new_bytes = new_pixel_bytes * width;
 
-		} else {
-			// Can reinterpret whole image
-			current_bytes = current_pixel_bytes * _width * _height;
-			new_bytes = new_pixel_bytes * width * height;
+			} else {
+				// Can reinterpret whole image
+				current_bytes = current_pixel_bytes * _width * _height;
+				new_bytes = new_pixel_bytes * width * height;
+			}
+
+			if (current_bytes == new_bytes || (current_bytes > new_bytes)) {
+				_type = type;
+				_width = width;
+				_height = height;
+				return REINTERPRETED;
+			}
 		}
 
-		if (current_bytes == new_bytes || (allow_reinterpret_as_smaller && current_bytes > new_bytes)) {
-			_type = type;
-			_width = width;
-			_height = height;
-			return true;
+		if ((flags & ALLOW_REALLOCATE) && new_pixel_bytes >= current_pixel_bytes) {
+			//! \todo Optimise
+			Image tmp(type, width, height);
+			for (size_t y = 0u; y < _height; ++y) {
+				for (size_t x = 0u; x < _width; ++x) {
+					const void* this_pixel = GetPixelAddress(x, y);
+					void* new_pixel = tmp.GetPixelAddress(x, y);
+					memcpy(new_pixel, this_pixel, current_pixel_bytes);
+					memset(static_cast<uint8_t*>(new_pixel) + current_pixel_bytes, 0, current_pixel_bytes - new_pixel_bytes);
+				}
+			}
+			Swap(tmp);
+			return REALLOCATED;
 		}
 
-		return false;
+		return 0u;
+	}
+	
+	Image Image::ReinterpretAs(Type type, size_t width, size_t height, uint32_t flags, uint32_t* flags_out) {
+		Image tmp = ShallowCopy();
+		flags = tmp.ReinterpretAsInPlace(type, width, height, flags);
+		if (flags_out) *flags_out = flags;
+		return tmp;
+	}
+
+	Image Image::ReinterpretAs(Type type, size_t width, size_t height, uint32_t flags, uint32_t* flags_out) const {
+		ANVIL_RUNTIME_ASSERT(flags == ALLOW_REALLOCATE, "anvil::compute::Image::ReinterpretAs : ALLOW_REALLOCATE is the only flag allowed for a const image")
+
+		Image tmp = const_cast<Image*>(this)->ShallowCopy();
+		flags = tmp.ReinterpretAsInPlace(type, width, height, flags);
+
+		if ((flags & REALLOCATED) == 0) {
+			tmp = tmp.DeepCopy();
+			flags = REALLOCATED;
+		}
+
+		if (flags_out) *flags_out = flags;
+		return tmp;
 	}
 
 	Image* Image::GetParent() throw() {
@@ -230,10 +277,25 @@ namespace anvil { namespace compute {
 		return _parent;
 	}
 
-	void Image::ConvertToInPlace(Type type) {
-		if (_type == type) return;
+	uint32_t Image::ConvertToInPlace(Type type, uint32_t flags) {
+		if (_type == type) return REINTERPRETED;
 
-		if (_type.GetSizeInBytes() != type.GetSizeInBytes()) {
+		if (ReinterpretAsInPlace(type, _width, _height, flags & ALLOW_REINTERPRET)) {
+			//! \todo Optimise
+			const Type previous_type = type;
+			for (size_t y = 0u; y < _height; ++y) {
+				for (size_t x = 0u; x < _width; ++x) {
+					Vector pixel;
+					ReadPixel(x, y, pixel.GetData());
+					pixel.ForceSetType(previous_type);
+					pixel.ConvertToInPlace(type);
+					WritePixel(x, y, pixel.GetData());
+				}
+			}
+			return REINTERPRETED;
+		}
+
+		if (flags & ALLOW_REALLOCATE) {
 			Image tmp(type, _width, _height);
 
 			//! \todo Optimise
@@ -247,34 +309,45 @@ namespace anvil { namespace compute {
 			}
 
 			Swap(tmp);
-
-		} else {
-			//! \todo Optimise
-			for (size_t y = 0u; y < _height; ++y) {
-				for (size_t x = 0u; x < _width; ++x) {
-					Vector pixel;
-					ReadPixel(x, y, pixel);
-					pixel.ConvertToInPlace(type);
-					WritePixel(x, y, pixel);
-				}
-			}
+			return REALLOCATED;
 		}
+
+		throw std::runtime_error("anvil::compute::Image::ConvertToInPlace : Failed to convert image");
 	}
 
-	Image Image::ConvertTo(Type type) {
+	Image Image::ConvertTo(Type type, uint32_t flags, uint32_t* flags_out) {
 		if (type == _type) return ShallowCopy();
 
-		// Only copy the image once
-		Image tmp = _type.GetSizeInBytes() == type.GetSizeInBytes() ? DeepCopy() : ShallowCopy();
+		Image tmp = ShallowCopy();
 		
 		// Perform conversion
-		tmp.ConvertToInPlace(type);
+		flags = tmp.ConvertToInPlace(type, flags);
+		if (flags_out) *flags_out = flags;
 		return tmp;
 	}
 
-	void Image::TransposeInPlace() {
-		if (_width <= 1u || _height <= 1u) {
-			if (TryReinterpretAs(_type, _height, _width, true)) return;
+	Image Image::ConvertTo(Type type, uint32_t flags, uint32_t* flags_out) const {
+		ANVIL_RUNTIME_ASSERT(flags == ALLOW_REALLOCATE, "anvil::compute::Image::ConvertTo : ALLOW_REALLOCATE is the only flag allowed for a const image")
+		if (type == _type) return DeepCopy();
+
+		Image tmp = const_cast<Image*>(this)->ShallowCopy();
+
+		// Perform conversion
+		flags = tmp.ConvertToInPlace(type, flags);
+
+		if ((flags & REALLOCATED) == 0) {
+			tmp = tmp.DeepCopy();
+			flags = REALLOCATED;
+		}
+
+		if (flags_out) *flags_out = flags;
+		return tmp;
+	}
+
+	uint32_t Image::TransposeInPlace(uint32_t flags) {
+
+		if ((_width <= 1u || _height <= 1u) && (flags & ALLOW_REINTERPRET)) {
+			if (ReinterpretAsInPlace(_type, _height, _width, ALLOW_REINTERPRET) & ALLOW_REINTERPRET) return REINTERPRETED;
 		}
 
 		//! \todo Optimise
@@ -284,12 +357,45 @@ namespace anvil { namespace compute {
 				tmp.WritePixel(y, x, GetPixelAddress(x, y));
 			}
 		}
-		Swap(tmp);
+		if (flags & ALLOW_REALLOCATE) {
+			Swap(tmp);
+			return REALLOCATED;
+		}
+
+		if (flags & ALLOW_REINTERPRET) {
+			if (ReinterpretAsInPlace(_type, _height, _width, ALLOW_REINTERPRET) & ALLOW_REINTERPRET) {
+				// Copy pixels back to this image
+				//! \todo Optimise
+				for (size_t y = 0u; y < _height; ++y) {
+					for (size_t x = 0u; x < _width; ++x) {
+						WritePixel(y, x, tmp.GetPixelAddress(x, y));
+					}
+				}
+				return REINTERPRETED;
+			}
+		}
+
+		throw std::runtime_error("anvil::compute::Image::TransposeInPlace : Failed to transpose image");
 	}
 
-	Image Image::Transpose() const {
-		Image tmp = DeepCopy();
-		tmp.TransposeInPlace();
+	Image Image::Transpose(uint32_t flags, uint32_t* flags_out) {
+		Image tmp = ShallowCopy();
+		flags = tmp.TransposeInPlace(flags);
+		if (flags_out) *flags_out = flags;
+		return tmp;
+	}
+
+	Image Image::Transpose(uint32_t flags, uint32_t* flags_out) const {
+		ANVIL_RUNTIME_ASSERT(flags == ALLOW_REALLOCATE, "anvil::compute::Image::Transpose : ALLOW_REALLOCATE is the only flag permitted on a const image");
+		Image tmp = const_cast<Image*>(this)->ShallowCopy();
+		flags = tmp.TransposeInPlace(flags);
+
+		if ((flags & REALLOCATED) == 0) {
+			tmp = tmp.DeepCopy();
+			flags = REALLOCATED;
+		}
+
+		if (flags_out) *flags_out = flags;
 		return tmp;
 	}
 
@@ -320,7 +426,7 @@ namespace anvil { namespace compute {
 	}
 
 	void Image::DeepCopyTo(Image& other) const {
-		other.Allocate(_type, _width, _height, false);
+		other.Allocate(_type, _width, _height, ALLOW_REALLOCATE | ALLOW_REINTERPRET);
 
 		if (IsRowContiguous() && other.IsRowContiguous()) {
 			const size_t pixel_bytes = _type.GetSizeInBytes();

@@ -59,6 +59,15 @@ namespace anvil { namespace compute {
 		size_t _height;									//!< The sizeo f a column in pixels.
 		Type _type;										//!< The data type of the pixels.
 	public:
+
+		enum : uint32_t {
+			ALLOW_REALLOCATE	= 1u << 0u,
+			ALLOW_REINTERPRET	= 1u << 1u,
+
+			REALLOCATED = ALLOW_REALLOCATE,
+			REINTERPRETED = ALLOW_REINTERPRET
+		};
+
 		static Allocator* GetAllocator();
 		static void SetAllocator(Allocator* allocator);
 
@@ -95,10 +104,39 @@ namespace anvil { namespace compute {
 		*	\param type The data type of the pixels in the new image.
 		*	\param width The number of pixels in each row.
 		*	\param height The number of pixels in each column.
-		*	\param force Will force allocation of a new block of memory if the current memory is shared by a parent or child image.
+		*	\param flags Supports the following flags:
+		*	<table>
+		*	  <tr>
+		*		<th>Flag</th>
+		*		<th>Effect</th>
+		*	  </tr>
+		*	  <tr>
+		*		<td>ALLOW_REINTERPRET</td>
+		*		<td>Allow re-use of current memory block if possible.</td>
+		*	  </tr>
+		*	  <tr>
+		*		<td>ALLOW_REALLOCATE</td>
+		*		<td>Allows allocation of a new memory block if current memory cannot be reinterpreted.</td>
+		*	  </tr>
+		*	</table>
+		*	\return Returns the following flags:
+		*	<table>
+		*	  <tr>
+		*		<th>Flag</th>
+		*		<th>Meaning</th>
+		*	  </tr>
+		*	  <tr>
+		*		<td>REALLOCATED</td>
+		*		<td>A new block of memory was allocated.</td>
+		*	  </tr>
+		*	  <tr>
+		*		<td>REINTERPRETET</td>
+		*		<td>Existing memory was re-used.</td>
+		*	  </tr>
+		*	</table>
 		*	\see Image::Deallocate
 		*/
-		void Allocate(Type type, size_t width, size_t height, bool force = true);
+		uint32_t Allocate(Type type, size_t width, size_t height, uint32_t flags = ALLOW_REALLOCATE);
 
 		/*!
 		*	\brief Deallocate memory that was previously allocated.
@@ -211,22 +249,43 @@ namespace anvil { namespace compute {
 		*	\param Convert the pixels in this image to a diffrent data type.
 		*	\details If the new type is a different size then the image memory will be re-allocated.
 		*	\param type The type to convert to.	
-		*	\see Image::ConvertTo
+		*	\param flags Supports the following flags:
+		*	<table>
+		*	  <tr>
+		*		<th>Flag</th>
+		*		<th>Effect</th>
+		*	  </tr>
+		*	  <tr>
+		*		<td>ALLOW_REINTERPRET</td>
+		*		<td>Allow re-use of current memory block if possible.</td>
+		*	  </tr>
+		*	  <tr>
+		*		<td>ALLOW_REALLOCATE</td>
+		*		<td>Allows allocation of a new memory block if current memory cannot be reinterpreted.</td>
+		*	  </tr>
+		*	</table>
+		*	\return Returns the following flags:
+		*	<table>
+		*	  <tr>
+		*		<th>Flag</th>
+		*		<th>Meaning</th>
+		*	  </tr>
+		*	  <tr>
+		*		<td>REALLOCATED</td>
+		*		<td>A new block of memory was allocated.</td>
+		*	  </tr>
+		*	  <tr>
+		*		<td>REINTERPRETET</td>
+		*		<td>Existing memory was re-used.</td>
+		*	  </tr>
+		*	</table>
 		*/
-		void ConvertToInPlace(Type type);
+		uint32_t ConvertToInPlace(Type type, uint32_t flags = ALLOW_REINTERPRET | ALLOW_REALLOCATE);
+		//! \see Image::ConvertToInPlace
+		Image ConvertTo(Type type, uint32_t flags = ALLOW_REALLOCATE, uint32_t* flags_out = nullptr);
+		//! \see Image::ConvertToInPlace
+		Image ConvertTo(Type type, uint32_t flags = ALLOW_REALLOCATE, uint32_t* flags_out = nullptr) const;
 
-		/*!
-		*	\brief Copy and convert the pixels values of this image to a different data type.
-		*	\details If the image is already the same type then peforms a shallow copy.
-		*	\param type The type to convert to.
-		*	\return The converted image
-		*	\see Image::ConvertToInPlace
-		*	\see Image::ShallowCopy
-		*/
-		Image ConvertTo(Type type);
-
-		void TransposeInPlace();
-		Image Transpose() const;
 
 		/*!
 		*	\param Try to reinterpret what the memory of this image represents without changing the values of any pixels.
@@ -234,9 +293,82 @@ namespace anvil { namespace compute {
 		*	\param type The data type to reinterpret the memory as.
 		*	\param width The number of pixels in each row of the reinterpreted image.
 		*	\param height The number of pixels in each column of the reinterpreted image.
-		*	\return True if the image memory was reinterpreted successfully.
+		*	\param flags Supports the following flags:
+		*	<table>
+		*	  <tr>
+		*		<th>Flag</th>
+		*		<th>Effect</th>
+		*	  </tr>
+		*	  <tr>
+		*		<td>ALLOW_REINTERPRET</td>
+		*		<td>Allow re-use of current memory block if possible.</td>
+		*	  </tr>
+		*	  <tr>
+		*		<td>ALLOW_REALLOCATE</td>
+		*		<td>Allows allocation of a new memory block if current memory cannot be reinterpreted.</td>
+		*	  </tr>
+		*	</table>
+		*	\return Returns the following flags:
+		*	<table>
+		*	  <tr>
+		*		<th>Flag</th>
+		*		<th>Meaning</th>
+		*	  </tr>
+		*	  <tr>
+		*		<td>REALLOCATED</td>
+		*		<td>A new block of memory was allocated.</td>
+		*	  </tr>
+		*	  <tr>
+		*		<td>REINTERPRETET</td>
+		*		<td>Existing memory was re-used.</td>
+		*	  </tr>
+		*	</table>
 		*/
-		bool TryReinterpretAs(Type type, size_t width, size_t height, bool allow_reinterpret_as_smaller = false);
+		uint32_t ReinterpretAsInPlace(Type type, size_t width, size_t height, uint32_t flags = ALLOW_REINTERPRET);
+		//! \see Image::ReinterpretAsInPlace
+		Image ReinterpretAs(Type type, size_t width, size_t height, uint32_t flags = ALLOW_REINTERPRET, uint32_t* flags_out = nullptr);
+		//! \see Image::ReinterpretAsInPlace
+		Image ReinterpretAs(Type type, size_t width, size_t height, uint32_t flags = ALLOW_REALLOCATE, uint32_t* flags_out = nullptr) const;
+
+		/*!
+		*	\param Inverts the X and Y coordinates of this image.
+		*	\param flags Supports the following flags:
+		*	<table>
+		*	  <tr>
+		*		<th>Flag</th>
+		*		<th>Effect</th>
+		*	  </tr>
+		*	  <tr>
+		*		<td>ALLOW_REINTERPRET</td>
+		*		<td>Allow re-use of current memory block if possible.</td>
+		*	  </tr>
+		*	  <tr>
+		*		<td>ALLOW_REALLOCATE</td>
+		*		<td>Allows allocation of a new memory block if current memory cannot be reinterpreted or it would be faster than reinterpreting.</td>
+		*	  </tr>
+		*	</table>
+		*	\return Returns the following flags:
+		*	<table>
+		*	  <tr>
+		*		<th>Flag</th>
+		*		<th>Meaning</th>
+		*	  </tr>
+		*	  <tr>
+		*		<td>REALLOCATED</td>
+		*		<td>A new block of memory was allocated.</td>
+		*	  </tr>
+		*	  <tr>
+		*		<td>REINTERPRETET</td>
+		*		<td>Existing memory was re-used.</td>
+		*	  </tr>
+		*	</table>
+		*/
+		uint32_t TransposeInPlace(uint32_t flags = ALLOW_REALLOCATE | ALLOW_REINTERPRET);
+
+		//! \see Image::TransposeInPlace
+		Image Transpose(uint32_t flags = ALLOW_REALLOCATE | ALLOW_REINTERPRET, uint32_t* flags_out = nullptr);
+		//! \see Image::TransposeInPlace
+		Image Transpose(uint32_t flags = ALLOW_REALLOCATE, uint32_t* flags_out = nullptr) const;
 
 		bool operator==(const Image& other) const throw();
 		ANVIL_STRONG_INLINE bool operator!=(const Image& other) const throw() { return !operator==(other); }
