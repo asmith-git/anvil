@@ -192,6 +192,25 @@ namespace anvil {namespace compute {
 
 		// 1 input
 
+		virtual void ConvertToU8(const void* src, void* dst, size_t count) const = 0;
+		virtual void ConvertToU16(const void* src, void* dst, size_t count) const = 0;
+		virtual void ConvertToU32(const void* src, void* dst, size_t count) const = 0;
+		virtual void ConvertToU64(const void* src, void* dst, size_t count) const = 0;
+		virtual void ConvertToS8(const void* src, void* dst, size_t count) const = 0;
+		virtual void ConvertToS16(const void* src, void* dst, size_t count) const = 0;
+		virtual void ConvertToS32(const void* src, void* dst, size_t count) const = 0;
+		virtual void ConvertToS64(const void* src, void* dst, size_t count) const = 0;
+#if ANVIL_F8_SUPPORT
+		virtual void ConvertToF8(const void* src, void* dst, size_t count) const = 0;
+#endif
+#if ANVIL_F16_SUPPORT
+		virtual void ConvertToF16(const void* src, void* dst, size_t count) const = 0;
+#endif
+		virtual void ConvertToF32(const void* src, void* dst, size_t count) const = 0;
+		virtual void ConvertToF64(const void* src, void* dst, size_t count) const = 0;
+
+		void ConvertTo(Type type, const void* src, void* dst, size_t count) const;
+
 		virtual void Sqrt(const void* src, void* dst, size_t count) const = 0;
 		virtual void Sqrt(const void* src, void* dst, size_t count, const uint8_t* mask) const;
 		ANVIL_STRONG_INLINE void Sqrt(const TypedScalar& src, TypedScalar& dst, uint64_t instruction_set = SupportedInstructionSets) const { CallOperation(src, dst, &ArithmeticOperations::Sqrt, instruction_set, false); }

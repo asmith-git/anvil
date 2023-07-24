@@ -16,6 +16,9 @@
 #define ANVIL_COMPUTE_ARITHMETIC_SSE_F32_HPP
 
 #include "anvil/compute/details/ArithmeticCpp.hpp"
+#if ANVIL_F16_SUPPORT
+#include "anvil/compute/details/ArithmeticF16.hpp"
+#endif
 
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 #include <immintrin.h>
@@ -27,7 +30,9 @@ namespace anvil { namespace compute { namespace details {
 
 	enum {
 		F32_VLEN_1X = 4,
-		F32_VLEN_2X = F32_VLEN_1X * 2
+		F32_VLEN_2X = F32_VLEN_1X * 2,
+		F32_VLEN_4X = F32_VLEN_1X * 4,
+		F32_VLEN_05X = F32_VLEN_1X / 2
 	};
 
 	class ArithmeticOperationsSseF32 : public ArithmeticOperationsCpp<float> {
@@ -59,6 +64,10 @@ namespace anvil { namespace compute { namespace details {
 			a = _mm_add_ps(a, b);
 			return _mm_sqrt_ps(a);
 		}
+
+#if ANVIL_F16_SUPPORT
+		ArithmeticOperationsFP16* _fp16;
+#endif
 	public:
 		typedef float T;
 
@@ -70,7 +79,152 @@ namespace anvil { namespace compute { namespace details {
 
 		}
 
+		virtual void Initialise() {
+			ArithmeticOperationsCpp::Initialise();
+#if ANVIL_F16_SUPPORT
+			_fp16 = dynamic_cast<ArithmeticOperationsFP16*>(GetArithmeticOperations(ANVIL_16FX1));
+#endif
+		}
+
 		// 1 input
+
+		virtual void ConvertToU8(const void* src, void* dst, size_t count) const {
+			typedef uint8_t T2;
+			const T* src2 = static_cast<const T*>(src);
+			T2* dst2 = static_cast<T2*>(dst);
+
+			size_t aligned_size = (count / F32_VLEN_4X) * F32_VLEN_4X;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += F32_VLEN_4X) {
+				__m128 xmm0 = _mm_loadu_ps(src2 + i);
+				__m128 xmm1 = _mm_loadu_ps(src2 + i + F32_VLEN_1X);
+				__m128 xmm2 = _mm_loadu_ps(src2 + i + F32_VLEN_1X * 2);
+				__m128 xmm3 = _mm_loadu_ps(src2 + i + F32_VLEN_1X * 3);
+				__m128i xmm4 = _mm_cvtps_epi32(xmm0);
+				__m128i xmm5 = _mm_cvtps_epi32(xmm1);
+				__m128i xmm6 = _mm_cvtps_epi32(xmm2);
+				__m128i xmm7 = _mm_cvtps_epi32(xmm3);
+				xmm4 = _mm_packs_epi32(xmm4, xmm5);
+				xmm6 = _mm_packs_epi32(xmm6, xmm7);
+				xmm4 = _mm_packus_epi16(xmm4, xmm5);
+				_mm_storeu_si128(reinterpret_cast<__m128i*>(dst2 + i), xmm4);
+			}
+
+			for (i; i < count; ++i) {
+				__m128 xmm0 = _mm_load_ss(src2 + i);
+				__m128i xmm1 = _mm_cvtps_epi32(xmm0);
+				dst2[i] = static_cast<T2>(_mm_cvtsi128_si32(xmm1));
+			}
+		}
+
+		virtual void ConvertToS8(const void* src, void* dst, size_t count) const {
+			typedef int8_t T2;
+			const T* src2 = static_cast<const T*>(src);
+			T2* dst2 = static_cast<T2*>(dst);
+
+			size_t aligned_size = (count / F32_VLEN_4X) * F32_VLEN_4X;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += F32_VLEN_4X) {
+				__m128 xmm0 = _mm_loadu_ps(src2 + i);
+				__m128 xmm1 = _mm_loadu_ps(src2 + i + F32_VLEN_1X);
+				__m128 xmm2 = _mm_loadu_ps(src2 + i + F32_VLEN_1X * 2);
+				__m128 xmm3 = _mm_loadu_ps(src2 + i + F32_VLEN_1X * 3);
+				__m128i xmm4 = _mm_cvtps_epi32(xmm0);
+				__m128i xmm5 = _mm_cvtps_epi32(xmm1);
+				__m128i xmm6 = _mm_cvtps_epi32(xmm2);
+				__m128i xmm7 = _mm_cvtps_epi32(xmm3);
+				xmm4 = _mm_packs_epi32(xmm4, xmm5);
+				xmm6 = _mm_packs_epi32(xmm6, xmm7);
+				xmm4 = _mm_packs_epi16(xmm4, xmm5);
+				_mm_storeu_si128(reinterpret_cast<__m128i*>(dst2 + i), xmm4);
+			}
+
+			for (i; i < count; ++i) {
+				__m128 xmm0 = _mm_load_ss(src2 + i);
+				__m128i xmm1 = _mm_cvtps_epi32(xmm0);
+				dst2[i] = static_cast<T2>(_mm_cvtsi128_si32(xmm1));
+			}
+		}
+
+		virtual void ConvertToS16(const void* src, void* dst, size_t count) const {
+			typedef int16_t T2;
+			const T* src2 = static_cast<const T*>(src);
+			T2* dst2 = static_cast<T2*>(dst);
+
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
+				__m128 xmm0 = _mm_loadu_ps(src2 + i);
+				__m128 xmm1 = _mm_loadu_ps(src2 + i + F32_VLEN_1X);
+				__m128i xmm2 = _mm_cvtps_epi32(xmm0);
+				__m128i xmm3 = _mm_cvtps_epi32(xmm1);
+				xmm2 = _mm_packs_epi32(xmm2, xmm3);
+				_mm_storeu_si128(reinterpret_cast<__m128i*>(dst2 + i), xmm2);
+			}
+
+			for (i; i < count; ++i) {
+				__m128 xmm0 = _mm_load_ss(src2 + i);
+				__m128i xmm1 = _mm_cvtps_epi32(xmm0); 
+				dst2[i] = static_cast<T2>(_mm_cvtsi128_si32(xmm1));
+			}
+		}
+
+		virtual void ConvertToS32(const void* src, void* dst, size_t count) const {
+			typedef int32_t T2;
+			const T* src2 = static_cast<const T*>(src);
+			T2* dst2 = static_cast<T2*>(dst);
+
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
+				__m128 xmm0 = _mm_loadu_ps(src2 + i);
+				__m128i xmm1 = _mm_cvtps_epi32(xmm0);
+				_mm_storeu_si128(reinterpret_cast<__m128i*>(dst2 + i), xmm1);
+			}
+
+			for (i; i < count; ++i) {
+				__m128 xmm0 = _mm_load_ss(src2 + i);
+				__m128i xmm1 = _mm_cvtps_epi32(xmm0);
+				dst2[i] = _mm_cvtsi128_si32(xmm1);
+			}
+		}
+
+#if ANVIL_F16_SUPPORT
+		virtual void ConvertToF16(const void* src, void* dst, size_t count) const {
+			if (_fp16) {
+				_fp16->ConvertF32ToF16(src, dst, count);
+			} else {
+				ArithmeticOperationsCpp::ConvertToF16(src, dst, count);
+			}
+		}
+#endif
+
+		virtual void ConvertToF64(const void* src, void* dst, size_t count) const {
+			typedef double T2;
+			const T* src2 = static_cast<const T*>(src);
+			T2* dst2 = static_cast<T2*>(dst);
+
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
+				__m128 xmm0 = _mm_loadu_ps(src2 + i);
+				__m128d xmm1 = _mm_cvtps_pd(xmm0);
+				__m128d xmm2 = _mm_cvtps_pd(_mm_movehl_ps(xmm0, xmm0));
+				_mm_storeu_pd(dst2 + i, xmm1);
+				_mm_storeu_pd(dst2 + i + F32_VLEN_05X, xmm1);
+			}
+
+			for (i; i < count; ++i) {
+				__m128 xmm0 = _mm_load_ss(src2 + i);
+				__m128d xmm1 = _mm_cvtps_pd(xmm0);
+				_mm_store_sd(dst2 + i, xmm1);
+			}
+		}
 
 		virtual void Sqrt(const void* src, void* dst, size_t count) const {
 			const T* src2 = static_cast<const T*>(src);
@@ -1302,6 +1456,30 @@ namespace anvil { namespace compute { namespace details {
 
 		// 1 input
 
+		virtual void ConvertToU16(const void* src, void* dst, size_t count) const {
+			typedef uint16_t T2;
+			const T* src2 = static_cast<const T*>(src);
+			T2* dst2 = static_cast<T2*>(dst);
+
+			size_t aligned_size = (count / F32_VLEN_2X) * F32_VLEN_2X;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += F32_VLEN_2X) {
+				__m128 xmm0 = _mm_loadu_ps(src2 + i);
+				__m128 xmm1 = _mm_loadu_ps(src2 + i + F32_VLEN_1X);
+				__m128i xmm2 = _mm_cvtps_epi32(xmm0);
+				__m128i xmm3 = _mm_cvtps_epi32(xmm1);
+				xmm2 = _mm_packus_epi32(xmm2, xmm3);
+				_mm_storeu_si128(reinterpret_cast<__m128i*>(dst2 + i), xmm2);
+			}
+
+			for (i; i < count; ++i) {
+				__m128 xmm0 = _mm_load_ss(src2 + i);
+				__m128i xmm1 = _mm_cvtps_epi32(xmm0);
+				dst2[i] = static_cast<T2>(_mm_cvtsi128_si32(xmm1));
+			}
+		}
+
 		virtual void Sqrt(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 			const T* src2 = static_cast<const T*>(src);
 			T* dst2 = static_cast<T*>(dst);
@@ -2084,6 +2262,29 @@ namespace anvil { namespace compute { namespace details {
 
 		}
 
+		// 1 input
+
+		virtual void ConvertToF64(const void* src, void* dst, size_t count) const {
+			typedef double T2;
+			const T* src2 = static_cast<const T*>(src);
+			T2* dst2 = static_cast<T2*>(dst);
+
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
+				__m128 xmm0 = _mm_loadu_ps(src2 + i);
+				__m256d xmm1 = _mm256_cvtps_pd(xmm0);
+				_mm256_storeu_pd(dst2 + i, xmm1);
+			}
+
+			for (i; i < count; ++i) {
+				__m128 xmm0 = _mm_load_ss(src2 + i);
+				__m128d xmm1 = _mm_cvtps_pd(xmm0);
+				_mm_store_sd(dst2 + i, xmm1);
+			}
+		}
+
 		// 2 inputs
 
 		virtual void Hypotenuse(const void* lhs, const void* rhs, void* dst, size_t count) const {
@@ -2339,6 +2540,27 @@ namespace anvil { namespace compute { namespace details {
 		}
 
 		// 1 input
+
+		virtual void ConvertToU32(const void* src, void* dst, size_t count) const {
+			typedef uint32_t T2;
+			const T* src2 = static_cast<const T*>(src);
+			T2* dst2 = static_cast<T2*>(dst);
+
+			size_t aligned_size = (count / F32_VLEN_1X) * F32_VLEN_1X;
+			size_t i = 0u;
+
+			for (i; i < aligned_size; i += F32_VLEN_1X) {
+				__m128 xmm0 = _mm_loadu_ps(src2 + i);
+				__m128i xmm1 = _mm_cvtps_epu32(xmm0);
+				_mm_storeu_si128(reinterpret_cast<__m128i*>(dst2 + i), xmm1);
+			}
+
+			for (i; i < count; ++i) {
+				__m128 xmm0 = _mm_load_ss(src2 + i);
+				__m128i xmm1 = _mm_cvtps_epu32(xmm0);
+				reinterpret_cast<int32_t*>(dst2)[i] = _mm_cvtsi128_si32(xmm1);
+			}
+		}
 
 		virtual void Sqrt(const void* src, void* dst, size_t count, const uint8_t* mask) const {
 			const T* src2 = static_cast<const T*>(src);

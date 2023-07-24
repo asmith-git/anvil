@@ -182,22 +182,22 @@ namespace anvil { namespace compute {
 
 		TypedScalar(const Type type);
 		TypedScalar(const Type type, const UntypedScalar& scalar);
-		TypedScalar(const uint8_t value);
-		TypedScalar(const uint16_t value);
-		TypedScalar(const uint32_t value);
-		TypedScalar(const uint64_t value);
-		TypedScalar(const int8_t value);
-		TypedScalar(const int16_t value);
-		TypedScalar(const int32_t value);
-		TypedScalar(const int64_t value);
+		explicit TypedScalar(const uint8_t value);
+		explicit TypedScalar(const uint16_t value);
+		explicit TypedScalar(const uint32_t value);
+		explicit TypedScalar(const uint64_t value);
+		explicit TypedScalar(const int8_t value);
+		explicit TypedScalar(const int16_t value);
+		explicit TypedScalar(const int32_t value);
+		explicit TypedScalar(const int64_t value);
 #if ANVIL_F8_SUPPORT
-		TypedScalar(const float8_t value);
+		explicit TypedScalar(const float8_t value);
 #endif
 #if ANVIL_F16_SUPPORT
-		TypedScalar(const float16_t value);
+		explicit TypedScalar(const float16_t value);
 #endif
-		TypedScalar(const float32_t value);
-		TypedScalar(const float64_t value);
+		explicit TypedScalar(const float32_t value);
+		explicit TypedScalar(const float64_t value);
 
 		ANVIL_STRONG_INLINE void* GetData() throw() { return _scalar.GetData(); }
 		ANVIL_STRONG_INLINE const void* GetData() const throw() { return _scalar.GetData(); }

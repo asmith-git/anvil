@@ -115,6 +115,18 @@ namespace anvil { namespace compute { namespace details {
 	template<class T>
 	class ArithmeticOperationsCpp : public ArithmeticOperations {
 	private:
+
+		template<class T2>
+		static void CallConversion(const void* src, void* dst, size_t count) {
+			if ANVIL_CONSTEXPR_VAR(std::is_same<T, T2>::value) {
+				memcpy(dst, src, sizeof(T) * count);
+			} else {
+				const T* src2 = static_cast<const T*>(src);
+				T2* dst2 = static_cast<T2*>(dst);
+				for (size_t i = 0u; i < count; ++i) dst2[i] = static_cast<T2>(src2[i]);
+			}
+		}
+
 		template<bool APPLY_TO_INTEGER>
 		static void CallCMathOperation(const void* src, void* dst, size_t count, float(*f32)(float), double(*f64)(double)) {
 			const T* src2 = static_cast<const T*>(src);
@@ -169,6 +181,59 @@ namespace anvil { namespace compute { namespace details {
 		}
 
 		// 1 input
+
+		virtual void ConvertToU8(const void* src, void* dst, size_t count) const {
+			CallConversion<uint8_t>(src, dst, count);
+		}
+
+		virtual void ConvertToU16(const void* src, void* dst, size_t count) const {
+			CallConversion<uint16_t>(src, dst, count);
+		}
+
+		virtual void ConvertToU32(const void* src, void* dst, size_t count) const {
+			CallConversion<uint32_t>(src, dst, count);
+		}
+
+		virtual void ConvertToU64(const void* src, void* dst, size_t count) const {
+			CallConversion<uint64_t>(src, dst, count);
+		}
+
+		virtual void ConvertToS8(const void* src, void* dst, size_t count) const {
+			CallConversion<int8_t>(src, dst, count);
+		}
+
+		virtual void ConvertToS16(const void* src, void* dst, size_t count) const {
+			CallConversion<int16_t>(src, dst, count);
+		}
+
+		virtual void ConvertToS32(const void* src, void* dst, size_t count) const {
+			CallConversion<int32_t>(src, dst, count);
+		}
+
+		virtual void ConvertToS64(const void* src, void* dst, size_t count) const {
+			CallConversion<int64_t>(src, dst, count);
+		}
+
+#if ANVIL_F8_SUPPORT
+		virtual void ConvertToF8(const void* src, void* dst, size_t count) const {
+			CallConversion<float8_t>(src, dst, count);
+	}
+
+#endif
+#if ANVIL_F16_SUPPORT
+		virtual void ConvertToF16(const void* src, void* dst, size_t count) const {
+			CallConversion<float16_t>(src, dst, count);
+		}
+
+#endif
+		virtual void ConvertToF32(const void* src, void* dst, size_t count) const {
+			CallConversion<float>(src, dst, count);
+		}
+
+		virtual void ConvertToF64(const void* src, void* dst, size_t count) const {
+			CallConversion<double>(src, dst, count);
+		}
+
 
 		virtual void Sqrt(const void* src, void* dst, size_t count) const {
 			CallCMathOperation<true>(src, dst, count, &std::sqrtf, &std::sqrt);

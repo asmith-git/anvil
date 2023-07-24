@@ -67,7 +67,7 @@ namespace anvil { namespace compute {
 	static StaticArithmeticOperations g_arithmetic_op_f8(new details::ArithmeticOperationsCpp<float8_t>());
 #endif
 #if ANVIL_F16_SUPPORT
-	static StaticArithmeticOperations g_arithmetic_op_f16(new details::ArithmeticOperationsCpp<float16_t>());
+	static StaticArithmeticOperations g_arithmetic_op_f16(new details::ArithmeticOperationsFP16());
 #endif
 	static StaticArithmeticOperations g_arithmetic_op_f32(new details::ArithmeticOperationsCpp<float>());
 	static StaticArithmeticOperations g_arithmetic_op_f64(new details::ArithmeticOperationsCpp<double>());
@@ -332,6 +332,55 @@ namespace anvil { namespace compute {
 		} else {
 			(this->*Function)(a, b, c, dst, count);
 			Mask(dst, a, dst, count, mask);
+		}
+	}
+
+
+	void ArithmeticOperations::ConvertTo(Type type, const void* src, void* dst, size_t count) const {
+		type.SetNumberOfChannels(1u);
+		switch (type.GetEnumeratedType()) {
+		case ANVIL_8UX1:
+			ConvertToU8(src, dst, count);
+			break;
+		case ANVIL_16UX1:
+			ConvertToU16(src, dst, count);
+			break;
+		case ANVIL_32UX1:
+			ConvertToU32(src, dst, count);
+			break;
+		case ANVIL_64UX1:
+			ConvertToU64(src, dst, count);
+			break;
+		case ANVIL_8SX1:
+			ConvertToS8(src, dst, count);
+			break;
+		case ANVIL_16SX1:
+			ConvertToS16(src, dst, count);
+			break;
+		case ANVIL_32SX1:
+			ConvertToS32(src, dst, count);
+			break;
+		case ANVIL_64SX1:
+			ConvertToS64(src, dst, count);
+			break;
+#if ANVIL_F8_SUPPORT
+		case ANVIL_8FX1:
+			ConvertToF8(src, dst, count);
+			break;
+#endif
+#if ANVIL_F16_SUPPORT
+		case ANVIL_16FX1:
+			ConvertToF16(src, dst, count);
+			break;
+#endif
+		case ANVIL_32FX1:
+			ConvertToF32(src, dst, count);
+			break;
+		case ANVIL_64FX1:
+			ConvertToF64(src, dst, count);
+			break;
+		default:
+			throw std::runtime_error("anvil::compute::ArithmeticOperations::ConvertTo : Failed to convert");
 		}
 	}
 

@@ -24,9 +24,18 @@
 
 namespace anvil { namespace compute { namespace details {
 
-	template<>
-	class ArithmeticOperationsCpp<float16_t> final : public ArithmeticOperations {
+	class ArithmeticOperationsFP16 final : public ArithmeticOperationsCpp<float16_t> {
 	private:
+
+		void CallConversionFP16(
+			const void* src, void* dst, size_t count,
+			void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count) const
+		) const {
+			void* buffer = _malloca(sizeof(float) * count);
+			_ConvertToF32((float16_t*)src, (float*)buffer, count); 
+			(_f32->*Function)(buffer, dst, count);
+			_freea(buffer);
+		}
 
 		static void ConvertToF32_Cpp(const float16_t* src, float* dst, const size_t size) {
 			for (size_t i = 0u; i < size; ++i) dst[i] = static_cast<float>(src[i]);
@@ -68,8 +77,8 @@ namespace anvil { namespace compute { namespace details {
 #endif
 			ConvertToF16_Cpp(src, dst, size);
 		}
-		void (*ConvertToF32)(const float16_t* src, float* dst, const size_t size);
-		void (*ConvertToF16)(const float* src, float16_t* dst, const size_t size);
+		void (*_ConvertToF32)(const float16_t* src, float* dst, const size_t size);
+		void (*_ConvertToF16)(const float* src, float16_t* dst, const size_t size);
 		ArithmeticOperations* _u16;
 		ArithmeticOperations* _f32;
 
@@ -79,11 +88,11 @@ namespace anvil { namespace compute { namespace details {
 		) const {
 			float* buffer_a = static_cast<float*>(_malloca(sizeof(float) * count));
 			ANVIL_RUNTIME_ASSERT(buffer_a != nullptr, "anvil::compute::details::ArithmeticOperationsCpp<float16_t>::Call1Input : Failed to allocate memory");
-			(*ConvertToF32)(static_cast<const float16_t*>(src), buffer_a, count);
+			(*_ConvertToF32)(static_cast<const float16_t*>(src), buffer_a, count);
 
 			(_f32->*Function)(buffer_a, buffer_a, count);
 
-			(*ConvertToF16)(buffer_a, static_cast<float16_t*>(dst), count);
+			(*_ConvertToF16)(buffer_a, static_cast<float16_t*>(dst), count);
 			_freea(buffer_a);
 		}
 
@@ -93,11 +102,11 @@ namespace anvil { namespace compute { namespace details {
 		) const {
 			float* buffer_a = static_cast<float*>(_malloca(sizeof(float) * count));
 			ANVIL_RUNTIME_ASSERT(buffer_a != nullptr, "anvil::compute::details::ArithmeticOperationsCpp<float16_t>::Call1Input : Failed to allocate memory");
-			(*ConvertToF32)(static_cast<const float16_t*>(src), buffer_a, count);
+			(*_ConvertToF32)(static_cast<const float16_t*>(src), buffer_a, count);
 
 			(_f32->*Function)(buffer_a, buffer_a, count, mask);
 
-			(*ConvertToF16)(buffer_a, static_cast<float16_t*>(dst), count);
+			(*_ConvertToF16)(buffer_a, static_cast<float16_t*>(dst), count);
 			_freea(buffer_a);
 		}
 
@@ -108,12 +117,12 @@ namespace anvil { namespace compute { namespace details {
 			float* buffer_a = static_cast<float*>(_malloca(sizeof(float) * count * 2));
 			ANVIL_RUNTIME_ASSERT(buffer_a != nullptr, "anvil::compute::details::ArithmeticOperationsCpp<float16_t>::Call2Inputs : Failed to allocate memory");
 			float* buffer_b = buffer_a + count;
-			(*ConvertToF32)(static_cast<const float16_t*>(lhs), buffer_a, count);
-			(*ConvertToF32)(static_cast<const float16_t*>(rhs), buffer_b, count);
+			(*_ConvertToF32)(static_cast<const float16_t*>(lhs), buffer_a, count);
+			(*_ConvertToF32)(static_cast<const float16_t*>(rhs), buffer_b, count);
 
 			(_f32->*Function)(buffer_a, buffer_b, buffer_a, count);
 
-			(*ConvertToF16)(buffer_a, static_cast<float16_t*>(dst), count);
+			(*_ConvertToF16)(buffer_a, static_cast<float16_t*>(dst), count);
 			_freea(buffer_a);
 		}
 
@@ -124,12 +133,12 @@ namespace anvil { namespace compute { namespace details {
 			float* buffer_a = static_cast<float*>(_malloca(sizeof(float) * count * 2));
 			ANVIL_RUNTIME_ASSERT(buffer_a != nullptr, "anvil::compute::details::ArithmeticOperationsCpp<float16_t>::Call2Inputs : Failed to allocate memory");
 			float* buffer_b = buffer_a + count;
-			(*ConvertToF32)(static_cast<const float16_t*>(lhs), buffer_a, count);
-			(*ConvertToF32)(static_cast<const float16_t*>(rhs), buffer_b, count);
+			(*_ConvertToF32)(static_cast<const float16_t*>(lhs), buffer_a, count);
+			(*_ConvertToF32)(static_cast<const float16_t*>(rhs), buffer_b, count);
 
 			(_f32->*Function)(buffer_a, buffer_b, buffer_a, count, mask);
 
-			(*ConvertToF16)(buffer_a, static_cast<float16_t*>(dst), count);
+			(*_ConvertToF16)(buffer_a, static_cast<float16_t*>(dst), count);
 			_freea(buffer_a);
 		}
 
@@ -141,13 +150,13 @@ namespace anvil { namespace compute { namespace details {
 			ANVIL_RUNTIME_ASSERT(buffer_a != nullptr, "anvil::compute::details::ArithmeticOperationsCpp<float16_t>::Call3Inputs : Failed to allocate memory");
 			float* buffer_b = buffer_a + count;
 			float* buffer_c = buffer_b + count;
-			(*ConvertToF32)(static_cast<const float16_t*>(a), buffer_a, count);
-			(*ConvertToF32)(static_cast<const float16_t*>(b), buffer_b, count);
-			(*ConvertToF32)(static_cast<const float16_t*>(c), buffer_c, count);
+			(*_ConvertToF32)(static_cast<const float16_t*>(a), buffer_a, count);
+			(*_ConvertToF32)(static_cast<const float16_t*>(b), buffer_b, count);
+			(*_ConvertToF32)(static_cast<const float16_t*>(c), buffer_c, count);
 
 			(_f32->*Function)(buffer_a, buffer_b, buffer_c, buffer_a, count);
 
-			(*ConvertToF16)(buffer_a, static_cast<float16_t*>(dst), count);
+			(*_ConvertToF16)(buffer_a, static_cast<float16_t*>(dst), count);
 			_freea(buffer_a);
 		}
 
@@ -159,43 +168,98 @@ namespace anvil { namespace compute { namespace details {
 			ANVIL_RUNTIME_ASSERT(buffer_a != nullptr, "anvil::compute::details::ArithmeticOperationsCpp<float16_t>::Call3Inputs : Failed to allocate memory");
 			float* buffer_b = buffer_a + count;
 			float* buffer_c = buffer_b + count;
-			(*ConvertToF32)(static_cast<const float16_t*>(a), buffer_a, count);
-			(*ConvertToF32)(static_cast<const float16_t*>(b), buffer_b, count);
-			(*ConvertToF32)(static_cast<const float16_t*>(c), buffer_c, count);
+			(*_ConvertToF32)(static_cast<const float16_t*>(a), buffer_a, count);
+			(*_ConvertToF32)(static_cast<const float16_t*>(b), buffer_b, count);
+			(*_ConvertToF32)(static_cast<const float16_t*>(c), buffer_c, count);
 
 			(_f32->*Function)(buffer_a, buffer_b, buffer_c, buffer_a, count, mask);
 
-			(*ConvertToF16)(buffer_a, static_cast<float16_t*>(dst), count);
+			(*_ConvertToF16)(buffer_a, static_cast<float16_t*>(dst), count);
 			_freea(buffer_a);
 		}
 	public:
 		typedef float16_t T;
 
-		ArithmeticOperationsCpp() :
-			ArithmeticOperations(EnumFromType<T>::value)
+		ArithmeticOperationsFP16() :
+			ArithmeticOperationsCpp()
 		{
-			ConvertToF32 = &ConvertToF32_Cpp;
-			ConvertToF16 = &ConvertToF16_Cpp;
+			_ConvertToF32 = &ConvertToF32_Cpp;
+			_ConvertToF16 = &ConvertToF16_Cpp;
 
 #if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
 			if (SupportedInstructionSets & ASM_F16C) {
-				ConvertToF32 = &ConvertToF32_FP16;
-				ConvertToF16 = &ConvertToF16_FP16;
+				_ConvertToF32 = &ConvertToF32_FP16;
+				_ConvertToF16 = &ConvertToF16_FP16;
 			}
 #endif
 		}
 
-		virtual ~ArithmeticOperationsCpp() {
+		virtual ~ArithmeticOperationsFP16() {
 
 		}
 
 		virtual void Initialise() {
-			ArithmeticOperations::Initialise();
+			ArithmeticOperationsCpp::Initialise();
 			_u16 = GetArithmeticOperations(ANVIL_16UX1);
 			_f32 = GetArithmeticOperations(ANVIL_32FX1);
 		}
 
+		ANVIL_STRONG_INLINE void ConvertF32ToF16(const void* src, void* dst, size_t count) const {
+			_ConvertToF16((float*)src, (float16_t*)dst, count);
+		}
+
 		// 1 input
+
+		void ConvertToU8(const void* src, void* dst, size_t count) const final {
+			CallConversionFP16(src, dst, count, &ArithmeticOperations::ConvertToU8);
+		}
+
+		void ConvertToU16(const void* src, void* dst, size_t count) const final {
+			CallConversionFP16(src, dst, count, &ArithmeticOperations::ConvertToU16);
+		}
+
+		void ConvertToU32(const void* src, void* dst, size_t count) const final {
+			CallConversionFP16(src, dst, count, &ArithmeticOperations::ConvertToU32);
+		}
+
+		void ConvertToU64(const void* src, void* dst, size_t count) const final {
+			CallConversionFP16(src, dst, count, &ArithmeticOperations::ConvertToU64);
+		}
+
+		void ConvertToS8(const void* src, void* dst, size_t count) const final {
+			CallConversionFP16(src, dst, count, &ArithmeticOperations::ConvertToS8);
+		}
+
+		void ConvertToS16(const void* src, void* dst, size_t count) const final {
+			CallConversionFP16(src, dst, count, &ArithmeticOperations::ConvertToS16);
+		}
+
+		void ConvertToS32(const void* src, void* dst, size_t count) const final {
+			CallConversionFP16(src, dst, count, &ArithmeticOperations::ConvertToS32);
+		}
+
+		void ConvertToS64(const void* src, void* dst, size_t count) const final {
+			CallConversionFP16(src, dst, count, &ArithmeticOperations::ConvertToS64);
+		}
+
+#if ANVIL_F8_SUPPORT
+		void ConvertToF8(const void* src, void* dst, size_t count) const final {
+			CallConversionFP16(src, dst, count, &ArithmeticOperations::ConvertToF8);
+		}
+#endif
+
+#if ANVIL_F16_SUPPORT
+		void ConvertToF16(const void* src, void* dst, size_t count) const final {
+			memcpy(dst, src, sizeof(float16_t) * count);
+		}
+#endif
+		void ConvertToF32(const void* src, void* dst, size_t count) const final {
+			CallConversionFP16(src, dst, count, &ArithmeticOperations::ConvertToF32);
+		}
+
+		void ConvertToF64(const void* src, void* dst, size_t count) const final {
+			CallConversionFP16(src, dst, count, &ArithmeticOperations::ConvertToF64);
+		}
 
 		void Sqrt(const void* src, void* dst, size_t count) const final {
 			CallOperation(src, dst, count, &ArithmeticOperations::Sqrt);

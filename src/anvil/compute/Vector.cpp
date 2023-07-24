@@ -47,15 +47,8 @@ namespace anvil { namespace compute {
 
 		ANVIL_RUNTIME_ASSERT(_type.GetNumberOfChannels() == type.GetNumberOfChannels(), "anvil::compute::Vector::ConvertToInPlace : Cannot change number of channels during conversion");
 
-		//! \todo Optimise
-		const size_t s = Size();
 		Vector tmp(type);
-		TypedScalar scalar;
-		for (size_t i = 0; i < s; ++i) {
-			Read(i, scalar);
-			scalar.ConvertToInPlace(type);
-			tmp.Write(i, scalar._scalar);
-		}
+		ArithmeticOperations::GetArithmeticOperations(_type)->ConvertTo(type, GetData(), tmp.GetData(), _type.GetNumberOfChannels());
 
 		*this = tmp;
 	}

@@ -280,31 +280,49 @@ namespace anvil { namespace compute {
 	uint32_t Image::ConvertToInPlace(Type type, uint32_t flags) {
 		if (_type == type) return REINTERPRETED;
 
-		if (ReinterpretAsInPlace(type, _width, _height, flags & ALLOW_REINTERPRET)) {
-			//! \todo Optimise
-			const Type previous_type = type;
-			for (size_t y = 0u; y < _height; ++y) {
-				for (size_t x = 0u; x < _width; ++x) {
-					Vector pixel;
-					ReadPixel(x, y, pixel.GetData());
-					pixel.ForceSetType(previous_type);
-					pixel.ConvertToInPlace(type);
-					WritePixel(x, y, pixel.GetData());
+		ArithmeticOperations* operations = ArithmeticOperations::GetArithmeticOperations(_type);
+
+		if (ReinterpretAsInPlace(type, _width, _height, flags & ALLOW_REINTERPRET) & REINTERPRETED) {
+			if (IsContiguous()) {
+				operations->ConvertTo(type, GetData(), GetData(), _width * _height);
+
+			} else if (IsRowContiguous()) {
+				for (size_t y = 0u; y < _height; ++y) {
+					operations->ConvertTo(type, GetRowAddress(y), GetRowAddress(y), _width);
+				}
+
+			} else {
+				//! \todo Optimise
+				const Type previous_type = type;
+				for (size_t y = 0u; y < _height; ++y) {
+					for (size_t x = 0u; x < _width; ++x) {
+						operations->ConvertTo(type, GetPixelAddress(x, y), GetPixelAddress(x, y), 1);
+					}
 				}
 			}
+
 			return REINTERPRETED;
 		}
 
 		if (flags & ALLOW_REALLOCATE) {
 			Image tmp(type, _width, _height);
 
-			//! \todo Optimise
-			for (size_t y = 0u; y < _height; ++y) {
-				for (size_t x = 0u; x < _width; ++x) {
-					Vector pixel;
-					ReadPixel(x, y, pixel);
-					pixel.ConvertToInPlace(type);
-					tmp.WritePixel(x, y, pixel);
+			
+			if (IsContiguous() && tmp.IsContiguous()) {
+				operations->ConvertTo(type, GetData(), tmp.GetData(), _width * _height);
+
+			} else if (IsRowContiguous() && tmp.IsRowContiguous()) {
+				for (size_t y = 0u; y < _height; ++y) {
+					operations->ConvertTo(type, GetRowAddress(y), tmp.GetRowAddress(y), _width);
+				}
+
+			} else {
+				//! \todo Optimise
+				const Type previous_type = type;
+				for (size_t y = 0u; y < _height; ++y) {
+					for (size_t x = 0u; x < _width; ++x) {
+						operations->ConvertTo(type, GetPixelAddress(x, y), tmp.GetPixelAddress(x, y), 1);
+					}
 				}
 			}
 

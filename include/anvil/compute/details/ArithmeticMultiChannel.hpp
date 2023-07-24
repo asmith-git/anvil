@@ -156,7 +156,7 @@ namespace anvil { namespace compute { namespace details {
 			void(ArithmeticOperations::* Function)(const void* src, void* dst, size_t count) const
 		) const {
 			// Call the parent function but with a higher count
-			(_parent.*Function)(src, dst, count * _type.GetNumberOfChannels());;
+			(_parent.*Function)(src, dst, count * _type.GetNumberOfChannels());
 		}
 
 		void CallOperation(
@@ -254,7 +254,59 @@ namespace anvil { namespace compute { namespace details {
 
 		}
 
-		// 1 input
+		// 1 input		
+		
+		void ConvertToU8(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::ConvertToU8);
+		}
+
+		void ConvertToU16(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::ConvertToU16);
+		}
+
+		void ConvertToU32(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::ConvertToU32);
+		}
+
+		void ConvertToU64(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::ConvertToU64);
+		}
+
+		void ConvertToS8(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::ConvertToS8);
+		}
+
+		void ConvertToS16(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::ConvertToS16);
+		}
+
+		void ConvertToS32(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::ConvertToS32);
+		}
+
+		void ConvertToS64(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::ConvertToS64);
+		}
+
+#if ANVIL_F8_SUPPORT
+		void ConvertToF8(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::ConvertToF8);
+		}
+
+#endif
+#if ANVIL_F16_SUPPORT
+		void ConvertToF16(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::ConvertToF16);
+		}
+
+#endif
+		void ConvertToF32(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::ConvertToF32);
+		}
+
+		void ConvertToF64(const void* src, void* dst, size_t count) const final {
+			CallOperation(src, dst, count, &ArithmeticOperations::ConvertToF64);
+		}
 
 		void Sqrt(const void* src, void* dst, size_t count) const final {
 			CallOperation(src, dst, count, &ArithmeticOperations::Sqrt);
