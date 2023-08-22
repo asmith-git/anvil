@@ -418,7 +418,6 @@ namespace anvil { namespace core {
 		TEST_METHOD(Strings)
 		{
 			std::string src, encoded;
-			uint8_t src_bin;
 
 			src = "Many hands make light work.";
 			encoded = anvil::Base64::Encode((const uint8_t*)src.c_str(), src.size());
@@ -467,7 +466,6 @@ namespace anvil { namespace core {
 		TEST_METHOD(Strings)
 		{
 			std::string src, encoded;
-			uint8_t src_bin;
 
 			src = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 			encoded = anvil::Hexadecimal::Encode((const uint8_t*)src.c_str(), src.size());

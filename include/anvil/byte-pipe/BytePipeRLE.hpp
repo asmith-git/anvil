@@ -40,7 +40,7 @@ namespace anvil { namespace BytePipe {
 	public:
 		enum : LengthWord {
 			LENGTH_BITS = sizeof(LengthWord) * 8,
-			RLE_FLAG = 1 << (LENGTH_BITS - 1),
+			RLE_FLAG = 1ull << (LENGTH_BITS - 1),
 			MAX_BYTES_IN_BLOCK = (anvil::ConstantPower<2, LENGTH_BITS>::value - 1) >> 1,
 			MAX_RLE_LENGTH = MAX_BYTES_IN_BLOCK//MAX_BYTES_IN_BLOCK / sizeof(DataWord)
 		};
@@ -127,7 +127,7 @@ namespace anvil { namespace BytePipe {
 				size_t to_add = MAX_RLE_LENGTH - _rle_length;
 				if (to_add > count) to_add = count;
 
-				_rle_length += to_add;
+				_rle_length += static_cast<LengthWord>(to_add);
 
 				count -= to_add;
 				if (_rle_length == MAX_RLE_LENGTH) {
@@ -151,7 +151,7 @@ namespace anvil { namespace BytePipe {
 					_Flush();
 				} else {
 					memcpy(_byte_buffer + _bytes_in_buffer, words, to_add * sizeof(DataWord));
-					_bytes_in_buffer += to_add * sizeof(DataWord);
+					_bytes_in_buffer += static_cast<LengthWord>(to_add * sizeof(DataWord));
 				}
 
 				count -= to_add;
@@ -312,7 +312,7 @@ NON_RLE:
 			if (remaining_bytes > 0) {
 				if (_rle_mode || _bytes_in_buffer + remaining_bytes > MAX_BYTES_IN_BLOCK) _Flush();
 				memcpy(_byte_buffer + _bytes_in_buffer, src, remaining_bytes);
-				_bytes_in_buffer += remaining_bytes;
+				_bytes_in_buffer += static_cast<LengthWord>(remaining_bytes);
 			}
 		}
 	public:
