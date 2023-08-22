@@ -37,5 +37,6 @@
 #include "anvil/core/Hexadecimal.hpp"
 #include "anvil/core/Allocator.hpp"
 #include "anvil/core/CRC.hpp"
+#include "anvil/core/Xorshift.hpp"
 
 #endif

@@ -12,25 +12,29 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-#include "solaire/maths/xorshift.hpp"
+#ifndef ANVIL_CORE_XORSHIFt_HPP
+#define ANVIL_CORE_XORSHIFt_HPP
 
-#if SOLAIRE_COMPILE_MODE != SOLAIRE_SHARED_IMPORT_COMPILE
+#include "Keywords.hpp"
 
-extern "C" SOLAIRE_EXPORT_API uint64_t SOLAIRE_EXPORT_CALL solaire_xorshift_star(uint64_t * aSeed) {
-	uint64_t& x = *aSeed;
-	x ^= x >> 12L;
-	x ^= x << 25L;
-	x ^= x >> 27L;
-	return x * 2685821657736338717L;
-}
+namespace anvil {
 
-extern "C" SOLAIRE_EXPORT_API uint64_t SOLAIRE_EXPORT_CALL solaire_xorshift_plus(uint64_t * aSeed) {
-	uint64_t x = aSeed[0];
-	uint64_t const y = aSeed[1];
-	aSeed[0] = y;
-	x ^= x << 23L;
-	aSeed[1] = x ^ y ^ (x >> 17L) ^ (y >> 26L);
-	return aSeed[1] + y;
+	static ANVIL_STRONG_INLINE uint64_t SOLAIRE_EXPORT_CALL solaire_xorshift_star(uint64_t * aSeed) {
+		uint64_t& x = *aSeed;
+		x ^= x >> 12L;
+		x ^= x << 25L;
+		x ^= x >> 27L;
+		return x * 2685821657736338717L;
+	}
+
+	static ANVIL_STRONG_INLINE uint64_t SOLAIRE_EXPORT_CALL solaire_xorshift_plus(uint64_t * aSeed) {
+		uint64_t x = aSeed[0];
+		uint64_t const y = aSeed[1];
+		aSeed[0] = y;
+		x ^= x << 23L;
+		aSeed[1] = x ^ y ^ (x >> 17L) ^ (y >> 26L);
+		return aSeed[1] + y;
+	}
 }
 
 #endif
