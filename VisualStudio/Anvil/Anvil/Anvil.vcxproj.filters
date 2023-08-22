@@ -362,5 +362,8 @@
     <ClInclude Include="..\..\..\include\anvil\core\CRC.hpp">
       <Filter>Header Files\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\Xorshift.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

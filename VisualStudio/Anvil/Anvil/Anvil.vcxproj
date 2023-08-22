@@ -273,6 +273,7 @@
     <ClInclude Include="..\..\..\include\anvil\core\Popcount.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\Reflection.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\TrailingZeroCount.hpp" />
+    <ClInclude Include="..\..\..\include\anvil\core\Xorshift.hpp" />
     <ClInclude Include="..\..\..\include\anvil\lutils\Message.hpp" />
     <ClInclude Include="..\..\..\include\anvil\RPC.hpp" />
     <ClInclude Include="..\..\..\include\anvil\RPC\Client.hpp" />
