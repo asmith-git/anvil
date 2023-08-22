@@ -49,21 +49,27 @@ namespace anvil {
 		return seed[1] + y;
 	}
 
-	struct Xorwow {
-		uint32_t x_0;
-		uint32_t x_1;
-		uint32_t x_2;
-		uint32_t x_3;
-		uint32_t x_4;
-		uint32_t counter;
+	class Xorwow {
+	private:
+		uint32_t _seed_0;
+		uint32_t _seed_1;
+		uint32_t _seed_2;
+		uint32_t _seed_3;
+		uint32_t _seed_4;
+		uint32_t _counter;
+
+	public:
+		Xorwow(uint32_t seed0, uint32_t seed1, uint32_t seed2, uint32_t seed3) :
+			_seed_0(seed0),
+			_seed_1(seed1),
+			_seed_2(seed2),
+			_seed_3(seed3),
+			_seed_4(0u),
+			_counter(0u)
+		{}
 
 		Xorwow(uint32_t seed) :
-			x_0(seed),
-			x_1(xorshift_32(seed)),
-			x_2(xorshift_32(seed)),
-			x_3(xorshift_32(seed)),
-			x_4(xorshift_32(seed)),
-			counter(0u)
+			Xorwow(xorshift_32(seed), xorshift_32(seed), xorshift_32(seed), xorshift_32(seed))
 		{}
 
 		Xorwow() :
@@ -71,20 +77,92 @@ namespace anvil {
 		{}
 
 		ANVIL_STRONG_INLINE uint32_t operator()() {
-			uint32_t t = x_4;
+			uint32_t t = _seed_4;
 
-			uint32_t s = x_0;
-			x_4 = x_3;
-			x_3 = x_2;
-			x_2 = x_1;
-			x_1 = s;
+			uint32_t s = _seed_0;
+			_seed_4 = _seed_3;
+			_seed_3 = _seed_2;
+			_seed_2 = _seed_1;
+			_seed_1 = s;
 
 			t ^= t >> 2u;
 			t ^= t << 1u;
 			t ^= s ^ (s << 4u);
-			x_0 = t;
-			counter += 362437u;
-			return t + counter;
+			_seed_0 = t;
+			_counter += 362437u;
+			return t + _counter;
+		}
+	};
+
+	class Xorshift32 {
+	private:
+		uint32_t _seed;
+	public:
+		Xorshift32(uint32_t seed) :
+			_seed(seed)
+		{}
+
+		Xorshift32() :
+			Xorshift32(static_cast<uint32_t>(rand()))
+		{}
+
+		ANVIL_STRONG_INLINE uint32_t operator()() {
+			return xorshift_32(_seed);
+		}
+	};
+
+	class Xorshift64 {
+	private:
+		uint64_t _seed;
+	public:
+		Xorshift64(uint64_t seed) :
+			_seed(seed)
+		{}
+
+		Xorshift64() :
+			Xorshift64(static_cast<uint64_t>(rand()) | (static_cast<uint64_t>(rand()) << 32ull))
+		{}
+
+		ANVIL_STRONG_INLINE uint64_t operator()() {
+			return xorshift_64(_seed);
+		}
+	};
+
+	class XorshiftStar {
+	private:
+		uint64_t _seed;
+	public:
+		XorshiftStar(uint64_t seed) :
+			_seed(seed)
+		{}
+
+		XorshiftStar() :
+			XorshiftStar(static_cast<uint64_t>(rand()) | (static_cast<uint64_t>(rand()) << 32ull))
+		{}
+
+		ANVIL_STRONG_INLINE uint64_t operator()() {
+			return xorshift_star(_seed);
+		}
+	};
+
+	class XorshiftPlus {
+	private:
+		uint64_t _seed[2];
+	public:
+		XorshiftPlus(uint64_t seed0, uint64_t seed1) :
+			_seed{seed0, seed1}
+		{}
+
+		XorshiftPlus(uint64_t seed) :
+			XorshiftPlus(xorshift_64(seed), xorshift_64(seed))
+		{}
+
+		XorshiftPlus() :
+			XorshiftPlus(static_cast<uint64_t>(rand()) | (static_cast<uint64_t>(rand()) << 32ull))
+		{}
+
+		ANVIL_STRONG_INLINE uint64_t operator()() {
+			return xorshift_plus(_seed);
 		}
 	};
 }
