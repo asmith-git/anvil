@@ -19,21 +19,27 @@
 
 namespace anvil {
 
-	static ANVIL_STRONG_INLINE uint64_t SOLAIRE_EXPORT_CALL solaire_xorshift_star(uint64_t * aSeed) {
-		uint64_t& x = *aSeed;
-		x ^= x >> 12L;
-		x ^= x << 25L;
-		x ^= x >> 27L;
-		return x * 2685821657736338717L;
+	static ANVIL_STRONG_INLINE uint32_t xorshift_32(uint32_t& seed) {
+		seed ^= seed << 13;
+		seed ^= seed >> 17;
+		seed ^= seed << 5;
+		return seed;
 	}
 
-	static ANVIL_STRONG_INLINE uint64_t SOLAIRE_EXPORT_CALL solaire_xorshift_plus(uint64_t * aSeed) {
-		uint64_t x = aSeed[0];
-		uint64_t const y = aSeed[1];
-		aSeed[0] = y;
+	static ANVIL_STRONG_INLINE uint64_t xorshift_star(uint64_t& seed) {
+		seed ^= seed >> 12L;
+		seed ^= seed << 25L;
+		seed ^= seed >> 27L;
+		return seed * 2685821657736338717L;
+	}
+
+	static ANVIL_STRONG_INLINE uint64_t xorshift_plus(uint64_t* seed) {
+		uint64_t x = seed[0];
+		uint64_t const y = seed[1];
+		seed[0] = y;
 		x ^= x << 23L;
-		aSeed[1] = x ^ y ^ (x >> 17L) ^ (y >> 26L);
-		return aSeed[1] + y;
+		seed[1] = x ^ y ^ (x >> 17L) ^ (y >> 26L);
+		return seed[1] + y;
 	}
 }
 
