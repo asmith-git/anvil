@@ -20,25 +20,32 @@
 namespace anvil {
 
 	static ANVIL_STRONG_INLINE uint32_t xorshift_32(uint32_t& seed) {
-		seed ^= seed << 13;
-		seed ^= seed >> 17;
-		seed ^= seed << 5;
+		seed ^= seed << 13u;
+		seed ^= seed >> 17u;
+		seed ^= seed << 5u;
+		return seed;
+	}
+
+	static ANVIL_STRONG_INLINE uint64_t xorshift_64(uint64_t& seed) {
+		seed ^= seed << 13ull;
+		seed ^= seed >> 7ull;
+		seed ^= seed << 17ull;
 		return seed;
 	}
 
 	static ANVIL_STRONG_INLINE uint64_t xorshift_star(uint64_t& seed) {
-		seed ^= seed >> 12L;
-		seed ^= seed << 25L;
-		seed ^= seed >> 27L;
-		return seed * 2685821657736338717L;
+		seed ^= seed >> 12ull;
+		seed ^= seed << 25ull;
+		seed ^= seed >> 27ull;
+		return seed * 2685821657736338717ull;
 	}
 
 	static ANVIL_STRONG_INLINE uint64_t xorshift_plus(uint64_t* seed) {
 		uint64_t x = seed[0];
 		uint64_t const y = seed[1];
 		seed[0] = y;
-		x ^= x << 23L;
-		seed[1] = x ^ y ^ (x >> 17L) ^ (y >> 26L);
+		x ^= x << 23ull;
+		seed[1] = x ^ y ^ (x >> 17ull) ^ (y >> 26ull);
 		return seed[1] + y;
 	}
 }
