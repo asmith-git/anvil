@@ -199,7 +199,7 @@ namespace anvil {
 
 	// CRC-32	Checksum	Polynomial				Rev. Data	Rev. Out	Init. Value		Xor Out		Name
 	typedef crc<uint32_t,	0x04C11DB7,				true,		true,		0xFFFFFFFF,		0xFFFFFFFF>	crc_32;
-	typedef crc<uint32_t,	0x04C11DB7,				false,		true,		0xFFFFFFFF,		0x00000000>	crc_32_bzip2;   //!\bug Wrong checksum on test      
+	typedef crc<uint32_t,	0x04C11DB7,				false,		false,		0x00000000,		0xFFFFFFFF>	crc_32_bzip2;   //!\bug Wrong checksum on test      
 	typedef crc<uint32_t,	0x1EDC6F41,				true ,		true,		0x00000000,		0xFFFFFFFF>	crc_32c;        //!\bug Wrong checksum on test  
 	typedef crc<uint32_t,	0xA833982B,				true ,		true,		0x00000000,		0xFFFFFFFF>	crc_32d;     	//!\bug Wrong checksum on test     
 	typedef crc<uint32_t,	0x04C11DB7,				false,		true,		0xFFFFFFFF,		0x00000000>	crc_32_mpeg;          
