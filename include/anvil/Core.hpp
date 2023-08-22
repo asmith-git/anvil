@@ -36,5 +36,6 @@
 #include "anvil/core/Base64.hpp"
 #include "anvil/core/Hexadecimal.hpp"
 #include "anvil/core/Allocator.hpp"
+#include "anvil/core/CRC.hpp"
 
 #endif

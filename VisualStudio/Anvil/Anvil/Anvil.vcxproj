@@ -260,6 +260,7 @@
     <ClInclude Include="..\..\..\include\anvil\core\Constants.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\CPU.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\CpuRuntime.hpp" />
+    <ClInclude Include="..\..\..\include\anvil\core\CRC.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\FastSharedPtr.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\Hexadecimal.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\IDGenerator.hpp" />

@@ -359,5 +359,8 @@
     <ClInclude Include="..\..\..\include\anvil\compute\details\ArithmeticSseF64.hpp">
       <Filter>Header Files\compute\details</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\CRC.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

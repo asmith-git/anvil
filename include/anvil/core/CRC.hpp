@@ -11,12 +11,12 @@
 //	See the License for the specific language governing permissions and
 //	limitations under the License.
 
-#ifndef ASMITH_UTILITIES_CRC_HPP
-#define ASMITH_UTILITIES_CRC_HPP
+#ifndef ANVIL_CRC_HPP
+#define ANVIL_CRC_HPP
 
-#include "reflect.hpp"
+#include "Reflection.hpp"
 
-namespace asmith {
+namespace anvil {
 	/*!
 		\brief Implements a configurable variant of CRC.
 		\tparam T The type of the checksum that is produced.
@@ -46,7 +46,7 @@ namespace asmith {
 		*/
 		template<bool R = REVERSE_DATA>
 		static inline typename std::enable_if<R, uint8_t>::type reflect_byte(const uint8_t aByte) {
-			return asmith::reflect(aByte);
+			return reflect(aByte);
 		}
 		/*!
 			\brief Reflect a byte from the input data.
@@ -67,7 +67,7 @@ namespace asmith {
 		*/
 		template<bool R = REVERSE_DATA, size_t W = WIDTH>
 		static inline typename std::enable_if<R && (W == 8 || W == 16 || W == 32 || W == 64) && sizeof(checksum_t) * 8 == W, checksum_t>::type reflect_checksum(checksum_t aValue) {
-			return asmith::reflect(aValue);
+			return reflect(aValue);
 		}
 
 		/*!
@@ -79,7 +79,7 @@ namespace asmith {
 		template<bool R = REVERSE_DATA, size_t W = WIDTH>
 		static inline typename std::enable_if<R && ((W != 8 && W != 16 && W != 32 && W != 64) || sizeof(checksum_t) * 8 != W), checksum_t>::type reflect_checksum(checksum_t aValue) {
 			checksum_t tmp = 0;
-			asmith::reflect(&aValue, &tmp, WIDTH);
+			reflect(&aValue, &tmp, WIDTH);
 			return tmp;
 		}
 
