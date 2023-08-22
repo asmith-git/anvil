@@ -48,6 +48,45 @@ namespace anvil {
 		seed[1] = x ^ y ^ (x >> 17ull) ^ (y >> 26ull);
 		return seed[1] + y;
 	}
+
+	struct Xorwow {
+		uint32_t x_0;
+		uint32_t x_1;
+		uint32_t x_2;
+		uint32_t x_3;
+		uint32_t x_4;
+		uint32_t counter;
+
+		Xorwow(uint32_t seed) :
+			x_0(seed),
+			x_1(xorshift_32(seed)),
+			x_2(xorshift_32(seed)),
+			x_3(xorshift_32(seed)),
+			x_4(xorshift_32(seed)),
+			counter(0u)
+		{}
+
+		Xorwow() :
+			Xorwow(static_cast<uint32_t>(rand()))
+		{}
+
+		ANVIL_STRONG_INLINE uint32_t operator()() {
+			uint32_t t = x_4;
+
+			uint32_t s = x_0;
+			x_4 = x_3;
+			x_3 = x_2;
+			x_2 = x_1;
+			x_1 = s;
+
+			t ^= t >> 2u;
+			t ^= t << 1u;
+			t ^= s ^ (s << 4u);
+			x_0 = t;
+			counter += 362437u;
+			return t + counter;
+		}
+	};
 }
 
 #endif
