@@ -24,8 +24,7 @@ namespace anvil {
 	*/
 	static ANVIL_STRONG_INLINE uint8_t rand_8() {
 		ANVIL_COMPILETIME_ASSERT(RAND_MAX >= UINT8_MAX, "RAND_MAX must be >= UINT8_MAX");
-		enum { MOD = UINT8_MAX + 1 };
-		return static_cast<uint8_t>(rand() % MOD);
+		return static_cast<uint8_t>(rand() & UINT8_MAX);
 	}
 
 	/*!
@@ -33,15 +32,12 @@ namespace anvil {
 	*/
 	static ANVIL_STRONG_INLINE uint16_t rand_16() {
 		if ANVIL_CONSTEXPR_VAR(RAND_MAX >= UINT16_MAX) {
-			enum { MOD = UINT16_MAX + 1 };
-			return static_cast<uint16_t>(rand() % MOD);
+			return static_cast<uint16_t>(rand() & UINT16_MAX);
 
-		} else if ANVIL_CONSTEXPR_VAR(RAND_MAX >= UINT16_MAX) {
-			int a = rand();
-			int b = rand();
-			a &= UINT8_MAX;
-			b &= UINT8_MAX;
-			return static_cast<uint16_t>(a | (b << 8));
+		} else {
+			uint16_t a = rand_8();
+			uint16_t b = rand_8();
+			return a | (b << 8u);
 		}
 	}
 
@@ -49,21 +45,33 @@ namespace anvil {
 	*	\brief Call rand() enough times to produce 32 bits of random data.
 	*/
 	static inline uint32_t rand_32() {
-		ANVIL_COMPILETIME_ASSERT(RAND_MAX >= 2047, "RAND_MAX must at least 11 bits");
+		if ANVIL_CONSTEXPR_VAR(RAND_MAX >= UINT16_MAX) {
+			uint32_t a = rand_16();
+			uint32_t b = rand_16();
+			return a | (b << 16u);
 
-		struct RandStruct {
-			uint32_t a : 11;
-			uint32_t b : 11;
-			uint32_t c : 10;
-		};
+		} else if ANVIL_CONSTEXPR_VAR(RAND_MAX >= 2047) {
+			struct RandStruct {
+				uint32_t a : 11;
+				uint32_t b : 11;
+				uint32_t c : 10;
+			};
 
-		RandStruct tmp;
-		tmp.a = static_cast<uint32_t>(rand());
-		tmp.b = static_cast<uint32_t>(rand());
-		tmp.c = static_cast<uint32_t>(rand());
+			RandStruct tmp;
+			tmp.a = static_cast<uint32_t>(rand());
+			tmp.b = static_cast<uint32_t>(rand());
+			tmp.c = static_cast<uint32_t>(rand());
 
-		static_assert(sizeof(RandStruct) == sizeof(uint32_t), "Expected RandStruct to be 32 bits");
-		return *reinterpret_cast<const uint32_t*>(&tmp);
+			static_assert(sizeof(RandStruct) == sizeof(uint32_t), "Expected RandStruct to be 32 bits");
+			return *reinterpret_cast<const uint32_t*>(&tmp);
+
+		} else {
+			uint32_t a = rand_8();
+			uint32_t b = rand_8();
+			uint32_t c = rand_8();
+			uint32_t d = rand_8();
+			return a | (b << 8u) | (c << 16u) | (d << 24u);
+		}
 	}
 
 	/*!
