@@ -115,7 +115,7 @@ namespace anvil { namespace BytePipe {
 		_WriteBits(static_cast<uint32_t>(bits), bit_count);
 		if ANVIL_CONSTEXPR_VAR(sizeof(uintptr_t) > sizeof(uint32_t)) {
 			if (bit_count > 32u) {
-				_WriteBits(static_cast<uint32_t>(bits >> 32u), bit_count - 32u);
+				_WriteBits(static_cast<uint32_t>(static_cast<uint64_t>(bits) >> 32ull), bit_count - 32u);
 			}
 		}
 	}

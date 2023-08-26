@@ -164,7 +164,7 @@ namespace anvil {
 			// For each possible ASCII character
 			for (size_t c = 0u; c < 256u; ++c) {
 				// Look for the character in the table
-				for (uint32_t j = 0; j < 64u; ++j) if (c == table[j]) {
+				for (uint32_t j = 0; j < 64u; ++j) if (c == static_cast<size_t>(table[j])) {
 					// Put the table index into the lookup table for this character
 					stack_table[c] = static_cast<uint8_t>(j);
 					goto NEXT_CHAR;
