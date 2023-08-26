@@ -16,6 +16,7 @@
 #define ANVIL_CORE_HASH_HPP
 
 #include "Keywords.hpp"
+#include "Xorshift.hpp"
 
 namespace anvil {
 
@@ -96,6 +97,17 @@ namespace anvil {
 		public:
 			LoseLose();
 			virtual ~LoseLose();
+
+			virtual hash_t Hash(const void* src, size_t bytes);
+			virtual void Reset() final;
+		};
+
+		class Murmur3_32 final : public HashTemplate<uint32_t> {
+		protected:
+			hash_t _hash;
+		public:
+			Murmur3_32();
+			virtual ~Murmur3_32();
 
 			virtual hash_t Hash(const void* src, size_t bytes);
 			virtual void Reset() final;

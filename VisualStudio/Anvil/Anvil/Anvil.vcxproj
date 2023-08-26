@@ -207,6 +207,7 @@
     <ClCompile Include="..\..\..\src\anvil\core\Hash.cpp" />
     <ClCompile Include="..\..\..\src\anvil\core\HashDJB2.cpp" />
     <ClCompile Include="..\..\..\src\anvil\core\HashLoseLose.cpp" />
+    <ClCompile Include="..\..\..\src\anvil\core\HashMurmur3.cpp" />
     <ClCompile Include="..\..\..\src\anvil\core\HashSDBM.cpp" />
     <ClCompile Include="..\..\..\src\anvil\core\Hexadecimal.cpp" />
     <ClCompile Include="..\..\..\src\anvil\core\Reflection.cpp" />

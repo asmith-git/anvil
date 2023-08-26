@@ -162,6 +162,9 @@
     <ClCompile Include="..\..\..\src\anvil\core\HashSDBM.cpp">
       <Filter>Source Files\core\Hashing</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\core\HashMurmur3.cpp">
+      <Filter>Source Files\core\Hashing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\anvil\core\Alignment.hpp">
