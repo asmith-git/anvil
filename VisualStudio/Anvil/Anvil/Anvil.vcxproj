@@ -204,6 +204,10 @@
     <ClCompile Include="..\..\..\src\anvil\core\Allocator.cpp" />
     <ClCompile Include="..\..\..\src\anvil\core\Base64.cpp" />
     <ClCompile Include="..\..\..\src\anvil\core\CpuRuntime.cpp" />
+    <ClCompile Include="..\..\..\src\anvil\core\Hash.cpp" />
+    <ClCompile Include="..\..\..\src\anvil\core\HashDJB2.cpp" />
+    <ClCompile Include="..\..\..\src\anvil\core\HashLoseLose.cpp" />
+    <ClCompile Include="..\..\..\src\anvil\core\HashSDBM.cpp" />
     <ClCompile Include="..\..\..\src\anvil\core\Hexadecimal.cpp" />
     <ClCompile Include="..\..\..\src\anvil\core\Reflection.cpp" />
     <ClCompile Include="..\..\..\src\anvil\lutils\Message.cpp" />
@@ -262,6 +266,7 @@
     <ClInclude Include="..\..\..\include\anvil\core\CpuRuntime.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\CRC.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\FastSharedPtr.hpp" />
+    <ClInclude Include="..\..\..\include\anvil\core\Hash.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\Hexadecimal.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\IDGenerator.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\Keywords.hpp" />

@@ -58,6 +58,9 @@
     <Filter Include="Header Files\compute\details">
       <UniqueIdentifier>{5cc6010b-ecc4-4ae0-9182-e611e2378da1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\core\Hashing">
+      <UniqueIdentifier>{59f84f21-4a1d-4e06-bbb4-e1fbc74724fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -146,6 +149,18 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\anvil\core\Allocator.cpp">
       <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\core\Hash.cpp">
+      <Filter>Source Files\core\Hashing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\core\HashDJB2.cpp">
+      <Filter>Source Files\core\Hashing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\core\HashLoseLose.cpp">
+      <Filter>Source Files\core\Hashing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\core\HashSDBM.cpp">
+      <Filter>Source Files\core\Hashing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -363,6 +378,9 @@
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\anvil\core\Xorshift.hpp">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\core\Hash.hpp">
       <Filter>Header Files\core</Filter>
     </ClInclude>
   </ItemGroup>

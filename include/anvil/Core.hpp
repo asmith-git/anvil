@@ -38,5 +38,6 @@
 #include "anvil/core/Allocator.hpp"
 #include "anvil/core/CRC.hpp"
 #include "anvil/core/Xorshift.hpp"
+#include "anvil/core/Hash.hpp"
 
 #endif
