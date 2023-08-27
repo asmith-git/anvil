@@ -16,7 +16,6 @@
 #define ANVIL_CORE_HASH_HPP
 
 #include "Keywords.hpp"
-#include "Xorshift.hpp"
 
 namespace anvil {
 
