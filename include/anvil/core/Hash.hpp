@@ -49,7 +49,7 @@ namespace anvil {
 
 	namespace hash {
 
-		class DJB2 : public HashTemplate<uint32_t> {
+		class ANVIL_DLL_EXPORT DJB2 : public HashTemplate<uint32_t> {
 		protected:
 			hash_t _hash;
 		public:
@@ -60,7 +60,7 @@ namespace anvil {
 			virtual void Reset() final;
 		};
 
-		class DJB2a final : public DJB2 {
+		class ANVIL_DLL_EXPORT DJB2a final : public DJB2 {
 		public:
 			DJB2a();
 			virtual ~DJB2a();
@@ -68,7 +68,7 @@ namespace anvil {
 			virtual hash_t Hash(const void* src, size_t bytes) final;
 		};
 
-		class SDBM : public HashTemplate<uint32_t> {
+		class ANVIL_DLL_EXPORT SDBM : public HashTemplate<uint32_t> {
 		protected:
 			hash_t _hash;
 		public:
@@ -82,7 +82,7 @@ namespace anvil {
 		/*!
 		*	\brief Faster approximation SDBM
 		*/
-		class FastSDBM final : public SDBM {
+		class ANVIL_DLL_EXPORT FastSDBM final : public SDBM {
 		public:
 			FastSDBM();
 			virtual ~FastSDBM();
@@ -90,7 +90,7 @@ namespace anvil {
 			virtual hash_t Hash(const void* src, size_t bytes);
 		};
 
-		class LoseLose final : public HashTemplate<uint32_t> {
+		class ANVIL_DLL_EXPORT LoseLose final : public HashTemplate<uint32_t> {
 		private:
 			hash_t _hash;
 		public:
@@ -101,7 +101,7 @@ namespace anvil {
 			virtual void Reset() final;
 		};
 
-		class Murmur3_32 final : public HashTemplate<uint32_t> {
+		class ANVIL_DLL_EXPORT Murmur3_32 final : public HashTemplate<uint32_t> {
 		protected:
 			hash_t _hash;
 		public:
