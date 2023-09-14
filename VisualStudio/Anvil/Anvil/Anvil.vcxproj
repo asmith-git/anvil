@@ -304,6 +304,7 @@
     <ClInclude Include="..\..\..\include\anvil\scheduling\SchedulerExamples.hpp" />
     <ClInclude Include="..\..\..\include\anvil\scheduling\Task.hpp" />
     <ClInclude Include="..\..\..\include\anvil\scheduling\TaskFunctional.hpp" />
+    <ClInclude Include="..\..\..\include\anvil\scheduling\TaskLockGuard.hpp" />
     <ClInclude Include="..\..\..\include\anvil\Utils.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

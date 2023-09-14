@@ -85,7 +85,10 @@ namespace anvil { namespace scheduling {
 
 				g_scheduler.Schedule(tasks, task_count);
 
-				for (size_t i = 0u; i < task_count; ++i) tasks[i].Wait();
+				for (size_t i = 0u; i < task_count; ++i) {
+					tasks[i].Wait();
+					Assert::AreEqual((int)Task::STATE_COMPLETE, (int)tasks[i].GetState(), L"Task is not in STATE_COMPLETE");
+				}
 
 				delete[] tasks;
 
@@ -176,6 +179,25 @@ namespace anvil { namespace scheduling {
 		
 		TEST_METHOD(FixedTask100_NoCPU_10Minute) {
 			FixedTimeTest(100.f, false, 1000.f * 60.f * 10.f);
+		}
+
+		TEST_METHOD(UnthreadedExecute) {
+			std::atomic_int task_counter = 0;
+
+			FixedTimeTask task;
+			task.time_ms = 2.f;
+			task.use_cpu = true;
+			task.task_counter = &task_counter;
+
+			try {
+				task.Execute();
+
+			} catch (std::exception& e) {
+				Assert::Fail(std::wstring_convert<std::codecvt<wchar_t, char, std::mbstate_t>>().from_bytes(e.what()).c_str());
+			}
+
+			Assert::AreEqual(1, (int)task_counter, L"Task did not complete execution");
+			Assert::AreEqual((int) Task::STATE_COMPLETE, (int)task.GetState(), L"Task is not in STATE_COMPLETE");
 		}
 
 	};

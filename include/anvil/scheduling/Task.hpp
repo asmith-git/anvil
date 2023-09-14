@@ -192,7 +192,7 @@ namespace anvil {
 		/*!
 			\brief Calls Task::OnExecution() with proper state changes and exception handling
 		*/
-		void Execute() throw();
+		void ExecuteInScheduler() throw();
 
 		void SetException(std::exception_ptr exception);
 
@@ -273,6 +273,13 @@ namespace anvil {
 			\details Undefined behaviour if state is not STATE_INITIALISED, STATE_COMPLETE or STATE_CANCELED
 		*/
 		virtual ~Task();
+
+		/*!
+		*	\brief Execute the task immediately.
+		*	\detail If called from a parent Task then this is the same as calling Scheduler::Schedule and Task::Wait.
+		*	Otherwise executes on the current thread using a temporary scheduler, this possibly is not very efficient.
+		*/
+		void Execute();
 
 		/*!
 			\brief Wait for the task to complete.

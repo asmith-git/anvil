@@ -401,5 +401,8 @@
     <ClInclude Include="..\..\..\include\anvil\scheduling\details\ThreadLocal.hpp">
       <Filter>Header Files\scheduling</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\scheduling\TaskLockGuard.hpp">
+      <Filter>Header Files\scheduling</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

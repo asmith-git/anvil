@@ -28,11 +28,13 @@
 #include "anvil/scheduling/details/Fibers.hpp"
 #include <vector>
 #include <deque>
+#include <memory>
 
 namespace anvil { namespace details {
 
 	class ANVIL_DLL_EXPORT TaskThreadLocalData {
 	private:
+		std::unique_ptr<Scheduler> _unthreaded_scheduler;	//!< Default scheduler used if Task::Execute is called.
 		std::deque<FiberData*> _fiber_list;
 		FiberData* _current_fiber;
 		LPVOID _main_fiber;
@@ -56,8 +58,10 @@ namespace anvil { namespace details {
 
 		FiberData* OnTaskExecuteBegin(Task& task);
 		void LaunchTaskFiber(Task& task, FiberData* fiber);
-		void OnTaskExecuteReturn(Task& task, FiberData* fiber);
+		void TerminateTaskFiber(Task& task, FiberData* fiber);
 		void OnTaskExecuteEnd(Task& task, FiberData* fiber);
+
+		Scheduler& GetUnthreadedScheduler();
 
 		// Fiber controls
 		bool AreAnyFibersReady() const;

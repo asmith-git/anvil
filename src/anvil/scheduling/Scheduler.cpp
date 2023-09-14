@@ -200,7 +200,7 @@ namespace anvil {
 		if (task_count > 0) {
 
 			for (uint32_t i = 0u; i < task_count; ++i) {
-				tasks[i]->task->Execute(); 
+				tasks[i]->task->ExecuteInScheduler();
 			}
 
 			return true;

@@ -191,7 +191,7 @@ namespace anvil { namespace details {
 	}
 
 	/*!
-	*	\brief Begin trackign the nessersary information needed for the execution of a Task.
+	*	\brief Begin tracking the nessersary information needed for the execution of a Task.
 	*	\param task The task that is about to execute.
 	*	\param The fiber for this task or nullptr if fibers are disabled.
 	*/
@@ -233,17 +233,24 @@ namespace anvil { namespace details {
 	*	\brief Call Task::FiberFunction() and switch control to another fiber if enabled
 	*	\param task The Task to call.
 	*	\param fiber The fiber to switch control to, nullptr if fibers are disabled.
+	*	\see TaskThreadLocalData::TerminateTaskFiber
 	*/
 	void TaskThreadLocalData::TaskThreadLocalData::LaunchTaskFiber(Task& task, FiberData* fiber) {
 		if (_using_fibers) {
 			g_thread_additional_data.SwitchToTask(*fiber);
 		} else {
-			task.FiberFunction(*_task_stack.back());
+			Task::FiberFunction(task);
 		}
 	}
 
-	void TaskThreadLocalData::OnTaskExecuteReturn(Task& task, FiberData* fiber) {
-		if(_using_fibers) {
+	/*!
+	*	\brief Called when Task::OnExecute returns. Releases data that was tracked by call to LaunchTaskFiber
+	*	\param task The Task that was executed.
+	*	\param fiber The fiber of the task or nullptr if fibers are disabled.
+	*	\see TaskThreadLocalData::TerminateTaskFiber
+	*/
+	void TaskThreadLocalData::TerminateTaskFiber(Task& task, FiberData* fiber) {
+		if(fiber) {
 			fiber->task = nullptr;
 			if (task._data->scheduler == nullptr) throw 0; // Main fiber has been switched to before this one somehow
 
@@ -253,9 +260,19 @@ namespace anvil { namespace details {
 	}
 
 	void TaskThreadLocalData::OnTaskExecuteEnd(Task& task, FiberData* fiber) {
-		if (_using_fibers) {
+		if (fiber) {
 			if (fiber->task != nullptr) throw 0;
 			g_thread_additional_data.SwitchToMainFiber2();
 		}
+	}
+
+
+	Scheduler& TaskThreadLocalData::GetUnthreadedScheduler() {
+		if (!_unthreaded_scheduler) {
+			if ANVIL_CONSTEXPR_VAR(Scheduler::DEFAULT_FEATURES & Scheduler::FEATURE_ONLY_EXECUTE_ON_WORKER_THREADS) throw std::runtime_error("anvil::details::TaskThreadLocalData::GetUnthreadedScheduler : Default (unthreaded) scheduler will not work correctly when FEATURE_ONLY_EXECUTE_ON_WORKER_THREADS is enabled");
+			_unthreaded_scheduler.reset(new Scheduler(0u, Scheduler::DEFAULT_FEATURES));
+		}
+
+		return *_unthreaded_scheduler;
 	}
 }}

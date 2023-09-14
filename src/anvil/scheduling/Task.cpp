@@ -576,13 +576,28 @@ namespace anvil {
 		}
 	};
 
-	void Task::Execute() throw() {
-		// Remember the scheduler for later
-		TaskDataLock task_lock(*_data);
-	
-		details::FiberData* const fiber = g_thread_additional_data.OnTaskExecuteBegin(*this);
+	void Task::Execute() {
+		// Select which scheduler should be used
+		Task* parent = Task::GetCurrentlyExecutingTask();
+		Scheduler* scheduler = parent ? &parent->GetScheduler() : &g_thread_additional_data.GetUnthreadedScheduler();
 
-		Scheduler::ThreadDebugData* debug_data = _data->scheduler->GetDebugDataForThread(g_thread_additional_data._scheduler_index);
+		// Schedule this task for execution
+		scheduler->Schedule(*this);
+
+		// Wait for the task to execute
+		Wait();
+	}
+
+	void Task::ExecuteInScheduler() throw() {
+		// Prevent the task data from being deleted during execution
+		TaskDataLock task_lock(*_data);
+
+		// Initialise contextual data required for execution
+		details::TaskThreadLocalData& thread_data = g_thread_additional_data;
+		details::FiberData* const fiber = thread_data.OnTaskExecuteBegin(*this);
+
+		// Update debugging data
+		Scheduler::ThreadDebugData* debug_data = _data->scheduler->GetDebugDataForThread(thread_data._scheduler_index);
 		if (debug_data) {
 			++debug_data->tasks_executing;
 			++_data->scheduler->_scheduler_debug.total_tasks_executing;
@@ -595,11 +610,11 @@ namespace anvil {
 		}
 #endif
 
-		// Switch control to the task's fiber
-		g_thread_additional_data.LaunchTaskFiber(*this, fiber);
+		// Execute the task
+		thread_data.LaunchTaskFiber(*this, fiber);
 
+		// Post-execution cleanup
 		{
-			// Post-execution cleanup
 			std::lock_guard<std::shared_mutex> new_task_lock(_data->lock);
 			_data->state = Task::STATE_COMPLETE;
 			_data->scheduler = nullptr;
@@ -609,19 +624,23 @@ namespace anvil {
 #if ANVIL_TASK_FIBERS
 	void WINAPI Task::FiberFunction(LPVOID param) {
 		details::FiberData* const fiber = *static_cast<FiberData*>(param);
+		details::TaskThreadLocalData& thread_data = g_thread_additional_data;
 		while (true) {
 			Task& task = *fiber->task;
 			if (task._data == nullptr || task._data->scheduler == nullptr) {
 				// fiber.task hasn't been set to null somehow
 				throw 0;
-			} else 
-			{
+			} else  {
 #else
 	void Task::FiberFunction(Task& task) {
 		details::FiberData* const fiber = nullptr;
+		details::TaskThreadLocalData& thread_data = g_thread_additional_data;
+		if(true) {
 			{
-#endif
+#endif	
+				// Prevent the task data from being deleted during execution
 				TaskDataLock task_lock(*task._data);
+
 
 				Scheduler& scheduler = task.GetScheduler();
 
@@ -642,9 +661,11 @@ namespace anvil {
 					}
 				}
 
-				g_thread_additional_data.OnTaskExecuteReturn(task, fiber);
+				// Begin cleanup of task execution data
+				thread_data.TerminateTaskFiber(task, fiber);
 
-				Scheduler::ThreadDebugData* debug_data = task._data->scheduler->GetDebugDataForThread(g_thread_additional_data._scheduler_index);
+				// Update debugging data
+				Scheduler::ThreadDebugData* debug_data = task._data->scheduler->GetDebugDataForThread(thread_data._scheduler_index);
 				if (debug_data) {
 					--debug_data->tasks_executing;
 					--task._data->scheduler->_scheduler_debug.total_tasks_executing;
@@ -653,19 +674,18 @@ namespace anvil {
 #if ANVIL_DEBUG_TASKS
 				{ TaskDebugEvent e = TaskDebugEvent::ExecuteEndEvent(task._data->debug_id); g_debug_event_handler(nullptr, &e); }
 #endif
+
+				// Schedule any tasks that were waiting for this task to finish
 				if((scheduler._feature_flags & Scheduler::FEATURE_DELAYED_SCHEDULING) != 0u){
 					std::lock_guard<std::shared_mutex> lock(scheduler._task_queue_mutex);
 					scheduler.SortTaskQueue(false, true);
 				}
 				scheduler.TaskQueueNotify();
-
-				// Return control to the main thread
 			}
 
-			g_thread_additional_data.OnTaskExecuteEnd(task, fiber);
-#if ANVIL_TASK_FIBERS
+			// Return control to the main thread
+			thread_data.OnTaskExecuteEnd(task, fiber);
 		}
-#endif
 	}
 
 	void Task::OnExecution() {
