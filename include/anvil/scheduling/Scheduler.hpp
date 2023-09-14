@@ -33,6 +33,7 @@
 #include <memory>
 #include "anvil/core/CPU.hpp"
 #include "anvil/scheduling/Core.hpp"
+#include "anvil/scheduling/details/ThreadLocal.hpp"
 
 namespace anvil {
 
@@ -63,7 +64,7 @@ namespace anvil {
 		};
 
 		struct ThreadDebugData {
-			TaskThreadLocalData* thread_local_data;
+			details::TaskThreadLocalData* thread_local_data;
 			std::atomic_uint32_t tasks_executing;
 			std::atomic_uint32_t sleeping;
 			std::atomic_uint32_t enabled;

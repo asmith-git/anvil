@@ -24,7 +24,7 @@
 
 #include "anvil/scheduling/details/Fibers.hpp"
 
-namespace anvil {
+namespace anvil { namespace details {
 
 	// FiberData
 
@@ -43,4 +43,4 @@ namespace anvil {
 	FiberData::~FiberData() {
 
 	}
-}
+}}

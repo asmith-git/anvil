@@ -23,9 +23,10 @@
 // For the latest version, please visit https://github.com/asmith-git/anvil-scheduling
 
 #include "anvil/scheduling/details/ThreadLocal.hpp"
+#include "anvil/scheduling/Task.hpp"
 #include <atomic>
 
-namespace anvil {
+namespace anvil { namespace details {
 
 	static std::atomic_uint32_t g_next_thread_index = UINT32_MAX;
 	thread_local TaskThreadLocalData g_thread_additional_data;
@@ -173,4 +174,4 @@ namespace anvil {
 
 		return count;
 	}
-}
+}}

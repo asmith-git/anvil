@@ -41,7 +41,7 @@
 #include "anvil/scheduling/details/ThreadLocal.hpp"
 #include <emmintrin.h>
 
-#define g_thread_additional_data anvil::TaskThreadLocalData::Get()
+#define g_thread_additional_data anvil::details::TaskThreadLocalData::Get()
 
 namespace anvil {
 
@@ -408,18 +408,6 @@ namespace anvil {
 			_data = nullptr;
 		}
 		//! \bug If the task is scheduled it must be removed from the scheduler
-	}
-
-	Task* Task::GetCurrentlyExecutingTask() {
-		return g_thread_additional_data.GetCurrentlyExecutingTask();
-	}
-
-	size_t Task::GetNumberOfTasksExecutingOnThisThread() {
-		return g_thread_additional_data.GetNumberOfTasksExecutingOnThisThread();
-	}
-
-	Task* Task::GetCurrentlyExecutingTask(size_t index) {
-		return g_thread_additional_data.GetCurrentlyExecutingTask(index);
 	}
 
 	void Task::SetException(std::exception_ptr exception) {

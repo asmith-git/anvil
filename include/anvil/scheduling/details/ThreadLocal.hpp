@@ -29,7 +29,7 @@
 #include <vector>
 #include <deque>
 
-namespace anvil {
+namespace anvil { namespace details {
 
 	struct ANVIL_DLL_EXPORT TaskThreadLocalData {
 		std::deque<FiberData*> fiber_list;
@@ -58,7 +58,6 @@ namespace anvil {
 		static TaskThreadLocalData& Get();
 	};
 
-
-}
+}}
 
 #endif

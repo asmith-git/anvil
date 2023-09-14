@@ -41,7 +41,7 @@
 #include "anvil/scheduling/details/ThreadLocal.hpp"
 #include <emmintrin.h>
 
-#define g_thread_additional_data anvil::TaskThreadLocalData::Get()
+#define g_thread_additional_data anvil::details::TaskThreadLocalData::Get()
 
 namespace anvil {
 
@@ -211,7 +211,7 @@ namespace anvil {
 
 
 	void Scheduler::RegisterAsWorkerThread() {
-		TaskThreadLocalData& local_data = g_thread_additional_data;
+		details::TaskThreadLocalData& local_data = g_thread_additional_data;
 		local_data.is_worker_thread = true;
 
 #if ANVIL_TASK_FIBERS
@@ -242,7 +242,7 @@ namespace anvil {
 		const float debug_time = GetDebugTime();
 #endif
 		// If this function is being called by a task
-		const TaskThreadLocalData& local_data = g_thread_additional_data;
+		const details::TaskThreadLocalData& local_data = g_thread_additional_data;
 #if ANVIL_TASK_FIBERS
 		FiberData* fiber = local_data.current_fiber;
 		Task* t = fiber == nullptr ? nullptr : fiber->task;

@@ -29,7 +29,9 @@
 #include <stdexcept>
 #include <memory>
 #include <shared_mutex>
+#include "anvil/core/Keywords.hpp"
 #include "anvil/scheduling/Scheduler.hpp"
+#include "anvil/scheduling/details/ThreadLocal.hpp"
 
 #if ANVIL_TASK_FIBERS
 	#define NOMINMAX
@@ -258,7 +260,7 @@ namespace anvil {
 		virtual bool IsReadyToExecute() const throw();
 	public:
 		friend Scheduler;
-		friend TaskThreadLocalData;
+		friend details::TaskThreadLocalData;
 
 		/*!
 			\brief Create a new task.
@@ -381,19 +383,19 @@ namespace anvil {
 			\brief Return the Task that is currently executing on this thread.
 			\details Returns nullptr if there is no task executing on this thread.
 		*/
-		static Task* GetCurrentlyExecutingTask();
+		static ANVIL_STRONG_INLINE Task* GetCurrentlyExecutingTask() { return details::TaskThreadLocalData::Get().GetCurrentlyExecutingTask(); }
 
 		/*!
 			\brief Return a Task that is executing on this thread.
 			\param Index the index in the execution stack, 0u is the first Task that started executing.
 			\see GetNumberOfTasksExecutingOnThisThread()
 		*/
-		static Task* GetCurrentlyExecutingTask(size_t index);
+		static ANVIL_STRONG_INLINE Task* GetCurrentlyExecutingTask(size_t index) { return details::TaskThreadLocalData::Get().GetCurrentlyExecutingTask(index); }
 
 		/*!
 			\brief Return the number of Tasks that are currently executing on this thread.
 		*/
-		static size_t GetNumberOfTasksExecutingOnThisThread();
+		static ANVIL_STRONG_INLINE size_t GetNumberOfTasksExecutingOnThisThread() { return details::TaskThreadLocalData::Get().GetNumberOfTasksExecutingOnThisThread(); }
 
 #if ANVIL_DEBUG_TASKS
 		void PrintDebugMessage(const char* message) const;

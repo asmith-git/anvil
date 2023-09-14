@@ -25,7 +25,7 @@
 #ifndef ANVIL_SCHEDULER_FIBERS_HPP
 #define ANVIL_SCHEDULER_FIBERS_HPP
 
-#include "anvil/scheduling/Task.hpp"
+#include "anvil/scheduling/Core.hpp"
 #include <functional>
 
 #if __has_include(<windows.h>)
@@ -36,7 +36,7 @@
 	typedef void* LPVOID;
 #endif
 
-namespace anvil {
+namespace anvil { namespace details {
 
 	struct ANVIL_DLL_EXPORT FiberData {
 		LPVOID fiber;
@@ -47,6 +47,6 @@ namespace anvil {
 		FiberData(Task* task);
 		~FiberData();
 	};
-}
+}}
 
 #endif
