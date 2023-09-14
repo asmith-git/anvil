@@ -34,31 +34,28 @@ namespace anvil { namespace details {
 	// TaskThreadLocalData
 
 	TaskThreadLocalData::TaskThreadLocalData() :
-		scheduler(nullptr),
-#if ANVIL_TASK_FIBERS
-		current_fiber(nullptr),
-		main_fiber(nullptr),
-#endif
-		scheduler_index(g_next_thread_index--),
-		is_worker_thread(false)
+		_scheduler(nullptr),
+		_current_fiber(nullptr),
+		_main_fiber(nullptr),
+		_scheduler_index(g_next_thread_index--),
+		_is_worker_thread(false),
+		_using_fibers(static_cast<bool>(ANVIL_TASK_FIBERS))
 	{}
 
 	TaskThreadLocalData::~TaskThreadLocalData() {
-#if ANVIL_TASK_FIBERS
 		// Delete old fibers
-		for (FiberData* fiber : fiber_list) {
+		for (FiberData* fiber : _fiber_list) {
 			DeleteFiber(fiber->fiber);
 			delete fiber;
 		}
-		fiber_list.clear();
-#endif
+		_fiber_list.clear();
 	}
 
 	bool TaskThreadLocalData::AreAnyFibersReady() const {
-		if (!fiber_list.empty()) {
-			auto end = fiber_list.end();
-			auto i = std::find_if(fiber_list.begin(), end, [this](FiberData* fiber)->bool {
-				return fiber != current_fiber && fiber->task != nullptr && (fiber->yield_condition == nullptr || (*fiber->yield_condition)());
+		if (!_fiber_list.empty()) {
+			auto end = _fiber_list.end();
+			auto i = std::find_if(_fiber_list.begin(), end, [this](FiberData* fiber)->bool {
+				return fiber != _current_fiber && fiber->task != nullptr && (fiber->yield_condition == nullptr || (*fiber->yield_condition)());
 				});
 			return i != end;
 		}
@@ -67,12 +64,12 @@ namespace anvil { namespace details {
 	}
 
 	bool TaskThreadLocalData::SwitchToTask(FiberData& fiber) {
-		if (&fiber == current_fiber) return false;
+		if (&fiber == _current_fiber) return false;
 
 		// If the task is able to execute
 		if (fiber.task != nullptr) {
 			if (fiber.yield_condition == nullptr || (*fiber.yield_condition)()) {
-				current_fiber = &fiber;
+				_current_fiber = &fiber;
 				SwitchToFiber(fiber.fiber);
 				return true;
 			}
@@ -84,10 +81,10 @@ namespace anvil { namespace details {
 	bool TaskThreadLocalData::SwitchToAnyTask() {
 		// Try to execute a task that is ready to resume
 	RETRY:
-		if (!fiber_list.empty()) {
-			auto end = fiber_list.end();
-			auto i = std::find_if(fiber_list.begin(), end, [this](FiberData* fiber)->bool {
-				return fiber != current_fiber && fiber->task != nullptr && (fiber->yield_condition == nullptr || (*fiber->yield_condition)());
+		if (!_fiber_list.empty()) {
+			auto end = _fiber_list.end();
+			auto i = std::find_if(_fiber_list.begin(), end, [this](FiberData* fiber)->bool {
+				return fiber != _current_fiber && fiber->task != nullptr && (fiber->yield_condition == nullptr || (*fiber->yield_condition)());
 				});
 			if (i != end) {
 				FiberData* fiber = *i;
@@ -98,11 +95,11 @@ namespace anvil { namespace details {
 				}
 
 				// Move fiber to the back of the list
-				fiber_list.erase(i);
-				fiber_list.push_back(fiber);
+				_fiber_list.erase(i);
+				_fiber_list.push_back(fiber);
 
 				// Switch to the fiber
-				current_fiber = fiber;
+				_current_fiber = fiber;
 				SwitchToFiber(fiber->fiber);
 				return true;
 			}
@@ -114,8 +111,8 @@ namespace anvil { namespace details {
 	void TaskThreadLocalData::SwitchToMainFiber2() {
 		// Only switch to the main fiber if there are no other fibers
 		const auto HasOtherFiber = [this]()->bool {
-			for (FiberData* fiber : fiber_list) {
-				if (fiber == current_fiber) continue;
+			for (FiberData* fiber : _fiber_list) {
+				if (fiber == _current_fiber) continue;
 				if (fiber->task == nullptr) continue;
 				return true;
 			}
@@ -132,11 +129,11 @@ namespace anvil { namespace details {
 
 	void TaskThreadLocalData::SwitchToMainFiber() {
 		// Are we currently executing the main fiber?
-		if (current_fiber == nullptr) return;
+		if (_current_fiber == nullptr) return;
 
 		// Switch to it
-		current_fiber = nullptr;
-		SwitchToFiber(main_fiber);
+		_current_fiber = nullptr;
+		SwitchToFiber(_main_fiber);
 	}
 
 	TaskThreadLocalData& TaskThreadLocalData::Get() {
@@ -145,33 +142,120 @@ namespace anvil { namespace details {
 
 
 	Task* TaskThreadLocalData::GetCurrentlyExecutingTask() const {
-		if (current_fiber) return current_fiber->task;
-		if (!task_stack.empty()) return task_stack.back();
+		if (_current_fiber) return _current_fiber->task;
+		if (!_task_stack.empty()) return _task_stack.back();
 		return nullptr;
 	}
 
 	Task* TaskThreadLocalData::GetCurrentlyExecutingTask(size_t index) const {
 		size_t count = 0u;
-		for (const FiberData* fiber : g_thread_additional_data.fiber_list) {
+		for (const FiberData* fiber : _fiber_list) {
 			if (fiber->task != nullptr) {
 				if (count == index) return fiber->task;
 				++count;
 			}
 		}
 
-		if (index >= g_thread_additional_data.task_stack.size()) return nullptr;
-		return g_thread_additional_data.task_stack[index];
+		if (index >= _task_stack.size()) return nullptr;
+		return _task_stack[index];
 	}
 
 	size_t TaskThreadLocalData::GetNumberOfTasksExecutingOnThisThread() const {
 		size_t count = 0u;
 
-		for (const FiberData* fiber : fiber_list) {
+		for (const FiberData* fiber : _fiber_list) {
 			if (fiber->task != nullptr) ++count;
 		}
 
-		count += g_thread_additional_data.task_stack.size();
+		count += _task_stack.size();
 
 		return count;
+	}
+	
+	void TaskThreadLocalData::RegisterAsWorkerThread(Scheduler& scheduler) {
+		_is_worker_thread = true;
+
+		if (_using_fibers) {
+			_main_fiber = ConvertThreadToFiber(nullptr);
+
+		} else if (scheduler._scheduler_debug.thread_debug_data != nullptr) {
+			_scheduler = &scheduler;
+			_scheduler_index = scheduler._scheduler_debug.total_thread_count++;
+			auto& debug_data = scheduler._scheduler_debug.thread_debug_data[_scheduler_index];
+			debug_data.tasks_executing = 0u;
+			debug_data.sleeping = 0u;
+			debug_data.enabled = 1u;
+			debug_data.thread_local_data = this;
+			++scheduler._scheduler_debug.executing_thread_count; // Default state is executing
+		}
+	}
+
+	/*!
+	*	\brief Begin trackign the nessersary information needed for the execution of a Task.
+	*	\param task The task that is about to execute.
+	*	\param The fiber for this task or nullptr if fibers are disabled.
+	*/
+	FiberData* TaskThreadLocalData::OnTaskExecuteBegin(Task& task) {
+		if (_using_fibers) {
+			FiberData* fiber = nullptr;
+			try {
+				// Check if an existing fiber is unused
+				for (FiberData* f : _fiber_list) {
+					if (f->task == nullptr) {
+						fiber = f;
+						break;
+					}
+				}
+
+				if (fiber == nullptr) {
+					// Allocate a new fiber
+					_fiber_list.push_back(new FiberData());
+					fiber = _fiber_list.back();
+					fiber->fiber = CreateFiber(0u, (LPFIBER_START_ROUTINE) Task::FiberFunction, fiber);
+				}
+
+				fiber->task = &task;
+				fiber->yield_condition = nullptr;
+
+			} catch (std::exception&) {
+				task.CatchException(std::move(std::current_exception()), false);
+			}
+
+			return fiber;
+
+		} else {
+			_task_stack.push_back(&task);
+			return nullptr;
+		}
+	}
+
+	/*!
+	*	\brief Call Task::FiberFunction() and switch control to another fiber if enabled
+	*	\param task The Task to call.
+	*	\param fiber The fiber to switch control to, nullptr if fibers are disabled.
+	*/
+	void TaskThreadLocalData::TaskThreadLocalData::LaunchTaskFiber(Task& task, FiberData* fiber) {
+		if (_using_fibers) {
+			g_thread_additional_data.SwitchToTask(*fiber);
+		} else {
+			task.FiberFunction(*_task_stack.back());
+		}
+	}
+
+	void TaskThreadLocalData::OnTaskExecuteReturn(Task& task, FiberData* fiber) {
+		if(_using_fibers) {
+			fiber->task = nullptr;
+			if (task._data->scheduler == nullptr) throw 0; // Main fiber has been switched to before this one somehow
+
+		} else {
+			_task_stack.pop_back();
+		}
+	}
+
+	void TaskThreadLocalData::OnTaskExecuteEnd(Task& task, FiberData* fiber) {
+		if (_using_fibers) {
+			if (fiber->task != nullptr) throw 0;
+			g_thread_additional_data.SwitchToMainFiber2();
+		}
 	}
 }}

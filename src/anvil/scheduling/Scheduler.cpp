@@ -209,27 +209,6 @@ namespace anvil {
 		return false;
 	}
 
-
-	void Scheduler::RegisterAsWorkerThread() {
-		details::TaskThreadLocalData& local_data = g_thread_additional_data;
-		local_data.is_worker_thread = true;
-
-#if ANVIL_TASK_FIBERS
-		local_data.main_fiber = ConvertThreadToFiber(nullptr);
-#endif
-
-		if(_scheduler_debug.thread_debug_data != nullptr) {
-			local_data.scheduler = this;
-			local_data.scheduler_index = _scheduler_debug.total_thread_count++;
-			ThreadDebugData& debug_data = _scheduler_debug.thread_debug_data[local_data.scheduler_index];
-			debug_data.tasks_executing = 0u;
-			debug_data.sleeping = 0u;
-			debug_data.enabled = 1u;
-			debug_data.thread_local_data = &local_data;
-			++_scheduler_debug.executing_thread_count; // Default state is executing
-		}
-	}
-
 	void Scheduler::Yield(const std::function<bool()>& condition, uint32_t max_sleep_milliseconds) {
 		// If the condition is already met then avoid the overheads of suspending the thread / task
 		if (condition()) return;
@@ -242,12 +221,11 @@ namespace anvil {
 		const float debug_time = GetDebugTime();
 #endif
 		// If this function is being called by a task
-		const details::TaskThreadLocalData& local_data = g_thread_additional_data;
 #if ANVIL_TASK_FIBERS
-		FiberData* fiber = local_data.current_fiber;
+		FiberData* fiber = g_thread_additional_data.current_fiber;
 		Task* t = fiber == nullptr ? nullptr : fiber->task;
 #else
-		Task* const t = local_data.task_stack.empty() ? nullptr : local_data.task_stack.back();
+		Task* const t = Task::GetCurrentlyExecutingTask();
 #endif
 
 		if (t) {
@@ -408,11 +386,7 @@ namespace anvil {
 
 		if (count == 0u) return;
 
-#if ANVIL_TASK_FIBERS
-		Task* const parent = g_thread_additional_data.current_fiber == nullptr ? nullptr : g_thread_additional_data.current_fiber->task;
-#else
-		Task* const parent = g_thread_additional_data.task_stack.empty() ? nullptr : g_thread_additional_data.task_stack.back();
-#endif
+		Task* parent = Task::GetCurrentlyExecutingTask();
 
 		// Ready tasks are placed at the start of this array, undready tasks are added to the end
 		TaskSchedulingData* ready_tasks[MAX_TASKS];
@@ -509,11 +483,11 @@ TASK_SCHEDULED:
 	}
 
 	uint32_t Scheduler::GetThisThreadIndex() const {
-		return g_thread_additional_data.scheduler_index;
+		return g_thread_additional_data._scheduler_index;
 	}
 
 	bool Scheduler::IsWorkerThread() const {
-		return g_thread_additional_data.scheduler == this;
+		return g_thread_additional_data._scheduler == this;
 	}
 
 	TaskSchedulingData* Scheduler::AllocateTaskSchedulingData() {

@@ -31,31 +31,50 @@
 
 namespace anvil { namespace details {
 
-	struct ANVIL_DLL_EXPORT TaskThreadLocalData {
-		std::deque<FiberData*> fiber_list;
-		FiberData* current_fiber;
-		LPVOID main_fiber;
+	class ANVIL_DLL_EXPORT TaskThreadLocalData {
+	private:
+		std::deque<FiberData*> _fiber_list;
+		FiberData* _current_fiber;
+		LPVOID _main_fiber;
 
-		std::vector<Task*> task_stack;
+		std::vector<Task*> _task_stack;
 
-		Scheduler* scheduler;
-		uint32_t scheduler_index;
-		bool is_worker_thread;
+		Scheduler* _scheduler;
+		uint32_t _scheduler_index;
+		bool _is_worker_thread;
+
+		bool _using_fibers;
+
+	public:
+		friend Scheduler;
+		friend Task;
+
+		static TaskThreadLocalData& Get();
 
 		TaskThreadLocalData();
 		~TaskThreadLocalData();
 
+		FiberData* OnTaskExecuteBegin(Task& task);
+		void LaunchTaskFiber(Task& task, FiberData* fiber);
+		void OnTaskExecuteReturn(Task& task, FiberData* fiber);
+		void OnTaskExecuteEnd(Task& task, FiberData* fiber);
+
+		// Fiber controls
 		bool AreAnyFibersReady() const;
 		bool SwitchToTask(FiberData& fiber);
 		bool SwitchToAnyTask();
 		void SwitchToMainFiber2();
 		void SwitchToMainFiber();
 
+		// Functions moved from Task
 		Task* GetCurrentlyExecutingTask() const;
 		Task* GetCurrentlyExecutingTask(size_t index) const;
 		size_t GetNumberOfTasksExecutingOnThisThread() const;
 
-		static TaskThreadLocalData& Get();
+
+		// Functions moved from Scheduler
+		void RegisterAsWorkerThread(Scheduler& scheduler);
+
 	};
 
 }}

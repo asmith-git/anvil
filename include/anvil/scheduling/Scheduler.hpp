@@ -131,11 +131,12 @@ namespace anvil {
 
 		friend Task;
 		friend TaskSchedulingData;
+		friend details::TaskThreadLocalData;
 
 		Scheduler(size_t thread_count, uint32_t feature_flags);
 		virtual ~Scheduler();
 
-		void RegisterAsWorkerThread();
+		inline void RegisterAsWorkerThread() { details::TaskThreadLocalData::Get().RegisterAsWorkerThread(*this); }
 
 		void Yield(const std::function<bool()>& condition, uint32_t max_sleep_milliseconds = 1u);
 
