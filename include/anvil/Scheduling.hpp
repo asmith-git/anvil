@@ -20,5 +20,6 @@
 #include "anvil/scheduling/Task.hpp"
 #include "anvil/scheduling/TaskFunctional.hpp"
 #include "anvil/scheduling/SchedulerExamples.hpp"
+#include "anvil/scheduling/TaskLockGuard.hpp"
 
 #endif
