@@ -222,8 +222,11 @@
     <ClCompile Include="..\..\..\src\anvil\RPC\ClientExample.cpp" />
     <ClCompile Include="..\..\..\src\anvil\RPC\Server.cpp" />
     <ClCompile Include="..\..\..\src\anvil\RPC\ServerExample.cpp" />
+    <ClCompile Include="..\..\..\src\anvil\scheduling\Fibers.cpp" />
+    <ClCompile Include="..\..\..\src\anvil\scheduling\Scheduler.cpp" />
     <ClCompile Include="..\..\..\src\anvil\scheduling\SchedulerExamples.cpp" />
     <ClCompile Include="..\..\..\src\anvil\scheduling\Task.cpp" />
+    <ClCompile Include="..\..\..\src\anvil\scheduling\ThreadLocal.cpp" />
     <ClCompile Include="dllmain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -295,6 +298,8 @@
     <ClInclude Include="..\..\..\include\anvil\RPC\ServerExample.hpp" />
     <ClInclude Include="..\..\..\include\anvil\Scheduling.hpp" />
     <ClInclude Include="..\..\..\include\anvil\scheduling\Core.hpp" />
+    <ClInclude Include="..\..\..\include\anvil\scheduling\details\Fibers.hpp" />
+    <ClInclude Include="..\..\..\include\anvil\scheduling\details\ThreadLocal.hpp" />
     <ClInclude Include="..\..\..\include\anvil\scheduling\Scheduler.hpp" />
     <ClInclude Include="..\..\..\include\anvil\scheduling\SchedulerExamples.hpp" />
     <ClInclude Include="..\..\..\include\anvil\scheduling\Task.hpp" />
