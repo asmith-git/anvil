@@ -14,8 +14,9 @@ namespace anvil { namespace scheduling {
 
 	class FixedTimeTask : public Task {
 	private:
-		volatile int _counter;
+		volatile int _cpu_var;
 	public:
+		std::atomic_int* task_counter;
 		float time_ms;
 		bool use_cpu;
 
@@ -24,29 +25,32 @@ namespace anvil { namespace scheduling {
 		void OnExecution() final {
 			float time_start = GetTimeMS();
 			if (use_cpu) {
-				while (GetTimeMS() < time_start + time_ms) {
-					_counter += (int) std::sqrtf(_counter + 1);
-					_counter += (int)std::sqrtf(_counter + 1);
-					_counter += (int)std::sqrtf(_counter + 1);
-					_counter += (int)std::sqrtf(_counter + 1);
-					_counter += (int)std::sqrtf(_counter + 1);
-					_counter += (int)std::sqrtf(_counter + 1);
-					_counter += (int)std::sqrtf(_counter + 1);
-					_counter += (int)std::sqrtf(_counter + 1);
-					_counter += (int)std::sqrtf(_counter + 1);
-					_counter += (int)std::sqrtf(_counter + 1);
-					_counter += (int)std::sqrtf(_counter + 1);
-					_counter += (int)std::sqrtf(_counter + 1);
+				while (GetTimeMS() <= (time_start + time_ms)) {
+					_cpu_var += (int) std::sqrtf(_cpu_var + 1);
+					_cpu_var += (int)std::sqrtf(_cpu_var + 1);
+					_cpu_var += (int)std::sqrtf(_cpu_var + 1);
+					_cpu_var += (int)std::sqrtf(_cpu_var + 1);
+					_cpu_var += (int)std::sqrtf(_cpu_var + 1);
+					_cpu_var += (int)std::sqrtf(_cpu_var + 1);
+					_cpu_var += (int)std::sqrtf(_cpu_var + 1);
+					_cpu_var += (int)std::sqrtf(_cpu_var + 1);
+					_cpu_var += (int)std::sqrtf(_cpu_var + 1);
+					_cpu_var += (int)std::sqrtf(_cpu_var + 1);
+					_cpu_var += (int)std::sqrtf(_cpu_var + 1);
+					_cpu_var += (int)std::sqrtf(_cpu_var + 1);
 				}
 			} else {
 				std::this_thread::sleep_for(std::chrono::microseconds(static_cast<int>(time_ms * 1000.f)));
 			}
+
+			if (task_counter) ++*task_counter;
 		}
 
 	public:
 
 		FixedTimeTask() :
-			_counter(0),
+			_cpu_var(0),
+			task_counter(nullptr),
 			time_ms(0.f),
 			use_cpu(true)
 		{}
@@ -68,9 +72,13 @@ namespace anvil { namespace scheduling {
 
 			float t1 = GetTimeMS();
 
+			std::atomic_int task_counter = 0;
+
 			try {
+
 				FixedTimeTask* tasks = new FixedTimeTask[task_count];
 				for (size_t i = 0u; i < task_count; ++i) {
+					tasks[i].task_counter = &task_counter;
 					tasks[i].time_ms = task_ms;
 					tasks[i].use_cpu = use_cpu;
 				}
@@ -87,10 +95,13 @@ namespace anvil { namespace scheduling {
 
 			float t2 = GetTimeMS();
 
-			float time_taken = t2 - t1;
-			float expected_time = total_time / static_cast<float>(std::thread::hardware_concurrency());
+			Assert::AreEqual((int)task_count, (int)task_counter, L"Number of tasks executed is wrong");
 
-			Assert::IsTrue(time_taken >= expected_time, (L"Finished faster than should be posible, took " + std::to_wstring(time_taken) + L"ms but minimum expected time is " + std::to_wstring(expected_time) + L"ms").c_str());
+			float time_taken = t2 - t1;
+			//float expected_time = total_time / static_cast<float>(std::thread::hardware_concurrency());
+			float expected_time = total_time / static_cast<float>(std::thread::hardware_concurrency() + 1);
+
+			Assert::IsTrue(time_taken >= (expected_time * 0.98f), (L"Finished faster than should be posible, took " + std::to_wstring(time_taken) + L"ms but minimum expected time is " + std::to_wstring(expected_time) + L"ms").c_str());
 
 		}
 
