@@ -101,7 +101,8 @@ namespace anvil { namespace scheduling {
 			//float expected_time = total_time / static_cast<float>(std::thread::hardware_concurrency());
 			float expected_time = total_time / static_cast<float>(std::thread::hardware_concurrency() + 1);
 
-			Assert::IsTrue(time_taken >= (expected_time * 0.98f), (L"Finished faster than should be posible, took " + std::to_wstring(time_taken) + L"ms but minimum expected time is " + std::to_wstring(expected_time) + L"ms").c_str());
+			Assert::IsTrue(time_taken >= (expected_time * 0.98f), (L"Finished faster than should be posible, took " + std::to_wstring(time_taken) + L" ms but expected time is " + std::to_wstring(expected_time) + L" ms").c_str());
+			Assert::IsTrue(time_taken < (expected_time * 2.f), (L"Took longer to execute (, took )" + std::to_wstring(time_taken) + L" ms) than expected (" + std::to_wstring(expected_time) + L" ms)").c_str());
 
 		}
 
