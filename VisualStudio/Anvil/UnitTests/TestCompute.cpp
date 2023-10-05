@@ -13,6 +13,48 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace anvil { namespace compute {
 
+
+	TEST_CLASS(OCV)
+	{
+	public:
+
+		TEST_METHOD(Type)
+		{
+			Assert::AreEqual((int)CV_8UC1, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_8UC1)).GetOpenCVType(), L"CV_8UC1 has wrong type");
+			Assert::AreEqual((int)CV_8SC1, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_8SC1)).GetOpenCVType(), L"CV_8SC1 has wrong type");
+			Assert::AreEqual((int)CV_16SC1, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_16SC1)).GetOpenCVType(), L"CV_16SC1 has wrong type");
+			Assert::AreEqual((int)CV_16UC1, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_16UC1)).GetOpenCVType(), L"CV_16UC1 has wrong type");
+			Assert::AreEqual((int)CV_32SC1, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_32SC1)).GetOpenCVType(), L"CV_32SC1 has wrong type");
+			Assert::AreEqual((int)CV_32FC1, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_32FC1)).GetOpenCVType(), L"CV_32FC1 has wrong type");
+			Assert::AreEqual((int)CV_64FC1, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_64FC1)).GetOpenCVType(), L"CV_64FC1 has wrong type");
+
+			Assert::AreEqual((int)CV_8UC2, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_8UC2)).GetOpenCVType(), L"CV_8UC2 has wrong type");
+			Assert::AreEqual((int)CV_8SC2, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_8SC2)).GetOpenCVType(), L"CV_8SC2 has wrong type");
+			Assert::AreEqual((int)CV_16SC2, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_16SC2)).GetOpenCVType(), L"CV_16SC2 has wrong type");
+			Assert::AreEqual((int)CV_16UC2, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_16UC2)).GetOpenCVType(), L"CV_16UC2 has wrong type");
+			Assert::AreEqual((int)CV_32SC2, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_32SC2)).GetOpenCVType(), L"CV_32SC2 has wrong type");
+			Assert::AreEqual((int)CV_32FC2, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_32FC2)).GetOpenCVType(), L"CV_32FC2 has wrong type");
+			Assert::AreEqual((int)CV_64FC2, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_64FC2)).GetOpenCVType(), L"CV_64FC2 has wrong type");
+
+			Assert::AreEqual((int)CV_8UC3, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_8UC3)).GetOpenCVType(), L"CV_8UC3 has wrong type");
+			Assert::AreEqual((int)CV_8SC3, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_8SC3)).GetOpenCVType(), L"CV_8SC3 has wrong type");
+			Assert::AreEqual((int)CV_16SC3, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_16SC3)).GetOpenCVType(), L"CV_16SC3 has wrong type");
+			Assert::AreEqual((int)CV_16UC3, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_16UC3)).GetOpenCVType(), L"CV_16UC3 has wrong type");
+			Assert::AreEqual((int)CV_32SC3, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_32SC3)).GetOpenCVType(), L"CV_32SC3 has wrong type");
+			Assert::AreEqual((int)CV_32FC3, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_32FC3)).GetOpenCVType(), L"CV_32FC3 has wrong type");
+			Assert::AreEqual((int)CV_64FC3, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_64FC3)).GetOpenCVType(), L"CV_64FC3 has wrong type");
+
+			Assert::AreEqual((int)CV_8UC4, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_8UC4)).GetOpenCVType(), L"CV_8UC4 has wrong type");
+			Assert::AreEqual((int)CV_8SC4, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_8SC4)).GetOpenCVType(), L"CV_8SC4 has wrong type");
+			Assert::AreEqual((int)CV_16SC4, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_16SC4)).GetOpenCVType(), L"CV_16SC4 has wrong type");
+			Assert::AreEqual((int)CV_16UC4, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_16UC4)).GetOpenCVType(), L"CV_16UC4 has wrong type");
+			Assert::AreEqual((int)CV_32SC4, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_32SC4)).GetOpenCVType(), L"CV_32SC4 has wrong type");
+			Assert::AreEqual((int)CV_32FC4, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_32FC4)).GetOpenCVType(), L"CV_32FC4 has wrong type");
+			Assert::AreEqual((int)CV_64FC4, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_64FC4)).GetOpenCVType(), L"CV_64FC4 has wrong type");
+		}
+	};
+
+
 	TEST_CLASS(TestImage)
 	{
 	public:

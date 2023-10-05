@@ -430,204 +430,51 @@ namespace anvil {
 		}
 
 #if ANVIL_OPENCV_SUPPORT
-		static EnumeratedType FromOpenCVType(int t) {
-			Type anvil_type;
-			int primative = t & CV_MAT_DEPTH_MASK;
-			int channels = (t >> CV_CN_SHIFT) + 1;
-			anvil_type.SetNumberOfChannels(static_cast<size_t>(channels));
-#ifdef CV_8U
-			if (primative == CV_8U) {
-				anvil_type.SetRepresentation(TYPE_UNSIGNED);
-				anvil_type.SetSizeInBytes(1u);
-				return anvil_type.GetEnumeratedType();
-			}
-#endif
-#ifdef CV_16U
-			if (primative == CV_16U) {
-				anvil_type.SetRepresentation(TYPE_UNSIGNED);
-				anvil_type.SetSizeInBytes(2u);
-				return anvil_type.GetEnumeratedType();
-			}
-#endif
-#ifdef CV_32U
-			if (primative == CV_32U) {
-				anvil_type.SetRepresentation(TYPE_UNSIGNED);
-				anvil_type.SetSizeInBytes(4u);
-				return anvil_type.GetEnumeratedType();
-			}
-#endif
-#ifdef CV_64U
-			if (primative == CV_64U) {
-				anvil_type.SetRepresentation(TYPE_UNSIGNED);
-				anvil_type.SetSizeInBytes(8u);
-				return anvil_type.GetEnumeratedType();
-			}
-#endif
-#ifdef CV_8S
-			if (primative == CV_8S) {
-				anvil_type.SetRepresentation(TYPE_SIGNED);
-				anvil_type.SetSizeInBytes(1u);
-				return anvil_type.GetEnumeratedType();
-			}
-#endif
-#ifdef CV_16S
-			if (primative == CV_16S) {
-				anvil_type.SetRepresentation(TYPE_SIGNED);
-				anvil_type.SetSizeInBytes(2u);
-				return anvil_type.GetEnumeratedType();
-			}
-#endif
-#ifdef CV_32S
-			if (primative == CV_32S) {
-				anvil_type.SetRepresentation(TYPE_SIGNED);
-				anvil_type.SetSizeInBytes(4u);
-				return anvil_type.GetEnumeratedType();
-			}
-#endif
-#ifdef CV_64S
-			if (primative == CV_64S) {
-				anvil_type.SetRepresentation(TYPE_SIGNED);
-				anvil_type.SetSizeInBytes(8u);
-				return anvil_type.GetEnumeratedType();
-			}
-#endif
-#ifdef CV_8F
-			if (primative == CV_8F) {
-				anvil_type.SetRepresentation(TYPE_FLOATING_POINT);
-				anvil_type.SetSizeInBytes(1u);
-				return anvil_type.GetEnumeratedType();
-			}
-#endif
-#ifdef CV_16F
-			if (primative == CV_16F) {
-				anvil_type.SetRepresentation(TYPE_FLOATING_POINT);
-				anvil_type.SetSizeInBytes(2u);
-				return anvil_type.GetEnumeratedType();
-			}
-#endif
-#ifdef CV_32F
-			if (primative == CV_32F) {
-				anvil_type.SetRepresentation(TYPE_FLOATING_POINT);
-				anvil_type.SetSizeInBytes(4u);
-				return anvil_type.GetEnumeratedType();
-			}
-#endif
-#ifdef CV_64F
-			if (primative == CV_64F) {
-				anvil_type.SetRepresentation(TYPE_FLOATING_POINT);
-				anvil_type.SetSizeInBytes(8u);
-				return anvil_type.GetEnumeratedType();
-			}
-#endif
+		static inline EnumeratedType FromOpenCVType(int t) {
 
-			throw std::runtime_error("anvil::Type::FromOpenCVType : Could not represent OpenCV type");
+			static_assert(CV_8U == 0, "anvil::Type : Expected CV_8U to be 0");
+			static_assert(CV_8S == 1, "anvil::Type : Expected CV_8S to be 1");
+			static_assert(CV_16U == 2, "anvil::Type : Expected CV_16U to be 2");
+			static_assert(CV_16S == 3, "anvil::Type : Expected CV_16S to be 3");
+			static_assert(CV_32S == 4, "anvil::Type : Expected CV_32S to be 4");
+			static_assert(CV_32F == 5, "anvil::Type : Expected CV_32F to be 5");
+			static_assert(CV_64F == 6, "anvil::Type : Expected CV_64F to be 6");
+#ifdef CV_16F
+			static_assert(CV_16F == 7, "anvil::Type : Expected CV_16F to be 7");
+#endif
+			static ANVIL_ALIGN(64) ANVIL_CONSTEXPR_VAR const EnumeratedType g_ocv_types[] = {
+				ANVIL_8UX1,
+				ANVIL_8SX1,
+				ANVIL_16UX1,
+				ANVIL_16SX1,
+				ANVIL_32SX1,
+				ANVIL_32FX1,
+				ANVIL_64FX1,
+				ANVIL_16FX1
+			};
+
+			Type anvil_type(g_ocv_types[t & CV_MAT_DEPTH_MASK]);
+			anvil_type.SetNumberOfChannels(static_cast<size_t>((t >> CV_CN_SHIFT) + 1));
+			return anvil_type.GetEnumeratedType();
 		}
 
 		static int ToOpenCVType(EnumeratedType type_enum) {
-			Type anvil_type(type_enum);
-			int cv_type = 0;
 
-			const size_t bytes = anvil_type.GetPrimitiveSizeInBytes();
-			switch (anvil_type.GetRepresentation()) {
-			case Type::TYPE_UNSIGNED:
-				switch (bytes) {
-				case 1u:
-#ifdef CV_8U
-					cv_type = CV_8U;
-#else
-					throw std::runtime_error("anvil::Type::ToOpenCVType : OpenCV does not support 8-bit unsigned integers");
-#endif
-					break;
-				case 2u:
-#ifdef CV_16U
-					cv_type = CV_16U;
-#else
-					throw std::runtime_error("anvil::Type::ToOpenCVType : OpenCV does not support 16-bit unsigned integers");
-#endif
-					break;
-				case 4u:
-#ifdef CV_32U
-					cv_type = CV_32U;
-#else
-					throw std::runtime_error("anvil::Type::ToOpenCVType : OpenCV does not support 32-bit unsigned integers");
-#endif
-					break;
-				case 8u:
-#ifdef CV_64U
-					cv_type = CV_64U;
-#else
-					throw std::runtime_error("anvil::Type::ToOpenCVType : OpenCV does not support 64-bit unsigned integers");
-#endif
-					break;
-				}
-				break;
-			case Type::TYPE_SIGNED:
-				switch (bytes) {
-				case 1u:
-#ifdef CV_8S
-					cv_type = CV_8S;
-#else
-					throw std::runtime_error("anvil::Type::ToOpenCVType : OpenCV does not support 8-bit signed integers");
-#endif
-					break;
-				case 2u:
-#ifdef CV_16S
-					cv_type = CV_16S;
-#else
-					throw std::runtime_error("anvil::Type::ToOpenCVType : OpenCV does not support 16-bit signed integers");
-#endif
-					break;
-				case 4u:
-#ifdef CV_32S
-					cv_type = CV_32S;
-#else
-					throw std::runtime_error("anvil::Type::ToOpenCVType : OpenCV does not support 32-bit signed integers");
-#endif
-					break;
-				case 8u:
-#ifdef CV_64S
-					cv_type = CV_64S;
-#else
-					throw std::runtime_error("anvil::Type::ToOpenCVType : OpenCV does not support 64-bit signed integers");
-#endif
-					break;
-				}
-				break;
-			case Type::TYPE_FLOATING_POINT:
-				switch (bytes) {
-				case 1u:
-#ifdef CV_8F
-					cv_type = CV_8F;
-#else
-					throw std::runtime_error("anvil::Type::ToOpenCVType : OpenCV does not support 8-bit floating point");
-#endif
-					break;
-				case 2u:
+			static ANVIL_ALIGN(64) ANVIL_CONSTEXPR_VAR const int8_t g_ocv_types[3][4] = {
+				{ CV_8U, CV_16U, -1, -1 },
+				{ CV_8S, CV_16S, CV_32S, -1 },
 #ifdef CV_16F
-					cv_type = CV_16F;
+				{ -1, CV_16F, CV_32F, CV_64F }
 #else
-					throw std::runtime_error("anvil::Type::ToOpenCVType : OpenCV does not support 16-bit floating point");
+				{ -1, -1, CV_32F, CV_64F }
 #endif
-					break;
-				case 4u:
-#ifdef CV_32F
-					cv_type = CV_32F;
-#else
-					throw std::runtime_error("anvil::Type::ToOpenCVType : OpenCV does not support 32-bit floating point");
-#endif
-					break;
-				case 8u:
-#ifdef CV_64F
-					cv_type = CV_64F;
-#else
-					throw std::runtime_error("anvil::Type::ToOpenCVType : OpenCV does not support 64-bit floating point");
-#endif
-					break;
-				}
-				break;
-			}
+			};
 
-			size_t channels = anvil_type.GetNumberOfChannels();
+			Type anvil_type(type_enum);
+			const int cv_type = g_ocv_types[anvil_type._type][anvil_type._bytes];
+			if(cv_type == -1) throw std::runtime_error("anvil::Type::ToOpenCVType : Data type is not supported by OpenCV");
+
+			const size_t channels = anvil_type.GetNumberOfChannels();
 			if(channels > 4u) throw std::runtime_error("anvil::Type::ToOpenCVType : OpenCV only supports up to 4 channels");
 			return CV_MAKE_TYPE(cv_type, static_cast<int>(channels));
 		}
