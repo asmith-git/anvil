@@ -33,8 +33,7 @@ namespace anvil { namespace core {
 		{
 			int counter = 0;
 
-			class DestructorTest
-			{
+			class DestructorTest {
 			public:
 				int& counter;
 
@@ -68,6 +67,49 @@ namespace anvil { namespace core {
 			}
 			Assert::AreEqual(1000, counter, L"Destructor was not called the expected number of times (for loop)");
 		}
+
+
+		TEST_METHOD(VirtualDestruction)
+		{
+			int base_counter = 0;
+			int child_counter = 0;
+
+			class IDestructorTest {
+			private:
+				int& _base_counter;
+			public:
+				IDestructorTest(int& counter) :
+					_base_counter(counter)
+				{}
+
+				virtual ~IDestructorTest() {
+					++_base_counter;
+				}
+			};
+
+			class DestructorTest final : IDestructorTest {
+			private:
+				int& _child_counter;
+			public:
+				DestructorTest(int& base_counter, int& child_counter) :
+					IDestructorTest(base_counter),
+					_child_counter(child_counter)
+				{}
+
+				virtual ~DestructorTest() {
+					++_child_counter;
+				}
+			};
+
+			base_counter = 0;
+			child_counter = 0;
+			for(int i = 0; i < 1000; ++i) {
+				anvil::LocalPointer<IDestructorTest, sizeof(DestructorTest)> ptr;
+				ptr.reset<DestructorTest>(std::ref<int>(base_counter), std::ref<int>(child_counter));
+			}
+			Assert::AreEqual(1000, base_counter, L"Base class destructor was not called the expected number of times");
+			Assert::AreEqual(1000, child_counter, L"Child class destructor was not called the expected number of times");
+		}
 		TEST_METHOD(ReleaseMovable)
 		{
 			{
@@ -77,6 +119,7 @@ namespace anvil { namespace core {
 				Assert::IsTrue(str == "test", L"String not allocated correctly");
 			}
 		}
+
 		TEST_METHOD(ReleaseUnmovable)
 		{
 			class Unmovable {
@@ -92,6 +135,20 @@ namespace anvil { namespace core {
 				anvil::LocalPointer<Unmovable> tmp;
 				tmp.reset<Unmovable>();
 				tmp.release();
+			}
+		}
+
+		TEST_METHOD(Move)
+		{
+			{
+				anvil::LocalPointer<std::string> a("a");
+				anvil::LocalPointer<std::string> b("b");
+				Assert::IsTrue(*a == "a", L"A string not allocated correctly");
+				Assert::IsTrue(*b == "b", L"B string not allocated correctly");
+
+				a = std::move(b);
+				Assert::IsTrue(*a == "b", L"B string not moved correctly");
+				Assert::IsTrue(b->empty(), L"Expected B string to be empty");
 			}
 		}
 	};
