@@ -39,5 +39,6 @@
 #include "anvil/core/CRC.hpp"
 #include "anvil/core/Xorshift.hpp"
 #include "anvil/core/Hash.hpp"
+#include "anvil/core/LocalPointer.hpp"
 
 #endif
