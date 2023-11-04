@@ -282,6 +282,7 @@
     <ClInclude Include="..\..\..\include\anvil\core\Keywords.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\LeadingZeroCount.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\LibDetect.hpp" />
+    <ClInclude Include="..\..\..\include\anvil\core\LocalPointer.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\OperatingSystem.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\PODAlgorithm.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\PODVector.hpp" />
