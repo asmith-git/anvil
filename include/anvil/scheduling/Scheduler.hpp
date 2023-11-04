@@ -91,7 +91,7 @@ namespace anvil {
 		Scheduler& operator=(Scheduler&&) = delete;
 		Scheduler& operator=(const Scheduler&) = delete;
 
-		std::vector<TaskSchedulingData*> _unready_task_queue; //!< Contains tasks that have been scheduled but are not yet ready to execute
+		std::vector<TaskSchedulingData*> _unready_task_queue;	//!< Contains tasks that have been scheduled but are not yet ready to execute
 		std::vector<TaskSchedulingData*> _task_queue;			//!< Contains tasks that have been scheduled and are ready to execute
 		void SortTaskQueue(bool recalculate_extended_priority, bool check_delayed_tasks) throw();
 
@@ -223,8 +223,13 @@ namespace anvil {
 		void PrintDebugMessage(const char* message) const;
 #endif
 
-		uint32_t GetThisThreadIndex() const;
-		bool IsWorkerThread() const;
+		inline uint32_t GetThisThreadIndex() const {
+			return details::TaskThreadLocalData::Get()._scheduler_index;
+		}
+
+		inline bool IsWorkerThread() const {
+			return details::TaskThreadLocalData::Get()._scheduler == this;
+		}
 
 		inline ThreadDebugData* GetDebugDataForThread(const uint32_t index) {
 			return index > _scheduler_debug.total_thread_count ? nullptr : _scheduler_debug.thread_debug_data + index;

@@ -185,7 +185,7 @@ namespace anvil { namespace scheduling {
 			std::atomic_int task_counter = 0;
 
 			FixedTimeTask task;
-			task.time_ms = 2.f;
+			task.time_ms = 0.f;
 			task.use_cpu = true;
 			task.task_counter = &task_counter;
 

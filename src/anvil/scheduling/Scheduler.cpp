@@ -384,8 +384,10 @@ namespace anvil {
 			count -= MAX_TASKS;
 		}
 
+		// If all tasks have been added then reutn early
 		if (count == 0u) return;
 
+		// If there is a task currently executing on this thread then it becomes the parent
 		Task* parent = Task::GetCurrentlyExecutingTask();
 
 		// Ready tasks are placed at the start of this array, undready tasks are added to the end
@@ -421,33 +423,36 @@ namespace anvil {
 			// Initialise scheduling data
 			t._data->scheduler = this;
 
-			// Update the child / parent relationship between tasks
-			if (parent) parent->_data->AddChild(t._data);
-
-			if ((_feature_flags & FEATURE_DELAYED_SCHEDULING) != 0u) {
-				// If the task isn't ready to execute yet push it to the innactive queue
-				if (!t.IsReadyToExecute()) {
-					*unready_tasks = t._data;
-					--unready_tasks;
-					++unready_count;
-					goto TASK_SCHEDULED;
-				}
-			}
-
-			ready_tasks[ready_count++] = t._data;
-			if(false){
+			// If an exception was caught then pass it to the task then cancel it
+			if(exception){
 HANDLE_EXCEPTION:
 				t.SetException(exception);
+				exception = nullptr;
 				t.Cancel();
+
 			} else {
+
+				// Check if the task is ready to execute now and add it to the appropriate queue
+				if ((_feature_flags & FEATURE_DELAYED_SCHEDULING) != 0u) {
+					// If the task isn't ready to execute yet push it to the innactive queue
+					if (!t.IsReadyToExecute()) {
+						*unready_tasks = t._data;
+						--unready_tasks;
+						++unready_count;
+						goto TASK_SCHEDULED;
+					}
+				}
+				ready_tasks[ready_count++] = t._data;
+
 TASK_SCHEDULED:
+				// Update the child / parent relationship between tasks
+				if (parent) parent->_data->AddChild(t._data);
+
 #if ANVIL_DEBUG_TASKS
 				uint32_t parent_id = 0u;
 				if (parent) parent_id = parent->_data->debug_id;
 				TaskDebugEvent e = TaskDebugEvent::ScheduleEvent(t._data->debug_id, parent_id, _debug_id);
 				g_debug_event_handler(nullptr, &e);
-#else
-				;
 #endif
 			}
 		}
@@ -480,14 +485,6 @@ TASK_SCHEDULED:
 	void Scheduler::Schedule(Task* task, Priority priority) {
 		task->_data->SetRegularPriority(priority);
 		Schedule(&task, 1u);
-	}
-
-	uint32_t Scheduler::GetThisThreadIndex() const {
-		return g_thread_additional_data._scheduler_index;
-	}
-
-	bool Scheduler::IsWorkerThread() const {
-		return g_thread_additional_data._scheduler == this;
 	}
 
 	TaskSchedulingData* Scheduler::AllocateTaskSchedulingData() {
