@@ -27,153 +27,8 @@ namespace anvil {
 	*	\tparam T The type to allocate.
 	*	\tparam BYTES The number of bytes to reserve to allocate. Increase from the default value if sub-classes of T are required.
 	*/
-	template<class T, size_t BYTES = sizeof(T), bool MOVABLE = std::is_move_assignable<T>::value && std::is_default_constructible<T>::value>
-	class LocalPointer;
-
 	template<class T, size_t BYTES>
-	class LocalPointer<T, BYTES, true> {
-	private:
-		uint8_t _local_memory[BYTES];	//!< Local memory for allocations
-		bool _is_allocated;				//!< True if something is currently allocated in _local_memory
-	public:
-		typedef T element_type;
-		typedef element_type* pointer;
-		typedef const element_type* const_pointer;
-
-		typedef LocalPointer<element_type, BYTES> this_t;
-
-		LocalPointer(this_t&&) = delete;
-		LocalPointer(const this_t&) = delete;
-
-		LocalPointer() :
-			_local_memory{},
-			_is_allocated(false)
-		{}
-
-		~LocalPointer() {
-			Deallocate();
-		}
-
-		template<class ...PARAMS>
-		LocalPointer(PARAMS... params) :
-			LocalPointer()
-		{
-			reset<element_type>(params...);
-		}
-
-		template<class T2 = element_type>
-		this_t& operator=(const this_t& other) {
-			if (other._is_allocated) {
-				if (_is_allocated) {
-					*get() = *other;
-				} else {
-					reset<T2>(*other);
-				}
-			} else {
-				Deallocate();
-			}
-			return *this;
-		}
-
-		template<class T2 = element_type>
-		this_t& operator=(this_t&& other) {
-			if (other._is_allocated) {
-				if (_is_allocated) {
-					*get() = std::move(*other);
-				} else {
-					reset<T2>(std::move(*other));
-				}
-			} else {
-				Deallocate();
-			}
-			return *this;
-		}
-
-		void Deallocate() {
-			if (_is_allocated) {
-				reinterpret_cast<element_type*>(_local_memory)->~T();
-				_is_allocated = false;
-			}
-		}
-
-		template<class NEW_T = element_type>
-		inline std::enable_if<std::is_default_constructible<NEW_T>::value, void>::type reset() {
-			// Compile-time safety checks
-			static_assert(std::is_same<element_type, NEW_T>::value || std::is_base_of<element_type, NEW_T>::value, "anvil::LocalPointer::Allocate : class is not allowed");
-			static_assert(sizeof(NEW_T) <= BYTES, "anvil::LocalPointer::Allocate : Not enough memory to allocate class");
-
-			Deallocate();
-			new(_local_memory) NEW_T();
-			_is_allocated = true;
-		}
-
-		template<class NEW_T, class ...PARAMS>
-		inline void reset(PARAMS... params) {
-			// Compile-time safety checks
-			static_assert(std::is_same<element_type, NEW_T>::value || std::is_base_of<element_type, NEW_T>::value, "anvil::LocalPointer::Allocate : class is not allowed");
-			static_assert(sizeof(NEW_T) <= BYTES, "anvil::LocalPointer::Allocate : Not enough memory to allocate class");
-
-			Deallocate();
-			new(_local_memory) NEW_T(params...);
-			_is_allocated = true;
-		}
-
-		inline element_type* get() {
-			return _is_allocated ? reinterpret_cast<element_type*>(_local_memory) : nullptr;
-		}
-
-		inline const element_type* get() const {
-			return _is_allocated ? reinterpret_cast<const element_type*>(_local_memory) : nullptr;
-		}
-
-		inline element_type release() {
-			element_type tmp = std::move(*get());
-			Deallocate();
-			return tmp;
-		}
-
-		inline operator bool() const {
-			return _is_allocated;
-		}
-
-		inline element_type* operator->() {
-			return get();
-		}
-
-		inline const element_type* operator->() const {
-			return get();
-		}
-
-		inline element_type& operator*() {
-			ANVIL_DEBUG_ASSERT(_is_allocated, "anvil::LocalPointer::get : Pointer is not allocated");
-			return *get();
-		}
-
-		inline const element_type& operator*() const {
-			ANVIL_DEBUG_ASSERT(_is_allocated, "anvil::LocalPointer::get : Pointer is not allocated");
-			return *get();
-		}
-
-		inline bool operator!=(const void* other) const {
-			return other == nullptr ? _is_allocated : this != other;
-		}
-
-		inline bool operator==(const void* other) const {
-			return !operator!=(other);
-		}
-
-		inline bool operator==(const this_t& other) const {
-			return _is_allocated ? this == &other : !other._is_allocated;
-		}
-
-		inline bool operator!=(const this_t& other) const {
-			return !operator==(other);
-		}
-	};
-
-
-	template<class T, size_t BYTES>
-	class LocalPointer<T, BYTES, false> {
+	class _LocalPointer {
 	private:
 		uint8_t _local_memory[BYTES]; //!< Local memory for allocations
 		bool _is_allocated;				//!< True if something is currently allocated in _local_memory
@@ -182,25 +37,25 @@ namespace anvil {
 		typedef element_type* pointer;
 		typedef const element_type* const_pointer;
 
-		typedef LocalPointer<element_type, BYTES> this_t;
+		typedef _LocalPointer<element_type, BYTES> this_t;
 
-		LocalPointer(this_t&&) = delete;
-		LocalPointer(const this_t&) = delete;
+		_LocalPointer(this_t&&) = delete;
+		_LocalPointer(const this_t&) = delete;
 		this_t& operator=(this_t&&) = delete;
 		this_t& operator=(const this_t&) = delete;
 
-		LocalPointer() :
+		_LocalPointer() :
 			_local_memory{},
 			_is_allocated(false)
 		{}
 
-		~LocalPointer() {
+		~_LocalPointer() {
 			Deallocate();
 		}
 
 		template<class ...PARAMS>
-		LocalPointer(PARAMS... params) :
-			LocalPointer()
+		_LocalPointer(PARAMS... params) :
+			_LocalPointer()
 		{
 			reset<element_type>(params...);
 		}
@@ -216,18 +71,18 @@ namespace anvil {
 		inline std::enable_if<std::is_default_constructible<NEW_T>::value, void>::type reset() {
 			// Compile-time safety checks
 			static_assert(std::is_same<element_type, NEW_T>::value || std::is_base_of<element_type, NEW_T>::value, "anvil::LocalPointer::Allocate : class is not allowed");
-			static_assert(sizeof(NEW_T) <= BYTES, "anvil::LocalPointer::Allocate : Not enough memory to allocate class");
+			static_assert(sizeof(NEW_T) <= BYTES, "anvil::_LocalPointer::Allocate : Not enough memory to allocate class");
 
 			Deallocate();
 			new(_local_memory) NEW_T();
 			_is_allocated = true;
 		}
 
-		template<class NEW_T, class ...PARAMS>
+		template<class NEW_T = element_type, class ...PARAMS>
 		inline void reset(PARAMS... params) {
 			// Compile-time safety checks
 			static_assert(std::is_same<element_type, NEW_T>::value || std::is_base_of<element_type, NEW_T>::value, "anvil::LocalPointer::Allocate : class is not allowed");
-			static_assert(sizeof(NEW_T) <= BYTES, "anvil::LocalPointer::Allocate : Not enough memory to allocate class");
+			static_assert(sizeof(NEW_T) <= BYTES, "anvil::_LocalPointer::Allocate : Not enough memory to allocate class");
 
 			Deallocate();
 			new(_local_memory) NEW_T(params...);
@@ -242,7 +97,6 @@ namespace anvil {
 			return _is_allocated ? reinterpret_cast<const element_type*>(_local_memory) : nullptr;
 		}
 
-		template<class T2 = element_type>
 		inline void release() {
 			Deallocate();
 		}
@@ -260,12 +114,12 @@ namespace anvil {
 		}
 
 		inline element_type& operator*() {
-			ANVIL_DEBUG_ASSERT(_is_allocated, "anvil::LocalPointer::get : Pointer is not allocated");
+			ANVIL_DEBUG_ASSERT(_is_allocated, "anvil::_LocalPointer::get : Pointer is not allocated");
 			return *get();
 		}
 
 		inline const element_type& operator*() const {
-			ANVIL_DEBUG_ASSERT(_is_allocated, "anvil::LocalPointer::get : Pointer is not allocated");
+			ANVIL_DEBUG_ASSERT(_is_allocated, "anvil::_LocalPointer::get : Pointer is not allocated");
 			return *get();
 		}
 
@@ -285,6 +139,138 @@ namespace anvil {
 			return !operator==(other);
 		}
 	};
+
+	template<class PTR>
+	class _LocalPointerWrapper {
+	private:
+		PTR _ptr;
+	public:
+		typedef typename PTR::element_type element_type;
+		typedef PTR smart_pointer_type;
+		typedef element_type* pointer;
+		typedef const element_type* const_pointer;
+
+		typedef _LocalPointerWrapper<PTR> this_t;
+
+		_LocalPointerWrapper(this_t&&) = delete;
+		_LocalPointerWrapper(const this_t&) = delete;
+		this_t& operator=(this_t&&) = delete;
+		this_t& operator=(const this_t&) = delete;
+
+		_LocalPointerWrapper() :
+			_ptr()
+		{}
+
+		~_LocalPointerWrapper() {
+			Deallocate();
+		}
+
+		_LocalPointerWrapper(smart_pointer_type other) :
+			_LocalPointerWrapper()
+		{
+			_ptr.swap(other);
+		}
+
+		template<class ...PARAMS>
+		_LocalPointerWrapper(PARAMS... params) :
+			_ptr(new element_type(params...))
+		{
+			
+		}
+
+		inline void Deallocate() {
+			smart_pointer_type tmp;
+			_ptr.swap(tmp);
+		}
+
+		template<class NEW_T = element_type>
+		inline smart_pointer_type reset() {
+			// Compile-time safety checks
+			static_assert(std::is_same<element_type, NEW_T>::value || std::is_base_of<element_type, NEW_T>::value, "anvil::_LocalPointerWrapper::Allocate : class is not allowed");
+
+			smart_pointer_type tmp(static_cast<element_type*>(new NEW_T()));
+			_ptr.swap(tmp);
+			return std::move(tmp);
+		}
+
+		template<class NEW_T = element_type, class ...PARAMS>
+		inline smart_pointer_type reset(PARAMS... params) {
+			// Compile-time safety checks
+			static_assert(std::is_same<element_type, NEW_T>::value || std::is_base_of<element_type, NEW_T>::value, "anvil::_LocalPointerWrapper::Allocate : class is not allowed");
+
+			smart_pointer_type tmp(static_cast<element_type*>(new NEW_T(params...)));
+			_ptr.swap(tmp);
+			return std::move(tmp);
+		}
+
+		inline element_type* get() {
+			return _ptr.get();
+		}
+
+		inline const element_type* get() const {
+			return _ptr.get();
+		}
+
+		inline smart_pointer_type release() {
+			smart_pointer_type tmp;
+			_ptr.swap(tmp);
+			return std::move(tmp);
+		}
+
+		inline operator bool() const {
+			return static_cast<bool>(_ptr);
+		}
+
+		inline element_type* operator->() {
+			return _ptr.get();
+		}
+
+		inline const element_type* operator->() const {
+			return _ptr.get();
+		}
+
+		inline element_type& operator*() {
+			return *_ptr.get();
+		}
+
+		inline const element_type& operator*() const {
+			return *_ptr.get();
+		}
+
+		inline bool operator!=(const void* other) const {
+			return other == nullptr ? _ptr : this != other;
+		}
+
+		inline bool operator==(const void* other) const {
+			return !operator!=(other);
+		}
+
+		inline bool operator==(const this_t& other) const {
+			return _ptr == other._ptr;
+		}
+
+		inline bool operator!=(const this_t& other) const {
+			return _ptr != other._ptr;
+		}
+	};
+
+	template<class T, size_t BYTES = sizeof(T)>
+	struct LocalPointerImplementationSelector {
+		typedef _LocalPointer<T, BYTES> type;
+	};
+
+	template<class T, size_t BYTES>
+	struct LocalPointerImplementationSelector<std::shared_ptr<T>, BYTES> {
+		typedef _LocalPointerWrapper<std::shared_ptr<T>> type;
+	};
+
+	template<class T, size_t BYTES>
+	struct LocalPointerImplementationSelector<std::unique_ptr<T>, BYTES> {
+		typedef _LocalPointerWrapper<std::unique_ptr<T>> type;
+	};
+
+	template<class T, size_t BYTES = sizeof(T)>
+	using LocalPointer = typename LocalPointerImplementationSelector<T, BYTES>::type;
 
 	template<class T, size_t BYTES = sizeof(T)>
 	using LocalPtr = LocalPointer<T, BYTES>;
