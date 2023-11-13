@@ -407,5 +407,8 @@
     <ClInclude Include="..\..\..\include\anvil\core\LocalPointer.hpp">
       <Filter>Header Files\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\compute\Pixel.hpp">
+      <Filter>Header Files\compute</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

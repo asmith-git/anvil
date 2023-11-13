@@ -908,4 +908,65 @@ namespace anvil { namespace compute {
 			TestMasking(IS);
 		}
 	};
+
+	TEST_CLASS(TestPixel)
+	{
+	public:
+
+		TEST_METHOD(Get)
+		{
+			typedef anvil::compute::TypedPixel Pixel;
+
+			enum {
+				VAL = 64
+			};
+#define TEST_GET(TYPE) Assert::AreEqual(static_cast<TYPE>(VAL), static_cast<TYPE>(anvil::compute::TypedPixel(static_cast<TYPE>(VAL))), STR2WSTR(#TYPE).c_str())
+
+			TEST_GET(uint8_t);
+			TEST_GET(int8_t);
+			TEST_GET(uint16_t);
+			TEST_GET(int16_t);
+			TEST_GET(uint32_t);
+			TEST_GET(int32_t);
+			TEST_GET(float);
+			TEST_GET(uint64_t);
+			TEST_GET(int64_t);
+			TEST_GET(double);
+
+#undef TEST_GET
+		}
+
+		template<class T>
+		void TestVector()
+		{
+			typedef anvil::compute::TypedPixel Pixel;
+
+			std::vector<T> vec;
+			enum { COUNT = RawPixel::COUNT_8 / sizeof(T) };
+
+			for (size_t i = 1u; i < COUNT; ++i) {
+				vec.push_back(static_cast<T>(i - 1u));
+
+				Pixel px(vec);
+
+				for (size_t j = 0u; j < i; ++j) {
+					Assert::AreEqual(static_cast<T>(j), px.value.Get<T>(j), STR2WSTR(typeid(T).name()).c_str());
+				}
+			}
+		}
+
+		TEST_METHOD(Vector)
+		{
+			TestVector<uint8_t>();
+			TestVector<int8_t>();
+			TestVector<uint16_t>();
+			TestVector<int16_t>();
+			TestVector<uint32_t>();
+			TestVector<int32_t>();
+			TestVector<float>();
+			TestVector<uint64_t>();
+			TestVector<int64_t>();
+			TestVector<double>();
+		}
+	};
 }}
