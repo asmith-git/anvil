@@ -24,13 +24,8 @@ namespace anvil { namespace compute {
 	/*!
 	*	\brief Alternate version of anvil::compute:Scalar / anvil::compute::Vector with simplified syntax
 	*/
-	struct RawPixel {
-		enum {
-			COUNT_8 = anvil::Type::MAX_CHANNELS,	//!< Maximum number of 8-bit values
-			COUNT_16 = COUNT_8 / 2,					//!< Maximum number of 16-bit values
-			COUNT_32 = COUNT_8 / 4,					//!< Maximum number of 32-bit values
-			COUNT_64 = COUNT_8 / 8,					//!< Maximum number of 64-bit values
-		};
+	template<size_t COUNT_8, size_t COUNT_16, size_t COUNT_32, size_t COUNT_64>
+	struct _RawPixel {
 
 		union {
 			uint8_t u8[COUNT_8];
@@ -51,29 +46,29 @@ namespace anvil { namespace compute {
 #endif
 		};
 
-		RawPixel() {
-			memset(GetData(), 0, COUNT_8); 
+		_RawPixel() {
+			memset(GetData(), 0, sizeof(*this)); 
 		}
 
-		RawPixel(uint8_t value) : RawPixel() { Get<decltype(value)>() = value; }
-		RawPixel(int8_t value) : RawPixel() { Get<decltype(value)>() = value; }
-		RawPixel(uint16_t value) : RawPixel() { Get<decltype(value)>() = value; }
-		RawPixel(int16_t value) : RawPixel() { Get<decltype(value)>() = value; }
-		RawPixel(uint32_t value) : RawPixel() { Get<decltype(value)>() = value; }
-		RawPixel(int32_t value) : RawPixel() { Get<decltype(value)>() = value; }
-		RawPixel(float32_t value) : RawPixel() { Get<decltype(value)>() = value; }
-		RawPixel(uint64_t value) : RawPixel() { Get<decltype(value)>() = value; }
-		RawPixel(int64_t value) : RawPixel() { Get<decltype(value)>() = value; }
-		RawPixel(float64_t value) : RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(uint8_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(int8_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(uint16_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(int16_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(uint32_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(int32_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(float32_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(uint64_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(int64_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(float64_t value) : _RawPixel() { Get<decltype(value)>() = value; }
 #if ANVIL_F8_SUPPORT
-		RawPixel(float8_t value) : RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(float8_t value) : _RawPixel() { Get<decltype(value)>() = value; }
 #endif
 #if ANVIL_F16_SUPPORT
-		RawPixel(float16_t value) : RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(float16_t value) : _RawPixel() { Get<decltype(value)>() = value; }
 #endif
 		template<class T>
-		RawPixel(const T* data, size_t count) :
-			RawPixel()
+		_RawPixel(const T* data, size_t count) :
+			_RawPixel()
 		{
 			enum { MAX_ELEMENTS = COUNT_8 / sizeof(T) };
 			if (count > MAX_ELEMENTS) count = MAX_ELEMENTS;
@@ -81,25 +76,25 @@ namespace anvil { namespace compute {
 		}
 
 		template<class T>
-		RawPixel(const std::vector<T>& value) :
-			RawPixel(value.data(), value.size())
+		_RawPixel(const std::vector<T>& value) :
+			_RawPixel(value.data(), value.size())
 		{}
 
 		template<class T, size_t S>
-		RawPixel(const std::array<T,S>& value) :
-			RawPixel(value.data(), S)
+		_RawPixel(const std::array<T,S>& value) :
+			_RawPixel(value.data(), S)
 		{}
 
 		template<class T = void>
 		inline T* GetData()
 		{
-			return reinterpret_cast<T*>(u8);
+			return reinterpret_cast<T*>(&u8);
 		}
 
 		template<class T = void>
 		inline const T* GetData() const
 		{
-			return reinterpret_cast<const T*>(u8);
+			return reinterpret_cast<const T*>(&u8);
 		}
 
 		template<class T>
@@ -139,60 +134,157 @@ namespace anvil { namespace compute {
 		}
 	};
 
-	static_assert(sizeof(RawPixel) == anvil::Type::MAX_CHANNELS, "Size of RawPixel is different than expected");
+	template<>
+	struct _RawPixel<1u, 1u, 1u, 1u> {
+
+		union {
+			uint8_t u8;
+			int8_t s8;
+			uint16_t u16;
+			int16_t s16;
+			uint32_t u32;
+			int32_t s32;
+			float32_t f32;
+			uint64_t u64;
+			int64_t s64;
+			float64_t f64;
+#if ANVIL_F8_SUPPORT
+			float8_t f8;
+#endif
+#if ANVIL_F16_SUPPORT
+			float16_t f16;
+#endif
+		};
+
+		_RawPixel() :
+			u64(0ull)
+		{}
+
+		_RawPixel(uint8_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(int8_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(uint16_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(int16_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(uint32_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(int32_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(float32_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(uint64_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(int64_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+		_RawPixel(float64_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+#if ANVIL_F8_SUPPORT
+		_RawPixel(float8_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+#endif
+#if ANVIL_F16_SUPPORT
+		_RawPixel(float16_t value) : _RawPixel() { Get<decltype(value)>() = value; }
+#endif
+		template<class T>
+		_RawPixel(const T* data, size_t count) :
+			_RawPixel()
+		{
+			enum { MAX_ELEMENTS = 1u };
+			if (count > MAX_ELEMENTS) count = MAX_ELEMENTS;
+			memcpy(GetData(), data, sizeof(T) * count);
+		}
+
+		template<class T>
+		_RawPixel(const std::vector<T>& value) :
+			_RawPixel(value.data(), value.size())
+		{}
+
+		template<class T, size_t S>
+		_RawPixel(const std::array<T, S>& value) :
+			_RawPixel(value.data(), S)
+		{}
+
+		template<class T = void>
+		inline T* GetData()
+		{
+			return reinterpret_cast<T*>(&u8);
+		}
+
+		template<class T = void>
+		inline const T* GetData() const
+		{
+			return reinterpret_cast<const T*>(&u8);
+		}
+
+		template<class T>
+		inline T& Get()
+		{
+			return *GetData<T>();
+		}
+
+		template<class T>
+		inline const T& Get() const
+		{
+			return *GetData<T>();
+		}
+
+		template<class T>
+		inline operator T& ()
+		{
+			return Get<T>();
+		}
+
+		template<class T>
+		inline operator const T& () const
+		{
+			return Get<T>();
+		}
+	};
 
 	/*!
 	*	\brief Alternate version of anvil::compute:Scalar / anvil::compute::Vector with simplified syntax
 	*/
-	struct TypedPixel {
-		RawPixel value;
+	template<size_t COUNT_8, size_t COUNT_16, size_t COUNT_32, size_t COUNT_64>
+	struct _TypedPixel {
+		_RawPixel<COUNT_8, COUNT_16, COUNT_32, COUNT_64> value;
 		Type type;
 
-		TypedPixel() : 
+		_TypedPixel() : 
 			value(), 
 			type(ANVIL_8UX1) 
 		{}
 
-		TypedPixel(anvil::Type a_type) : 
+		_TypedPixel(anvil::Type a_type) : 
 			value(), 
 			type(a_type) 
 		{}
 
-		TypedPixel(uint8_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
-		TypedPixel(int8_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
-		TypedPixel(uint16_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
-		TypedPixel(int16_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
-		TypedPixel(uint32_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
-		TypedPixel(int32_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
-		TypedPixel(float32_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
-		TypedPixel(uint64_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
-		TypedPixel(int64_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
-		TypedPixel(float64_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
+		_TypedPixel(uint8_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
+		_TypedPixel(int8_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
+		_TypedPixel(uint16_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
+		_TypedPixel(int16_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
+		_TypedPixel(uint32_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
+		_TypedPixel(int32_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
+		_TypedPixel(float32_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
+		_TypedPixel(uint64_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
+		_TypedPixel(int64_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
+		_TypedPixel(float64_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
 #if ANVIL_F8_SUPPORT
-		TypedPixel(float8_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
+		_TypedPixel(float8_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
 #endif
 #if ANVIL_F16_SUPPORT
-		TypedPixel(float16_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
+		_TypedPixel(float16_t a_value) : value(a_value), type(EnumFromType<decltype(a_value)>::value) {}
 #endif
 
 		template<class T>
-		TypedPixel(const T* data, size_t count) :
+		_TypedPixel(const T* data, size_t count) :
 			value(data, count),
 			type(EnumFromType<T>::value)
 		{
-			enum { MAX_ELEMENTS = RawPixel::COUNT_8 / sizeof(T) };
+			enum { MAX_ELEMENTS = COUNT_8 / sizeof(T) };
 			if (count > MAX_ELEMENTS) count = MAX_ELEMENTS;
 			type.SetNumberOfChannels(count);
 		}
 
 		template<class T>
-		TypedPixel(const std::vector<T>& value) :
-			TypedPixel(value.data(), value.size())
+		_TypedPixel(const std::vector<T>& value) :
+			_TypedPixel(value.data(), value.size())
 		{}
 
 		template<class T, size_t S>
-		TypedPixel(const std::array<T, S>& value) :
-			TypedPixel(value.data(), S)
+		_TypedPixel(const std::array<T, S>& value) :
+			_TypedPixel(value.data(), S)
 		{}
 
 		template<class T>
@@ -208,6 +300,15 @@ namespace anvil { namespace compute {
 		}
 	};
 
+	typedef _RawPixel<1u, 1u, 1u, 1u> RawPixelScalar;
+	typedef _RawPixel<anvil::Type::MAX_CHANNELS, anvil::Type::MAX_CHANNELS / 2, anvil::Type::MAX_CHANNELS / 4u, anvil::Type::MAX_CHANNELS / 8u> RawPixel;
+	typedef _RawPixel<anvil::Type::MAX_CHANNELS, anvil::Type::MAX_CHANNELS, anvil::Type::MAX_CHANNELS, anvil::Type::MAX_CHANNELS> BigRawPixel;
+
+	static_assert(sizeof(RawPixel) == anvil::Type::MAX_CHANNELS, "Size of RawPixel is different than expected");
+
+	typedef _TypedPixel<1u, 1u, 1u, 1u> SmallTypedPixel;
+	typedef _TypedPixel<anvil::Type::MAX_CHANNELS, anvil::Type::MAX_CHANNELS / 2, anvil::Type::MAX_CHANNELS / 4u, anvil::Type::MAX_CHANNELS / 8u> TypedPixel;
+	typedef _TypedPixel<anvil::Type::MAX_CHANNELS, anvil::Type::MAX_CHANNELS, anvil::Type::MAX_CHANNELS, anvil::Type::MAX_CHANNELS> BigTypedPixel;
 
 }}
 

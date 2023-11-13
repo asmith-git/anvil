@@ -913,10 +913,8 @@ namespace anvil { namespace compute {
 	{
 	public:
 
-		TEST_METHOD(Get)
-		{
-			typedef anvil::compute::TypedPixel Pixel;
-
+		template<class Pixel>
+		void TestGet() {
 			enum {
 				VAL = 64
 			};
@@ -935,14 +933,18 @@ namespace anvil { namespace compute {
 
 #undef TEST_GET
 		}
+		TEST_METHOD(Get)
+		{
+			TestGet< anvil::compute::SmallTypedPixel>();
+			TestGet< anvil::compute::TypedPixel>();
+			TestGet< anvil::compute::BigTypedPixel>();
+		}
 
-		template<class T>
+		template<class Pixel, class T>
 		void TestVector()
 		{
-			typedef anvil::compute::TypedPixel Pixel;
-
 			std::vector<T> vec;
-			enum { COUNT = RawPixel::COUNT_8 / sizeof(T) };
+			enum { COUNT = sizeof(Pixel::type) / sizeof(T) };
 
 			for (size_t i = 1u; i < COUNT; ++i) {
 				vec.push_back(static_cast<T>(i - 1u));
@@ -955,18 +957,26 @@ namespace anvil { namespace compute {
 			}
 		}
 
+
+		template<class Pixel>
+		void TestVector()
+		{
+			TestVector<Pixel, uint8_t>();
+			TestVector<Pixel, int8_t>();
+			TestVector<Pixel, uint16_t>();
+			TestVector<Pixel, int16_t>();
+			TestVector<Pixel, uint32_t>();
+			TestVector<Pixel, int32_t>();
+			TestVector<Pixel, float>();
+			TestVector<Pixel, uint64_t>();
+			TestVector<Pixel, int64_t>();
+			TestVector<Pixel, double>();
+		}
+
 		TEST_METHOD(Vector)
 		{
-			TestVector<uint8_t>();
-			TestVector<int8_t>();
-			TestVector<uint16_t>();
-			TestVector<int16_t>();
-			TestVector<uint32_t>();
-			TestVector<int32_t>();
-			TestVector<float>();
-			TestVector<uint64_t>();
-			TestVector<int64_t>();
-			TestVector<double>();
+			TestVector<anvil::compute::TypedPixel>();
+			TestVector<anvil::compute::BigTypedPixel>();
 		}
 	};
 }}
