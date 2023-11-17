@@ -272,11 +272,156 @@ namespace anvil {
 	template<class T, size_t BYTES = sizeof(T)>
 	using LocalPointer = typename LocalPointerImplementationSelector<T, BYTES>::type;
 
+	/*!
+	*	\brief Acts like std::unique_ptr but uses local placement allocations.
+	*	\details Use if you need to avoid overheads of heap memory allocation.
+	*	\tparam T The type to allocate.
+	*	\tparam BYTES The number of bytes to reserve to allocate. Increase from the default value if sub-classes of T are required.
+	*/
+	template<class T, size_t BYTES = sizeof(T)>
+	class DynamicPointer {
+	private:
+		enum AllocationType : uint8_t
+		{
+			NOT_ALLOCATED = 0,
+			ALLOCATED_LOCALLY = 1,
+			ALLOCATED_ON_HEAP = 2
+		};
+		uint8_t _local_memory[BYTES];		//!< Local memory for allocations
+		AllocationType _allocation_type;	//!< What is allocated in _local_memory
+	public:
+		typedef T element_type;
+		typedef element_type* pointer;
+		typedef const element_type* const_pointer;
+
+		typedef DynamicPointer<element_type, BYTES> this_t;
+
+		DynamicPointer(this_t&&) = delete;
+		DynamicPointer(const this_t&) = delete;
+		this_t& operator=(this_t&&) = delete;
+		this_t& operator=(const this_t&) = delete;
+
+		DynamicPointer() :
+			_local_memory{},
+			_allocation_type(NOT_ALLOCATED)
+		{}
+
+		~DynamicPointer() {
+			Deallocate();
+		}
+
+		template<class ...PARAMS>
+		DynamicPointer(PARAMS... params) :
+			DynamicPointer()
+		{
+			reset<element_type>(params...);
+		}
+
+		void Deallocate() {
+			if (_allocation_type == ALLOCATED_LOCALLY) {
+				reinterpret_cast<element_type*>(_local_memory)->~T();
+			} else if (_allocation_type == ALLOCATED_ON_HEAP) {
+				(**reinterpret_cast<element_type**>(_local_memory)).~T();
+			}
+			_allocation_type = NOT_ALLOCATED;
+		}
+
+		template<class NEW_T = element_type>
+		inline std::enable_if<std::is_default_constructible<NEW_T>::value, void>::type reset() {
+			// Compile-time safety checks
+			static_assert(std::is_same<element_type, NEW_T>::value || std::is_base_of<element_type, NEW_T>::value, "anvil::LocalPointer::Allocate : class is not allowed");
+
+			Deallocate();
+			if (sizeof(NEW_T) <= BYTES) {
+				new(_local_memory) NEW_T();
+				_allocation_type = ALLOCATED_LOCALLY;
+			} else {
+				new(_local_memory) element_type*(new NEW_T());
+				_allocation_type = ALLOCATED_ON_HEAP;
+			}
+		}
+
+		template<class NEW_T = element_type, class ...PARAMS>
+		inline void reset(PARAMS... params) {
+			// Compile-time safety checks
+			static_assert(std::is_same<element_type, NEW_T>::value || std::is_base_of<element_type, NEW_T>::value, "anvil::LocalPointer::Allocate : class is not allowed");
+
+			Deallocate();
+			if (sizeof(NEW_T) <= BYTES) {
+				new(_local_memory) NEW_T(params...);
+				_allocation_type = ALLOCATED_LOCALLY;
+			} else {
+				new(_local_memory) element_type* (new NEW_T(params...));
+				_allocation_type = ALLOCATED_ON_HEAP;
+			}
+		}
+
+		inline element_type* get() {
+			return _allocation_type == ALLOCATED_LOCALLY ? reinterpret_cast<element_type*>(_local_memory) :
+				_allocation_type == ALLOCATED_ON_HEAP ? *reinterpret_cast<element_type**>(_local_memory) :
+				nullptr;
+		}
+
+		inline const element_type* get() const {
+			return _allocation_type == ALLOCATED_LOCALLY ? reinterpret_cast<element_type*>(_local_memory) :
+				_allocation_type == ALLOCATED_ON_HEAP ? *reinterpret_cast<element_type**>(_local_memory) :
+				nullptr;
+		}
+
+		inline void release() {
+			Deallocate();
+		}
+
+		inline operator bool() const {
+			return _allocation_type;
+		}
+
+		inline element_type* operator->() {
+			return get();
+		}
+
+		inline const element_type* operator->() const {
+			return get();
+		}
+
+		inline element_type& operator*() {
+			ANVIL_DEBUG_ASSERT(_allocation_type, "anvil::DynamicPointer::get : Pointer is not allocated");
+			return *get();
+		}
+
+		inline const element_type& operator*() const {
+			ANVIL_DEBUG_ASSERT(_allocation_type, "anvil::DynamicPointer::get : Pointer is not allocated");
+			return *get();
+		}
+
+		inline bool operator!=(const void* other) const {
+			return other == nullptr ? _allocation_type != NOT_ALLOCATED : this != other;
+		}
+
+		inline bool operator==(const void* other) const {
+			return !operator!=(other);
+		}
+
+		inline bool operator==(const this_t& other) const {
+			return _allocation_type != NOT_ALLOCATED ? this == &other : other._allocation_type == NOT_ALLOCATED;
+		}
+
+		inline bool operator!=(const this_t& other) const {
+			return !operator==(other);
+		}
+	};
+
 	template<class T, size_t BYTES = sizeof(T)>
 	using LocalPtr = LocalPointer<T, BYTES>;
 
 	template<class T, size_t BYTES = sizeof(T)>
 	using local_ptr = LocalPointer<T, BYTES>;
+
+	template<class T, size_t BYTES = sizeof(T)>
+	using DynamicPtr = DynamicPointer<T, BYTES>;
+
+	template<class T, size_t BYTES = sizeof(T)>
+	using dynamic_ptr = DynamicPointer<T, BYTES>;
 
 }
 
