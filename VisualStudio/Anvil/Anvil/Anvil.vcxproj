@@ -216,6 +216,7 @@
     <ClCompile Include="..\..\..\src\anvil\core\HashMurmur3.cpp" />
     <ClCompile Include="..\..\..\src\anvil\core\HashSDBM.cpp" />
     <ClCompile Include="..\..\..\src\anvil\core\Hexadecimal.cpp" />
+    <ClCompile Include="..\..\..\src\anvil\core\Popcount.cpp" />
     <ClCompile Include="..\..\..\src\anvil\core\Reflection.cpp" />
     <ClCompile Include="..\..\..\src\anvil\lutils\Message.cpp" />
     <ClCompile Include="..\..\..\src\anvil\RPC\Client.cpp" />

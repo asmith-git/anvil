@@ -41,240 +41,425 @@
 	#define ANVIL_HW_POPCNT_COMPILETIME true
 #endif
 
-// Disable warnings for unreferenced functions and use of static on a specialised template functions
-// - This is a library, so we don't know what functions the und user will use or not
-// - There is no particular reason why a template function can't be specialsied in a header, compilers handle it just fine
-// (These functions are implemented in the header file so they can be inlined into user code for performance gains)
-#pragma warning(disable:4499 4505)
-
-namespace anvil { namespace detail {
-
-	// Unoptimised functions for testing the output of the optimsied versions
-
-	template<class T>
-	static size_t ANVIL_CALL popcount_test(T aValue) throw()
-	{
-		return popcount_test<UnsignedType<T>>(numeric_reinterpret_cast<UnsignedType<T>>(aValue));
-	}
-
-	template<>
-	static size_t ANVIL_CALL popcount_test<uint8_t>(uint8_t aValue) throw()
-	{
-		uint32_t value_word = aValue;
-		size_t count = 0u;
-		uint32_t bit = 1u;
-		
-		for (size_t i = 0u; i < 8u; ++i)
-		{
-			count += value_word & bit ? 1u : 0u;
-			bit <<= 1ul;
-		}
-
-		return count;
-	}
-
-	template<>
-	static size_t ANVIL_CALL popcount_test<uint16_t>(uint16_t aValue) throw()
-	{
-		uint32_t value_word = aValue;
-		size_t count = 0u;
-		uint32_t bit = 1u;
-
-		for (size_t i = 0u; i < 16u; ++i)
-		{
-			count += value_word & bit ? 1u : 0u;
-			bit <<= 1ul;
-		}
-
-		return count;
-	}
-
-	template<>
-	static size_t ANVIL_CALL popcount_test<uint32_t>(uint32_t aValue) throw()
-	{
-		uint32_t value_word = aValue;
-		size_t count = 0u;
-		uint32_t bit = 1u;
-
-		for (size_t i = 0u; i < 32u; ++i)
-		{
-			count += value_word & bit ? 1u : 0u;
-			bit <<= 1ul;
-		}
-
-		return count;
-	}
-
-	template<>
-	static size_t ANVIL_CALL popcount_test<uint64_t>(uint64_t aValue) throw()
-	{
-		uint64_t value_word = aValue;
-		size_t count = 0u;
-		uint64_t bit = 1ull;
-
-		for (size_t i = 0u; i < 64u; ++i)
-		{
-			count += value_word & bit ? 1u : 0u;
-			bit <<= 1ull;
-		}
-
-		return count;
-	}
-
-	// Optimised C++ implementation
-
-	template<class T>
-	static size_t ANVIL_CALL popcount_c(T aValue) throw()
-	{
-		return popcount_c<UnsignedType<T>>(numeric_reinterpret_cast<UnsignedType<T>>(aValue));
-	}
-
-	template<>
-	static size_t ANVIL_CALL popcount_c<uint8_t>(uint8_t aValue) throw()
-	{
-		uint32_t val = aValue;
-		uint32_t bit0 = val & 1u;
-		uint32_t bit1 = (val & 2u) >> 1u;
-		uint32_t bit2 = (val & 4u) >> 2u;
-		uint32_t bit3 = (val & 8u) >> 3u;
-		uint32_t bit4 = (val & 16u) >> 4u;
-		uint32_t bit5 = (val & 32u) >> 5u;
-		uint32_t bit6 = (val & 64u) >> 6u;
-		uint32_t bit7 = (val & 128u) >> 7u;
-
-		bit0 += bit1;
-		bit2 += bit3;
-		bit4 += bit5;
-		bit6 += bit7;
-
-		bit0 += bit2;
-		bit4 += bit6;
-
-		return bit0 + bit4;
-	}
-
-	template<>
-	static size_t ANVIL_CALL popcount_c<uint16_t>(uint16_t aValue) throw()
-	{
-		return 
-			popcount_c<uint8_t>(static_cast<uint8_t>(aValue & UINT8_MAX)) + 
-			popcount_c<uint8_t>(static_cast<uint8_t>(aValue >> 8u))
-		;
-	}
-
-	template<>
-	static size_t ANVIL_CALL popcount_c<uint32_t>(uint32_t aValue) throw()
-	{
-		return 
-			popcount_c<uint16_t>(static_cast<uint16_t>(aValue & UINT16_MAX)) + 
-			popcount_c<uint16_t>(static_cast<uint16_t>(aValue >> 16u))
-		;
-	}
-
-	template<>
-	static size_t ANVIL_CALL popcount_c<uint64_t>(uint64_t aValue) throw()
-	{
-		return 
-			popcount_c<uint32_t>(static_cast<uint32_t>(aValue & UINT32_MAX)) + 
-			popcount_c<uint32_t>(static_cast<uint32_t>(aValue >> 32ull))
-		;
-	}
-
-	// Optimised using the x86 POPCNT instruction
-
-
-	template<class T>
-	static size_t ANVIL_CALL popcount_hw(T aValue) throw()
-	{
-		return popcount_hw<UnsignedType<T>>(numeric_reinterpret_cast<UnsignedType<T>>(aValue));
-	}
-
-	template<>
-	static size_t ANVIL_CALL popcount_hw<uint8_t>(uint8_t aValue) throw()
-	{
-#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-		return _mm_popcnt_u32(aValue);
-#else
-		return popcount_c<decltype(aValue)>(aValue);
-#endif
-	}
-
-	template<>
-	static size_t ANVIL_CALL popcount_hw<uint16_t>(uint16_t aValue) throw()
-	{
-#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-		return _mm_popcnt_u32(aValue);
-#else
-		return popcount_c<decltype(aValue)>(aValue);
-#endif
-	}
-
-	template<>
-	static size_t ANVIL_CALL popcount_hw<uint32_t>(uint32_t aValue) throw()
-	{
-#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-		return _mm_popcnt_u32(aValue);
-#else
-		return popcount_c<decltype(aValue)>(aValue);
-#endif
-	}
-
-	template<>
-	static size_t ANVIL_CALL popcount_hw<uint64_t>(uint64_t aValue) throw()
-	{
-#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-		return _mm_popcnt_u64(aValue);
-#elif ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86
-		return 
-			_mm_popcnt_u32(static_cast<uint32_t>(aValue & UINT32_MAX)) + 
-			_mm_popcnt_u32(static_cast<uint32_t>(aValue >> 32ull))
-		;
-#else
-		return popcount_c<decltype(aValue)>(aValue);
-#endif
-	}
-}}
 
 
 namespace anvil 
-{
+{ 
+
+	enum PopcountImplementation
+	{
+		POPCOUNT_TEST,			//!< Unoptimised reference C++ implementation, for testing the output of the more optimised implementations.
+		POPCOUNT_CPP,			//!< Optimised C++ implementation.
+		POPCOUNT_CONSTEXPR,		//!< This implementation can be run at compile-time.
+		POPCOUNT_LUT4,			//!< Uses a 4-bit look-up table (LUT), may be faster than the C++ implementation on some architectures.
+		POPCOUNT_LUT8,			//!< Uses a 8-bit look-up table (LUT), may be faster than the C++ implementation on some architectures.
+		POPCOUNT_X86,			//!< This implementation uses the x86 POPCNT instruction, should be the fastest way to do this calculation.
+
+		POPCOUNT_DEFAULT = ANVIL_HW_POPCNT_COMPILETIME ? POPCOUNT_X86 : POPCOUNT_CPP
+	};
+
+	namespace detail
+	{
+		template<class T, PopcountImplementation IMPLEMENTATION>
+		struct PopcountHelper
+		{
+			static ANVIL_STRONG_INLINE size_t Execute(const T a_value) throw()
+			{
+				if constexpr (std::is_unsigned<T>::value)
+				{
+					// Call the C++ implementation
+					return PopcountHelper<T, POPCOUNT_CPP>::Execute(a_value);
+				}
+				else
+				{
+					// Call the unsigned version of this implementation
+					typedef UnsignedType<T> UT;
+					return PopcountHelper<UT, IMPLEMENTATION>::Execute(numeric_reinterpret_cast<UT>(a_value));
+				}
+			}
+		};
+
+		// POPCOUNT_TEST
+
+		template<>
+		struct PopcountHelper<uint8_t, POPCOUNT_TEST>
+		{
+			static ANVIL_STRONG_INLINE size_t Execute(const uint8_t a_value) throw()
+			{
+				uint32_t value_word = a_value;
+				size_t count = 0u;
+				uint32_t bit = 1u;
+
+				for (size_t i = 0u; i < 8u; ++i)
+				{
+					count += value_word & bit ? 1u : 0u;
+					bit <<= 1ul;
+				}
+
+				return count;
+			}
+		};
+
+		template<>
+		struct PopcountHelper<uint16_t, POPCOUNT_TEST>
+		{
+			static ANVIL_STRONG_INLINE size_t Execute(const uint16_t a_value) throw()
+			{
+				uint32_t value_word = a_value;
+				size_t count = 0u;
+				uint32_t bit = 1u;
+
+				for (size_t i = 0u; i < 16u; ++i)
+				{
+					count += value_word & bit ? 1u : 0u;
+					bit <<= 1ul;
+				}
+
+				return count;
+			}
+		};
+
+		template<>
+		struct PopcountHelper<uint32_t, POPCOUNT_TEST>
+		{
+			static ANVIL_STRONG_INLINE size_t Execute(const uint32_t a_value) throw()
+			{
+				uint32_t value_word = a_value;
+				size_t count = 0u;
+				uint32_t bit = 1u;
+
+				for (size_t i = 0u; i < 32u; ++i)
+				{
+					count += value_word & bit ? 1u : 0u;
+					bit <<= 1ul;
+				}
+
+				return count;
+			}
+		};
+
+		template<>
+		struct PopcountHelper<uint64_t, POPCOUNT_TEST>
+		{
+			static ANVIL_STRONG_INLINE size_t Execute(const uint64_t a_value) throw()
+			{
+				uint64_t value_word = a_value;
+				size_t count = 0u;
+				uint64_t bit = 1ull;
+
+				for (size_t i = 0u; i < 64u; ++i)
+				{
+					count += value_word & bit ? 1u : 0u;
+					bit <<= 1ull;
+				}
+
+				return count;
+			}
+		};
+
+		// POPCOUNT_CPP
+
+		template<>
+		struct PopcountHelper<uint8_t, POPCOUNT_CPP>
+		{
+			static ANVIL_STRONG_INLINE size_t Execute(const uint8_t a_value) throw()
+			{
+				uint32_t val = a_value;
+				uint32_t bit0 = val & 1u;
+				uint32_t bit1 = (val & 2u) >> 1u;
+				uint32_t bit2 = (val & 4u) >> 2u;
+				uint32_t bit3 = (val & 8u) >> 3u;
+				uint32_t bit4 = (val & 16u) >> 4u;
+				uint32_t bit5 = (val & 32u) >> 5u;
+				uint32_t bit6 = (val & 64u) >> 6u;
+				uint32_t bit7 = (val & 128u) >> 7u;
+
+				bit0 += bit1;
+				bit2 += bit3;
+				bit4 += bit5;
+				bit6 += bit7;
+
+				bit0 += bit2;
+				bit4 += bit6;
+
+				return bit0 + bit4;
+			}
+		};
+
+		template<>
+		struct PopcountHelper<uint16_t, POPCOUNT_CPP>
+		{
+			static ANVIL_STRONG_INLINE size_t Execute(const uint16_t a_value) throw()
+			{
+				return
+					PopcountHelper<uint8_t, POPCOUNT_CPP>::Execute(static_cast<uint8_t>(a_value & UINT8_MAX)) +
+					PopcountHelper<uint8_t, POPCOUNT_CPP>::Execute(static_cast<uint8_t>(a_value >> 8u))
+				;
+			}
+		};
+
+		template<>
+		struct PopcountHelper<uint32_t, POPCOUNT_CPP>
+		{
+			static ANVIL_STRONG_INLINE size_t Execute(const uint32_t a_value) throw()
+			{
+				return
+					PopcountHelper<uint16_t, POPCOUNT_CPP>::Execute(static_cast<uint16_t>(a_value & UINT16_MAX)) +
+					PopcountHelper<uint16_t, POPCOUNT_CPP>::Execute(static_cast<uint16_t>(a_value >> 16u))
+				;
+			}
+		};
+
+		template<>
+		struct PopcountHelper<uint64_t, POPCOUNT_CPP>
+		{
+			static ANVIL_STRONG_INLINE size_t Execute(const uint64_t a_value) throw()
+			{
+				return
+					PopcountHelper<uint32_t, POPCOUNT_CPP>::Execute(static_cast<uint32_t>(a_value & UINT32_MAX)) +
+					PopcountHelper<uint32_t, POPCOUNT_CPP>::Execute(static_cast<uint32_t>(a_value >> 32ull))
+				;
+			}
+		};
+
+		// POPCOUNT_X86
+
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+
+		template<>
+		struct PopcountHelper<uint8_t, POPCOUNT_X86>
+		{
+			static ANVIL_STRONG_INLINE size_t Execute(const uint8_t a_value) throw()
+			{
+				return static_cast<size_t>(_mm_popcnt_u32(a_value));
+			}
+		};
+
+		template<>
+		struct PopcountHelper<uint16_t, POPCOUNT_X86>
+		{
+			static ANVIL_STRONG_INLINE size_t Execute(const uint16_t a_value) throw()
+			{
+				return static_cast<size_t>(_mm_popcnt_u32(a_value));
+			}
+		};
+
+		template<>
+		struct PopcountHelper<uint32_t, POPCOUNT_X86>
+		{
+			static ANVIL_STRONG_INLINE size_t Execute(const uint32_t a_value) throw()
+			{
+				return static_cast<size_t>(_mm_popcnt_u32(a_value));
+			}
+		};
+
+		template<>
+		struct PopcountHelper<uint64_t, POPCOUNT_X86>
+		{
+			static ANVIL_STRONG_INLINE size_t Execute(const uint64_t a_value) throw()
+			{
+				#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+					return _mm_popcnt_u64(a_value);
+				#else
+					return
+						_mm_popcnt_u32(static_cast<uint32_t>(a_value & UINT32_MAX)) +
+						_mm_popcnt_u32(static_cast<uint32_t>(a_value >> 32ull))
+					;
+				#endif
+			}
+		};
+
+#endif
+
+		// POPCOUNT_CONSTEXPR
+
+		template<class T>
+		struct PopcountHelper<T, POPCOUNT_CONSTEXPR>
+		{
+			static ANVIL_CONSTEXPR_FN size_t Execute(const T a_value) throw()
+			{
+				if constexpr (std::is_unsigned<T>::value)
+				{
+					enum { BIT_COUNT = sizeof(T) * 8u };
+
+					uint64_t value_word = a_value;
+					size_t count = 0u;
+					uint64_t bit = 1ull;
+
+					for (size_t i = 0u; i < BIT_COUNT; ++i)
+					{
+						count += value_word & bit ? 1u : 0u;
+						bit <<= 1ull;
+					}
+
+					return count;
+				}
+				else
+				{
+					// Call the unsigned version of this implementation
+					typedef UnsignedType<T> UT;
+					return PopcountHelper<UT, POPCOUNT_CONSTEXPR>::Execute(numeric_reinterpret_cast<UT>(a_value));
+				}
+			}
+		};
+
+		// POPCOUNT_LUT4
+
+		ANVIL_DLL_EXPORT const uint8_t* ANVIL_CALL GetPopcountLUT() throw();
+
+		template<>
+		struct PopcountHelper<uint8_t, POPCOUNT_LUT4>
+		{
+			static inline size_t Execute(const uint8_t a_value) throw()
+			{
+				const uint8_t* const table = GetPopcountLUT();
+				size_t count = table[a_value & 15u];
+				count += table[a_value >> 4u];
+				return count;
+			}
+		};
+
+		template<>
+		struct PopcountHelper<uint16_t, POPCOUNT_LUT4>
+		{
+			static inline size_t Execute(const uint16_t a_value) throw()
+			{
+				const uint8_t* const table = GetPopcountLUT();
+				size_t count = table[a_value & 15u];
+				count += table[(a_value >> 4u) & 15u];
+				count += table[(a_value >> 8u) & 15u];
+				count += table[(a_value >> 12u) & 15u];
+				return count;
+			}
+		};
+
+		template<>
+		struct PopcountHelper<uint32_t, POPCOUNT_LUT4>
+		{
+			static inline size_t Execute(const uint32_t a_value) throw()
+			{
+				const uint8_t* const table = GetPopcountLUT();
+				size_t count = table[a_value & 15u];
+				count += table[(a_value >> 4u) & 15u];
+				count += table[(a_value >> 8u) & 15u];
+				count += table[(a_value >> 12u) & 15u];
+				count += table[(a_value >> 16u) & 15u];
+				count += table[(a_value >> 20u) & 15u];
+				count += table[(a_value >> 24u) & 15u];
+				count += table[(a_value >> 28u) & 15u];
+				return count;
+			}
+		};
+
+		template<>
+		struct PopcountHelper<uint64_t, POPCOUNT_LUT4>
+		{
+			static inline size_t Execute(const uint64_t a_value) throw()
+			{
+				const uint8_t* const table = GetPopcountLUT();
+				size_t count = table[a_value & 15ull];
+				count += table[(a_value >> 4ull) & 15ull];
+				count += table[(a_value >> 8ull) & 15ull];
+				count += table[(a_value >> 12ull) & 15ull];
+				count += table[(a_value >> 16ull) & 15ull];
+				count += table[(a_value >> 20ull) & 15ull];
+				count += table[(a_value >> 24ull) & 15ull];
+				count += table[(a_value >> 28ull) & 15ull];
+				count += table[(a_value >> 32ull) & 15ull];
+				count += table[(a_value >> 36ull) & 15ull];
+				count += table[(a_value >> 40ull) & 15ull];
+				count += table[(a_value >> 44ull) & 15ull];
+				count += table[(a_value >> 48ull) & 15ull];
+				count += table[(a_value >> 52ull) & 15ull];
+				count += table[(a_value >> 56ull) & 15ull];
+				count += table[(a_value >> 60ull) & 15ull];
+				return count;
+			}
+		};
+
+		// POPCOUNT_LUT8
+
+		template<>
+		struct PopcountHelper<uint8_t, POPCOUNT_LUT8>
+		{
+			static inline size_t Execute(const uint8_t a_value) throw()
+			{
+				return GetPopcountLUT()[a_value];
+			}
+		};
+
+		template<>
+		struct PopcountHelper<uint16_t, POPCOUNT_LUT8>
+		{
+			static inline size_t Execute(const uint16_t a_value) throw()
+			{
+				const uint8_t* const table = GetPopcountLUT();
+				size_t count = table[a_value & 255u];
+				count += table[a_value >> 8u];
+				return count;
+			}
+		};
+
+		template<>
+		struct PopcountHelper<uint32_t, POPCOUNT_LUT8>
+		{
+			static inline size_t Execute(const uint32_t a_value) throw()
+			{
+				const uint8_t* const table = GetPopcountLUT();
+				size_t count = table[a_value & 255u];
+				count += table[(a_value >> 8u) & 255u];
+				count += table[(a_value >> 16u) & 255u];
+				count += table[(a_value >> 24u) & 255u];
+				return count;
+			}
+		};
+
+		template<>
+		struct PopcountHelper<uint64_t, POPCOUNT_LUT8>
+		{
+			static inline size_t Execute(const uint64_t a_value) throw()
+			{
+				const uint8_t* const table = GetPopcountLUT();
+				size_t count = table[a_value & 255u];
+				count += table[(a_value >> 8u) & 255u];
+				count += table[(a_value >> 16u) & 255u];
+				count += table[(a_value >> 24u) & 255u];
+				count += table[(a_value >> 32u) & 255u];
+				count += table[(a_value >> 40u) & 255u];
+				count += table[(a_value >> 48u) & 255u];
+				count += table[(a_value >> 56u) & 255u];
+				return count;
+			}
+		};
+	}
+
 	/*!
 	*	\brief Count the number of bits set to 1 in a primative numeric value.
 	*	\tparam T The data type
-	*	\tparam USE_HARDWARE_OPTIMISATION True if the x86 POPCNT instruction should be used, otherwise a C++ implementation is used.
+	*	\tparam IMPLEMENTATION The implementation to use.
 	*/
-	template<class T, bool USE_HARDWARE_OPTIMISATION = ANVIL_HW_POPCNT_COMPILETIME>
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount(T aValue) throw()
+	template<class T, PopcountImplementation IMPLEMENTATION = POPCOUNT_DEFAULT>
+	static ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount(T a_value) throw()
 	{
-		if constexpr (USE_HARDWARE_OPTIMISATION)
-		{
-			return detail::popcount_hw<T>(aValue);
-		}
-		else
-		{
-			return detail::popcount_c<T>(aValue);
-		}
+		return detail::PopcountHelper<T, IMPLEMENTATION>::Execute(a_value);
 	}
 
 	/*!
 	*	\brief Count the number of bits set to 0 in a primative numeric value.
 	*	\tparam T The data type
-	*	\tparam USE_HARDWARE_OPTIMISATION True if the x86 POPCNT instruction should be used, otherwise a C++ implementation is used.
+	*	\tparam IMPLEMENTATION The implementation to use.
 	*/
-	template<class T, bool USE_HARDWARE_OPTIMISATION = ANVIL_HW_POPCNT_COMPILETIME>
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount_inverse(T aValue) throw()
+	template<class T, PopcountImplementation IMPLEMENTATION = POPCOUNT_DEFAULT>
+	static ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount_inverse(T a_value) throw()
 	{
 		enum 
 		{
 			SIZE_BITS = sizeof(T) * 8u	//!< Number of bits in data type T.
 		};
 		
-		return SIZE_BITS - popcount<T, USE_HARDWARE_OPTIMISATION>(aValue);
+		return SIZE_BITS - detail::PopcountHelper<T, IMPLEMENTATION>::Execute(a_value);
 	}
 
 }
-
-// Renable warnings diabled earlier in this header file
-#pragma warning(default:4499 4505)
 
 #endif

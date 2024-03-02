@@ -304,7 +304,7 @@ namespace anvil { namespace core {
 	{
 	public:
 
-		TEST_METHOD(IsCppImplementationSameAsTest)
+		TEST_METHOD(TestOutputCPP)
 		{
 			if (!ANVIL_HW_POPCNT) Assert::Fail(L"CPU does not support BSR instruction");
 
@@ -313,29 +313,125 @@ namespace anvil { namespace core {
 				size_t hw;
 
 				if (i <= UINT8_MAX) {
-					c = anvil::detail::popcount_test((uint8_t)i);
-					hw = anvil::detail::popcount_c((uint8_t)i);
+					c = anvil::detail::PopcountHelper<uint8_t, POPCOUNT_TEST>::Execute((uint8_t)i);
+					hw = anvil::detail::PopcountHelper<uint8_t, POPCOUNT_CPP>::Execute((uint8_t)i);
 					Assert::AreEqual(c, hw, std::wstring(L"uint8 : " + std::to_wstring(i)).c_str());
 				}
 
 				if (i <= UINT16_MAX) {
-					c = anvil::detail::popcount_test((uint16_t)i);
-					hw = anvil::detail::popcount_c((uint16_t)i);
+					c = anvil::detail::PopcountHelper<uint16_t, POPCOUNT_TEST>::Execute((uint16_t)i);
+					hw = anvil::detail::PopcountHelper<uint16_t, POPCOUNT_CPP>::Execute((uint16_t)i);
 					Assert::AreEqual(c, hw, std::wstring(L"uint16 : " + std::to_wstring(i)).c_str());
 				}
 
 				if (i <= UINT32_MAX) {
-					c = anvil::detail::popcount_test((uint32_t)i);
-					hw = anvil::detail::popcount_c((uint32_t)i);
+					c = anvil::detail::PopcountHelper<uint32_t, POPCOUNT_TEST>::Execute((uint32_t)i);
+					hw = anvil::detail::PopcountHelper<uint32_t, POPCOUNT_CPP>::Execute((uint32_t)i);
 					Assert::AreEqual(c, hw, std::wstring(L"uint32 : " + std::to_wstring(i)).c_str());
 				}
 
-				c = anvil::detail::popcount_test((uint64_t)i);
-				hw = anvil::detail::popcount_c((uint64_t)i);
+				c = anvil::detail::PopcountHelper<uint64_t, POPCOUNT_TEST>::Execute((uint64_t)i);
+				hw = anvil::detail::PopcountHelper<uint64_t, POPCOUNT_CPP>::Execute((uint64_t)i);
+				Assert::AreEqual(c, hw, std::wstring(L"uint64 : " + std::to_wstring(i)).c_str());
+			});
+		}
+		TEST_METHOD(TestOutputX86)
+		{
+			if (!ANVIL_HW_POPCNT) Assert::Fail(L"CPU does not support BSR instruction");
+
+			TestRange64Bitwise([this](uint64_t i)->void {
+				size_t c;
+				size_t hw;
+
+				if (i <= UINT8_MAX) {
+					c = anvil::detail::PopcountHelper<uint8_t, POPCOUNT_TEST>::Execute((uint8_t)i);
+					hw = anvil::detail::PopcountHelper<uint8_t, POPCOUNT_X86>::Execute((uint8_t)i);
+					Assert::AreEqual(c, hw, std::wstring(L"uint8 : " + std::to_wstring(i)).c_str());
+				}
+
+				if (i <= UINT16_MAX) {
+					c = anvil::detail::PopcountHelper<uint16_t, POPCOUNT_TEST>::Execute((uint16_t)i);
+					hw = anvil::detail::PopcountHelper<uint16_t, POPCOUNT_X86>::Execute((uint16_t)i);
+					Assert::AreEqual(c, hw, std::wstring(L"uint16 : " + std::to_wstring(i)).c_str());
+				}
+
+				if (i <= UINT32_MAX) {
+					c = anvil::detail::PopcountHelper<uint32_t, POPCOUNT_TEST>::Execute((uint32_t)i);
+					hw = anvil::detail::PopcountHelper<uint32_t, POPCOUNT_X86>::Execute((uint32_t)i);
+					Assert::AreEqual(c, hw, std::wstring(L"uint32 : " + std::to_wstring(i)).c_str());
+				}
+
+				c = anvil::detail::PopcountHelper<uint64_t, POPCOUNT_TEST>::Execute((uint64_t)i);
+				hw = anvil::detail::PopcountHelper<uint64_t, POPCOUNT_X86>::Execute((uint64_t)i);
+				Assert::AreEqual(c, hw, std::wstring(L"uint64 : " + std::to_wstring(i)).c_str());
+			});
+		}
+
+		TEST_METHOD(TestOutputLUT4)
+		{
+			if (!ANVIL_HW_POPCNT) Assert::Fail(L"CPU does not support BSR instruction");
+
+			TestRange64Bitwise([this](uint64_t i)->void {
+				size_t c;
+				size_t hw;
+
+				if (i <= UINT8_MAX) {
+					c = anvil::detail::PopcountHelper<uint8_t, POPCOUNT_TEST>::Execute((uint8_t)i);
+					hw = anvil::detail::PopcountHelper<uint8_t, POPCOUNT_LUT4>::Execute((uint8_t)i);
+					Assert::AreEqual(c, hw, std::wstring(L"uint8 : " + std::to_wstring(i)).c_str());
+				}
+
+				if (i <= UINT16_MAX) {
+					c = anvil::detail::PopcountHelper<uint16_t, POPCOUNT_TEST>::Execute((uint16_t)i);
+					hw = anvil::detail::PopcountHelper<uint16_t, POPCOUNT_LUT4>::Execute((uint16_t)i);
+					Assert::AreEqual(c, hw, std::wstring(L"uint16 : " + std::to_wstring(i)).c_str());
+				}
+
+				if (i <= UINT32_MAX) {
+					c = anvil::detail::PopcountHelper<uint32_t, POPCOUNT_TEST>::Execute((uint32_t)i);
+					hw = anvil::detail::PopcountHelper<uint32_t, POPCOUNT_LUT4>::Execute((uint32_t)i);
+					Assert::AreEqual(c, hw, std::wstring(L"uint32 : " + std::to_wstring(i)).c_str());
+				}
+
+				c = anvil::detail::PopcountHelper<uint64_t, POPCOUNT_TEST>::Execute((uint64_t)i);
+				hw = anvil::detail::PopcountHelper<uint64_t, POPCOUNT_LUT4>::Execute((uint64_t)i);
+				Assert::AreEqual(c, hw, std::wstring(L"uint64 : " + std::to_wstring(i)).c_str());
+			});
+		}
+
+		TEST_METHOD(TestOutputLUT8)
+		{
+			if (!ANVIL_HW_POPCNT) Assert::Fail(L"CPU does not support BSR instruction");
+
+			TestRange64Bitwise([this](uint64_t i)->void {
+				size_t c;
+				size_t hw;
+
+				if (i <= UINT8_MAX) {
+					c = anvil::detail::PopcountHelper<uint8_t, POPCOUNT_TEST>::Execute((uint8_t)i);
+					hw = anvil::detail::PopcountHelper<uint8_t, POPCOUNT_LUT8>::Execute((uint8_t)i);
+					Assert::AreEqual(c, hw, std::wstring(L"uint8 : " + std::to_wstring(i)).c_str());
+				}
+
+				if (i <= UINT16_MAX) {
+					c = anvil::detail::PopcountHelper<uint16_t, POPCOUNT_TEST>::Execute((uint16_t)i);
+					hw = anvil::detail::PopcountHelper<uint16_t, POPCOUNT_LUT8>::Execute((uint16_t)i);
+					Assert::AreEqual(c, hw, std::wstring(L"uint16 : " + std::to_wstring(i)).c_str());
+				}
+
+				if (i <= UINT32_MAX) {
+					c = anvil::detail::PopcountHelper<uint32_t, POPCOUNT_TEST>::Execute((uint32_t)i);
+					hw = anvil::detail::PopcountHelper<uint32_t, POPCOUNT_LUT8>::Execute((uint32_t)i);
+					Assert::AreEqual(c, hw, std::wstring(L"uint32 : " + std::to_wstring(i)).c_str());
+				}
+
+				c = anvil::detail::PopcountHelper<uint64_t, POPCOUNT_TEST>::Execute((uint64_t)i);
+				hw = anvil::detail::PopcountHelper<uint64_t, POPCOUNT_LUT8>::Execute((uint64_t)i);
 				Assert::AreEqual(c, hw, std::wstring(L"uint64 : " + std::to_wstring(i)).c_str());
 				});
 		}
-		TEST_METHOD(IsHWImplementationSameAsCpp)
+
+		TEST_METHOD(TestOutputConstexpr)
 		{
 			if (!ANVIL_HW_POPCNT) Assert::Fail(L"CPU does not support BSR instruction");
 
@@ -344,25 +440,25 @@ namespace anvil { namespace core {
 				size_t hw;
 
 				if (i <= UINT8_MAX) {
-					c = anvil::detail::popcount_c((uint8_t)i);
-					hw = anvil::detail::popcount_hw((uint8_t)i);
+					c = anvil::detail::PopcountHelper<uint8_t, POPCOUNT_TEST>::Execute((uint8_t)i);
+					hw = anvil::detail::PopcountHelper<uint8_t, POPCOUNT_CONSTEXPR>::Execute((uint8_t)i);
 					Assert::AreEqual(c, hw, std::wstring(L"uint8 : " + std::to_wstring(i)).c_str());
 				}
 
 				if (i <= UINT16_MAX) {
-					c = anvil::detail::popcount_c((uint16_t)i);
-					hw = anvil::detail::popcount_hw((uint16_t)i);
+					c = anvil::detail::PopcountHelper<uint16_t, POPCOUNT_TEST>::Execute((uint16_t)i);
+					hw = anvil::detail::PopcountHelper<uint16_t, POPCOUNT_CONSTEXPR>::Execute((uint16_t)i);
 					Assert::AreEqual(c, hw, std::wstring(L"uint16 : " + std::to_wstring(i)).c_str());
 				}
 
 				if (i <= UINT32_MAX) {
-					c = anvil::detail::popcount_c((uint32_t)i);
-					hw = anvil::detail::popcount_hw((uint32_t)i);
+					c = anvil::detail::PopcountHelper<uint32_t, POPCOUNT_TEST>::Execute((uint32_t)i);
+					hw = anvil::detail::PopcountHelper<uint32_t, POPCOUNT_CONSTEXPR>::Execute((uint32_t)i);
 					Assert::AreEqual(c, hw, std::wstring(L"uint32 : " + std::to_wstring(i)).c_str());
 				}
 
-				c = anvil::detail::popcount_c((uint64_t)i);
-				hw = anvil::detail::popcount_hw((uint64_t)i);
+				c = anvil::detail::PopcountHelper<uint64_t, POPCOUNT_TEST>::Execute((uint64_t)i);
+				hw = anvil::detail::PopcountHelper<uint64_t, POPCOUNT_CONSTEXPR>::Execute((uint64_t)i);
 				Assert::AreEqual(c, hw, std::wstring(L"uint64 : " + std::to_wstring(i)).c_str());
 			});
 		}
@@ -372,8 +468,8 @@ namespace anvil { namespace core {
 			if (!ANVIL_HW_POPCNT) Assert::Fail(L"CPU does not support BSR instruction");
 
 			for (uint64_t i = 0; i <= UINT8_MAX; ++i) {
-				size_t a = anvil::detail::popcount_c((uint8_t)i);
-				size_t b = anvil::detail::popcount_c((uint16_t)i);
+				size_t a = popcount((uint8_t)i);
+				size_t b = popcount((uint16_t)i);
 				Assert::AreEqual(a, b, std::wstring(L"uint16 : " + std::to_wstring(i)).c_str());
 			}
 		}
@@ -383,8 +479,8 @@ namespace anvil { namespace core {
 			if (!ANVIL_HW_POPCNT) Assert::Fail(L"CPU does not support BSR instruction");
 
 			for (uint64_t i = 0; i <= UINT8_MAX; ++i) {
-				size_t a = anvil::detail::popcount_c((uint8_t)i);
-				size_t b = anvil::detail::popcount_c((uint32_t)i);
+				size_t a = anvil::popcount((uint8_t)i);
+				size_t b = anvil::popcount((uint32_t)i);
 				Assert::AreEqual(a, b, std::wstring(L"uint32 : " + std::to_wstring(i)).c_str());
 			}
 		}
@@ -394,8 +490,8 @@ namespace anvil { namespace core {
 			if (!ANVIL_HW_POPCNT) Assert::Fail(L"CPU does not support BSR instruction");
 
 			for (uint64_t i = 0; i <= UINT8_MAX; ++i) {
-				size_t a = anvil::detail::popcount_c((uint8_t)i);
-				size_t b = anvil::detail::popcount_c((uint64_t)i);
+				size_t a = anvil::popcount((uint8_t)i);
+				size_t b = anvil::popcount((uint64_t)i);
 				Assert::AreEqual(a, b, std::wstring(L"uint64 : " + std::to_wstring(i)).c_str());
 			}
 		}
@@ -405,23 +501,23 @@ namespace anvil { namespace core {
 			if (!ANVIL_HW_POPCNT) Assert::Fail(L"CPU does not support BSR instruction");
 
 
-			Assert::AreEqual(anvil::detail::popcount_c((uint8_t)0u), (size_t)0u, 
+			Assert::AreEqual(anvil::popcount((uint8_t)0u), (size_t)0u,
 				L"C++ implementation of 8-bit popcount does not handle 0 correctly"
 			);
 
-			Assert::AreEqual(anvil::detail::popcount_c((uint8_t)1u), (size_t)1u,
+			Assert::AreEqual(anvil::popcount((uint8_t)1u), (size_t)1u,
 				L"C++ implementation of 8-bit popcount does not handle 1 correctly"
 			);
 
-			Assert::AreEqual(anvil::detail::popcount_c((uint8_t)2u), (size_t)1u,
+			Assert::AreEqual(anvil::popcount((uint8_t)2u), (size_t)1u,
 				L"C++ implementation of 8-bit popcount does not handle 2 correctly"
 			);
 
-			Assert::AreEqual(anvil::detail::popcount_c((uint8_t)3u), (size_t)2u,
+			Assert::AreEqual(anvil::popcount((uint8_t)3u), (size_t)2u,
 				L"C++ implementation of 8-bit popcount does not handle 3 correctly"
 			);
 
-			Assert::AreEqual(anvil::detail::popcount_c((uint8_t)255u), (size_t)8u,
+			Assert::AreEqual(anvil::popcount((uint8_t)255u), (size_t)8u,
 				L"C++ implementation of 8-bit popcount does not handle 255 correctly"
 			);
 		}
