@@ -134,21 +134,13 @@ namespace anvil { namespace detail {
 	{
 		uint32_t val = aValue;
 		uint32_t bit0 = val & 1u;
-		uint32_t bit1 = val & 2u;
-		uint32_t bit2 = val & 4u;
-		uint32_t bit3 = val & 8u;
-		uint32_t bit4 = val & 16u;
-		uint32_t bit5 = val & 32u;
-		uint32_t bit6 = val & 64u;
-		uint32_t bit7 = val & 128u;
-
-		bit1 >>= 1u;
-		bit2 >>= 2u;
-		bit3 >>= 3u;
-		bit4 >>= 4u;
-		bit5 >>= 5u;
-		bit6 >>= 6u;
-		bit7 >>= 7u;
+		uint32_t bit1 = (val & 2u) >> 1u;
+		uint32_t bit2 = (val & 4u) >> 2u;
+		uint32_t bit3 = (val & 8u) >> 3u;
+		uint32_t bit4 = (val & 16u) >> 4u;
+		uint32_t bit5 = (val & 32u) >> 5u;
+		uint32_t bit6 = (val & 64u) >> 6u;
+		uint32_t bit7 = (val & 128u) >> 7u;
 
 		bit0 += bit1;
 		bit2 += bit3;
