@@ -41,45 +41,97 @@
 	#define ANVIL_HW_POPCNT_COMPILETIME true
 #endif
 
+// Disable warnings for unreferenced functions and use of static on a specialised template functions
+// - This is a library, so we don't know what functions the und user will use or not
+// - There is no particular reason why a template function can't be specialsied in a header, compilers handle it just fine
+// (These functions are implemented in the header file so they can be inlined into user code for performance gains)
+#pragma warning(disable:4499 4505)
+
 namespace anvil { namespace detail {
 
-	// Using POPCNT instruction
+	// Unoptimised functions for testing the output of the optimsied versions
 
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount8_hw(uint8_t aValue) throw() {
-#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-		return _mm_popcnt_u32(aValue);
-#else
-		return 0;
-#endif
+	template<class T>
+	static size_t ANVIL_CALL popcount_test(T aValue) throw()
+	{
+		return popcount_test<UnsignedType<T>>(numeric_reinterpret_cast<UnsignedType<T>>(aValue));
 	}
 
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount16_hw(uint16_t aValue) throw() {
-#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-		return _mm_popcnt_u32(aValue);
-#else
-		return 0;
-#endif
+	template<>
+	static size_t ANVIL_CALL popcount_test<uint8_t>(uint8_t aValue) throw()
+	{
+		uint32_t value_word = aValue;
+		size_t count = 0u;
+		uint32_t bit = 1u;
+		
+		for (size_t i = 0u; i < 8u; ++i)
+		{
+			count += value_word & bit ? 1u : 0u;
+			bit <<= 1ul;
+		}
+
+		return count;
 	}
 
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount32_hw(uint32_t aValue) throw() {
-#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-		return _mm_popcnt_u32(aValue);
-#else
-		return 0;
-#endif
+	template<>
+	static size_t ANVIL_CALL popcount_test<uint16_t>(uint16_t aValue) throw()
+	{
+		uint32_t value_word = aValue;
+		size_t count = 0u;
+		uint32_t bit = 1u;
+
+		for (size_t i = 0u; i < 16u; ++i)
+		{
+			count += value_word & bit ? 1u : 0u;
+			bit <<= 1ul;
+		}
+
+		return count;
 	}
 
-	static ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount64_hw(uint64_t aValue) throw() {
-#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
-		return _mm_popcnt_u64(aValue);
-#elif ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86
-		return _mm_popcnt_u32(static_cast<uint32_t>(aValue & UINT32_MAX)) + _mm_popcnt_u32(static_cast<uint32_t>(aValue >> 32ull));
-#else
-		return 0;
-#endif
+	template<>
+	static size_t ANVIL_CALL popcount_test<uint32_t>(uint32_t aValue) throw()
+	{
+		uint32_t value_word = aValue;
+		size_t count = 0u;
+		uint32_t bit = 1u;
+
+		for (size_t i = 0u; i < 32u; ++i)
+		{
+			count += value_word & bit ? 1u : 0u;
+			bit <<= 1ul;
+		}
+
+		return count;
 	}
 
-	static size_t ANVIL_CALL popcount8_c(uint8_t aValue) throw() {
+	template<>
+	static size_t ANVIL_CALL popcount_test<uint64_t>(uint64_t aValue) throw()
+	{
+		uint64_t value_word = aValue;
+		size_t count = 0u;
+		uint64_t bit = 1ull;
+
+		for (size_t i = 0u; i < 64u; ++i)
+		{
+			count += value_word & bit ? 1u : 0u;
+			bit <<= 1ull;
+		}
+
+		return count;
+	}
+
+	// Optimised C++ implementation
+
+	template<class T>
+	static size_t ANVIL_CALL popcount_c(T aValue) throw()
+	{
+		return popcount_c<UnsignedType<T>>(numeric_reinterpret_cast<UnsignedType<T>>(aValue));
+	}
+
+	template<>
+	static size_t ANVIL_CALL popcount_c<uint8_t>(uint8_t aValue) throw()
+	{
 		uint32_t val = aValue;
 		uint32_t bit0 = val & 1u;
 		uint32_t bit1 = val & 2u;
@@ -109,131 +161,128 @@ namespace anvil { namespace detail {
 		return bit0 + bit4;
 	}
 
-	static size_t ANVIL_CALL popcount16_c(uint16_t aValue) throw() {
-		return popcount8_c(static_cast<uint8_t>(aValue & UINT8_MAX)) + popcount8_c(static_cast<uint8_t>(aValue >> 8ull));
+	template<>
+	static size_t ANVIL_CALL popcount_c<uint16_t>(uint16_t aValue) throw()
+	{
+		return 
+			popcount_c<uint8_t>(static_cast<uint8_t>(aValue & UINT8_MAX)) + 
+			popcount_c<uint8_t>(static_cast<uint8_t>(aValue >> 8u))
+		;
 	}
 
-	static size_t ANVIL_CALL popcount32_c(uint32_t aValue) throw() {
-		return popcount16_c(static_cast<uint16_t>(aValue & UINT16_MAX)) + popcount16_c(static_cast<uint16_t>(aValue >> 16ull));
+	template<>
+	static size_t ANVIL_CALL popcount_c<uint32_t>(uint32_t aValue) throw()
+	{
+		return 
+			popcount_c<uint16_t>(static_cast<uint16_t>(aValue & UINT16_MAX)) + 
+			popcount_c<uint16_t>(static_cast<uint16_t>(aValue >> 16u))
+		;
 	}
 
-	static size_t ANVIL_CALL popcount64_c(uint64_t aValue) throw() {
-		return popcount32_c(static_cast<uint32_t>(aValue & UINT32_MAX)) + popcount32_c(static_cast<uint32_t>(aValue >> 32ull));
+	template<>
+	static size_t ANVIL_CALL popcount_c<uint64_t>(uint64_t aValue) throw()
+	{
+		return 
+			popcount_c<uint32_t>(static_cast<uint32_t>(aValue & UINT32_MAX)) + 
+			popcount_c<uint32_t>(static_cast<uint32_t>(aValue >> 32ull))
+		;
 	}
 
-	static size_t(*popcount8_fn)(uint8_t) = ANVIL_HW_POPCNT ? detail::popcount8_hw : detail::popcount8_c;
-	static size_t(*popcount16_fn)(uint16_t) = ANVIL_HW_POPCNT ? detail::popcount16_hw : detail::popcount16_c;
-	static size_t(*popcount32_fn)(uint32_t) = ANVIL_HW_POPCNT ? detail::popcount32_hw : detail::popcount32_c;
-	static size_t(*popcount64_fn)(uint64_t) = ANVIL_HW_POPCNT ? detail::popcount64_hw : detail::popcount64_c;
+	// Optimised using the x86 POPCNT instruction
 
+
+	template<class T>
+	static size_t ANVIL_CALL popcount_hw(T aValue) throw()
+	{
+		return popcount_hw<UnsignedType<T>>(numeric_reinterpret_cast<UnsignedType<T>>(aValue));
+	}
+
+	template<>
+	static size_t ANVIL_CALL popcount_hw<uint8_t>(uint8_t aValue) throw()
+	{
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+		return _mm_popcnt_u32(aValue);
+#else
+		return popcount_c<decltype(aValue)>(aValue);
+#endif
+	}
+
+	template<>
+	static size_t ANVIL_CALL popcount_hw<uint16_t>(uint16_t aValue) throw()
+	{
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+		return _mm_popcnt_u32(aValue);
+#else
+		return popcount_c<decltype(aValue)>(aValue);
+#endif
+	}
+
+	template<>
+	static size_t ANVIL_CALL popcount_hw<uint32_t>(uint32_t aValue) throw()
+	{
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86 || ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+		return _mm_popcnt_u32(aValue);
+#else
+		return popcount_c<decltype(aValue)>(aValue);
+#endif
+	}
+
+	template<>
+	static size_t ANVIL_CALL popcount_hw<uint64_t>(uint64_t aValue) throw()
+	{
+#if ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86_64
+		return _mm_popcnt_u64(aValue);
+#elif ANVIL_CPU_ARCHITECTURE == ANVIL_CPU_X86
+		return 
+			_mm_popcnt_u32(static_cast<uint32_t>(aValue & UINT32_MAX)) + 
+			_mm_popcnt_u32(static_cast<uint32_t>(aValue >> 32ull))
+		;
+#else
+		return popcount_c<decltype(aValue)>(aValue);
+#endif
+	}
 }}
 
 
-namespace anvil {
+namespace anvil 
+{
+	/*!
+	*	\brief Count the number of bits set to 1 in a primative numeric value.
+	*	\tparam T The data type
+	*	\tparam USE_HARDWARE_OPTIMISATION True if the x86 POPCNT instruction should be used, otherwise a C++ implementation is used.
+	*/
+	template<class T, bool USE_HARDWARE_OPTIMISATION = ANVIL_HW_POPCNT_COMPILETIME>
+	static ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount(T aValue) throw()
+	{
+		if constexpr (USE_HARDWARE_OPTIMISATION)
+		{
+			return detail::popcount_hw<T>(aValue);
+		}
+		else
+		{
+			return detail::popcount_c<T>(aValue);
+		}
+	}
 
 	/*!
+	*	\brief Count the number of bits set to 0 in a primative numeric value.
 	*	\tparam T The data type
-	*	\tparam BRANCHING True if function should be inlined with a conditional branch, false for a function pointer call.
+	*	\tparam USE_HARDWARE_OPTIMISATION True if the x86 POPCNT instruction should be used, otherwise a C++ implementation is used.
 	*/
-	template<class T, bool BRANCHING = ANVIL_HW_POPCNT_COMPILETIME>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount(T aValue) throw();
-
-	// unsigned
-
-	template<>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount<uint8_t, false>(uint8_t aValue) throw() {
-		return detail::popcount8_fn(aValue);
-	}
-
-	template<>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount<uint16_t, false>(uint16_t aValue) throw() {
-		return detail::popcount16_fn(aValue);
-	}
-
-	template<>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount<uint32_t, false>(uint32_t aValue) throw() {
-		return detail::popcount32_fn(aValue);
-	}
-
-	template<>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount<uint64_t, false>(uint64_t aValue) throw() {
-		return detail::popcount64_fn(aValue);
-	}
-
-	template<>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount<uint8_t, true>(uint8_t aValue) throw() {
-		return ANVIL_HW_POPCNT ? detail::popcount8_hw(aValue) : detail::popcount8_c(aValue);
-	}
-
-	template<>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount<uint16_t, true>(uint16_t aValue) throw() {
-		return ANVIL_HW_POPCNT ? detail::popcount16_hw(aValue) : detail::popcount16_c(aValue);
-	}
-
-	template<>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount<uint32_t, true>(uint32_t aValue) throw() {
-		return ANVIL_HW_POPCNT ? detail::popcount32_hw(aValue) : detail::popcount32_c(aValue);
-	}
-
-	template<>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount<uint64_t, true>(uint64_t aValue) throw() {
-		return ANVIL_HW_POPCNT ? detail::popcount64_hw(aValue) : detail::popcount64_c(aValue);
-	}
-
-	// signed
-
-	template<>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount<int8_t, false>(int8_t aValue) throw() {
-		return popcount<uint8_t, false>(numeric_reinterpret_cast<uint8_t>(aValue));
-	}
-
-	template<>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount<int8_t, true>(int8_t aValue) throw() {
-		return popcount<uint8_t, true>(numeric_reinterpret_cast<uint8_t>(aValue));
-	}
-
-	template<>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount<int16_t, false>(int16_t aValue) throw() {
-		return popcount<uint16_t, false>(numeric_reinterpret_cast<uint16_t>(aValue));
-	}
-
-	template<>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount<int16_t, true>(int16_t aValue) throw() {
-		return popcount<uint16_t, true>(numeric_reinterpret_cast<uint16_t>(aValue));
-	}
-
-	template<>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount<int32_t, false>(int32_t aValue) throw() {
-		return popcount<uint32_t, false>(numeric_reinterpret_cast<uint32_t>(aValue));
-	}
-
-	template<>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount<int32_t, true>(int32_t aValue) throw() {
-		return popcount<uint32_t, true>(numeric_reinterpret_cast<uint32_t>(aValue));
-	}
-
-	// other types
-
-	template<>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount<float, false>(float aValue) throw() {
-		return popcount<uint32_t, false>(numeric_reinterpret_cast<uint32_t>(aValue));
-	}
-
-	template<>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount<float, true>(float aValue) throw() {
-		return popcount<uint32_t, true>(numeric_reinterpret_cast<uint32_t>(aValue));
-	}
-
-	template<>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount<double, false>(double aValue) throw() {
-		return popcount<uint64_t, false>(numeric_reinterpret_cast<uint64_t>(aValue));
-	}
-
-	template<>
-	ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount<double, true>(double aValue) throw() {
-		return popcount<uint64_t, true>(numeric_reinterpret_cast<uint64_t>(aValue));
+	template<class T, bool USE_HARDWARE_OPTIMISATION = ANVIL_HW_POPCNT_COMPILETIME>
+	static ANVIL_STRONG_INLINE size_t ANVIL_CALL popcount_inverse(T aValue) throw()
+	{
+		enum 
+		{
+			SIZE_BITS = sizeof(T) * 8u	//!< Number of bits in data type T.
+		};
+		
+		return SIZE_BITS - popcount<T, USE_HARDWARE_OPTIMISATION>(aValue);
 	}
 
 }
+
+// Renable warnings diabled earlier in this header file
+#pragma warning(default:4499 4505)
 
 #endif
