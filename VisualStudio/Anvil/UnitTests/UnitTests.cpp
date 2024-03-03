@@ -191,8 +191,8 @@ namespace anvil { namespace core {
 
 				if (i <= UINT32_MAX) {
 					uint32_t c, test;
-					c = anvil::lzcount((uint32_t)i);
-					test = TestLZ((uint32_t)i);
+					c = anvil::lzcount((uint64_t)i);
+					test = TestLZ((uint64_t)i);
 					Assert::AreEqual(c, test, std::wstring(L"uint32 : " + std::to_wstring(i)).c_str());
 				}
 			});
@@ -222,7 +222,7 @@ namespace anvil { namespace core {
 
 			return result;
 		}
-		TEST_METHOD(IsBSRImplementationSameAsCpp)
+		TEST_METHOD(TestCPPImplementation)
 		{
 			if (!ANVIL_HW_TZCNTA) Assert::Fail(L"CPU does not support BSR instruction");
 
@@ -231,59 +231,122 @@ namespace anvil { namespace core {
 				uint64_t hw;
 
 				if (i <= UINT8_MAX) {
-					c = anvil::detail::tzcount8_c((uint8_t)i);
-					hw = anvil::detail::tzcount8_hwa((uint8_t)i);
+					c = anvil::detail::TZCountHelper<uint8_t, TZCNT_TEST>::Execute((uint8_t)i);
+					hw = anvil::detail::TZCountHelper<uint8_t, TZCNT_CPP>::Execute((uint8_t)i);
 					Assert::AreEqual(c, hw, std::wstring(L"uint8 : " + std::to_wstring(i)).c_str());
 				}
 
 				if (i <= UINT16_MAX) {
-					c = anvil::detail::tzcount16_c((uint16_t)i);
-					hw = anvil::detail::tzcount16_hwa((uint16_t)i);
+					c = anvil::detail::TZCountHelper<uint16_t, TZCNT_TEST>::Execute((uint16_t)i);
+					hw = anvil::detail::TZCountHelper<uint16_t, TZCNT_CPP>::Execute((uint16_t)i);
 					Assert::AreEqual(c, hw, std::wstring(L"uint16 : " + std::to_wstring(i)).c_str());
 				}
 
 				if (i <= UINT32_MAX) {
-					c = anvil::detail::tzcount32_c((uint32_t)i);
-					hw = anvil::detail::tzcount32_hwa((uint32_t)i);
+					c = anvil::detail::TZCountHelper<uint32_t, TZCNT_TEST>::Execute((uint32_t)i);
+					hw = anvil::detail::TZCountHelper<uint32_t, TZCNT_CPP>::Execute((uint32_t)i);
 					Assert::AreEqual(c, hw, std::wstring(L"uint32 : " + std::to_wstring(i)).c_str());
 				}
 
-				c = anvil::detail::tzcount64_c((uint64_t)i);
-				hw = anvil::detail::tzcount64_hwa((uint64_t)i);
+				c = anvil::detail::TZCountHelper<uint64_t, TZCNT_TEST>::Execute((uint64_t)i);
+				hw = anvil::detail::TZCountHelper<uint64_t, TZCNT_CPP>::Execute((uint64_t)i);
 				Assert::AreEqual(c, hw, std::wstring(L"uint64 : " + std::to_wstring(i)).c_str());
-			});
+				});
 		}
 
-		TEST_METHOD(IsTZCNTImplementationSameAsCpp)
+		TEST_METHOD(TestConstexprImplementation)
 		{
-			if (!ANVIL_HW_TZCNTB) Assert::Fail(L"CPU does not support TZCNT instruction");
+			if (!ANVIL_HW_TZCNTA) Assert::Fail(L"CPU does not support BSR instruction");
 
 			TestRange64Bitwise([this](uint64_t i)->void {
 				uint64_t c;
 				uint64_t hw;
 
 				if (i <= UINT8_MAX) {
-					c = anvil::detail::tzcount8_c((uint8_t)i);
-					hw = anvil::detail::tzcount8_hwb((uint8_t)i);
+					c = anvil::detail::TZCountHelper<uint8_t, TZCNT_TEST>::Execute((uint8_t)i);
+					hw = anvil::detail::TZCountHelper<uint8_t, TZCNT_CONSTEXPR>::Execute((uint8_t)i);
 					Assert::AreEqual(c, hw, std::wstring(L"uint8 : " + std::to_wstring(i)).c_str());
 				}
 
 				if (i <= UINT16_MAX) {
-					c = anvil::detail::tzcount16_c((uint16_t)i);
-					hw = anvil::detail::tzcount16_hwb((uint16_t)i);
+					c = anvil::detail::TZCountHelper<uint16_t, TZCNT_TEST>::Execute((uint16_t)i);
+					hw = anvil::detail::TZCountHelper<uint16_t, TZCNT_CONSTEXPR>::Execute((uint16_t)i);
 					Assert::AreEqual(c, hw, std::wstring(L"uint16 : " + std::to_wstring(i)).c_str());
 				}
 
 				if (i <= UINT32_MAX) {
-					c = anvil::detail::tzcount32_c((uint32_t)i);
-					hw = anvil::detail::tzcount32_hwb((uint32_t)i);
+					c = anvil::detail::TZCountHelper<uint32_t, TZCNT_TEST>::Execute((uint32_t)i);
+					hw = anvil::detail::TZCountHelper<uint32_t, TZCNT_CONSTEXPR>::Execute((uint32_t)i);
 					Assert::AreEqual(c, hw, std::wstring(L"uint32 : " + std::to_wstring(i)).c_str());
 				}
 
-				c = anvil::detail::tzcount64_c((uint64_t)i);
-				hw = anvil::detail::tzcount64_hwb((uint64_t)i);
+				c = anvil::detail::TZCountHelper<uint64_t, TZCNT_TEST>::Execute((uint64_t)i);
+				hw = anvil::detail::TZCountHelper<uint64_t, TZCNT_CONSTEXPR>::Execute((uint64_t)i);
 				Assert::AreEqual(c, hw, std::wstring(L"uint64 : " + std::to_wstring(i)).c_str());
-			});
+				});
+		}
+		TEST_METHOD(TestBSRImplementation)
+		{
+			if (!ANVIL_HW_TZCNTA) Assert::Fail(L"CPU does not support BSR instruction");
+
+			TestRange64Bitwise([this](uint64_t i)->void {
+				uint64_t c;
+				uint64_t hw;
+
+				if (i <= UINT8_MAX) {
+					c = anvil::detail::TZCountHelper<uint8_t, TZCNT_TEST>::Execute((uint8_t)i);
+					hw = anvil::detail::TZCountHelper<uint8_t, TZCNT_BSR>::Execute((uint8_t)i);
+					Assert::AreEqual(c, hw, std::wstring(L"uint8 : " + std::to_wstring(i)).c_str());
+				}
+
+				if (i <= UINT16_MAX) {
+					c = anvil::detail::TZCountHelper<uint16_t, TZCNT_TEST>::Execute((uint16_t)i);
+					hw = anvil::detail::TZCountHelper<uint16_t, TZCNT_BSR>::Execute((uint16_t)i);
+					Assert::AreEqual(c, hw, std::wstring(L"uint16 : " + std::to_wstring(i)).c_str());
+				}
+
+				if (i <= UINT32_MAX) {
+					c = anvil::detail::TZCountHelper<uint32_t, TZCNT_TEST>::Execute((uint32_t)i);
+					hw = anvil::detail::TZCountHelper<uint32_t, TZCNT_BSR>::Execute((uint32_t)i);
+					Assert::AreEqual(c, hw, std::wstring(L"uint32 : " + std::to_wstring(i)).c_str());
+				}
+
+				c = anvil::detail::TZCountHelper<uint64_t, TZCNT_TEST>::Execute((uint64_t)i);
+				hw = anvil::detail::TZCountHelper<uint64_t, TZCNT_BSR>::Execute((uint64_t)i);
+				Assert::AreEqual(c, hw, std::wstring(L"uint64 : " + std::to_wstring(i)).c_str());
+				});
+		}
+
+		TEST_METHOD(TestX86Implementation)
+		{
+			if (!ANVIL_HW_TZCNTA) Assert::Fail(L"CPU does not support BSR instruction");
+
+			TestRange64Bitwise([this](uint64_t i)->void {
+				uint64_t c;
+				uint64_t hw;
+
+				if (i <= UINT8_MAX) {
+					c = anvil::detail::TZCountHelper<uint8_t, TZCNT_TEST>::Execute((uint8_t)i);
+					hw = anvil::detail::TZCountHelper<uint8_t, TZCNT_X86>::Execute((uint8_t)i);
+					Assert::AreEqual(c, hw, std::wstring(L"uint8 : " + std::to_wstring(i)).c_str());
+				}
+
+				if (i <= UINT16_MAX) {
+					c = anvil::detail::TZCountHelper<uint16_t, TZCNT_TEST>::Execute((uint16_t)i);
+					hw = anvil::detail::TZCountHelper<uint16_t, TZCNT_X86>::Execute((uint16_t)i);
+					Assert::AreEqual(c, hw, std::wstring(L"uint16 : " + std::to_wstring(i)).c_str());
+				}
+
+				if (i <= UINT32_MAX) {
+					c = anvil::detail::TZCountHelper<uint32_t, TZCNT_TEST>::Execute((uint32_t)i);
+					hw = anvil::detail::TZCountHelper<uint32_t, TZCNT_X86>::Execute((uint32_t)i);
+					Assert::AreEqual(c, hw, std::wstring(L"uint32 : " + std::to_wstring(i)).c_str());
+				}
+
+				c = anvil::detail::TZCountHelper<uint64_t, TZCNT_TEST>::Execute((uint64_t)i);
+				hw = anvil::detail::TZCountHelper<uint64_t, TZCNT_X86>::Execute((uint64_t)i);
+				Assert::AreEqual(c, hw, std::wstring(L"uint64 : " + std::to_wstring(i)).c_str());
+				});
 		}
 
 		TEST_METHOD(IsCPPImplementationSameAsSlowTest)
@@ -292,8 +355,8 @@ namespace anvil { namespace core {
 
 				if (i <= UINT32_MAX) {
 					uint32_t c, test;
-					c = anvil::detail::tzcount64_c((uint32_t)i);
-					test = TestTZ((uint32_t)i);
+					c = anvil::tzcount((uint64_t)i);
+					test = TestTZ((uint64_t)i);
 					Assert::AreEqual(c, test, std::wstring(L"uint32 : " + std::to_wstring(i)).c_str());
 				}
 			});

@@ -405,7 +405,7 @@ namespace anvil
 	}
 
 	/*!
-	*	\brief Count the number of trailing bits set to 0
+	*	\brief Count the number of leading bits set to 0
 	*	\tparam T The data type
 	*	\tparam BRANCHING True if function should be inlined with a conditional branch, false for a function pointer call.
 	*	\tparam IMPLEMENTATION Which implementation to use
