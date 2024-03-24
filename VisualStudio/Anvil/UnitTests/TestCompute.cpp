@@ -18,39 +18,73 @@ namespace anvil { namespace compute {
 	{
 	public:
 
-		TEST_METHOD(Type)
+		TEST_METHOD(FastShortType)
 		{
-			Assert::AreEqual((int)CV_8UC1, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_8UC1)).GetOpenCVType(), L"CV_8UC1 has wrong type");
-			Assert::AreEqual((int)CV_8SC1, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_8SC1)).GetOpenCVType(), L"CV_8SC1 has wrong type");
-			Assert::AreEqual((int)CV_16SC1, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_16SC1)).GetOpenCVType(), L"CV_16SC1 has wrong type");
-			Assert::AreEqual((int)CV_16UC1, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_16UC1)).GetOpenCVType(), L"CV_16UC1 has wrong type");
-			Assert::AreEqual((int)CV_32SC1, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_32SC1)).GetOpenCVType(), L"CV_32SC1 has wrong type");
-			Assert::AreEqual((int)CV_32FC1, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_32FC1)).GetOpenCVType(), L"CV_32FC1 has wrong type");
-			Assert::AreEqual((int)CV_64FC1, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_64FC1)).GetOpenCVType(), L"CV_64FC1 has wrong type");
+			Assert::AreEqual((int)CV_8UC1, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_8UC1)).GetOpenCVType(), L"CV_8UC1 has wrong type");
+			Assert::AreEqual((int)CV_8SC1, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_8SC1)).GetOpenCVType(), L"CV_8SC1 has wrong type");
+			Assert::AreEqual((int)CV_16SC1, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_16SC1)).GetOpenCVType(), L"CV_16SC1 has wrong type");
+			Assert::AreEqual((int)CV_16UC1, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_16UC1)).GetOpenCVType(), L"CV_16UC1 has wrong type");
+			Assert::AreEqual((int)CV_32SC1, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_32SC1)).GetOpenCVType(), L"CV_32SC1 has wrong type");
+			Assert::AreEqual((int)CV_32FC1, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_32FC1)).GetOpenCVType(), L"CV_32FC1 has wrong type");
+			Assert::AreEqual((int)CV_64FC1, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_64FC1)).GetOpenCVType(), L"CV_64FC1 has wrong type");
 
-			Assert::AreEqual((int)CV_8UC2, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_8UC2)).GetOpenCVType(), L"CV_8UC2 has wrong type");
-			Assert::AreEqual((int)CV_8SC2, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_8SC2)).GetOpenCVType(), L"CV_8SC2 has wrong type");
-			Assert::AreEqual((int)CV_16SC2, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_16SC2)).GetOpenCVType(), L"CV_16SC2 has wrong type");
-			Assert::AreEqual((int)CV_16UC2, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_16UC2)).GetOpenCVType(), L"CV_16UC2 has wrong type");
-			Assert::AreEqual((int)CV_32SC2, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_32SC2)).GetOpenCVType(), L"CV_32SC2 has wrong type");
-			Assert::AreEqual((int)CV_32FC2, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_32FC2)).GetOpenCVType(), L"CV_32FC2 has wrong type");
-			Assert::AreEqual((int)CV_64FC2, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_64FC2)).GetOpenCVType(), L"CV_64FC2 has wrong type");
+			Assert::AreEqual((int)CV_8UC2, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_8UC2)).GetOpenCVType(), L"CV_8UC2 has wrong type");
+			Assert::AreEqual((int)CV_8SC2, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_8SC2)).GetOpenCVType(), L"CV_8SC2 has wrong type");
+			Assert::AreEqual((int)CV_16SC2, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_16SC2)).GetOpenCVType(), L"CV_16SC2 has wrong type");
+			Assert::AreEqual((int)CV_16UC2, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_16UC2)).GetOpenCVType(), L"CV_16UC2 has wrong type");
+			Assert::AreEqual((int)CV_32SC2, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_32SC2)).GetOpenCVType(), L"CV_32SC2 has wrong type");
+			Assert::AreEqual((int)CV_32FC2, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_32FC2)).GetOpenCVType(), L"CV_32FC2 has wrong type");
+			Assert::AreEqual((int)CV_64FC2, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_64FC2)).GetOpenCVType(), L"CV_64FC2 has wrong type");
 
-			Assert::AreEqual((int)CV_8UC3, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_8UC3)).GetOpenCVType(), L"CV_8UC3 has wrong type");
-			Assert::AreEqual((int)CV_8SC3, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_8SC3)).GetOpenCVType(), L"CV_8SC3 has wrong type");
-			Assert::AreEqual((int)CV_16SC3, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_16SC3)).GetOpenCVType(), L"CV_16SC3 has wrong type");
-			Assert::AreEqual((int)CV_16UC3, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_16UC3)).GetOpenCVType(), L"CV_16UC3 has wrong type");
-			Assert::AreEqual((int)CV_32SC3, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_32SC3)).GetOpenCVType(), L"CV_32SC3 has wrong type");
-			Assert::AreEqual((int)CV_32FC3, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_32FC3)).GetOpenCVType(), L"CV_32FC3 has wrong type");
-			Assert::AreEqual((int)CV_64FC3, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_64FC3)).GetOpenCVType(), L"CV_64FC3 has wrong type");
+			Assert::AreEqual((int)CV_8UC3, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_8UC3)).GetOpenCVType(), L"CV_8UC3 has wrong type");
+			Assert::AreEqual((int)CV_8SC3, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_8SC3)).GetOpenCVType(), L"CV_8SC3 has wrong type");
+			Assert::AreEqual((int)CV_16SC3, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_16SC3)).GetOpenCVType(), L"CV_16SC3 has wrong type");
+			Assert::AreEqual((int)CV_16UC3, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_16UC3)).GetOpenCVType(), L"CV_16UC3 has wrong type");
+			Assert::AreEqual((int)CV_32SC3, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_32SC3)).GetOpenCVType(), L"CV_32SC3 has wrong type");
+			Assert::AreEqual((int)CV_32FC3, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_32FC3)).GetOpenCVType(), L"CV_32FC3 has wrong type");
+			Assert::AreEqual((int)CV_64FC3, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_64FC3)).GetOpenCVType(), L"CV_64FC3 has wrong type");
 
-			Assert::AreEqual((int)CV_8UC4, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_8UC4)).GetOpenCVType(), L"CV_8UC4 has wrong type");
-			Assert::AreEqual((int)CV_8SC4, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_8SC4)).GetOpenCVType(), L"CV_8SC4 has wrong type");
-			Assert::AreEqual((int)CV_16SC4, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_16SC4)).GetOpenCVType(), L"CV_16SC4 has wrong type");
-			Assert::AreEqual((int)CV_16UC4, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_16UC4)).GetOpenCVType(), L"CV_16UC4 has wrong type");
-			Assert::AreEqual((int)CV_32SC4, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_32SC4)).GetOpenCVType(), L"CV_32SC4 has wrong type");
-			Assert::AreEqual((int)CV_32FC4, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_32FC4)).GetOpenCVType(), L"CV_32FC4 has wrong type");
-			Assert::AreEqual((int)CV_64FC4, (int)anvil::Type(anvil::Type::FromOpenCVType(CV_64FC4)).GetOpenCVType(), L"CV_64FC4 has wrong type");
+			Assert::AreEqual((int)CV_8UC4, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_8UC4)).GetOpenCVType(), L"CV_8UC4 has wrong type");
+			Assert::AreEqual((int)CV_8SC4, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_8SC4)).GetOpenCVType(), L"CV_8SC4 has wrong type");
+			Assert::AreEqual((int)CV_16SC4, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_16SC4)).GetOpenCVType(), L"CV_16SC4 has wrong type");
+			Assert::AreEqual((int)CV_16UC4, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_16UC4)).GetOpenCVType(), L"CV_16UC4 has wrong type");
+			Assert::AreEqual((int)CV_32SC4, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_32SC4)).GetOpenCVType(), L"CV_32SC4 has wrong type");
+			Assert::AreEqual((int)CV_32FC4, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_32FC4)).GetOpenCVType(), L"CV_32FC4 has wrong type");
+			Assert::AreEqual((int)CV_64FC4, (int)anvil::FastShortType(anvil::FastShortType::FromOpenCVType(CV_64FC4)).GetOpenCVType(), L"CV_64FC4 has wrong type");
+		}
+		TEST_METHOD(ExtendedShortType)
+		{
+			Assert::AreEqual((int)CV_8UC1, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_8UC1)).GetOpenCVType(), L"CV_8UC1 has wrong type");
+			Assert::AreEqual((int)CV_8SC1, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_8SC1)).GetOpenCVType(), L"CV_8SC1 has wrong type");
+			Assert::AreEqual((int)CV_16SC1, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_16SC1)).GetOpenCVType(), L"CV_16SC1 has wrong type");
+			Assert::AreEqual((int)CV_16UC1, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_16UC1)).GetOpenCVType(), L"CV_16UC1 has wrong type");
+			Assert::AreEqual((int)CV_32SC1, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_32SC1)).GetOpenCVType(), L"CV_32SC1 has wrong type");
+			Assert::AreEqual((int)CV_32FC1, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_32FC1)).GetOpenCVType(), L"CV_32FC1 has wrong type");
+			Assert::AreEqual((int)CV_64FC1, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_64FC1)).GetOpenCVType(), L"CV_64FC1 has wrong type");
+
+			Assert::AreEqual((int)CV_8UC2, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_8UC2)).GetOpenCVType(), L"CV_8UC2 has wrong type");
+			Assert::AreEqual((int)CV_8SC2, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_8SC2)).GetOpenCVType(), L"CV_8SC2 has wrong type");
+			Assert::AreEqual((int)CV_16SC2, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_16SC2)).GetOpenCVType(), L"CV_16SC2 has wrong type");
+			Assert::AreEqual((int)CV_16UC2, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_16UC2)).GetOpenCVType(), L"CV_16UC2 has wrong type");
+			Assert::AreEqual((int)CV_32SC2, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_32SC2)).GetOpenCVType(), L"CV_32SC2 has wrong type");
+			Assert::AreEqual((int)CV_32FC2, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_32FC2)).GetOpenCVType(), L"CV_32FC2 has wrong type");
+			Assert::AreEqual((int)CV_64FC2, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_64FC2)).GetOpenCVType(), L"CV_64FC2 has wrong type");
+
+			Assert::AreEqual((int)CV_8UC3, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_8UC3)).GetOpenCVType(), L"CV_8UC3 has wrong type");
+			Assert::AreEqual((int)CV_8SC3, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_8SC3)).GetOpenCVType(), L"CV_8SC3 has wrong type");
+			Assert::AreEqual((int)CV_16SC3, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_16SC3)).GetOpenCVType(), L"CV_16SC3 has wrong type");
+			Assert::AreEqual((int)CV_16UC3, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_16UC3)).GetOpenCVType(), L"CV_16UC3 has wrong type");
+			Assert::AreEqual((int)CV_32SC3, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_32SC3)).GetOpenCVType(), L"CV_32SC3 has wrong type");
+			Assert::AreEqual((int)CV_32FC3, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_32FC3)).GetOpenCVType(), L"CV_32FC3 has wrong type");
+			Assert::AreEqual((int)CV_64FC3, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_64FC3)).GetOpenCVType(), L"CV_64FC3 has wrong type");
+
+			Assert::AreEqual((int)CV_8UC4, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_8UC4)).GetOpenCVType(), L"CV_8UC4 has wrong type");
+			Assert::AreEqual((int)CV_8SC4, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_8SC4)).GetOpenCVType(), L"CV_8SC4 has wrong type");
+			Assert::AreEqual((int)CV_16SC4, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_16SC4)).GetOpenCVType(), L"CV_16SC4 has wrong type");
+			Assert::AreEqual((int)CV_16UC4, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_16UC4)).GetOpenCVType(), L"CV_16UC4 has wrong type");
+			Assert::AreEqual((int)CV_32SC4, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_32SC4)).GetOpenCVType(), L"CV_32SC4 has wrong type");
+			Assert::AreEqual((int)CV_32FC4, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_32FC4)).GetOpenCVType(), L"CV_32FC4 has wrong type");
+			Assert::AreEqual((int)CV_64FC4, (int)anvil::ExtendedShortType(anvil::ExtendedShortType::FromOpenCVType(CV_64FC4)).GetOpenCVType(), L"CV_64FC4 has wrong type");
 		}
 	};
 
@@ -314,98 +348,98 @@ namespace anvil { namespace compute {
 		}
 	};
 
-	TEST_CLASS(TestShortType)
+	TEST_CLASS(TestFastShortType)
 	{
 	public:
 
 		TEST_METHOD(EnumerationConstants) {
-			Assert::AreEqual((int)Type::TYPE_UNSIGNED, (int)Type(ANVIL_8UX1).GetRepresentation(),L"Representation is wrong");
-			Assert::AreEqual((int)Type::TYPE_UNSIGNED, (int)Type(ANVIL_16UX1).GetRepresentation(), L"Representation is wrong");
-			Assert::AreEqual((int)Type::TYPE_UNSIGNED, (int)Type(ANVIL_32UX1).GetRepresentation(), L"Representation is wrong");
-			Assert::AreEqual((int)Type::TYPE_UNSIGNED, (int)Type(ANVIL_64UX1).GetRepresentation(), L"Representation is wrong");
-			Assert::AreEqual((int)Type::TYPE_SIGNED, (int)Type(ANVIL_8SX1).GetRepresentation(), L"Representation is wrong");
-			Assert::AreEqual((int)Type::TYPE_SIGNED, (int)Type(ANVIL_16SX1).GetRepresentation(), L"Representation is wrong");
-			Assert::AreEqual((int)Type::TYPE_SIGNED, (int)Type(ANVIL_32SX1).GetRepresentation(), L"Representation is wrong");
-			Assert::AreEqual((int)Type::TYPE_SIGNED, (int)Type(ANVIL_64SX1).GetRepresentation(), L"Representation is wrong");
-			Assert::AreEqual((int)Type::TYPE_FLOATING_POINT, (int)Type(ANVIL_8FX1).GetRepresentation(), L"Representation is wrong");
-			Assert::AreEqual((int)Type::TYPE_FLOATING_POINT, (int)Type(ANVIL_16FX1).GetRepresentation(), L"Representation is wrong");
-			Assert::AreEqual((int)Type::TYPE_FLOATING_POINT, (int)Type(ANVIL_32FX1).GetRepresentation(), L"Representation is wrong");
-			Assert::AreEqual((int)Type::TYPE_FLOATING_POINT, (int)Type(ANVIL_64FX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)FastShortType::TYPE_UNSIGNED, (int)FastShortType(ANVIL_8UX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)FastShortType::TYPE_UNSIGNED, (int)FastShortType(ANVIL_16UX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)FastShortType::TYPE_UNSIGNED, (int)FastShortType(ANVIL_32UX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)FastShortType::TYPE_UNSIGNED, (int)FastShortType(ANVIL_64UX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)FastShortType::TYPE_SIGNED, (int)FastShortType(ANVIL_8SX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)FastShortType::TYPE_SIGNED, (int)FastShortType(ANVIL_16SX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)FastShortType::TYPE_SIGNED, (int)FastShortType(ANVIL_32SX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)FastShortType::TYPE_SIGNED, (int)FastShortType(ANVIL_64SX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)FastShortType::TYPE_FLOATING_POINT, (int)FastShortType(ANVIL_8FX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)FastShortType::TYPE_FLOATING_POINT, (int)FastShortType(ANVIL_16FX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)FastShortType::TYPE_FLOATING_POINT, (int)FastShortType(ANVIL_32FX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)FastShortType::TYPE_FLOATING_POINT, (int)FastShortType(ANVIL_64FX1).GetRepresentation(), L"Representation is wrong");
 
-			Assert::AreEqual((int)1, (int)Type(ANVIL_8UX1).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)1, (int)Type(ANVIL_16UX1).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)1, (int)Type(ANVIL_32UX1).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)1, (int)Type(ANVIL_64UX1).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)1, (int)Type(ANVIL_8SX1).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)1, (int)Type(ANVIL_16SX1).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)1, (int)Type(ANVIL_32SX1).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)1, (int)Type(ANVIL_64SX1).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)1, (int)Type(ANVIL_8FX1).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)1, (int)Type(ANVIL_16FX1).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)1, (int)Type(ANVIL_32FX1).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)1, (int)Type(ANVIL_64FX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)FastShortType(ANVIL_8UX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)FastShortType(ANVIL_16UX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)FastShortType(ANVIL_32UX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)FastShortType(ANVIL_64UX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)FastShortType(ANVIL_8SX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)FastShortType(ANVIL_16SX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)FastShortType(ANVIL_32SX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)FastShortType(ANVIL_64SX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)FastShortType(ANVIL_8FX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)FastShortType(ANVIL_16FX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)FastShortType(ANVIL_32FX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)FastShortType(ANVIL_64FX1).GetNumberOfChannels(), L"Number of channels is wrong");
 
-			Assert::AreEqual((int)1, (int)Type(ANVIL_8UX1).GetSizeInBytes(), L"Size in bytes is wrong");
-			Assert::AreEqual((int)2, (int)Type(ANVIL_16UX1).GetSizeInBytes(), L"Size in bytes is wrong");
-			Assert::AreEqual((int)4, (int)Type(ANVIL_32UX1).GetSizeInBytes(), L"Size in bytes is wrong");
-			Assert::AreEqual((int)8, (int)Type(ANVIL_64UX1).GetSizeInBytes(), L"Size in bytes is wrong");
-			Assert::AreEqual((int)1, (int)Type(ANVIL_8SX1).GetSizeInBytes(), L"Size in bytes is wrong");
-			Assert::AreEqual((int)2, (int)Type(ANVIL_16SX1).GetSizeInBytes(), L"Size in bytes is wrong");
-			Assert::AreEqual((int)4, (int)Type(ANVIL_32SX1).GetSizeInBytes(), L"Size in bytes is wrong");
-			Assert::AreEqual((int)8, (int)Type(ANVIL_64SX1).GetSizeInBytes(), L"Size in bytes is wrong");
-			Assert::AreEqual((int)1, (int)Type(ANVIL_8FX1).GetSizeInBytes(), L"Size in bytes is wrong");
-			Assert::AreEqual((int)2, (int)Type(ANVIL_16FX1).GetSizeInBytes(), L"Size in bytes is wrong");
-			Assert::AreEqual((int)4, (int)Type(ANVIL_32FX1).GetSizeInBytes(), L"Size in bytes is wrong");
-			Assert::AreEqual((int)8, (int)Type(ANVIL_64FX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)1, (int)FastShortType(ANVIL_8UX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)2, (int)FastShortType(ANVIL_16UX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)4, (int)FastShortType(ANVIL_32UX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)8, (int)FastShortType(ANVIL_64UX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)1, (int)FastShortType(ANVIL_8SX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)2, (int)FastShortType(ANVIL_16SX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)4, (int)FastShortType(ANVIL_32SX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)8, (int)FastShortType(ANVIL_64SX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)1, (int)FastShortType(ANVIL_8FX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)2, (int)FastShortType(ANVIL_16FX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)4, (int)FastShortType(ANVIL_32FX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)8, (int)FastShortType(ANVIL_64FX1).GetSizeInBytes(), L"Size in bytes is wrong");
 
-			Assert::AreEqual((int)2, (int)Type(ANVIL_8UX2).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)3, (int)Type(ANVIL_8UX3).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)4, (int)Type(ANVIL_8UX4).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)5, (int)Type(ANVIL_8UX5).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)6, (int)Type(ANVIL_8UX6).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)7, (int)Type(ANVIL_8UX7).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)8, (int)Type(ANVIL_8UX8).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)9, (int)Type(ANVIL_8UX9).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)10, (int)Type(ANVIL_8UX10).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)11, (int)Type(ANVIL_8UX11).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)12, (int)Type(ANVIL_8UX12).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)13, (int)Type(ANVIL_8UX13).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)14, (int)Type(ANVIL_8UX14).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)15, (int)Type(ANVIL_8UX15).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)16, (int)Type(ANVIL_8UX16).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)2, (int)FastShortType(ANVIL_8UX2).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)3, (int)FastShortType(ANVIL_8UX3).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)4, (int)FastShortType(ANVIL_8UX4).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)5, (int)FastShortType(ANVIL_8UX5).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)6, (int)FastShortType(ANVIL_8UX6).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)7, (int)FastShortType(ANVIL_8UX7).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)8, (int)FastShortType(ANVIL_8UX8).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)9, (int)FastShortType(ANVIL_8UX9).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)10, (int)FastShortType(ANVIL_8UX10).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)11, (int)FastShortType(ANVIL_8UX11).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)12, (int)FastShortType(ANVIL_8UX12).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)13, (int)FastShortType(ANVIL_8UX13).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)14, (int)FastShortType(ANVIL_8UX14).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)15, (int)FastShortType(ANVIL_8UX15).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)16, (int)FastShortType(ANVIL_8UX16).GetNumberOfChannels(), L"Number of channels is wrong");
 		}
 		TEST_METHOD(Enumerations)
 		{
 			for (size_t i = 0u; i < 256u; ++i) {
 				anvil::EnumeratedType t = static_cast<anvil::EnumeratedType>(i);
 				anvil::EnumeratedType t2 = anvil::Type(t).GetEnumeratedType();
-				Assert::AreEqual((int)t,(int)t2);
+				Assert::AreEqual((int)t, (int)t2);
 			}
-			
+
 		}
 
 		TEST_METHOD(Representation)
 		{
-			anvil::Type t, ref;
+			anvil::FastShortType t, ref;
 
-			t.SetRepresentation(anvil::Type::TYPE_UNSIGNED);
+			t.SetRepresentation(anvil::FastShortType::TYPE_UNSIGNED);
 			Assert::IsTrue(t.GetRepresentation() == anvil::Type::TYPE_UNSIGNED, L"TYPE_UNSIGNED");
 			Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
 			Assert::IsTrue(ref.GetPrimitiveSizeInBytes() == t.GetPrimitiveSizeInBytes(), L"Byte count was corrupted");
 
-			t.SetRepresentation(anvil::Type::TYPE_SIGNED);
-			Assert::IsTrue(t.GetRepresentation() == anvil::Type::TYPE_SIGNED, L"TYPE_SIGNED");
+			t.SetRepresentation(anvil::FastShortType::TYPE_SIGNED);
+			Assert::IsTrue(t.GetRepresentation() == anvil::FastShortType::TYPE_SIGNED, L"TYPE_SIGNED");
 			Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
 			Assert::IsTrue(ref.GetPrimitiveSizeInBytes() == t.GetPrimitiveSizeInBytes(), L"Byte count was corrupted");
 
-			t.SetRepresentation(anvil::Type::TYPE_FLOATING_POINT);
-			Assert::IsTrue(t.GetRepresentation() == anvil::Type::TYPE_FLOATING_POINT, L"TYPE_FLOATING_POINT");
+			t.SetRepresentation(anvil::FastShortType::TYPE_FLOATING_POINT);
+			Assert::IsTrue(t.GetRepresentation() == anvil::FastShortType::TYPE_FLOATING_POINT, L"TYPE_FLOATING_POINT");
 			Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
 			Assert::IsTrue(ref.GetPrimitiveSizeInBytes() == t.GetPrimitiveSizeInBytes(), L"Byte count was corrupted");
 		}
 		TEST_METHOD(Channels)
 		{
-			anvil::Type t, ref;
+			anvil::FastShortType t, ref;
 
 			t.SetNumberOfChannels(1u);
 			Assert::AreEqual((size_t)1u, t.GetNumberOfChannels());
@@ -430,7 +464,7 @@ namespace anvil { namespace compute {
 
 		TEST_METHOD(Bytes)
 		{
-			anvil::Type t, ref;
+			anvil::FastShortType t, ref;
 
 			t.SetSizeInBytes(1u);
 			Assert::AreEqual((size_t)1u, t.GetPrimitiveSizeInBytes());
@@ -455,7 +489,7 @@ namespace anvil { namespace compute {
 
 		TEST_METHOD(Bits)
 		{
-			anvil::Type t, ref;
+			anvil::FastShortType t, ref;
 
 			t.SetSizeInBytes(1u);
 			Assert::AreEqual((size_t)8u, t.GetPrimitiveSizeInBits());
@@ -478,7 +512,7 @@ namespace anvil { namespace compute {
 			Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
 		}
 
-		TEST_METHOD(OpenCV) 
+		TEST_METHOD(OpenCV)
 		{
 #if ANVIL_OPENCV_SUPPORT
 			int values[] = {
@@ -493,16 +527,235 @@ namespace anvil { namespace compute {
 			};
 
 			try {
-				for(int i : values) {
-					Assert::AreEqual(i, anvil::Type::ToOpenCVType(anvil::Type::FromOpenCVType(i)));
+				for (int i : values) {
+					Assert::AreEqual(i, anvil::FastShortType::ToOpenCVType(anvil::FastShortType::FromOpenCVType(i)));
 				}
-			} catch (std::exception& e) {
+			}
+			catch (std::exception& e) {
 				Assert::Fail(std::wstring_convert<std::codecvt<wchar_t, char, std::mbstate_t>>().from_bytes(e.what()).c_str());
 			}
 #else
 			Assert::Fail(L"OpenCV was not detected");
 #endif
 		}
+	};
+
+		TEST_CLASS(TestExtendedShortType)
+		{
+		public:
+
+			TEST_METHOD(EnumerationConstants) {
+				Assert::AreEqual((int)ExtendedShortType::TYPE_UNSIGNED, (int)ExtendedShortType(ANVIL_8UX1).GetRepresentation(), L"Representation is wrong");
+				Assert::AreEqual((int)ExtendedShortType::TYPE_UNSIGNED, (int)ExtendedShortType(ANVIL_16UX1).GetRepresentation(), L"Representation is wrong");
+				Assert::AreEqual((int)ExtendedShortType::TYPE_UNSIGNED, (int)ExtendedShortType(ANVIL_32UX1).GetRepresentation(), L"Representation is wrong");
+				Assert::AreEqual((int)ExtendedShortType::TYPE_UNSIGNED, (int)ExtendedShortType(ANVIL_64UX1).GetRepresentation(), L"Representation is wrong");
+				Assert::AreEqual((int)ExtendedShortType::TYPE_SIGNED, (int)ExtendedShortType(ANVIL_8SX1).GetRepresentation(), L"Representation is wrong");
+				Assert::AreEqual((int)ExtendedShortType::TYPE_SIGNED, (int)ExtendedShortType(ANVIL_16SX1).GetRepresentation(), L"Representation is wrong");
+				Assert::AreEqual((int)ExtendedShortType::TYPE_SIGNED, (int)ExtendedShortType(ANVIL_32SX1).GetRepresentation(), L"Representation is wrong");
+				Assert::AreEqual((int)ExtendedShortType::TYPE_SIGNED, (int)ExtendedShortType(ANVIL_64SX1).GetRepresentation(), L"Representation is wrong");
+				Assert::AreEqual((int)ExtendedShortType::TYPE_FLOATING_POINT, (int)ExtendedShortType(ANVIL_8FX1).GetRepresentation(), L"Representation is wrong");
+				Assert::AreEqual((int)ExtendedShortType::TYPE_FLOATING_POINT, (int)ExtendedShortType(ANVIL_16FX1).GetRepresentation(), L"Representation is wrong");
+				Assert::AreEqual((int)ExtendedShortType::TYPE_FLOATING_POINT, (int)ExtendedShortType(ANVIL_32FX1).GetRepresentation(), L"Representation is wrong");
+				Assert::AreEqual((int)ExtendedShortType::TYPE_FLOATING_POINT, (int)ExtendedShortType(ANVIL_64FX1).GetRepresentation(), L"Representation is wrong");
+				Assert::AreEqual((int)ExtendedShortType::TYPE_CHAR, (int)ExtendedShortType(ANVIL_CX1).GetRepresentation(), L"Representation is wrong");
+				Assert::AreEqual((int)ExtendedShortType::TYPE_BOOLEAN, (int)ExtendedShortType(ANVIL_8BX1).GetRepresentation(), L"Representation is wrong");
+
+				Assert::AreEqual((int)1, (int)ExtendedShortType(ANVIL_8UX1).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)1, (int)ExtendedShortType(ANVIL_16UX1).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)1, (int)ExtendedShortType(ANVIL_32UX1).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)1, (int)ExtendedShortType(ANVIL_64UX1).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)1, (int)ExtendedShortType(ANVIL_8SX1).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)1, (int)ExtendedShortType(ANVIL_16SX1).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)1, (int)ExtendedShortType(ANVIL_32SX1).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)1, (int)ExtendedShortType(ANVIL_64SX1).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)1, (int)ExtendedShortType(ANVIL_8FX1).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)1, (int)ExtendedShortType(ANVIL_16FX1).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)1, (int)ExtendedShortType(ANVIL_32FX1).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)1, (int)ExtendedShortType(ANVIL_64FX1).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)1, (int)ExtendedShortType(ANVIL_CX1).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)1, (int)ExtendedShortType(ANVIL_8BX1).GetNumberOfChannels(), L"Number of channels is wrong");
+
+				Assert::AreEqual((int)1, (int)ExtendedShortType(ANVIL_8UX1).GetSizeInBytes(), L"Size in bytes is wrong");
+				Assert::AreEqual((int)2, (int)ExtendedShortType(ANVIL_16UX1).GetSizeInBytes(), L"Size in bytes is wrong");
+				Assert::AreEqual((int)4, (int)ExtendedShortType(ANVIL_32UX1).GetSizeInBytes(), L"Size in bytes is wrong");
+				Assert::AreEqual((int)8, (int)ExtendedShortType(ANVIL_64UX1).GetSizeInBytes(), L"Size in bytes is wrong");
+				Assert::AreEqual((int)1, (int)ExtendedShortType(ANVIL_8SX1).GetSizeInBytes(), L"Size in bytes is wrong");
+				Assert::AreEqual((int)2, (int)ExtendedShortType(ANVIL_16SX1).GetSizeInBytes(), L"Size in bytes is wrong");
+				Assert::AreEqual((int)4, (int)ExtendedShortType(ANVIL_32SX1).GetSizeInBytes(), L"Size in bytes is wrong");
+				Assert::AreEqual((int)8, (int)ExtendedShortType(ANVIL_64SX1).GetSizeInBytes(), L"Size in bytes is wrong");
+				Assert::AreEqual((int)1, (int)ExtendedShortType(ANVIL_8FX1).GetSizeInBytes(), L"Size in bytes is wrong");
+				Assert::AreEqual((int)2, (int)ExtendedShortType(ANVIL_16FX1).GetSizeInBytes(), L"Size in bytes is wrong");
+				Assert::AreEqual((int)4, (int)ExtendedShortType(ANVIL_32FX1).GetSizeInBytes(), L"Size in bytes is wrong");
+				Assert::AreEqual((int)8, (int)ExtendedShortType(ANVIL_64FX1).GetSizeInBytes(), L"Size in bytes is wrong");
+				Assert::AreEqual((int)sizeof(char), (int)ExtendedShortType(ANVIL_CX1).GetSizeInBytes(), L"Size in bytes is wrong");
+				Assert::AreEqual((int)sizeof(bool), (int)ExtendedShortType(ANVIL_8BX1).GetSizeInBytes(), L"Size in bytes is wrong");
+
+				Assert::AreEqual((int)2, (int)ExtendedShortType(ANVIL_8UX2).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)3, (int)ExtendedShortType(ANVIL_8UX3).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)4, (int)ExtendedShortType(ANVIL_8UX4).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)5, (int)ExtendedShortType(ANVIL_8UX5).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)6, (int)ExtendedShortType(ANVIL_8UX6).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)7, (int)ExtendedShortType(ANVIL_8UX7).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)8, (int)ExtendedShortType(ANVIL_8UX8).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)9, (int)ExtendedShortType(ANVIL_8UX9).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)10, (int)ExtendedShortType(ANVIL_8UX10).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)11, (int)ExtendedShortType(ANVIL_8UX11).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)12, (int)ExtendedShortType(ANVIL_8UX12).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)13, (int)ExtendedShortType(ANVIL_8UX13).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)14, (int)ExtendedShortType(ANVIL_8UX14).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)15, (int)ExtendedShortType(ANVIL_8UX15).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)16, (int)ExtendedShortType(ANVIL_8UX16).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)15, (int)ExtendedShortType(ANVIL_CX15).GetNumberOfChannels(), L"Number of channels is wrong");
+				Assert::AreEqual((int)16, (int)ExtendedShortType(ANVIL_8BX16).GetNumberOfChannels(), L"Number of channels is wrong");
+			}
+
+			TEST_METHOD(Enumerations)
+			{
+				for (size_t i = 0u; i < 256u; ++i) {
+					anvil::EnumeratedType t = static_cast<anvil::EnumeratedType>(i);
+					anvil::EnumeratedType t2 = anvil::Type(t).GetEnumeratedType();
+					Assert::AreEqual((int)t, (int)t2);
+				}
+
+			}
+
+			TEST_METHOD(Representation)
+			{
+				anvil::ExtendedShortType t, ref;
+
+				t.SetRepresentation(anvil::ExtendedShortType::TYPE_UNSIGNED);
+				Assert::IsTrue(t.GetRepresentation() == anvil::Type::TYPE_UNSIGNED, L"TYPE_UNSIGNED");
+				Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
+				Assert::IsTrue(ref.GetPrimitiveSizeInBytes() == t.GetPrimitiveSizeInBytes(), L"Byte count was corrupted");
+
+				t.SetRepresentation(anvil::ExtendedShortType::TYPE_SIGNED);
+				Assert::IsTrue(t.GetRepresentation() == anvil::ExtendedShortType::TYPE_SIGNED, L"TYPE_SIGNED");
+				Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
+				Assert::IsTrue(ref.GetPrimitiveSizeInBytes() == t.GetPrimitiveSizeInBytes(), L"Byte count was corrupted");
+
+				t.SetRepresentation(anvil::ExtendedShortType::TYPE_FLOATING_POINT);
+				Assert::IsTrue(t.GetRepresentation() == anvil::ExtendedShortType::TYPE_FLOATING_POINT, L"TYPE_FLOATING_POINT");
+				Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
+				Assert::IsTrue(ref.GetPrimitiveSizeInBytes() == t.GetPrimitiveSizeInBytes(), L"Byte count was corrupted");
+
+				t.SetRepresentation(anvil::ExtendedShortType::TYPE_CHAR);
+				Assert::IsTrue(t.GetRepresentation() == anvil::ExtendedShortType::TYPE_CHAR, L"TYPE_CHAR");
+				Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
+				Assert::IsTrue(ref.GetPrimitiveSizeInBytes() == t.GetPrimitiveSizeInBytes(), L"Byte count was corrupted");
+
+				t.SetRepresentation(anvil::ExtendedShortType::TYPE_BOOLEAN);
+				Assert::IsTrue(t.GetRepresentation() == anvil::ExtendedShortType::TYPE_BOOLEAN, L"TYPE_BOOLEAN");
+				Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
+				Assert::IsTrue(ref.GetPrimitiveSizeInBytes() == t.GetPrimitiveSizeInBytes(), L"Byte count was corrupted");
+			}
+			
+			TEST_METHOD(Channels)
+			{
+				anvil::ExtendedShortType t, ref;
+
+				t.SetNumberOfChannels(1u);
+				Assert::AreEqual((size_t)1u, t.GetNumberOfChannels());
+				Assert::IsTrue(ref.GetRepresentation() == t.GetRepresentation(), L"Representation was corrupted");
+				Assert::IsTrue(ref.GetPrimitiveSizeInBytes() == t.GetPrimitiveSizeInBytes(), L"Byte count was corrupted");
+
+				t.SetNumberOfChannels(2u);
+				Assert::AreEqual((size_t)2u, t.GetNumberOfChannels());
+				Assert::IsTrue(ref.GetRepresentation() == t.GetRepresentation(), L"Representation was corrupted");
+				Assert::IsTrue(ref.GetPrimitiveSizeInBytes() == t.GetPrimitiveSizeInBytes(), L"Byte count was corrupted");
+
+				t.SetNumberOfChannels(4u);
+				Assert::AreEqual((size_t)4u, t.GetNumberOfChannels());
+				Assert::IsTrue(ref.GetRepresentation() == t.GetRepresentation(), L"Representation was corrupted");
+				Assert::IsTrue(ref.GetPrimitiveSizeInBytes() == t.GetPrimitiveSizeInBytes(), L"Byte count was corrupted");
+
+				t.SetNumberOfChannels(8u);
+				Assert::AreEqual((size_t)8u, t.GetNumberOfChannels());
+				Assert::IsTrue(ref.GetRepresentation() == t.GetRepresentation(), L"Representation was corrupted");
+				Assert::IsTrue(ref.GetPrimitiveSizeInBytes() == t.GetPrimitiveSizeInBytes(), L"Byte count was corrupted");
+			}
+
+			TEST_METHOD(Bytes)
+			{
+				anvil::ExtendedShortType t, ref;
+
+				t.SetSizeInBytes(1u);
+				Assert::AreEqual((size_t)1u, t.GetPrimitiveSizeInBytes());
+				Assert::IsTrue(ref.GetRepresentation() == t.GetRepresentation(), L"Representation was corrupted");
+				Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
+
+				t.SetSizeInBytes(2u);
+				Assert::AreEqual((size_t)2u, t.GetPrimitiveSizeInBytes());
+				Assert::IsTrue(ref.GetRepresentation() == t.GetRepresentation(), L"Representation was corrupted");
+				Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
+
+				t.SetSizeInBytes(4u);
+				Assert::AreEqual((size_t)4u, t.GetPrimitiveSizeInBytes());
+				Assert::IsTrue(ref.GetRepresentation() == t.GetRepresentation(), L"Representation was corrupted");
+				Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
+
+				t.SetSizeInBytes(8u);
+				Assert::AreEqual((size_t)8u, t.GetPrimitiveSizeInBytes());
+				Assert::IsTrue(ref.GetRepresentation() == t.GetRepresentation(), L"Representation was corrupted");
+				Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
+			}
+
+			TEST_METHOD(Bits)
+			{
+				anvil::ExtendedShortType t, ref;
+
+				t.SetSizeInBytes(1u);
+				Assert::AreEqual((size_t)8u, t.GetPrimitiveSizeInBits());
+				Assert::IsTrue(ref.GetRepresentation() == t.GetRepresentation(), L"Representation was corrupted");
+				Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
+
+				t.SetSizeInBytes(2u);
+				Assert::AreEqual((size_t)16u, t.GetPrimitiveSizeInBits());
+				Assert::IsTrue(ref.GetRepresentation() == t.GetRepresentation(), L"Representation was corrupted");
+				Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
+
+				t.SetSizeInBytes(4u);
+				Assert::AreEqual((size_t)32u, t.GetPrimitiveSizeInBits());
+				Assert::IsTrue(ref.GetRepresentation() == t.GetRepresentation(), L"Representation was corrupted");
+				Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
+
+				t.SetSizeInBytes(8u);
+				Assert::AreEqual((size_t)64u, t.GetPrimitiveSizeInBits());
+				Assert::IsTrue(ref.GetRepresentation() == t.GetRepresentation(), L"Representation was corrupted");
+				Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
+
+				t.SetSizeInBytes(sizeof(bool));
+				t.SetRepresentation(ExtendedShortType::TYPE_BOOLEAN);
+				Assert::AreEqual((size_t)sizeof(bool) * 8u, t.GetPrimitiveSizeInBits());
+				t.SetSizeInBits(1u);
+				Assert::AreEqual((size_t)1u, t.GetPrimitiveSizeInBits());
+			}
+
+			TEST_METHOD(OpenCV)
+			{
+#if ANVIL_OPENCV_SUPPORT
+				int values[] = {
+					CV_8U, CV_8UC1, CV_8UC2, CV_8UC3, CV_8UC4,
+					CV_16U, CV_16UC1, CV_16UC2, CV_16UC3, CV_16UC4,
+					CV_8S, CV_8SC1, CV_8SC2, CV_8SC3, CV_8SC4,
+					CV_16S, CV_16SC1, CV_16SC2, CV_16SC3, CV_16SC4,
+					CV_32S, CV_32SC1, CV_32SC2, CV_32SC3, CV_32SC4,
+					CV_16F, CV_16FC1, CV_16FC2, CV_16FC3, CV_16FC4,
+					CV_32F, CV_32FC1, CV_32FC2, CV_32FC3, CV_32FC4,
+					CV_64F, CV_64FC1, CV_64FC2, CV_64FC3, CV_64FC4
+				};
+
+				try {
+					for (int i : values) {
+						Assert::AreEqual(i, anvil::Type::ToOpenCVType(anvil::ExtendedShortType::FromOpenCVType(i)));
+					}
+				}
+				catch (std::exception& e) {
+					Assert::Fail(std::wstring_convert<std::codecvt<wchar_t, char, std::mbstate_t>>().from_bytes(e.what()).c_str());
+				}
+#else
+				Assert::Fail(L"OpenCV was not detected");
+#endif
+			}
 	}; 
 	
 	TEST_CLASS(TestLongType)

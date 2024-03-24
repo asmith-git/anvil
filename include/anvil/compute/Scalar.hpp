@@ -23,6 +23,9 @@ namespace anvil { namespace compute {
 
 	struct UntypedScalar {
 		union {
+			char c;
+			struct { uint8_t b1 : 1u; };
+			bool b8;
 			uint8_t u8;
 			uint16_t u16;
 			uint32_t u32;
@@ -46,6 +49,14 @@ namespace anvil { namespace compute {
 
 		ANVIL_STRONG_INLINE void* GetData() throw() { return this; }
 		ANVIL_STRONG_INLINE const void* GetData() const throw() { return this; }
+
+		ANVIL_CONSTEXPR_FN UntypedScalar(const char value) :
+			c(value)
+		{}
+
+		ANVIL_CONSTEXPR_FN UntypedScalar(const bool value) :
+			b8(value)
+		{}
 
 		ANVIL_CONSTEXPR_FN UntypedScalar(const uint8_t value) :
 			u64(value)
@@ -137,6 +148,14 @@ namespace anvil { namespace compute {
 			return s64;
 		}
 
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN operator bool() const throw() {
+			return b8;
+		}
+
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN operator char() const throw() {
+			return c;
+		}
+
 #if ANVIL_F8_SUPPORT
 		ANVIL_STRONG_INLINE operator float8_t() const throw() {
 			return f8;
@@ -182,6 +201,8 @@ namespace anvil { namespace compute {
 
 		TypedScalar(const Type type);
 		TypedScalar(const Type type, const UntypedScalar& scalar);
+		explicit TypedScalar(const char value);
+		explicit TypedScalar(const bool value);
 		explicit TypedScalar(const uint8_t value);
 		explicit TypedScalar(const uint16_t value);
 		explicit TypedScalar(const uint32_t value);
@@ -226,6 +247,8 @@ namespace anvil { namespace compute {
 #endif
 		operator float32_t() const throw();
 		operator float64_t() const throw();
+		operator bool() const throw();
+		operator char() const throw();
 		operator UntypedScalar() const throw();
 
 		bool operator==(const TypedScalar& other) const throw();

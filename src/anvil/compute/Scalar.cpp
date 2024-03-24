@@ -39,6 +39,16 @@ namespace anvil { namespace compute {
 		_type.SetNumberOfChannels(1u);
 	}
 
+	TypedScalar::TypedScalar(const bool value) :
+		_scalar(value),
+		_type(ANVIL_8BX1)
+	{}
+
+	TypedScalar::TypedScalar(const char value) :
+		_scalar(value),
+		_type(ANVIL_CX1)
+	{}
+
 	TypedScalar::TypedScalar(const uint8_t value) :
 		_scalar(value),
 		_type(ANVIL_8UX1)
@@ -189,6 +199,10 @@ namespace anvil { namespace compute {
 			return _scalar.s32 < 0 ? 0ull : static_cast<uint64_t>(_scalar.s32);
 		case ANVIL_64SX1:
 			return _scalar.s64 < 0 ? 0ull : static_cast<uint64_t>(_scalar.s64);
+		case ANVIL_8BX1:
+			return _scalar.b8 ? 1u : 0u;
+		case ANVIL_CX1:
+			return static_cast<uint64_t>(_scalar.c);
 #if ANVIL_F8_SUPPORT
 		case ANVIL_8FX1:
 			return _scalar.s64 < 0 ? 0ull : static_cast<uint64_t>(_scalar.f8);
@@ -227,6 +241,14 @@ namespace anvil { namespace compute {
 		return static_cast<uint32_t>(tmp);
 	}
 
+	TypedScalar::operator char() const throw() {
+		return static_cast<char>(static_cast<int64_t>(*this));
+	}
+
+	TypedScalar::operator bool() const throw() {
+		return static_cast<int64_t>(*this) != 0;
+	}
+
 	TypedScalar::operator int64_t() const throw() {
 		switch (_type.GetEnumeratedType()) {
 		case ANVIL_8UX1:
@@ -245,6 +267,10 @@ namespace anvil { namespace compute {
 			return _scalar.s32;
 		case ANVIL_64SX1:
 			return _scalar.s64;
+		case ANVIL_8BX1:
+			return _scalar.b8 ? 1 : 0;
+		case ANVIL_CX1:
+			return static_cast<int64_t>(_scalar.c);
 #if ANVIL_F8_SUPPORT
 		case ANVIL_8FX1:
 			return static_cast<int64_t>(_scalar.f8);
@@ -292,6 +318,10 @@ namespace anvil { namespace compute {
 			return static_cast<float32_t>(_scalar.s32);
 		case ANVIL_64SX1:
 			return static_cast<float32_t>(_scalar.s64);
+		case ANVIL_8BX1:
+			return _scalar.b8 ? 1.f : 0.f;
+		case ANVIL_CX1:
+			return static_cast<float32_t>(_scalar.c);
 #if ANVIL_F8_SUPPORT
 		case ANVIL_8FX1:
 			return static_cast<float32_t>(_scalar.f8);
