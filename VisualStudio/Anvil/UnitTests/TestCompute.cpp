@@ -14,6 +14,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 namespace anvil { namespace compute {
 
 
+
 	TEST_CLASS(OCV)
 	{
 	public:
@@ -411,6 +412,8 @@ namespace anvil { namespace compute {
 		TEST_METHOD(Enumerations)
 		{
 			for (size_t i = 0u; i < 256u; ++i) {
+				if ((i & INVALID_TYPE_ENUM_FLAG) == INVALID_TYPE_ENUM_FLAG) continue;
+				Logger::WriteMessage(("Testing : " + std::to_string(i) + "\n").c_str());
 				anvil::EnumeratedType t = static_cast<anvil::EnumeratedType>(i);
 				anvil::EnumeratedType t2 = anvil::Type(t).GetEnumeratedType();
 				Assert::AreEqual((int)t, (int)t2);
@@ -612,6 +615,8 @@ namespace anvil { namespace compute {
 			TEST_METHOD(Enumerations)
 			{
 				for (size_t i = 0u; i < 256u; ++i) {
+					if ((i & INVALID_TYPE_ENUM_FLAG) == INVALID_TYPE_ENUM_FLAG) continue;
+					Logger::WriteMessage(("Testing : " + std::to_string(i) + "\n").c_str());
 					anvil::EnumeratedType t = static_cast<anvil::EnumeratedType>(i);
 					anvil::EnumeratedType t2 = anvil::Type(t).GetEnumeratedType();
 					Assert::AreEqual((int)t, (int)t2);
@@ -774,6 +779,8 @@ namespace anvil { namespace compute {
 			Assert::AreEqual((int)Type::TYPE_FLOATING_POINT, (int)LongType(ANVIL_16FX1).GetRepresentation(), L"Representation is wrong");
 			Assert::AreEqual((int)Type::TYPE_FLOATING_POINT, (int)LongType(ANVIL_32FX1).GetRepresentation(), L"Representation is wrong");
 			Assert::AreEqual((int)Type::TYPE_FLOATING_POINT, (int)LongType(ANVIL_64FX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_CHAR, (int)LongType(ANVIL_CX1).GetRepresentation(), L"Representation is wrong");
+			Assert::AreEqual((int)Type::TYPE_BOOLEAN, (int)LongType(ANVIL_8BX1).GetRepresentation(), L"Representation is wrong");
 
 			Assert::AreEqual((int)1, (int)LongType(ANVIL_8UX1).GetNumberOfChannels(), L"Number of channels is wrong");
 			Assert::AreEqual((int)1, (int)LongType(ANVIL_16UX1).GetNumberOfChannels(), L"Number of channels is wrong");
@@ -787,6 +794,9 @@ namespace anvil { namespace compute {
 			Assert::AreEqual((int)1, (int)LongType(ANVIL_16FX1).GetNumberOfChannels(), L"Number of channels is wrong");
 			Assert::AreEqual((int)1, (int)LongType(ANVIL_32FX1).GetNumberOfChannels(), L"Number of channels is wrong");
 			Assert::AreEqual((int)1, (int)LongType(ANVIL_64FX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_CX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_8BX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_1BX1).GetNumberOfChannels(), L"Number of channels is wrong");
 
 			Assert::AreEqual((int)1, (int)LongType(ANVIL_8UX1).GetSizeInBytes(), L"Size in bytes is wrong");
 			Assert::AreEqual((int)2, (int)LongType(ANVIL_16UX1).GetSizeInBytes(), L"Size in bytes is wrong");
@@ -800,6 +810,9 @@ namespace anvil { namespace compute {
 			Assert::AreEqual((int)2, (int)LongType(ANVIL_16FX1).GetSizeInBytes(), L"Size in bytes is wrong");
 			Assert::AreEqual((int)4, (int)LongType(ANVIL_32FX1).GetSizeInBytes(), L"Size in bytes is wrong");
 			Assert::AreEqual((int)8, (int)LongType(ANVIL_64FX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)sizeof(char), (int)LongType(ANVIL_CX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)sizeof(bool), (int)LongType(ANVIL_8BX1).GetSizeInBytes(), L"Size in bytes is wrong");
+			Assert::AreEqual((int)1, (int)LongType(ANVIL_1BX1).GetSizeInBits(), L"Size in bytes is wrong");
 
 			Assert::AreEqual((int)2, (int)LongType(ANVIL_8UX2).GetNumberOfChannels(), L"Number of channels is wrong");
 			Assert::AreEqual((int)3, (int)LongType(ANVIL_8UX3).GetNumberOfChannels(), L"Number of channels is wrong");
@@ -810,17 +823,22 @@ namespace anvil { namespace compute {
 			Assert::AreEqual((int)8, (int)LongType(ANVIL_8UX8).GetNumberOfChannels(), L"Number of channels is wrong");
 			Assert::AreEqual((int)9, (int)LongType(ANVIL_8UX9).GetNumberOfChannels(), L"Number of channels is wrong");
 			Assert::AreEqual((int)10, (int)LongType(ANVIL_8UX10).GetNumberOfChannels(), L"Number of channels is wrong");
-			Assert::AreEqual((int)11, (int)LongType(ANVIL_8UX1).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)11, (int)LongType(ANVIL_8UX11).GetNumberOfChannels(), L"Number of channels is wrong");
 			Assert::AreEqual((int)12, (int)LongType(ANVIL_8UX12).GetNumberOfChannels(), L"Number of channels is wrong");
 			Assert::AreEqual((int)13, (int)LongType(ANVIL_8UX13).GetNumberOfChannels(), L"Number of channels is wrong");
 			Assert::AreEqual((int)14, (int)LongType(ANVIL_8UX14).GetNumberOfChannels(), L"Number of channels is wrong");
 			Assert::AreEqual((int)15, (int)LongType(ANVIL_8UX15).GetNumberOfChannels(), L"Number of channels is wrong");
 			Assert::AreEqual((int)16, (int)LongType(ANVIL_8UX16).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)16, (int)LongType(ANVIL_CX16).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)16, (int)LongType(ANVIL_8BX16).GetNumberOfChannels(), L"Number of channels is wrong");
+			Assert::AreEqual((int)16, (int)LongType(ANVIL_1BX16).GetNumberOfChannels(), L"Number of channels is wrong");
 		}
 		TEST_METHOD(Enumerations)
 		{
 			try {
 				for (size_t i = 0u; i < 256u; ++i) {
+					if ((i & INVALID_TYPE_ENUM_FLAG) == INVALID_TYPE_ENUM_FLAG) continue;
+					Logger::WriteMessage(("Testing : " + std::to_string(i) + "\n").c_str());
 					anvil::EnumeratedType t = static_cast<anvil::EnumeratedType>(i);
 					anvil::EnumeratedType t2 = anvil::LongType(t).GetEnumeratedType();
 					Assert::AreEqual((int)t, (int)t2);
@@ -849,6 +867,23 @@ namespace anvil { namespace compute {
 			Assert::IsTrue(t.GetRepresentation() == anvil::Type::TYPE_FLOATING_POINT, L"TYPE_FLOATING_POINT");
 			Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
 			Assert::IsTrue(ref.GetPrimitiveSizeInBytes() == t.GetPrimitiveSizeInBytes(), L"Byte count was corrupted");
+
+			t.SetRepresentation(anvil::Type::TYPE_CHAR);
+			Assert::IsTrue(t.GetRepresentation() == anvil::Type::TYPE_CHAR, L"TYPE_CHAR");
+			Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
+			Assert::IsTrue(ref.GetPrimitiveSizeInBytes() == t.GetPrimitiveSizeInBytes(), L"Byte count was corrupted");
+
+			t.SetRepresentation(anvil::Type::TYPE_BOOLEAN);
+			Assert::IsTrue(t.GetRepresentation() == anvil::Type::TYPE_CHAR, L"TYPE_BOOLEAN");
+			Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
+			Assert::IsTrue(ref.GetPrimitiveSizeInBytes() == t.GetPrimitiveSizeInBytes(), L"Byte count was corrupted");
+
+			t.SetRepresentation(anvil::Type::TYPE_BOOLEAN);
+			Assert::IsTrue(t.GetRepresentation() == anvil::Type::TYPE_CHAR, L"TYPE_BOOLEAN");
+			t.SetSizeInBits(1u);
+			Assert::IsTrue(ref.GetNumberOfChannels() == t.GetNumberOfChannels(), L"Channel count was corrupted");
+			Assert::IsTrue(ref.GetPrimitiveSizeInBits() == 1u, L"Byte count was corrupted");
+			Assert::IsTrue(ref.GetPrimitiveSizeInBytes() == 1u, L"Byte count was corrupted");
 		}
 
 		TEST_METHOD(Channels)

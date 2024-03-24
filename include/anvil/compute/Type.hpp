@@ -294,9 +294,12 @@ namespace anvil {
 		ANVIL_CX16 = ANVIL_ENCODE_TYPE_ENUMERATION(3, 2, 15)
 	};
 
-	static_assert(sizeof(bool) == 1, "anvil : Expected bool to be 1 byte");
+	enum
+	{
+		INVALID_TYPE_ENUM_FLAG = ANVIL_ENCODE_TYPE_ENUMERATION(3, 3, 0) //!< Enums with matching bits set currently do not represent any type.
+	};
 
-#undef ANVIL_ENCODE_TYPE_ENUMERATION
+	static_assert(sizeof(bool) == 1, "anvil : Expected bool to be 1 byte");
 
 	/*!
 	*	\class FastShortType
@@ -624,6 +627,14 @@ namespace anvil {
 
 		/*!
 		*	\brief Create a new type.
+		*	\param type The type this should be.
+		*/
+		ANVIL_CONSTEXPR_FN ExtendedShortType(const FastShortType type) :
+			ExtendedShortType(type.GetEnumeratedType())
+		{}
+
+		/*!
+		*	\brief Create a new type.
 		*	\detail Default type will be ANVIL_8UX1
 		*/
 		ANVIL_CONSTEXPR_FN ExtendedShortType() :
@@ -746,7 +757,8 @@ namespace anvil {
 				{
 					sizeof(bool) * 8u,
 					1u,
-					sizeof(char) * 8u
+					sizeof(char) * 8u,
+					0u // Unused
 				};
 				return g_size_in_bits[GetExtendedMode()];
 			}
@@ -780,8 +792,14 @@ namespace anvil {
 		ANVIL_STRONG_INLINE void SetSizeInBits(const size_t size) {
 			if (IsExtendedMode())
 			{
-				ANVIL_RUNTIME_ASSERT(GetExtendedMode() != EXTENDED_MODE_CHAR, "anvil::ExtendedShortType::SetSizeInBits : Cannot set size of char");
-				SetExtendedMode(size == 1u ? EXTENDED_MODE_BIT : EXTENDED_MODE_BOOLEAN);
+				if (GetExtendedMode() == EXTENDED_MODE_CHAR)
+				{
+					ANVIL_RUNTIME_ASSERT(size == (sizeof(char) * 8u), "anvil::ExtendedShortType::SetSizeInBits : Cannot set size of char");
+				}
+				else
+				{
+					SetExtendedMode(size == 1u ? EXTENDED_MODE_BIT : EXTENDED_MODE_BOOLEAN);
+				}
 			}
 			else
 			{
@@ -930,18 +948,20 @@ namespace anvil {
 		#pragma warning( disable : 4201) // Unnamed struct. Should be fine as layout is checked by static asserts
 		union {
 			struct {
-				uint16_t _type : 2;		//!< Determines if this type is unsigned, signed or floating point. \see Representation
-				uint16_t _bytes : 5;	//!< The size of a single channel or dimension in bytes - 1.
-				uint16_t _channels : 9;	//!< The number of channels or dimensions - 1.
+				uint32_t _type : 3;			//!< Determines if this type is unsigned, signed or floating point. \see Representation
+				uint32_t _bits : 9;			//!< The size of a single channel or dimension in bits - 1.
+				uint32_t _channels : 20;	//!< The number of channels or dimensions - 1.
 			};
-			uint16_t _numeric_value;
+			uint32_t _numeric_value;
 		};
 	public:
 		enum {
-			MIN_CHANNEL_BYTES = 1,		//!< The minimum size of a single channel or dimension in bytes.
-			MAX_CHANNEL_BYTES = 1 << 5,	//!< The maximum size of a single channel or dimension in bytes.
-			MIN_CHANNELS = 1,			//!< The minimum size of a single channel or dimension in bytes.
-			MAX_CHANNELS = 1 << 9,		//!< The minimum size of a single channel or dimension in bytes.
+			MIN_CHANNEL_BITS = 1u,		//!< The minimum size of a single channel or dimension in bytes.
+			MAX_CHANNEL_BITS = (1u << 9u),	//!< The maximum size of a single channel or dimension in bytes.
+			MIN_CHANNEL_BYTES = 1u,		//!< The minimum size of a single channel or dimension in bytes.
+			MAX_CHANNEL_BYTES = MAX_CHANNEL_BITS / 8u,	//!< The maximum size of a single channel or dimension in bytes.
+			MIN_CHANNELS = 1u,			//!< The minimum size of a single channel or dimension in bytes.
+			MAX_CHANNELS = 1u << 20u,		//!< The minimum size of a single channel or dimension in bytes.
 		};
 
 		/*!
@@ -953,11 +973,11 @@ namespace anvil {
 		*	\brief Create a new type.
 		*	\param type The type this should be.
 		*/
-		 LongType(const ShortType type) :
+		 LongType(const ExtendedShortType type) :
 			_numeric_value(0u)
 		{
 			 SetRepresentation(type.GetRepresentation());
-			 SetSizeInBytes(type.GetPrimitiveSizeInBytes());
+			 SetSizeInBits(type.GetPrimitiveSizeInBits());
 			 SetNumberOfChannels(type.GetNumberOfChannels());
 		}
 
@@ -966,7 +986,15 @@ namespace anvil {
 		*	\param type The type this should be.
 		*/
 		LongType(const EnumeratedType type) :
-			LongType(ShortType(type))
+			LongType(ExtendedShortType(type))
+		{}
+
+		/*!
+		*	\brief Create a new type.
+		*	\param type The type this should be.
+		*/
+		LongType(const FastShortType type) :
+			LongType(ExtendedShortType(type))
 		{}
 
 		/*!
@@ -1004,7 +1032,11 @@ namespace anvil {
 		*	\details Will throw exception if type cannot be represented by anvil::Type.
 		*/
 		ANVIL_STRONG_INLINE ShortType GetShortType() const {
-			return ShortType(GetRepresentation(), GetPrimitiveSizeInBytes(), GetNumberOfChannels());
+			ShortType tmp;
+			tmp.SetRepresentation(GetRepresentation());
+			tmp.SetSizeInBits(GetPrimitiveSizeInBits());
+			tmp.SetNumberOfChannels(GetNumberOfChannels());
+			return tmp;
 		}
 
 		/*!
@@ -1044,6 +1076,20 @@ namespace anvil {
 		}
 
 		/*!
+		*	\brief Return true if this type is an unsigned integer.
+		*/
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN bool IsBoolean() const throw() {
+			return _type == Type::TYPE_BOOLEAN;
+		}
+
+		/*!
+		*	\brief Return true if this type is an unsigned integer.
+		*/
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN bool IsChar() const throw() {
+			return _type == Type::TYPE_CHAR;
+		}
+
+		/*!
 		*	\brief Return the number of channels or dimensions.
 		*/
 		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN size_t GetNumberOfChannels() const throw() {
@@ -1051,19 +1097,20 @@ namespace anvil {
 		}
 
 		/*!
-		*	\brief Return the size of a single channel or dimension in bytes.
-		*	\see Type::GetSizeInBytes
-		*/
-		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN size_t GetPrimitiveSizeInBytes() const throw() {
-			return _bytes + 1u;
-		}
-
-		/*!
 		*	\brief Return the size of a single channel or dimension in bits.
 		*	\see Type::GetSizeInBits
 		*/
 		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN size_t GetPrimitiveSizeInBits() const throw() {
-			return GetPrimitiveSizeInBytes() * 8u;
+			return _bits + 1u;
+		}
+
+		/*!
+		*	\brief Return the size of a single channel or dimension in bytes.
+		*	\see Type::GetSizeInBytes
+		*/
+		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN size_t GetPrimitiveSizeInBytes() const throw() {
+			const size_t bits = GetPrimitiveSizeInBits();
+			return (bits / 8u) + ((bits % 8u) > 0u ? 1u : 0u);
 		}
 
 		/*!
@@ -1079,16 +1126,7 @@ namespace anvil {
 		*	\see Type::GetPrimitiveSizeInBits
 		*/
 		ANVIL_STRONG_INLINE ANVIL_CONSTEXPR_FN size_t GetSizeInBits() const throw() {
-			return GetSizeInBytes() * 8u;
-		}
-
-		/*!
-		*	\brief Set the size of a single channel or dimension in bytes.
-		*	\param size The number of bytes. Must be either 1, 2, 4 or 8.
-		*/
-		ANVIL_STRONG_INLINE void SetSizeInBytes(const size_t size) {
-			ANVIL_RUNTIME_ASSERT(size >= MIN_CHANNEL_BYTES && size <= MAX_CHANNEL_BYTES, "anvil::LongType::SetSizeInBytes : " + std::to_string(size) + " bytes is an invalid size (must be 1 - 32)");
-			_bytes = static_cast<uint16_t>(size - 1u);
+			return GetPrimitiveSizeInBits() * GetNumberOfChannels();
 		}
 
 		/*!
@@ -1096,7 +1134,16 @@ namespace anvil {
 		*	\param size The number of bytes. Must be either 8, 16, 32 or 64.
 		*/
 		ANVIL_STRONG_INLINE void SetSizeInBits(const size_t size) {
-			SetSizeInBytes(size / 8u);
+			ANVIL_RUNTIME_ASSERT(size >= MIN_CHANNEL_BITS && size <= MAX_CHANNEL_BITS, "anvil::LongType::SetSizeInBits : " + std::to_string(size) + " bits is an invalid size");
+			_bits = static_cast<uint16_t>(size - 1u);
+		}
+
+		/*!
+		*	\brief Set the size of a single channel or dimension in bytes.
+		*	\param size The number of bytes. Must be either 1, 2, 4 or 8.
+		*/
+		ANVIL_STRONG_INLINE void SetSizeInBytes(const size_t size) {
+			SetSizeInBits(size * 8u);
 		}
 
 		/*!
@@ -1112,7 +1159,7 @@ namespace anvil {
 		*	\param channel The number of channels or dimensions. Must be between 1 and 8.
 		*/
 		ANVIL_STRONG_INLINE void SetNumberOfChannels(const size_t channels) {
-			ANVIL_RUNTIME_ASSERT(channels >= MIN_CHANNELS && channels <= MAX_CHANNELS, "anvil::SetNumberOfChannels::SetNumberOfChannels : " + std::to_string(channels) + " is an invalid number of channels (must be 1-512)");
+			ANVIL_RUNTIME_ASSERT(channels >= MIN_CHANNELS && channels <= MAX_CHANNELS, "anvil::SetNumberOfChannels::SetNumberOfChannels : " + std::to_string(channels) + " is an invalid number of channels");
 			_channels = channels - 1u;
 		}
 
@@ -1137,7 +1184,7 @@ namespace anvil {
 #endif
 	};
 
-	static_assert(sizeof(LongType) == 2, "Excpected size of anvil::LongType to be 1 byte");
+	static_assert(sizeof(LongType) == 4, "Excpected size of anvil::LongType to be 4 bytes");
 
 	template<class T> struct EnumFromType;
 	template<> struct EnumFromType<uint8_t> { static ANVIL_CONSTEXPR_VAR const EnumeratedType value = ANVIL_8UX1; };
