@@ -10,6 +10,14 @@
 #include "anvil/RPC.hpp"
 #include "anvil/Scheduling.hpp"
 #include "anvil/Compute.hpp"
+#include "anvil/core/TrailingZeroCount.hpp"
+
+#define lzcount32_c(X) lzcount<uint32_t, anvil::LZCNT_CPP>(static_cast<uint32_t>(X))
+#define lzcount32_hwa(X) lzcount<uint32_t, anvil::LZCNT_BSR>(static_cast<uint32_t>(X))
+#define lzcount32_hwb(X) lzcount<uint32_t, anvil::LZCNT_X86>(static_cast<uint32_t>(X))
+#define tzcount32_c(X) tzcount<uint32_t, anvil::TZCNT_CPP>(static_cast<uint32_t>(X))
+#define tzcount32_hwa(X) tzcount<uint32_t, anvil::TZCNT_BSR>(static_cast<uint32_t>(X))
+#define tzcount32_hwb(X) tzcount<uint32_t, anvil::TZCNT_X86>(static_cast<uint32_t>(X))
 
 static uint64_t CurrentTime() {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -626,8 +634,8 @@ void XMLTest() {
 void LZCNTTestA() {
 	
 	for (uint32_t i = 0; i < UINT16_MAX; ++i) {
-		uint32_t c = anvil::detail::lzcount32_c(i);
-		uint32_t a = anvil::detail::lzcount32_hwa(i);
+		uint32_t c = anvil::lzcount32_c(i);
+		uint32_t a = anvil::lzcount32_hwa(i);
 		if(a != c) std::cout << "Value = " << i << " C++ says " << c << " BSR says " << a << std::endl;
 	}
 }
@@ -635,34 +643,34 @@ void LZCNTTestA() {
 void TZCNTTestA() {
 
 	for (uint32_t i = 0; i < UINT16_MAX; ++i) {
-		uint32_t c = anvil::detail::tzcount32_c(i);
-		uint32_t a = anvil::detail::tzcount32_hwa(i);
+		uint32_t c = anvil::tzcount32_c(i);
+		uint32_t a = anvil::tzcount32_hwa(i);
 		if (a != c) std::cout << "Value = " << i << " C++ says " << c << " BSR says " << a << std::endl;
 	}
 }
 
 void ReflectTest() {
 	for (uint32_t i = 0; i <= UINT8_MAX; ++i) {
-		uint8_t a = anvil::reflect((uint8_t)i);
-		uint8_t b = anvil::reflect((uint8_t)a);
+		uint8_t a = anvil::reflect_bits((uint8_t)i);
+		uint8_t b = anvil::reflect_bits((uint8_t)a);
 		if (b != i) std::cout << "Value = " << std::bitset<8>(i) << " A = " << std::bitset<8>(a) << " B = " << std::bitset<8>(b) << std::endl;
 	}
 
 	for (uint32_t i = 0; i <= UINT16_MAX; ++i) {
-		uint16_t a = anvil::reflect((uint16_t)i);
-		uint16_t b = anvil::reflect((uint16_t)a);
+		uint16_t a = anvil::reflect_bits((uint16_t)i);
+		uint16_t b = anvil::reflect_bits((uint16_t)a);
 		if (b != i) std::cout << "Value = " << std::bitset<16>(i) << " A = " << std::bitset<16>(a) << " B = " << std::bitset<16>(b) << std::endl;
 	}
 
 	for (uint32_t i = 0; i <= UINT16_MAX; ++i) {
-		uint32_t a = anvil::reflect((uint32_t)i);
-		uint32_t b = anvil::reflect((uint32_t)a);
+		uint32_t a = anvil::reflect_bits((uint32_t)i);
+		uint32_t b = anvil::reflect_bits((uint32_t)a);
 		if (b != i) std::cout << "Value = " << std::bitset<32>(i) << " A = " << std::bitset<32>(a) << " B = " << std::bitset<32>(b) << std::endl;
 	}
 
 	for (uint32_t i = 0; i <= UINT16_MAX; ++i) {
-		uint64_t a = anvil::reflect((uint64_t)i);
-		uint64_t b = anvil::reflect((uint64_t)a);
+		uint64_t a = anvil::reflect_bits((uint64_t)i);
+		uint64_t b = anvil::reflect_bits((uint64_t)a);
 		if (b != i) std::cout << "Value = " << std::bitset<64>(i) << " A = " << std::bitset<64>(a) << " B = " << std::bitset<64>(b) << std::endl;
 	}
 }
@@ -1204,7 +1212,7 @@ int main()
 	for (uint32_t i = 0; i < 100; ++i) {
 		uint32_t x = i;
 
-		std::cout << x << "\t" << anvil::detail::lzcount32_hwb((uint32_t)x) << "\t" << anvil::detail::lzcount32_c((uint32_t)x) << std::endl;
+		std::cout << x << "\t" << anvil::lzcount32_hwb((uint32_t)x) << "\t" << anvil::lzcount32_c((uint32_t)x) << std::endl;
 	}
 
 	std::cout << "HW TZCNT : " << ANVIL_HW_TZCNTB << std::endl;
@@ -1212,7 +1220,7 @@ int main()
 	for (uint32_t i = 0; i < 100; ++i) {
 		uint32_t x = i;
 
-		std::cout << x << "\t" << anvil::detail::tzcount32_hwb((uint32_t)x) << "\t" << anvil::detail::tzcount32_c((uint32_t)x) << std::endl;
+		std::cout << x << "\t" << anvil::tzcount32_hwb((uint32_t)x) << "\t" << anvil::tzcount32_c((uint32_t)x) << std::endl;
 	}
 
 	//for (uint32_t i = 0; i < 10000; ++i) {
