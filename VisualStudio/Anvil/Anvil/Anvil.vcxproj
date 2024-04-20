@@ -270,6 +270,7 @@
     <ClInclude Include="..\..\..\include\anvil\core\Bitset128.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\Bitset256.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\BitwiseLUT.hpp" />
+    <ClInclude Include="..\..\..\include\anvil\core\ByteManipulation.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\ByteSwap.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\Common.hpp" />
     <ClInclude Include="..\..\..\include\anvil\core\Compiler.hpp" />

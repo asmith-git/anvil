@@ -367,38 +367,86 @@ namespace anvil { namespace core {
 	{
 	public:
 
+		template<size_t SIZE>
+		void TestBlock()
+		{
+			uint8_t block_src[SIZE];
+			uint8_t block_expected[SIZE];
+			for (size_t i = 0u; i < SIZE; ++i)
+			{
+				block_src[i] = (uint8_t)i;
+				block_expected[SIZE - (i + 1)] = anvil::detail::reflect_bits_c(block_src[i]);
+			}
+			uint8_t block_dst[SIZE];
+
+			reflect_bits(block_dst, block_src, SIZE);
+
+			for (uint32_t i = 0u; i < SIZE; ++i)
+			{
+				Assert::AreEqual(block_expected[i], block_dst[i]);
+			}
+		}
+
+		void TestBlocks()
+		{
+			TestBlock<1u>();
+			TestBlock<2u>();
+			TestBlock<3u>();
+			TestBlock<4u>();
+			TestBlock<5u>();
+			TestBlock<6u>();
+			TestBlock<7u>();
+			TestBlock<8u>();
+			TestBlock<9u>();
+			TestBlock<10u>();
+			TestBlock<11u>();
+			TestBlock<12u>();
+			TestBlock<13u>();
+			TestBlock<14u>();
+			TestBlock<15u>();
+			TestBlock<16u>();
+
+			TestBlock<19u>();
+			TestBlock<32u>();
+			TestBlock<45u>();
+			TestBlock<64u>();
+			TestBlock<97u>();
+			TestBlock<128u>();
+		}
 		TEST_METHOD(IsCppSameAsSlow)
 		{
 			for (uint32_t i = 0u; i <= UINT8_MAX; ++i) {
-				uint8_t a = anvil::detail::reflect_c((uint8_t)i);
-				uint8_t b = anvil::reflect((uint8_t)i);
+				uint8_t a = anvil::detail::reflect_bits_c((uint8_t)i);
+				uint8_t b = anvil::reflect_bits((uint8_t)i);
 				Assert::AreEqual(a, b, std::wstring(L"uint8 : " + std::to_wstring(i)).c_str());
 			}
+
+			TestBlocks();
 		}
 
 		TEST_METHOD(SameWhenReversed)
 		{
 			TestRange64Bitwise([this](uint64_t i)->void {
 				if (i <= UINT8_MAX) {
-					uint8_t a = anvil::reflect((uint8_t)i);
-					uint8_t b = anvil::reflect(a);
+					uint8_t a = anvil::reflect_bits((uint8_t)i);
+					uint8_t b = anvil::reflect_bits(a);
 					Assert::AreEqual((uint8_t)i, b, std::wstring(L"uint8 : " + std::to_wstring(i)).c_str());
 				}
 
 				if (i <= UINT16_MAX) {
-					uint16_t a = anvil::reflect((uint16_t)i);
-					uint16_t b = anvil::reflect(a);
+					uint16_t a = anvil::reflect_bits((uint16_t)i);
+					uint16_t b = anvil::reflect_bits(a);
 					Assert::AreEqual((uint16_t)i, b, std::wstring(L"uint16 : " + std::to_wstring(i)).c_str());
 				}
 
 				if (i <= UINT32_MAX) {
-					uint32_t a = anvil::reflect((uint32_t)i);
-					uint32_t b = anvil::reflect(a);
+					uint32_t a = anvil::reflect_bits((uint32_t)i);
+					uint32_t b = anvil::reflect_bits(a);
 					Assert::AreEqual((uint32_t)i, b, std::wstring(L"uint32 : " + std::to_wstring(i)).c_str());
 				}
 					
-				uint64_t a = anvil::reflect((uint64_t)i);
-				uint64_t b = anvil::reflect(a);
+				uint64_t a = anvil::reflect_bits((uint64_t)i);
+				uint64_t b = anvil::reflect_bits(a);
 				Assert::AreEqual((uint64_t)i, b, std::wstring(L"uint64 : " + std::to_wstring(i)).c_str());
 			});
 		}
@@ -407,21 +455,21 @@ namespace anvil { namespace core {
 		{
 			TestRange64Bitwise([this](uint64_t i)->void {
 				if (i <= UINT8_MAX) {
-					uint8_t a = anvil::reflect((uint8_t)i);
+					uint8_t a = anvil::reflect_bits((uint8_t)i);
 					Assert::AreEqual(anvil::popcount(i), anvil::popcount(a), std::wstring(L"uint8 : " + std::to_wstring(i)).c_str());
 				}
 
 				if (i <= UINT16_MAX) {
-					uint16_t a = anvil::reflect((uint16_t)i);
+					uint16_t a = anvil::reflect_bits((uint16_t)i);
 					Assert::AreEqual(anvil::popcount(i), anvil::popcount(a), std::wstring(L"uint16 : " + std::to_wstring(i)).c_str());
 				}
 
 				if (i <= UINT32_MAX) {
-					uint32_t a = anvil::reflect((uint32_t)i);
+					uint32_t a = anvil::reflect_bits((uint32_t)i);
 					Assert::AreEqual(anvil::popcount(i), anvil::popcount(a), std::wstring(L"uint32 : " + std::to_wstring(i)).c_str());
 				}
 					
-				uint64_t a = anvil::reflect((uint64_t)i);
+				uint64_t a = anvil::reflect_bits((uint64_t)i);
 				Assert::AreEqual(anvil::popcount(i), anvil::popcount(a), std::wstring(L"uint64 : " + std::to_wstring(i)).c_str());
 			});
 		}

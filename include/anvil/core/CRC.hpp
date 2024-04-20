@@ -46,7 +46,7 @@ namespace anvil {
 		*/
 		template<bool R = REVERSE_DATA>
 		static inline typename std::enable_if<R, uint8_t>::type reflect_byte(const uint8_t aByte) {
-			return reflect(aByte);
+			return reflect_bits(aByte);
 		}
 		/*!
 			\brief Reflect a byte from the input data.
@@ -67,7 +67,7 @@ namespace anvil {
 		*/
 		template<bool R = REVERSE_DATA, size_t W = WIDTH>
 		static inline typename std::enable_if<R && (W == 8 || W == 16 || W == 32 || W == 64) && sizeof(checksum_t) * 8 == W, checksum_t>::type reflect_checksum(checksum_t aValue) {
-			return reflect(aValue);
+			return reflect_bits(aValue);
 		}
 
 		/*!
@@ -79,7 +79,7 @@ namespace anvil {
 		template<bool R = REVERSE_DATA, size_t W = WIDTH>
 		static inline typename std::enable_if<R && ((W != 8 && W != 16 && W != 32 && W != 64) || sizeof(checksum_t) * 8 != W), checksum_t>::type reflect_checksum(checksum_t aValue) {
 			checksum_t tmp = 0;
-			reflect(&aValue, &tmp, WIDTH);
+			reflect_bits(&aValue, &tmp, WIDTH);
 			return tmp;
 		}
 
