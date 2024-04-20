@@ -189,7 +189,7 @@ namespace anvil
 		template<>
 		struct PopcountHelper<uint16_t, POPCOUNT_CPP>
 		{
-			static ANVIL_STRONG_INLINE size_t Execute(const uint16_t a_value) throw()
+			static inline size_t Execute(const uint16_t a_value) throw()
 			{
 				return
 					PopcountHelper<uint8_t, POPCOUNT_CPP>::Execute(static_cast<uint8_t>(a_value & UINT8_MAX)) +
@@ -201,7 +201,7 @@ namespace anvil
 		template<>
 		struct PopcountHelper<uint32_t, POPCOUNT_CPP>
 		{
-			static ANVIL_STRONG_INLINE size_t Execute(const uint32_t a_value) throw()
+			static inline size_t Execute(const uint32_t a_value) throw()
 			{
 				return
 					PopcountHelper<uint16_t, POPCOUNT_CPP>::Execute(static_cast<uint16_t>(a_value & UINT16_MAX)) +
@@ -213,7 +213,7 @@ namespace anvil
 		template<>
 		struct PopcountHelper<uint64_t, POPCOUNT_CPP>
 		{
-			static ANVIL_STRONG_INLINE size_t Execute(const uint64_t a_value) throw()
+			static inline size_t Execute(const uint64_t a_value) throw()
 			{
 				return
 					PopcountHelper<uint32_t, POPCOUNT_CPP>::Execute(static_cast<uint32_t>(a_value & UINT32_MAX)) +
