@@ -56,25 +56,30 @@ namespace anvil { namespace BytePipe {
 
 	OStreamPipe::OStreamPipe(std::ostream& stream) :
 		_stream(stream)
-	{}
+	{
 
-	OStreamPipe::~OStreamPipe() {
+	}
+
+	OStreamPipe::~OStreamPipe() 
+	{
 		_stream.flush();
 	}
 
-	size_t OStreamPipe::WriteBytes(const void* src, const size_t bytes) {
+	#pragma warning( disable : 4100) // timeout_ms is not used
+	std::future_status OStreamPipe::WriteBytesVirtual(const void* src, size_t& bytes, int timeout_ms)
+	{
 		const auto pos = _stream.tellp();
 		_stream.write(static_cast<const char*>(src), bytes);
-		return static_cast<size_t>(_stream.tellp() - pos);
+		bytes = static_cast<size_t>(_stream.tellp() - pos);
+		return std::future_status::ready;
 	}
 
-	#pragma warning( disable : 4100) // timeout_ms is not used, name is retained to improve code readability
-	void OStreamPipe::WriteBytesFast(const void* src, size_t bytes, int timeout_ms) {
-		_stream.write(static_cast<const char*>(src), bytes);
-	}
-
-	void OStreamPipe::Flush() {
+	std::future_status OStreamPipe::FlushVirtual(int timeout_ms) 
+	{
 		_stream.flush();
+		return std::future_status::ready;
 	}
+
+
 
 }}

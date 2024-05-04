@@ -80,18 +80,24 @@ namespace anvil { namespace BytePipe {
 
 	}
 
-	size_t detail::TCPCommonPipe::WriteBytes(const void* src, const size_t bytes) {
+#pragma warning( disable : 4100) // timeout_ms is not used
+	std::future_status detail::TCPCommonPipe::WriteBytesVirtual(const void* src, size_t& bytes, int timeout_ms)
+	{
 #if ANVIL_OS == ANVIL_WINDOWS
 		int sent_bytes = send(_socket, static_cast<const char*>(src), static_cast<int>(bytes), 0);
-		if (sent_bytes == SOCKET_ERROR) throw std::runtime_error("TCPClientOutputPipe::WriteBytes : Failed to send data, WSA error code " + std::to_string(WSAGetLastError()));
-		return sent_bytes;
-#else
-		return 0;
+		if (sent_bytes == SOCKET_ERROR) goto TIMEOUT;//throw std::runtime_error("TCPClientOutputPipe::WriteBytes : Failed to send data, WSA error code " + std::to_string(WSAGetLastError()));
+		bytes = static_cast<size_t>(sent_bytes);
+		return std::future_status::ready;
+	TIMEOUT:
 #endif
+		bytes = 0;
+		return std::future_status::timeout;
 	}
 
-	void detail::TCPCommonPipe::Flush() {
-		
+	
+	std::future_status detail::TCPCommonPipe::FlushVirtual(int timeout_ms) 
+	{
+		return std::future_status::ready;
 	}
 
 	// TCPServerPipe

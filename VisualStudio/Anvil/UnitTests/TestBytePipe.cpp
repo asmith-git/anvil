@@ -46,6 +46,17 @@ namespace anvil { namespace BytePipe {
 			return dst8;
 		}
 
+		virtual std::future_status WriteBytesVirtual(const void* src, size_t& bytes, int timeout_ms)  final
+		{
+			for (size_t i = 0u; i < bytes; ++i) data.push_back(static_cast<const uint8_t*>(src)[i]);
+			return std::future_status::ready;
+		}
+
+		virtual std::future_status FlushVirtual(int timeout_ms) final
+		{
+			return std::future_status::ready;
+		}
+
 	public:
 		std::deque<uint8_t> data;
 
@@ -59,16 +70,6 @@ namespace anvil { namespace BytePipe {
 		virtual ~DebugPipe() {
 			operator delete(_buffer);
 		}
-
-		virtual size_t WriteBytes(const void* src, const size_t bytes) final
-		{
-			for (size_t i = 0u; i < bytes; ++i) data.push_back(static_cast<const uint8_t*>(src)[i]);
-			return bytes;
-		}
-
-		void Flush() final {
-
-		}
 	};
 
 	void WriteTest(anvil::BytePipe::OutputPipe& out, anvil::BytePipe::InputPipe& in, const void* src, size_t bytes, std::deque<uint8_t>& debug, bool split_writes, bool split_reads) {
@@ -81,12 +82,16 @@ namespace anvil { namespace BytePipe {
 				const uint8_t* src8 = static_cast<const uint8_t*>(src);
 				while (bytes_left) {
 					size_t bytes_to_write = bytes_left < 10 ? bytes_left: rand() % bytes_left;
-					out.WriteBytesFast(src8, bytes_to_write, 10000);
+					size_t bytes_written = bytes_to_write;
+					out.WriteBytes(src8, bytes_written, 10000);
+					Assert::AreEqual(bytes_written, bytes_to_write, L"Did not write all bytes");
 					bytes_left -= bytes_to_write;
 					src8 += bytes_to_write;
 				}
 			} else {
-				out.WriteBytesFast(src, bytes, 10000);
+				size_t bytes_written = bytes;
+				out.WriteBytes(src, bytes_written, 10000);
+				Assert::AreEqual(bytes_written, bytes, L"Did not write all bytes");
 			}
 			out.Flush();
 

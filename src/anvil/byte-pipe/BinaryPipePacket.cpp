@@ -142,12 +142,12 @@ namespace anvil { namespace BytePipe {
 	}
 
 	PacketOutputPipe::~PacketOutputPipe() {
-		_Flush(_payload, _current_packet_size);
+		_Flush(_payload, _current_packet_size, 100);
 		 delete[] _payload;
 		 _payload = nullptr;
 	}
 
-	void PacketOutputPipe::WriteBytesInternal(const void* src, const size_t bytes) {
+	void PacketOutputPipe::WriteBytesInternal(const void* src, const size_t bytes, int timeout_ms) {
 		const uint8_t* data = static_cast<const uint8_t*>(src);
 		size_t b = bytes;
 
@@ -167,13 +167,13 @@ WRITE_TO_BUFFER:
 				_current_packet_size += bytes_to_buffer;
 
 				// If the packet is full then write it
-				if (_current_packet_size == _max_payload_size) _Flush(_payload, _current_packet_size);
+				if (_current_packet_size == _max_payload_size) _Flush(_payload, _current_packet_size, timeout_ms);
 
 			} else {
 				// If the input data is larger than a packet
 				if (b > _max_payload_size) {
 					// Send packet directly from input memory
-					_Flush(data, _max_payload_size);
+					_Flush(data, _max_payload_size, timeout_ms);
 					data += _max_payload_size;
 					b -= _max_payload_size;
 
@@ -184,17 +184,16 @@ WRITE_TO_BUFFER:
 		}
 	}
 
-	size_t PacketOutputPipe::WriteBytes(const void* src, const size_t bytes) {
-		WriteBytesInternal(src, bytes);
-		return bytes;
+#pragma warning( disable : 4100) // timeout_ms is not used, name is retained to improve code readability
+	std::future_status PacketOutputPipe::WriteBytesVirtual(const void* src, size_t& bytes, int timeout_ms)
+	{
+		WriteBytesInternal(src, bytes, timeout_ms);
+		return std::future_status::ready;
 	}
 
-	#pragma warning( disable : 4100) // timeout_ms is not used, name is retained to improve code readability
-	void PacketOutputPipe::WriteBytes(const void** src, const size_t* bytes, const size_t count, int timeout_ms) {
-		for (size_t i = 0; i < count; ++i) WriteBytesInternal(src[i], bytes[i]);
-	}
 
-	void PacketOutputPipe::_Flush(const void* buffer, size_t bytes_in_buffer) {
+
+	void PacketOutputPipe::_Flush(const void* buffer, size_t bytes_in_buffer, int timeout_ms) {
 		if (bytes_in_buffer == 0u) return;
 
 		const size_t packet_size = (_fixed_size_packets ? _packet_size : bytes_in_buffer + _header_size);
@@ -234,7 +233,13 @@ WRITE_TO_BUFFER:
 			memset(const_cast<void*>(addresses[2]), 0, bytes_to_write[2]);
 		}
 
-		_downstream_pipe.WriteBytes(addresses, bytes_to_write, 3);
+		size_t bytes_written = 0u;
+		for (size_t i = 0u; i < 3u; ++i)
+		{
+			bytes_written = bytes_to_write[i];
+			//! \bug Does not handle timeout correctly
+			_downstream_pipe.WriteBytes(addresses[i], bytes_written, timeout_ms);
+		}
 
 		if (addresses[2] != nullptr) _freea(const_cast<void*>(addresses[2]));
 
@@ -243,9 +248,10 @@ WRITE_TO_BUFFER:
 		if(buffer == _payload) _current_packet_size = 0u;
 	}
 
-	void PacketOutputPipe::Flush() {
-		_Flush(_payload, _current_packet_size);
-		_downstream_pipe.Flush();
+	std::future_status PacketOutputPipe::FlushVirtual(int timeout_ms)
+	{
+		_Flush(_payload, _current_packet_size, timeout_ms);
+		return _downstream_pipe.Flush(timeout_ms);
 	}
 
 }}

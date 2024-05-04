@@ -63,18 +63,23 @@ namespace anvil { namespace BytePipe {
 #endif
 	}
 
-	size_t UDPOutputPipe::WriteBytes(const void* src, const size_t bytes) {
+#pragma warning( disable : 4100) // timeout_ms is not used
+	std::future_status UDPOutputPipe::WriteBytesVirtual(const void* src, size_t& bytes, int timeout_ms)
+	{
 #if ANVIL_OS == ANVIL_WINDOWS
 		int sent_bytes = sendto(_socket, static_cast<const char*>(src), static_cast<int>(bytes), 0, reinterpret_cast<SOCKADDR*>(&_address), sizeof(_address));
-		if (sent_bytes == SOCKET_ERROR) throw std::runtime_error("UDPOutputPipe::WriteBytes : Failed to send data, WSA error code " + std::to_string(WSAGetLastError()));
-		return sent_bytes;
-#else
-		return 0;
+		if (sent_bytes == SOCKET_ERROR) goto TIMEOUT;//throw std::runtime_error("UDPOutputPipe::WriteBytes : Failed to send data, WSA error code " + std::to_string(WSAGetLastError()));
+		bytes = static_cast<size_t>(sent_bytes);
+		return std::future_status::ready;
+	TIMEOUT:
 #endif
+		bytes = 0u;
+		return std::future_status::timeout;
 	}
 
-	void UDPOutputPipe::Flush() {
-		
+	std::future_status UDPOutputPipe::FlushVirtual(int timeout_ms)
+	{
+		return std::future_status::ready;
 	}
 
 	// UDPInputPipe

@@ -43,15 +43,15 @@ namespace anvil { namespace BytePipe {
 		SOCKET _socket;
 		SOCKADDR_IN _address;
 #endif
+	protected:
+
+		// Inherited from OutputPipe
+		virtual std::future_status WriteBytesVirtual(const void* src, size_t& bytes, int timeout_ms) final;
+		virtual std::future_status FlushVirtual(int timeout_ms) final;
 
 	public:
 		UDPOutputPipe(IPAddress server_ip, UDPPort server_port);
 		virtual ~UDPOutputPipe();
-
-		// Inherited from OutputPipe
-
-		size_t WriteBytes(const void* src, const size_t bytes) final;
-		void Flush() final;
 	};
 
 }}

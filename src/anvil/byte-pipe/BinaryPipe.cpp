@@ -441,7 +441,8 @@ namespace anvil { namespace BytePipe {
 			// So if contracts are disabled then we wont check because the value isn't used
 			_pipe.WriteBytesFast(src, bytes);
 #else
-			const size_t bytesWritten = _pipe.WriteBytes(src, bytes);
+			size_t bytesWritten = bytes;
+			_pipe.WriteBytes(src, bytesWritten);
 			ANVIL_CONTRACT(bytesWritten == bytes, "Failed to write to pipe");
 #endif
 		};
@@ -1590,7 +1591,8 @@ OLD_COMPONENT_ID:
 
 	// OutputPipe
 
-	OutputPipe::OutputPipe() 
+	OutputPipe::OutputPipe() :
+		_small_buffer_size(0u)
 	{
 
 	}
@@ -1600,35 +1602,62 @@ OLD_COMPONENT_ID:
 		
 	}
 
-	void OutputPipe::WriteBytes(const void** src, const size_t* bytes, const size_t count, int timeout_ms) 
+	std::future_status OutputPipe::FlushSmallBuffer(int timeout_ms)
 	{
-		for (size_t i = 0; i < count; ++i) 
+		if (_small_buffer_size > 0u)
 		{
-			WriteBytesFast(src[i], bytes[i], timeout_ms == -1 ? -1 : timeout_ms / static_cast<int>(count));
+			size_t bytes_written = _small_buffer_size;
+			if (WriteBytesVirtual(_small_buffer, bytes_written, timeout_ms) == std::future_status::timeout || bytes_written != _small_buffer_size)
+			{
+				memcpy(_small_buffer, static_cast<uint8_t*>(_small_buffer) + bytes_written, _small_buffer_size - bytes_written);
+				_small_buffer_size = bytes_written;
+				return std::future_status::timeout;
+			}
+			_small_buffer_size = 0u;
 		}
+		return std::future_status::ready;
+	}
+
+	std::future_status OutputPipe::WriteBytes(const void* src, size_t& bytes, int timeout_ms)
+	{
+		if (bytes > SMALL_BUFFER_LENGTH)
+		{
+			if(FlushSmallBuffer(timeout_ms) == std::future_status::timeout) return std::future_status::timeout;
+			if (WriteBytesVirtual(src, bytes, timeout_ms) == std::future_status::timeout) return std::future_status::timeout;
+		}
+		else
+		{
+			if (bytes + _small_buffer_size > SMALL_BUFFER_LENGTH)
+			{
+				if (FlushSmallBuffer(timeout_ms) == std::future_status::timeout) return std::future_status::timeout;
+			}
+			memcpy(static_cast<uint8_t*>(_small_buffer) + _small_buffer_size, src, bytes);
+			_small_buffer_size += bytes;
+		}
+		return std::future_status::ready;
 	}
 	
-	/*!
-	*	\brief Write an exact ammount of data from the pipe.
-	*	\details Use of this function is no longer recommended. Throws exception on time-out. Timing out will leave the data in an undefined state as the number of bytes writeen will not be recorded.
-	*	\param src The address of the bytes to write
-	*	\param bytes The number of bytes to write
-	*	\param timout_ms The number of milliseconds before the write times-out. A value of -1 will force it to never time out.
-	*/
-	void OutputPipe::WriteBytesFast(const void* src, size_t bytes, int timeout_ms) {
-		const uint64_t t = GetTimeMSUint();
+	///*!
+	//*	\brief Write an exact ammount of data from the pipe.
+	//*	\details Use of this function is no longer recommended. Throws exception on time-out. Timing out will leave the data in an undefined state as the number of bytes writeen will not be recorded.
+	//*	\param src The address of the bytes to write
+	//*	\param bytes The number of bytes to write
+	//*	\param timout_ms The number of milliseconds before the write times-out. A value of -1 will force it to never time out.
+	//*/
+	//void OutputPipe::WriteBytesFast(const void* src, size_t bytes, int timeout_ms) {
+	//	const uint64_t t = GetTimeMSUint();
 
-		while (bytes > 0u) {
-			size_t bytes_written = WriteBytes(src, bytes);
+	//	while (bytes > 0u) {
+	//		size_t bytes_written = WriteBytes(src, bytes);
 
-			bytes -= bytes_written;
-			src = static_cast<const uint8_t*>(src) + bytes_written;
+	//		bytes -= bytes_written;
+	//		src = static_cast<const uint8_t*>(src) + bytes_written;
 
-			if (bytes > 0u && timeout_ms >= 0) {
-				const uint64_t t2 = GetTimeMSUint();
-				if (static_cast<int>(t2 - t) > timeout_ms) throw std::runtime_error("OutputPipe::WriteBytesFast : Read timed-out");
-			}
-		}
-	}
+	//		if (bytes > 0u && timeout_ms >= 0) {
+	//			const uint64_t t2 = GetTimeMSUint();
+	//			if (static_cast<int>(t2 - t) > timeout_ms) throw std::runtime_error("OutputPipe::WriteBytesFast : Read timed-out");
+	//		}
+	//	}
+	//}
 
 }}

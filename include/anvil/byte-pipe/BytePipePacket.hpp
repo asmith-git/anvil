@@ -96,14 +96,16 @@ namespace anvil { namespace BytePipe {
 		uint32_t _version;
 		bool _fixed_size_packets;
 
-		void _Flush(const void* buffer, size_t bytes_in_buffer);
-		void WriteBytesInternal(const void* src, const size_t bytes);
+		void _Flush(const void* buffer, size_t bytes_in_buffer, int timeout_ms);
+		void WriteBytesInternal(const void* src, const size_t bytes, int timeout_ms);
+
+	protected:
+		virtual std::future_status WriteBytesVirtual(const void* src, size_t& bytes, int timeout_ms) final;
+		virtual std::future_status FlushVirtual(int timeout_ms) final;
+
 	public:
 		PacketOutputPipe(OutputPipe& downstream_pipe, const size_t packet_size, bool fixed_size_packets = true);
 		virtual ~PacketOutputPipe();
-		size_t WriteBytes(const void* src, const size_t bytes) final;
-		void WriteBytes(const void** src, const size_t* bytes, const size_t count, int timeout_ms = -1) final;
-		void Flush() final;
 	};
 
 }}

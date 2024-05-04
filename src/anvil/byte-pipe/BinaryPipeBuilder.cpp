@@ -45,6 +45,17 @@ namespace anvil { namespace BytePipe {
 	private:
 		std::vector<std::shared_ptr<OutputPipe>> _pipes;
 
+	protected:
+		virtual std::future_status WriteBytesVirtual(const void* src, size_t& bytes, int timeout_ms) final 
+		{
+			return _pipes.back()->WriteBytes(src, bytes, timeout_ms);
+		}
+
+		virtual std::future_status FlushVirtual(int timeout_ms) final
+		{
+			return _pipes.back()->Flush(timeout_ms);
+		}
+
 	public:
 		BuiltOutputPipe(std::vector<std::shared_ptr<OutputPipe>>&& pipes) :
 			_pipes(std::move(pipes))
@@ -55,26 +66,6 @@ namespace anvil { namespace BytePipe {
 		virtual ~BuiltOutputPipe()
 		{
 
-		}
-
-		virtual size_t WriteBytes(const void* src, const size_t bytes)
-		{
-			return _pipes.back()->WriteBytes(src, bytes);
-		}
-
-		virtual void WriteBytes(const void** src, const size_t* bytes_requested, const size_t count, int timeout_ms)
-		{
-			_pipes.back()->WriteBytes(src, bytes_requested, count, timeout_ms);
-		}
-
-		virtual void Flush()
-		{
-			_pipes.back()->Flush();
-		}
-
-		virtual void WriteBytesFast(const void* src, size_t bytes, int timeout_ms) final
-		{
-			_pipes.back()->WriteBytesFast(src, bytes, timeout_ms);
 		}
 	};
 

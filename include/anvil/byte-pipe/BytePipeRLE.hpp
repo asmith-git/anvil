@@ -78,7 +78,15 @@ namespace anvil { namespace BytePipe {
 			return *reinterpret_cast<DataWord*>(_byte_buffer);
 		}
 
-		bool _Flush() {
+		void _WriteToOutput(const void* src, size_t size)
+		{
+			//! \bug Does not handle timeout correctly
+			size_t bytes_written = size;
+			_output.WriteBytes(src, bytes_written, -1);
+			if (bytes_written != size) throw std::runtime_error("RLEEncoderPipe::_WriteToOutput : Failed to write all bytes to the downstream pipe");
+		}
+
+		bool _Flush(int timeout_ms) {
 			if (_bytes_in_buffer > 0u) {
 				LengthWord len = _bytes_in_buffer;
 
@@ -93,12 +101,12 @@ namespace anvil { namespace BytePipe {
 					DataWord& word2 = *reinterpret_cast<DataWord*>(block + sizeof(LengthWord));
 					len2 = len;
 					word2 = GetCurrentWord();
-					_output.WriteBytesFast(block, sizeof(LengthWord) + sizeof(DataWord));
+					_WriteToOutput(block, sizeof(LengthWord) + sizeof(DataWord));
 				} else {
 
 					// Write the buffer
-					_output.WriteBytesFast(&len, sizeof(LengthWord));
-					_output.WriteBytesFast(_byte_buffer, _bytes_in_buffer);
+					_WriteToOutput(&len, sizeof(LengthWord));
+					_WriteToOutput(_byte_buffer, _bytes_in_buffer);
 				}
 
 				// Reset the encoder state
@@ -111,11 +119,12 @@ namespace anvil { namespace BytePipe {
 		}
 
 		void NewRLEBlock(const DataWord word) {
+			//! \bug Does not handle timeout correctly
 			DataWord& current = GetCurrentWord();
 			if (_rle_mode) {
-				if (_rle_length > 0 && current != word) _Flush();
+				if (_rle_length > 0 && current != word) _Flush(100);
 			} else if (_bytes_in_buffer > 0) {
-				_Flush();
+				_Flush(100);
 			}
 			_rle_mode = true;
 			_rle_length = 1u;
@@ -131,7 +140,8 @@ namespace anvil { namespace BytePipe {
 
 				count -= to_add;
 				if (_rle_length == MAX_RLE_LENGTH) {
-					_Flush();
+					//! \bug Does not handle timeout correctly
+					_Flush(1000);
 					// Force into RLE mode
 					if (count > 0) {
 						NewRLEBlock(word);
@@ -148,7 +158,8 @@ namespace anvil { namespace BytePipe {
 				if (to_add > count) to_add = count;
 
 				if (to_add == 0) {
-					_Flush();
+					//! \bug Does not handle timeout correctly
+					_Flush(1000);
 				} else {
 					memcpy(_byte_buffer + _bytes_in_buffer, words, to_add * sizeof(DataWord));
 					_bytes_in_buffer += static_cast<LengthWord>(to_add * sizeof(DataWord));
@@ -177,7 +188,8 @@ RLE:
 							words += rle_words;
 							count -= rle_words;
 						} else {
-							_Flush();
+							//! \bug Does not handle timeout correctly
+							_Flush(1000);
 							goto NON_RLE;
 						}
 					} else {
@@ -310,11 +322,30 @@ NON_RLE:
 
 			size_t remaining_bytes = bytes - (bytes / sizeof(DataWord)) * sizeof(DataWord);
 			if (remaining_bytes > 0) {
-				if (_rle_mode || _bytes_in_buffer + remaining_bytes > MAX_BYTES_IN_BLOCK) _Flush();
+				//! \bug Does not handle timeout correctly
+				if (_rle_mode || _bytes_in_buffer + remaining_bytes > MAX_BYTES_IN_BLOCK) _Flush(-1);
 				memcpy(_byte_buffer + _bytes_in_buffer, src, remaining_bytes);
 				_bytes_in_buffer += static_cast<LengthWord>(remaining_bytes);
 			}
 		}
+	protected:
+
+		#pragma warning( disable : 4100) // timeout_ms is not used, name is retained to improve code readability
+		virtual std::future_status WriteBytesVirtual(const void* src, size_t& bytes, int timeout_ms) final
+		{
+			//! \bug Does not handle timeout correctly
+			WriteBytesInternal(src, bytes);
+			return std::future_status::ready;
+		}
+
+
+		virtual std::future_status FlushVirtual(int timeout_ms) final
+		{
+			//! \bug Does not handle timeout correctly
+			if (_Flush(timeout_ms)) return _output.Flush(timeout_ms);
+			return std::future_status::ready;
+		}
+
 	public:
 		RLEEncoderPipe(OutputPipe& output) :
 			_output(output),
@@ -325,26 +356,11 @@ NON_RLE:
 		{}
 
 		~RLEEncoderPipe() {
-			if (_Flush()) _output.Flush();
+			if (_Flush(1000)) _output.Flush(1000);
 			if (_byte_buffer) {
 				delete[] _byte_buffer;
 				_byte_buffer = nullptr;
 			}
-		}
-
-
-		size_t WriteBytes(const void* src, const size_t bytes) final {
-			WriteBytesInternal(src, bytes);
-			return bytes;
-		}
-
-		#pragma warning( disable : 4100) // timeout_ms is not used, name is retained to improve code readability
-		void WriteBytes(const void** src, const size_t* bytes_requested, const size_t count, int timeout_ms = -1) final {
-			for (size_t i = 0u; i < count; ++i) WriteBytesInternal(src[i], bytes_requested[i]);
-		}
-
-		void Flush() final {
-			if (_Flush()) _output.Flush();
 		}
 	};
 

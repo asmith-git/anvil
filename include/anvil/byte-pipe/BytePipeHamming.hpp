@@ -57,12 +57,13 @@ namespace anvil { namespace BytePipe {
 		void* _buffer;
 		size_t _buffer_size;
 
+	protected:
+		virtual std::future_status WriteBytesVirtual(const void* src, size_t& bytes, int timeout_ms) final;
+		virtual std::future_status FlushVirtual(int timeout_ms) final;
+
 	public:
 		RawHamming74OutputPipe(OutputPipe& downstream_pipe, int timeout_ms = -1);
 		virtual ~RawHamming74OutputPipe();
-
-		size_t WriteBytes(const void* src, const size_t bytes) final;
-		void Flush() final;
 	};
 
 	/*!
@@ -97,11 +98,13 @@ namespace anvil { namespace BytePipe {
 		RawHamming74OutputPipe _hamming_pipe;
 		PacketOutputPipe _packet_pipe;
 
+	protected:
+		virtual std::future_status WriteBytesVirtual(const void* src, size_t& bytes, int timeout_ms) final;
+		virtual std::future_status FlushVirtual(int timeout_ms) final;
+
 	public:
 		Hamming74OutputPipe(OutputPipe& downstream_pipe, size_t block_size = 256);
 		virtual ~Hamming74OutputPipe();
-		size_t WriteBytes(const void* src, const size_t bytes) final;
-		void Flush() final;
 	};
 
 	/*!
@@ -116,11 +119,13 @@ namespace anvil { namespace BytePipe {
 		void* _buffer;
 		size_t _buffer_size;
 
+	protected:
+		virtual std::future_status WriteBytesVirtual(const void* src, size_t& bytes, int timeout_ms) final;
+		virtual std::future_status FlushVirtual(int timeout_ms) final;
+
 	public:
 		RawHamming1511OutputPipe(OutputPipe& downstream_pipe, int timeout_ms = -1);
 		virtual ~RawHamming1511OutputPipe();
-		size_t WriteBytes(const void* src, const size_t bytes) final;
-		void Flush() final;
 	};
 
 	/*!
@@ -175,11 +180,13 @@ namespace anvil { namespace BytePipe {
 		RawHamming1511OutputPipe _hamming_pipe;
 		PacketOutputPipe _packet_pipe;
 
+	protected:
+		virtual std::future_status WriteBytesVirtual(const void* src, size_t& bytes, int timeout_ms) final;
+		virtual std::future_status FlushVirtual(int timeout_ms) final;
+
 	public:
 		Hamming1511OutputPipe(OutputPipe& downstream_pipe, size_t block_size = 264);
 		virtual ~Hamming1511OutputPipe();
-		size_t WriteBytes(const void* src, const size_t bytes) final;
-		void Flush() final;
 	};
 
 	// Define default Hamming impelmentation

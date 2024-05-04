@@ -36,12 +36,14 @@ namespace anvil { namespace BytePipe {
 	class ANVIL_DLL_EXPORT OStreamPipe final : public OutputPipe {
 	private:
 		std::ostream& _stream;
+
+	protected:
+		virtual std::future_status WriteBytesVirtual(const void* src, size_t& bytes, int timeout_ms) final;
+		virtual std::future_status FlushVirtual(int timeout_ms) final;
+
 	public:
 		OStreamPipe(std::ostream& stream);
 		virtual ~OStreamPipe();
-		size_t WriteBytes(const void* src, const size_t bytes) final;
-		void WriteBytesFast(const void* src, size_t bytes, int timeout_ms) final;
-		void Flush() final;
 	};
 
 }}

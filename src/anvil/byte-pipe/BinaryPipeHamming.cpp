@@ -377,7 +377,7 @@ namespace anvil { namespace BytePipe {
 		operator delete(_buffer);
 	}
 
-	size_t RawHamming74OutputPipe::WriteBytes(const void* src, const size_t a_decoded_bytes) 
+	std::future_status RawHamming74OutputPipe::WriteBytesVirtual(const void* src, size_t& a_decoded_bytes, int timeout_ms)
 	{
 		// Round size down to one that can be encoded correctly
 		size_t decoded_bytes = a_decoded_bytes;
@@ -409,15 +409,17 @@ namespace anvil { namespace BytePipe {
 		for (size_t i = 0; i < decoded_bytes; ++i) stream.WriteBits(EncodeHamming74_8(static_cast<const uint8_t*>(src)[i]), 14u);
 
 		// Write the encoded data downstream
-		if (_downstream_pipe.WriteBytes(_buffer, encoded_bytes) != encoded_bytes) throw std::runtime_error("RawHamming74OutputPipe::WriteBytes : Error writing to downstream Pipe");
-
-		return decoded_bytes;
+		size_t decoded_bytes_written = decoded_bytes;
+		_downstream_pipe.WriteBytes(_buffer, decoded_bytes_written, timeout_ms);
+		//! \bug RawHamming1511OutputPipe does not recover correctly from a timeout
+		if(decoded_bytes != decoded_bytes_written) throw std::runtime_error("RawHamming74OutputPipe::WriteBytes : Failed writing all bytes to downstream pipe");
+		return std::future_status::ready;
 	}
 
-	void RawHamming74OutputPipe::Flush()
+	std::future_status RawHamming74OutputPipe::FlushVirtual(int timeout_ms)
 	{
 		// Flush the downstream pipe
-		_downstream_pipe.Flush();
+		return _downstream_pipe.Flush(timeout_ms);
 	}
 
 	// Hamming74InputPipe
@@ -456,15 +458,15 @@ namespace anvil { namespace BytePipe {
 	{
 
 	}
-
-	size_t Hamming74OutputPipe::WriteBytes(const void* src, const size_t bytes) 
+	
+	std::future_status Hamming74OutputPipe::WriteBytesVirtual(const void* src, size_t& bytes, int timeout_ms)
 	{
-		return _packet_pipe.WriteBytes(src, bytes);
+		return _packet_pipe.WriteBytes(src, bytes, timeout_ms);
 	}
 
-	void Hamming74OutputPipe::Flush() 
+	std::future_status Hamming74OutputPipe::FlushVirtual(int timeout_ms)
 	{
-		_packet_pipe.Flush();
+		return _packet_pipe.Flush(timeout_ms);
 	}
 
 	// RawHamming1511OutputPipe
@@ -482,7 +484,7 @@ namespace anvil { namespace BytePipe {
 		operator delete(_buffer);
 	}
 
-	size_t RawHamming1511OutputPipe::WriteBytes(const void* src, const size_t a_decoded_bytes) 
+	std::future_status RawHamming1511OutputPipe::WriteBytesVirtual(const void* src, size_t& a_decoded_bytes, int timeout_ms)
 	{
 		// Round size down to oen that can be encoded correctly
 		size_t decoded_bytes = a_decoded_bytes;
@@ -525,14 +527,16 @@ namespace anvil { namespace BytePipe {
 		}
 
 		// Write the encoded data downstream
-		if (_downstream_pipe.WriteBytes(_buffer, encoded_bytes) != encoded_bytes) throw std::runtime_error("RawHamming1511OutputPipe::WriteBytes : Error writing to downstream Pipe");
-
-		return decoded_bytes;
+		size_t encoded_bytes_written = encoded_bytes;
+		_downstream_pipe.WriteBytes(_buffer, encoded_bytes_written, timeout_ms);
+		//! \bug RawHamming1511OutputPipe does not recover correctly from a timeout
+		if(encoded_bytes != encoded_bytes_written) throw std::runtime_error("RawHamming1511OutputPipe::WriteBytes : Error writing to downstream Pipe");
+		return std::future_status::ready;
 	}
 
-	void RawHamming1511OutputPipe::Flush() 
+	std::future_status RawHamming1511OutputPipe::FlushVirtual(int timeout_ms)
 	{
-		_downstream_pipe.Flush();
+		return _downstream_pipe.Flush(timeout_ms);
 	}
 
 	// RawHamming1511InputPipe
@@ -627,14 +631,14 @@ namespace anvil { namespace BytePipe {
 
 	}
 
-	size_t Hamming1511OutputPipe::WriteBytes(const void* src, const size_t bytes) 
+	std::future_status Hamming1511OutputPipe::WriteBytesVirtual(const void* src, size_t& bytes, int timeout_ms)
 	{
-		return _packet_pipe.WriteBytes(src, bytes);
+		return _packet_pipe.WriteBytes(src, bytes, timeout_ms);
 	}
 
-	void Hamming1511OutputPipe::Flush() 
+	std::future_status Hamming1511OutputPipe::FlushVirtual(int timeout_ms)
 	{
-		_packet_pipe.Flush();
+		return _packet_pipe.Flush(timeout_ms);
 	}
 
 }}

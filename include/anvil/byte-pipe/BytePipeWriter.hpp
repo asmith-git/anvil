@@ -28,15 +28,35 @@ namespace anvil { namespace BytePipe {
 	*/
 	class ANVIL_DLL_EXPORT OutputPipe 
 	{
+	private:
+		enum { SMALL_BUFFER_LENGTH = 512 };
+		uint8_t _small_buffer[SMALL_BUFFER_LENGTH];
+		size_t _small_buffer_size;
+
+		std::future_status FlushSmallBuffer(int timeout_ms);
+
+	protected:
+		virtual std::future_status WriteBytesVirtual(const void* src, size_t& bytes, int timeout_ms) = 0;
+		virtual std::future_status FlushVirtual(int timeout_ms) = 0;
+
 	public:
+
 		OutputPipe();
 		virtual ~OutputPipe();
 
-		virtual size_t WriteBytes(const void* src, const size_t bytes) = 0;
-		virtual void WriteBytes(const void** src, const size_t* bytes_requested, const size_t count, int timeout_ms = -1);
-		virtual void Flush() = 0;
+		std::future_status WriteBytes(const void* src, size_t& bytes, int timeout_ms);
 
-		virtual void WriteBytesFast(const void* src, size_t bytes, int timeout_ms = -1);
+		inline void WriteBytes(const void* src, size_t& bytes)
+		{
+			if (WriteBytes(src, bytes, -1) != std::future_status::ready) throw std::runtime_error("OutputPipe::WriteBytesNew : Timed-out when timeout was set to -1");
+		}
+
+		inline std::future_status Flush(int timeout_ms = -1)
+		{
+			if (FlushSmallBuffer(timeout_ms) == std::future_status::timeout) return std::future_status::timeout;
+			if (FlushVirtual(timeout_ms) == std::future_status::timeout) return std::future_status::timeout;
+			return std::future_status::ready;
+		}
 	};
 
 	/*!
