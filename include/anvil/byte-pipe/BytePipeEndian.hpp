@@ -15,29 +15,31 @@
 #ifndef ANVIL_BYTEPIPE_ENDIAN_HPP
 #define ANVIL_BYTEPIPE_ENDIAN_HPP
 
-#ifdef _MSC_VER 
+#include "anvil/core/Compiler.hpp"
+#if ANVIL_COMPILER == ANVIL_MSVC
 #include <stdlib.h>
 #endif
 #include "anvil/byte-pipe/BytePipeCore.hpp"
 
 namespace anvil { namespace BytePipe {
 
-	enum Endianness {
+	enum Endianness 
+	{
 		ENDIAN_BIG,
 		ENDIAN_LITTLE
 	};
 
-	static inline Endianness GetEndianness() {
+	static inline Endianness GetEndianness() 
+	{
 		union { uint32_t u32; uint8_t u8[4u]; };
 		enum : uint32_t { WORD = 1u | (2u << 8u) | (3u << 16u) | (4u << 24u) };
 		u32 = WORD;
 		return u8[0u] == 1u ? ENDIAN_LITTLE : ENDIAN_BIG;
 	}
 
-	static const Endianness test = GetEndianness();
-
-	static inline uint16_t SwapByteOrder(uint16_t word) {
-#ifdef _MSC_VER 
+	static inline uint16_t SwapByteOrder(uint16_t word) 
+	{
+#if ANVIL_COMPILER == ANVIL_MSVC
 		return _byteswap_ushort(word);
 #else
 		const uint32_t lo = word & 255u;
@@ -46,8 +48,9 @@ namespace anvil { namespace BytePipe {
 #endif
 	}
 
-	static inline uint32_t SwapByteOrder(uint32_t word) {
-#ifdef _MSC_VER 
+	static inline uint32_t SwapByteOrder(uint32_t word) 
+	{
+#if ANVIL_COMPILER == ANVIL_MSVC
 		return _byteswap_ulong(word);
 #else
 		const uint32_t a = word & 255u;
@@ -58,8 +61,9 @@ namespace anvil { namespace BytePipe {
 #endif
 	}
 
-	static inline uint64_t SwapByteOrder(uint64_t word) {
-#ifdef _MSC_VER 
+	static inline uint64_t SwapByteOrder(uint64_t word) 
+	{
+#if ANVIL_COMPILER == ANVIL_MSVC
 		return _byteswap_uint64(word);
 #else
 		const uint64_t a = word & 255ull;

@@ -40,11 +40,14 @@ namespace anvil { namespace BytePipe {
 #if ANVIL_OS == ANVIL_WINDOWS
 			SOCKET _socket;
 #endif
+			void* _buffer;
+		protected:
+			virtual void* ReadNextPacket(size_t& bytes) final;
+
 		public:
 			TCPCommonPipe();
 			virtual ~TCPCommonPipe();
 
-			size_t ReadBytes(void* dst, const size_t bytes) final;
 			size_t WriteBytes(const void* src, const size_t bytes) final;
 			void Flush() final;
 		};

@@ -824,7 +824,7 @@ namespace anvil { namespace BytePipe {
 
 		inline void ReadFromPipeRaw(void* dst, const uint32_t bytes) {
 #if ANVIL_CONTRACT_MODE == ANVIL_CONTRACT_IGNORE || ANVIL_CONTRACT_MODE == ANVIL_CONTRACT_ASSUME
-			_pipe.ReadBytesFast(dst, bytes, 10000);
+			_pipe.ForceReadBytes(dst, bytes, 10000);
 #else
 			const size_t bytesRead = _pipe.ReadBytes(dst, bytes);
 			ANVIL_CONTRACT(bytesRead == bytes, "Failed to read from pipe");
@@ -1059,13 +1059,16 @@ OLD_COMPONENT_ID:
 
 	}
 
-	void Reader::Read(Parser& dst) {
+	void Reader::Read(Parser& dst) 
+	{
+		size_t throwaway = 0u;
+
 		// Read the version from the header
 		union {
 			PipeHeaderV1 header_v1;
 			PipeHeaderV2 header_v2;
 		};
-		_pipe.ReadBytesFast(&header_v1, sizeof(PipeHeaderV1), 10000);
+		if (_pipe.ForceReadBytes(&header_v1, sizeof(PipeHeaderV1), throwaway, 10000) == std::future_status::timeout) throw std::runtime_error("Reader::Read : Timed-out reading version number");
 
 		// Check for unsupported version
 		if (header_v1.version > VERSION_3) throw std::runtime_error("Reader::Read : BytePipe version not supported");
@@ -1078,7 +1081,7 @@ OLD_COMPONENT_ID:
 			swap_byte_order = e != ENDIAN_LITTLE;
 		} else {
 			// Read the version 2 header info
-			_pipe.ReadBytesFast(reinterpret_cast<uint8_t*>(&header_v2) + sizeof(PipeHeaderV1), sizeof(PipeHeaderV2) - sizeof(PipeHeaderV1), 10000);
+			if(_pipe.ForceReadBytes(reinterpret_cast<uint8_t*>(&header_v2) + sizeof(PipeHeaderV1), sizeof(PipeHeaderV2) - sizeof(PipeHeaderV1), throwaway, 10000) == std::future_status::timeout) throw std::runtime_error("Reader::Read : Timed-out reading V2 header");
 			swap_byte_order = e != (header_v2.little_endian ? ENDIAN_LITTLE : ENDIAN_BIG);
 
 			// These header options are not defined yet
@@ -1542,47 +1545,16 @@ OLD_COMPONENT_ID:
 
 
 	InputPipe::InputPipe() :
-		read2_faster(0),
-		unused_flags(0)
-	{}
-
-	InputPipe::~InputPipe() {
+		_current_packet(nullptr),
+		_current_packet_size(0u),
+		_current_packet_bytes_read(0u)
+	{
 
 	}
 
-	/*!
-	*	\brief Attempt to read bytes from the pipe
-	*	\param dst The address to write any bytes that can be read
-	*	\param bytes The maximum number of bytes to read
-	*	\return The number of bytes that were read from the pipe
-	*/
-	size_t InputPipe::ReadBytes(void* dst, const size_t bytes) {
-		size_t bytes_read = 0u;
-		const void* tmp = ReadBytes2(bytes, bytes_read);
-		memcpy(dst, tmp, bytes_read);
-		return bytes_read;
-	}
+	InputPipe::~InputPipe() 
+	{
 
-	/*!
-	*	\brief Attempt to read bytes from the pipe
-	*	\param bytes_requested The maximum number of bytes to read
-	*	\param bytes_actual The number of bytes that were read from the pipe
-	*	\return The bytes that were read from the pipe. This data is invalidated the next time ReadBytes or ReadBytes2 is called.
-	*	\see read2_faster
-	*/
-	const void* InputPipe::ReadBytes2(const size_t bytes_requested, size_t& bytes_actual) {
-		if (bytes_requested == 0u) {
-			bytes_actual = 0u;
-			return nullptr;
-		}
-
-		enum { LOCAL_BUFFER_SIZE = 4096 };
-		thread_local uint8_t buffer[LOCAL_BUFFER_SIZE];
-
-		bytes_actual = bytes_requested > LOCAL_BUFFER_SIZE ? LOCAL_BUFFER_SIZE : bytes_requested;
-		bytes_actual = ReadBytes(buffer, bytes_actual);
-
-		return buffer;
 	}
 
 	/*!
@@ -1590,55 +1562,48 @@ OLD_COMPONENT_ID:
 	*	\details Use of this function is no longer recommended. Throws exception on time-out. Timing out will leave the data in an undefined state as the number of bytes read will not be recorded.
 	*	\param dst The address to write any bytes that can be read
 	*	\param bytes The number of bytes to read
+		\param bytes_actual The number of bytes that were read from the pipe before a timeout
 	*	\param timout_ms The number of milliseconds before the read times-out. A value of -1 will force it to never time out.
 	*/
-	void InputPipe::ReadBytesFast(void* dst, size_t bytes, int timeout_ms) {
-		uint64_t t = 0u;
-		bool once = true;
+	std::future_status InputPipe::ForceReadBytes(void* dst, size_t bytes, size_t& bytes_actual, int timeout_ms)
+	{
+		const uint64_t t = timeout_ms == -1 ? 0u : GetTimeMSUint();
+		bytes_actual = 0u;
 
-		while (bytes > 0u) {
-			size_t bytes_read = 0u;
-			if (read2_faster) {
-				const void* tmp = ReadBytes2(bytes, bytes_read);
-				memcpy(dst, tmp, bytes_read);
-
-			} else {
-				bytes_read = ReadBytes(dst, bytes);
-			}
-
+		while (bytes > 0u) 
+		{
+			const size_t bytes_read = ReadBytes(dst, bytes);
 			bytes -= bytes_read;
 			dst = static_cast<uint8_t*>(dst) + bytes_read;
+			bytes_actual += bytes_read;
 
-			if (bytes > 0u && timeout_ms >= 0) {
+			if (bytes > 0u && timeout_ms >= 0) 
+			{
 				const uint64_t t2 = GetTimeMSUint();
-				if(once) t = t2;
-				once = false;
-				if (static_cast<int>(t2 - t) > timeout_ms) throw std::runtime_error("InputPipe::ReadBytesFast : Read timed-out");
+				if (static_cast<int>(t2 - t) > timeout_ms) return std::future_status::timeout;
 			}
-		}
-	}
 
-	/*!
-	*	\brief Get how many bytes are immediately available for reading.
-	*	\details More bytes may be available but will only be processed when ReadBytes or ReadBytes2 are called.
-	*	\return The number of bytes
-	*/
-	size_t InputPipe::GetBufferSize() const {
-		return 0u;
+		}
+
+		return std::future_status::ready;
 	}
 
 	// OutputPipe
 
-	OutputPipe::OutputPipe() {
+	OutputPipe::OutputPipe() 
+	{
 
 	}
 
-	OutputPipe::~OutputPipe() {
+	OutputPipe::~OutputPipe() 
+	{
 		
 	}
 
-	void OutputPipe::WriteBytes(const void** src, const size_t* bytes, const size_t count, int timeout_ms) {
-		for (size_t i = 0; i < count; ++i) {
+	void OutputPipe::WriteBytes(const void** src, const size_t* bytes, const size_t count, int timeout_ms) 
+	{
+		for (size_t i = 0; i < count; ++i) 
+		{
 			WriteBytesFast(src[i], bytes[i], timeout_ms == -1 ? -1 : timeout_ms / static_cast<int>(count));
 		}
 	}

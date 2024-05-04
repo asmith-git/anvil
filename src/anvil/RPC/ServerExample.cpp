@@ -60,11 +60,12 @@ namespace anvil { namespace RPC {
 	void ServerJsonTCP::ReadDataFromClient(BytePipe::Parser& parser) {
 #if ANVIL_JSON_SUPPORT
 		if (!_tcp) _tcp.reset(new BytePipe::TCPServerPipe(_port));
+		size_t throwaway = 0u;
 
 		std::string str;
 		char c = '?';
 		while (true) {
-			_tcp->ReadBytesFast(&c, 1u); //! \todo Optimise
+			_tcp->ForceReadBytes(&c, 1u, throwaway); //! \todo Optimise
 			if (c == '\0') break;
 			str += c;
 		}

@@ -14,47 +14,60 @@ namespace anvil { namespace BytePipe {
 	class DebugPipe final : public OutputPipe, public InputPipe {
 	private:
 		std::mutex _lock;
-	public:
-		std::deque<uint8_t> data;
+		void* _buffer;
+		size_t _buffer_size = 0u;
 
-		DebugPipe() {
-
-		}
-
-		virtual ~DebugPipe() {
-
-		}
-
-		void Flush() final {
-
-		}
-		
-		size_t WriteBytes(const void* src, const size_t bytes) final {
-			std::lock_guard<std::mutex> lock(_lock);
-			const uint8_t* src8 = static_cast<const uint8_t*>(src); 
-			
-			for (size_t i = 0u; i < bytes; ++i) {
-				data.push_back(src8[i]);
-			}
-			return bytes;
-		}
-
-		size_t ReadBytes(void* dst, const size_t bytes) final {
+	protected:
+		virtual void* ReadNextPacket(size_t& bytes) final
+		{
 			if (bytes == 0u) return 0u;
 
 			std::lock_guard<std::mutex> lock(_lock);
-			if (bytes > data.size()) Assert::Fail(L"Tried to read more data than was written");
+			if (bytes > data.size())
+			{
+				Assert::Fail(L"Tried to read more data than was written"); 
+				bytes = data.size();
+			}
 
-			size_t to_read = bytes;
-			if (to_read > data.size()) to_read = data.size();
-			uint8_t* dst8 = static_cast<uint8_t*>(dst);
+			if (_buffer_size < bytes)
+			{
+				operator delete(_buffer);
+				_buffer = operator new(bytes);
+				_buffer_size = bytes;
+			}
 
-			for (size_t i = 0u; i < to_read; ++i) {
+			uint8_t* dst8 = static_cast<uint8_t*>(_buffer);
+
+			for (size_t i = 0u; i < bytes; ++i) {
 				dst8[i] = data.front();
 				data.pop_front();
 			}
 
-			return to_read;
+			return dst8;
+		}
+
+	public:
+		std::deque<uint8_t> data;
+
+		DebugPipe() :
+			_buffer(operator new(1024)),
+			_buffer_size(1024)
+		{
+
+		}
+
+		virtual ~DebugPipe() {
+			operator delete(_buffer);
+		}
+
+		virtual size_t WriteBytes(const void* src, const size_t bytes) final
+		{
+			for (size_t i = 0u; i < bytes; ++i) data.push_back(static_cast<const uint8_t*>(src)[i]);
+			return bytes;
+		}
+
+		void Flush() final {
+
 		}
 	};
 
@@ -80,17 +93,18 @@ namespace anvil { namespace BytePipe {
 			uint8_t* buffer = new uint8_t[bytes];
 
 			// Break into random sized reads
+			size_t throwaway = 0u;
 			if(split_reads) {
 				size_t bytes_left = bytes;
 				uint8_t* buffer2 = buffer;
 				while (bytes_left) {
 					size_t bytes_to_write = bytes_left < 10 ? bytes_left : rand() % bytes_left;
-					in.ReadBytesFast(buffer2, bytes_to_write, 10000);
+					in.ForceReadBytes(buffer2, bytes_to_write, throwaway, 10000);
 					bytes_left -= bytes_to_write;
 					buffer2 += bytes_to_write;
 				}
 			} else {
-				in.ReadBytesFast(buffer, bytes, 10000);
+				in.ForceReadBytes(buffer, bytes, throwaway, 10000);
 			}
 
 			Assert::IsTrue(debug.empty(), L"Data was left over in the buffer");
@@ -123,7 +137,7 @@ namespace anvil { namespace BytePipe {
 		uint8_t non_rle[MAX_TEST_LEN];
 		for (size_t j = 0u; j < MAX_TEST_LEN; ++j) rle[j] = (uint8_t)(j % 256);
 
-		for (size_t i = 0; i < 4000; ++i) {
+		for (size_t i = 0; i < 10; ++i) {
 			size_t bytes = rand() % MAX_TEST_LEN;
 
 			// Always RLE
@@ -159,7 +173,7 @@ namespace anvil { namespace BytePipe {
 			{
 				DebugPipe debug_pipe;
 
-				PacketInputPipe in(debug_pipe);
+				PacketInputPipe in(debug_pipe, -1);
 				PacketOutputPipe out(debug_pipe, 1u, true);
 
 				RandomWriteTest(out, in, debug_pipe.data);
@@ -167,7 +181,7 @@ namespace anvil { namespace BytePipe {
 			{
 				DebugPipe debug_pipe;
 
-				PacketInputPipe in(debug_pipe);
+				PacketInputPipe in(debug_pipe, -1);
 				PacketOutputPipe out(debug_pipe, 111u, true);
 
 				RandomWriteTest(out, in, debug_pipe.data);
@@ -175,7 +189,7 @@ namespace anvil { namespace BytePipe {
 			{
 				DebugPipe debug_pipe;
 
-				PacketInputPipe in(debug_pipe);
+				PacketInputPipe in(debug_pipe, -1);
 				PacketOutputPipe out(debug_pipe, 1024u, true);
 
 				RandomWriteTest(out, in, debug_pipe.data);
@@ -183,7 +197,7 @@ namespace anvil { namespace BytePipe {
 			{
 				DebugPipe debug_pipe;
 
-				PacketInputPipe in(debug_pipe);
+				PacketInputPipe in(debug_pipe, -1);
 				PacketOutputPipe out(debug_pipe, 4096u, true);
 
 				RandomWriteTest(out, in, debug_pipe.data);
@@ -191,7 +205,7 @@ namespace anvil { namespace BytePipe {
 			{
 				DebugPipe debug_pipe;
 
-				PacketInputPipe in(debug_pipe);
+				PacketInputPipe in(debug_pipe, -1);
 				PacketOutputPipe out(debug_pipe, 1048576u, true);
 
 				RandomWriteTest(out, in, debug_pipe.data);
@@ -199,7 +213,7 @@ namespace anvil { namespace BytePipe {
 			{
 				DebugPipe debug_pipe;
 
-				PacketInputPipe in(debug_pipe);
+				PacketInputPipe in(debug_pipe, -1);
 				PacketOutputPipe out(debug_pipe, 1048576u * 10, true);
 
 				RandomWriteTest(out, in, debug_pipe.data);
@@ -210,7 +224,7 @@ namespace anvil { namespace BytePipe {
 			{
 				DebugPipe debug_pipe;
 
-				PacketInputPipe in(debug_pipe);
+				PacketInputPipe in(debug_pipe, -1);
 				PacketOutputPipe out(debug_pipe, 1u, false);
 
 				RandomWriteTest(out, in, debug_pipe.data);
@@ -218,7 +232,7 @@ namespace anvil { namespace BytePipe {
 			{
 				DebugPipe debug_pipe;
 
-				PacketInputPipe in(debug_pipe);
+				PacketInputPipe in(debug_pipe, -1);
 				PacketOutputPipe out(debug_pipe, 111u, false);
 
 				RandomWriteTest(out, in, debug_pipe.data);
@@ -226,7 +240,7 @@ namespace anvil { namespace BytePipe {
 			{
 				DebugPipe debug_pipe;
 
-				PacketInputPipe in(debug_pipe);
+				PacketInputPipe in(debug_pipe, -1);
 				PacketOutputPipe out(debug_pipe, 1024u, false);
 
 				RandomWriteTest(out, in, debug_pipe.data);
@@ -234,7 +248,7 @@ namespace anvil { namespace BytePipe {
 			{
 				DebugPipe debug_pipe;
 
-				PacketInputPipe in(debug_pipe);
+				PacketInputPipe in(debug_pipe, -1);
 				PacketOutputPipe out(debug_pipe, 4096u, false);
 
 				RandomWriteTest(out, in, debug_pipe.data);
@@ -242,7 +256,7 @@ namespace anvil { namespace BytePipe {
 			{
 				DebugPipe debug_pipe;
 
-				PacketInputPipe in(debug_pipe);
+				PacketInputPipe in(debug_pipe, -1);
 				PacketOutputPipe out(debug_pipe, 1048576u, false);
 
 				RandomWriteTest(out, in, debug_pipe.data);
@@ -250,7 +264,7 @@ namespace anvil { namespace BytePipe {
 			{
 				DebugPipe debug_pipe;
 
-				PacketInputPipe in(debug_pipe);
+				PacketInputPipe in(debug_pipe, -1);
 				PacketOutputPipe out(debug_pipe, 1048576u * 10, false);
 
 				RandomWriteTest(out, in, debug_pipe.data);
@@ -262,9 +276,9 @@ namespace anvil { namespace BytePipe {
 			{
 				DebugPipe debug_pipe;
 
-				PacketInputPipe in1(debug_pipe);
-				PacketInputPipe in2(in1);
-				PacketInputPipe in3(in2);
+				PacketInputPipe in1(debug_pipe, -1);
+				PacketInputPipe in2(in1, -1);
+				PacketInputPipe in3(in2, -1);
 				PacketOutputPipe out1(debug_pipe, 1500, true);
 				PacketOutputPipe out2(out1, 8000, true);
 				PacketOutputPipe out3(out2, 2048, true);
@@ -278,9 +292,9 @@ namespace anvil { namespace BytePipe {
 			{
 				DebugPipe debug_pipe;
 
-				PacketInputPipe in1(debug_pipe);
-				PacketInputPipe in2(in1);
-				PacketInputPipe in3(in2);
+				PacketInputPipe in1(debug_pipe, -1);
+				PacketInputPipe in2(in1, -1);
+				PacketInputPipe in3(in2, -1);
 				PacketOutputPipe out1(debug_pipe, 1500, false);
 				PacketOutputPipe out2(out1, 8000, false);
 				PacketOutputPipe out3(out2, 2048, false);

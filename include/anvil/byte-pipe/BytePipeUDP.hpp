@@ -21,26 +21,35 @@ namespace anvil { namespace BytePipe {
 
 	typedef TCPPort UDPPort;
 
-	class ANVIL_DLL_EXPORT UDPInputPipe final : public InputPipe {
+	class ANVIL_DLL_EXPORT UDPInputPipe final : public InputPipe 
+	{
 	private:
 #if ANVIL_OS == ANVIL_WINDOWS
 		SOCKET _socket;
 #endif
+		void* _buffer;
+	protected:
+		virtual void* ReadNextPacket(size_t& bytes) final;
+
 	public:
 		UDPInputPipe(UDPPort listen_port);
 		virtual ~UDPInputPipe();
-		size_t ReadBytes(void* dst, const size_t bytes) final;
 	};
 
-	class ANVIL_DLL_EXPORT UDPOutputPipe final : public OutputPipe {
+	class ANVIL_DLL_EXPORT UDPOutputPipe final : public OutputPipe 
+	{
 	private:
 #if ANVIL_OS == ANVIL_WINDOWS
 		SOCKET _socket;
 		SOCKADDR_IN _address;
 #endif
+
 	public:
 		UDPOutputPipe(IPAddress server_ip, UDPPort server_port);
 		virtual ~UDPOutputPipe();
+
+		// Inherited from OutputPipe
+
 		size_t WriteBytes(const void* src, const size_t bytes) final;
 		void Flush() final;
 	};

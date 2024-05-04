@@ -30,13 +30,19 @@ namespace anvil { namespace BytePipe {
 		\details The number of bits sent to ReadBytes() must be divisble by 4 otherwise an exception will be thrown.
 		\see RawHamming74OutputPipe
 	*/
-	class ANVIL_DLL_EXPORT RawHamming74InputPipe final : public InputPipe {
+	class ANVIL_DLL_EXPORT RawHamming74InputPipe final : public InputPipe 
+	{
 	private:
 		InputPipe& _downstream_pipe;
+
+	protected:
+		virtual void* ReadNextPacket(size_t& bytes) final;
+
 	public:
-		RawHamming74InputPipe(InputPipe& downstream_pipe);
+		friend class Hamming74InputPipe;
+
+		RawHamming74InputPipe(InputPipe& downstream_pipe, int timeout_ms = -1);
 		virtual ~RawHamming74InputPipe();
-		size_t ReadBytes(void* dst, const size_t bytes) final;
 	};
 
 	/*!
@@ -44,12 +50,15 @@ namespace anvil { namespace BytePipe {
 		\details The number of bits sent to WriteBytes() must be divisble by 4 otherwise an exception will be thrown.
 		\see RawHamming74InputPipe
 	*/
-	class ANVIL_DLL_EXPORT RawHamming74OutputPipe final : public OutputPipe {
+	class ANVIL_DLL_EXPORT RawHamming74OutputPipe final : public OutputPipe 
+	{
 	private:
 		OutputPipe& _downstream_pipe;
+
 	public:
-		RawHamming74OutputPipe(OutputPipe& downstream_pipe);
+		RawHamming74OutputPipe(OutputPipe& downstream_pipe, int timeout_ms = -1);
 		virtual ~RawHamming74OutputPipe();
+
 		size_t WriteBytes(const void* src, const size_t bytes) final;
 		void Flush() final;
 	};
@@ -60,14 +69,18 @@ namespace anvil { namespace BytePipe {
 		This adds some additional overhead, use RawHamming74InputPipe to avoid.
 		\see Hamming74OutputPipe
 	*/
-	class ANVIL_DLL_EXPORT Hamming74InputPipe final : public InputPipe {
+	class ANVIL_DLL_EXPORT Hamming74InputPipe final : public InputPipe 
+	{
 	private:
 		PacketInputPipe _packet_pipe;
 		RawHamming74InputPipe _hamming_pipe;
+
+	protected:
+		virtual void* ReadNextPacket(size_t& bytes) final;
+
 	public:
-		Hamming74InputPipe(InputPipe& downstream_pipe);
+		Hamming74InputPipe(InputPipe& downstream_pipe, int timeout_ms = -1);
 		virtual ~Hamming74InputPipe();
-		size_t ReadBytes(void* dst, const size_t bytes) final;
 	};
 
 	/*!
@@ -76,10 +89,12 @@ namespace anvil { namespace BytePipe {
 		This adds some additional overhead, use RawHamming74OutputPipe to avoid.
 		\see Hamming74InputPipe
 	*/
-	class ANVIL_DLL_EXPORT Hamming74OutputPipe final : public OutputPipe {
+	class ANVIL_DLL_EXPORT Hamming74OutputPipe final : public OutputPipe 
+	{
 	private:
 		RawHamming74OutputPipe _hamming_pipe;
 		PacketOutputPipe _packet_pipe;
+
 	public:
 		Hamming74OutputPipe(OutputPipe& downstream_pipe, size_t block_size = 256);
 		virtual ~Hamming74OutputPipe();
@@ -92,11 +107,13 @@ namespace anvil { namespace BytePipe {
 		\details The number of bits sent to WriteBytes() must be divisble by 11 otherwise an exception will be thrown.
 		\see RawHamming1511InputPipe
 	*/
-	class ANVIL_DLL_EXPORT RawHamming1511OutputPipe final : public OutputPipe {
+	class ANVIL_DLL_EXPORT RawHamming1511OutputPipe final : public OutputPipe 
+	{
 	private:
 		OutputPipe& _downstream_pipe;
+
 	public:
-		RawHamming1511OutputPipe(OutputPipe& downstream_pipe);
+		RawHamming1511OutputPipe(OutputPipe& downstream_pipe, int timeout_ms = -1);
 		virtual ~RawHamming1511OutputPipe();
 		size_t WriteBytes(const void* src, const size_t bytes) final;
 		void Flush() final;
@@ -107,13 +124,19 @@ namespace anvil { namespace BytePipe {
 		\details The number of bits sent to ReadBytes() must be divisble by 11 otherwise an exception will be thrown.
 		\see RawHamming1511OutputPipe
 	*/
-	class ANVIL_DLL_EXPORT RawHamming1511InputPipe final : public InputPipe {
+	class ANVIL_DLL_EXPORT RawHamming1511InputPipe final : public InputPipe 
+	{
 	private:
 		InputPipe& _downstream_pipe;
+
+	protected:
+		virtual void* ReadNextPacket(size_t& bytes) final;
+
 	public:
-		RawHamming1511InputPipe(InputPipe& downstream_pipe);
+		friend class Hamming1511InputPipe;
+
+		RawHamming1511InputPipe(InputPipe& downstream_pipe, int timeout_ms = -1);
 		virtual ~RawHamming1511InputPipe();
-		size_t ReadBytes(void* dst, const size_t bytes) final;
 	};
 
 	/*!
@@ -122,14 +145,18 @@ namespace anvil { namespace BytePipe {
 		This adds some additional overhead, use RawHamming1511InputPipe to avoid.
 		\see Hamming1511OutputPipe
 	*/
-	class ANVIL_DLL_EXPORT Hamming1511InputPipe final : public InputPipe {
+	class ANVIL_DLL_EXPORT Hamming1511InputPipe final : public InputPipe 
+	{
 	private:
 		PacketInputPipe _packet_pipe;
 		RawHamming1511InputPipe _hamming_pipe;
+
+	protected:
+		virtual void* ReadNextPacket(size_t& bytes) final;
+
 	public:
-		Hamming1511InputPipe(InputPipe& downstream_pipe);
+		Hamming1511InputPipe(InputPipe& downstream_pipe, int timeout_ms = -1);
 		virtual ~Hamming1511InputPipe();
-		size_t ReadBytes(void* dst, const size_t bytes) final;
 	};
 
 	/*!
@@ -138,10 +165,12 @@ namespace anvil { namespace BytePipe {
 		This adds some additional overhead, use RawHamming1511OutputPipe to avoid.
 		\see Hamming1511InputPipe
 	*/
-	class ANVIL_DLL_EXPORT Hamming1511OutputPipe final : public OutputPipe {
+	class ANVIL_DLL_EXPORT Hamming1511OutputPipe final : public OutputPipe 
+	{
 	private:
 		RawHamming1511OutputPipe _hamming_pipe;
 		PacketOutputPipe _packet_pipe;
+
 	public:
 		Hamming1511OutputPipe(OutputPipe& downstream_pipe, size_t block_size = 264);
 		virtual ~Hamming1511OutputPipe();

@@ -26,10 +26,12 @@ namespace anvil { namespace BytePipe {
 		\brief An output stream for binary data.
 		\see InputPipe
 	*/
-	class ANVIL_DLL_EXPORT OutputPipe {
+	class ANVIL_DLL_EXPORT OutputPipe 
+	{
 	public:
 		OutputPipe();
 		virtual ~OutputPipe();
+
 		virtual size_t WriteBytes(const void* src, const size_t bytes) = 0;
 		virtual void WriteBytes(const void** src, const size_t* bytes_requested, const size_t count, int timeout_ms = -1);
 		virtual void Flush() = 0;
@@ -43,14 +45,16 @@ namespace anvil { namespace BytePipe {
 		\brief Writes binary serialised data into an OutputPipe
 		\see Reader
 	*/
-	class ANVIL_DLL_EXPORT Writer final : public Parser {
+	class ANVIL_DLL_EXPORT Writer final : public Parser 
+	{
 	private:
 		Writer(Writer&&) = delete;
 		Writer(const Writer&) = delete;
 		Writer& operator=(Writer&&) = delete;
 		Writer& operator=(const Writer&) = delete;
 
-		enum State : uint8_t {
+		enum State : uint8_t 
+		{
 			STATE_CLOSED,
 			STATE_NORMAL,
 			STATE_ARRAY,
@@ -73,6 +77,7 @@ namespace anvil { namespace BytePipe {
 		void _OnPrimitiveArray(const void* ptr, const size_t size, const uint8_t id);
 
 		Writer(OutputPipe& pipe, Version version, bool swap_byte_order);
+
 	public:
 		Writer(OutputPipe& pipe);
 		Writer(OutputPipe& pipe, Version version);

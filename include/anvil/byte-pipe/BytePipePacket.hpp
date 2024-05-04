@@ -68,7 +68,7 @@ namespace anvil { namespace BytePipe {
 	static_assert(offsetof(PacketHeader, v2) == 0u, "Expected PacketHeader::v2 to be located at byte offset 0");
 	static_assert(offsetof(PacketHeader, v3) == 0u, "Expected PacketHeader::v3 to be located at byte offset 0");
 
-	class ANVIL_DLL_EXPORT PacketInputPipe : public InputPipe {
+	class ANVIL_DLL_EXPORT PacketInputPipe final : public InputPipe {
 	private:
 		uint8_t* _payload;
 		size_t _payload_capacity;
@@ -77,16 +77,15 @@ namespace anvil { namespace BytePipe {
 		int _timeout_ms;
 		InputPipe& _downstream_pipe;
 
-		void ReadNextPacket();
+		void ReadNextPacket2();
+	protected:
+		virtual void* ReadNextPacket(size_t& bytes) final;
 	public:
-		PacketInputPipe(InputPipe& downstream_pipe, int timeout_ms = -1);
+		PacketInputPipe(InputPipe& downstream_pipe, int timeout_ms);
 		virtual ~PacketInputPipe();
-		size_t ReadBytes(void* dst, const size_t bytes) final;
-		virtual const void* ReadBytes2(const size_t bytes_requested, size_t& bytes_actual);
-		size_t GetBufferSize() const final;
 	};
 
-	class ANVIL_DLL_EXPORT PacketOutputPipe : public OutputPipe {
+	class ANVIL_DLL_EXPORT PacketOutputPipe final : public OutputPipe {
 	private:
 		OutputPipe& _downstream_pipe;
 		uint8_t* _payload;

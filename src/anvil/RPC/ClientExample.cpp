@@ -28,10 +28,11 @@ namespace anvil { namespace RPC {
 	
 	BytePipe::Value ClientJsonTCP::ReadFromServer() {
 #if ANVIL_JSON_SUPPORT
+		size_t throwaway = 0u;
 		std::string str;
 		char c = '?';
 		while (true) {
-			_tcp.ReadBytesFast(&c, 1u); //! \todo Optimise
+			_tcp.ForceReadBytes(&c, 1u, throwaway); //! \todo Optimise
 			if (c == '\0') break;
 			str += c;
 		}

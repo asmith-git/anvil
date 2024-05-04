@@ -17,11 +17,13 @@
 
 #include "anvil/Core.hpp"
 
-namespace anvil { namespace BytePipe {
-	enum Version : uint8_t {
-		VERSION_1 = 1,
-		VERSION_2 = 2, // Endianness
-		VERSION_3 = 3, // String component IDs
+namespace anvil { namespace BytePipe 
+{
+	enum Version : uint8_t 
+	{
+		VERSION_1 = 1u,
+		VERSION_2 = 2u, // Endianness
+		VERSION_3 = 3u, // String component IDs
 	};
 }}
 

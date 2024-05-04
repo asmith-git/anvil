@@ -42,7 +42,7 @@ public:
 
 	}
 
-	size_t ReadBytes(void* dst, const size_t bytes) final {
+	virtual size_t ReadBytes(void* dst, const size_t bytes) final {
 		if (bytes == 0u) return 0u;
 
 		std::lock_guard<std::mutex> lock(_lock);
@@ -329,9 +329,10 @@ static void UDPTest() {
 	std::thread server([port]()->void {
 		anvil::BytePipe::UDPInputPipe pipe(port);
 
+		size_t throwaway = 0u;
 		for (int i = 0; i < 100; ++i) {
 			int j = 0;
-			pipe.ReadBytesFast(&j, sizeof(j));
+			pipe.ForceReadBytes(&j, sizeof(j), throwaway);
 			std::cout << j << std::endl;
 		}
 	});
@@ -354,63 +355,63 @@ static void UDPTest() {
 	server.join();
 }
 
-static void TCPTest() {
-
-	int port = 1234;
-
-	DebugPipe debugpipe;
-
-	std::thread server([port, &debugpipe]()->void {
-		std::unique_ptr<anvil::BytePipe::InputPipe>ipacketpipe1(new anvil::BytePipe::PacketInputPipe(debugpipe));
-		std::unique_ptr<anvil::BytePipe::InputPipe>ipacketpipe2(new anvil::BytePipe::PacketInputPipe(*ipacketpipe1));
-
-		//anvil::BytePipe::TCPServerPipe itcppipe(port);
-		//anvil::BytePipe::PacketInputPipe ipacketpipe1(debugpipe);
-		//anvil::BytePipe::PacketInputPipe ipacketpipe2(ipacketpipe1);
-		//anvil::BytePipe::RLEDecoderPipe<> rlepipe(ipacketpipe2);
-		anvil::BytePipe::InputPipe& ipipe = *ipacketpipe2;
-
-		//ipacketpipe1->debug_name = "PacketPipe 1";
-		//ipacketpipe2->debug_name = "PacketPipe 2";
-
-		int count = 0;
-		ipipe.ReadBytesFast(&count, sizeof(count));
-
-		for (int i = 0; i < count; ++i) {
-			int val = 0;
-			ipipe.ReadBytesFast(&val, sizeof(val));
-			std::cout << ("Server reading " + std::to_string(val) + "\n");
-		}
-	});
-
-	std::thread client([port, &debugpipe]()->void {
-		anvil::BytePipe::IPAddress ip;
-		ip.u8[0] = 127;
-		ip.u8[1] = 0;
-		ip.u8[2] = 0;
-		ip.u8[3] = 1;
-
-		//anvil::BytePipe::TCPClientPipe otcppipe(ip, port);
-		anvil::BytePipe::PacketOutputPipe opacketpipe1(debugpipe, 500, true);
-		anvil::BytePipe::PacketOutputPipe opacketpipe2(opacketpipe1, 1000, true);
-		//anvil::BytePipe::RLEEncoderPipe<> orlepipe(packetpipe2);
-
-		anvil::BytePipe::OutputPipe& opipe = opacketpipe2;
-
-		int count = 2000;
-		opipe.WriteBytesFast(&count, sizeof(count));
-
-		for (int i = 0; i < count; ++i) {
-			int val = i;
-			std::cout << ("Client writing " + std::to_string(val) + "\n");
-			opipe.WriteBytesFast(&val, sizeof(val));
-		}
-		opipe.Flush();
-	});
-
-	client.join();
-	server.join();
-}
+//static void TCPTest() {
+//
+//	int port = 1234;
+//
+//	DebugPipe debugpipe;
+//
+//	std::thread server([port, &debugpipe]()->void {
+//		std::unique_ptr<anvil::BytePipe::InputPipe>ipacketpipe1(new anvil::BytePipe::PacketInputPipe(debugpipe));
+//		std::unique_ptr<anvil::BytePipe::InputPipe>ipacketpipe2(new anvil::BytePipe::PacketInputPipe(*ipacketpipe1));
+//
+//		//anvil::BytePipe::TCPServerPipe itcppipe(port);
+//		//anvil::BytePipe::PacketInputPipe ipacketpipe1(debugpipe);
+//		//anvil::BytePipe::PacketInputPipe ipacketpipe2(ipacketpipe1);
+//		//anvil::BytePipe::RLEDecoderPipe<> rlepipe(ipacketpipe2);
+//		anvil::BytePipe::InputPipe& ipipe = *ipacketpipe2;
+//
+//		//ipacketpipe1->debug_name = "PacketPipe 1";
+//		//ipacketpipe2->debug_name = "PacketPipe 2";
+//
+//		int count = 0;
+//		ipipe.ReadBytesFast(&count, sizeof(count));
+//
+//		for (int i = 0; i < count; ++i) {
+//			int val = 0;
+//			ipipe.ReadBytesFast(&val, sizeof(val));
+//			std::cout << ("Server reading " + std::to_string(val) + "\n");
+//		}
+//	});
+//
+//	std::thread client([port, &debugpipe]()->void {
+//		anvil::BytePipe::IPAddress ip;
+//		ip.u8[0] = 127;
+//		ip.u8[1] = 0;
+//		ip.u8[2] = 0;
+//		ip.u8[3] = 1;
+//
+//		//anvil::BytePipe::TCPClientPipe otcppipe(ip, port);
+//		anvil::BytePipe::PacketOutputPipe opacketpipe1(debugpipe, 500, true);
+//		anvil::BytePipe::PacketOutputPipe opacketpipe2(opacketpipe1, 1000, true);
+//		//anvil::BytePipe::RLEEncoderPipe<> orlepipe(packetpipe2);
+//
+//		anvil::BytePipe::OutputPipe& opipe = opacketpipe2;
+//
+//		int count = 2000;
+//		opipe.WriteBytesFast(&count, sizeof(count));
+//
+//		for (int i = 0; i < count; ++i) {
+//			int val = i;
+//			std::cout << ("Client writing " + std::to_string(val) + "\n");
+//			opipe.WriteBytesFast(&val, sizeof(val));
+//		}
+//		opipe.Flush();
+//	});
+//
+//	client.join();
+//	server.join();
+//}
 
 static void ConsoleTest() {
 	using namespace anvil;
@@ -702,223 +703,223 @@ void Base64Test2() {
 	//if(i != 0) throw 0;
 }
 
-void RLETest2() {
-	auto  WriteTest = [](anvil::BytePipe::OutputPipe & out, anvil::BytePipe::InputPipe & in, const void* src, size_t bytes, DebugPipe& debug_buffer, bool split_writes, bool split_reads)->void {
-		try {
-			if(! debug_buffer.buffer.empty())
-				throw L"Buffer is not empty";
-
-			//anvil::BytePipe::g_debug_rle = bytes == 6306;
-			//if (anvil::BytePipe::g_debug_rle) {
-			//	std::cout << "\x1B[2J\x1B[H";
-			//	std::cout << "---------------START-TEST---------------" << std::endl;
-			//}
-
-			debug_buffer.bytes_read = 0;
-			debug_buffer.bytes_written = 0;
-
-			// Break into random sized writes
-			if(split_writes) {
-				size_t bytes_left = bytes;
-				const uint8_t* src8 = static_cast<const uint8_t*>(src);
-				while (bytes_left) {
-					size_t bytes_to_write = bytes_left < 10 ? bytes_left : rand() % bytes_left;
-					out.WriteBytesFast(src8, bytes_to_write, 10000);
-					bytes_left -= bytes_to_write;
-					src8 += bytes_to_write;
-				}
-
-			} else {
-				out.WriteBytesFast(src, bytes, 10000);
-			}
-			out.Flush();
-
-			uint8_t* buffer = new uint8_t[bytes];
-
-			// Break into random sized reads
-			if (split_reads) {
-				size_t bytes_left = bytes;
-				uint8_t* buffer2 = buffer;
-				while (bytes_left) {
-					size_t bytes_to_write = bytes_left < 10 ? bytes_left : rand() % bytes_left;
-					in.ReadBytesFast(buffer2, bytes_to_write, 10000);
-					bytes_left -= bytes_to_write;
-					buffer2 += bytes_to_write;
-				}
-			} else {
-				in.ReadBytesFast(buffer, bytes, 10000);
-			}
-
-			if (!debug_buffer.buffer.empty())
-				throw L"Buffer is not empty";
-
-			if (debug_buffer.bytes_read != debug_buffer.bytes_written)
-				throw L"Number of bytes written does not match bytes read";
-
-			if(!std::memcmp(buffer, src, bytes) == 0) 
-				throw L"Memory read did not match what was written";
-
-			delete[] buffer;
-
-		}
-		catch (std::exception& e) {
-			std::cerr << e.what() << std::endl;
-			throw e;
-		}
-		catch (...) {
-			throw L"Caught something that wasn't a std::exception";
-		}
-	};
-
-	auto RandomWriteTest = [&WriteTest](anvil::BytePipe::OutputPipe& out, anvil::BytePipe::InputPipe& in, DebugPipe& debug_buffer)->void {
-		//{
-		//	size_t bytes = 4604;
-		//	uint8_t* data = bytes == 0u ? nullptr : new uint8_t[bytes];
-		//	//memset(data, 128, bytes);
-		//	for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)rand() % 255;
-
-		//	WriteTest(out, in, data, bytes, debug_buffer);
-
-		//	if (data) delete[] data;
-		//}
-		//return;
-
-		//WriteTest(out, in, nullptr, 0, debug_buffer);
-
-		//{
-		//	uint32_t buffer = 12345678u;
-		//	WriteTest(out, in, &buffer, sizeof(buffer), debug_buffer);
-		//}
-
-		for (size_t i = 0; i < 200; ++i) {
-			size_t bytes = rand() % 10000;
-			uint8_t* data = bytes == 0u ? nullptr : new uint8_t[bytes]; 
-
-			// Always RLE
-			memset(data, 128, bytes);
-			WriteTest(out, in, data, bytes, debug_buffer, false, false);
-			WriteTest(out, in, data, bytes, debug_buffer, true, true);
-
-			// Never RLE
-			for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)j % 256;
-			WriteTest(out, in, data, bytes, debug_buffer, false, false);
-			WriteTest(out, in, data, bytes, debug_buffer, true, true);
-
-			// Random
-			for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)rand() % 256;
-			WriteTest(out, in, data, bytes, debug_buffer, false, false);
-			WriteTest(out, in, data, bytes, debug_buffer, true, true);
-
-			if (data) delete[] data;
-		}
-	};
-
-	{
-		DebugPipe debug_pipe;
-		typedef uint8_t RLEIndex;
-		typedef uint8_t RLEWord;
-		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
-		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
-
-		RandomWriteTest(out, in, debug_pipe);
-	}
-
-	{
-		DebugPipe debug_pipe;
-		typedef uint8_t RLEIndex;
-		typedef uint16_t RLEWord;
-		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
-		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
-
-		RandomWriteTest(out, in, debug_pipe);
-	}
-
-	{
-		DebugPipe debug_pipe;
-		typedef uint8_t RLEIndex;
-		typedef uint32_t RLEWord;
-		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
-		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
-
-		RandomWriteTest(out, in, debug_pipe);
-	}
-
-	{
-		DebugPipe debug_pipe;
-		typedef uint8_t RLEIndex;
-		typedef uint64_t RLEWord;
-		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
-		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
-
-		RandomWriteTest(out, in, debug_pipe);
-	}
-
-	{
-		DebugPipe debug_pipe;
-		typedef uint16_t RLEIndex;
-		typedef uint8_t RLEWord;
-		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
-		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
-
-		RandomWriteTest(out, in, debug_pipe);
-	}
-
-	{
-		DebugPipe debug_pipe;
-		typedef uint16_t RLEIndex;
-		typedef uint16_t RLEWord;
-		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
-		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
-
-		RandomWriteTest(out, in, debug_pipe);
-	}
-
-	{
-		DebugPipe debug_pipe;
-		typedef uint16_t RLEIndex;
-		typedef uint32_t RLEWord;
-		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
-		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
-
-		RandomWriteTest(out, in, debug_pipe);
-	}
-
-	{
-		DebugPipe debug_pipe;
-		typedef uint16_t RLEIndex;
-		typedef uint64_t RLEWord;
-		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
-		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
-
-		RandomWriteTest(out, in, debug_pipe);
-	}
-
-	{
-		DebugPipe debug_pipe;
-		typedef uint64_t RLEIndex;
-		typedef uint8_t RLEWord;
-		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
-		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
-
-		RandomWriteTest(out, in, debug_pipe);
-	}
-
-	//enum { SIZE = 512 };
-	//uint8_t buffer[SIZE];
-	////memset(buffer, 128, SIZE);
-	//for (int i = 0; i < SIZE; ++i) buffer[i] = i % 255;
-
-	//out.WriteBytesFast(buffer, SIZE);
-	//out.Flush();
-
-	//uint8_t read_buffer[SIZE];
-	//in.ReadBytesFast(read_buffer, SIZE);
-
-	//if (memcmp(buffer, read_buffer, SIZE) != 0)
-	//	throw 0;
-
-	return;
-}
+//void RLETest2() {
+//	auto  WriteTest = [](anvil::BytePipe::OutputPipe & out, anvil::BytePipe::InputPipe & in, const void* src, size_t bytes, DebugPipe& debug_buffer, bool split_writes, bool split_reads)->void {
+//		try {
+//			if(! debug_buffer.buffer.empty())
+//				throw L"Buffer is not empty";
+//
+//			//anvil::BytePipe::g_debug_rle = bytes == 6306;
+//			//if (anvil::BytePipe::g_debug_rle) {
+//			//	std::cout << "\x1B[2J\x1B[H";
+//			//	std::cout << "---------------START-TEST---------------" << std::endl;
+//			//}
+//
+//			debug_buffer.bytes_read = 0;
+//			debug_buffer.bytes_written = 0;
+//
+//			// Break into random sized writes
+//			if(split_writes) {
+//				size_t bytes_left = bytes;
+//				const uint8_t* src8 = static_cast<const uint8_t*>(src);
+//				while (bytes_left) {
+//					size_t bytes_to_write = bytes_left < 10 ? bytes_left : rand() % bytes_left;
+//					out.WriteBytesFast(src8, bytes_to_write, 10000);
+//					bytes_left -= bytes_to_write;
+//					src8 += bytes_to_write;
+//				}
+//
+//			} else {
+//				out.WriteBytesFast(src, bytes, 10000);
+//			}
+//			out.Flush();
+//
+//			uint8_t* buffer = new uint8_t[bytes];
+//
+//			// Break into random sized reads
+//			if (split_reads) {
+//				size_t bytes_left = bytes;
+//				uint8_t* buffer2 = buffer;
+//				while (bytes_left) {
+//					size_t bytes_to_write = bytes_left < 10 ? bytes_left : rand() % bytes_left;
+//					in.ReadBytesFast(buffer2, bytes_to_write, 10000);
+//					bytes_left -= bytes_to_write;
+//					buffer2 += bytes_to_write;
+//				}
+//			} else {
+//				in.ReadBytesFast(buffer, bytes, 10000);
+//			}
+//
+//			if (!debug_buffer.buffer.empty())
+//				throw L"Buffer is not empty";
+//
+//			if (debug_buffer.bytes_read != debug_buffer.bytes_written)
+//				throw L"Number of bytes written does not match bytes read";
+//
+//			if(!std::memcmp(buffer, src, bytes) == 0) 
+//				throw L"Memory read did not match what was written";
+//
+//			delete[] buffer;
+//
+//		}
+//		catch (std::exception& e) {
+//			std::cerr << e.what() << std::endl;
+//			throw e;
+//		}
+//		catch (...) {
+//			throw L"Caught something that wasn't a std::exception";
+//		}
+//	};
+//
+//	auto RandomWriteTest = [&WriteTest](anvil::BytePipe::OutputPipe& out, anvil::BytePipe::InputPipe& in, DebugPipe& debug_buffer)->void {
+//		//{
+//		//	size_t bytes = 4604;
+//		//	uint8_t* data = bytes == 0u ? nullptr : new uint8_t[bytes];
+//		//	//memset(data, 128, bytes);
+//		//	for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)rand() % 255;
+//
+//		//	WriteTest(out, in, data, bytes, debug_buffer);
+//
+//		//	if (data) delete[] data;
+//		//}
+//		//return;
+//
+//		//WriteTest(out, in, nullptr, 0, debug_buffer);
+//
+//		//{
+//		//	uint32_t buffer = 12345678u;
+//		//	WriteTest(out, in, &buffer, sizeof(buffer), debug_buffer);
+//		//}
+//
+//		for (size_t i = 0; i < 200; ++i) {
+//			size_t bytes = rand() % 10000;
+//			uint8_t* data = bytes == 0u ? nullptr : new uint8_t[bytes]; 
+//
+//			// Always RLE
+//			memset(data, 128, bytes);
+//			WriteTest(out, in, data, bytes, debug_buffer, false, false);
+//			WriteTest(out, in, data, bytes, debug_buffer, true, true);
+//
+//			// Never RLE
+//			for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)j % 256;
+//			WriteTest(out, in, data, bytes, debug_buffer, false, false);
+//			WriteTest(out, in, data, bytes, debug_buffer, true, true);
+//
+//			// Random
+//			for (size_t j = 0u; j < bytes; ++j) data[j] = (uint8_t)rand() % 256;
+//			WriteTest(out, in, data, bytes, debug_buffer, false, false);
+//			WriteTest(out, in, data, bytes, debug_buffer, true, true);
+//
+//			if (data) delete[] data;
+//		}
+//	};
+//
+//	{
+//		DebugPipe debug_pipe;
+//		typedef uint8_t RLEIndex;
+//		typedef uint8_t RLEWord;
+//		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+//		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+//
+//		RandomWriteTest(out, in, debug_pipe);
+//	}
+//
+//	{
+//		DebugPipe debug_pipe;
+//		typedef uint8_t RLEIndex;
+//		typedef uint16_t RLEWord;
+//		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+//		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+//
+//		RandomWriteTest(out, in, debug_pipe);
+//	}
+//
+//	{
+//		DebugPipe debug_pipe;
+//		typedef uint8_t RLEIndex;
+//		typedef uint32_t RLEWord;
+//		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+//		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+//
+//		RandomWriteTest(out, in, debug_pipe);
+//	}
+//
+//	{
+//		DebugPipe debug_pipe;
+//		typedef uint8_t RLEIndex;
+//		typedef uint64_t RLEWord;
+//		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+//		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+//
+//		RandomWriteTest(out, in, debug_pipe);
+//	}
+//
+//	{
+//		DebugPipe debug_pipe;
+//		typedef uint16_t RLEIndex;
+//		typedef uint8_t RLEWord;
+//		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+//		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+//
+//		RandomWriteTest(out, in, debug_pipe);
+//	}
+//
+//	{
+//		DebugPipe debug_pipe;
+//		typedef uint16_t RLEIndex;
+//		typedef uint16_t RLEWord;
+//		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+//		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+//
+//		RandomWriteTest(out, in, debug_pipe);
+//	}
+//
+//	{
+//		DebugPipe debug_pipe;
+//		typedef uint16_t RLEIndex;
+//		typedef uint32_t RLEWord;
+//		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+//		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+//
+//		RandomWriteTest(out, in, debug_pipe);
+//	}
+//
+//	{
+//		DebugPipe debug_pipe;
+//		typedef uint16_t RLEIndex;
+//		typedef uint64_t RLEWord;
+//		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+//		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+//
+//		RandomWriteTest(out, in, debug_pipe);
+//	}
+//
+//	{
+//		DebugPipe debug_pipe;
+//		typedef uint64_t RLEIndex;
+//		typedef uint8_t RLEWord;
+//		anvil::BytePipe::RLEDecoderPipe<RLEIndex, RLEWord> in(debug_pipe);
+//		anvil::BytePipe::RLEEncoderPipe<RLEIndex, RLEWord> out(debug_pipe);
+//
+//		RandomWriteTest(out, in, debug_pipe);
+//	}
+//
+//	//enum { SIZE = 512 };
+//	//uint8_t buffer[SIZE];
+//	////memset(buffer, 128, SIZE);
+//	//for (int i = 0; i < SIZE; ++i) buffer[i] = i % 255;
+//
+//	//out.WriteBytesFast(buffer, SIZE);
+//	//out.Flush();
+//
+//	//uint8_t read_buffer[SIZE];
+//	//in.ReadBytesFast(read_buffer, SIZE);
+//
+//	//if (memcmp(buffer, read_buffer, SIZE) != 0)
+//	//	throw 0;
+//
+//	return;
+//}
 
 void FillImage(anvil::compute::Image& img, anvil::compute::Vector value) {
 	size_t w = img.GetHeight();
@@ -1171,8 +1172,8 @@ int main()
 	ImageRoiTest();
 	return 0;
 
-	RLETest2();
-	return 0;
+	//RLETest2();
+	//return 0;
 
 	Base64Test2();
 	return 0;
@@ -1201,8 +1202,8 @@ int main()
 	//UDPTest();
 	//return 0;
 
-	TCPTest();
-	return 0;
+	//TCPTest();
+	//return 0;
 
 	ConsoleTest();
 	return 0;

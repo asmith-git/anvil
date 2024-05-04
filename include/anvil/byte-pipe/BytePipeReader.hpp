@@ -19,6 +19,7 @@
 #include <array>
 #include <deque>
 #include <list>
+#include <future>
 #include <map>
 #include "anvil/byte-pipe/BytePipeCore.hpp"
 #include "anvil/byte-pipe/BytePipeEndian.hpp"
@@ -33,20 +34,79 @@ namespace anvil { namespace BytePipe {
 		\brief An input stream for binary data.
 		\see OutputPipe
 	*/
-	class ANVIL_DLL_EXPORT InputPipe {
+	class ANVIL_DLL_EXPORT InputPipe 
+	{
+	private:
+		const void* _current_packet;				//!< Starting address of the current packet, null if there is no packet
+		size_t _current_packet_size;		//!< The size of the current packet in bytes
+		size_t _current_packet_bytes_read;	//!< How many bytes have been read from the current packet
+
+		inline void PrepareNextPacket(const size_t bytes_requested)
+		{
+			if (_current_packet_bytes_read == _current_packet_size)
+			{
+				_current_packet = nullptr;
+				_current_packet_bytes_read = 0u;
+				_current_packet_size = bytes_requested;
+				_current_packet = ReadNextPacket(_current_packet_size);
+			}
+		}
+
+	protected:
+		virtual void* ReadNextPacket(size_t& bytes) = 0;
+
 	public:
-		#pragma warning( disable : 4201) // Unnamed struct.
-		struct {
-			uint8_t read2_faster : 1;	//!< Set to 1 if the next call to ReadBytes2 will be faster than calling ReadBytes instead
-			uint8_t unused_flags : 7;
-		};
+		InputPipe(InputPipe&&) = delete;
+		InputPipe(const InputPipe&) = delete;
+		InputPipe& operator=(InputPipe&&) = delete;
+		InputPipe& operator=(const InputPipe&) = delete;
 
 		InputPipe();
 		virtual ~InputPipe();
-		virtual size_t ReadBytes(void* dst, const size_t bytes);
-		virtual void ReadBytesFast(void* dst, size_t bytes, int timeout_ms = -1);
-		virtual const void* ReadBytes2(const size_t bytes_requested, size_t& bytes_actual);
-		virtual size_t GetBufferSize() const;
+
+		/*!
+		*	\brief Attempt to read bytes from the pipe
+		*	\param bytes_requested The maximum number of bytes to read
+		*	\param bytes_actual The number of bytes that were read from the pipe
+		*	\return The bytes that were read from the pipe. This data is invalidated the next time ReadBytes or ReadBytesFromBuffer is called.
+		*/
+		inline const void* ReadBytesFromBuffer(const size_t bytes_requested, size_t& bytes_actual)
+		{
+			PrepareNextPacket(bytes_requested);
+
+			const size_t offset = _current_packet_bytes_read;
+			const size_t bytes_available = _current_packet_size - offset;
+			bytes_actual = bytes_available > bytes_requested ? bytes_requested : bytes_available;
+			_current_packet_bytes_read += bytes_actual;
+
+			return static_cast<const uint8_t*>(_current_packet) + offset;
+		}
+
+		/*!
+		*	\brief Attempt to read bytes from the pipe
+		*	\param dst The address to write any bytes that can be read
+		*	\param bytes The maximum number of bytes to read
+		*	\return The number of bytes that were read from the pipe
+		*/
+		inline size_t ReadBytes(void* dst, const size_t bytes)
+		{
+			size_t bytes_read = 0u;
+			const void* src = ReadBytesFromBuffer(bytes, bytes_read);
+			memcpy(dst, src, bytes_read);
+			return bytes_read;
+		}
+
+		std::future_status ForceReadBytes(void* dst, size_t bytes, size_t& bytes_actual, int timeout_ms = -1);
+
+		/*!
+		*	\brief Get how many bytes are immediately available for reading.
+		*	\details More bytes may be available but will only be processed when ReadBytes or ReadBytesFromBuffer are called.
+		*	\return The number of bytes
+		*/
+		inline size_t GetBufferSize() const
+		{
+			return _current_packet_size - _current_packet_bytes_read;
+		}
 	};
 
 	/*!
@@ -54,7 +114,8 @@ namespace anvil { namespace BytePipe {
 		\date September 2019
 		\brief Interface for serialising or deserialising data.
 	*/
-	class ANVIL_DLL_EXPORT Parser {
+	class ANVIL_DLL_EXPORT Parser 
+	{
 	public:
 		Parser();
 		virtual ~Parser();

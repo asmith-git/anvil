@@ -370,15 +370,18 @@ NON_RLE:
 		LengthWord _repeat_length;
 		DataWord _repeat_word;
 
-		inline bool InRepeatMode() const {
+		inline bool InRepeatMode() const 
+		{
 			return _repeat_length > 0;
 		}
 
-		inline size_t BytesInBuffer() const {
+		inline size_t BytesInBuffer() const 
+		{
 			return _byte_buffer.size() - _buffer_read_head;
 		}
 
-		void BufferCurrentRepeat() {
+		void BufferCurrentRepeat() 
+		{
 			const uint8_t* u8 = reinterpret_cast<uint8_t*>(&_repeat_word);
 			for (LengthWord i = 0; i < _repeat_length; ++i) {
 				//! \todo Optimise writing multiple bytes to the buffer
@@ -388,7 +391,6 @@ NON_RLE:
 			}
 			_repeat_length = 0;
 			_repeat_word = 0;
-			read2_faster = 1;
 		}
 
 		void ReadNextBlock() {
@@ -403,27 +405,49 @@ NON_RLE:
 
 			// Read the length of the block
 			LengthWord len = 0u;
-			_input.ReadBytesFast(&len, sizeof(LengthWord), _timeout_ms);
+			size_t throwaway = 0u;
+			_input.ForceReadBytes(&len, sizeof(LengthWord), throwaway, _timeout_ms);
 
 			// If the block is repeated word
-			if (len & RLE_FLAG) {
+			if (len & RLE_FLAG) 
+			{
 				len &= ~RLE_FLAG;
 				_repeat_length = len;
-				read2_faster = 0;
 				
 				// Read the word
 				_repeat_word = 0u;
-				_input.ReadBytesFast(&_repeat_word, sizeof(DataWord), _timeout_ms);
+				_input.ForceReadBytes(&_repeat_word, sizeof(DataWord), throwaway, _timeout_ms);
 
 				// If there is data in the buffer then this repeat needs to be added to it
 				if (BytesInBuffer() > 0) BufferCurrentRepeat();
-			} else {
-				read2_faster = 1;
+			} 
+			else 
+			{
 				size_t offset = _byte_buffer.size();
 				_byte_buffer.resize(offset + len);
-				_input.ReadBytesFast(_byte_buffer.data() + offset, len, _timeout_ms);
+				_input.ForceReadBytes(_byte_buffer.data() + offset, len, throwaway, _timeout_ms);
 			}
 		}
+
+	protected:
+		virtual void* ReadNextPacket(size_t& bytes) final 
+		{
+			// Try to fill the buffer with enough data
+			if (InRepeatMode()) BufferCurrentRepeat();
+
+			while (BytesInBuffer() < bytes) //! \bug Possible infinite loop
+			{ 
+				ReadNextBlock();
+				if (InRepeatMode()) BufferCurrentRepeat();
+			}
+
+			// Update the current read position
+			bytes = BytesInBuffer();
+			uint8_t* read_head = _byte_buffer.data() + _buffer_read_head;
+			_buffer_read_head += bytes;
+			return read_head;
+		}
+
 	public:
 		RLEDecoderPipe(InputPipe& input, int timeout_ms = -1) :
 			_input(input),
@@ -433,73 +457,10 @@ NON_RLE:
 			_repeat_length(0u)
 		{
 			_byte_buffer.reserve(MAX_BYTES_IN_BLOCK > (UINT16_MAX >> 1) ? (UINT16_MAX >> 1) : MAX_BYTES_IN_BLOCK);
-			read2_faster = 0;
 		}
 
 		~RLEDecoderPipe() {
 
-		}
-
-		size_t ReadBytes(void* dst, const size_t bytes) final{
-			size_t byte_remaining = bytes;
-			uint8_t* dst8 = static_cast<uint8_t*>(dst);
-
-			// Start reading from a new block
-READ_NEW_BLOCK:
-			if (InRepeatMode()) {
-				// Read as many words as possible
-				while (byte_remaining >= sizeof(DataWord) && _repeat_length > 0u) {
-					*reinterpret_cast<DataWord*>(dst8) = _repeat_word;
-					dst8 += sizeof(DataWord);
-					byte_remaining -= sizeof(DataWord);
-					--_repeat_length;
-				}
-
-				// If the number of bytes requested isn't a multiple of the word length then push the remaining words into the buffer
-				if(_repeat_length > 0 && byte_remaining > 0) BufferCurrentRepeat();
-			}
-
-			if (byte_remaining > 0) {
-				// If there are no bytes buffered then read a new block
-				const size_t bytes_in_buffer = BytesInBuffer();
-				if (bytes_in_buffer == 0u) {
-					ReadNextBlock();
-					goto READ_NEW_BLOCK;
-				}
-
-				// Read as many bytes as possible from the buffer
-				const uint8_t* read_head = _byte_buffer.data() + _buffer_read_head;
-				size_t bytes_to_read = bytes_in_buffer;
-				if (bytes_to_read > byte_remaining) bytes_to_read = byte_remaining;
-
-				memcpy(dst8, read_head, bytes_to_read);
-
-				_buffer_read_head += bytes_to_read;
-				dst8 += bytes_to_read;
-				byte_remaining -= bytes_to_read;
-			}
-
-			return bytes - byte_remaining;
-		}
-
-		const void* ReadBytes2(const size_t bytes_requested, size_t& bytes_actual) final {
-			// Try to fill the buffer with enough data
-			if (InRepeatMode()) BufferCurrentRepeat();
-			while (BytesInBuffer() < bytes_requested) { //! \bug Possible infinite loop
-				ReadNextBlock();
-				if (InRepeatMode()) BufferCurrentRepeat();
-			}
-
-			// Update the current read position
-			bytes_actual = bytes_requested;
-			const uint8_t* read_head = _byte_buffer.data() + _buffer_read_head;
-			_buffer_read_head += bytes_actual;
-
-			return read_head;
-		}
-
-		size_t GetBufferSize() const final {
-			return InRepeatMode() ? _repeat_length * sizeof(DataWord) : BytesInBuffer();
 		}
 	};
 

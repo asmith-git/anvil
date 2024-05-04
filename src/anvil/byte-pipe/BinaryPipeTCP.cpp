@@ -16,6 +16,11 @@
 
 namespace anvil { namespace BytePipe {
 
+	enum
+	{
+		MAX_PACKET_SIZE = 9000
+	};
+
 #if ANVIL_OS == ANVIL_WINDOWS
 	static void InitWinsock() {
 		WSADATA wsaData;
@@ -26,7 +31,9 @@ namespace anvil { namespace BytePipe {
 
 	// detail::TCPCommonPipe
 
-	detail::TCPCommonPipe::TCPCommonPipe() {
+	detail::TCPCommonPipe::TCPCommonPipe() :
+		_buffer(operator new(MAX_PACKET_SIZE))
+	{
 #if ANVIL_OS == ANVIL_WINDOWS
 		_socket = INVALID_SOCKET;
 #endif
@@ -39,6 +46,7 @@ namespace anvil { namespace BytePipe {
 			_socket = INVALID_SOCKET;
 		}
 #endif
+		operator delete(_buffer);
 	}
 	
 	// TCPClientPipe
@@ -88,7 +96,8 @@ namespace anvil { namespace BytePipe {
 
 	// TCPServerPipe
 
-	TCPServerPipe::TCPServerPipe(TCPPort listen_port) {
+	TCPServerPipe::TCPServerPipe(TCPPort listen_port) 
+	{
 #if ANVIL_OS == ANVIL_WINDOWS
 		InitWinsock();
 
@@ -128,17 +137,22 @@ namespace anvil { namespace BytePipe {
 #endif
 	}
 
-	TCPServerPipe::~TCPServerPipe() {
+	TCPServerPipe::~TCPServerPipe() 
+	{
 
 	}
 
-	size_t detail::TCPCommonPipe::ReadBytes(void* dst, const size_t bytes) {
+	void* detail::TCPCommonPipe::ReadNextPacket(size_t& bytes)
+	{
+		if (bytes > MAX_PACKET_SIZE) bytes = MAX_PACKET_SIZE;
 #if ANVIL_OS == ANVIL_WINDOWS
-		int bytes_read = recv(_socket, static_cast<char*>(dst), static_cast<int32_t>(bytes), 0);
+		int bytes_read = recv(_socket, static_cast<char*>(_buffer), static_cast<int32_t>(bytes), 0);
 		if (bytes_read == SOCKET_ERROR) throw std::runtime_error("TCPServerInputPipe::ReadBytes : Failed to read data, WSA error code " + std::to_string(WSAGetLastError()));
-		return bytes_read;
+		bytes = static_cast<size_t>(bytes_read);
+		return _buffer;
 #else
-		return 0;
+		bytes = 0u;
+		return nullptr;
 #endif
 	}
 

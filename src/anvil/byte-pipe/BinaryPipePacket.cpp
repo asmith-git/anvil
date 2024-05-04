@@ -42,20 +42,46 @@ namespace anvil { namespace BytePipe {
 		_payload_read_head(0u),
 		_timeout_ms(timeout_ms)
 	{
-		read2_faster = 1;
+
 	}
 
-	PacketInputPipe::~PacketInputPipe() {
+	PacketInputPipe::~PacketInputPipe() 
+	{
 		if (_payload != nullptr) delete[] _payload;
 	}
 
-	void PacketInputPipe::ReadNextPacket() {
+	void* PacketInputPipe::ReadNextPacket(size_t& bytes_actual)
+	{
+		const size_t bytes_requested = bytes_actual;
 
+		if (bytes_requested == 0u) 
+		{
+		NO_DATA:
+			bytes_actual = 0u;
+			return nullptr;
+		}
+
+		if (_payload_read_head >= _payload_bytes) ReadNextPacket2();
+		if (_payload_bytes == 0u) goto NO_DATA;
+
+		bytes_actual = _payload_bytes - _payload_read_head;
+		if (bytes_actual > bytes_requested) bytes_actual = bytes_requested;
+
+		void* address = _payload + _payload_read_head;
+		_payload_read_head += bytes_actual;
+
+		return address;
+	}
+
+	void PacketInputPipe::ReadNextPacket2() 
+	{
+		enum { _timeout_ms = -1 };
+		size_t throwaway = 0u;
 		size_t packet_size = 0u;
 
 		// Read the packet header version
 		PacketHeader header;
-		_downstream_pipe.ReadBytesFast(&header, 1u, _timeout_ms);
+		_downstream_pipe.ForceReadBytes(&header, 1u, throwaway, _timeout_ms);
 
 		// Error checking
 		uint32_t version = header.v1.packet_version;
@@ -67,7 +93,7 @@ namespace anvil { namespace BytePipe {
 
 		// Read the rest of the header
 		const size_t header_size = g_header_sizes[version - 1u];
-		_downstream_pipe.ReadBytesFast(reinterpret_cast<uint8_t*>(&header) + 1u, header_size - 1u, _timeout_ms);
+		_downstream_pipe.ForceReadBytes(reinterpret_cast<uint8_t*>(&header) + 1u, header_size - 1u, throwaway, _timeout_ms);
 
 		if (version == 1u) {
 			_payload_bytes = header.v1.payload_size + 1u;
@@ -94,38 +120,8 @@ namespace anvil { namespace BytePipe {
 		
 		if(_payload == nullptr) throw std::runtime_error("PacketInputPipe::ReadNextPacket : Failed to allocate payload buffer");
 
-		_downstream_pipe.ReadBytesFast(_payload, packet_size - header_size, _timeout_ms);
+		_downstream_pipe.ForceReadBytes(_payload, packet_size - header_size, throwaway, _timeout_ms);
 		_payload_read_head = 0u;
-	}
-
-	size_t PacketInputPipe::ReadBytes(void* dst, const size_t bytes) {
-		size_t bytes_read = 0u;
-		const void* tmp = ReadBytes2(bytes, bytes_read);
-		memcpy(dst, tmp, bytes_read);
-		return bytes_read;
-	}
-
-	const void* PacketInputPipe::ReadBytes2(const size_t bytes_requested, size_t& bytes_actual) {
-		if (bytes_requested == 0u) {
-NO_DATA:
-			bytes_actual = 0u;
-			return nullptr;
-		}
-
-		if (_payload_read_head >= _payload_bytes) ReadNextPacket();
-		if (_payload_bytes == 0u) goto NO_DATA;
-
-		bytes_actual = _payload_bytes - _payload_read_head;
-		if (bytes_actual > bytes_requested) bytes_actual = bytes_requested;
-
-		const void* address = _payload + _payload_read_head;
-		_payload_read_head += bytes_actual;
-
-		return address;
-	}
-
-	size_t PacketInputPipe::GetBufferSize() const {
-		return _payload_bytes - _payload_read_head;
 	}
 
 	// PacketOutputPipe

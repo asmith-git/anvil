@@ -15,6 +15,10 @@
 #include "anvil/byte-pipe/BytePipeUDP.hpp"
 
 namespace anvil { namespace BytePipe {
+	enum
+	{
+		MAX_PACKET_SIZE = 9000
+	};
 
 #if ANVIL_OS == ANVIL_WINDOWS
 	static void InitWinsock() {
@@ -75,7 +79,9 @@ namespace anvil { namespace BytePipe {
 
 	// UDPInputPipe
 
-	UDPInputPipe::UDPInputPipe(UDPPort listen_port) {
+	UDPInputPipe::UDPInputPipe(UDPPort listen_port) :
+		_buffer(operator new(MAX_PACKET_SIZE))
+	{
 #if ANVIL_OS == ANVIL_WINDOWS
 		InitWinsock();
 
@@ -108,15 +114,20 @@ namespace anvil { namespace BytePipe {
 			_socket = INVALID_SOCKET;
 		}
 #endif
+		operator delete(_buffer);
 	}
 
-	size_t UDPInputPipe::ReadBytes(void* dst, const size_t bytes) {
+	void* UDPInputPipe::ReadNextPacket(size_t& bytes)
+	{
+		if (bytes > MAX_PACKET_SIZE) bytes = MAX_PACKET_SIZE;
 #if ANVIL_OS == ANVIL_WINDOWS
-		int bytes_read = recv(_socket, static_cast<char*>(dst), static_cast<int32_t>(bytes), 0);
+		int bytes_read = recv(_socket, static_cast<char*>(_buffer), static_cast<int32_t>(bytes), 0);
 		if (bytes_read == SOCKET_ERROR) throw std::runtime_error("UDPInputPipe::ReadBytes : Failed to read data, WSA error code " + std::to_string(WSAGetLastError()));
-		return static_cast<uint32_t>(bytes_read);
+		bytes = static_cast<size_t>(bytes_read);
+		return _buffer;
 #else
-		return 0;
+		bytes = 0u;
+		return nullptr;
 #endif
 	}
 

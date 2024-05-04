@@ -24,11 +24,13 @@ namespace anvil { namespace BytePipe {
 	class ANVIL_DLL_EXPORT IStreamPipe final : public InputPipe {
 	private:
 		std::istream& _stream;
+		void* _buffer;
+		size_t _buffer_size;
+	protected:
+		virtual void* ReadNextPacket(size_t& bytes) final;
 	public:
 		IStreamPipe(std::istream& stream);
 		virtual ~IStreamPipe();
-		size_t ReadBytes(void* dst, const size_t bytes) final;
-		void ReadBytesFast(void* dst, size_t bytes, int timeout_ms) final;
 	};
 
 	class ANVIL_DLL_EXPORT OStreamPipe final : public OutputPipe {
