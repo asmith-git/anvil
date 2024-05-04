@@ -193,6 +193,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\src\anvil\byte-pipe\BinaryPipe.cpp" />
     <ClCompile Include="..\..\..\src\anvil\byte-pipe\BinaryPipeBits.cpp" />
+    <ClCompile Include="..\..\..\src\anvil\byte-pipe\BinaryPipeBuilder.cpp" />
     <ClCompile Include="..\..\..\src\anvil\byte-pipe\BinaryPipeHamming.cpp" />
     <ClCompile Include="..\..\..\src\anvil\byte-pipe\BinaryPipeJSON.cpp" />
     <ClCompile Include="..\..\..\src\anvil\byte-pipe\BinaryPipePacket.cpp" />
@@ -232,6 +233,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeBits.hpp" />
+    <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeBuilder.hpp" />
     <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeCore.hpp" />
     <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeEndian.hpp" />
     <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeHamming.hpp" />

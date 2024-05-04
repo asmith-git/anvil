@@ -177,6 +177,9 @@
     <ClCompile Include="..\..\..\src\anvil\core\Popcount.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\anvil\byte-pipe\BinaryPipeBuilder.cpp">
+      <Filter>Source Files\byte-pipe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\anvil\core\Alignment.hpp">
@@ -415,6 +418,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\anvil\core\ByteManipulation.hpp">
       <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\anvil\byte-pipe\BytePipeBuilder.hpp">
+      <Filter>Header Files\byte-pipe</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
