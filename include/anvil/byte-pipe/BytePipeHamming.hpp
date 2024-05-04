@@ -54,6 +54,8 @@ namespace anvil { namespace BytePipe {
 	{
 	private:
 		OutputPipe& _downstream_pipe;
+		void* _buffer;
+		size_t _buffer_size;
 
 	public:
 		RawHamming74OutputPipe(OutputPipe& downstream_pipe, int timeout_ms = -1);
@@ -111,6 +113,8 @@ namespace anvil { namespace BytePipe {
 	{
 	private:
 		OutputPipe& _downstream_pipe;
+		void* _buffer;
+		size_t _buffer_size;
 
 	public:
 		RawHamming1511OutputPipe(OutputPipe& downstream_pipe, int timeout_ms = -1);
