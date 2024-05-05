@@ -62,6 +62,9 @@ namespace anvil { namespace BytePipe {
 		virtual std::future_status FlushVirtual(int timeout_ms) final;
 
 	public:
+		static size_t HowManyBitsToEncode(size_t decoded_bits);
+		static size_t HowManyBitsToDecode(size_t encoded_bits);
+
 		RawHamming74OutputPipe(OutputPipe& downstream_pipe, int timeout_ms = -1);
 		virtual ~RawHamming74OutputPipe();
 	};
@@ -124,6 +127,9 @@ namespace anvil { namespace BytePipe {
 		virtual std::future_status FlushVirtual(int timeout_ms) final;
 
 	public:
+		static size_t HowManyBitsToEncode(size_t decoded_bits);
+		static size_t HowManyBitsToDecode(size_t encoded_bits);
+
 		RawHamming1511OutputPipe(OutputPipe& downstream_pipe, int timeout_ms = -1);
 		virtual ~RawHamming1511OutputPipe();
 	};
