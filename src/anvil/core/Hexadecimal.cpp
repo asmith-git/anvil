@@ -15,42 +15,95 @@
 #include "anvil/core/Hexadecimal.hpp"
 #include "anvil/core/Keywords.hpp"
 
-namespace anvil {
+namespace anvil 
+{
+	// ---- Utility Functions ----
 
-	static char ToHex(uint32_t nybble) {
+	static char ToHex(uint32_t nybble) 
+	{
 		return static_cast<char>(nybble <= 9 ?
 			'0' + nybble :
 			'A' + (nybble - 10));
 	}
 
-	static inline void ToHex(uint32_t byte, char* out) {
+	static inline void ToHex(uint32_t byte, char* out)
+	{
 		out[0u] = ToHex(byte >> 4u);
 		out[1u] = ToHex(byte & 15u);
 	}
 
-	static uint32_t HexNybbleToBin(char hex) {
-		if (hex >= '0' && hex <= '9') {
+	static uint32_t HexNybbleToBin(char hex) 
+	{
+		if (hex >= '0' && hex <= '9') 
+		{
 			return hex - '0';
-		} else if (hex >= 'A' && hex <= 'Z') {
+		} 
+		else if (hex >= 'A' && hex <= 'Z') 
+		{
 			return (hex - 'A') + 10;
-		} else {
+		}
+		else 
+		{
 			return (hex - 'a') + 10;
 		}
 	}
 
-	// Hexadecimal
+	// ---- Hexadecimal ----
 
-	void Hexadecimal::Encode(const uint8_t* src, size_t bytes_in, char* dst, size_t& dst_len) {
-		for (size_t i = 0u; i < bytes_in; ++i) {
+	void Hexadecimal::Encode(const uint8_t* src, size_t bytes_in, char* dst, size_t& dst_len) 
+	{
+		// If no bytes to encode
+		if (src == nullptr || bytes_in == 0u)
+		{
+			dst_len = 0u;
+			return;
+		}
+
+		// Prevent a buffer overflow when writing to dst
+		if (dst_len != 0u) bytes_in = std::min(bytes_in, dst_len / 2u);
+
+		// Convert to hexadecimal
+		for (size_t i = 0u; i < bytes_in; ++i) 
+		{
 			ToHex(src[i], dst);
 			dst += 2u;
 		}
+
+		// Output the number of bytes written
 		dst_len = bytes_in * 2u;
 	}
 
-	void Hexadecimal::Decode(const char* src, size_t src_len, uint8_t* dst, size_t& bytes_out) {
+	void Hexadecimal::Encode(const uint8_t* src, size_t bytes_in, char* dst)
+	{
+		size_t bytes_encoded = 0u;
+		Encode(src, bytes_in, dst, bytes_encoded);
+	}
+
+	void Hexadecimal::Decode(const char* src, size_t src_len, uint8_t* dst, size_t& bytes_out) 
+	{
+		// Handle empty string
+		if (src == nullptr)
+		{
+	NO_BYTES_OUT:
+			bytes_out = 0u;
+			return;
+		}
+
+		// Call strlen if required
+		if (src_len == 0u) 
+		{
+			src_len = strlen(src);
+
+			// If length is still zero then return
+			if (src_len == 0u) goto NO_BYTES_OUT;
+		}
+
+		// Output the number of bytes that will be written
 		bytes_out = src_len / 2u;
-		for (size_t i = 0u; i < bytes_out; ++i) {
+
+		// Convert from hexadecimal
+		for (size_t i = 0u; i < bytes_out; ++i) 
+		{
 			*dst = static_cast<uint8_t>(HexNybbleToBin(src[1u]) | (HexNybbleToBin(src[0u]) << 4u));
 
 			src += 2u;
@@ -58,18 +111,29 @@ namespace anvil {
 		}
 	}
 
-	std::string Hexadecimal::Encode(const uint8_t* src, size_t bytes_in) {
-		std::string tmp;
-		tmp.resize(bytes_in * 2u);
-		size_t buf_len = 0u;
-		Encode(src, bytes_in, const_cast<char*>(tmp.c_str()), buf_len);
+	void Hexadecimal::Decode(const char* src, size_t src_len, uint8_t* dst)
+	{
+		size_t bytes_decoded = 0u;
+		Decode(src, src_len, dst);
+	}
+
+	std::string Hexadecimal::Encode(const uint8_t* src, size_t bytes_in) 
+	{
+		// Allocate the string
+		std::string tmp(bytes_in * 2u, ' ');
+
+		// Do the conversion and return the result
+		Encode(src, bytes_in, const_cast<char*>(tmp.c_str()));
 		return tmp;
 	}
 
-	std::vector<uint8_t> Hexadecimal::Decode(const char* src, size_t src_len) {
+	std::vector<uint8_t> Hexadecimal::Decode(const char* src, size_t src_len) 
+	{
+		// Allocate the outoput data
 		std::vector<uint8_t> tmp(src_len / 2);
-		size_t bytes_out = 0u;
-		Decode(src, src_len, tmp.data(), bytes_out);
+
+		// Do the conversion and return the result
+		Decode(src, src_len, tmp.data());
 		return tmp;
 	}
 
