@@ -114,7 +114,7 @@ namespace anvil
 	void Hexadecimal::Decode(const char* src, size_t src_len, uint8_t* dst)
 	{
 		size_t bytes_decoded = 0u;
-		Decode(src, src_len, dst);
+		Decode(src, src_len, dst, bytes_decoded);
 	}
 
 	std::string Hexadecimal::Encode(const uint8_t* src, size_t bytes_in) 
