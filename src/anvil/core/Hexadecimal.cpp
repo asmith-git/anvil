@@ -32,19 +32,16 @@ namespace anvil
 		out[1u] = ToHex(byte & 15u);
 	}
 
-	static uint32_t HexNybbleToBin(char hex) 
+	static uint32_t HexNybbleToBin(char hex)
 	{
-		if (hex >= '0' && hex <= '9') 
+		if (hex >= '0' && hex <= '9')
 		{
 			return hex - '0';
-		} 
-		else if (hex >= 'A' && hex <= 'Z') 
-		{
-			return (hex - 'A') + 10;
 		}
-		else 
+		else
 		{
-			return (hex - 'a') + 10;
+			const char sub = hex >= 'A' && hex <= 'Z' ? 'A' : 'a';
+			return (hex - sub) + 10;
 		}
 	}
 
